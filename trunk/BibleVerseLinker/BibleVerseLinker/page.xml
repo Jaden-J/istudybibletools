@@ -1,0 +1,586 @@
+﻿<?xml version="1.0" ?>
+- <one:Page xmlns:one="http://schemas.microsoft.com/office/onenote/2010/onenote" ID="{5D216E81-A8D1-4FEF-980A-2B4B92EBCCC3}{1}{B0}" name="1 глава. От Матфея" dateTime="2011-07-11T12:35:25.000Z" lastModifiedTime="2011-09-09T05:47:29.000Z" pageLevel="2" isCurrentlyViewed="true" lang="ru">
+  <one:QuickStyleDef index="0" name="PageTitle" fontColor="automatic" highlightColor="automatic" font="Calibri" fontSize="17.0" spaceBefore="0.0" spaceAfter="0.0" />
+  <one:QuickStyleDef index="1" name="p" fontColor="automatic" highlightColor="automatic" font="Calibri" fontSize="11.0" spaceBefore="0.0" spaceAfter="0.0" />
+  - <one:PageSettings RTL="false" color="automatic">
+    - <one:PageSize>
+      <one:Automatic />
+    </one:PageSize>
+    <one:RuleLines visible="false" />
+  </one:PageSettings>
+  - <one:Title lang="ru">
+    - <one:OE author="Windows User" authorInitials="WU" lastModifiedBy="Наталья Мусарева" lastModifiedByInitials="НМ" creationTime="2011-07-11T12:35:29.000Z" lastModifiedTime="2011-08-24T08:55:34.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{15}{B0}" alignment="left" quickStyleIndex="0">
+      - <one:T>
+        - <![CDATA[ <span
+lang=en-US>1 </span><span lang=ru>глава. От Матфея</span>
+  ]]>
+      </one:T>
+    </one:OE>
+  </one:Title>
+  - <one:Outline author="Windows User" authorInitials="WU" lastModifiedBy="Windows User" lastModifiedByInitials="WU" lastModifiedTime="2011-09-09T05:37:37.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{32}{B0}">
+    <one:Position x="36.0" y="86.4000015258789" z="0" />
+    <one:Size width="352.7999572753906" height="812.8533935546874" />
+    - <one:OEChildren>
+      - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-09-09T05:37:37.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{33}{B0}" alignment="left">
+        - <one:Table bordersVisible="false" lastModifiedTime="2011-09-09T05:37:37.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{34}{B0}">
+          - <one:Columns>
+            <one:Column index="0" width="307.5599975585937" />
+            <one:Column index="1" width="37.11000061035156" />
+          </one:Columns>
+          - <one:Row objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{35}{B0}" lastModifiedTime="2011-09-09T05:37:37.000Z">
+            - <one:Cell lastModifiedTime="2011-09-09T05:37:37.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{36}{B0}" lastModifiedByInitials="D">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-09-09T05:37:37.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{39}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ <span lang=en-US>1 </span><span
+style='text-decoration:underline' lang=ru>Родословие</span><span lang=en-US> Иисуса Христа, Сына Давидова, Сына Авраамова. </span>
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{53}{B0}" lang="en-US" author="Наталья Мусарева" authorInitials="НМ" lastModifiedBy="Наталья Мусарева" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{56}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{58}{B0}" lastModifiedTime="2011-08-24T08:58:08.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:08.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{68}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:08.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{71}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 2 Авраам родил Исаака; Исаак родил Иакова; Иаков родил Иуду и братьев его; 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{59}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{77}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{79}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{89}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{92}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 3 Иуда родил Фареса и Зару от Фамари; Фарес родил Есрома; Есром родил Арама; 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{80}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{98}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{100}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{110}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{113}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 4 Арам родил Аминадава; Аминадав родил Наассона; Наассон родил Салмона; 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{101}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{119}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{121}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{131}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{134}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 5 Салмон родил Вооза от Рахавы; Вооз родил Овида от Руфи; Овид родил Иессея; 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{122}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{140}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{142}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{152}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{155}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 6 Иессей родил Давида царя; Давид царь родил Соломона от бывшей за Уриею; 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{143}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{161}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{163}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{173}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{176}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 7 Соломон родил Ровоама; Ровоам родил Авию; Авия родил Асу; 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{164}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{182}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{184}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{194}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{197}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 8 Аса родил Иосафата; Иосафат родил Иорама; Иорам родил Озию; 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{185}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{203}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{205}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{215}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{218}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 9 Озия родил Иоафама; Иоафам родил Ахаза; Ахаз родил Езекию; 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{206}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{224}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{226}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{236}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{239}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 10 Езекия родил Манассию; Манассия родил Амона; Амон родил Иосию; 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{227}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{245}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{247}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{11}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{14}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 11 Иосия родил Иоакима; Иоаким родил Иехонию и братьев его, перед переселением в Вавилон. 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{F71A185B-6D49-47F1-8876-D14EF8A21144}{248}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{20}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{22}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{32}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{35}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 12 По переселении же в Вавилон, Иехония родил Салафииля; Салафииль родил Зоровавеля; 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{23}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{41}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{43}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{53}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{56}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 13 Зоровавель родил Авиуда; Авиуд родил Елиакима; Елиаким родил Азора; 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{44}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{62}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{64}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{74}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{77}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 14 Азор родил Садока; Садок родил Ахима; Ахим родил Елиуда; 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{65}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{83}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{85}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{95}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{98}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 15 Елиуд родил Елеазара; Елеазар родил Матфана; Матфан родил Иакова; 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{86}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{104}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{106}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{116}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{119}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 16 Иаков родил Иосифа, мужа Марии, от Которой родился Иисус, называемый Христос. 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{107}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{125}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{127}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{137}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{140}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 17 Итак всех родов от Авраама до Давида четырнадцать родов; и от Давида до переселения в Вавилон четырнадцать родов; и от переселения в Вавилон до Христа четырнадцать родов. 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{128}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{146}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{148}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{158}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{161}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 18 Рождество Иисуса Христа было так: по обручении Матери Его Марии с Иосифом, прежде нежели сочетались они, оказалось, что Она имеет во чреве от Духа Святаго. 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{149}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{167}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{169}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{179}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{182}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 19 Иосиф же муж Ее, будучи праведен и не желая огласить Ее, хотел тайно отпустить Ее. 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{170}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{188}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{190}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{200}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{203}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ <span lang=en-US>20 Но когда он помыслил это, </span><span
+lang=ru>—</span><span lang=en-US> се, Ангел Господень явился ему во сне и сказал: Иосиф, сын Давидов! не бойся принять Марию, жену твою, ибо родившееся в Ней есть от Духа Святаго; </span>
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{191}{B0}" lang="en-US" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{210}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{212}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{222}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{225}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 21 родит же Сына, и наречешь Ему имя Иисус, ибо Он спасет людей Своих от грехов их. 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{213}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{231}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{233}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{243}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{246}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 22 А все сие произошло, да сбудется реченное Господом через пророка, который говорит: 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{234}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{252}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{254}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{1069DB37-1A3C-43EF-9E4C-82C7D738B791}{18}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{1069DB37-1A3C-43EF-9E4C-82C7D738B791}{21}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 23 се, Дева во чреве приимет и родит Сына, и нарекут имя Ему Еммануил, что значит: с нами Бог. 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{AA0B339D-694C-47E5-BD48-FC27E147B1B0}{255}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{1069DB37-1A3C-43EF-9E4C-82C7D738B791}{27}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{1069DB37-1A3C-43EF-9E4C-82C7D738B791}{29}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{1069DB37-1A3C-43EF-9E4C-82C7D738B791}{39}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{1069DB37-1A3C-43EF-9E4C-82C7D738B791}{42}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 24 Встав от сна, Иосиф поступил, как повелел ему Ангел Господень, и принял жену свою, 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{1069DB37-1A3C-43EF-9E4C-82C7D738B791}{30}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{1069DB37-1A3C-43EF-9E4C-82C7D738B791}{48}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          - <one:Row objectID="{1069DB37-1A3C-43EF-9E4C-82C7D738B791}{50}{B0}" lastModifiedTime="2011-08-24T08:58:02.000Z" lang="en-US" lastModifiedBy="Наталья Мусарева">
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{1069DB37-1A3C-43EF-9E4C-82C7D738B791}{60}{B0}" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-07-11T12:35:30.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{1069DB37-1A3C-43EF-9E4C-82C7D738B791}{63}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 25 и не знал Ее. [Как] наконец Она родила Сына Своего первенца, и он нарек Ему имя: Иисус. 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            - <one:Cell lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{1069DB37-1A3C-43EF-9E4C-82C7D738B791}{51}{B0}" author="Наталья Мусарева" authorInitials="НМ" lastModifiedByInitials="НМ">
+              - <one:OEChildren>
+                - <one:OE creationTime="2011-08-24T08:58:02.000Z" lastModifiedTime="2011-08-24T08:58:02.000Z" objectID="{1069DB37-1A3C-43EF-9E4C-82C7D738B791}{70}{B0}" alignment="left" spaceAfter="12.0" quickStyleIndex="1">
+                  - <one:T>
+                    - <![CDATA[ 
+  ]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+        </one:Table>
+      </one:OE>
+    </one:OEChildren>
+  </one:Outline>
+</one:Page>
