@@ -84,7 +84,7 @@ namespace BibleNoteLinker
                 {
                     Logger.LogMessage("Старт обработки всей записной книжки");
                     
-                    string currentNotebookId = GetBibleNotebookId(oneNoteApp, SettingsManager.Instance.NotebookName);
+                    string currentNotebookId = Utils.GetNotebookId(oneNoteApp, SettingsManager.Instance.NotebookName);
 
                     if (!string.IsNullOrEmpty(currentNotebookId))
                     {
@@ -153,20 +153,7 @@ namespace BibleNoteLinker
             }
         }
       
-        private static string GetBibleNotebookId(Application oneNoteApp, string notebookName)
-        {
-            string xml;
-            XmlNamespaceManager xnm;
-            oneNoteApp.GetHierarchy(null, HierarchyScope.hsNotebooks, out xml);
-            XDocument doc = Utils.GetXDocument(xml, out xnm);            
-            XElement bibleNotebook = doc.Root.XPathSelectElement(string.Format("one:Notebook[@name='{0}']", notebookName), xnm);
-            if (bibleNotebook != null)
-            {
-                return (string)bibleNotebook.Attribute("ID");                
-            }
-
-            return null;
-        }
+     
 
         private static void ProcessRootSectionGroup(Application oneNoteApp, string notebookId, XDocument doc, string sectionGroupName,
             XmlNamespaceManager xnm, NoteLinkManager.AnalyzeDepth linkDepth, bool force, bool deleteNotes)
