@@ -260,7 +260,7 @@ namespace BibleCommon.Helpers
                     break;
                 }
 
-                if (c >= '0' && c <= '9')  // значит цифры
+                if (IsDigit(c))  // значит цифры
                 {
                     foundValidChars = true;
 
@@ -399,7 +399,7 @@ namespace BibleCommon.Helpers
                     continue;
                 }
 
-                if (c >= '0' && c <= '9')  // значит цифры
+                if (IsDigit(c))  // значит цифры
                 {
                     foundValidChars = true;
 

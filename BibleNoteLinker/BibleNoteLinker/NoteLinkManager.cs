@@ -422,20 +422,24 @@ namespace BibleNoteLinker
 
                             if (!string.IsNullOrEmpty(bookName) && !string.IsNullOrEmpty(bookName.Trim()))
                             {
-                                string verseName = string.Format("{0}{1}{2}{3}{4}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number, ChapterVerseDelimiter, verseString);
-
-                                VersePointer vp = new VersePointer(verseName);
-                                if (vp.IsValid)
+                                char prevPrevChar = Utils.GetChar(textElement.Value, startIndex);
+                                if (!(Utils.IsCharAlphabetical(prevPrevChar) || Utils.IsDigit(prevPrevChar)))
                                 {
-                                    result.VersePointer = vp;
-                                    result.ResultType = startIndex == -1 
-                                                ? VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString
-                                                : VersePointerSearchResult.SearchResultType.ChapterAndVerse;
-                                    result.VersePointerEndIndex = endIndex;
-                                    result.VersePointerStartIndex = startIndex;
-                                    result.ChapterName = string.Format("{0}{1}{2}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number);
-                                    result.TextElement = textElement;
-                                    break;
+                                    string verseName = string.Format("{0}{1}{2}{3}{4}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number, ChapterVerseDelimiter, verseString);
+
+                                    VersePointer vp = new VersePointer(verseName);
+                                    if (vp.IsValid)
+                                    {
+                                        result.VersePointer = vp;
+                                        result.ResultType = startIndex == -1
+                                                    ? VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString
+                                                    : VersePointerSearchResult.SearchResultType.ChapterAndVerse;
+                                        result.VersePointerEndIndex = endIndex;
+                                        result.VersePointerStartIndex = startIndex;
+                                        result.ChapterName = string.Format("{0}{1}{2}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number);
+                                        result.TextElement = textElement;
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -544,23 +548,27 @@ namespace BibleNoteLinker
 
                     if (!string.IsNullOrEmpty(bookName) && !string.IsNullOrEmpty(bookName.Trim()))
                     {
-                        string verseName = string.Format("{0}{1}{2}{3}{4}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number, ChapterVerseDelimiter, 0);
-
-                        VersePointer vp = new VersePointer(verseName);
-                        if (vp.IsValid)
+                        char prevPrevChar = Utils.GetChar(textElement.Value, startIndex);
+                        if (!(Utils.IsCharAlphabetical(prevPrevChar) || Utils.IsDigit(prevPrevChar)))
                         {
-                            result.ChapterName = string.Format("{0}{1}{2}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number);
-                            if (isInBrackets)
-                                result.ResultType = VersePointerSearchResult.SearchResultType.ExcludableChapter;
-                            else
-                                result.ResultType = startIndex == -1 && nextChar != "-"                                     // так как пока мы не поддерживаем Откр 1-2, и так как мы найдём в таком случае только Откр 1, то не считаем это ссылкой, как ChapterOnlyAtStartString
-                                            ? VersePointerSearchResult.SearchResultType.ChapterOnlyAtStartString
-                                            : VersePointerSearchResult.SearchResultType.ChapterOnly;
-                            result.VersePointerEndIndex = nextBreakIndex;
-                            result.VersePointerStartIndex = startIndex;
-                            result.VersePointer = vp;
-                            result.TextElement = textElement;
-                            break;
+                            string verseName = string.Format("{0}{1}{2}{3}{4}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number, ChapterVerseDelimiter, 0);
+
+                            VersePointer vp = new VersePointer(verseName);
+                            if (vp.IsValid)
+                            {
+                                result.ChapterName = string.Format("{0}{1}{2}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number);
+                                if (isInBrackets)
+                                    result.ResultType = VersePointerSearchResult.SearchResultType.ExcludableChapter;
+                                else
+                                    result.ResultType = startIndex == -1 && nextChar != "-"                                     // так как пока мы не поддерживаем Откр 1-2, и так как мы найдём в таком случае только Откр 1, то не считаем это ссылкой, как ChapterOnlyAtStartString
+                                                ? VersePointerSearchResult.SearchResultType.ChapterOnlyAtStartString
+                                                : VersePointerSearchResult.SearchResultType.ChapterOnly;
+                                result.VersePointerEndIndex = nextBreakIndex;
+                                result.VersePointerStartIndex = startIndex;
+                                result.VersePointer = vp;
+                                result.TextElement = textElement;
+                                break;
+                            }
                         }
                     }
                 }
