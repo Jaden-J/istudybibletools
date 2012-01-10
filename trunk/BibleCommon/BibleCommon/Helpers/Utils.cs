@@ -9,11 +9,27 @@ using System.Reflection;
 using System.IO;
 using BibleCommon.Consts;
 using BibleCommon.Services;
+using System.Xml.XPath;
 
 namespace BibleCommon.Helpers
 {
     public static class Utils
     {
+        public static string GetNotebookId(Application oneNoteApp, string notebookName)
+        {
+            string xml;
+            XmlNamespaceManager xnm;
+            oneNoteApp.GetHierarchy(null, HierarchyScope.hsNotebooks, out xml);
+            XDocument doc = Utils.GetXDocument(xml, out xnm);
+            XElement bibleNotebook = doc.Root.XPathSelectElement(string.Format("one:Notebook[@name='{0}']", notebookName), xnm);
+            if (bibleNotebook != null)
+            {
+                return (string)bibleNotebook.Attribute("ID");
+            }
+
+            return null;
+        }
+
         public static string GetHierarchyElementName(Application oneNoteApp, string elementId)
         {
             XmlNamespaceManager xnm;
