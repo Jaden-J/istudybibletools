@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0"?>
-<one:Page xmlns:one="http://schemas.microsoft.com/office/onenote/2010/onenote" ID="{5F1BF8D6-E9C0-4187-919F-497B7E078068}{1}{B0}" name="Тест" dateTime="2011-11-27T19:08:16.000Z" lastModifiedTime="2011-11-29T13:43:20.000Z" pageLevel="1" isCurrentlyViewed="true" lang="ru">
+<one:Page xmlns:one="http://schemas.microsoft.com/office/onenote/2010/onenote" ID="{DA890D3C-B54A-4FB9-94FA-445B7FC9CDDB}{1}{B0}" name="План урока студента" dateTime="2012-01-10T06:27:03.000Z" lastModifiedTime="2012-01-10T06:38:01.000Z" pageLevel="1" isInRecycleBin="true" isCurrentlyViewed="true" lang="ru">
   <one:QuickStyleDef index="0" name="PageTitle" fontColor="automatic" highlightColor="automatic" font="Calibri" fontSize="17.0" spaceBefore="0.0" spaceAfter="0.0"/>
   <one:QuickStyleDef index="1" name="h2" fontColor="#366092" highlightColor="automatic" font="Calibri" fontSize="13.0" bold="true" spaceBefore="0.0" spaceAfter="0.0"/>
   <one:QuickStyleDef index="2" name="p" fontColor="automatic" highlightColor="automatic" font="Calibri" fontSize="11.0" spaceBefore="0.0" spaceAfter="0.0"/>
@@ -10,62 +10,121 @@
     <one:RuleLines visible="false"/>
   </one:PageSettings>
   <one:Title lang="ru">
-    <one:OE author="Наталья Мусарева" authorInitials="НМ" lastModifiedBy="Наталья Мусарева" lastModifiedByInitials="НМ" creationTime="2011-11-27T19:08:19.000Z" lastModifiedTime="2011-11-29T12:18:28.000Z" objectID="{0AC3E40B-DA3B-40F0-BFC9-31597DD8814F}{32}{B0}" alignment="left" quickStyleIndex="0">
-      <one:T><![CDATA[Тест]]></one:T>
+    <one:OE author="Александр и Наталья" authorInitials="АИН" lastModifiedBy="Александр и Наталья" lastModifiedByInitials="АИН" creationTime="2012-01-10T06:27:05.000Z" lastModifiedTime="2012-01-10T06:27:07.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{65}{B0}" alignment="left" quickStyleIndex="0">
+      <one:T><![CDATA[План урока студента]]></one:T>
     </one:OE>
   </one:Title>
-  <one:Outline author="Наталья Мусарева" authorInitials="НМ" lastModifiedBy="Demko, Aleksandr" lastModifiedByInitials="DA" lastModifiedTime="2011-11-29T13:43:20.000Z" objectID="{293BEF24-3AE0-4697-A78B-BC2C070AE8CC}{10}{B0}">
+  <one:Outline author="Александр и Наталья" authorInitials="АИН" lastModifiedBy="Александр и Наталья" lastModifiedByInitials="АИН" lastModifiedTime="2012-01-10T06:34:50.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{15}{B0}">
     <one:Position x="36.0" y="86.4000015258789" z="0"/>
-    <one:Size width="400.2749938964844" height="123.2908554077148"/>
+    <one:Size width="460.7673645019531" height="222.2400054931641"/>
     <one:OEChildren>
-      <one:OE creationTime="2011-07-27T13:15:14.000Z" lastModifiedTime="2011-11-29T13:43:20.000Z" objectID="{293BEF24-3AE0-4697-A78B-BC2C070AE8CC}{15}{B0}" alignment="left" quickStyleIndex="1">
-        <one:T><![CDATA[<span style='font-weight:bold'>Выводы:</span>]]></one:T>
-        <one:OEChildren>
-          <one:OE creationTime="2011-07-27T13:15:24.000Z" lastModifiedTime="2011-11-29T13:43:20.000Z" objectID="{293BEF24-3AE0-4697-A78B-BC2C070AE8CC}{16}{B0}" alignment="left" quickStyleIndex="2">
-            <one:List>
-              <one:Bullet bullet="2" fontSize="11.0"/>
-            </one:List>
-            <one:T>
-              <![CDATA[Не всякая вера ведет к спасению. <span
-style='font-weight:bold'>Ин 2:22-23 </span>Необходимо верить в Писание, в Слова Иисуса, в Иисуса.]]>
-            </one:T>
-          </one:OE>
-          <one:OE creationTime="2011-07-27T13:16:27.000Z" lastModifiedTime="2011-11-29T13:43:20.000Z" objectID="{293BEF24-3AE0-4697-A78B-BC2C070AE8CC}{20}{B0}" alignment="left" quickStyleIndex="2">
-            <one:List>
-              <one:Bullet bullet="2" fontSize="11.0"/>
-            </one:List>
-            <one:T>
-              <![CDATA[Вера дают преимущества <span
-style='font-weight:bold'>Ин 3:15,16,18,36</span>]]>
-            </one:T>
-            <one:OEChildren>
-              <one:OE creationTime="2011-07-27T13:17:11.000Z" lastModifiedTime="2011-11-29T13:43:20.000Z" objectID="{293BEF24-3AE0-4697-A78B-BC2C070AE8CC}{21}{B0}" alignment="left" quickStyleIndex="2">
-                <one:List>
-                  <one:Bullet bullet="3" fontSize="11.0"/>
-                </one:List>
-                <one:T><![CDATA[избавлены от смерти]]></one:T>
-              </one:OE>
-              <one:OE creationTime="2011-07-27T13:17:18.000Z" lastModifiedTime="2011-11-29T13:43:20.000Z" objectID="{293BEF24-3AE0-4697-A78B-BC2C070AE8CC}{24}{B0}" alignment="left" quickStyleIndex="2">
-                <one:List>
-                  <one:Bullet bullet="3" fontSize="11.0"/>
-                </one:List>
-                <one:T><![CDATA[не судятся]]></one:T>
-              </one:OE>
-              <one:OE creationTime="2011-07-27T13:17:26.000Z" lastModifiedTime="2011-11-29T13:43:20.000Z" objectID="{293BEF24-3AE0-4697-A78B-BC2C070AE8CC}{27}{B0}" alignment="left" quickStyleIndex="2">
-                <one:List>
-                  <one:Bullet bullet="3" fontSize="11.0"/>
-                </one:List>
-                <one:T><![CDATA[имеют жизнь вечную]]></one:T>
-              </one:OE>
-            </one:OEChildren>
-          </one:OE>
-          <one:OE creationTime="2011-07-27T13:17:57.000Z" lastModifiedTime="2011-11-29T13:43:20.000Z" objectID="{293BEF24-3AE0-4697-A78B-BC2C070AE8CC}{32}{B0}" alignment="left" quickStyleIndex="2">
-            <one:List>
-              <one:Bullet bullet="2" fontSize="11.0"/>
-            </one:List>
-            <one:T><![CDATA[В Царство Божие войдут только рожденные свыше, а на неверующих пребывает гнев Божий постоянно.]]></one:T>
-          </one:OE>
-        </one:OEChildren>
+      <one:OE creationTime="2012-01-10T06:27:08.000Z" lastModifiedTime="2012-01-10T06:27:10.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{16}{B0}" alignment="left" quickStyleIndex="1">
+        <one:T>
+          <![CDATA[<span
+style='font-weight:bold'>Тема</span>]]>
+        </one:T>
+      </one:OE>
+      <one:OE creationTime="2012-01-10T06:27:11.000Z" lastModifiedTime="2012-01-10T06:27:32.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{20}{B0}" alignment="left" quickStyleIndex="2">
+        <one:T><![CDATA[Какие отношения Бога с с друзьями и миром неверных]]></one:T>
+      </one:OE>
+      <one:OE creationTime="2012-01-10T06:27:32.000Z" lastModifiedTime="2012-01-10T06:27:32.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{23}{B0}" alignment="left" quickStyleIndex="2">
+        <one:T><![CDATA[]]></one:T>
+      </one:OE>
+      <one:OE creationTime="2012-01-10T06:27:33.000Z" lastModifiedTime="2012-01-10T06:27:36.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{25}{B0}" alignment="left" quickStyleIndex="1">
+        <one:T>
+          <![CDATA[<span
+style='font-weight:bold'>Мотивация</span>]]>
+        </one:T>
+      </one:OE>
+      <one:OE creationTime="2012-01-10T06:27:37.000Z" lastModifiedTime="2012-01-10T06:27:55.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{27}{B0}" alignment="left" quickStyleIndex="2">
+        <one:T><![CDATA[Друг всегда утешит и поддержит, не будет упрекать, в трудную минуту защитит]]></one:T>
+      </one:OE>
+      <one:OE creationTime="2012-01-10T06:28:17.000Z" lastModifiedTime="2012-01-10T06:28:17.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{29}{B0}" alignment="left" quickStyleIndex="2">
+        <one:T><![CDATA[]]></one:T>
+      </one:OE>
+      <one:OE creationTime="2012-01-10T06:28:18.000Z" lastModifiedTime="2012-01-10T06:28:21.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{31}{B0}" alignment="left" quickStyleIndex="1">
+        <one:T>
+          <![CDATA[<span
+style='font-weight:bold'>Ход урока</span>]]>
+        </one:T>
+      </one:OE>
+      <one:OE creationTime="2012-01-10T06:28:29.000Z" lastModifiedTime="2012-01-10T06:34:50.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{33}{B0}" alignment="left">
+        <one:Table bordersVisible="true" lastModifiedTime="2012-01-10T06:34:50.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{34}{B0}">
+          <one:Columns>
+            <one:Column index="0" width="145.7500762939453" isLocked="true"/>
+            <one:Column index="1" width="144.9998474121094"/>
+            <one:Column index="2" width="156.907470703125"/>
+          </one:Columns>
+          <one:Row objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{35}{B0}" lastModifiedTime="2012-01-10T06:34:50.000Z">
+            <one:Cell lastModifiedTime="2012-01-10T06:34:50.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{36}{B0}" lastModifiedByInitials="АИН">
+              <one:OEChildren>
+                <one:OE creationTime="2012-01-10T06:28:26.000Z" lastModifiedTime="2012-01-10T06:33:14.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{37}{B0}" alignment="left" quickStyleIndex="2" style="font-family:Calibri;font-size:11.0pt">
+                  <one:T>
+                    <![CDATA[<span
+style='font-weight:bold'>Друг в Ветхом Завете</span>]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            <one:Cell lastModifiedTime="2012-01-10T06:34:50.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{40}{B0}" lastModifiedByInitials="АИН">
+              <one:OEChildren>
+                <one:OE creationTime="2012-01-10T06:28:31.000Z" lastModifiedTime="2012-01-10T06:33:14.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{41}{B0}" alignment="left" quickStyleIndex="2" style="font-family:Calibri;font-size:11.0pt">
+                  <one:T>
+                    <![CDATA[<span
+style='font-weight:bold'>В Новом Завете друг - ученик</span>]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            <one:Cell lastModifiedTime="2012-01-10T06:34:50.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{43}{B0}" lastModifiedByInitials="АИН">
+              <one:OEChildren>
+                <one:OE creationTime="2012-01-10T06:29:09.000Z" lastModifiedTime="2012-01-10T06:33:14.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{44}{B0}" alignment="left" quickStyleIndex="2" style="font-family:Calibri;font-size:11.0pt">
+                  <one:T>
+                    <![CDATA[<span
+style='font-weight:bold'>Блаженный и неверный ученик</span>]]>
+                  </one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+          <one:Row objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{46}{B0}" lastModifiedTime="2012-01-10T06:34:50.000Z">
+            <one:Cell lastModifiedTime="2012-01-10T06:34:50.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{47}{B0}" lastModifiedByInitials="АИН">
+              <one:OEChildren>
+                <one:OE creationTime="2012-01-10T06:32:00.000Z" lastModifiedTime="2012-01-10T06:32:05.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{48}{B0}" alignment="left" quickStyleIndex="2">
+                  <one:T><![CDATA[Быт 18:17-33]]></one:T>
+                </one:OE>
+                <one:OE creationTime="2012-01-10T06:32:10.000Z" lastModifiedTime="2012-01-10T06:32:17.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{50}{B0}" alignment="left" quickStyleIndex="2">
+                  <one:T><![CDATA[Какие отношения у Бога с Авраамом?]]></one:T>
+                </one:OE>
+                <one:OE creationTime="2012-01-10T06:33:33.000Z" lastModifiedTime="2012-01-10T06:33:51.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{52}{B0}" alignment="left" quickStyleIndex="2">
+                  <one:T><![CDATA[:19 - Бог избрал его для чего?]]></one:T>
+                  <one:OEChildren>
+                    <one:OE creationTime="2012-01-10T06:34:00.000Z" lastModifiedTime="2012-01-10T06:34:16.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{53}{B0}" alignment="left" quickStyleIndex="2">
+                      <one:List>
+                        <one:Bullet bullet="2" fontSize="11.0"/>
+                      </one:List>
+                      <one:T><![CDATA[Чтобы заповедал сынам и дому своему ходить путём]]></one:T>
+                    </one:OE>
+                  </one:OEChildren>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            <one:Cell lastModifiedTime="2012-01-10T06:34:50.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{57}{B0}" lastModifiedByInitials="АИН">
+              <one:OEChildren>
+                <one:OE creationTime="2012-01-10T06:29:55.000Z" lastModifiedTime="2012-01-10T06:29:55.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{58}{B0}" alignment="left" quickStyleIndex="2">
+                  <one:T><![CDATA[]]></one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+            <one:Cell lastModifiedTime="2012-01-10T06:34:50.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{60}{B0}" lastModifiedByInitials="АИН">
+              <one:OEChildren>
+                <one:OE creationTime="2012-01-10T06:29:55.000Z" lastModifiedTime="2012-01-10T06:29:55.000Z" objectID="{63346ED7-4B48-48AC-83B8-EC23B7077E0C}{61}{B0}" alignment="left" quickStyleIndex="2">
+                  <one:T><![CDATA[]]></one:T>
+                </one:OE>
+              </one:OEChildren>
+            </one:Cell>
+          </one:Row>
+        </one:Table>
       </one:OE>
     </one:OEChildren>
   </one:Outline>
