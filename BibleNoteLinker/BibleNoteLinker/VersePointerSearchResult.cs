@@ -60,7 +60,7 @@ namespace BibleNoteLinker
 
                 if (!_depthLevel.HasValue)
                 {
-                    _depthLevel = Utils.GetDepthLevel(TextElement);
+                    _depthLevel = OneNoteUtils.GetDepthLevel(TextElement);
                 }
 
                 return _depthLevel.Value;

@@ -6,6 +6,9 @@ using Microsoft.Office.Interop.OneNote;
 
 namespace BibleCommon.Services
 {
+    /// <summary>
+    /// Кэш OneNote
+    /// </summary>
     public class OneNoteProxy
     {
         public class OneNoteHierarchyContentId

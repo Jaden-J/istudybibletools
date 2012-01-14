@@ -37,9 +37,9 @@ namespace BibleNoteLinkerEx
         {
             if (!chkDeleteNotes.Checked)
             {
-                Settings.Default.AllPages = rbAnalyzeAllPages.Checked;
-                Settings.Default.Force = chkForce.Checked;
-                Settings.Default.Save();
+                BibleNoteLinkerEx.Properties.Settings.Default.AllPages = rbAnalyzeAllPages.Checked;
+                BibleNoteLinkerEx.Properties.Settings.Default.Force = chkForce.Checked;
+                BibleNoteLinkerEx.Properties.Settings.Default.Save();
             }
             else if (MessageBox.Show("Удалить все сводные страницы заметок и ссылки на них?", "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.No)
                 return;            
@@ -94,11 +94,11 @@ namespace BibleNoteLinkerEx
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            if (Settings.Default.AllPages)
+            if (BibleNoteLinkerEx.Properties.Settings.Default.AllPages)
                 rbAnalyzeAllPages.Checked = true;
 
-            if (Settings.Default.Force)
-                chkForce.Checked = true;         
+            if (BibleNoteLinkerEx.Properties.Settings.Default.Force)
+                chkForce.Checked = true;            
         }       
 
         private bool _wasShown = false;

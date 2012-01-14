@@ -52,14 +52,14 @@ namespace BibleNoteLinker
                 XDocument notePageDocument;
                 XmlNamespaceManager xnm;
                 oneNoteApp.GetPageContent(pageId, out pageContentXml);
-                notePageDocument = Utils.GetXDocument(pageContentXml, out xnm);
+                notePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
                 string notePageName = (string)notePageDocument.Root.Attribute("name");
 
                 if (!CanProcessPage(notePageDocument, notePageName))
                     return;
 
-                string noteSectionGroupName = Utils.GetHierarchyElementName(oneNoteApp, sectionGroupId);
-                string noteSectionName = Utils.GetHierarchyElementName(oneNoteApp, sectionId);
+                string noteSectionGroupName = OneNoteUtils.GetHierarchyElementName(oneNoteApp, sectionGroupId);
+                string noteSectionName = OneNoteUtils.GetHierarchyElementName(oneNoteApp, sectionId);
                 List<FoundChapterInfo> foundChapters = new List<FoundChapterInfo>();
                 List<VersePointer> processedVerses = new List<VersePointer>();   // отслеживаем обработанные стихи, чтобы, например, верно подсчитывать verseCount, когда анализируем ссылки в том числе
                 List<VersePointerSearchResult> pageChaptersSearchResult = ProcessPageTitle(oneNoteApp, notebookId, notePageDocument,
@@ -129,7 +129,7 @@ namespace BibleNoteLinker
 
         private static bool CanProcessPage(XDocument pageDocument, string pageName)
         {
-            if (pageName.StartsWith(SettingsManager.Instance.NotesPageDefaultName + "."))
+            if (pageName.StartsWith(Settings.Default.PageName_Notes + "."))
                 return false;
 
             return true;
@@ -350,26 +350,26 @@ namespace BibleNoteLinker
             isInBrackets = false;
 
             if (numberIndex == 0)  // не может начинаться с цифры
-                return false; 
+                return false;
 
-            char prevChar = Utils.GetChar(textElement.Value, numberIndex - 1);
-            string numberString = Utils.GetNextString(textElement.Value, numberIndex - 1, null, out breakIndex);
-            char nextChar = Utils.GetChar(textElement.Value, breakIndex);
+            char prevChar = StringUtils.GetChar(textElement.Value, numberIndex - 1);
+            string numberString = StringUtils.GetNextString(textElement.Value, numberIndex - 1, null, out breakIndex);
+            char nextChar = StringUtils.GetChar(textElement.Value, breakIndex);
 
-            if (((prevChar == '>' || prevChar == ' ' || prevChar == '.' || Utils.IsCharAlphabetical(prevChar))                             // нашли полную ссылку
+            if (((prevChar == '>' || prevChar == ' ' || prevChar == '.' || StringUtils.IsCharAlphabetical(prevChar))                             // нашли полную ссылку
                     && (nextChar == '<' || nextChar == ChapterVerseDelimiter 
                             || nextChar == default(char) || nextChar == ' '
                             || nextChar == ')' || nextChar == ']' || nextChar == ',' || nextChar == '.') || nextChar == '-')  // нашли ссылку только на главу
                 ||
                 ((prevChar == ChapterVerseDelimiter || prevChar == '>' || prevChar == ',')                                                // нашли только стих
-                    && !Utils.IsCharAlphabetical(nextChar)))
+                    && !StringUtils.IsCharAlphabetical(nextChar)))
             {
                 number = int.Parse(numberString);  // полюбому тут должно быть число 
 
                 if (number > 0 && number <= 176)
-                {                    
-                    isLink = Utils.IsSurroundedBy(textElement.Value, "<a", "</a", numberIndex);
-                    isInBrackets = Utils.IsSurroundedBy(textElement.Value, "[", "]", numberIndex);                    
+                {
+                    isLink = StringUtils.IsSurroundedBy(textElement.Value, "<a", "</a", numberIndex);
+                    isInBrackets = StringUtils.IsSurroundedBy(textElement.Value, "[", "]", numberIndex);                    
 
                     return true;
                 }
@@ -400,12 +400,12 @@ namespace BibleNoteLinker
             int nextBreakIndex;
             int prevBreakIndex;
 
-            string prevChar = Utils.GetPrevString(textElement.Value, numberStartIndex, null, out prevBreakIndex, Utils.StringSearchSpaceIgnorance.None, Utils.StringSearchMode.SearchFirstValueChar);
-            string nextChar = Utils.GetNextString(textElement.Value, numberEndIndex, null, out nextBreakIndex, Utils.StringSearchSpaceIgnorance.None, Utils.StringSearchMode.SearchFirstValueChar);
+            string prevChar = StringUtils.GetPrevString(textElement.Value, numberStartIndex, null, out prevBreakIndex, StringSearchSpaceIgnorance.None, StringSearchMode.SearchFirstValueChar);
+            string nextChar = StringUtils.GetNextString(textElement.Value, numberEndIndex, null, out nextBreakIndex, StringSearchSpaceIgnorance.None, StringSearchMode.SearchFirstValueChar);
 
             if (nextChar == ChapterVerseDelimiter.ToString())  // как будто нашли полную ссылку
             {
-                string verseString = Utils.GetNextString(textElement.Value, nextBreakIndex, null, out endIndex);
+                string verseString = StringUtils.GetNextString(textElement.Value, nextBreakIndex, null, out endIndex);
                 int verseNumber;
                 if (int.TryParse(verseString, out verseNumber))
                 {
@@ -414,16 +414,16 @@ namespace BibleNoteLinker
                         verseString = GetFullVerseString(textElement.Value, verseString, ref endIndex);                      
 
                         for (int maxMissCount = 2; maxMissCount >= 0; maxMissCount--)
-                        {                            
-                            string bookName = Utils.GetPrevString(textElement.Value,
-                                numberStartIndex, new Utils.SearchMissInfo(maxMissCount, Utils.SearchMissInfo.MissMode.CancelOnMissFound), out startIndex, 
-                                maxMissCount > 0 ? Utils.StringSearchSpaceIgnorance.IgnoreAllSpaces : Utils.StringSearchSpaceIgnorance.IgnoreFirstSpace,
-                                Utils.StringSearchMode.SearchText);
+                        {
+                            string bookName = StringUtils.GetPrevString(textElement.Value,
+                                numberStartIndex, new SearchMissInfo(maxMissCount, SearchMissInfo.MissMode.CancelOnMissFound), out startIndex,
+                                maxMissCount > 0 ? StringSearchSpaceIgnorance.IgnoreAllSpaces : StringSearchSpaceIgnorance.IgnoreFirstSpace,
+                                StringSearchMode.SearchText);
 
                             if (!string.IsNullOrEmpty(bookName) && !string.IsNullOrEmpty(bookName.Trim()))
                             {
-                                char prevPrevChar = Utils.GetChar(textElement.Value, startIndex);
-                                if (!(Utils.IsCharAlphabetical(prevPrevChar) || Utils.IsDigit(prevPrevChar)))
+                                char prevPrevChar = StringUtils.GetChar(textElement.Value, startIndex);
+                                if (!(StringUtils.IsCharAlphabetical(prevPrevChar) || StringUtils.IsDigit(prevPrevChar)))
                                 {
                                     string verseName = string.Format("{0}{1}{2}{3}{4}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number, ChapterVerseDelimiter, verseString);
 
@@ -449,7 +449,7 @@ namespace BibleNoteLinker
             else if (prevChar == ChapterVerseDelimiter.ToString() || prevChar == ",") // как будто нашли ссылку только на стих                    
             {
                 int temp;
-                string prevPrevChar = Utils.GetPrevString(textElement.Value, prevBreakIndex, null, out temp, Utils.StringSearchSpaceIgnorance.None, Utils.StringSearchMode.SearchFirstChar);                
+                string prevPrevChar = StringUtils.GetPrevString(textElement.Value, prevBreakIndex, null, out temp, StringSearchSpaceIgnorance.None, StringSearchMode.SearchFirstChar);                
                 string globalChapterName = globalChapterResult != null ? globalChapterResult.ChapterName : string.Empty;
 
                 if (!string.IsNullOrEmpty(globalChapterName) || !string.IsNullOrEmpty(localChapterName))
@@ -496,7 +496,7 @@ namespace BibleNoteLinker
 
                         if (canContinue && !string.IsNullOrEmpty(prevPrevChar))
                         {
-                            if (Utils.IsCharAlphabetical(prevPrevChar[0]))
+                            if (StringUtils.IsCharAlphabetical(prevPrevChar[0]))
                                 canContinue = false;
                         }
 
@@ -505,7 +505,7 @@ namespace BibleNoteLinker
                             if (globalChapterResult == null)
                                 canContinue = false;
                             else
-                                if (globalChapterResult.DepthLevel > Utils.GetDepthLevel(textElement))  // то есть глава находится глубже (правее), чем найденный стих. должно быть либо на одном уровне, либо левее.
+                                if (globalChapterResult.DepthLevel > OneNoteUtils.GetDepthLevel(textElement))  // то есть глава находится глубже (правее), чем найденный стих. должно быть либо на одном уровне, либо левее.
                                     canContinue = false;
                             
                         }
@@ -540,16 +540,16 @@ namespace BibleNoteLinker
             else if (string.IsNullOrEmpty(nextChar.Trim()) || nextChar == ")" || nextChar == "]" || nextChar == "," || nextChar == ".")  // как будто нашли только ссылку на главу
             {
                 for (int maxMissCount = 2; maxMissCount >= 0; maxMissCount--)
-                {                    
-                    string bookName = Utils.GetPrevString(textElement.Value,
-                        numberStartIndex, new Utils.SearchMissInfo(maxMissCount, Utils.SearchMissInfo.MissMode.CancelOnMissFound), out startIndex,
-                        maxMissCount > 0 ? Utils.StringSearchSpaceIgnorance.IgnoreAllSpaces : Utils.StringSearchSpaceIgnorance.IgnoreFirstSpace,
-                        Utils.StringSearchMode.SearchText);
+                {
+                    string bookName = StringUtils.GetPrevString(textElement.Value,
+                        numberStartIndex, new SearchMissInfo(maxMissCount, SearchMissInfo.MissMode.CancelOnMissFound), out startIndex,
+                        maxMissCount > 0 ? StringSearchSpaceIgnorance.IgnoreAllSpaces : StringSearchSpaceIgnorance.IgnoreFirstSpace,
+                        StringSearchMode.SearchText);
 
                     if (!string.IsNullOrEmpty(bookName) && !string.IsNullOrEmpty(bookName.Trim()))
                     {
-                        char prevPrevChar = Utils.GetChar(textElement.Value, startIndex);
-                        if (!(Utils.IsCharAlphabetical(prevPrevChar) || Utils.IsDigit(prevPrevChar)))
+                        char prevPrevChar = StringUtils.GetChar(textElement.Value, startIndex);
+                        if (!(StringUtils.IsCharAlphabetical(prevPrevChar) || StringUtils.IsDigit(prevPrevChar)))
                         {
                             string verseName = string.Format("{0}{1}{2}{3}{4}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number, ChapterVerseDelimiter, 0);
 
@@ -580,14 +580,14 @@ namespace BibleNoteLinker
 
         private static string GetFullVerseString(string textElementValue, string verseString, ref int endIndex)
         {
-            if (Utils.GetChar(textElementValue, endIndex) == '-')
+            if (StringUtils.GetChar(textElementValue, endIndex) == '-')
             {
-                char tempNextChar = Utils.GetChar(textElementValue, endIndex + 1);
-                if (Utils.IsDigit(tempNextChar))
+                char tempNextChar = StringUtils.GetChar(textElementValue, endIndex + 1);
+                if (StringUtils.IsDigit(tempNextChar))
                 {
                     verseString = string.Format("{0}-{1}",
                         verseString,
-                        Utils.GetNextString(textElementValue, endIndex, null, out endIndex));  // чтоб учесть случай Откр 4:5-9 - чтоб определить, где заканчивается ссылка
+                        StringUtils.GetNextString(textElementValue, endIndex, null, out endIndex));  // чтоб учесть случай Откр 4:5-9 - чтоб определить, где заканчивается ссылка
                 }
             }
 
@@ -644,7 +644,7 @@ namespace BibleNoteLinker
                     {
                         if (!isLink)  // || vp.IsMultiVerse)   // например было Ин 4:17. Потом стало Ин 4:17-19. Чтоб обновлять в таком случае ссылки.
                         {
-                            string link = Utils.GenerateHref(oneNoteApp, textToChange,
+                            string link = OneNoteUtils.GenerateHref(oneNoteApp, textToChange,
                                 hierarchySearchResult.HierarchyObjectInfo.PageId, hierarchySearchResult.HierarchyObjectInfo.ContentObjectId);
 
                            link = string.Format("<span style='font-weight:normal'>{0}</span>", link);
@@ -730,8 +730,8 @@ namespace BibleNoteLinker
         {
             if (textToChangeHtml[textToChangeHtml.Length - 1] == '>') // пока только в таком случае корректируем
             {
-                int openSpanTagsCount = Utils.GetEntranceCount(textToChangeHtml, "<span");
-                int closedSpantagsCount = Utils.GetEntranceCount(textToChangeHtml, "</span");
+                int openSpanTagsCount = StringUtils.GetEntranceCount(textToChangeHtml, "<span");
+                int closedSpantagsCount = StringUtils.GetEntranceCount(textToChangeHtml, "</span");
 
                 if (closedSpantagsCount - openSpanTagsCount == 1)  // рассматриваем случай, когда на вход пришло значение, например :2</span>
                 {
@@ -749,7 +749,7 @@ namespace BibleNoteLinker
             XDocument versePageDocument;
             XmlNamespaceManager xnm;
             oneNoteApp.GetPageContent(verseHierarchyObjectInfo.PageId, out pageContentXml);
-            versePageDocument = Utils.GetXDocument(pageContentXml, out xnm);
+            versePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
             string pageName = (string)versePageDocument.Root.Attribute("name");
 
             string notesPageId = null;
@@ -757,7 +757,7 @@ namespace BibleNoteLinker
             {
                 notesPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(oneNoteApp,
                     notebookId, verseHierarchyObjectInfo.SectionId,
-                    verseHierarchyObjectInfo.PageId, pageName, SettingsManager.Instance.NotesPageDefaultName);
+                    verseHierarchyObjectInfo.PageId, pageName, Settings.Default.PageName_Notes);
             }
             catch (Exception ex)
             {
@@ -770,7 +770,7 @@ namespace BibleNoteLinker
                         noteSectionGroupName, noteSectionName, notesPageId, notePageName, notePageId, notePageContentObjectId, force);
 
                 string link = string.Format("<font size='2pt'>{0}</font>",
-                                Utils.GenerateHref(oneNoteApp, SettingsManager.Instance.NotesPageDefaultName, notesPageId, targetContentObjectId));
+                                OneNoteUtils.GenerateHref(oneNoteApp, Settings.Default.PageName_Notes, notesPageId, targetContentObjectId));
 
                 bool wasModified = false;
 
@@ -828,7 +828,7 @@ namespace BibleNoteLinker
             if (notesLinkElement != null && notesLinkElement.Nodes().Count() == 1)   // похоже на правду                        
             {
                 notesLinkElement = notesLinkElement.XPathSelectElement(string.Format("one:OE/one:T[contains(.,'{0}')]",
-                    SettingsManager.Instance.NotesPageDefaultName), xnm);
+                    Settings.Default.PageName_Notes), xnm);
             }
             else notesLinkElement = null;
 
@@ -869,7 +869,7 @@ namespace BibleNoteLinker
             XmlNamespaceManager xnm;
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
             oneNoteApp.GetPageContent(notesPageId, out notesPageContentXml);
-            notesPageDocument = Utils.GetXDocument(notesPageContentXml, out xnm);
+            notesPageDocument = OneNoteUtils.GetXDocument(notesPageContentXml, out xnm);
 
             XElement rowElement = GetNotesRowAndCreateIfNotExists(oneNoteApp, vp, isChapter, verseHierarchyObjectInfo, notesPageDocument, xnm, nms);            
 
@@ -896,7 +896,7 @@ namespace BibleNoteLinker
             XElement suchNoteLink = null;            
             XElement notesCellElement = rowElement.XPathSelectElement("one:Cell[2]/one:OEChildren", xnm);
 
-            string link = Utils.GenerateHref(oneNoteApp, noteTitle, notePageId, notePageContentObjectId);
+            string link = OneNoteUtils.GenerateHref(oneNoteApp, noteTitle, notePageId, notePageContentObjectId);
             int pageIdStringIndex = link.IndexOf("page-id={");
             if (pageIdStringIndex != -1)
             {
@@ -956,7 +956,7 @@ namespace BibleNoteLinker
                     int verseCountEndIndex = suchNoteLink.Value.IndexOf(verseCountEndSearchPattern, verseCountIndex + 1);
                     if (verseCountEndIndex != -1)
                     {
-                        int? prevVerseCount = Utils.GetStringFirstNumber(suchNoteLink.Value.Substring(verseCountIndex + verseCountSearchPattern.Length, verseCountEndIndex - verseCountIndex));
+                        int? prevVerseCount = StringUtils.GetStringFirstNumber(suchNoteLink.Value.Substring(verseCountIndex + verseCountSearchPattern.Length, verseCountEndIndex - verseCountIndex));
                         if (prevVerseCount.HasValue)
                         {
                             verseCount = prevVerseCount.Value + 1;
@@ -1004,7 +1004,7 @@ namespace BibleNoteLinker
 
                         if (topVerseTextIndex != -1)
                         {
-                            int? prevTopVerse = Utils.GetStringFirstNumber(
+                            int? prevTopVerse = StringUtils.GetStringFirstNumber(
                                 multiVerseString.Substring(topVerseTextIndex + topVerseTextSearchPattern.Length));
                             if (prevTopVerse.HasValue)
                             {
@@ -1038,7 +1038,7 @@ namespace BibleNoteLinker
             XmlNamespaceManager xnm;
             string notesPageContentXml;
             oneNoteApp.GetPageContent(notesPageId, out notesPageContentXml);
-            XDocument notesPageDocument = Utils.GetXDocument(notesPageContentXml, out xnm);
+            XDocument notesPageDocument = OneNoteUtils.GetXDocument(notesPageContentXml, out xnm);
             XElement tableElement = notesPageDocument.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", xnm);
             XElement targetElement = GetNotesRow(tableElement, vp, isChapter, xnm);
 
@@ -1119,7 +1119,7 @@ namespace BibleNoteLinker
                                                 new XElement(nms + "T",
                                                     new XCData(
                                                         !isChapter ?
-                                                            Utils.GenerateHref(oneNoteApp, string.Format(":{0}", vp.Verse.GetValueOrDefault(0)),
+                                                            OneNoteUtils.GenerateHref(oneNoteApp, string.Format(":{0}", vp.Verse.GetValueOrDefault(0)),
                                                                 verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.ContentObjectId)
                                                             :
                                                             string.Empty
@@ -1134,7 +1134,7 @@ namespace BibleNoteLinker
                 foreach (var row in tableElement.XPathSelectElements("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
                 {
                     XCData verseData = (XCData)row.Nodes().First();
-                    int? verseNumber = Utils.GetStringLastNumber(verseData.Value);
+                    int? verseNumber = StringUtils.GetStringLastNumber(verseData.Value);
                     if (verseNumber.GetValueOrDefault(0) > vp.Verse)
                         break;
 
@@ -1160,7 +1160,7 @@ namespace BibleNoteLinker
                 XDocument notePageDocument;
                 XmlNamespaceManager xnm;
                 oneNoteApp.GetPageContent(pageId, out pageContentXml);
-                notePageDocument = Utils.GetXDocument(pageContentXml, out xnm);
+                notePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
 
                 foreach (XElement noteTextElement in notePageDocument.Root.XPathSelectElements("//one:Table/one:Row/one:Cell[2]/one:OEChildren/one:OE/one:T", xnm))
                 {
@@ -1188,7 +1188,7 @@ namespace BibleNoteLinker
                     try
                     {
                         notesPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(oneNoteApp,
-                            notebookId, sectionId, pageId, pageName, SettingsManager.Instance.NotesPageDefaultName);
+                            notebookId, sectionId, pageId, pageName, Settings.Default.PageName_Notes);
                     }
                     catch (Exception ex)
                     {
@@ -1229,7 +1229,7 @@ namespace BibleNoteLinker
 
         private static bool CantainsLinkToNotesPage(XElement textElement)
         {
-            return textElement.Value.IndexOf(string.Format(">{0}<", SettingsManager.Instance.NotesPageDefaultName)) != -1;                
+            return textElement.Value.IndexOf(string.Format(">{0}<", Settings.Default.PageName_Notes)) != -1;                
         }
     }
 }

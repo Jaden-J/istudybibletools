@@ -23,7 +23,7 @@ namespace BibleCommon.Services
                 string sectionId = FindDescriptionSectionForCurrentPage(oneNoteApp, currentPageName, sectionGroupId);
                 if (!string.IsNullOrEmpty(sectionId))
                 {
-                    string currentSectionName = Utils.GetHierarchyElementName(oneNoteApp, currentSectionId);
+                    string currentSectionName = OneNoteUtils.GetHierarchyElementName(oneNoteApp, currentSectionId);
                     string pageId = FindDescriptionPageForCurrentPage(oneNoteApp, sectionId,
                         currentSectionName, currentPageId, currentPageName, descriptionPageName);
                     if (!string.IsNullOrEmpty(pageId))
@@ -48,7 +48,7 @@ namespace BibleCommon.Services
 
             string notebookContentXml = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, currentNotebookId, HierarchyScope.hsSections, refreshCache);
 
-            XDocument document = Utils.GetXDocument(notebookContentXml, out xnm);
+            XDocument document = OneNoteUtils.GetXDocument(notebookContentXml, out xnm);
 
             XElement currentSection = document.XPathSelectElement(string.Format("/one:Notebook/one:SectionGroup/one:SectionGroup/one:Section[@ID='{0}']",
                 currentSectionId), xnm);
@@ -101,11 +101,11 @@ namespace BibleCommon.Services
             XmlNamespaceManager xnm;
 
             string sectionGroupXml = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, targetSectionGroupId, HierarchyScope.hsSections, refreshCache);
-            XDocument sectionGroupDocument = Utils.GetXDocument(sectionGroupXml, out xnm);
+            XDocument sectionGroupDocument = OneNoteUtils.GetXDocument(sectionGroupXml, out xnm);
             string sectionGroupName = (string)sectionGroupDocument.Root.Attribute("name");
 
             if (sectionGroupName.IndexOf(currentPageName) != -1)
-                currentPageName = SettingsManager.Instance.BookOverviewPageDefaultName;
+                currentPageName = Settings.Default.PageName_DefaultBookOverview;
 
             XElement targetSection = sectionGroupDocument.Root.XPathSelectElement(
                 string.Format("one:Section[@name='{0}']", currentPageName), xnm);
@@ -126,16 +126,16 @@ namespace BibleCommon.Services
             XElement targetSection = new XElement(nms + "Section",
                                     new XAttribute("name", pageName));
 
-            if (pageName == SettingsManager.Instance.BookOverviewPageDefaultName || sectionGroupDocument.Root.Nodes().Count() == 0)
+            if (pageName == Settings.Default.PageName_DefaultBookOverview || sectionGroupDocument.Root.Nodes().Count() == 0)
                 sectionGroupDocument.Root.AddFirst(targetSection);
             else
             {
-                int? pageNameIndex = Utils.GetStringFirstNumber(pageName);
+                int? pageNameIndex = StringUtils.GetStringFirstNumber(pageName);
                 bool wasAdded = false;
                 foreach (XElement section in sectionGroupDocument.Root.Nodes())
                 {
                     string name = (string)section.Attribute("name");
-                    int? otherPageIndex = Utils.GetStringFirstNumber(name);
+                    int? otherPageIndex = StringUtils.GetStringFirstNumber(name);
 
                     if (pageNameIndex.GetValueOrDefault(0) < otherPageIndex.GetValueOrDefault(0))
                     {
@@ -157,7 +157,7 @@ namespace BibleCommon.Services
         {
             XmlNamespaceManager xnm;
             string sectionContentXml = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages);
-            XDocument sectionDocument = Utils.GetXDocument(sectionContentXml, out xnm);
+            XDocument sectionDocument = OneNoteUtils.GetXDocument(sectionContentXml, out xnm);
 
             VersePointer vp = GetCurrentVersePointer(currentSectionName, currentPageName);
 
@@ -194,8 +194,8 @@ namespace BibleCommon.Services
         private static VersePointer GetCurrentVersePointer(string currentSectionName, string currentPageName)
         {
             VersePointer result = null;
-            
-            int? chapter = Utils.GetStringFirstNumber(currentPageName);
+
+            int? chapter = StringUtils.GetStringFirstNumber(currentPageName);
             if (chapter.HasValue)
             {
                 result = VersePointer.GetChapterVersePointer(string.Format("{0} {1}", currentSectionName.Substring(4), chapter));

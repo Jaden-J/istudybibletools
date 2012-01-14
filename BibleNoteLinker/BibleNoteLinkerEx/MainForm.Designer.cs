@@ -40,9 +40,9 @@
             this.chkForce.AutoSize = true;
             this.chkForce.Location = new System.Drawing.Point(12, 63);
             this.chkForce.Name = "chkForce";
-            this.chkForce.Size = new System.Drawing.Size(174, 17);
+            this.chkForce.Size = new System.Drawing.Size(189, 17);
             this.chkForce.TabIndex = 0;
-            this.chkForce.Text = "Анализировать даже ссылки";
+            this.chkForce.Text = "Повторный анализ всех ссылок";
             this.chkForce.UseVisualStyleBackColor = true;
             // 
             // rbAnalyzeCurrentPage

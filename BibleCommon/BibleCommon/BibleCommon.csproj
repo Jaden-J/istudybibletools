@@ -46,14 +46,20 @@
   <ItemGroup>
     <Compile Include="Consts\Consts.cs" />
     <Compile Include="Helpers\FormExtensions.cs" />
+    <Compile Include="Helpers\StringUtils.cs" />
+    <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\OneNoteProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\HierarchySearchManager.cs" />
-    <Compile Include="Services\SettingsManager.cs" />
-    <Compile Include="Helpers\Utils.cs" />
+    <Compile Include="Helpers\OneNoteUtils.cs" />
     <Compile Include="Services\VerseLinkManager.cs" />
     <Compile Include="Common\VersePointer.cs" />
+    <Compile Include="Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Interop.OneNote">
@@ -67,8 +73,10 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="settings.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="app.config" />
+    <None Include="Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
