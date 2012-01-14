@@ -233,7 +233,7 @@ namespace BibleNoteLinker
                                 VersePointerSearchResult searchResult = GetValidVersePointer(textElement,
                                     numberIndex, breakIndex - 1, number, 
                                     globalChapterSearchResult, 
-                                    localChapterName, prevResult, isInBrackets);
+                                    localChapterName, prevResult, isInBrackets, isTitle);
                                 
                                 if (searchResult.ResultType != VersePointerSearchResult.SearchResultType.Nothing)
                                 {
@@ -391,7 +391,7 @@ namespace BibleNoteLinker
         /// <returns></returns>
         private static VersePointerSearchResult GetValidVersePointer(XElement textElement,
             int numberStartIndex, int numberEndIndex, int number, VersePointerSearchResult globalChapterResult, string localChapterName,
-            VersePointerSearchResult prevResult, bool isInBrackets)
+            VersePointerSearchResult prevResult, bool isInBrackets, bool isTitle)
         {
             VersePointerSearchResult result = new VersePointerSearchResult() 
                                     { ResultType = VersePointerSearchResult.SearchResultType.Nothing };
@@ -557,10 +557,11 @@ namespace BibleNoteLinker
                             if (vp.IsValid)
                             {
                                 result.ChapterName = string.Format("{0}{1}{2}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number);
-                                if (isInBrackets)
+                                bool chapterOnlyAtStartString = startIndex == -1 && nextChar != "-";    // так как пока мы не поддерживаем Откр 1-2, и так как мы найдём в таком случае только Откр 1, то не считаем это ссылкой, как ChapterOnlyAtStartString
+                                if (isInBrackets && isTitle)
                                     result.ResultType = VersePointerSearchResult.SearchResultType.ExcludableChapter;
                                 else
-                                    result.ResultType = startIndex == -1 && nextChar != "-"                                     // так как пока мы не поддерживаем Откр 1-2, и так как мы найдём в таком случае только Откр 1, то не считаем это ссылкой, как ChapterOnlyAtStartString
+                                    result.ResultType = chapterOnlyAtStartString                                     
                                                 ? VersePointerSearchResult.SearchResultType.ChapterOnlyAtStartString
                                                 : VersePointerSearchResult.SearchResultType.ChapterOnly;
                                 result.VersePointerEndIndex = nextBreakIndex;
@@ -676,6 +677,16 @@ namespace BibleNoteLinker
                                                     canContinue = false;    // если указан уже диапазон, а далее идут пояснения, то не отмечаем их заметками
                                         }
                                     }
+                                    //else
+                                    //{
+                                    //    if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter)
+                                    //    {
+                                    //        if (!isInBrackets)
+                                    //        {
+                                    //            canContinue = false;
+                                    //        }
+                                    //    }
+                                    //}
                                 }
                             }
 
