@@ -154,7 +154,9 @@ namespace BibleVerseLinkerEx
                                 pointerElement.Value = pointerElement.Value.Replace(pointerString, href);
                             }
 
-                            OneNoteApp.UpdatePageContent(currentPageDocument.ToString());
+                            if (SearchForUnderlineText)
+                                OneNoteApp.UpdatePageContent(currentPageDocument.ToString());
+                            
                             OneNoteApp.NavigateTo(verseLinkPageId, objectId);
                         }
                     }
