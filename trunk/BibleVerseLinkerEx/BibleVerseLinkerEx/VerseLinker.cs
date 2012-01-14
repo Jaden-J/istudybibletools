@@ -37,7 +37,7 @@ namespace BibleVerseLinkerEx
         public VerseLinker()
         {
             _onenoteApp = new Application();
-            DescriptionPageName = SettingsManager.Instance.DescriptionPageDefaultName;
+            DescriptionPageName = Settings.Default.PageName_DefaultDescription;
             SearchForUnderlineText = true;
         }
 
@@ -51,7 +51,7 @@ namespace BibleVerseLinkerEx
             OneNoteApp.GetPageContent(pageId, out pageContentXml);
 
             XmlNamespaceManager xnm;
-            document = Utils.GetXDocument(pageContentXml, out xnm);
+            document = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
             XElement pointerElement = null;
 
             if (SearchForUnderlineText)
@@ -87,7 +87,7 @@ namespace BibleVerseLinkerEx
             OneNoteApp.GetPageContent(pageId, out pageContentXml);
 
             XmlNamespaceManager xnm;
-            XDocument document = Utils.GetXDocument(pageContentXml, out xnm);
+            XDocument document = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
 
             XElement result = null;
             
@@ -149,7 +149,7 @@ namespace BibleVerseLinkerEx
 
                             if (!string.IsNullOrEmpty(pointerString))
                             {
-                                string href = Utils.GenerateHref(OneNoteApp, pointerValueString, verseLinkPageId, objectId);
+                                string href = OneNoteUtils.GenerateHref(OneNoteApp, pointerValueString, verseLinkPageId, objectId);
 
                                 pointerElement.Value = pointerElement.Value.Replace(pointerString, href);
                             }
@@ -178,10 +178,10 @@ namespace BibleVerseLinkerEx
                 string searchPattern = ">";
                 int i = textElementValue.IndexOf(searchPattern);
                 if (i != -1)
-                    result = Utils.GetStringFirstNumber(textElementValue, i + searchPattern.Length);
+                    result = StringUtils.GetStringFirstNumber(textElementValue, i + searchPattern.Length);
             }
             else
-                result = Utils.GetStringFirstNumber(textElementValue);
+                result = StringUtils.GetStringFirstNumber(textElementValue);
 
             return result;
         }
@@ -217,7 +217,7 @@ namespace BibleVerseLinkerEx
             XDocument pageDocument;
             XmlNamespaceManager xnm;
             OneNoteApp.GetPageContent(pageId, out pageContentXml);
-            pageDocument = Utils.GetXDocument(pageContentXml, out xnm);
+            pageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
 
@@ -240,7 +240,7 @@ namespace BibleVerseLinkerEx
                     int i = commentElement.Value.IndexOf(searchPattern);
                     if (i != -1)
                     {
-                        int? number = Utils.GetStringFirstNumber(commentElement.Value, i + searchPattern.Length);
+                        int? number = StringUtils.GetStringFirstNumber(commentElement.Value, i + searchPattern.Length);
 
                         if (number.HasValue)
                         {

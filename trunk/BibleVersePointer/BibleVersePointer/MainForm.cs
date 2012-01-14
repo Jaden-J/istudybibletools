@@ -99,7 +99,7 @@ namespace BibleVersePointer
 
         private bool GoToVerse(VersePointer vp)
         {
-            string notebookId = Utils.GetNotebookId(OneNoteApp, SettingsManager.Instance.NotebookName);
+            string notebookId = OneNoteUtils.GetNotebookId(OneNoteApp, Settings.Default.NotebookName_Bible);
 
             HierarchySearchManager.HierarchySearchResult result = HierarchySearchManager.GetHierarchyObject(
                 OneNoteApp, notebookId, vp);

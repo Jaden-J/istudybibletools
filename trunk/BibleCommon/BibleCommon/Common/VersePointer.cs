@@ -65,7 +65,7 @@ namespace BibleCommon.Common
 
                 s = TrimLocation(s);
 
-                int? verse = Utils.GetStringLastNumber(s);
+                int? verse = StringUtils.GetStringLastNumber(s);
 
                 if (verse.HasValue)
                 {
@@ -75,7 +75,7 @@ namespace BibleCommon.Common
 
                     s = s.Substring(0, i);
 
-                    int? chapter = Utils.GetStringLastNumber(s);
+                    int? chapter = StringUtils.GetStringLastNumber(s);
 
                     if (chapter.HasValue)
                     {
@@ -180,7 +180,7 @@ namespace BibleCommon.Common
             {
                 char c = bookName[index];
 
-                if (Utils.IsCharAlphabetical(c) || Utils.IsDigit(c))
+                if (StringUtils.IsCharAlphabetical(c) || StringUtils.IsDigit(c))
                     break;
                 else if (c == ' ' || c == '.')
                     bookName = bookName.Remove(bookName.Length - 1);

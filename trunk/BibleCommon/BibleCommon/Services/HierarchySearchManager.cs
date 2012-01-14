@@ -90,7 +90,7 @@ namespace BibleCommon.Services
             string pageContentXml = OneNoteProxy.Instance.GetPageContent(oneNoteApp, pageId);            
 
             XmlNamespaceManager xnm;
-            XDocument document = Utils.GetXDocument(pageContentXml, out xnm);
+            XDocument document = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
 
             XElement pointerElement = null;
 
@@ -134,7 +134,7 @@ namespace BibleCommon.Services
             string sectionContentXml = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages);
 
             XmlNamespaceManager xnm;
-            XDocument sectionDocument = Utils.GetXDocument(sectionContentXml, out xnm);
+            XDocument sectionDocument = OneNoteUtils.GetXDocument(sectionContentXml, out xnm);
 
             XElement page = sectionDocument.Root.XPathSelectElement(string.Format("one:Page[starts-with(@name,'{0} ')]", vp.Chapter), xnm);
 
@@ -149,11 +149,15 @@ namespace BibleCommon.Services
             string notebookContentXml = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, HierarchyScope.hsSections);
 
             XmlNamespaceManager xnm;
-            XDocument document = Utils.GetXDocument(notebookContentXml, out xnm);
+            XDocument document = OneNoteUtils.GetXDocument(notebookContentXml, out xnm);
 
             XElement targetSection = document.Root.XPathSelectElement(
-            string.Format("one:SectionGroup[@name='{0}']/one:SectionGroup/one:Section[@name='{1}']",
-            SettingsManager.Instance.BibleSectionGroupName, vp.BookName), xnm);
+                string.Format("{0}one:SectionGroup/one:Section[@name='{1}']",
+                    !string.IsNullOrEmpty(Settings.Default.SectionGroupName_Bible) 
+                        ? string.Format("one:SectionGroup[@name='{0}']/", Settings.Default.SectionGroupName_Bible) 
+                        : string.Empty,
+                    vp.BookName), 
+                xnm);
 
             return targetSection;
         }      
