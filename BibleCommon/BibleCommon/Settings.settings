@@ -3,22 +3,22 @@
   <Profiles />
   <Settings>
     <Setting Name="NotebookName_Bible" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Holy Bible</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="NotebookName_BibleComments" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Holy Bible</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="NotebookName_BibleStudy" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Holy Bible</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="SectionGroupName_Bible" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Библия</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="SectionGroupName_BibleComments" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Изучение Библии</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="SectionGroupName_BibleStudy" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Тематические исследования</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="PageName_DefaultDescription" Type="System.String" Scope="User">
       <Value Profile="(Default)">Комментарии</Value>
@@ -28,6 +28,9 @@
     </Setting>
     <Setting Name="PageName_Notes" Type="System.String" Scope="User">
       <Value Profile="(Default)">Заметки</Value>
+    </Setting>
+    <Setting Name="NotebookName_Single" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Holy Bible</Value>
     </Setting>
   </Settings>
 </SettingsFile>

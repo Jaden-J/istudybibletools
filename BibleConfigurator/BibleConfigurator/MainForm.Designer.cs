@@ -31,32 +31,37 @@
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnSingleNotebookParameters = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
+            this.chkCreateBibleStudyNotebookFromTemplate = new System.Windows.Forms.CheckBox();
+            this.cbBibleStudyNotebook = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.chkCreateBibleCommentsNotebookFromTemplate = new System.Windows.Forms.CheckBox();
+            this.cbBibleCommentsNotebook = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.chkCreateBibleNotebookFromTemplate = new System.Windows.Forms.CheckBox();
+            this.cbBibleNotebook = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.chkCreateSingleNotebookFromTemplate = new System.Windows.Forms.CheckBox();
+            this.cbSingleNotebook = new System.Windows.Forms.ComboBox();
+            this.rbMultiNotebook = new System.Windows.Forms.RadioButton();
+            this.rbSingleNotebook = new System.Windows.Forms.RadioButton();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.textBox4 = new System.Windows.Forms.TextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.tbNotesPageName = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.tbBookOverviewName = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tbPageDescriptionName = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -66,47 +71,49 @@
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(521, 275);
+            this.tabControl1.Size = new System.Drawing.Size(530, 275);
             this.tabControl1.TabIndex = 16;
             // 
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage1.Controls.Add(this.button2);
+            this.tabPage1.Controls.Add(this.btnSingleNotebookParameters);
             this.tabPage1.Controls.Add(this.label4);
-            this.tabPage1.Controls.Add(this.checkBox4);
-            this.tabPage1.Controls.Add(this.comboBox4);
+            this.tabPage1.Controls.Add(this.chkCreateBibleStudyNotebookFromTemplate);
+            this.tabPage1.Controls.Add(this.cbBibleStudyNotebook);
             this.tabPage1.Controls.Add(this.label3);
-            this.tabPage1.Controls.Add(this.checkBox3);
-            this.tabPage1.Controls.Add(this.comboBox3);
+            this.tabPage1.Controls.Add(this.chkCreateBibleCommentsNotebookFromTemplate);
+            this.tabPage1.Controls.Add(this.cbBibleCommentsNotebook);
             this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Controls.Add(this.checkBox2);
-            this.tabPage1.Controls.Add(this.comboBox2);
+            this.tabPage1.Controls.Add(this.chkCreateBibleNotebookFromTemplate);
+            this.tabPage1.Controls.Add(this.cbBibleNotebook);
             this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Controls.Add(this.checkBox1);
-            this.tabPage1.Controls.Add(this.comboBox1);
-            this.tabPage1.Controls.Add(this.radioButton2);
-            this.tabPage1.Controls.Add(this.radioButton1);
+            this.tabPage1.Controls.Add(this.chkCreateSingleNotebookFromTemplate);
+            this.tabPage1.Controls.Add(this.cbSingleNotebook);
+            this.tabPage1.Controls.Add(this.rbMultiNotebook);
+            this.tabPage1.Controls.Add(this.rbSingleNotebook);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(513, 249);
+            this.tabPage1.Size = new System.Drawing.Size(522, 249);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Параметры OneNote";
+            this.tabPage1.Text = "Параметры записных книжек";
             // 
-            // button2
+            // btnSingleNotebookParameters
             // 
-            this.button2.Location = new System.Drawing.Point(301, 40);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 31;
-            this.button2.Text = "Настроить";
-            this.button2.UseVisualStyleBackColor = true;          
+            this.btnSingleNotebookParameters.Location = new System.Drawing.Point(301, 40);
+            this.btnSingleNotebookParameters.Name = "btnSingleNotebookParameters";
+            this.btnSingleNotebookParameters.Size = new System.Drawing.Size(75, 23);
+            this.btnSingleNotebookParameters.TabIndex = 31;
+            this.btnSingleNotebookParameters.Text = "Настроить";
+            this.btnSingleNotebookParameters.UseVisualStyleBackColor = true;
+            this.btnSingleNotebookParameters.Click += new System.EventHandler(this.btnSingleNotebookParameters_Click);
             // 
             // label4
             // 
@@ -117,23 +124,25 @@
             this.label4.TabIndex = 30;
             this.label4.Text = "Выберите записную книжку для изучения Библии";
             // 
-            // checkBox4
+            // chkCreateBibleStudyNotebookFromTemplate
             // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(301, 220);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(130, 17);
-            this.checkBox4.TabIndex = 29;
-            this.checkBox4.Text = "Создать из шаблона";
-            this.checkBox4.UseVisualStyleBackColor = true;
+            this.chkCreateBibleStudyNotebookFromTemplate.AutoSize = true;
+            this.chkCreateBibleStudyNotebookFromTemplate.Location = new System.Drawing.Point(301, 220);
+            this.chkCreateBibleStudyNotebookFromTemplate.Name = "chkCreateBibleStudyNotebookFromTemplate";
+            this.chkCreateBibleStudyNotebookFromTemplate.Size = new System.Drawing.Size(130, 17);
+            this.chkCreateBibleStudyNotebookFromTemplate.TabIndex = 29;
+            this.chkCreateBibleStudyNotebookFromTemplate.Text = "Создать из шаблона";
+            this.chkCreateBibleStudyNotebookFromTemplate.UseVisualStyleBackColor = true;
+            this.chkCreateBibleStudyNotebookFromTemplate.CheckedChanged += new System.EventHandler(this.chkCreateBibleStudyNotebookFromTemplate_CheckedChanged);
             // 
-            // comboBox4
+            // cbBibleStudyNotebook
             // 
-            this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(47, 218);
-            this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(248, 21);
-            this.comboBox4.TabIndex = 28;
+            this.cbBibleStudyNotebook.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbBibleStudyNotebook.FormattingEnabled = true;
+            this.cbBibleStudyNotebook.Location = new System.Drawing.Point(47, 218);
+            this.cbBibleStudyNotebook.Name = "cbBibleStudyNotebook";
+            this.cbBibleStudyNotebook.Size = new System.Drawing.Size(248, 21);
+            this.cbBibleStudyNotebook.TabIndex = 28;
             // 
             // label3
             // 
@@ -144,23 +153,25 @@
             this.label3.TabIndex = 27;
             this.label3.Text = "Выберите записную книжку для комментариев к Библии";
             // 
-            // checkBox3
+            // chkCreateBibleCommentsNotebookFromTemplate
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(301, 172);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(130, 17);
-            this.checkBox3.TabIndex = 26;
-            this.checkBox3.Text = "Создать из шаблона";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.chkCreateBibleCommentsNotebookFromTemplate.AutoSize = true;
+            this.chkCreateBibleCommentsNotebookFromTemplate.Location = new System.Drawing.Point(301, 172);
+            this.chkCreateBibleCommentsNotebookFromTemplate.Name = "chkCreateBibleCommentsNotebookFromTemplate";
+            this.chkCreateBibleCommentsNotebookFromTemplate.Size = new System.Drawing.Size(130, 17);
+            this.chkCreateBibleCommentsNotebookFromTemplate.TabIndex = 26;
+            this.chkCreateBibleCommentsNotebookFromTemplate.Text = "Создать из шаблона";
+            this.chkCreateBibleCommentsNotebookFromTemplate.UseVisualStyleBackColor = true;
+            this.chkCreateBibleCommentsNotebookFromTemplate.CheckedChanged += new System.EventHandler(this.chkCreateBibleCommentsNotebookFromTemplate_CheckedChanged);
             // 
-            // comboBox3
+            // cbBibleCommentsNotebook
             // 
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(47, 168);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(248, 21);
-            this.comboBox3.TabIndex = 25;
+            this.cbBibleCommentsNotebook.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbBibleCommentsNotebook.FormattingEnabled = true;
+            this.cbBibleCommentsNotebook.Location = new System.Drawing.Point(47, 168);
+            this.cbBibleCommentsNotebook.Name = "cbBibleCommentsNotebook";
+            this.cbBibleCommentsNotebook.Size = new System.Drawing.Size(248, 21);
+            this.cbBibleCommentsNotebook.TabIndex = 25;
             // 
             // label2
             // 
@@ -171,23 +182,25 @@
             this.label2.TabIndex = 24;
             this.label2.Text = "Выберите записную книжку для Библии";
             // 
-            // checkBox2
+            // chkCreateBibleNotebookFromTemplate
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(301, 120);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(130, 17);
-            this.checkBox2.TabIndex = 23;
-            this.checkBox2.Text = "Создать из шаблона";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.chkCreateBibleNotebookFromTemplate.AutoSize = true;
+            this.chkCreateBibleNotebookFromTemplate.Location = new System.Drawing.Point(301, 120);
+            this.chkCreateBibleNotebookFromTemplate.Name = "chkCreateBibleNotebookFromTemplate";
+            this.chkCreateBibleNotebookFromTemplate.Size = new System.Drawing.Size(130, 17);
+            this.chkCreateBibleNotebookFromTemplate.TabIndex = 23;
+            this.chkCreateBibleNotebookFromTemplate.Text = "Создать из шаблона";
+            this.chkCreateBibleNotebookFromTemplate.UseVisualStyleBackColor = true;
+            this.chkCreateBibleNotebookFromTemplate.CheckedChanged += new System.EventHandler(this.chkCreateBibleNotebookFromTemplate_CheckedChanged);
             // 
-            // comboBox2
+            // cbBibleNotebook
             // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(47, 118);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(248, 21);
-            this.comboBox2.TabIndex = 22;
+            this.cbBibleNotebook.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbBibleNotebook.FormattingEnabled = true;
+            this.cbBibleNotebook.Location = new System.Drawing.Point(47, 118);
+            this.cbBibleNotebook.Name = "cbBibleNotebook";
+            this.cbBibleNotebook.Size = new System.Drawing.Size(248, 21);
+            this.cbBibleNotebook.TabIndex = 22;
             // 
             // label1
             // 
@@ -198,54 +211,94 @@
             this.label1.TabIndex = 21;
             this.label1.Text = "Выберите записную книжку";
             // 
-            // checkBox1
+            // chkCreateSingleNotebookFromTemplate
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(382, 44);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(130, 17);
-            this.checkBox1.TabIndex = 20;
-            this.checkBox1.Text = "Создать из шаблона";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.chkCreateSingleNotebookFromTemplate.AutoSize = true;
+            this.chkCreateSingleNotebookFromTemplate.Location = new System.Drawing.Point(382, 44);
+            this.chkCreateSingleNotebookFromTemplate.Name = "chkCreateSingleNotebookFromTemplate";
+            this.chkCreateSingleNotebookFromTemplate.Size = new System.Drawing.Size(130, 17);
+            this.chkCreateSingleNotebookFromTemplate.TabIndex = 20;
+            this.chkCreateSingleNotebookFromTemplate.Text = "Создать из шаблона";
+            this.chkCreateSingleNotebookFromTemplate.UseVisualStyleBackColor = true;
+            this.chkCreateSingleNotebookFromTemplate.CheckedChanged += new System.EventHandler(this.chkCreateSingleNotebookFromTemplate_CheckedChanged);
             // 
-            // comboBox1
+            // cbSingleNotebook
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(47, 42);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(248, 21);
-            this.comboBox1.TabIndex = 19;
+            this.cbSingleNotebook.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbSingleNotebook.FormattingEnabled = true;
+            this.cbSingleNotebook.Location = new System.Drawing.Point(47, 42);
+            this.cbSingleNotebook.Name = "cbSingleNotebook";
+            this.cbSingleNotebook.Size = new System.Drawing.Size(248, 21);
+            this.cbSingleNotebook.TabIndex = 19;
             // 
-            // radioButton2
+            // rbMultiNotebook
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(6, 82);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(176, 17);
-            this.radioButton2.TabIndex = 18;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "Отдельные записные книжки";
-            this.radioButton2.UseVisualStyleBackColor = true;
+            this.rbMultiNotebook.AutoSize = true;
+            this.rbMultiNotebook.Location = new System.Drawing.Point(6, 82);
+            this.rbMultiNotebook.Name = "rbMultiNotebook";
+            this.rbMultiNotebook.Size = new System.Drawing.Size(176, 17);
+            this.rbMultiNotebook.TabIndex = 18;
+            this.rbMultiNotebook.Text = "Отдельные записные книжки";
+            this.rbMultiNotebook.UseVisualStyleBackColor = true;
+            this.rbMultiNotebook.CheckedChanged += new System.EventHandler(this.rbMultiNotebook_CheckedChanged);
             // 
-            // radioButton1
+            // rbSingleNotebook
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(6, 6);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(143, 17);
-            this.radioButton1.TabIndex = 17;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Одна записная книжка";
-            this.radioButton1.UseVisualStyleBackColor = true;
+            this.rbSingleNotebook.AutoSize = true;
+            this.rbSingleNotebook.Checked = true;
+            this.rbSingleNotebook.Location = new System.Drawing.Point(6, 6);
+            this.rbSingleNotebook.Name = "rbSingleNotebook";
+            this.rbSingleNotebook.Size = new System.Drawing.Size(143, 17);
+            this.rbSingleNotebook.TabIndex = 17;
+            this.rbSingleNotebook.TabStop = true;
+            this.rbSingleNotebook.Text = "Одна записная книжка";
+            this.rbSingleNotebook.UseVisualStyleBackColor = true;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage3.Controls.Add(this.label9);
+            this.tabPage3.Controls.Add(this.label8);
+            this.tabPage3.Controls.Add(this.textBox4);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(513, 249);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Параметры страниц";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(69, 36);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(35, 13);
+            this.label9.TabIndex = 2;
+            this.label9.Text = "точек";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(13, 13);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(176, 13);
+            this.label8.TabIndex = 1;
+            this.label8.Text = "Укажите ширину страниц Библии";
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(16, 29);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(47, 20);
+            this.textBox4.TabIndex = 0;
             // 
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage2.Controls.Add(this.textBox3);
+            this.tabPage2.Controls.Add(this.tbNotesPageName);
             this.tabPage2.Controls.Add(this.label7);
-            this.tabPage2.Controls.Add(this.textBox2);
+            this.tabPage2.Controls.Add(this.tbBookOverviewName);
             this.tabPage2.Controls.Add(this.label6);
-            this.tabPage2.Controls.Add(this.textBox1);
+            this.tabPage2.Controls.Add(this.tbPageDescriptionName);
             this.tabPage2.Controls.Add(this.label5);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
@@ -254,28 +307,28 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Параметры программы";
             // 
-            // textBox3
+            // tbNotesPageName
             // 
-            this.textBox3.Location = new System.Drawing.Point(16, 129);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(248, 20);
-            this.textBox3.TabIndex = 5;
+            this.tbNotesPageName.Location = new System.Drawing.Point(16, 129);
+            this.tbNotesPageName.Name = "tbNotesPageName";
+            this.tbNotesPageName.Size = new System.Drawing.Size(248, 20);
+            this.tbNotesPageName.TabIndex = 5;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(13, 113);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(264, 13);
+            this.label7.Size = new System.Drawing.Size(211, 13);
             this.label7.TabIndex = 4;
-            this.label7.Text = "Название ссылки на страницу \"Сводная заметок\"";
+            this.label7.Text = "Название страницы \"Сводная заметок\"";
             // 
-            // textBox2
+            // tbBookOverviewName
             // 
-            this.textBox2.Location = new System.Drawing.Point(16, 79);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(248, 20);
-            this.textBox2.TabIndex = 3;
+            this.tbBookOverviewName.Location = new System.Drawing.Point(16, 79);
+            this.tbBookOverviewName.Name = "tbBookOverviewName";
+            this.tbBookOverviewName.Size = new System.Drawing.Size(248, 20);
+            this.tbBookOverviewName.TabIndex = 3;
             // 
             // label6
             // 
@@ -286,12 +339,12 @@
             this.label6.TabIndex = 2;
             this.label6.Text = "Название страницы комментариев ";
             // 
-            // textBox1
+            // tbPageDescriptionName
             // 
-            this.textBox1.Location = new System.Drawing.Point(16, 29);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(248, 20);
-            this.textBox1.TabIndex = 1;
+            this.tbPageDescriptionName.Location = new System.Drawing.Point(16, 29);
+            this.tbPageDescriptionName.Name = "tbPageDescriptionName";
+            this.tbPageDescriptionName.Size = new System.Drawing.Size(248, 20);
+            this.tbPageDescriptionName.TabIndex = 1;
             // 
             // label5
             // 
@@ -328,23 +381,27 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.btnOK);
-            this.splitContainer1.Size = new System.Drawing.Size(521, 320);
+            this.splitContainer1.Size = new System.Drawing.Size(530, 320);
             this.splitContainer1.SplitterDistance = 275;
             this.splitContainer1.TabIndex = 17;
             // 
             // MainForm
             // 
+            this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(521, 320);
+            this.ClientSize = new System.Drawing.Size(530, 320);
             this.Controls.Add(this.splitContainer1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Укажите параметры программы";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -359,30 +416,34 @@
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnSingleNotebookParameters;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.CheckBox checkBox4;
-        private System.Windows.Forms.ComboBox comboBox4;
+        private System.Windows.Forms.CheckBox chkCreateBibleStudyNotebookFromTemplate;
+        private System.Windows.Forms.ComboBox cbBibleStudyNotebook;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.CheckBox checkBox3;
-        private System.Windows.Forms.ComboBox comboBox3;
+        private System.Windows.Forms.CheckBox chkCreateBibleCommentsNotebookFromTemplate;
+        private System.Windows.Forms.ComboBox cbBibleCommentsNotebook;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.CheckBox chkCreateBibleNotebookFromTemplate;
+        private System.Windows.Forms.ComboBox cbBibleNotebook;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.CheckBox chkCreateSingleNotebookFromTemplate;
+        private System.Windows.Forms.ComboBox cbSingleNotebook;
+        private System.Windows.Forms.RadioButton rbMultiNotebook;
+        private System.Windows.Forms.RadioButton rbSingleNotebook;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox tbNotesPageName;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox tbBookOverviewName;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox tbPageDescriptionName;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox textBox4;
 
     }
 }
