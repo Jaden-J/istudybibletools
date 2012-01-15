@@ -87,11 +87,11 @@ namespace BibleNoteLinker
                     Logger.LogMessage("Старт обработки всей записной книжки");
 
                     if (userArgs.DeleteNotes)
-                        ProcessNotebook(oneNoteApp, Settings.Default.NotebookName_Bible, Settings.Default.SectionGroupName_Bible, userArgs);
+                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupName_Bible, userArgs);
                     else
                     {
-                        ProcessNotebook(oneNoteApp, Settings.Default.NotebookName_BibleComments, Settings.Default.SectionGroupName_BibleComments, userArgs);
-                        ProcessNotebook(oneNoteApp, Settings.Default.NotebookName_BibleStudy, Settings.Default.SectionGroupName_BibleStudy, userArgs);
+                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, SettingsManager.Instance.SectionGroupName_BibleComments, userArgs);
+                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleStudy, SettingsManager.Instance.SectionGroupName_BibleStudy, userArgs);
                     }
                 }
                 else
@@ -107,10 +107,16 @@ namespace BibleNoteLinker
 
                         if (!string.IsNullOrEmpty(currentPageId))
                         {
-                            if (userArgs.DeleteNotes)
-                                NoteLinkManager.DeletePageNotes(oneNoteApp, currentNotebookId, currentSectionGroupId, currentSectionId, currentPageId, OneNoteUtils.GetHierarchyElementName(oneNoteApp,currentPageId));
+
+                            if (currentNotebookId == SettingsManager.Instance.NotebookId_Bible)
+                            {
+                                if (userArgs.DeleteNotes)
+                                    NoteLinkManager.DeletePageNotes(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, OneNoteUtils.GetHierarchyElementName(oneNoteApp, currentPageId));
+                                else
+                                    NoteLinkManager.LinkPageVerses(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);
+                            }
                             else
-                                NoteLinkManager.LinkPageVerses(oneNoteApp, currentNotebookId, currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);
+                                Logger.LogError("Комментарии можно писать только к библейскому тексту");
                         }
                         else
                             Logger.LogError("Не найдено открытой страницы заметок");
@@ -121,7 +127,7 @@ namespace BibleNoteLinker
                     }
                 }
 
-                Logger.LogMessage("Успешно завершено.");                
+                Logger.LogMessage("Успешно завершено");                
             }
             catch (Exception ex)
             {
@@ -134,32 +140,23 @@ namespace BibleNoteLinker
 
             if (Logger.ErrorWasLogged)
             {
-                Console.WriteLine("Во время работы программы произошли ошибки.");
+                Console.WriteLine("Во время работы программы произошли ошибки");
                 Console.ReadKey();
             }
         }
 
-        private static void ProcessNotebook(Application oneNoteApp, string notebookName, string sectionGroupName, Args userArgs)
+        private static void ProcessNotebook(Application oneNoteApp, string notebookId, string sectionGroupName, Args userArgs)
         {
-            string notebookId = OneNoteUtils.GetNotebookId(oneNoteApp, notebookName);
+            Logger.LogMessage("Обработка записной книжки: '{0}'", OneNoteUtils.GetHierarchyElementName(oneNoteApp, notebookId));  // чтобы точно убедиться
 
-            if (!string.IsNullOrEmpty(notebookId))
-            {
-                Logger.LogMessage("Обработка записной книжки: '{0}'", OneNoteUtils.GetHierarchyElementName(oneNoteApp, notebookId));  // чтобы точно убедиться
+            string hierarchyXml;
+            oneNoteApp.GetHierarchy(notebookId, HierarchyScope.hsPages, out hierarchyXml);
+            XmlNamespaceManager xnm;
+            XDocument notebookDoc = OneNoteUtils.GetXDocument(hierarchyXml, out xnm);
 
-                string hierarchyXml;
-                oneNoteApp.GetHierarchy(notebookId, HierarchyScope.hsPages, out hierarchyXml);
-                XmlNamespaceManager xnm;
-                XDocument notebookDoc = OneNoteUtils.GetXDocument(hierarchyXml, out xnm);
-
-                Logger.MoveLevel(1);
-                ProcessRootSectionGroup(oneNoteApp, notebookId, notebookDoc, sectionGroupName, xnm, userArgs.AnalyzeDepth, userArgs.Force, userArgs.DeleteNotes);
-                Logger.MoveLevel(-1);
-            }
-            else
-            {
-                Logger.LogError(string.Format("Не найдено записной книжки '{0}'.", notebookName));
-            }
+            Logger.MoveLevel(1);
+            ProcessRootSectionGroup(oneNoteApp, notebookId, notebookDoc, sectionGroupName, xnm, userArgs.AnalyzeDepth, userArgs.Force, userArgs.DeleteNotes);
+            Logger.MoveLevel(-1);
         }
 
         private static void ProcessRootSectionGroup(Application oneNoteApp, string notebookId, XDocument doc, string sectionGroupName,
@@ -222,9 +219,9 @@ namespace BibleNoteLinker
 
                 Logger.MoveLevel(1);
                 if (deleteNotes)
-                    NoteLinkManager.DeletePageNotes(oneNoteApp, notebookId, sectionGroupId, sectionId, pageId, pageName);
+                    NoteLinkManager.DeletePageNotes(oneNoteApp, sectionGroupId, sectionId, pageId, pageName);
                 else
-                    NoteLinkManager.LinkPageVerses(oneNoteApp, notebookId, sectionGroupId, sectionId, pageId, linkDepth, force);
+                    NoteLinkManager.LinkPageVerses(oneNoteApp, sectionGroupId, sectionId, pageId, linkDepth, force);
                 Logger.MoveLevel(-1);
             }
 

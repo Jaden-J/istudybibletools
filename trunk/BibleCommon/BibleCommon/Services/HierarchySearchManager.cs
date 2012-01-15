@@ -48,12 +48,12 @@ namespace BibleCommon.Services
             }
         }
 
-        public static HierarchySearchResult GetHierarchyObject(Application oneNoteApp, string notebookId, VersePointer vp)
+        public static HierarchySearchResult GetHierarchyObject(Application oneNoteApp, string bibleNotebookId, VersePointer vp)
         {
             HierarchySearchResult result = new HierarchySearchResult();
             result.ResultType = HierarchySearchResultType.NotFound;
 
-            XElement targetSection = FindSection(oneNoteApp, notebookId, vp);
+            XElement targetSection = FindSection(oneNoteApp, bibleNotebookId, vp);
             if (targetSection != null)
             {
                 result.HierarchyObjectInfo.SectionId = (string)targetSection.Attribute("ID");
@@ -153,8 +153,8 @@ namespace BibleCommon.Services
 
             XElement targetSection = document.Root.XPathSelectElement(
                 string.Format("{0}one:SectionGroup/one:Section[@name='{1}']",
-                    !string.IsNullOrEmpty(Settings.Default.SectionGroupName_Bible) 
-                        ? string.Format("one:SectionGroup[@name='{0}']/", Settings.Default.SectionGroupName_Bible) 
+                    !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupName_Bible)
+                        ? string.Format("one:SectionGroup[@name='{0}']/", SettingsManager.Instance.SectionGroupName_Bible) 
                         : string.Empty,
                     vp.BookName), 
                 xnm);

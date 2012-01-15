@@ -25,7 +25,7 @@ namespace BibleCommon {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Holy Bible")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string NotebookName_Bible {
             get {
                 return ((string)(this["NotebookName_Bible"]));
@@ -37,7 +37,7 @@ namespace BibleCommon {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Holy Bible")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string NotebookName_BibleComments {
             get {
                 return ((string)(this["NotebookName_BibleComments"]));
@@ -49,7 +49,7 @@ namespace BibleCommon {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Holy Bible")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string NotebookName_BibleStudy {
             get {
                 return ((string)(this["NotebookName_BibleStudy"]));
@@ -61,7 +61,7 @@ namespace BibleCommon {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Библия")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string SectionGroupName_Bible {
             get {
                 return ((string)(this["SectionGroupName_Bible"]));
@@ -73,7 +73,7 @@ namespace BibleCommon {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Изучение Библии")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string SectionGroupName_BibleComments {
             get {
                 return ((string)(this["SectionGroupName_BibleComments"]));
@@ -85,7 +85,7 @@ namespace BibleCommon {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Тематические исследования")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string SectionGroupName_BibleStudy {
             get {
                 return ((string)(this["SectionGroupName_BibleStudy"]));
@@ -128,6 +128,18 @@ namespace BibleCommon {
             }
             set {
                 this["PageName_Notes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Holy Bible")]
+        public string NotebookName_Single {
+            get {
+                return ((string)(this["NotebookName_Single"]));
+            }
+            set {
+                this["NotebookName_Single"] = value;
             }
         }
     }

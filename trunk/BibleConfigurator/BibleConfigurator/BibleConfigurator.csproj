@@ -54,19 +54,19 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="NotebookParameters.cs">
+    <Compile Include="NotebookParametersForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NotebookParameters.Designer.cs">
-      <DependentUpon>NotebookParameters.cs</DependentUpon>
+    <Compile Include="NotebookParametersForm.Designer.cs">
+      <DependentUpon>NotebookParametersForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NotebookParameters.resx">
-      <DependentUpon>NotebookParameters.cs</DependentUpon>
+    <EmbeddedResource Include="NotebookParametersForm.resx">
+      <DependentUpon>NotebookParametersForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -99,6 +99,12 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BibleCommon\BibleCommon\BibleCommon.csproj">
+      <Project>{D2E40D0E-9786-49E9-B2A7-54088B42EAC5}</Project>
+      <Name>BibleCommon</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

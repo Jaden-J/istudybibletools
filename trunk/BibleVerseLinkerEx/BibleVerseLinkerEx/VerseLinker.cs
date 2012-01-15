@@ -37,7 +37,7 @@ namespace BibleVerseLinkerEx
         public VerseLinker()
         {
             _onenoteApp = new Application();
-            DescriptionPageName = Settings.Default.PageName_DefaultDescription;
+            DescriptionPageName = SettingsManager.Instance.PageName_DefaultDescription;
             SearchForUnderlineText = true;
         }
 
@@ -131,7 +131,7 @@ namespace BibleVerseLinkerEx
                         string verseLinkPageId = null;
                         try
                         {
-                            verseLinkPageId = BibleCommon.Services.VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(OneNoteApp, currentNotebookId, currentSectionId,
+                            verseLinkPageId = BibleCommon.Services.VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(OneNoteApp, currentSectionId,
                                 currentPageId, currentPageName, DescriptionPageName);                            
                         }
                         catch (Exception ex)
