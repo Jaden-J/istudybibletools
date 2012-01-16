@@ -47,9 +47,6 @@
             this.rbMultiNotebook = new System.Windows.Forms.RadioButton();
             this.rbSingleNotebook = new System.Windows.Forms.RadioButton();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tbNotesPageName = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -59,6 +56,8 @@
             this.label5 = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.btnRelinkComments = new System.Windows.Forms.Button();
+            this.btnResizeBibleTables = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage3.SuspendLayout();
@@ -71,8 +70,8 @@
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
@@ -103,7 +102,7 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(522, 249);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Параметры записных книжек";
+            this.tabPage1.Text = "Параметры OneNote";
             // 
             // btnSingleNotebookParameters
             // 
@@ -257,39 +256,13 @@
             // tabPage3
             // 
             this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage3.Controls.Add(this.label9);
-            this.tabPage3.Controls.Add(this.label8);
-            this.tabPage3.Controls.Add(this.textBox4);
+            this.tabPage3.Controls.Add(this.btnResizeBibleTables);
+            this.tabPage3.Controls.Add(this.btnRelinkComments);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(513, 249);
+            this.tabPage3.Size = new System.Drawing.Size(522, 249);
             this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Параметры страниц";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(69, 36);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(35, 13);
-            this.label9.TabIndex = 2;
-            this.label9.Text = "точек";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(13, 13);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(176, 13);
-            this.label8.TabIndex = 1;
-            this.label8.Text = "Укажите ширину страниц Библии";
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(16, 29);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(47, 20);
-            this.textBox4.TabIndex = 0;
+            this.tabPage3.Text = "Дополнительные утилиты";
             // 
             // tabPage2
             // 
@@ -303,7 +276,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(513, 249);
+            this.tabPage2.Size = new System.Drawing.Size(522, 249);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Параметры программы";
             // 
@@ -385,6 +358,25 @@
             this.splitContainer1.SplitterDistance = 275;
             this.splitContainer1.TabIndex = 17;
             // 
+            // btnRelinkComments
+            // 
+            this.btnRelinkComments.Location = new System.Drawing.Point(13, 13);
+            this.btnRelinkComments.Name = "btnRelinkComments";
+            this.btnRelinkComments.Size = new System.Drawing.Size(207, 23);
+            this.btnRelinkComments.TabIndex = 0;
+            this.btnRelinkComments.Text = "Обновить ссылки на комментарии";
+            this.btnRelinkComments.UseVisualStyleBackColor = true;
+            // 
+            // btnResizeBibleTables
+            // 
+            this.btnResizeBibleTables.Enabled = false;
+            this.btnResizeBibleTables.Location = new System.Drawing.Point(13, 53);
+            this.btnResizeBibleTables.Name = "btnResizeBibleTables";
+            this.btnResizeBibleTables.Size = new System.Drawing.Size(207, 23);
+            this.btnResizeBibleTables.TabIndex = 1;
+            this.btnResizeBibleTables.Text = "Изменить ширину страниц Библии";
+            this.btnResizeBibleTables.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnOK;
@@ -401,7 +393,6 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -441,9 +432,8 @@
         private System.Windows.Forms.TextBox tbPageDescriptionName;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.Button btnResizeBibleTables;
+        private System.Windows.Forms.Button btnRelinkComments;
 
     }
 }
