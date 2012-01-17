@@ -31,6 +31,9 @@
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.btnSingleNotebookParameters = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.chkCreateBibleStudyNotebookFromTemplate = new System.Windows.Forms.CheckBox();
@@ -46,7 +49,6 @@
             this.cbSingleNotebook = new System.Windows.Forms.ComboBox();
             this.rbMultiNotebook = new System.Windows.Forms.RadioButton();
             this.rbSingleNotebook = new System.Windows.Forms.RadioButton();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tbNotesPageName = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -54,14 +56,15 @@
             this.label6 = new System.Windows.Forms.Label();
             this.tbPageDescriptionName = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btnResizeBibleTables = new System.Windows.Forms.Button();
+            this.btnRelinkComments = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.btnRelinkComments = new System.Windows.Forms.Button();
-            this.btnResizeBibleTables = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.tabPage3.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -76,12 +79,15 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(530, 275);
+            this.tabControl1.Size = new System.Drawing.Size(533, 275);
             this.tabControl1.TabIndex = 16;
             // 
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.button3);
+            this.tabPage1.Controls.Add(this.button2);
+            this.tabPage1.Controls.Add(this.button1);
             this.tabPage1.Controls.Add(this.btnSingleNotebookParameters);
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.chkCreateBibleStudyNotebookFromTemplate);
@@ -100,9 +106,36 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(522, 249);
+            this.tabPage1.Size = new System.Drawing.Size(525, 249);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Параметры OneNote";
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(301, 216);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 34;
+            this.button3.Text = "Настроить";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(301, 166);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 33;
+            this.button2.Text = "Настроить";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(301, 116);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 32;
+            this.button1.Text = "Настроить";
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // btnSingleNotebookParameters
             // 
@@ -126,7 +159,7 @@
             // chkCreateBibleStudyNotebookFromTemplate
             // 
             this.chkCreateBibleStudyNotebookFromTemplate.AutoSize = true;
-            this.chkCreateBibleStudyNotebookFromTemplate.Location = new System.Drawing.Point(301, 220);
+            this.chkCreateBibleStudyNotebookFromTemplate.Location = new System.Drawing.Point(382, 220);
             this.chkCreateBibleStudyNotebookFromTemplate.Name = "chkCreateBibleStudyNotebookFromTemplate";
             this.chkCreateBibleStudyNotebookFromTemplate.Size = new System.Drawing.Size(130, 17);
             this.chkCreateBibleStudyNotebookFromTemplate.TabIndex = 29;
@@ -155,7 +188,7 @@
             // chkCreateBibleCommentsNotebookFromTemplate
             // 
             this.chkCreateBibleCommentsNotebookFromTemplate.AutoSize = true;
-            this.chkCreateBibleCommentsNotebookFromTemplate.Location = new System.Drawing.Point(301, 172);
+            this.chkCreateBibleCommentsNotebookFromTemplate.Location = new System.Drawing.Point(382, 170);
             this.chkCreateBibleCommentsNotebookFromTemplate.Name = "chkCreateBibleCommentsNotebookFromTemplate";
             this.chkCreateBibleCommentsNotebookFromTemplate.Size = new System.Drawing.Size(130, 17);
             this.chkCreateBibleCommentsNotebookFromTemplate.TabIndex = 26;
@@ -184,7 +217,7 @@
             // chkCreateBibleNotebookFromTemplate
             // 
             this.chkCreateBibleNotebookFromTemplate.AutoSize = true;
-            this.chkCreateBibleNotebookFromTemplate.Location = new System.Drawing.Point(301, 120);
+            this.chkCreateBibleNotebookFromTemplate.Location = new System.Drawing.Point(382, 120);
             this.chkCreateBibleNotebookFromTemplate.Name = "chkCreateBibleNotebookFromTemplate";
             this.chkCreateBibleNotebookFromTemplate.Size = new System.Drawing.Size(130, 17);
             this.chkCreateBibleNotebookFromTemplate.TabIndex = 23;
@@ -253,17 +286,6 @@
             this.rbSingleNotebook.Text = "Одна записная книжка";
             this.rbSingleNotebook.UseVisualStyleBackColor = true;
             // 
-            // tabPage3
-            // 
-            this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage3.Controls.Add(this.btnResizeBibleTables);
-            this.tabPage3.Controls.Add(this.btnRelinkComments);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(522, 249);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Дополнительные утилиты";
-            // 
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
@@ -328,9 +350,39 @@
             this.label5.TabIndex = 0;
             this.label5.Text = "Название страницы комментариев по умолчанию";
             // 
+            // tabPage3
+            // 
+            this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage3.Controls.Add(this.btnResizeBibleTables);
+            this.tabPage3.Controls.Add(this.btnRelinkComments);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(522, 249);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Дополнительные утилиты";
+            // 
+            // btnResizeBibleTables
+            // 
+            this.btnResizeBibleTables.Enabled = false;
+            this.btnResizeBibleTables.Location = new System.Drawing.Point(13, 53);
+            this.btnResizeBibleTables.Name = "btnResizeBibleTables";
+            this.btnResizeBibleTables.Size = new System.Drawing.Size(207, 23);
+            this.btnResizeBibleTables.TabIndex = 1;
+            this.btnResizeBibleTables.Text = "Изменить ширину страниц Библии";
+            this.btnResizeBibleTables.UseVisualStyleBackColor = true;
+            // 
+            // btnRelinkComments
+            // 
+            this.btnRelinkComments.Location = new System.Drawing.Point(13, 13);
+            this.btnRelinkComments.Name = "btnRelinkComments";
+            this.btnRelinkComments.Size = new System.Drawing.Size(207, 23);
+            this.btnRelinkComments.TabIndex = 0;
+            this.btnRelinkComments.Text = "Обновить ссылки на комментарии";
+            this.btnRelinkComments.UseVisualStyleBackColor = true;
+            // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(441, 6);
+            this.btnOK.Location = new System.Drawing.Point(441, 42);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 16;
@@ -354,35 +406,16 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.btnOK);
-            this.splitContainer1.Size = new System.Drawing.Size(530, 320);
+            this.splitContainer1.Size = new System.Drawing.Size(533, 365);
             this.splitContainer1.SplitterDistance = 275;
             this.splitContainer1.TabIndex = 17;
-            // 
-            // btnRelinkComments
-            // 
-            this.btnRelinkComments.Location = new System.Drawing.Point(13, 13);
-            this.btnRelinkComments.Name = "btnRelinkComments";
-            this.btnRelinkComments.Size = new System.Drawing.Size(207, 23);
-            this.btnRelinkComments.TabIndex = 0;
-            this.btnRelinkComments.Text = "Обновить ссылки на комментарии";
-            this.btnRelinkComments.UseVisualStyleBackColor = true;
-            // 
-            // btnResizeBibleTables
-            // 
-            this.btnResizeBibleTables.Enabled = false;
-            this.btnResizeBibleTables.Location = new System.Drawing.Point(13, 53);
-            this.btnResizeBibleTables.Name = "btnResizeBibleTables";
-            this.btnResizeBibleTables.Size = new System.Drawing.Size(207, 23);
-            this.btnResizeBibleTables.TabIndex = 1;
-            this.btnResizeBibleTables.Text = "Изменить ширину страниц Библии";
-            this.btnResizeBibleTables.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(530, 320);
+            this.ClientSize = new System.Drawing.Size(533, 365);
             this.Controls.Add(this.splitContainer1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "MainForm";
@@ -392,9 +425,9 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.ResumeLayout(false);
@@ -434,6 +467,9 @@
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Button btnResizeBibleTables;
         private System.Windows.Forms.Button btnRelinkComments;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
 
     }
 }
