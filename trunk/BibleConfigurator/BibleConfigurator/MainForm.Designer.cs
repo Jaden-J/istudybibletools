@@ -31,9 +31,6 @@
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.btnSingleNotebookParameters = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.chkCreateBibleStudyNotebookFromTemplate = new System.Windows.Forms.CheckBox();
@@ -61,6 +58,10 @@
             this.btnRelinkComments = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.btnSingleNotebookSetPath = new System.Windows.Forms.Button();
+            this.btnBibleNotebookSetPath = new System.Windows.Forms.Button();
+            this.btnBibleCommentsNotebookSetPath = new System.Windows.Forms.Button();
+            this.btnBibleStudyNotebookSetPath = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -79,15 +80,16 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(533, 275);
+            this.tabControl1.Size = new System.Drawing.Size(533, 310);
             this.tabControl1.TabIndex = 16;
             // 
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage1.Controls.Add(this.button3);
-            this.tabPage1.Controls.Add(this.button2);
-            this.tabPage1.Controls.Add(this.button1);
+            this.tabPage1.Controls.Add(this.btnBibleStudyNotebookSetPath);
+            this.tabPage1.Controls.Add(this.btnBibleCommentsNotebookSetPath);
+            this.tabPage1.Controls.Add(this.btnBibleNotebookSetPath);
+            this.tabPage1.Controls.Add(this.btnSingleNotebookSetPath);
             this.tabPage1.Controls.Add(this.btnSingleNotebookParameters);
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.chkCreateBibleStudyNotebookFromTemplate);
@@ -106,42 +108,15 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(525, 249);
+            this.tabPage1.Size = new System.Drawing.Size(525, 284);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Параметры OneNote";
             // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(301, 216);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 34;
-            this.button3.Text = "Настроить";
-            this.button3.UseVisualStyleBackColor = true;
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(301, 166);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 33;
-            this.button2.Text = "Настроить";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(301, 116);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 32;
-            this.button1.Text = "Настроить";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
             // btnSingleNotebookParameters
             // 
-            this.btnSingleNotebookParameters.Location = new System.Drawing.Point(301, 40);
+            this.btnSingleNotebookParameters.Location = new System.Drawing.Point(47, 69);
             this.btnSingleNotebookParameters.Name = "btnSingleNotebookParameters";
-            this.btnSingleNotebookParameters.Size = new System.Drawing.Size(75, 23);
+            this.btnSingleNotebookParameters.Size = new System.Drawing.Size(102, 23);
             this.btnSingleNotebookParameters.TabIndex = 31;
             this.btnSingleNotebookParameters.Text = "Настроить";
             this.btnSingleNotebookParameters.UseVisualStyleBackColor = true;
@@ -150,7 +125,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(44, 202);
+            this.label4.Location = new System.Drawing.Point(46, 227);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(259, 13);
             this.label4.TabIndex = 30;
@@ -159,7 +134,7 @@
             // chkCreateBibleStudyNotebookFromTemplate
             // 
             this.chkCreateBibleStudyNotebookFromTemplate.AutoSize = true;
-            this.chkCreateBibleStudyNotebookFromTemplate.Location = new System.Drawing.Point(382, 220);
+            this.chkCreateBibleStudyNotebookFromTemplate.Location = new System.Drawing.Point(303, 245);
             this.chkCreateBibleStudyNotebookFromTemplate.Name = "chkCreateBibleStudyNotebookFromTemplate";
             this.chkCreateBibleStudyNotebookFromTemplate.Size = new System.Drawing.Size(130, 17);
             this.chkCreateBibleStudyNotebookFromTemplate.TabIndex = 29;
@@ -171,7 +146,7 @@
             // 
             this.cbBibleStudyNotebook.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbBibleStudyNotebook.FormattingEnabled = true;
-            this.cbBibleStudyNotebook.Location = new System.Drawing.Point(47, 218);
+            this.cbBibleStudyNotebook.Location = new System.Drawing.Point(49, 243);
             this.cbBibleStudyNotebook.Name = "cbBibleStudyNotebook";
             this.cbBibleStudyNotebook.Size = new System.Drawing.Size(248, 21);
             this.cbBibleStudyNotebook.TabIndex = 28;
@@ -179,7 +154,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(44, 152);
+            this.label3.Location = new System.Drawing.Point(46, 177);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(297, 13);
             this.label3.TabIndex = 27;
@@ -188,7 +163,7 @@
             // chkCreateBibleCommentsNotebookFromTemplate
             // 
             this.chkCreateBibleCommentsNotebookFromTemplate.AutoSize = true;
-            this.chkCreateBibleCommentsNotebookFromTemplate.Location = new System.Drawing.Point(382, 170);
+            this.chkCreateBibleCommentsNotebookFromTemplate.Location = new System.Drawing.Point(303, 195);
             this.chkCreateBibleCommentsNotebookFromTemplate.Name = "chkCreateBibleCommentsNotebookFromTemplate";
             this.chkCreateBibleCommentsNotebookFromTemplate.Size = new System.Drawing.Size(130, 17);
             this.chkCreateBibleCommentsNotebookFromTemplate.TabIndex = 26;
@@ -200,7 +175,7 @@
             // 
             this.cbBibleCommentsNotebook.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbBibleCommentsNotebook.FormattingEnabled = true;
-            this.cbBibleCommentsNotebook.Location = new System.Drawing.Point(47, 168);
+            this.cbBibleCommentsNotebook.Location = new System.Drawing.Point(49, 193);
             this.cbBibleCommentsNotebook.Name = "cbBibleCommentsNotebook";
             this.cbBibleCommentsNotebook.Size = new System.Drawing.Size(248, 21);
             this.cbBibleCommentsNotebook.TabIndex = 25;
@@ -208,7 +183,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(44, 102);
+            this.label2.Location = new System.Drawing.Point(46, 127);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(210, 13);
             this.label2.TabIndex = 24;
@@ -217,7 +192,7 @@
             // chkCreateBibleNotebookFromTemplate
             // 
             this.chkCreateBibleNotebookFromTemplate.AutoSize = true;
-            this.chkCreateBibleNotebookFromTemplate.Location = new System.Drawing.Point(382, 120);
+            this.chkCreateBibleNotebookFromTemplate.Location = new System.Drawing.Point(303, 145);
             this.chkCreateBibleNotebookFromTemplate.Name = "chkCreateBibleNotebookFromTemplate";
             this.chkCreateBibleNotebookFromTemplate.Size = new System.Drawing.Size(130, 17);
             this.chkCreateBibleNotebookFromTemplate.TabIndex = 23;
@@ -229,7 +204,7 @@
             // 
             this.cbBibleNotebook.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbBibleNotebook.FormattingEnabled = true;
-            this.cbBibleNotebook.Location = new System.Drawing.Point(47, 118);
+            this.cbBibleNotebook.Location = new System.Drawing.Point(49, 143);
             this.cbBibleNotebook.Name = "cbBibleNotebook";
             this.cbBibleNotebook.Size = new System.Drawing.Size(248, 21);
             this.cbBibleNotebook.TabIndex = 22;
@@ -246,7 +221,7 @@
             // chkCreateSingleNotebookFromTemplate
             // 
             this.chkCreateSingleNotebookFromTemplate.AutoSize = true;
-            this.chkCreateSingleNotebookFromTemplate.Location = new System.Drawing.Point(382, 44);
+            this.chkCreateSingleNotebookFromTemplate.Location = new System.Drawing.Point(301, 44);
             this.chkCreateSingleNotebookFromTemplate.Name = "chkCreateSingleNotebookFromTemplate";
             this.chkCreateSingleNotebookFromTemplate.Size = new System.Drawing.Size(130, 17);
             this.chkCreateSingleNotebookFromTemplate.TabIndex = 20;
@@ -266,10 +241,12 @@
             // rbMultiNotebook
             // 
             this.rbMultiNotebook.AutoSize = true;
-            this.rbMultiNotebook.Location = new System.Drawing.Point(6, 82);
+            this.rbMultiNotebook.Checked = true;
+            this.rbMultiNotebook.Location = new System.Drawing.Point(8, 107);
             this.rbMultiNotebook.Name = "rbMultiNotebook";
             this.rbMultiNotebook.Size = new System.Drawing.Size(176, 17);
             this.rbMultiNotebook.TabIndex = 18;
+            this.rbMultiNotebook.TabStop = true;
             this.rbMultiNotebook.Text = "Отдельные записные книжки";
             this.rbMultiNotebook.UseVisualStyleBackColor = true;
             this.rbMultiNotebook.CheckedChanged += new System.EventHandler(this.rbMultiNotebook_CheckedChanged);
@@ -277,12 +254,10 @@
             // rbSingleNotebook
             // 
             this.rbSingleNotebook.AutoSize = true;
-            this.rbSingleNotebook.Checked = true;
             this.rbSingleNotebook.Location = new System.Drawing.Point(6, 6);
             this.rbSingleNotebook.Name = "rbSingleNotebook";
             this.rbSingleNotebook.Size = new System.Drawing.Size(143, 17);
             this.rbSingleNotebook.TabIndex = 17;
-            this.rbSingleNotebook.TabStop = true;
             this.rbSingleNotebook.Text = "Одна записная книжка";
             this.rbSingleNotebook.UseVisualStyleBackColor = true;
             // 
@@ -298,7 +273,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(522, 249);
+            this.tabPage2.Size = new System.Drawing.Size(525, 284);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Параметры программы";
             // 
@@ -357,7 +332,7 @@
             this.tabPage3.Controls.Add(this.btnRelinkComments);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(522, 249);
+            this.tabPage3.Size = new System.Drawing.Size(525, 284);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Дополнительные утилиты";
             // 
@@ -382,7 +357,7 @@
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(441, 42);
+            this.btnOK.Location = new System.Drawing.Point(446, 16);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 16;
@@ -394,7 +369,6 @@
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -407,8 +381,48 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.btnOK);
             this.splitContainer1.Size = new System.Drawing.Size(533, 365);
-            this.splitContainer1.SplitterDistance = 275;
+            this.splitContainer1.SplitterDistance = 310;
             this.splitContainer1.TabIndex = 17;
+            // 
+            // btnSingleNotebookSetPath
+            // 
+            this.btnSingleNotebookSetPath.Location = new System.Drawing.Point(437, 40);
+            this.btnSingleNotebookSetPath.Name = "btnSingleNotebookSetPath";
+            this.btnSingleNotebookSetPath.Size = new System.Drawing.Size(26, 23);
+            this.btnSingleNotebookSetPath.TabIndex = 32;
+            this.btnSingleNotebookSetPath.Text = "...";
+            this.btnSingleNotebookSetPath.UseVisualStyleBackColor = true;
+            this.btnSingleNotebookSetPath.Click += new System.EventHandler(this.btnSingleNotebookSetPath_Click);
+            // 
+            // btnBibleNotebookSetPath
+            // 
+            this.btnBibleNotebookSetPath.Location = new System.Drawing.Point(437, 141);
+            this.btnBibleNotebookSetPath.Name = "btnBibleNotebookSetPath";
+            this.btnBibleNotebookSetPath.Size = new System.Drawing.Size(26, 23);
+            this.btnBibleNotebookSetPath.TabIndex = 33;
+            this.btnBibleNotebookSetPath.Text = "...";
+            this.btnBibleNotebookSetPath.UseVisualStyleBackColor = true;
+            this.btnBibleNotebookSetPath.Click += new System.EventHandler(this.btnBibleNotebookSetPath_Click);
+            // 
+            // btnBibleCommentsNotebookSetPath
+            // 
+            this.btnBibleCommentsNotebookSetPath.Location = new System.Drawing.Point(437, 191);
+            this.btnBibleCommentsNotebookSetPath.Name = "btnBibleCommentsNotebookSetPath";
+            this.btnBibleCommentsNotebookSetPath.Size = new System.Drawing.Size(26, 23);
+            this.btnBibleCommentsNotebookSetPath.TabIndex = 34;
+            this.btnBibleCommentsNotebookSetPath.Text = "...";
+            this.btnBibleCommentsNotebookSetPath.UseVisualStyleBackColor = true;
+            this.btnBibleCommentsNotebookSetPath.Click += new System.EventHandler(this.btnBibleCommentsNotebookSetPath_Click);
+            // 
+            // btnBibleStudyNotebookSetPath
+            // 
+            this.btnBibleStudyNotebookSetPath.Location = new System.Drawing.Point(437, 241);
+            this.btnBibleStudyNotebookSetPath.Name = "btnBibleStudyNotebookSetPath";
+            this.btnBibleStudyNotebookSetPath.Size = new System.Drawing.Size(26, 23);
+            this.btnBibleStudyNotebookSetPath.TabIndex = 35;
+            this.btnBibleStudyNotebookSetPath.Text = "...";
+            this.btnBibleStudyNotebookSetPath.UseVisualStyleBackColor = true;
+            this.btnBibleStudyNotebookSetPath.Click += new System.EventHandler(this.btnBibleStudyNotebookSetPath_Click);
             // 
             // MainForm
             // 
@@ -467,9 +481,10 @@
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Button btnResizeBibleTables;
         private System.Windows.Forms.Button btnRelinkComments;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnBibleStudyNotebookSetPath;
+        private System.Windows.Forms.Button btnBibleCommentsNotebookSetPath;
+        private System.Windows.Forms.Button btnBibleNotebookSetPath;
+        private System.Windows.Forms.Button btnSingleNotebookSetPath;
 
     }
 }

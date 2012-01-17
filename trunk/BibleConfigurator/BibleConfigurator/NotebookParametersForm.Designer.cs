@@ -102,6 +102,7 @@
             this.btnBibleSectionRename.TabIndex = 10;
             this.btnBibleSectionRename.Text = "Переименовать";
             this.btnBibleSectionRename.UseVisualStyleBackColor = true;
+            this.btnBibleSectionRename.Click += new System.EventHandler(this.btnBibleSectionRename_Click);
             // 
             // btnBibleCommentsSectionRename
             // 
@@ -111,6 +112,7 @@
             this.btnBibleCommentsSectionRename.TabIndex = 11;
             this.btnBibleCommentsSectionRename.Text = "Переименовать";
             this.btnBibleCommentsSectionRename.UseVisualStyleBackColor = true;
+            this.btnBibleCommentsSectionRename.Click += new System.EventHandler(this.btnBibleCommentsSectionRename_Click);
             // 
             // btnBibleStudySectionRename
             // 
@@ -120,9 +122,11 @@
             this.btnBibleStudySectionRename.TabIndex = 12;
             this.btnBibleStudySectionRename.Text = "Переименовать";
             this.btnBibleStudySectionRename.UseVisualStyleBackColor = true;
+            this.btnBibleStudySectionRename.Click += new System.EventHandler(this.btnBibleStudySectionRename_Click);
             // 
             // btnOK
             // 
+            this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOK.Location = new System.Drawing.Point(320, 177);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);

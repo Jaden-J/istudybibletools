@@ -15,6 +15,7 @@ using System.Xml.XPath;
 using System.IO;
 using System.Diagnostics;
 using BibleCommon;
+using System.Threading;
 
 namespace BibleConfigurator
 {
@@ -80,7 +81,37 @@ namespace BibleConfigurator
                 Settings.Default.SectionGroupName_BibleComments = string.Empty;
                 Settings.Default.SectionGroupName_BibleStudy = string.Empty;
 
-                if (chkCreateBibleNotebookFromTemplate.Checked)
+                if (chkCreateBibleStudyNotebookFromTemplate.Checked)
+                {
+                    string notebookName = CreateNotebookFromTemplate(BibleStudyNotebookTemplateFileName, BibleStudyNotebookFromTemplatePath);
+                    if (!string.IsNullOrEmpty(notebookName))
+                    {
+                        Settings.Default.NotebookName_BibleStudy = notebookName;
+                        Thread.Sleep(3000);  // чтоб точно OneNote отработал
+                    }
+                }
+                else
+                {
+                    if (CheckNotebook((string)cbBibleStudyNotebook.SelectedItem, NotebookType.BibleStudy))
+                        Settings.Default.NotebookName_BibleStudy = (string)cbBibleStudyNotebook.SelectedItem;
+                }
+
+                if (chkCreateBibleCommentsNotebookFromTemplate.Checked)
+                {
+                    string notebookName = CreateNotebookFromTemplate(BibleCommentsNotebookTemplateFileName, BibleCommentsNotebookFromTemplatePath);
+                    if (!string.IsNullOrEmpty(notebookName))
+                    {
+                        Settings.Default.NotebookName_BibleComments = notebookName;
+                        Thread.Sleep(3000);  // чтоб точно OneNote отработал
+                    }
+                }
+                else
+                {
+                    if (CheckNotebook((string)cbBibleCommentsNotebook.SelectedItem, NotebookType.BibleComments))
+                        Settings.Default.NotebookName_BibleComments = (string)cbBibleCommentsNotebook.SelectedItem;
+                }
+
+                if (chkCreateBibleNotebookFromTemplate.Checked)  // записную книжку для Библии создаём в самом конце, так как она дольше всех создаётся
                 {
                     string notebookName = CreateNotebookFromTemplate(BibleNotebookTemplateFileName, BibleNotebookFromTemplatePath);
                     if (!string.IsNullOrEmpty(notebookName))
@@ -90,30 +121,6 @@ namespace BibleConfigurator
                 {
                     if (CheckNotebook((string)cbBibleNotebook.SelectedItem, NotebookType.Bible))
                         Settings.Default.NotebookName_Bible = (string)cbBibleNotebook.SelectedItem;
-                }
-
-                if (chkCreateBibleCommentsNotebookFromTemplate.Checked)
-                {
-                    string notebookName = CreateNotebookFromTemplate(BibleCommentsNotebookTemplateFileName, BibleCommentsNotebookFromTemplatePath);
-                    if (!string.IsNullOrEmpty(notebookName))
-                        Settings.Default.NotebookName_BibleComments = notebookName;
-                }
-                else
-                {
-                    if (CheckNotebook((string)cbBibleCommentsNotebook.SelectedItem, NotebookType.BibleComments))
-                        Settings.Default.NotebookName_BibleComments = (string)cbBibleCommentsNotebook.SelectedItem;
-                }
-
-                if (chkCreateBibleStudyNotebookFromTemplate.Checked)
-                {
-                    string notebookName = CreateNotebookFromTemplate(BibleStudyNotebookTemplateFileName, BibleStudyNotebookFromTemplatePath);
-                    if (!string.IsNullOrEmpty(notebookName))
-                        Settings.Default.NotebookName_BibleStudy = notebookName;
-                }
-                else
-                {
-                    if (CheckNotebook((string)cbBibleStudyNotebook.SelectedItem, NotebookType.BibleStudy))
-                        Settings.Default.NotebookName_BibleStudy = (string)cbBibleStudyNotebook.SelectedItem;
                 }
             }
 
@@ -212,10 +219,10 @@ namespace BibleConfigurator
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            PrepareFolderBrowser();            
+            PrepareFolderBrowser();
+            SetNotebooksDefaultPaths();
 
-            rbSingleNotebook.Checked = (Settings.Default.NotebookName_Bible == Settings.Default.NotebookName_BibleComments)
-                                    && (Settings.Default.NotebookName_Bible == Settings.Default.NotebookName_BibleStudy);
+            rbSingleNotebook.Checked = !string.IsNullOrEmpty(Settings.Default.NotebookName_Single);
 
             rbMultiNotebook.Checked = !rbSingleNotebook.Checked;
             rbMultiNotebook_CheckedChanged(this, null);
@@ -228,22 +235,53 @@ namespace BibleConfigurator
             cbBibleCommentsNotebook.DataSource = notebooks.Keys.ToList();
             cbBibleStudyNotebook.DataSource = notebooks.Keys.ToList();
 
-            cbSingleNotebook.SelectedItem = !string.IsNullOrEmpty(Settings.Default.NotebookName_Single) ?
-                Settings.Default.NotebookName_Single : SingleNotebookDefaultName;            
-            cbBibleNotebook.SelectedItem = !string.IsNullOrEmpty(Settings.Default.NotebookName_Bible) ?
-                Settings.Default.NotebookName_Bible : BibleNotebookDefaultName;            
-            cbBibleCommentsNotebook.SelectedItem = !string.IsNullOrEmpty(Settings.Default.NotebookName_BibleComments) ?
-                Settings.Default.NotebookName_BibleComments : BibleCommentsNotebookDefaultName;            
-            cbBibleStudyNotebook.SelectedItem = !string.IsNullOrEmpty(Settings.Default.NotebookName_BibleStudy) ?
+            string singleNotebookName = !string.IsNullOrEmpty(Settings.Default.NotebookName_Single) ?
+                Settings.Default.NotebookName_Single : SingleNotebookDefaultName;
+            if (cbSingleNotebook.Items.Contains(singleNotebookName))
+                cbSingleNotebook.SelectedItem = singleNotebookName;
+            else
+                chkCreateSingleNotebookFromTemplate.Checked = true;
+
+            string bibleNotebookName = !string.IsNullOrEmpty(Settings.Default.NotebookName_Bible) ?
+                Settings.Default.NotebookName_Bible : BibleNotebookDefaultName;
+            if (cbBibleNotebook.Items.Contains(bibleNotebookName))
+                cbBibleNotebook.SelectedItem = bibleNotebookName;
+            else
+                chkCreateBibleNotebookFromTemplate.Checked = true;
+
+            string bibleCommentsNotebookName = !string.IsNullOrEmpty(Settings.Default.NotebookName_BibleComments) ?
+                Settings.Default.NotebookName_BibleComments : BibleCommentsNotebookDefaultName;
+            if (cbBibleCommentsNotebook.Items.Contains(bibleCommentsNotebookName))
+                cbBibleCommentsNotebook.SelectedItem = bibleCommentsNotebookName;
+            else
+                chkCreateBibleCommentsNotebookFromTemplate.Checked = true;
+
+            string bibleStudyNotebookName = !string.IsNullOrEmpty(Settings.Default.NotebookName_BibleStudy) ?
                 Settings.Default.NotebookName_BibleStudy : BibleStudyNotebookDefaultName;
+            if (cbBibleStudyNotebook.Items.Contains(bibleStudyNotebookName))
+                cbBibleStudyNotebook.SelectedItem = bibleStudyNotebookName;
+            else
+                chkCreateBibleStudyNotebookFromTemplate.Checked = true;
+        }
+
+        private void SetNotebooksDefaultPaths()
+        {
+            // по дефолту пути такие
+            SingleNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
+            BibleNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
+            BibleCommentsNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
+            BibleStudyNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
         }
 
         private void PrepareFolderBrowser()
         {
-            string[] directories = Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                                        "*OneNote*", SearchOption.TopDirectoryOnly);
+            string myDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string[] directories = Directory.GetDirectories(myDocumentsPath, "*OneNote*", SearchOption.TopDirectoryOnly);
             if (directories.Length > 0)
                 folderBrowserDialog.SelectedPath = directories[0];
+            else
+                folderBrowserDialog.SelectedPath = myDocumentsPath;
+
 
             //folderBrowserDialog.RootFolder = Environment.SpecialFolder.MyDocuments;
 
@@ -275,6 +313,7 @@ namespace BibleConfigurator
             btnSingleNotebookParameters.Enabled = rbSingleNotebook.Checked;
             chkCreateSingleNotebookFromTemplate.Enabled = rbSingleNotebook.Checked;
             btnSingleNotebookParameters.Enabled = rbSingleNotebook.Checked;
+            btnSingleNotebookSetPath.Enabled = rbSingleNotebook.Checked;
 
             cbBibleNotebook.Enabled = rbMultiNotebook.Checked;
             cbBibleCommentsNotebook.Enabled = rbMultiNotebook.Checked;
@@ -282,67 +321,45 @@ namespace BibleConfigurator
             chkCreateBibleNotebookFromTemplate.Enabled = rbMultiNotebook.Checked;
             chkCreateBibleCommentsNotebookFromTemplate.Enabled = rbMultiNotebook.Checked;
             chkCreateBibleStudyNotebookFromTemplate.Enabled = rbMultiNotebook.Checked;
+            btnBibleNotebookSetPath.Enabled = rbMultiNotebook.Checked;
+            btnBibleCommentsNotebookSetPath.Enabled = rbMultiNotebook.Checked;
+            btnBibleStudyNotebookSetPath.Enabled = rbMultiNotebook.Checked;
+
+            if (rbSingleNotebook.Checked)
+            {
+                chkCreateSingleNotebookFromTemplate_CheckedChanged(this, null);
+            }
+            else
+            {
+                chkCreateBibleNotebookFromTemplate_CheckedChanged(this, null);
+                chkCreateBibleCommentsNotebookFromTemplate_CheckedChanged(this, null);
+                chkCreateBibleStudyNotebookFromTemplate_CheckedChanged(this, null);
+            }
         }
 
         private void chkCreateSingleNotebookFromTemplate_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkCreateSingleNotebookFromTemplate.Checked)
-            {
-                if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    SingleNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
-                }
-                else
-                    chkCreateSingleNotebookFromTemplate.Checked = false;
-            }
-
             cbSingleNotebook.Enabled = !chkCreateSingleNotebookFromTemplate.Checked;
             btnSingleNotebookParameters.Enabled = !chkCreateSingleNotebookFromTemplate.Checked;
+            btnSingleNotebookSetPath.Enabled = chkCreateSingleNotebookFromTemplate.Checked;
         }
 
         private void chkCreateBibleNotebookFromTemplate_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkCreateBibleNotebookFromTemplate.Checked)
-            {
-                if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    BibleNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
-                }
-                else
-                    chkCreateBibleNotebookFromTemplate.Checked = false;
-            }
-
             cbBibleNotebook.Enabled = !chkCreateBibleNotebookFromTemplate.Checked;
+            btnBibleNotebookSetPath.Enabled = chkCreateBibleNotebookFromTemplate.Checked;
         }
 
         private void chkCreateBibleCommentsNotebookFromTemplate_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkCreateBibleCommentsNotebookFromTemplate.Checked)
-            {
-                if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    BibleCommentsNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
-                }
-                else
-                    chkCreateBibleCommentsNotebookFromTemplate.Checked = false;
-            }
-
             cbBibleCommentsNotebook.Enabled = !chkCreateBibleCommentsNotebookFromTemplate.Checked;
+            btnBibleCommentsNotebookSetPath.Enabled = chkCreateBibleCommentsNotebookFromTemplate.Checked;
         }
 
         private void chkCreateBibleStudyNotebookFromTemplate_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkCreateBibleStudyNotebookFromTemplate.Checked)
-            {
-                if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    BibleStudyNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
-                }
-                else
-                    chkCreateBibleStudyNotebookFromTemplate.Checked = false;
-            }
-
             cbBibleStudyNotebook.Enabled = !chkCreateBibleStudyNotebookFromTemplate.Checked;
+            btnBibleStudyNotebookSetPath.Enabled = chkCreateBibleStudyNotebookFromTemplate.Checked;
         }
 
         private void btnSingleNotebookParameters_Click(object sender, EventArgs e)
@@ -358,6 +375,58 @@ namespace BibleConfigurator
             else
             {
                 Logger.LogMessage("Не указана записная книжка.");
+            }
+        }
+
+        private void btnSingleNotebookSetPath_Click(object sender, EventArgs e)
+        {
+            if (chkCreateSingleNotebookFromTemplate.Checked)
+            {
+                if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    SingleNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
+                }
+                else
+                    chkCreateSingleNotebookFromTemplate.Checked = false;
+            }
+        }
+
+        private void btnBibleNotebookSetPath_Click(object sender, EventArgs e)
+        {
+            if (chkCreateBibleNotebookFromTemplate.Checked)
+            {
+                if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    BibleNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
+                }
+                else
+                    chkCreateBibleNotebookFromTemplate.Checked = false;
+            }
+        }
+
+        private void btnBibleCommentsNotebookSetPath_Click(object sender, EventArgs e)
+        {
+            if (chkCreateBibleCommentsNotebookFromTemplate.Checked)
+            {
+                if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    BibleCommentsNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
+                }
+                else
+                    chkCreateBibleCommentsNotebookFromTemplate.Checked = false;
+            }
+        }
+
+        private void btnBibleStudyNotebookSetPath_Click(object sender, EventArgs e)
+        {
+            if (chkCreateBibleStudyNotebookFromTemplate.Checked)
+            {
+                if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    BibleStudyNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
+                }
+                else
+                    chkCreateBibleStudyNotebookFromTemplate.Checked = false;
             }
         }
     }
