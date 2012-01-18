@@ -48,6 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common.cs" />
+    <Compile Include="Consts.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -55,6 +57,7 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="NotebookChecker.cs" />
     <Compile Include="NotebookParametersForm.cs">
       <SubType>Form</SubType>
     </Compile>
