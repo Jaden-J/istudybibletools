@@ -39,9 +39,20 @@ namespace BibleConfigurator
         private string BibleCommentsNotebookFromTemplatePath { get; set; }
         private string BibleStudyNotebookFromTemplatePath { get; set; }
 
-        private enum NotebookType
+        public Dictionary<string, string> RenamedSectionGroups { get; set; }
+        public bool ToRenameSectionGroups { get; set; }
+
+        public enum NotebookType
         {
             Single,
+            Bible,
+            BibleComments,
+            BibleStudy
+        }
+
+        public enum SectionGroupType
+        {
+            None,
             Bible,
             BibleComments,
             BibleStudy
@@ -71,7 +82,14 @@ namespace BibleConfigurator
                 else
                 {
                     if (CheckNotebook((string)cbSingleNotebook.SelectedItem, NotebookType.Single))
+                    {
                         Settings.Default.NotebookName_Single = (string)cbSingleNotebook.SelectedItem;
+
+                        if (ToRenameSectionGroups)
+                        {
+                            RenameSectionGroupsForm((string)cbSingleNotebook.SelectedItem, RenamedSectionGroups);
+                        }
+                    }
                 }
             }
             else
@@ -131,6 +149,35 @@ namespace BibleConfigurator
             }   
         }
 
+        private void RenameSectionGroupsForm(string notebookName, Dictionary<string, string> renamedSectionGroups)
+        {
+            string notebookId = OneNoteUtils.GetNotebookId(_oneNoteApp, notebookName);
+
+            if (!string.IsNullOrEmpty(notebookId))
+            {
+                string xml;
+                XmlNamespaceManager xnm;
+                _oneNoteApp.GetHierarchy(notebookId, HierarchyScope.hsSections, out xml);
+                XDocument notebookDoc = OneNoteUtils.GetXDocument(xml, out xnm);
+
+                foreach (string sectionGroupId in renamedSectionGroups.Keys)
+                {
+                    XElement sectionGroup = notebookDoc.Root.XPathSelectElement(string.Format("one:SectionGroup[@ID='{0}']", sectionGroupId), xnm);
+
+                    if (sectionGroup != null)
+                    {
+                        sectionGroup.SetAttributeValue("name", renamedSectionGroups[sectionGroupId]);
+                    }
+                    else
+                        Logger.LogError(string.Format("Не найдена группа разделов '{0}'.", sectionGroupId));
+                }
+
+                _oneNoteApp.UpdateHierarchy(notebookDoc.ToString());
+            }
+            else
+                Logger.LogError(string.Format("Не найдена записная книжка '{0}'.", notebookName));
+        }
+
         private bool CheckNotebook(string notebookName, NotebookType notebookType)
         {
             string notebookId = OneNoteUtils.GetNotebookId(_oneNoteApp, notebookName);
@@ -161,6 +208,8 @@ namespace BibleConfigurator
                         }
                         //else
                         //    errorText = string.Format("", )
+
+                        return true;
                         break;
                 }                
             }
@@ -280,10 +329,7 @@ namespace BibleConfigurator
             if (directories.Length > 0)
                 folderBrowserDialog.SelectedPath = directories[0];
             else
-                folderBrowserDialog.SelectedPath = myDocumentsPath;
-
-
-            //folderBrowserDialog.RootFolder = Environment.SpecialFolder.MyDocuments;
+                folderBrowserDialog.SelectedPath = myDocumentsPath;            
 
             folderBrowserDialog.Description = "Укажите расположение записной книжки";
             folderBrowserDialog.ShowNewFolderButton = true;            
@@ -369,7 +415,11 @@ namespace BibleConfigurator
                 NotebookParametersForm notebookParametersForm = new NotebookParametersForm(_oneNoteApp, (string)cbSingleNotebook.SelectedItem);
                 if (notebookParametersForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    //либо переименовать, либо запомнить дефолтные
+                    if (notebookParametersForm.RenamedSectionGroups.Count > 0)
+                    {
+                        ToRenameSectionGroups = true;
+                        RenamedSectionGroups = notebookParametersForm.RenamedSectionGroups;
+                    }
                 }
             }
             else

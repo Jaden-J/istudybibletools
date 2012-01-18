@@ -24,8 +24,8 @@ namespace BibleConfigurator
         private Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
         private string _notebookName;
 
-        public Dictionary<string, string> OriginalSectionGroups { get; set; }
-        public Dictionary<string, string> RenamedSectionGroups { get; set; }
+        public Dictionary<MainForm.SectionGroupType, string> OriginalSectionGroups { get; set; }
+        public Dictionary<MainForm.SectionGroupType, string> RenamedSectionGroups { get; set; }
 
         public NotebookParametersForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, string notebookName)
         {
@@ -48,27 +48,35 @@ namespace BibleConfigurator
         private void NotebookParametersForm_Load(object sender, EventArgs e)
         {
             OriginalSectionGroups = GetAllSectionGroups();
-            RenamedSectionGroups = new Dictionary<string, string>();
+            RenamedSectionGroups = new Dictionary<MainForm.SectionGroupType, string>();
 
-            BindComboBox(cbBibleSection, OriginalSectionGroups.Keys.ToList(), !string.IsNullOrEmpty(Settings.Default.SectionGroupName_Bible) ?
-                Settings.Default.SectionGroupName_Bible : BibleSectionGroupDefaultName);
+            BindComboBox(cbBibleSection, OriginalSectionGroups.Values.ToList(), );
 
-            BindComboBox(cbBibleCommentsSection, OriginalSectionGroups.Keys.ToList(), !string.IsNullOrEmpty(Settings.Default.SectionGroupName_BibleComments) ?
-                Settings.Default.SectionGroupName_BibleComments : BibleCommentsSectionGroupDefaultName);
+            BindComboBox(cbBibleCommentsSection, OriginalSectionGroups.Values.ToList(), );
 
-            BindComboBox(cbBibleStudySection, OriginalSectionGroups.Keys.ToList(), !string.IsNullOrEmpty(Settings.Default.SectionGroupName_BibleStudy) ?
-                Settings.Default.SectionGroupName_BibleStudy : BibleStudySectionGroupDefaultName);
+            BindComboBox(cbBibleStudySection, OriginalSectionGroups.Values.ToList(), );
         }
 
         private void BindComboBox(ComboBox cb, List<string> dataSource, string selectedItem)
-        {
+        {   
             cb.DataSource = dataSource;
-            cb.SelectedItem = selectedItem;
+            if (!string.IsNullOrEmpty(selectedItem))
+                cb.SelectedItem = selectedItem;
         }
 
-        private Dictionary<string, string> GetAllSectionGroups()
+        private void BindComboBoxByOriginalSectionGroup(ComboBox cb, string selectedSectionGroupId, bool selectItem)
+        {            
+            object oldSelectedItem = cb.SelectedItem;
+            cb.DataSource = OriginalSectionGroups.Values.ToList();
+            if (selectItem)
+                cb.SelectedItem = OriginalSectionGroups[selectedSectionGroupId];
+            else
+                cb.SelectedItem = oldSelectedItem;
+        }
+
+        private Dictionary<MainForm.SectionGroupType, string> GetAllSectionGroups()
         {
-            Dictionary<string, string> result = new Dictionary<string, string>();
+            Dictionary<MainForm.SectionGroupType, string> result = new Dictionary<MainForm.SectionGroupType, string>();
 
             string notebookId = OneNoteUtils.GetNotebookId(_oneNoteApp, _notebookName);
 
@@ -84,7 +92,14 @@ namespace BibleConfigurator
                     string name = (string)sectionGroup.Attribute("name");
                     string id = (string)sectionGroup.Attribute("ID");
 
-                    result.Add(name, id);
+                    if (name == (!string.IsNullOrEmpty(Settings.Default.SectionGroupName_Bible) ? Settings.Default.SectionGroupName_Bible : BibleSectionGroupDefaultName))
+                        result.Add(MainForm.SectionGroupType.Bible, name);
+                    else if (name == (!string.IsNullOrEmpty(Settings.Default.SectionGroupName_BibleComments) ? Settings.Default.SectionGroupName_BibleComments : BibleCommentsSectionGroupDefaultName))
+                        result.Add(MainForm.SectionGroupType.BibleComments, name);
+                    else if (name == (!string.IsNullOrEmpty(Settings.Default.SectionGroupName_BibleStudy) ? Settings.Default.SectionGroupName_BibleStudy : BibleStudySectionGroupDefaultName))
+                        result.Add(MainForm.SectionGroupType.BibleStudy, name);
+                    else
+                        result.Add(MainForm.SectionGroupType.None);
                 }
             }
             else
@@ -112,33 +127,39 @@ namespace BibleConfigurator
             TryToRenameSectionGroup((string)cbBibleStudySection.SelectedItem);
         }
 
-        private void ChangeSectionGroupNameInAllComboBoxes(string sectionGroupNewName)
+        private void ChangeSectionGroupNameInAllComboBoxes(string sectionGroupId, string originalSectionGroupName)
         {
-            ChangeSectionGroupName(cbBibleSection, sectionGroupNewName);
-            ChangeSectionGroupName(cbBibleCommentsSection, sectionGroupNewName);
-            ChangeSectionGroupName(cbBibleStudySection, sectionGroupNewName);
+            ChangeSectionGroupName(cbBibleSection, sectionGroupId, originalSectionGroupName);
+            ChangeSectionGroupName(cbBibleCommentsSection, sectionGroupId, originalSectionGroupName);
+            ChangeSectionGroupName(cbBibleStudySection, sectionGroupId, originalSectionGroupName);
         }
 
-        private void ChangeSectionGroupName(ComboBox cb, string sectionGroupNewName)
-        {
-            BindComboBox(cb, OriginalSectionGroups.Keys.ToList(), 
-            cb.Items[cb.SelectedIndex] = sectionGroupNewName;
+        private void ChangeSectionGroupName(ComboBox cb, string sectionGroupId, string originalSectionGroupName)
+        {            
+            BindComboBoxByOriginalSectionGroup(cb, sectionGroupId, cb.SelectedItem == originalSectionGroupName);            
         }
 
         private void TryToRenameSectionGroup(string originalSectionGroupName)
         {
             string result = CallRenameSectionGroupForm(originalSectionGroupName);
             if (!string.IsNullOrEmpty(result))
-            {
-                string sectionGroupId = OriginalSectionGroups[originalSectionGroupName];
-
-                OriginalSectionGroups.Remove(originalSectionGroupName);
-                OriginalSectionGroups.
-                    [originalSectionGroupName] = result;
+            {                
+                string sectionGroupId = GetDictionaryKeyBaValue(OriginalSectionGroups, originalSectionGroupName);
+                OriginalSectionGroups[sectionGroupId] = result;
                 RenamedSectionGroups.Add(sectionGroupId, result);
-
-                ChangeSectionGroupNameInAllComboBoxes(result);                
+                ChangeSectionGroupNameInAllComboBoxes(sectionGroupId, originalSectionGroupName);                
             }
+        }
+
+        private string GetDictionaryKeyBaValue(Dictionary<string, string> dictionary, string value)
+        {
+            foreach (string key in dictionary.Keys)
+            {
+                if (dictionary[key] == value)
+                    return key;
+            }
+
+            return null;
         }
 
         private string CallRenameSectionGroupForm(string sectionGroupName)
