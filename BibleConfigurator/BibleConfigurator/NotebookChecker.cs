@@ -1,0 +1,124 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Xml.Linq;
+using System.Xml;
+using System.Xml.XPath;
+using Microsoft.Office.Interop.OneNote;
+using BibleCommon.Helpers;
+
+namespace BibleConfigurator
+{
+    public static class NotebookChecker
+    {
+        public static bool CheckNotebook(Application oneNoteApp, string notebookName, NotebookType notebookType)
+        {
+            string notebookId = OneNoteUtils.GetNotebookId(oneNoteApp, notebookName);
+            //string errorText = string.Empty;
+            bool result = false;
+
+            if (!string.IsNullOrEmpty(notebookId))
+            {
+                string xml;
+                XmlNamespaceManager xnm;
+                oneNoteApp.GetHierarchy(notebookId, HierarchyScope.hsSections, out xml);
+                XDocument notebookDoc = OneNoteUtils.GetXDocument(xml, out xnm);
+
+                switch (notebookType)
+                {
+                    case NotebookType.Single:
+                        result = ElementIsSingleNotebook(notebookDoc, xnm);
+                        break;
+                    case NotebookType.Bible:
+                        result = ElementIsBible(notebookDoc.Root, xnm);
+                        break;
+                    case NotebookType.BibleComments:
+                        result = ElementIsBibleComments(notebookDoc.Root, xnm);
+                        break;
+                    case NotebookType.BibleStudy:
+                        result = !(ElementIsBible(notebookDoc.Root, xnm) || ElementIsBibleComments(notebookDoc.Root, xnm));
+                        break;
+                }
+            }
+            else
+                Logger.LogError(string.Format("Не найдена записная книжка '{0}'.", notebookName));
+
+            if (!result)
+            {
+                Logger.LogError(string.Format("Указана неподходящая записная книжка '{0}'.", notebookName));
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool ElementIsSingleNotebook(XDocument notebookDoc, XmlNamespaceManager xnm)
+        {
+            List<XElement> sectionsGroups = notebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm).ToList();
+
+            if (sectionsGroups.Count == 3)
+            {
+                if ((ElementIsBible(sectionsGroups[0], xnm) || ElementIsBible(sectionsGroups[1], xnm) || ElementIsBible(sectionsGroups[2], xnm))
+                    && (ElementIsBibleComments(sectionsGroups[0], xnm) || ElementIsBibleComments(sectionsGroups[1], xnm) || ElementIsBibleComments(sectionsGroups[2], xnm)))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static bool ElementIsBible(XElement element, XmlNamespaceManager xnm)
+        {
+            XElement oldTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", Consts.OldTestamentName), xnm);
+
+            if (oldTestamentSectionGroup != null)
+            {
+                int oldTestamentSectionsCount = oldTestamentSectionGroup.XPathSelectElements("one:Section", xnm).Count();
+
+                if (oldTestamentSectionsCount == 39)
+                {
+                    XElement newTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", Consts.NewTestamentName), xnm);
+
+                    if (newTestamentSectionGroup != null)
+                    {
+                        int newTestamentSectionsCount = newTestamentSectionGroup.XPathSelectElements("one:Section", xnm).Count();
+
+                        if (newTestamentSectionsCount == 27)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private static bool ElementIsBibleComments(XElement element, XmlNamespaceManager xnm)
+        {
+            XElement oldTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", Consts.OldTestamentName), xnm);
+
+            if (oldTestamentSectionGroup != null)
+            {
+                int subSectionsCount = oldTestamentSectionGroup.XPathSelectElements("one:Section", xnm).Count();
+
+                if (subSectionsCount == 0)
+                {
+                    XElement newTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", Consts.NewTestamentName), xnm);
+
+                    if (newTestamentSectionGroup != null)
+                    {
+                        subSectionsCount = newTestamentSectionGroup.XPathSelectElements("one:Section", xnm).Count();
+
+                        if (subSectionsCount == 0)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+}
