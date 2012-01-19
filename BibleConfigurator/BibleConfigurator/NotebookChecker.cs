@@ -53,7 +53,7 @@ namespace BibleConfigurator
             return true;
         }
 
-        private static bool ElementIsSingleNotebook(XDocument notebookDoc, XmlNamespaceManager xnm)
+        public static bool ElementIsSingleNotebook(XDocument notebookDoc, XmlNamespaceManager xnm)
         {
             List<XElement> sectionsGroups = notebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm).ToList();
 
@@ -67,7 +67,7 @@ namespace BibleConfigurator
             return false;
         }
 
-        private static bool ElementIsBible(XElement element, XmlNamespaceManager xnm)
+        public static bool ElementIsBible(XElement element, XmlNamespaceManager xnm)
         {
             XElement oldTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", Consts.OldTestamentName), xnm);
 
@@ -94,7 +94,7 @@ namespace BibleConfigurator
             return false;
         }
 
-        private static bool ElementIsBibleComments(XElement element, XmlNamespaceManager xnm)
+        public static bool ElementIsBibleComments(XElement element, XmlNamespaceManager xnm)
         {
             XElement oldTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", Consts.OldTestamentName), xnm);
 

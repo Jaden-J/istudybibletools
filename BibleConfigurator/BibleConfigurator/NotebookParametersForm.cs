@@ -20,7 +20,7 @@ namespace BibleConfigurator
         private Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
         private string _notebookName;
 
-        public Dictionary<string, string> OriginalSectionGroups { get; set; }
+        public Dictionary<SectionGroupType, SectionGroupInfo> OriginalSectionGroups { get; set; }
         public Dictionary<string, string> RenamedSectionGroups { get; set; }
         public Dictionary<SectionGroupType, string> GroupedSectionGroups { get; set; }
         
@@ -48,39 +48,34 @@ namespace BibleConfigurator
 
         private void NotebookParametersForm_Load(object sender, EventArgs e)
         {
-            OriginalSectionGroups = GetAllSectionGroups();
             RenamedSectionGroups = new Dictionary<string, string>();
 
-            BindComboBox(cbBibleSection, OriginalSectionGroups.Values.ToList(), !string.IsNullOrEmpty(Settings.Default.SectionGroupName_Bible) 
-                ? Settings.Default.SectionGroupName_Bible : Consts.BibleSectionGroupDefaultName);                
+            try
+            {
+                OriginalSectionGroups = GetAllSectionGroups();               
 
-            BindComboBox(cbBibleCommentsSection, OriginalSectionGroups.Values.ToList(), !string.IsNullOrEmpty(Settings.Default.SectionGroupName_BibleComments)
-                ? Settings.Default.SectionGroupName_BibleComments : Consts.BibleCommentsSectionGroupDefaultName);
+                BindComboBox(cbBibleSection, OriginalSectionGroups[SectionGroupType.Bible]);
 
-            BindComboBox(cbBibleStudySection, OriginalSectionGroups.Values.ToList(), !string.IsNullOrEmpty(Settings.Default.SectionGroupName_BibleStudy)
-                ? Settings.Default.SectionGroupName_BibleStudy : Consts.BibleStudySectionGroupDefaultName);
+                BindComboBox(cbBibleCommentsSection, OriginalSectionGroups[SectionGroupType.BibleComments]);
+
+                BindComboBox(cbBibleStudySection, OriginalSectionGroups[SectionGroupType.BibleStudy]);
+            }
+            catch (InvalidNotebookException)
+            {
+                Logger.LogError("Указана неподходящая записная книжка.");
+                this.Close();
+            }
         }
 
-        private void BindComboBox(ComboBox cb, List<string> dataSource, string selectedItem)
-        {   
-            cb.DataSource = dataSource;
-            if (!string.IsNullOrEmpty(selectedItem))
-                cb.SelectedItem = selectedItem;
-        }
-
-        private void BindComboBoxByOriginalSectionGroup(ComboBox cb, string selectedSectionGroupId, bool selectItem)
-        {            
-            object oldSelectedItem = cb.SelectedItem;
-            cb.DataSource = OriginalSectionGroups.Values.ToList();
-            if (selectItem)
-                cb.SelectedItem = OriginalSectionGroups[selectedSectionGroupId];
-            else
-                cb.SelectedItem = oldSelectedItem;
-        }
-
-        private Dictionary<string, string> GetAllSectionGroups()
+        private void BindComboBox(ComboBox cb, SectionGroupInfo sectionGroupInfo)
         {
-            Dictionary<string, string> result = new Dictionary<string, string>();
+            cb.Items.Add(sectionGroupInfo.OriginalName);
+            cb.SelectedIndex = 0;
+        }  
+
+        private Dictionary<SectionGroupType, SectionGroupInfo> GetAllSectionGroups()
+        {
+            Dictionary<SectionGroupType, SectionGroupInfo> result = new Dictionary<SectionGroupType, SectionGroupInfo>();
 
             string notebookId = OneNoteUtils.GetNotebookId(_oneNoteApp, _notebookName);
 
@@ -96,8 +91,18 @@ namespace BibleConfigurator
                     string name = (string)sectionGroup.Attribute("name");
                     string id = (string)sectionGroup.Attribute("ID");
 
-                    result.Add(id, name);                  
+                    if (NotebookChecker.ElementIsBible(sectionGroup, xnm) && !result.ContainsKey(SectionGroupType.Bible))
+                        result.Add(SectionGroupType.Bible, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.Bible });
+                    else if (NotebookChecker.ElementIsBibleComments(sectionGroup, xnm) && !result.ContainsKey(SectionGroupType.BibleComments))
+                        result.Add(SectionGroupType.BibleComments, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.BibleComments });
+                    else if (!result.ContainsKey(SectionGroupType.BibleStudy))
+                        result.Add(SectionGroupType.BibleStudy, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.BibleStudy });
+                    else
+                        throw new InvalidNotebookException();
                 }
+
+                if (result.Count < 3)
+                    throw new InvalidNotebookException();
             }
             else
             {
@@ -111,53 +116,46 @@ namespace BibleConfigurator
 
         private void btnBibleSectionRename_Click(object sender, EventArgs e)
         {
-            TryToRenameSectionGroup((string)cbBibleSection.SelectedItem);        
+            TryToRenameSectionGroup(SectionGroupType.Bible, (string)cbBibleSection.SelectedItem);        
         }      
 
         private void btnBibleCommentsSectionRename_Click(object sender, EventArgs e)
         {
-            TryToRenameSectionGroup((string)cbBibleCommentsSection.SelectedItem);
+            TryToRenameSectionGroup(SectionGroupType.BibleComments, (string)cbBibleCommentsSection.SelectedItem);
         }
 
         private void btnBibleStudySectionRename_Click(object sender, EventArgs e)
         {
-            TryToRenameSectionGroup((string)cbBibleStudySection.SelectedItem);
+            TryToRenameSectionGroup(SectionGroupType.BibleStudy, (string)cbBibleStudySection.SelectedItem);
         }
 
-        private void ChangeSectionGroupNameInAllComboBoxes(string sectionGroupId, string originalSectionGroupName)
-        {
-            ChangeSectionGroupName(cbBibleSection, sectionGroupId, originalSectionGroupName);
-            ChangeSectionGroupName(cbBibleCommentsSection, sectionGroupId, originalSectionGroupName);
-            ChangeSectionGroupName(cbBibleStudySection, sectionGroupId, originalSectionGroupName);
-        }
-
-        private void ChangeSectionGroupName(ComboBox cb, string sectionGroupId, string originalSectionGroupName)
-        {            
-            BindComboBoxByOriginalSectionGroup(cb, sectionGroupId, (string)cb.SelectedItem == originalSectionGroupName);            
-        }
-
-        private void TryToRenameSectionGroup(string originalSectionGroupName)
+        private void TryToRenameSectionGroup(SectionGroupType sectionGroupType, string originalSectionGroupName)
         {
             string result = CallRenameSectionGroupForm(originalSectionGroupName);
             if (!string.IsNullOrEmpty(result))
-            {                
-                string sectionGroupId = GetDictionaryKeyBaValue(OriginalSectionGroups, originalSectionGroupName);
-                OriginalSectionGroups[sectionGroupId] = result;
-                RenamedSectionGroups.Add(sectionGroupId, result);
-                ChangeSectionGroupNameInAllComboBoxes(sectionGroupId, originalSectionGroupName);                
-            }
-        }
-
-        private string GetDictionaryKeyBaValue(Dictionary<string, string> dictionary, string value)
-        {
-            foreach (string key in dictionary.Keys)
             {
-                if (dictionary[key] == value)
-                    return key;
+                SectionGroupInfo sectionGroupInfo = OriginalSectionGroups[sectionGroupType];                
+                sectionGroupInfo.NewName = result;
+                RenamedSectionGroups.Add(sectionGroupInfo.Id, result);
+                ChangeSectionGroupNameInComboBox(sectionGroupType, result);                
             }
-
-            return null;
         }
+
+        private void ChangeSectionGroupNameInComboBox(SectionGroupType sectionGroupType, string result)
+        {
+            switch (sectionGroupType)
+            {
+                case SectionGroupType.Bible:
+                    cbBibleSection.Items[0] = result;
+                    break;
+                case SectionGroupType.BibleComments:
+                    cbBibleCommentsSection.Items[0] = result;
+                    break;
+                case SectionGroupType.BibleStudy:
+                    cbBibleStudySection.Items[0] = result;
+                    break;
+            }
+        }      
 
         private string CallRenameSectionGroupForm(string sectionGroupName)
         {

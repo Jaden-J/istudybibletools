@@ -71,12 +71,25 @@ namespace BibleConfigurator
                 }
                 else
                 {
-                    if (NotebookChecker.CheckNotebook(_oneNoteApp, (string)cbSingleNotebook.SelectedItem, NotebookType.Single))
+                    string notebookName = (string)cbSingleNotebook.SelectedItem;
+                    if (NotebookChecker.CheckNotebook(_oneNoteApp, notebookName, NotebookType.Single))
                     {
-                        Settings.Default.NotebookName_Single = (string)cbSingleNotebook.SelectedItem;
+                        Settings.Default.NotebookName_Single = notebookName;
 
-                        if (ToRenameSectionGroups)                        
-                            RenameSectionGroupsForm((string)cbSingleNotebook.SelectedItem, RenamedSectionGroups);                        
+                        if (ToRenameSectionGroups)
+                            RenameSectionGroupsForm(notebookName, RenamedSectionGroups);
+
+                        if (!_wasSearchedSectionGroupsInSingleNotebook)
+                        {
+                            try
+                            {
+                                SearchForCorrespondenceSectionGroups(notebookName);
+                            }
+                            catch (InvalidNotebookException)
+                            {
+                                Logger.LogError("Указана неподходящая записная книжка.");
+                            }
+                        }
                     }
                 }
             }
@@ -137,6 +150,51 @@ namespace BibleConfigurator
             }
             else
                 btnOK.Enabled = true;
+        }
+
+        private void SearchForCorrespondenceSectionGroups(string notebookName)
+        {
+            string notebookId = OneNoteUtils.GetNotebookId(_oneNoteApp, notebookName);
+
+            if (!string.IsNullOrEmpty(notebookId))
+            {
+                string xml;
+                XmlNamespaceManager xnm;
+                _oneNoteApp.GetHierarchy(notebookId, HierarchyScope.hsSections, out xml);
+                XDocument notebookDoc = OneNoteUtils.GetXDocument(xml, out xnm);
+
+                List<SectionGroupType> sectionGroups = new List<SectionGroupType>();
+
+                foreach (XElement sectionGroup in notebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm))
+                {
+                    string name = (string)sectionGroup.Attribute("name");
+
+                    if (NotebookChecker.ElementIsBible(sectionGroup, xnm) && !sectionGroups.Contains(SectionGroupType.Bible))
+                    {
+                        Settings.Default.SectionGroupName_Bible = name;
+                        sectionGroups.Add(SectionGroupType.Bible);
+                    }
+                    else if (NotebookChecker.ElementIsBibleComments(sectionGroup, xnm) && !sectionGroups.Contains(SectionGroupType.BibleComments))
+                    {
+                        Settings.Default.SectionGroupName_BibleComments = name;
+                        sectionGroups.Add(SectionGroupType.BibleComments);
+                    }
+                    else if (!sectionGroups.Contains(SectionGroupType.BibleStudy))
+                    {
+                        Settings.Default.SectionGroupName_BibleStudy = name;
+                        sectionGroups.Add(SectionGroupType.BibleStudy);
+                    }
+                    else
+                        throw new InvalidNotebookException();
+                }
+
+                if (sectionGroups.Count < 3)
+                    throw new InvalidNotebookException();
+            }
+            else
+            {
+                Logger.LogError(string.Format("Не найдена записная книжка '{0}'.", notebookName));
+            }
         }
 
         private void RenameSectionGroupsForm(string notebookName, Dictionary<string, string> renamedSectionGroups)
@@ -371,15 +429,12 @@ namespace BibleConfigurator
                             ToRenameSectionGroups = true;
                             RenamedSectionGroups = notebookParametersForm.RenamedSectionGroups;
                         }
+                        
+                        Settings.Default.SectionGroupName_Bible = notebookParametersForm.GroupedSectionGroups[SectionGroupType.Bible];                        
+                        Settings.Default.SectionGroupName_BibleComments = notebookParametersForm.GroupedSectionGroups[SectionGroupType.BibleComments];                        
+                        Settings.Default.SectionGroupName_BibleStudy = notebookParametersForm.GroupedSectionGroups[SectionGroupType.BibleStudy];
 
-                        if (notebookParametersForm.GroupedSectionGroups.ContainsKey(SectionGroupType.Bible))
-                            Settings.Default.SectionGroupName_Bible = notebookParametersForm.GroupedSectionGroups[SectionGroupType.Bible];
-
-                        if (notebookParametersForm.GroupedSectionGroups.ContainsKey(SectionGroupType.BibleComments))
-                            Settings.Default.SectionGroupName_BibleComments = notebookParametersForm.GroupedSectionGroups[SectionGroupType.BibleComments];
-
-                        if (notebookParametersForm.GroupedSectionGroups.ContainsKey(SectionGroupType.BibleStudy))
-                            Settings.Default.SectionGroupName_BibleStudy = notebookParametersForm.GroupedSectionGroups[SectionGroupType.BibleStudy];
+                        _wasSearchedSectionGroupsInSingleNotebook = true;  // нашли необходимые группы секций. 
                     }
                 }
             }
