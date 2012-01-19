@@ -23,6 +23,10 @@ namespace BibleConfigurator
 
         public const string BibleSectionGroupDefaultName = "Библия";
         public const string BibleCommentsSectionGroupDefaultName = "Комментарии к Библии";
-        public const string BibleStudySectionGroupDefaultName = "Изучение Библии";       
+        public const string BibleStudySectionGroupDefaultName = "Изучение Библии";
+
+        public const string PageNameDefaultBookOverview = "Общий обзор";
+        public const string PageNameNotes = "Заметки";
+        public const string PageNameDefaultDescription = "Комментарии";
     }
 }
