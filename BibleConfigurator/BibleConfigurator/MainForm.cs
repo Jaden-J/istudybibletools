@@ -17,10 +17,6 @@ using System.Diagnostics;
 using BibleCommon;
 using System.Threading;
 
-//todo: 
-// 1. сделать проверку на форме NotebookParametersForm, чтоб он давал в combobox-e выбирать только подходящие секции. Проверить переименование.
-// 2. при сохранении всего смотреть - вызывалась ли форма  NotebbokParametersForm  и если нет, то проходить и смотреть, какие секции подходят, чтоб их сохранить в настройки
-
 namespace BibleConfigurator
 {
     public partial class MainForm : Form
