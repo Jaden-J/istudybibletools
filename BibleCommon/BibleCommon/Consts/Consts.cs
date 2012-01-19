@@ -10,6 +10,25 @@ namespace BibleCommon.Consts
     {
         public static readonly string OneNoteXmlNs = "http://schemas.microsoft.com/office/onenote/2010/onenote";
         public static readonly string ToolsName = "IStudyBibleTools";
+        public static readonly string ConfigFileName = "settings.config";
+
+        public static readonly string DefaultNotebookNameBible = "Библия";
+        public static readonly string DefaultNotebookNameBibleComments = "Комментарии к Библии";
+        public static readonly string DefaultNotebookNameBibleStudy = "Изучение Библии";
+        public static readonly string DefaultPageNameDefaultBookOverview = "Общий обзор";
+        public static readonly string DefaultPageNameDefaultDescription = "Комментарии";
+        public static readonly string DefaultPageName_Notes = "Заметки";
+
+        public static readonly string ParameterName_NotebookNameBible = "NotebookName_Bible";
+        public static readonly string ParameterName_NotebookNameBibleComments = "NotebookName_BibleComments";
+        public static readonly string ParameterName_NotebookNameBibleStudy = "NotebookName_BibleStudy";
+        public static readonly string ParameterName_NotebookNameSingle = "NotebookName_Single";
+        public static readonly string ParameterName_SectionGroupNameBible = "SectionGroupName_Bible";
+        public static readonly string ParameterName_SectionGroupNameBibleComments = "SectionGroupName_BibleComments";
+        public static readonly string ParameterName_SectionGroupNameBibleStudy = "SectionGroupName_BibleStudy";
+        public static readonly string ParameterName_PageNameDefaultDescription = "PageName_DefaultDescription";
+        public static readonly string ParameterName_PageNameDefaultBookOverview = "PageName_DefaultBookOverview";
+        public static readonly string ParameterName_PageNamePageName_Notes = "PageName_Notes";
 
 
         public static readonly Dictionary<string, StringCollection> BookNames = new Dictionary<string, StringCollection>()
@@ -80,7 +99,7 @@ namespace BibleCommon.Consts
                 { "25. К Филимону", new StringCollection() { "флм", "филимон", "филимону", "к филимону" } },
                 { "26. К Евреям", new StringCollection() { "евр", "евреям", "к евреям" } },
                 { "27. Откровение", new StringCollection() { "откр", "отк", "откровен", "апок", "откровение", "апокалипсис" } }
-            };        
+            };
 
 
     }
