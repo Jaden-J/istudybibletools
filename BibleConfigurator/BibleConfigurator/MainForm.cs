@@ -141,8 +141,26 @@ namespace BibleConfigurator
 
             if (!Logger.WasErrorLogged)
             {
-                Close();
+                if (chkDefaultPageNameParameters.Checked)
+                {
+                    Settings.Default.PageName_DefaultBookOverview = Consts.PageNameDefaultBookOverview;
+                    Settings.Default.PageName_Notes = Consts.PageNameNotes;
+                    Settings.Default.PageName_DefaultDescription = Consts.PageNameDefaultDescription;
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(tbBookOverviewName.Text))
+                        Settings.Default.PageName_DefaultBookOverview = tbBookOverviewName.Text;
+
+                    if (!string.IsNullOrEmpty(tbNotesPageName.Text))
+                        Settings.Default.PageName_Notes = tbNotesPageName.Text;
+
+                    if (!string.IsNullOrEmpty(tbPageDescriptionName.Text))
+                        Settings.Default.PageName_DefaultDescription = tbPageDescriptionName.Text;
+                }
+
                 Settings.Default.Save();
+                Close();
             }
             else
                 btnOK.Enabled = true;
@@ -313,6 +331,10 @@ namespace BibleConfigurator
                 cbBibleStudyNotebook.SelectedItem = bibleStudyNotebookName;
             else
                 chkCreateBibleStudyNotebookFromTemplate.Checked = true;
+
+            tbBookOverviewName.Text = Settings.Default.PageName_DefaultBookOverview;
+            tbNotesPageName.Text = Settings.Default.PageName_Notes;
+            tbPageDescriptionName.Text = Settings.Default.PageName_DefaultDescription;
         }
 
         private void SetNotebooksDefaultPaths()
@@ -490,6 +512,13 @@ namespace BibleConfigurator
                 else
                     chkCreateBibleStudyNotebookFromTemplate.Checked = false;
             }
+        }
+
+        private void chkDefaultPageNameParameters_CheckedChanged(object sender, EventArgs e)
+        {
+            tbPageDescriptionName.Enabled = !chkDefaultPageNameParameters.Checked;
+            tbNotesPageName.Enabled = !chkDefaultPageNameParameters.Checked;
+            tbBookOverviewName.Enabled = !chkDefaultPageNameParameters.Checked;
         }
     }
 }
