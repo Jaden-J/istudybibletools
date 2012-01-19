@@ -13,6 +13,7 @@ namespace BibleCommon.Services
     public class SettingsManager
     {
         private static object _locker = new object();
+        private string _filePath;
 
         private static volatile SettingsManager _instance = null;
         public static SettingsManager Instance
@@ -34,9 +35,11 @@ namespace BibleCommon.Services
             }
         }
 
+        public string NotebookId_Single { get; private set; }
         public string NotebookId_Bible { get; private set; }
         public string NotebookId_BibleComments { get; private set; }
         public string NotebookId_BibleStudy { get; private set; }
+        public string NotebookName_Single { get; private set; }
         public string NotebookName_Bible { get; private set; }
         public string NotebookName_BibleComments { get; private set; }
         public string NotebookName_BibleStudy { get; private set; }
@@ -49,22 +52,79 @@ namespace BibleCommon.Services
 
         protected SettingsManager()
         {
-            this.NotebookName_Bible = Settings.Default.NotebookName_Bible;
-            this.NotebookName_BibleComments = Settings.Default.NotebookName_BibleComments;
-            this.NotebookName_BibleStudy = Settings.Default.NotebookName_BibleStudy;
+            string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Consts.Constants.ToolsName);
 
-            this.SectionGroupName_Bible = Settings.Default.SectionGroupName_Bible;
-            this.SectionGroupName_BibleComments = Settings.Default.SectionGroupName_BibleComments;
-            this.SectionGroupName_BibleStudy = Settings.Default.SectionGroupName_BibleStudy;
+            if (!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
 
-            this.PageName_DefaultBookOverview = Settings.Default.PageName_DefaultBookOverview;
-            this.PageName_DefaultDescription = Settings.Default.PageName_DefaultDescription;
-            this.PageName_Notes = Settings.Default.PageName_Notes;
+            _filePath = Path.Combine(directoryPath, Consts.Constants.ConfigFileName);
 
+            if (!File.Exists(_filePath))            
+                LoadDefaultSettings();                
+            else
+                LoadSettingsFromFile();
+
+            LoadNotebookIds();
+        }
+
+        private void LoadSettingsFromFile()
+        {
+            XDocument xdoc = XDocument.Load(_filePath);
+
+            this.NotebookName_Bible = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NotebookNameBible).Value;
+            this.NotebookName_BibleComments = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NotebookNameBibleComments).Value;
+            this.NotebookName_BibleStudy = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NotebookNameBible).Value;
+            this.NotebookName_Single = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NotebookNameSingle).Value;
+            this.SectionGroupName_Bible = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupNameBible).Value;
+            this.SectionGroupName_BibleComments = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupNameBibleComments).Value;
+            this.SectionGroupName_BibleStudy = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupNameBibleStudy).Value;
+            this.PageName_DefaultBookOverview = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameDefaultBookOverview).Value;
+            this.PageName_DefaultDescription = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameDefaultDescription).Value;
+            this.PageName_Notes = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNamePageName_Notes).Value;
+        }
+
+        private void LoadNotebookIds()
+        {
             Application oneNoteApp = new Application();
             this.NotebookId_Bible = GetNotebookId(oneNoteApp, this.NotebookName_Bible);
             this.NotebookId_BibleComments = GetNotebookId(oneNoteApp, this.NotebookName_BibleComments);
             this.NotebookId_BibleStudy = GetNotebookId(oneNoteApp, this.NotebookName_BibleStudy);
+        }
+
+        private void LoadDefaultSettings()
+        {
+            this.NotebookName_Single = string.Empty;
+            this.NotebookName_Bible = Consts.Constants.DefaultNotebookNameBible;
+            this.NotebookName_BibleComments = Consts.Constants.DefaultNotebookNameBibleComments;
+            this.NotebookName_BibleStudy = Consts.Constants.DefaultNotebookNameBibleStudy;
+
+            this.SectionGroupName_Bible = string.Empty;
+            this.SectionGroupName_BibleComments = string.Empty;
+            this.SectionGroupName_BibleStudy = string.Empty;
+
+            this.PageName_DefaultBookOverview = Consts.Constants.DefaultPageNameDefaultBookOverview;
+            this.PageName_DefaultDescription = Consts.Constants.DefaultPageNameDefaultDescription;
+            this.PageName_Notes = Consts.Constants.DefaultPageName_Notes;
+        }
+
+        public void SaveSettings()
+        {
+            // сохранять идентификаторы, и просто преолбразовывать при чтении их в имена (и зхаписные книжки, и группы разделов
+            using (FileStream fs = new FileStream(
+            XDocument xDoc = XDocument.Parse("<Settings></Settings>");
+            xDoc.Root.Add(new XElement(Consts.Constants.ParameterName_NotebookNameBible, this.NotebookName_Bible),
+                          new XElement(Consts.Constants.ParameterName_NotebookNameBibleComments, this.NotebookName_BibleComments),
+                          new XElement(Consts.Constants.ParameterName_NotebookNameBibleStudy, this.NotebookName_BibleStudy),
+                          new XElement(Consts.Constants.ParameterName_NotebookNameSingle, this.NotebookName_Single),
+                          new XElement(Consts.Constants.ParameterName_SectionGroupNameBible, this.SectionGroupName_Bible),
+                          new XElement(Consts.Constants.ParameterName_SectionGroupNameBibleComments, this.SectionGroupName_BibleComments),
+                          new XElement(Consts.Constants.ParameterName_SectionGroupNameBibleStudy, this.SectionGroupName_BibleStudy),
+                          new XElement(Consts.Constants.ParameterName_PageNameDefaultBookOverview, this.PageName_DefaultBookOverview),
+                          new XElement(Consts.Constants.ParameterName_PageNameDefaultDescription, this.PageName_DefaultDescription),
+                          new XElement(Consts.Constants.ParameterName_PageNamePageName_Notes, this.PageName_Notes)
+                          );
+            
+
         }
 
         private string GetNotebookId(Application oneNoteApp, string notebookName)
