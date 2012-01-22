@@ -12,9 +12,8 @@ namespace BibleConfigurator
 {
     public static class NotebookChecker
     {
-        public static bool CheckNotebook(Application oneNoteApp, string notebookName, NotebookType notebookType)
+        public static bool CheckNotebook(Application oneNoteApp, string notebookId, NotebookType notebookType)
         {
-            string notebookId = OneNoteUtils.GetNotebookId(oneNoteApp, notebookName);
             //string errorText = string.Empty;
             bool result = false;
 
@@ -41,16 +40,8 @@ namespace BibleConfigurator
                         break;
                 }
             }
-            else
-                Logger.LogError(string.Format("Не найдена записная книжка '{0}'.", notebookName));
 
-            if (!result)
-            {
-                Logger.LogError(string.Format("Указана неподходящая записная книжка '{0}'.", notebookName));
-                return false;
-            }
-
-            return true;
+            return result;
         }
 
         public static bool ElementIsSingleNotebook(XDocument notebookDoc, XmlNamespaceManager xnm)

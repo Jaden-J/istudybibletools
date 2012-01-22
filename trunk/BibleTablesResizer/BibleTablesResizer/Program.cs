@@ -18,14 +18,14 @@ namespace BibleTablesResizer
     {
         static void Main(string[] args)
         {
-            Logger.Init();
+            Logger.Init("BibleTablesResizer");
 
             Logger.LogMessage("Старт обработки всей записной книжки");
 
             Application oneNoteApp = new Application();
 
-            string notebookName = SettingsManager.Instance.NotebookName;
-            string currentNotebookId = GetBibleNotebookId(oneNoteApp, notebookName);
+            string notebookName = SettingsManager.Instance.NotebookId_Single;
+            string currentNotebookId = GetBibleNotebookName(oneNoteApp, notebookName);
 
             if (!string.IsNullOrEmpty(currentNotebookId))
             {
@@ -52,16 +52,16 @@ namespace BibleTablesResizer
             }
         }
 
-        private static string GetBibleNotebookId(Application oneNoteApp, string notebookName)
+        private static string GetBibleNotebookName(Application oneNoteApp, string notebookName)
         {
             string xml;
             XmlNamespaceManager xnm;
             oneNoteApp.GetHierarchy(null, HierarchyScope.hsNotebooks, out xml);
-            XDocument doc = Utils.GetXDocument(xml, out xnm);
-            XElement bibleNotebook = doc.Root.XPathSelectElement(string.Format("one:Notebook[@name='{0}']", notebookName), xnm);
+            XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
+            XElement bibleNotebook = doc.Root.XPathSelectElement(string.Format("one:Notebook[@ID='{0}']", notebookName), xnm);
             if (bibleNotebook != null)
             {
-                return (string)bibleNotebook.Attribute("ID");
+                return (string)bibleNotebook.Attribute("name");
             }
 
             return null;

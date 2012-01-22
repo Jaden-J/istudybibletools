@@ -19,13 +19,12 @@ namespace BibleCommon.Consts
         public static readonly string DefaultPageNameDefaultDescription = "Комментарии";
         public static readonly string DefaultPageName_Notes = "Заметки";
 
-        public static readonly string ParameterName_NotebookNameBible = "NotebookName_Bible";
-        public static readonly string ParameterName_NotebookNameBibleComments = "NotebookName_BibleComments";
-        public static readonly string ParameterName_NotebookNameBibleStudy = "NotebookName_BibleStudy";
-        public static readonly string ParameterName_NotebookNameSingle = "NotebookName_Single";
-        public static readonly string ParameterName_SectionGroupNameBible = "SectionGroupName_Bible";
-        public static readonly string ParameterName_SectionGroupNameBibleComments = "SectionGroupName_BibleComments";
-        public static readonly string ParameterName_SectionGroupNameBibleStudy = "SectionGroupName_BibleStudy";
+        public static readonly string ParameterName_NotebookIdBible = "NotebookId_Bible";
+        public static readonly string ParameterName_NotebookIdBibleComments = "NotebookId_BibleComments";
+        public static readonly string ParameterName_NotebookIdBibleStudy = "NotebookId_BibleStudy";        
+        public static readonly string ParameterName_SectionGroupIdBible = "SectionGroupId_Bible";
+        public static readonly string ParameterName_SectionGroupIdBibleComments = "SectionGroupId_BibleComments";
+        public static readonly string ParameterName_SectionGroupIdBibleStudy = "SectionGroupId_BibleStudy";
         public static readonly string ParameterName_PageNameDefaultDescription = "PageName_DefaultDescription";
         public static readonly string ParameterName_PageNameDefaultBookOverview = "PageName_DefaultBookOverview";
         public static readonly string ParameterName_PageNamePageName_Notes = "PageName_Notes";

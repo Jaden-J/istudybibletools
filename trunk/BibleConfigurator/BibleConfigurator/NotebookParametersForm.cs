@@ -18,26 +18,27 @@ namespace BibleConfigurator
     public partial class NotebookParametersForm : Form
     {
         private Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
-        private string _notebookName;
+        private string _notebookId;
 
         public Dictionary<SectionGroupType, SectionGroupInfo> OriginalSectionGroups { get; set; }
         public Dictionary<string, string> RenamedSectionGroups { get; set; }
         public Dictionary<SectionGroupType, string> GroupedSectionGroups { get; set; }
-        
 
-        public NotebookParametersForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, string notebookName)
+        private bool _firstLoad = true;
+
+        public NotebookParametersForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, string notebookId)
         {
             _oneNoteApp = oneNoteApp;
-            _notebookName = notebookName;
+            _notebookId = notebookId;
             InitializeComponent();
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
             GroupedSectionGroups = new Dictionary<SectionGroupType, string>();
-            GroupedSectionGroups.Add(SectionGroupType.Bible, (string)cbBibleSection.SelectedItem);
-            GroupedSectionGroups.Add(SectionGroupType.BibleComments, (string)cbBibleCommentsSection.SelectedItem);
-            GroupedSectionGroups.Add(SectionGroupType.BibleStudy, (string)cbBibleStudySection.SelectedItem);
+            GroupedSectionGroups.Add(SectionGroupType.Bible, OriginalSectionGroups[SectionGroupType.Bible].Id);
+            GroupedSectionGroups.Add(SectionGroupType.BibleComments, OriginalSectionGroups[SectionGroupType.BibleComments].Id);
+            GroupedSectionGroups.Add(SectionGroupType.BibleStudy, OriginalSectionGroups[SectionGroupType.BibleStudy].Id);
         }
 
         private void NotebookParametersForm_KeyDown(object sender, KeyEventArgs e)
@@ -48,22 +49,27 @@ namespace BibleConfigurator
 
         private void NotebookParametersForm_Load(object sender, EventArgs e)
         {
-            RenamedSectionGroups = new Dictionary<string, string>();
-
-            try
+            if (_firstLoad)
             {
-                OriginalSectionGroups = GetAllSectionGroups();               
+                RenamedSectionGroups = new Dictionary<string, string>();
 
-                BindComboBox(cbBibleSection, OriginalSectionGroups[SectionGroupType.Bible]);
+                try
+                {
+                    OriginalSectionGroups = GetAllSectionGroups();
 
-                BindComboBox(cbBibleCommentsSection, OriginalSectionGroups[SectionGroupType.BibleComments]);
+                    BindComboBox(cbBibleSection, OriginalSectionGroups[SectionGroupType.Bible]);
 
-                BindComboBox(cbBibleStudySection, OriginalSectionGroups[SectionGroupType.BibleStudy]);
-            }
-            catch (InvalidNotebookException)
-            {
-                Logger.LogError("Указана неподходящая записная книжка.");
-                this.Close();
+                    BindComboBox(cbBibleCommentsSection, OriginalSectionGroups[SectionGroupType.BibleComments]);
+
+                    BindComboBox(cbBibleStudySection, OriginalSectionGroups[SectionGroupType.BibleStudy]);
+
+                    _firstLoad = false;
+                }
+                catch (InvalidNotebookException)
+                {
+                    Logger.LogError("Указана неподходящая записная книжка.");
+                    this.Close();
+                }
             }
         }
 
@@ -71,45 +77,34 @@ namespace BibleConfigurator
         {
             cb.Items.Add(sectionGroupInfo.OriginalName);
             cb.SelectedIndex = 0;
-        }  
+        }
 
         private Dictionary<SectionGroupType, SectionGroupInfo> GetAllSectionGroups()
         {
             Dictionary<SectionGroupType, SectionGroupInfo> result = new Dictionary<SectionGroupType, SectionGroupInfo>();
 
-            string notebookId = OneNoteUtils.GetNotebookId(_oneNoteApp, _notebookName);
+            string xml;
+            XmlNamespaceManager xnm;
+            _oneNoteApp.GetHierarchy(_notebookId, HierarchyScope.hsSections, out xml);
+            XDocument notebookDoc = OneNoteUtils.GetXDocument(xml, out xnm);
 
-            if (!string.IsNullOrEmpty(notebookId))
+            foreach (XElement sectionGroup in notebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm))
             {
-                string xml;
-                XmlNamespaceManager xnm;
-                _oneNoteApp.GetHierarchy(notebookId, HierarchyScope.hsSections, out xml);
-                XDocument notebookDoc = OneNoteUtils.GetXDocument(xml, out xnm);
+                string name = (string)sectionGroup.Attribute("name");
+                string id = (string)sectionGroup.Attribute("ID");
 
-                foreach (XElement sectionGroup in notebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm))
-                {
-                    string name = (string)sectionGroup.Attribute("name");
-                    string id = (string)sectionGroup.Attribute("ID");
-
-                    if (NotebookChecker.ElementIsBible(sectionGroup, xnm) && !result.ContainsKey(SectionGroupType.Bible))
-                        result.Add(SectionGroupType.Bible, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.Bible });
-                    else if (NotebookChecker.ElementIsBibleComments(sectionGroup, xnm) && !result.ContainsKey(SectionGroupType.BibleComments))
-                        result.Add(SectionGroupType.BibleComments, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.BibleComments });
-                    else if (!result.ContainsKey(SectionGroupType.BibleStudy))
-                        result.Add(SectionGroupType.BibleStudy, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.BibleStudy });
-                    else
-                        throw new InvalidNotebookException();
-                }
-
-                if (result.Count < 3)
+                if (NotebookChecker.ElementIsBible(sectionGroup, xnm) && !result.ContainsKey(SectionGroupType.Bible))
+                    result.Add(SectionGroupType.Bible, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.Bible });
+                else if (NotebookChecker.ElementIsBibleComments(sectionGroup, xnm) && !result.ContainsKey(SectionGroupType.BibleComments))
+                    result.Add(SectionGroupType.BibleComments, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.BibleComments });
+                else if (!result.ContainsKey(SectionGroupType.BibleStudy))
+                    result.Add(SectionGroupType.BibleStudy, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.BibleStudy });
+                else
                     throw new InvalidNotebookException();
             }
-            else
-            {
-                Logger.LogError(string.Format("Не найдена записная книжка '{0}'.", _notebookName));
-                this.DialogResult = System.Windows.Forms.DialogResult.None;
-                Close();
-            }
+
+            if (result.Count < 3)
+                throw new InvalidNotebookException();
 
             return result;
         }
@@ -136,7 +131,12 @@ namespace BibleConfigurator
             {
                 SectionGroupInfo sectionGroupInfo = OriginalSectionGroups[sectionGroupType];                
                 sectionGroupInfo.NewName = result;
-                RenamedSectionGroups.Add(sectionGroupInfo.Id, result);
+
+                if (!RenamedSectionGroups.ContainsKey(sectionGroupInfo.Id))
+                    RenamedSectionGroups.Add(sectionGroupInfo.Id, result);
+                else
+                    RenamedSectionGroups[sectionGroupInfo.Id] = result;
+
                 ChangeSectionGroupNameInComboBox(sectionGroupType, result);                
             }
         }
