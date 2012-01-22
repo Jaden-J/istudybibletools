@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tbcMain = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.btnBibleStudyNotebookSetPath = new System.Windows.Forms.Button();
             this.btnBibleCommentsNotebookSetPath = new System.Windows.Forms.Button();
@@ -51,6 +51,7 @@
             this.rbMultiNotebook = new System.Windows.Forms.RadioButton();
             this.rbSingleNotebook = new System.Windows.Forms.RadioButton();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.chkDefaultPageNameParameters = new System.Windows.Forms.CheckBox();
             this.tbNotesPageName = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.tbBookOverviewName = new System.Windows.Forms.TextBox();
@@ -58,13 +59,14 @@
             this.tbPageDescriptionName = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.button1 = new System.Windows.Forms.Button();
             this.btnResizeBibleTables = new System.Windows.Forms.Button();
             this.btnRelinkComments = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.button1 = new System.Windows.Forms.Button();
-            this.chkDefaultPageNameParameters = new System.Windows.Forms.CheckBox();
-            this.tabControl1.SuspendLayout();
+            this.pbLoadParameters = new System.Windows.Forms.ProgressBar();
+            this.lblCreateNotebookDescription = new System.Windows.Forms.Label();
+            this.tbcMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
@@ -73,17 +75,17 @@
             this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tabControl1
+            // tbcMain
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(533, 310);
-            this.tabControl1.TabIndex = 16;
+            this.tbcMain.Controls.Add(this.tabPage1);
+            this.tbcMain.Controls.Add(this.tabPage2);
+            this.tbcMain.Controls.Add(this.tabPage3);
+            this.tbcMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbcMain.Location = new System.Drawing.Point(0, 0);
+            this.tbcMain.Name = "tbcMain";
+            this.tbcMain.SelectedIndex = 0;
+            this.tbcMain.Size = new System.Drawing.Size(533, 310);
+            this.tbcMain.TabIndex = 16;
             // 
             // tabPage1
             // 
@@ -320,6 +322,17 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Параметры программы";
             // 
+            // chkDefaultPageNameParameters
+            // 
+            this.chkDefaultPageNameParameters.AutoSize = true;
+            this.chkDefaultPageNameParameters.Location = new System.Drawing.Point(16, 171);
+            this.chkDefaultPageNameParameters.Name = "chkDefaultPageNameParameters";
+            this.chkDefaultPageNameParameters.Size = new System.Drawing.Size(223, 17);
+            this.chkDefaultPageNameParameters.TabIndex = 6;
+            this.chkDefaultPageNameParameters.Text = "Использовать значения по умолчанию";
+            this.chkDefaultPageNameParameters.UseVisualStyleBackColor = true;
+            this.chkDefaultPageNameParameters.CheckedChanged += new System.EventHandler(this.chkDefaultPageNameParameters_CheckedChanged);
+            // 
             // tbNotesPageName
             // 
             this.tbNotesPageName.Location = new System.Drawing.Point(16, 129);
@@ -380,6 +393,16 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Дополнительные утилиты";
             // 
+            // button1
+            // 
+            this.button1.Enabled = false;
+            this.button1.Location = new System.Drawing.Point(13, 93);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(230, 23);
+            this.button1.TabIndex = 2;
+            this.button1.Text = "Сделать бэкап всех записных книжек";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // btnResizeBibleTables
             // 
             this.btnResizeBibleTables.Enabled = false;
@@ -413,41 +436,40 @@
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.tabControl1);
+            this.splitContainer1.Panel1.Controls.Add(this.tbcMain);
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.lblCreateNotebookDescription);
+            this.splitContainer1.Panel2.Controls.Add(this.pbLoadParameters);
             this.splitContainer1.Panel2.Controls.Add(this.btnOK);
             this.splitContainer1.Size = new System.Drawing.Size(533, 365);
             this.splitContainer1.SplitterDistance = 310;
             this.splitContainer1.TabIndex = 17;
             // 
-            // button1
+            // pbLoadParameters
             // 
-            this.button1.Enabled = false;
-            this.button1.Location = new System.Drawing.Point(13, 93);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(230, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Сделать бэкап всех записных книжек";
-            this.button1.UseVisualStyleBackColor = true;
+            this.pbLoadParameters.Location = new System.Drawing.Point(12, 16);
+            this.pbLoadParameters.Name = "pbLoadParameters";
+            this.pbLoadParameters.Size = new System.Drawing.Size(423, 23);
+            this.pbLoadParameters.Step = 3;
+            this.pbLoadParameters.TabIndex = 17;
+            this.pbLoadParameters.Visible = false;
             // 
-            // chkDefaultPageNameParameters
+            // lblCreateNotebookDescription
             // 
-            this.chkDefaultPageNameParameters.AutoSize = true;
-            this.chkDefaultPageNameParameters.Location = new System.Drawing.Point(16, 171);
-            this.chkDefaultPageNameParameters.Name = "chkDefaultPageNameParameters";
-            this.chkDefaultPageNameParameters.Size = new System.Drawing.Size(223, 17);
-            this.chkDefaultPageNameParameters.TabIndex = 6;
-            this.chkDefaultPageNameParameters.Text = "Использовать значения по умолчанию";
-            this.chkDefaultPageNameParameters.UseVisualStyleBackColor = true;
-            this.chkDefaultPageNameParameters.CheckedChanged += new System.EventHandler(this.chkDefaultPageNameParameters_CheckedChanged);
+            this.lblCreateNotebookDescription.AutoSize = true;
+            this.lblCreateNotebookDescription.Location = new System.Drawing.Point(12, 0);
+            this.lblCreateNotebookDescription.Name = "lblCreateNotebookDescription";
+            this.lblCreateNotebookDescription.Size = new System.Drawing.Size(0, 13);
+            this.lblCreateNotebookDescription.TabIndex = 18;
             // 
             // MainForm
             // 
@@ -460,8 +482,9 @@
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Укажите параметры программы";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
-            this.tabControl1.ResumeLayout(false);
+            this.tbcMain.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
@@ -469,6 +492,7 @@
             this.tabPage3.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.Panel2.PerformLayout();
             this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -477,7 +501,7 @@
         #endregion
 
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl tbcMain;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.Button btnSingleNotebookParameters;
         private System.Windows.Forms.Label label4;
@@ -512,6 +536,8 @@
         private System.Windows.Forms.Button btnSingleNotebookSetPath;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.CheckBox chkDefaultPageNameParameters;
+        private System.Windows.Forms.ProgressBar pbLoadParameters;
+        private System.Windows.Forms.Label lblCreateNotebookDescription;
 
     }
 }

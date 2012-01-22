@@ -31,4 +31,8 @@ namespace BibleConfigurator
     public class InvalidNotebookException: Exception
     {
     }
+
+    public class LoadParametersException : Exception
+    {
+    }
 }

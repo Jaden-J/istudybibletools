@@ -153,8 +153,8 @@ namespace BibleCommon.Services
 
             XElement targetSection = document.Root.XPathSelectElement(
                 string.Format("{0}one:SectionGroup/one:Section[@name='{1}']",
-                    !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupName_Bible)
-                        ? string.Format("one:SectionGroup[@name='{0}']/", SettingsManager.Instance.SectionGroupName_Bible) 
+                    !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_Bible)
+                        ? string.Format("one:SectionGroup[@ID='{0}']/", SettingsManager.Instance.SectionGroupId_Bible) 
                         : string.Empty,
                     vp.BookName), 
                 xnm);

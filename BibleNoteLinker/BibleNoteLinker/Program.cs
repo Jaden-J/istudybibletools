@@ -87,11 +87,11 @@ namespace BibleNoteLinker
                     Logger.LogMessage("Старт обработки всей записной книжки");
 
                     if (userArgs.DeleteNotes)
-                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupName_Bible, userArgs);
+                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, userArgs);
                     else
                     {
-                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, SettingsManager.Instance.SectionGroupName_BibleComments, userArgs);
-                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleStudy, SettingsManager.Instance.SectionGroupName_BibleStudy, userArgs);
+                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, SettingsManager.Instance.SectionGroupId_BibleComments, userArgs);
+                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleStudy, SettingsManager.Instance.SectionGroupId_BibleStudy, userArgs);
                     }
                 }
                 else
@@ -145,7 +145,7 @@ namespace BibleNoteLinker
             }
         }
 
-        private static void ProcessNotebook(Application oneNoteApp, string notebookId, string sectionGroupName, Args userArgs)
+        private static void ProcessNotebook(Application oneNoteApp, string notebookId, string sectionGroupId, Args userArgs)
         {
             Logger.LogMessage("Обработка записной книжки: '{0}'", OneNoteUtils.GetHierarchyElementName(oneNoteApp, notebookId));  // чтобы точно убедиться
 
@@ -155,28 +155,28 @@ namespace BibleNoteLinker
             XDocument notebookDoc = OneNoteUtils.GetXDocument(hierarchyXml, out xnm);
 
             Logger.MoveLevel(1);
-            ProcessRootSectionGroup(oneNoteApp, notebookId, notebookDoc, sectionGroupName, xnm, userArgs.AnalyzeDepth, userArgs.Force, userArgs.DeleteNotes);
+            ProcessRootSectionGroup(oneNoteApp, notebookId, notebookDoc, sectionGroupId, xnm, userArgs.AnalyzeDepth, userArgs.Force, userArgs.DeleteNotes);
             Logger.MoveLevel(-1);
         }
 
-        private static void ProcessRootSectionGroup(Application oneNoteApp, string notebookId, XDocument doc, string sectionGroupName,
+        private static void ProcessRootSectionGroup(Application oneNoteApp, string notebookId, XDocument doc, string sectionGroupId,
             XmlNamespaceManager xnm, NoteLinkManager.AnalyzeDepth linkDepth, bool force, bool deleteNotes)
         {
-            XElement sectionGroup = string.IsNullOrEmpty(sectionGroupName) 
+            XElement sectionGroup = string.IsNullOrEmpty(sectionGroupId) 
                                         ? doc.Root 
                                         : doc.Root.XPathSelectElement(
-                                                string.Format("one:SectionGroup[@name='{0}']", sectionGroupName), xnm);                        
+                                                string.Format("one:SectionGroup[@ID='{0}']", sectionGroupId), xnm);                        
 
             if (sectionGroup != null)
-                ProcessSectionGroup(sectionGroup, sectionGroupName, oneNoteApp, notebookId, xnm, linkDepth, force, deleteNotes);
+                ProcessSectionGroup(sectionGroup, sectionGroupId, oneNoteApp, notebookId, xnm, linkDepth, force, deleteNotes);
             else
-                Logger.LogError("Не удаётся найти группу секций '{0}'", sectionGroupName);
+                Logger.LogError("Не удаётся найти группу секций '{0}'", sectionGroupId);
         }
 
-        private static void ProcessSectionGroup(XElement sectionGroup, string sectionGroupName,
+        private static void ProcessSectionGroup(XElement sectionGroup, string sectionGroupId,
             Application oneNoteApp, string notebookId, XmlNamespaceManager xnm, NoteLinkManager.AnalyzeDepth linkDepth, bool force, bool deleteNotes)
         {
-            string sectionGroupId = (string)sectionGroup.Attribute("ID");
+            string sectionGroupName = (string)sectionGroup.Attribute("name");
 
             if (!string.IsNullOrEmpty(sectionGroupName))
             {

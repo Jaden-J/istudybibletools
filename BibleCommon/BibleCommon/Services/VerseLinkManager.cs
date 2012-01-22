@@ -54,7 +54,7 @@ namespace BibleCommon.Services
             XDocument commentsDocument = OneNoteUtils.GetXDocument(commentsNotebookContentXml, out xnm);
 
             XElement currentSection = bibleDocument.Root.XPathSelectElement(string.Format("{0}one:SectionGroup/one:Section[@ID='{1}']",
-                !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupName_Bible) ? "one:SectionGroup/" : string.Empty, currentSectionId), xnm);
+                !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_Bible) ? "one:SectionGroup/" : string.Empty, currentSectionId), xnm);
 
             if (currentSection != null && currentSection.Parent != null && currentSection.Parent.Parent != null)
             {
@@ -63,8 +63,8 @@ namespace BibleCommon.Services
 
                 XElement targetParentSectionGroup = commentsDocument.Root.XPathSelectElement(
                         string.Format("{0}one:SectionGroup[@name='{1}']",                    
-                            !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupName_BibleComments) 
-                                ? string.Format("one:SectionGroup[@name='{0}']/", SettingsManager.Instance.SectionGroupName_BibleComments)
+                            !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_BibleComments) 
+                                ? string.Format("one:SectionGroup[@ID='{0}']/", SettingsManager.Instance.SectionGroupId_BibleComments)
                                 : string.Empty,
                             sectionGroupName), 
                         xnm);                                        // Изучение Библии/Новый Завет
