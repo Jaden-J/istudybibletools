@@ -22,7 +22,7 @@ namespace BibleTablesResizer
                 XDocument notePageDocument;
                 XmlNamespaceManager xnm;
                 oneNoteApp.GetPageContent(pageId, out pageContentXml);
-                notePageDocument = Utils.GetXDocument(pageContentXml, out xnm);
+                notePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
 
                 XElement columns = notePageDocument.Root.XPathSelectElement("//one:Table/one:Columns", xnm);
                 if (columns != null)

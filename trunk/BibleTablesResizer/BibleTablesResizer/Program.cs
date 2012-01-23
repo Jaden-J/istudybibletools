@@ -24,23 +24,23 @@ namespace BibleTablesResizer
 
             Application oneNoteApp = new Application();
 
-            string notebookName = SettingsManager.Instance.NotebookId_Single;
-            string currentNotebookId = GetBibleNotebookName(oneNoteApp, notebookName);
+            string notebookId = SettingsManager.Instance.NotebookId_Bible;
+            string notebookName = OneNoteUtils.GetNotebookName(oneNoteApp, notebookId);
 
-            if (!string.IsNullOrEmpty(currentNotebookId))
+            if (!string.IsNullOrEmpty(notebookName))
             {
-                Logger.LogMessage("Имя записной книжки: {0}", Utils.GetHierarchyElementName(oneNoteApp, currentNotebookId));  // чтобы точно убедиться
+                Logger.LogMessage("Имя записной книжки: {0}", OneNoteUtils.GetHierarchyElementName(oneNoteApp, notebookId));  // чтобы точно убедиться
 
                 string hierarchyXml;
-                oneNoteApp.GetHierarchy(currentNotebookId, HierarchyScope.hsPages, out hierarchyXml);
+                oneNoteApp.GetHierarchy(notebookId, HierarchyScope.hsPages, out hierarchyXml);
                 XmlNamespaceManager xnm;
-                XDocument notebookDoc = Utils.GetXDocument(hierarchyXml, out xnm);
+                XDocument notebookDoc = OneNoteUtils.GetXDocument(hierarchyXml, out xnm);
 
-                ProcessRootSectionGroup(oneNoteApp, currentNotebookId, notebookDoc, SettingsManager.Instance.BibleSectionGroupName, xnm);
+                ProcessRootSectionGroup(oneNoteApp, notebookId, notebookDoc, SettingsManager.Instance.SectionGroupId_Bible, xnm);
             }
             else
             {
-                Logger.LogError("Не найдено записной книжки");
+                Logger.LogError(string.Format("Не найдено записной книжки '{0}'", notebookName));
             }
 
             Logger.Done();
@@ -67,15 +67,15 @@ namespace BibleTablesResizer
             return null;
         }
 
-        private static void ProcessRootSectionGroup(Application oneNoteApp, string notebookId, XDocument doc, string sectionGroupName, XmlNamespaceManager xnm)
+        private static void ProcessRootSectionGroup(Application oneNoteApp, string notebookId, XDocument doc, string sectionGroupId, XmlNamespaceManager xnm)
         {
             XElement sectionGroup = doc.Root.XPathSelectElement(
-                            string.Format("one:SectionGroup[@name='{0}']", sectionGroupName), xnm);
+                            string.Format("one:SectionGroup[@ID='{0}']", sectionGroupId), xnm);
 
             if (sectionGroup != null)
                 ProcessSectionGroup(sectionGroup, oneNoteApp, notebookId, xnm);
             else
-                Logger.LogError("Не удаётся найти группу секций '{0}'", sectionGroupName);
+                Logger.LogError("Не удаётся найти группу секций '{0}'", sectionGroupId);
         }
 
         private static void ProcessSectionGroup(XElement sectionGroup,
