@@ -21,29 +21,16 @@ namespace BibleCommon.Helpers
             XmlNamespaceManager xnm;
             oneNoteApp.GetHierarchy(null, HierarchyScope.hsNotebooks, out xml);
             XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
-            XElement bibleNotebook = doc.Root.XPathSelectElement(string.Format("one:Notebook[@name='{0}']", notebookName), xnm);
+            XElement bibleNotebook = doc.Root.XPathSelectElement(string.Format("one:Notebook[@nickname='{0}']", notebookName), xnm);
+            if (bibleNotebook == null)
+                bibleNotebook = doc.Root.XPathSelectElement(string.Format("one:Notebook[@name='{0}']", notebookName), xnm);
             if (bibleNotebook != null)
             {
                 return (string)bibleNotebook.Attribute("ID");
             }
 
             return string.Empty;
-        }
-
-        public static string GetNotebookName(Application oneNoteApp, string notebookId)
-        {
-            string xml;
-            XmlNamespaceManager xnm;
-            oneNoteApp.GetHierarchy(null, HierarchyScope.hsNotebooks, out xml);
-            XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
-            XElement bibleNotebook = doc.Root.XPathSelectElement(string.Format("one:Notebook[@id='{0}']", notebookId), xnm);
-            if (bibleNotebook != null)
-            {
-                return (string)bibleNotebook.Attribute("name");
-            }
-
-            return string.Empty;
-        }
+        }     
 
         public static string GetHierarchyElementName(Application oneNoteApp, string elementId)
         {

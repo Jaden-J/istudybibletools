@@ -466,7 +466,9 @@ namespace BibleConfigurator
             XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
             foreach (XElement notebook in doc.Root.XPathSelectElements("one:Notebook", xnm))
             {
-                string name = (string)notebook.Attribute("name");
+                string name = (string)notebook.Attribute("nickname");
+                if (string.IsNullOrEmpty(name))
+                    name = (string)notebook.Attribute("name");
                 string id = (string)notebook.Attribute("ID");
                 result.Add(id, name);
             }

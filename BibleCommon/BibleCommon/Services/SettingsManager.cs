@@ -53,13 +53,7 @@ namespace BibleCommon.Services
                 return this.NotebookId_Bible == this.NotebookId_BibleComments
                     && this.NotebookId_Bible == this.NotebookId_BibleStudy;
             }
-        }
-
-
-        //public string NotebookName_Single { get; private set; }
-        //public string NotebookName_Bible { get; private set; }
-        //public string NotebookName_BibleComments { get; private set; }
-        //public string NotebookName_BibleStudy { get; private set; }
+        }       
 
         protected SettingsManager()
         {
@@ -73,9 +67,7 @@ namespace BibleCommon.Services
             if (!File.Exists(_filePath))            
                 LoadDefaultSettings();                
             else
-                LoadSettingsFromFile();
-
-          //  LoadNotebookIds();
+                LoadSettingsFromFile();        
         }
 
         private void LoadSettingsFromFile()
@@ -93,20 +85,8 @@ namespace BibleCommon.Services
             this.PageName_Notes = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNamePageName_Notes).Value;
         }
 
-        //private void LoadNotebookIds()
-        //{
-        //    Application oneNoteApp = new Application();
-        //    this.NotebookId_Bible = GetNotebookId(oneNoteApp, this.NotebookName_Bible);
-        //    this.NotebookId_BibleComments = GetNotebookId(oneNoteApp, this.NotebookName_BibleComments);
-        //    this.NotebookId_BibleStudy = GetNotebookId(oneNoteApp, this.NotebookName_BibleStudy);
-        //}
-
         private void LoadDefaultSettings()
-        {            
-            //this.NotebookName_Bible = Consts.Constants.DefaultNotebookNameBible;
-            //this.NotebookName_BibleComments = Consts.Constants.DefaultNotebookNameBibleComments;
-            //this.NotebookName_BibleStudy = Consts.Constants.DefaultNotebookNameBibleStudy;            
-
+        {                       
             this.PageName_DefaultBookOverview = Consts.Constants.DefaultPageNameDefaultBookOverview;
             this.PageName_DefaultDescription = Consts.Constants.DefaultPageNameDefaultDescription;
             this.PageName_Notes = Consts.Constants.DefaultPageName_Notes;
@@ -135,23 +115,7 @@ namespace BibleCommon.Services
                     sw.Flush();                    
                 }
             }
-        }        
-
-        private string GetNotebookName(Application oneNoteApp, string notebookId)
-        {
-            string result = string.Empty;
-
-            if (!string.IsNullOrEmpty(notebookId))
-            {
-                result = OneNoteUtils.GetNotebookName(oneNoteApp, notebookId);
-
-                if (string.IsNullOrEmpty(result))
-                    throw new Exception(string.Format("Не найдено записной книжки: {0}", notebookId));
-
-            }
-
-            return result;
-        }       
+        }                 
     }
 }
 

@@ -183,8 +183,13 @@ namespace BibleCommon.Services
             {
                 oneNoteApp.CreateNewPage(sectionId, out pageId, NewPageStyle.npsBlankPageWithTitle);
 
+                XDocument currentPageDoc = OneNoteUtils.GetXDocument(
+                    OneNoteProxy.Instance.GetPageContent(oneNoteApp, currentPageId), out xnm);
+                string currentPagetitleId = (string)currentPageDoc.Root
+                    .XPathSelectElement("one:Title/one:OE", xnm).Attribute("objectID");
+
                 string linkToCurrentPage;
-                oneNoteApp.GetHyperlinkToObject(currentPageId, null, out linkToCurrentPage);
+                oneNoteApp.GetHyperlinkToObject(currentPageId, currentPagetitleId, out linkToCurrentPage);
                 string pageName = string.Format("{0}. <span style='font-size:10pt;'>[<a href='{1}'>{2}</a>]</span>", 
                                     descriptionPageName, linkToCurrentPage, vp.FriendlyChapterName);
                 SetPageName(oneNoteApp, pageId, pageName);
