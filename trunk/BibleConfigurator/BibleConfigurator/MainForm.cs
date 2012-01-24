@@ -373,8 +373,7 @@ namespace BibleConfigurator
         private void LoadParameters()
         {
             rbSingleNotebook.Checked = SettingsManager.Instance.NotebookId_Bible == SettingsManager.Instance.NotebookId_BibleComments
-                                    && SettingsManager.Instance.NotebookId_Bible == SettingsManager.Instance.NotebookId_BibleStudy
-                                    && !string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible);
+                                    && SettingsManager.Instance.NotebookId_Bible == SettingsManager.Instance.NotebookId_BibleStudy;
 
             rbMultiNotebook.Checked = !rbSingleNotebook.Checked;
             rbMultiNotebook_CheckedChanged(this, null);
@@ -387,7 +386,12 @@ namespace BibleConfigurator
             cbBibleCommentsNotebook.DataSource = notebooks.Values.ToList();
             cbBibleStudyNotebook.DataSource = notebooks.Values.ToList();
 
-            SetNotebookParameters(rbSingleNotebook.Checked, Consts.SingleNotebookDefaultName, notebooks, SettingsManager.Instance.NotebookId_Bible, cbSingleNotebook, chkCreateSingleNotebookFromTemplate);
+            string singleNotebookId = SearchForSingleNoteBook(notebooks.Keys);
+            string singleNotebookDefaultName = Consts.SingleNotebookDefaultName;
+            if (!string.IsNullOrEmpty(singleNotebookId))
+                singleNotebookDefaultName = notebooks[singleNotebookId];
+
+            SetNotebookParameters(rbSingleNotebook.Checked, singleNotebookDefaultName, notebooks, SettingsManager.Instance.NotebookId_Bible, cbSingleNotebook, chkCreateSingleNotebookFromTemplate);
 
             SetNotebookParameters(rbMultiNotebook.Checked, Consts.BibleNotebookDefaultName, notebooks, SettingsManager.Instance.NotebookId_Bible, cbBibleNotebook, chkCreateBibleNotebookFromTemplate);
 
@@ -400,7 +404,7 @@ namespace BibleConfigurator
             tbPageDescriptionName.Text = SettingsManager.Instance.PageName_DefaultDescription;
         }
 
-        private string SearchForSingleNoteBook(List<string> notebooksIds)
+        private string SearchForSingleNoteBook(IEnumerable<string> notebooksIds)
         {
             foreach (string notebookId in notebooksIds)
             {
