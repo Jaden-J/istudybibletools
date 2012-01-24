@@ -108,15 +108,16 @@ namespace BibleNoteLinker
                         if (!string.IsNullOrEmpty(currentPageId))
                         {
 
-                            if (currentNotebookId == SettingsManager.Instance.NotebookId_Bible)
-                            {
+                            //if (currentNotebookId == SettingsManager.Instance.NotebookId_BibleComments
+                            //    || currentNotebookId == SettingsManager.Instance.NotebookId_BibleStudy)
+                            //{
                                 if (userArgs.DeleteNotes)
                                     NoteLinkManager.DeletePageNotes(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, OneNoteUtils.GetHierarchyElementName(oneNoteApp, currentPageId));
                                 else
                                     NoteLinkManager.LinkPageVerses(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);
-                            }
-                            else
-                                Logger.LogError("Комментарии можно писать только к библейскому тексту");
+                            //}
+                            //else
+                                //Logger.LogError("Заметки к Библии необходимо писать только в записных книжках ");
                         }
                         else
                             Logger.LogError("Не найдено открытой страницы заметок");

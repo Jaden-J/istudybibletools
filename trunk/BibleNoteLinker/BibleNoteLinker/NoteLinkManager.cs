@@ -223,95 +223,85 @@ namespace BibleNoteLinker
                         bool isInBrackets;
                         if (CanProcessAtNumberPosition(textElement, numberIndex, out number, out breakIndex, out isLink, out isInBrackets))
                         {
-                            //if (isLink && !force)  // если не анализируем ссылки, то во избежание некоторых проблем, забываем предыдущую главу
-                            //{
-                            //    globalChapterSearchResult = null;
-                            //}
+                            VersePointerSearchResult searchResult = GetValidVersePointer(textElement,
+                                numberIndex, breakIndex - 1, number,
+                                globalChapterSearchResult,
+                                localChapterName, prevResult, isInBrackets, isTitle);
 
-                            //if (!isLink || (isLink && force) || isTitle)
+                            if (searchResult.ResultType != VersePointerSearchResult.SearchResultType.Nothing)
                             {
-                                VersePointerSearchResult searchResult = GetValidVersePointer(textElement,
-                                    numberIndex, breakIndex - 1, number, 
-                                    globalChapterSearchResult, 
-                                    localChapterName, prevResult, isInBrackets, isTitle);
-                                
-                                if (searchResult.ResultType != VersePointerSearchResult.SearchResultType.Nothing)
+                                if (onVersePointerFound != null)
+                                    onVersePointerFound(searchResult);
+
+                                string textToChange;
+                                HierarchySearchManager.HierarchySearchResult hierarchySearchResult;
+
+                                if (searchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterOnlyAtStartString
+                                    || searchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString)      // считаем, что указан глава только тогда, когда конкретно указана только глава, а не глава со стихом, например
                                 {
-                                    if (onVersePointerFound != null)
-                                        onVersePointerFound(searchResult);
+                                    globalChapterSearchResult = searchResult;
+                                }
 
-                                    //if (!(isLink && isTitle && !force))   // чтоб заново не делать ссылку на главу, которую и так уже проанализировали в заголовке
+                                localChapterName = searchResult.ChapterName;   // всегда запоминаем
+
+
+                                if (!isLink || (isLink && force))
+                                {
+                                    if (VersePointerSearchResult.IsVerse(searchResult.ResultType))
+                                        textToChange = searchResult.VerseString;
+                                    else if (VersePointerSearchResult.IsChapter(searchResult.ResultType))
+                                        textToChange = searchResult.ChapterName;
+                                    else
+                                        textToChange = searchResult.VersePointer.OriginalVerseName;
+
+                                    string textElementObjectId = (string)textElement.Parent.Attribute("objectID");
+
+                                    textElementValue = ProcessVerse(oneNoteApp, searchResult,
+                                                                processedVerses,
+                                                                textToChange,
+                                                                textElementValue,
+                                                                noteSectionGroupName, noteSectionName,
+                                                                notePageName, pageId, textElementObjectId,
+                                                                linkDepth, globalChapterSearchResult, pageChaptersSearchResult,
+                                                                isLink, isInBrackets, force, out numberIndex, out hierarchySearchResult);
+
+                                    if (searchResult.ResultType == VersePointerSearchResult.SearchResultType.SingleVerseOnly)  // то есть нашли стих, а до этого значит была скорее всего просто глава!
                                     {
-                                        string textToChange;
-                                        HierarchySearchManager.HierarchySearchResult hierarchySearchResult;
+                                        List<FoundChapterInfo> chaptersInfo = foundChapters.Where(fch =>
+                                                fch.VersePointerSearchResult.ResultType != VersePointerSearchResult.SearchResultType.ExcludableChapter
+                                                 && fch.VersePointerSearchResult.VersePointer.ChapterName == searchResult.VersePointer.ChapterName).ToList();
 
-                                        if (searchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterOnlyAtStartString
-                                            || searchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString)      // считаем, что указан глава только тогда, когда конкретно указана только глава, а не глава со стихом, например
+                                        if (chaptersInfo.Count > 0)
+                                            foundChapters.Remove(chaptersInfo[chaptersInfo.Count - 1]);
+                                    }
+                                    else if (VersePointerSearchResult.IsChapter(searchResult.ResultType))
+                                    {
+                                        if (hierarchySearchResult.ResultType == HierarchySearchManager.HierarchySearchResultType.Successfully
+                                            && hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.Page)
                                         {
-                                            globalChapterSearchResult = searchResult;
-                                        }
-
-                                        localChapterName = searchResult.ChapterName;   // всегда запоминаем
-
-
-                                        if (!isLink || (isLink && force))
-                                        {
-                                            if (VersePointerSearchResult.IsVerse(searchResult.ResultType))
-                                                textToChange = searchResult.VerseString;
-                                            else if (VersePointerSearchResult.IsChapter(searchResult.ResultType))
-                                                textToChange = searchResult.ChapterName;
-                                            else
-                                                textToChange = searchResult.VersePointer.OriginalVerseName;
-
-                                            string textElementObjectId = (string)textElement.Parent.Attribute("objectID");
-
-                                            textElementValue = ProcessVerse(oneNoteApp, searchResult,
-                                                                        processedVerses,
-                                                                        textToChange,
-                                                                        textElementValue,
-                                                                        noteSectionGroupName, noteSectionName,
-                                                                        notePageName, pageId, textElementObjectId,
-                                                                        linkDepth, globalChapterSearchResult, pageChaptersSearchResult,
-                                                                        isLink, isInBrackets, force, out numberIndex, out hierarchySearchResult);
-
-                                            if (searchResult.ResultType == VersePointerSearchResult.SearchResultType.SingleVerseOnly)  // то есть нашли стих, а до этого значит была скорее всего просто глава!
+                                            if (!foundChapters.Exists(fch =>
+                                                    fch.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
+                                                     && fch.VersePointerSearchResult.VersePointer.ChapterName == searchResult.VersePointer.ChapterName))
                                             {
-                                                List<FoundChapterInfo> chaptersInfo = foundChapters.Where(fch =>
-                                                        fch.VersePointerSearchResult.ResultType != VersePointerSearchResult.SearchResultType.ExcludableChapter
-                                                         && fch.VersePointerSearchResult.VersePointer.ChapterName == searchResult.VersePointer.ChapterName).ToList();
-
-                                                if (chaptersInfo.Count > 0)
-                                                    foundChapters.Remove(chaptersInfo[chaptersInfo.Count - 1]);
-                                            }
-                                            else if (VersePointerSearchResult.IsChapter(searchResult.ResultType))
-                                            {
-                                                if (hierarchySearchResult.ResultType == HierarchySearchManager.HierarchySearchResultType.Successfully
-                                                    && hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.Page)
+                                                foundChapters.Add(new FoundChapterInfo()
                                                 {
-                                                    if (!foundChapters.Exists(fch =>
-                                                            fch.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
-                                                             && fch.VersePointerSearchResult.VersePointer.ChapterName == searchResult.VersePointer.ChapterName))
-                                                    {
-                                                        foundChapters.Add(new FoundChapterInfo()
-                                                        {
-                                                            TextElementObjectId = textElementObjectId,
-                                                            VersePointerSearchResult = searchResult,
-                                                            HierarchySearchResult = hierarchySearchResult
-                                                        });
-                                                    }
-                                                }
-                                            }
-
-                                            if (textElement.Value != textElementValue)
-                                            {
-                                                textElement.Value = textElementValue;
-                                                wasModified = true;
+                                                    TextElementObjectId = textElementObjectId,
+                                                    VersePointerSearchResult = searchResult,
+                                                    HierarchySearchResult = hierarchySearchResult
+                                                });
                                             }
                                         }
+                                    }
 
-                                        prevResult = searchResult;
+                                    if (textElement.Value != textElementValue)
+                                    {
+                                        textElement.Value = textElementValue;
+                                        wasModified = true;
                                     }
                                 }
+
+                                prevResult = searchResult;
+
                             }
                         }
                     }
@@ -642,7 +632,7 @@ namespace BibleNoteLinker
 
                     if (linkDepth >= AnalyzeDepth.GetVersesLinks)
                     {
-                        if (!isLink)  // || vp.IsMultiVerse)   // например было Ин 4:17. Потом стало Ин 4:17-19. Чтоб обновлять в таком случае ссылки.
+                        //if (!isLink)  // || vp.IsMultiVerse)   // например было Ин 4:17. Потом стало Ин 4:17-19. Чтоб обновлять в таком случае ссылки.
                         {
                             string link = OneNoteUtils.GenerateHref(oneNoteApp, textToChange,
                                 hierarchySearchResult.HierarchyObjectInfo.PageId, hierarchySearchResult.HierarchyObjectInfo.ContentObjectId);
@@ -889,7 +879,7 @@ namespace BibleNoteLinker
             string notePageName, string notePageId, string notePageContentObjectId,
             XDocument notesPageDocument, XmlNamespaceManager xnm, XNamespace nms, bool force)
         {
-            string noteTitle = noteSectionGroupName != noteSectionName
+            string noteTitle = (noteSectionGroupName != noteSectionName && !string.IsNullOrEmpty(noteSectionGroupName))
                 ? string.Format("{0} / {1} / {2}", noteSectionGroupName, noteSectionName, notePageName)
                 : string.Format("{0} / {1}", noteSectionName, notePageName);
             

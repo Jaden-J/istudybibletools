@@ -24,10 +24,9 @@ namespace BibleTablesResizer
 
             Application oneNoteApp = new Application();
 
-            string notebookId = SettingsManager.Instance.NotebookId_Bible;
-            string notebookName = OneNoteUtils.GetNotebookName(oneNoteApp, notebookId);
+            string notebookId = SettingsManager.Instance.NotebookId_Bible;            
 
-            if (!string.IsNullOrEmpty(notebookName))
+            if (!string.IsNullOrEmpty(notebookId))
             {
                 Logger.LogMessage("Имя записной книжки: {0}", OneNoteUtils.GetHierarchyElementName(oneNoteApp, notebookId));  // чтобы точно убедиться
 
@@ -40,7 +39,7 @@ namespace BibleTablesResizer
             }
             else
             {
-                Logger.LogError(string.Format("Не найдено записной книжки '{0}'", notebookName));
+                Logger.LogError(string.Format("Не найдено записной книжки '{0}'", notebookId));
             }
 
             Logger.Done();
