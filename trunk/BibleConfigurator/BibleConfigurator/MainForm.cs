@@ -400,6 +400,19 @@ namespace BibleConfigurator
             tbPageDescriptionName.Text = SettingsManager.Instance.PageName_DefaultDescription;
         }
 
+        private string SearchForSingleNoteBook(List<string> notebooksIds)
+        {
+            foreach (string notebookId in notebooksIds)
+            {
+                if (NotebookChecker.CheckNotebook(_oneNoteApp, notebookId, NotebookType.Single))
+                {
+                    return notebookId;
+                }
+            }
+
+            return string.Empty;
+        }
+
         private static void SetNotebookParameters(bool loadNameFromSettings, string defaultName, Dictionary<string, string> notebooks, string notebookId, ComboBox cb, CheckBox chk)
         {
             string singleNotebookName = (loadNameFromSettings && !string.IsNullOrEmpty(notebookId)) ? TryToGetNotebookName(notebooks, notebookId) : defaultName;
