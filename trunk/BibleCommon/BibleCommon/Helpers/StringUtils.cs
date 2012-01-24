@@ -14,11 +14,11 @@ namespace BibleCommon.Helpers
         SearchFirstChar         // получить первый любой символ (не равный '<' и '>')
     }
 
-    public enum StringSearchSpaceIgnorance
+    public enum StringSearchIgnorance
     {
-        None,               // не игнорировать пробелы
-        IgnoreFirstSpace,
-        IgnoreAllSpaces
+        None,               // не игнорировать пробелы и точки
+        IgnoreFirstSpaceAndDot,
+        IgnoreAllSpacesAndDots
     }
 
     public class SearchMissInfo
@@ -176,11 +176,11 @@ namespace BibleCommon.Helpers
         /// <param name="searchMode">что ищем</param>
         /// <returns></returns>
         public static string GetPrevString(string s, int index, SearchMissInfo missInfo, out int breakIndex,
-            StringSearchSpaceIgnorance ignoreSpaces = StringSearchSpaceIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
+            StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
         {
             if (searchMode == StringSearchMode.SearchFirstValueChar || searchMode == StringSearchMode.SearchFirstChar)
             {
-                if (ignoreSpaces != StringSearchSpaceIgnorance.None)
+                if (ignoreSpaces != StringSearchIgnorance.None)
                     throw new ArgumentException("Противоречащие значения параметров searchMode и ignoreSpaces");
 
                 if (missInfo != null)
@@ -284,15 +284,15 @@ namespace BibleCommon.Helpers
                     {
                         bool isMiss = true;
 
-                        if (c == ' ')
+                        if (c == ' ' || c == '.')
                         {
                             switch (ignoreSpaces)
                             {
-                                case StringSearchSpaceIgnorance.IgnoreAllSpaces:
+                                case StringSearchIgnorance.IgnoreAllSpacesAndDots:
                                     isMiss = false;
                                     break;
-                                case StringSearchSpaceIgnorance.IgnoreFirstSpace:
-                                    if (!foundValidChars)  // значит первый пробел
+                                case StringSearchIgnorance.IgnoreFirstSpaceAndDot:
+                                    if (!foundValidChars)  // значит пробел или точка до текста
                                         isMiss = false;
                                     break;
                             }
@@ -321,11 +321,11 @@ namespace BibleCommon.Helpers
         }
 
         public static string GetNextString(string s, int index, SearchMissInfo missInfo, out int breakIndex,
-            StringSearchSpaceIgnorance ignoreSpaces = StringSearchSpaceIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
+            StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
         {
             if (searchMode == StringSearchMode.SearchFirstValueChar || searchMode == StringSearchMode.SearchFirstChar)
             {
-                if (ignoreSpaces != StringSearchSpaceIgnorance.None)
+                if (ignoreSpaces != StringSearchIgnorance.None)
                     throw new ArgumentException("Противоречащие значения параметров searchMode и ignoreSpaces");
 
                 if (missInfo != null)
@@ -423,15 +423,15 @@ namespace BibleCommon.Helpers
                     {
                         bool isMiss = true;
 
-                        if (c == ' ')
+                        if (c == ' ' || c == '.')
                         {
                             switch (ignoreSpaces)
                             {
-                                case StringSearchSpaceIgnorance.IgnoreAllSpaces:
+                                case StringSearchIgnorance.IgnoreAllSpacesAndDots:
                                     isMiss = false;
                                     break;
-                                case StringSearchSpaceIgnorance.IgnoreFirstSpace:
-                                    if (!foundValidChars)  // значит первый пробел
+                                case StringSearchIgnorance.IgnoreFirstSpaceAndDot:
+                                    if (!foundValidChars)  // значит пробел или точка до текста
                                         isMiss = false;
                                     break;
                             }

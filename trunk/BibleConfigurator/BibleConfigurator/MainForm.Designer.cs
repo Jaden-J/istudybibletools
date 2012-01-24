@@ -421,6 +421,7 @@
             this.btnRelinkComments.TabIndex = 0;
             this.btnRelinkComments.Text = "Обновить ссылки на комментарии";
             this.btnRelinkComments.UseVisualStyleBackColor = true;
+            this.btnRelinkComments.Click += new System.EventHandler(this.btnRelinkComments_Click);
             // 
             // btnOK
             // 
