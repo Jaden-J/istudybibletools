@@ -390,8 +390,8 @@ namespace BibleNoteLinker
             int nextBreakIndex;
             int prevBreakIndex;
 
-            string prevChar = StringUtils.GetPrevString(textElement.Value, numberStartIndex, null, out prevBreakIndex, StringSearchSpaceIgnorance.None, StringSearchMode.SearchFirstValueChar);
-            string nextChar = StringUtils.GetNextString(textElement.Value, numberEndIndex, null, out nextBreakIndex, StringSearchSpaceIgnorance.None, StringSearchMode.SearchFirstValueChar);
+            string prevChar = StringUtils.GetPrevString(textElement.Value, numberStartIndex, null, out prevBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar);
+            string nextChar = StringUtils.GetNextString(textElement.Value, numberEndIndex, null, out nextBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar);
 
             if (nextChar == ChapterVerseDelimiter.ToString())  // как будто нашли полную ссылку
             {
@@ -407,7 +407,7 @@ namespace BibleNoteLinker
                         {
                             string bookName = StringUtils.GetPrevString(textElement.Value,
                                 numberStartIndex, new SearchMissInfo(maxMissCount, SearchMissInfo.MissMode.CancelOnMissFound), out startIndex,
-                                maxMissCount > 0 ? StringSearchSpaceIgnorance.IgnoreAllSpaces : StringSearchSpaceIgnorance.IgnoreFirstSpace,
+                                maxMissCount > 0 ? StringSearchIgnorance.IgnoreAllSpacesAndDots : StringSearchIgnorance.IgnoreFirstSpaceAndDot,
                                 StringSearchMode.SearchText);
 
                             if (!string.IsNullOrEmpty(bookName) && !string.IsNullOrEmpty(bookName.Trim()))
@@ -439,7 +439,7 @@ namespace BibleNoteLinker
             else if (prevChar == ChapterVerseDelimiter.ToString() || prevChar == ",") // как будто нашли ссылку только на стих                    
             {
                 int temp;
-                string prevPrevChar = StringUtils.GetPrevString(textElement.Value, prevBreakIndex, null, out temp, StringSearchSpaceIgnorance.None, StringSearchMode.SearchFirstChar);                
+                string prevPrevChar = StringUtils.GetPrevString(textElement.Value, prevBreakIndex, null, out temp, StringSearchIgnorance.None, StringSearchMode.SearchFirstChar);                
                 string globalChapterName = globalChapterResult != null ? globalChapterResult.ChapterName : string.Empty;
 
                 if (!string.IsNullOrEmpty(globalChapterName) || !string.IsNullOrEmpty(localChapterName))
@@ -533,7 +533,7 @@ namespace BibleNoteLinker
                 {
                     string bookName = StringUtils.GetPrevString(textElement.Value,
                         numberStartIndex, new SearchMissInfo(maxMissCount, SearchMissInfo.MissMode.CancelOnMissFound), out startIndex,
-                        maxMissCount > 0 ? StringSearchSpaceIgnorance.IgnoreAllSpaces : StringSearchSpaceIgnorance.IgnoreFirstSpace,
+                        maxMissCount > 0 ? StringSearchIgnorance.IgnoreAllSpacesAndDots : StringSearchIgnorance.IgnoreFirstSpaceAndDot,
                         StringSearchMode.SearchText);
 
                     if (!string.IsNullOrEmpty(bookName) && !string.IsNullOrEmpty(bookName.Trim()))

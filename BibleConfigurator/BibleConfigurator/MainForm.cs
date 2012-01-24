@@ -16,6 +16,7 @@ using System.IO;
 using System.Diagnostics;
 using BibleCommon;
 using System.Threading;
+using BibleConfigurator.Tools;
 
 namespace BibleConfigurator
 {
@@ -624,6 +625,11 @@ namespace BibleConfigurator
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             BibleCommon.Services.Logger.Done();
+        }
+
+        private void btnRelinkComments_Click(object sender, EventArgs e)
+        {
+            new RelinkAllBibleCommentsManager(_oneNoteApp).RelinkAllBibleComments();
         }
     }
 }

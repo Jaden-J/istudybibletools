@@ -72,12 +72,12 @@ namespace BibleNoteLinker
 
                 Args userArgs = GetUserArgs(args);
                 if (userArgs.DeleteNotes)
-                    Logger.LogMessage("Удаляем страницы заметок и ссылки на них.");
+                    Logger.LogMessage("Удаляем страницы заметок и ссылки на них");
                 else
                 {
-                    Logger.LogMessage("Уровень текущего анализа: '{0} ({1})'.", userArgs.AnalyzeDepth, (int)userArgs.AnalyzeDepth);
+                    Logger.LogMessage("Уровень текущего анализа: '{0} ({1})'", userArgs.AnalyzeDepth, (int)userArgs.AnalyzeDepth);
                     if (userArgs.Force)
-                        Logger.LogMessage("Анализируем ссылки в том числе.");
+                        Logger.LogMessage("Анализируем ссылки в том числе");
                 }
 
                 Application oneNoteApp = new Application();                               
