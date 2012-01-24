@@ -17,7 +17,7 @@ namespace BibleConfigurator.Tools
 
         public RelinkAllBibleCommentsManager(Application oneNoteApp)
         {
-            _oneNoteApp = oneNoteApp;
+            _oneNoteApp = oneNoteApp; 
         }
 
         public void RelinkAllBibleComments()
