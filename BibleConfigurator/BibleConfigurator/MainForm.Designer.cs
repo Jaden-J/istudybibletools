@@ -64,8 +64,8 @@
             this.btnRelinkComments = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.pbLoadParameters = new System.Windows.Forms.ProgressBar();
             this.lblCreateNotebookDescription = new System.Windows.Forms.Label();
+            this.pbLoadParameters = new System.Windows.Forms.ProgressBar();
             this.tbcMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -400,7 +400,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(230, 23);
             this.button1.TabIndex = 2;
-            this.button1.Text = "Сделать бэкап всех записных книжек";
+            this.button1.Text = "Создать резервную копию данных";
             this.button1.UseVisualStyleBackColor = true;
             // 
             // btnResizeBibleTables
@@ -454,6 +454,14 @@
             this.splitContainer1.SplitterDistance = 310;
             this.splitContainer1.TabIndex = 17;
             // 
+            // lblCreateNotebookDescription
+            // 
+            this.lblCreateNotebookDescription.AutoSize = true;
+            this.lblCreateNotebookDescription.Location = new System.Drawing.Point(12, 0);
+            this.lblCreateNotebookDescription.Name = "lblCreateNotebookDescription";
+            this.lblCreateNotebookDescription.Size = new System.Drawing.Size(0, 13);
+            this.lblCreateNotebookDescription.TabIndex = 18;
+            // 
             // pbLoadParameters
             // 
             this.pbLoadParameters.Location = new System.Drawing.Point(12, 16);
@@ -462,14 +470,6 @@
             this.pbLoadParameters.Step = 3;
             this.pbLoadParameters.TabIndex = 17;
             this.pbLoadParameters.Visible = false;
-            // 
-            // lblCreateNotebookDescription
-            // 
-            this.lblCreateNotebookDescription.AutoSize = true;
-            this.lblCreateNotebookDescription.Location = new System.Drawing.Point(12, 0);
-            this.lblCreateNotebookDescription.Name = "lblCreateNotebookDescription";
-            this.lblCreateNotebookDescription.Size = new System.Drawing.Size(0, 13);
-            this.lblCreateNotebookDescription.TabIndex = 18;
             // 
             // MainForm
             // 
