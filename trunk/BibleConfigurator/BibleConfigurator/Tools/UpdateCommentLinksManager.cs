@@ -115,6 +115,9 @@ namespace BibleConfigurator.Tools
             XmlNamespaceManager xnm;
             XDocument pageDocument = OneNoteUtils.GetXDocument(OneNoteProxy.Instance.GetPageContent(_oneNoteApp, pageId), out xnm);
 
+            вот здес - VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(_oneNoteApp, sectionId, pageId, pageName, SettingsManager.Instance.PageName_DefaultComments);
+            надо искать с учётом имени страницы. (в ссылке искать строку, от ".one#" до "."). и при этом, чтобы одно искать то же не искать - запоминать где нить (особенно дефолтную страницу, потому что в 99,99% будет только она)
+
             foreach (XElement rowElement in pageDocument.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]", xnm))
             {
                 rowElement.Value = rowElement.Value.Replace("\n", " ");
@@ -123,13 +126,35 @@ namespace BibleConfigurator.Tools
 
                 while (linkIndex > -1)
                 {
+                    int linkEnd = rowElement.Value.IndexOf("</a>", linkIndex + 1);
 
+                    if (linkEnd != -1)
+                    {
+                        RelinkPageComment(rowElement, linkIndex, linkEnd);                        
 
-                    //ProgressBar.Progress()
+                        //ProgressBar.Progress()
+                    }
 
                     linkIndex = rowElement.Value.IndexOf("<a ", linkIndex + 1);
                 }
             }
         }
+
+        private void RelinkPageComment(XElement rowElement, int linkIndex, int linkEnd)
+        {
+            
+            string commentLink = rowElement.Value.Substring(linkIndex, linkEnd - linkIndex + "</a>".Length);
+            string commentText = GetLinkText(commentLink);            
+        }
+
+        private string GetLinkText(string commentLink)
+        {
+            int breakIndex;
+            string s = StringUtils.GetNextString(commentLink, -1, null, out breakIndex, StringSearchIgnorance.None,
+                 StringSearchMode.SearchText);
+
+            return s;
+        }
+       
     }
 }

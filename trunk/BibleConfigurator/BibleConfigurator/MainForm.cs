@@ -165,7 +165,7 @@ namespace BibleConfigurator
             {
                 SettingsManager.Instance.PageName_DefaultBookOverview = Consts.PageNameDefaultBookOverview;
                 SettingsManager.Instance.PageName_Notes = Consts.PageNameNotes;
-                SettingsManager.Instance.PageName_DefaultDescription = Consts.PageNameDefaultDescription;
+                SettingsManager.Instance.PageName_DefaultComments = Consts.PageNameDefaultComments;
             }
             else
             {
@@ -176,7 +176,7 @@ namespace BibleConfigurator
                     SettingsManager.Instance.PageName_Notes = tbNotesPageName.Text;
 
                 if (!string.IsNullOrEmpty(tbPageDescriptionName.Text))
-                    SettingsManager.Instance.PageName_DefaultDescription = tbPageDescriptionName.Text;
+                    SettingsManager.Instance.PageName_DefaultComments = tbPageDescriptionName.Text;
             }
         }
 
@@ -402,7 +402,7 @@ namespace BibleConfigurator
 
             tbBookOverviewName.Text = SettingsManager.Instance.PageName_DefaultBookOverview;
             tbNotesPageName.Text = SettingsManager.Instance.PageName_Notes;
-            tbPageDescriptionName.Text = SettingsManager.Instance.PageName_DefaultDescription;
+            tbPageDescriptionName.Text = SettingsManager.Instance.PageName_DefaultComments;
         }
 
         private string SearchForSingleNoteBook(IEnumerable<string> notebooksIds)

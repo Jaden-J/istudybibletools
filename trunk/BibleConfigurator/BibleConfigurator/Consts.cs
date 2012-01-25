@@ -27,6 +27,6 @@ namespace BibleConfigurator
 
         public const string PageNameDefaultBookOverview = "Общий обзор";
         public const string PageNameNotes = "Заметки";
-        public const string PageNameDefaultDescription = "Комментарии";
+        public const string PageNameDefaultComments = "Комментарии";
     }
 }

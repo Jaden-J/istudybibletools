@@ -16,7 +16,7 @@ namespace BibleCommon.Consts
         public static readonly string DefaultNotebookNameBibleComments = "Комментарии к Библии";
         public static readonly string DefaultNotebookNameBibleStudy = "Изучение Библии";
         public static readonly string DefaultPageNameDefaultBookOverview = "Общий обзор";
-        public static readonly string DefaultPageNameDefaultDescription = "Комментарии";
+        public static readonly string DefaultPageNameDefaultComments = "Комментарии";
         public static readonly string DefaultPageName_Notes = "Заметки";
 
         public static readonly string ParameterName_NotebookIdBible = "NotebookId_Bible";
@@ -25,7 +25,7 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_SectionGroupIdBible = "SectionGroupId_Bible";
         public static readonly string ParameterName_SectionGroupIdBibleComments = "SectionGroupId_BibleComments";
         public static readonly string ParameterName_SectionGroupIdBibleStudy = "SectionGroupId_BibleStudy";
-        public static readonly string ParameterName_PageNameDefaultDescription = "PageName_DefaultDescription";
+        public static readonly string ParameterName_PageNameDefaultComments = "PageName_DefaultComments";
         public static readonly string ParameterName_PageNameDefaultBookOverview = "PageName_DefaultBookOverview";
         public static readonly string ParameterName_PageNamePageName_Notes = "PageName_Notes";
 

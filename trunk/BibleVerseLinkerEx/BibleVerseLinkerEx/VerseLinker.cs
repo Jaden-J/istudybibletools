@@ -37,7 +37,7 @@ namespace BibleVerseLinkerEx
         public VerseLinker()
         {
             _onenoteApp = new Application();
-            DescriptionPageName = SettingsManager.Instance.PageName_DefaultDescription;
+            DescriptionPageName = SettingsManager.Instance.PageName_DefaultComments;
             SearchForUnderlineText = true;
         }
 
