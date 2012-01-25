@@ -459,21 +459,21 @@ namespace BibleCommon.Helpers
             return result;
         }
 
-        public static string GetNextCloseTag(string s, int index)
-        {
-            int startIndex = s.IndexOf("<", index + 1);
-            if (startIndex != -1)
-            {
-                if (GetChar(s, startIndex + 1) == '/')
-                {
-                    int endIndex = s.IndexOf(">", startIndex + 2);
-                    if (endIndex != -1)
-                    {
-                        return s.Substring(startIndex + 2, endIndex - startIndex - 2);
-                    }
-                }
-            }
-            return string.Empty;
-        }
+        //public static string GetNextCloseTag(string s, int index)
+        //{
+        //    int startIndex = s.IndexOf("<", index + 1);
+        //    if (startIndex != -1)
+        //    {
+        //        if (GetChar(s, startIndex + 1) == '/')
+        //        {
+        //            int endIndex = s.IndexOf(">", startIndex + 2);
+        //            if (endIndex != -1)
+        //            {
+        //                return s.Substring(startIndex + 2, endIndex - startIndex - 2);
+        //            }
+        //        }
+        //    }
+        //    return string.Empty;
+        //}
     }
 }
