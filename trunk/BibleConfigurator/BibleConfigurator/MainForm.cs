@@ -570,9 +570,7 @@ namespace BibleConfigurator
                 if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     SingleNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
-                }
-                else
-                    chkCreateSingleNotebookFromTemplate.Checked = false;
+                }                
             }
         }
 
@@ -583,9 +581,7 @@ namespace BibleConfigurator
                 if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     BibleNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
-                }
-                else
-                    chkCreateBibleNotebookFromTemplate.Checked = false;
+                }                
             }
         }
 
@@ -597,8 +593,6 @@ namespace BibleConfigurator
                 {
                     BibleCommentsNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
                 }
-                else
-                    chkCreateBibleCommentsNotebookFromTemplate.Checked = false;
             }
         }
 
@@ -610,8 +604,6 @@ namespace BibleConfigurator
                 {
                     BibleStudyNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
                 }
-                else
-                    chkCreateBibleStudyNotebookFromTemplate.Checked = false;
             }
         }
 
