@@ -138,6 +138,7 @@ namespace BibleConfigurator.Tools
         {
             XmlNamespaceManager xnm;
             XDocument pageDocument = OneNoteUtils.GetXDocument(OneNoteProxy.Instance.GetPageContent(_oneNoteApp, pageId), out xnm);            
+            bool wasModified = false;
 
             foreach (XElement rowElement in pageDocument.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]", xnm))
             {
@@ -151,24 +152,48 @@ namespace BibleConfigurator.Tools
 
                     if (linkEnd != -1)
                     {
-                        RelinkPageComment(sectionId, pageId, pageName, rowElement, linkIndex, linkEnd);    
+                        if (RelinkPageComment(sectionId, pageId, pageName, rowElement, linkIndex, linkEnd))
+                            wasModified = true;
                     }
 
                     linkIndex = rowElement.Value.IndexOf("<a ", linkIndex + 1);
                 }
             }
 
+            //if (wasModified)
+            //    _oneNoteApp.UpdatePageContent(pageDocument.ToString());
+
             //ProgressBar.Progress()
         }
 
-        private void RelinkPageComment(string bibleSectionId, string biblePageId, string biblePageName, XElement rowElement, int linkIndex, int linkEnd)
+        private bool RelinkPageComment(string bibleSectionId, string biblePageId, string biblePageName, XElement rowElement, int linkIndex, int linkEnd)
         {
             string commentLink = rowElement.Value.Substring(linkIndex, linkEnd - linkIndex + "</a>".Length);
             string commentText = GetLinkText(commentLink);
 
             string commentPageName = GetCommentPageName(commentLink);
             string commentPageId = GetCommentPageId(bibleSectionId, biblePageId, biblePageName, commentPageName);
-            
+            string commentObjectId = GetComentobjectId(commentPageId, commentText);
+
+            string newCommentLink;
+            _oneNoteApp.GetHyperlinkToObject(commentPageId, commentObjectId, out newCommentLink);
+
+            if (!string.IsNullOrEmpty(commentObjectId))
+            {
+                rowElement.Value = string.Concat(
+                                rowElement.Value.Substring(0, linkIndex + 1),
+                                newCommentLink,
+                                rowElement.Value.Substring(linkEnd));
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private string GetComentobjectId(string commentPageId, string commentText)
+        {
+            throw new NotImplementedException();
         }
 
         private string GetCommentPageId(string bibleSectionId, string biblePageId, string biblePageName, string commentPageName)
