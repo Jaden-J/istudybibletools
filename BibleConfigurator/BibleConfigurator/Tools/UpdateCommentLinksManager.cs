@@ -137,10 +137,7 @@ namespace BibleConfigurator.Tools
         private void RelinkPageComments(string sectionGroupId, string sectionId, string pageId, string pageName)
         {
             XmlNamespaceManager xnm;
-            XDocument pageDocument = OneNoteUtils.GetXDocument(OneNoteProxy.Instance.GetPageContent(_oneNoteApp, pageId), out xnm);
-
-            //вот здес - VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(_oneNoteApp, sectionId, pageId, pageName, SettingsManager.Instance.PageName_DefaultComments);
-            //надо искать с учётом имени страницы. (в ссылке искать строку, от ".one#" до "."). и при этом, чтобы одно искать то же не искать - запоминать где нить (особенно дефолтную страницу, потому что в 99,99% будет только она)
+            XDocument pageDocument = OneNoteUtils.GetXDocument(OneNoteProxy.Instance.GetPageContent(_oneNoteApp, pageId), out xnm);            
 
             foreach (XElement rowElement in pageDocument.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]", xnm))
             {
@@ -154,14 +151,14 @@ namespace BibleConfigurator.Tools
 
                     if (linkEnd != -1)
                     {
-                        RelinkPageComment(sectionId, pageId, pageName, rowElement, linkIndex, linkEnd);                        
-
-                        //ProgressBar.Progress()
+                        RelinkPageComment(sectionId, pageId, pageName, rowElement, linkIndex, linkEnd);    
                     }
 
                     linkIndex = rowElement.Value.IndexOf("<a ", linkIndex + 1);
                 }
             }
+
+            //ProgressBar.Progress()
         }
 
         private void RelinkPageComment(string bibleSectionId, string biblePageId, string biblePageName, XElement rowElement, int linkIndex, int linkEnd)
@@ -209,6 +206,7 @@ namespace BibleConfigurator.Tools
 
         private string GetLinkText(string commentLink)
         {
+            это надо переделать, так как не верно вернёт например если коммент чисто на стих
             int breakIndex;
             string s = StringUtils.GetNextString(commentLink, -1, null, out breakIndex, StringSearchIgnorance.None,
                  StringSearchMode.SearchText);
