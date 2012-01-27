@@ -197,11 +197,9 @@ namespace BibleConfigurator.Tools
             XmlNamespaceManager xnm;
             _oneNoteApp.GetPageContent(commentPageId, out pageContent);
 
-            XDocument pageDoc = OneNoteUtils.GetXDocument(pageContent, out xnm);
+            XDocument pageDoc = OneNoteUtils.GetXDocument(pageContent, out xnm);            
 
-
-
-            return pageDoc.ToString(); 
+            
         }
 
         private string GetCommentPageId(string bibleSectionId, string biblePageId, string biblePageName, string commentPageName)
