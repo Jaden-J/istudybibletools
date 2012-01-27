@@ -14,6 +14,15 @@ namespace BibleCommon.Services
 {
     public static class VerseLinkManager
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oneNoteApp"></param>
+        /// <param name="currentSectionId"></param>
+        /// <param name="currentPageId"></param>
+        /// <param name="currentPageName"></param>
+        /// <param name="descriptionPageName"></param>
+        /// <returns>target pageId</returns>
         public static string FindVerseLinkPageAndCreateIfNeeded(Application oneNoteApp, 
             string currentSectionId, string currentPageId, string currentPageName, string descriptionPageName)
         {
