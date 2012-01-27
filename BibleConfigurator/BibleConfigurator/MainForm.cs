@@ -373,21 +373,21 @@ namespace BibleConfigurator
 
         private void LoadParameters()
         {
+            Dictionary<string, string> notebooks = GetNotebooks();
+            string singleNotebookId = SearchForSingleNoteBook(notebooks.Keys);
+
             rbSingleNotebook.Checked = SettingsManager.Instance.NotebookId_Bible == SettingsManager.Instance.NotebookId_BibleComments
-                                    && SettingsManager.Instance.NotebookId_Bible == SettingsManager.Instance.NotebookId_BibleStudy;
+                                    && SettingsManager.Instance.NotebookId_Bible == SettingsManager.Instance.NotebookId_BibleStudy
+                                    && !string.IsNullOrEmpty(singleNotebookId);
 
             rbMultiNotebook.Checked = !rbSingleNotebook.Checked;
-            rbMultiNotebook_CheckedChanged(this, null);
-
-
-            Dictionary<string, string> notebooks = GetNotebooks();
+            rbMultiNotebook_CheckedChanged(this, null);            
 
             cbSingleNotebook.DataSource = notebooks.Values.ToList();
             cbBibleNotebook.DataSource = notebooks.Values.ToList();
             cbBibleCommentsNotebook.DataSource = notebooks.Values.ToList();
             cbBibleStudyNotebook.DataSource = notebooks.Values.ToList();
-
-            string singleNotebookId = SearchForSingleNoteBook(notebooks.Keys);
+            
             string singleNotebookDefaultName = Consts.SingleNotebookDefaultName;
             if (!string.IsNullOrEmpty(singleNotebookId))
                 singleNotebookDefaultName = notebooks[singleNotebookId];

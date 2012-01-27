@@ -13,6 +13,30 @@ namespace BibleConfigurator.Tools
 {
     public class RelinkAllBibleCommentsManager
     {
+        public class CommentPageId
+        {
+            public string BibleSectionId { get; set; }
+            public string BiblePageId { get; set; }
+            public string BiblePageName { get; set; }
+            public string CommentsPageName { get; set; }
+
+            public override int GetHashCode()
+            {
+                return BibleSectionId.GetHashCode() ^ BiblePageId.GetHashCode() ^ BiblePageName.GetHashCode() ^ CommentsPageName.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                CommentPageId otherObject = (CommentPageId)obj;
+                return BibleSectionId == otherObject.BibleSectionId
+                    && BiblePageId == otherObject.BiblePageId
+                    && BiblePageName == otherObject.BiblePageName
+                    && CommentsPageName == otherObject.CommentsPageName;
+            }
+        }
+
+        private Dictionary<CommentPageId, string> _commentPagesIds = new Dictionary<CommentPageId, string>();
+
         private Application _oneNoteApp;
 
         public RelinkAllBibleCommentsManager(Application oneNoteApp)
@@ -115,8 +139,8 @@ namespace BibleConfigurator.Tools
             XmlNamespaceManager xnm;
             XDocument pageDocument = OneNoteUtils.GetXDocument(OneNoteProxy.Instance.GetPageContent(_oneNoteApp, pageId), out xnm);
 
-            вот здес - VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(_oneNoteApp, sectionId, pageId, pageName, SettingsManager.Instance.PageName_DefaultComments);
-            надо искать с учётом имени страницы. (в ссылке искать строку, от ".one#" до "."). и при этом, чтобы одно искать то же не искать - запоминать где нить (особенно дефолтную страницу, потому что в 99,99% будет только она)
+            //вот здес - VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(_oneNoteApp, sectionId, pageId, pageName, SettingsManager.Instance.PageName_DefaultComments);
+            //надо искать с учётом имени страницы. (в ссылке искать строку, от ".one#" до "."). и при этом, чтобы одно искать то же не искать - запоминать где нить (особенно дефолтную страницу, потому что в 99,99% будет только она)
 
             foreach (XElement rowElement in pageDocument.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]", xnm))
             {
@@ -130,7 +154,7 @@ namespace BibleConfigurator.Tools
 
                     if (linkEnd != -1)
                     {
-                        RelinkPageComment(rowElement, linkIndex, linkEnd);                        
+                        RelinkPageComment(sectionId, pageId, pageName, rowElement, linkIndex, linkEnd);                        
 
                         //ProgressBar.Progress()
                     }
@@ -140,11 +164,47 @@ namespace BibleConfigurator.Tools
             }
         }
 
-        private void RelinkPageComment(XElement rowElement, int linkIndex, int linkEnd)
+        private void RelinkPageComment(string bibleSectionId, string biblePageId, string biblePageName, XElement rowElement, int linkIndex, int linkEnd)
         {
-            
             string commentLink = rowElement.Value.Substring(linkIndex, linkEnd - linkIndex + "</a>".Length);
-            string commentText = GetLinkText(commentLink);            
+            string commentText = GetLinkText(commentLink);
+
+            string commentPageName = GetCommentPageName(commentLink);
+            string commentPageId = GetCommentPageId(bibleSectionId, biblePageId, biblePageName, commentPageName);
+            
+        }
+
+        private string GetCommentPageId(string bibleSectionId, string biblePageId, string biblePageName, string commentPageName)
+        {
+            CommentPageId key = new CommentPageId() { 
+                BibleSectionId = bibleSectionId, BiblePageId = biblePageId, BiblePageName = biblePageName, CommentsPageName = commentPageName };
+            if (!_commentPagesIds.ContainsKey(key))
+            {
+                string commentPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName);                
+                _commentPagesIds.Add(key, commentPageId);
+            }
+
+            return _commentPagesIds[key];
+        }
+
+        private string GetCommentPageName(string commentLink)
+        {
+            string result = SettingsManager.Instance.PageName_DefaultComments;
+            string beginSearchString = ".one#";
+            string endSearchString = ".%20%5b";
+            int i = commentLink.IndexOf(beginSearchString);
+
+            if (i != -1)
+            {
+                int ii = commentLink.IndexOf(endSearchString, i + 1);
+
+                if (ii != -1)
+                {
+                    result = commentLink.Substring(i + beginSearchString.Length, ii - i - beginSearchString.Length);
+                }
+            }
+
+            return result;
         }
 
         private string GetLinkText(string commentLink)
