@@ -192,8 +192,16 @@ namespace BibleConfigurator.Tools
         }
 
         private string GetComentobjectId(string commentPageId, string commentText)
-        {
-            throw new NotImplementedException();
+        {            
+            string pageContent;
+            XmlNamespaceManager xnm;
+            _oneNoteApp.GetPageContent(commentPageId, out pageContent);
+
+            XDocument pageDoc = OneNoteUtils.GetXDocument(pageContent, out xnm);
+
+
+
+            return pageDoc.ToString(); 
         }
 
         private string GetCommentPageId(string bibleSectionId, string biblePageId, string biblePageName, string commentPageName)
@@ -230,11 +238,10 @@ namespace BibleConfigurator.Tools
         }
 
         private string GetLinkText(string commentLink)
-        {
-            это надо переделать, так как не верно вернёт например если коммент чисто на стих
+        {            
             int breakIndex;
-            string s = StringUtils.GetNextString(commentLink, -1, null, out breakIndex, StringSearchIgnorance.None,
-                 StringSearchMode.SearchText);
+            string s = StringUtils.GetNextString(commentLink, -1, new SearchMissInfo(int.MaxValue, SearchMissInfo.MissMode.CancelOnNextMiss),
+                out breakIndex, StringSearchIgnorance.None, StringSearchMode.NotSpecified);
 
             return s;
         }
