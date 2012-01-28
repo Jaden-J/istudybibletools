@@ -179,6 +179,14 @@ namespace BibleNoteLinker
         {
             string sectionGroupName = (string)sectionGroup.Attribute("name");
 
+            if (sectionGroup.Attribute("isRecycleBin") != null)
+            {
+                string isRecycleBin = (string)sectionGroup.Attribute("isRecycleBin").Value;
+
+                if (bool.Parse(isRecycleBin))
+                    return;
+            }
+
             if (!string.IsNullOrEmpty(sectionGroupName))
             {
                 Logger.LogMessage("Обработка группы секций '{0}'", sectionGroupName);

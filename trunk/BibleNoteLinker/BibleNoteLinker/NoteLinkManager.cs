@@ -1141,7 +1141,7 @@ namespace BibleNoteLinker
                 prevRow.AddAfterSelf(newRow);
         }
 
-        public static void DeletePageNotes(Application oneNoteApp, string sectionGroupId, string sectionId, string pageId, string pageName)
+        public static void DeletePageNotes(Application oneNoteApp, string bibleSectionGroupId, string bibleSectionId, string biblePageId, string biblePageName)
         {
             try
             {
@@ -1149,7 +1149,7 @@ namespace BibleNoteLinker
                 string pageContentXml;
                 XDocument notePageDocument;
                 XmlNamespaceManager xnm;
-                oneNoteApp.GetPageContent(pageId, out pageContentXml);
+                oneNoteApp.GetPageContent(biblePageId, out pageContentXml);
                 notePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
 
                 foreach (XElement noteTextElement in notePageDocument.Root.XPathSelectElements("//one:Table/one:Row/one:Cell[2]/one:OEChildren/one:OE/one:T", xnm))
@@ -1167,18 +1167,18 @@ namespace BibleNoteLinker
                 XElement chapterNotesLink = FindChapterNotesLink(notePageDocument, xnm);
                 if (chapterNotesLink != null)
                 {
-                    oneNoteApp.DeletePageContent(pageId, (string)chapterNotesLink.Attribute("objectID"));
+                    oneNoteApp.DeletePageContent(biblePageId, (string)chapterNotesLink.Attribute("objectID"));
                     chapterNotesLink.Remove();
                     wasModified = true;
                 }
 
                 if (wasModified)  // значит есть страница заметок
-                {
+                {                    
                     string notesPageId = null;
                     try
                     {
                         notesPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(oneNoteApp,
-                            sectionId, pageId, pageName, SettingsManager.Instance.PageName_Notes);
+                            bibleSectionId, biblePageId, biblePageName, SettingsManager.Instance.PageName_Notes);
                     }
                     catch (Exception ex)
                     {
@@ -1187,7 +1187,16 @@ namespace BibleNoteLinker
 
                     if (!string.IsNullOrEmpty(notesPageId))
                     {
+                        string sectionId;
+                        oneNoteApp.GetHierarchyParent(notesPageId, out sectionId);
+
                         oneNoteApp.DeleteHierarchy(notesPageId);
+
+                        string sectionPagesXml;
+                        oneNoteApp.GetHierarchy(sectionId, HierarchyScope.hsPages, out sectionPagesXml);
+                        XDocument sectionPages = OneNoteUtils.GetXDocument(sectionPagesXml, out xnm);
+                        if (sectionPages.Root.XPathSelectElements("one:Page", xnm).Count() == 0)
+                            oneNoteApp.DeleteHierarchy(sectionId);  // удаляем раздел, если нет больше в нём страниц
                     }
                 }
 
@@ -1199,6 +1208,7 @@ namespace BibleNoteLinker
                 Logger.LogError("Ошибки при обработке страницы.", ex);
             }
         }
+        
 
         private static XElement FindChapterNotesLink(XDocument notePageDocument, XmlNamespaceManager xnm)
         {

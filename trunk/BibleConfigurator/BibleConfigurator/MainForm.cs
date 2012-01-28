@@ -373,7 +373,10 @@ namespace BibleConfigurator
         private void LoadParameters()
         {
             Dictionary<string, string> notebooks = GetNotebooks();
-            string singleNotebookId = SearchForSingleNoteBook(notebooks.Keys);
+            string singleNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.Single);
+            string bibleNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.Bible);
+            string bibleCommentsNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.BibleComments);
+            string bibleStudyNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.BibleStudy);
 
             rbSingleNotebook.Checked = SettingsManager.Instance.NotebookId_Bible == SettingsManager.Instance.NotebookId_BibleComments
                                     && SettingsManager.Instance.NotebookId_Bible == SettingsManager.Instance.NotebookId_BibleStudy
@@ -386,35 +389,35 @@ namespace BibleConfigurator
             cbBibleNotebook.DataSource = notebooks.Values.ToList();
             cbBibleCommentsNotebook.DataSource = notebooks.Values.ToList();
             cbBibleStudyNotebook.DataSource = notebooks.Values.ToList();
-            
-            string singleNotebookDefaultName = Consts.SingleNotebookDefaultName;
-            if (!string.IsNullOrEmpty(singleNotebookId))
-                singleNotebookDefaultName = notebooks[singleNotebookId];
 
-            SetNotebookParameters(rbSingleNotebook.Checked, singleNotebookDefaultName, notebooks, SettingsManager.Instance.NotebookId_Bible, cbSingleNotebook, chkCreateSingleNotebookFromTemplate);
+            SetNotebookParameters(rbSingleNotebook.Checked, !string.IsNullOrEmpty(singleNotebookId) ? notebooks[singleNotebookId] :  Consts.SingleNotebookDefaultName, 
+                notebooks, SettingsManager.Instance.NotebookId_Bible, cbSingleNotebook, chkCreateSingleNotebookFromTemplate);
 
-            SetNotebookParameters(rbMultiNotebook.Checked, Consts.BibleNotebookDefaultName, notebooks, SettingsManager.Instance.NotebookId_Bible, cbBibleNotebook, chkCreateBibleNotebookFromTemplate);
+            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotebookId) ? notebooks[bibleNotebookId] :  Consts.BibleNotebookDefaultName, 
+                notebooks, SettingsManager.Instance.NotebookId_Bible, cbBibleNotebook, chkCreateBibleNotebookFromTemplate);
 
-            SetNotebookParameters(rbMultiNotebook.Checked, Consts.BibleCommentsNotebookDefaultName, notebooks, SettingsManager.Instance.NotebookId_BibleComments, cbBibleCommentsNotebook, chkCreateBibleCommentsNotebookFromTemplate);
+            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleCommentsNotebookId) ? notebooks[bibleCommentsNotebookId] :  Consts.BibleCommentsNotebookDefaultName, 
+                notebooks, SettingsManager.Instance.NotebookId_BibleComments, cbBibleCommentsNotebook, chkCreateBibleCommentsNotebookFromTemplate);
 
-            SetNotebookParameters(rbMultiNotebook.Checked, Consts.BibleStudyNotebookDefaultName, notebooks, SettingsManager.Instance.NotebookId_BibleStudy, cbBibleStudyNotebook, chkCreateBibleStudyNotebookFromTemplate);
+            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleStudyNotebookId) ? notebooks[bibleStudyNotebookId] :  Consts.BibleStudyNotebookDefaultName, 
+                notebooks, SettingsManager.Instance.NotebookId_BibleStudy, cbBibleStudyNotebook, chkCreateBibleStudyNotebookFromTemplate);
 
             tbBookOverviewName.Text = SettingsManager.Instance.PageName_DefaultBookOverview;
             tbNotesPageName.Text = SettingsManager.Instance.PageName_Notes;
             tbPageDescriptionName.Text = SettingsManager.Instance.PageName_DefaultComments;
         }
 
-        private string SearchForSingleNoteBook(IEnumerable<string> notebooksIds)
+        private string SearchForNotebook(IEnumerable<string> notebooksIds, NotebookType notebookType)
         {
             foreach (string notebookId in notebooksIds)
             {
-                if (NotebookChecker.CheckNotebook(_oneNoteApp, notebookId, NotebookType.Single))
+                if (NotebookChecker.CheckNotebook(_oneNoteApp, notebookId, notebookType))
                 {
                     return notebookId;
                 }
             }
 
-            return string.Empty;
+            return null;
         }
 
         private static void SetNotebookParameters(bool loadNameFromSettings, string defaultName, Dictionary<string, string> notebooks, string notebookId, ComboBox cb, CheckBox chk)
