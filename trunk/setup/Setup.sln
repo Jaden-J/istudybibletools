@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibleCommon", "..\BibleComm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibleNoteLinker", "..\BibleNoteLinker\BibleNoteLinker\BibleNoteLinker.csproj", "{0BFBA110-0694-4747-98A8-3691C596806A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibleConfigurator", "..\BibleConfigurator\BibleConfigurator\BibleConfigurator.csproj", "{11828968-B062-4A9D-BF56-60A008E8CBEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,16 @@ Global
 		{0BFBA110-0694-4747-98A8-3691C596806A}.Release|Mixed Platforms.Build.0 = Release|x86
 		{0BFBA110-0694-4747-98A8-3691C596806A}.Release|x86.ActiveCfg = Release|x86
 		{0BFBA110-0694-4747-98A8-3691C596806A}.Release|x86.Build.0 = Release|x86
+		{11828968-B062-4A9D-BF56-60A008E8CBEE}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{11828968-B062-4A9D-BF56-60A008E8CBEE}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{11828968-B062-4A9D-BF56-60A008E8CBEE}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{11828968-B062-4A9D-BF56-60A008E8CBEE}.Debug|x86.ActiveCfg = Debug|x86
+		{11828968-B062-4A9D-BF56-60A008E8CBEE}.Debug|x86.Build.0 = Debug|x86
+		{11828968-B062-4A9D-BF56-60A008E8CBEE}.Release|Any CPU.ActiveCfg = Release|x86
+		{11828968-B062-4A9D-BF56-60A008E8CBEE}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{11828968-B062-4A9D-BF56-60A008E8CBEE}.Release|Mixed Platforms.Build.0 = Release|x86
+		{11828968-B062-4A9D-BF56-60A008E8CBEE}.Release|x86.ActiveCfg = Release|x86
+		{11828968-B062-4A9D-BF56-60A008E8CBEE}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,5 +119,6 @@ Global
 		{B2933354-9EF6-4975-B263-9BE374FF9940} = {98750266-722F-469D-943F-9D38CB36AA2D}
 		{D2E40D0E-9786-49E9-B2A7-54088B42EAC5} = {98750266-722F-469D-943F-9D38CB36AA2D}
 		{0BFBA110-0694-4747-98A8-3691C596806A} = {98750266-722F-469D-943F-9D38CB36AA2D}
+		{11828968-B062-4A9D-BF56-60A008E8CBEE} = {98750266-722F-469D-943F-9D38CB36AA2D}
 	EndGlobalSection
 EndGlobal

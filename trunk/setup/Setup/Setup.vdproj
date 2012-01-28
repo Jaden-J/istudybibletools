@@ -4,9 +4,9 @@
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
 "IsWebType" = "8:FALSE"
 "ProjectName" = "8:Setup"
-"LanguageId" = "3:1033"
-"CodePage" = "3:1252"
-"UILanguageId" = "3:1033"
+"LanguageId" = "3:1049"
+"CodePage" = "3:1251"
+"UILanguageId" = "3:1049"
 "SccProjectName" = "8:"
 "SccLocalPath" = "8:"
 "SccAuxPath" = "8:"
@@ -21,14 +21,62 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_2AC846C08E714AAC9DF6481F7B960DD0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2C012073661546ECB774FF61ABBA68D8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2E95AEAF63CF73A90E9D59B78268E721"
+        "OwnerKey" = "8:_830B3D6A545B464F87CF9AA03B88DBEC"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2E95AEAF63CF73A90E9D59B78268E721"
+        "OwnerKey" = "8:_4D43A8950BBA61E95A29FFE061FD6641"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2E95AEAF63CF73A90E9D59B78268E721"
+        "OwnerKey" = "8:_EB9CA9DEF0094F6EB6A349318DF9C17A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2E95AEAF63CF73A90E9D59B78268E721"
+        "OwnerKey" = "8:_CA4EBCE7EEAD491A924378B1B80C766E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2E95AEAF63CF73A90E9D59B78268E721"
+        "OwnerKey" = "8:_A3A83E09BBAD46FEABA7F53A91CF974E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_3FC71294DAB247EDA89368E781DCDC4E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_63F07F50D7F243D8A2760E46DC4922A7"
+        "MsmKey" = "8:_4CE1B79E46764008A1969F6323ECDDE5"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4D43A8950BBA61E95A29FFE061FD6641"
+        "OwnerKey" = "8:_EB9CA9DEF0094F6EB6A349318DF9C17A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -39,14 +87,20 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_7FD3AADE30BB55B3AF8AE60EF54EB2BB"
-        "OwnerKey" = "8:_3FC71294DAB247EDA89368E781DCDC4E"
+        "MsmKey" = "8:_77CC2EEEEBDD48158591A06A8138FDCF"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_830B3D6A545B464F87CF9AA03B88DBEC"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_87EB3BB4D0E25ABCB47DC11B48D56C67"
+        "OwnerKey" = "8:_3FC71294DAB247EDA89368E781DCDC4E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -63,26 +117,38 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_B319E0923B1BE9DD0B515D381F3947A0"
+        "MsmKey" = "8:_CA4EBCE7EEAD491A924378B1B80C766E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CAE36FDC923F4DE8A5FCDED1D8BDB8E2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
+        "OwnerKey" = "8:_2E95AEAF63CF73A90E9D59B78268E721"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
         "OwnerKey" = "8:_EB9CA9DEF0094F6EB6A349318DF9C17A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
-        "OwnerKey" = "8:_D85BAC55BB4951D1EBE30B9D348666DC"
+        "OwnerKey" = "8:_4D43A8950BBA61E95A29FFE061FD6641"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
-        "OwnerKey" = "8:_EB9CA9DEF0094F6EB6A349318DF9C17A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
-        "OwnerKey" = "8:_B319E0923B1BE9DD0B515D381F3947A0"
+        "OwnerKey" = "8:_CA4EBCE7EEAD491A924378B1B80C766E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -99,26 +165,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_D85BAC55BB4951D1EBE30B9D348666DC"
-        "OwnerKey" = "8:_830B3D6A545B464F87CF9AA03B88DBEC"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D85BAC55BB4951D1EBE30B9D348666DC"
-        "OwnerKey" = "8:_B319E0923B1BE9DD0B515D381F3947A0"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D85BAC55BB4951D1EBE30B9D348666DC"
-        "OwnerKey" = "8:_EB9CA9DEF0094F6EB6A349318DF9C17A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D85BAC55BB4951D1EBE30B9D348666DC"
-        "OwnerKey" = "8:_A3A83E09BBAD46FEABA7F53A91CF974E"
+        "MsmKey" = "8:_DAE3F7C8C3D9494BB404D9417E4F2448"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -136,13 +184,37 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_EB9CA9DEF0094F6EB6A349318DF9C17A"
+        "OwnerKey" = "8:_4D43A8950BBA61E95A29FFE061FD6641"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B319E0923B1BE9DD0B515D381F3947A0"
+        "OwnerKey" = "8:_2E95AEAF63CF73A90E9D59B78268E721"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_4CE1B79E46764008A1969F6323ECDDE5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_CA4EBCE7EEAD491A924378B1B80C766E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_EB9CA9DEF0094F6EB6A349318DF9C17A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -161,18 +233,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_830B3D6A545B464F87CF9AA03B88DBEC"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D85BAC55BB4951D1EBE30B9D348666DC"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -292,12 +352,12 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_63F07F50D7F243D8A2760E46DC4922A7"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2AC846C08E714AAC9DF6481F7B960DD0"
             {
-            "SourcePath" = "8:..\\..\\BibleCommon\\BibleCommon\\settings.config"
-            "TargetName" = "8:settings.config"
+            "SourcePath" = "8:..\\..\\OneNoteTemplates\\Holy Bible.onepkg"
+            "TargetName" = "8:Holy Bible.onepkg"
             "Tag" = "8:"
-            "Folder" = "8:_377531C7659D426AB7C4AD5FAB945ACD"
+            "Folder" = "8:_C3956FCEAD3C4AD2997FF12787DF4B4C"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -312,12 +372,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7FD3AADE30BB55B3AF8AE60EF54EB2BB"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2C012073661546ECB774FF61ABBA68D8"
             {
-            "SourcePath" = "8:RibbonButtons.tlb"
-            "TargetName" = "8:RibbonButtons.tlb"
+            "SourcePath" = "8:..\\..\\OneNoteTemplates\\Комментарии к Библии.onepkg"
+            "TargetName" = "8:Комментарии к Библии.onepkg"
             "Tag" = "8:"
-            "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
+            "Folder" = "8:_C3956FCEAD3C4AD2997FF12787DF4B4C"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -327,19 +387,50 @@
             "Permanent" = "11:FALSE"
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
-            "Register" = "3:2"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2E95AEAF63CF73A90E9D59B78268E721"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_2E95AEAF63CF73A90E9D59B78268E721"
+                    {
+                    "Name" = "8:BibleCommon.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:BibleCommon.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_D7BA4F22777B48ECA39AA4EB92EA8BE0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B319E0923B1BE9DD0B515D381F3947A0"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4D43A8950BBA61E95A29FFE061FD6641"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:BibleNoteLinker, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
-                    "_B319E0923B1BE9DD0B515D381F3947A0"
+                    "_4D43A8950BBA61E95A29FFE061FD6641"
                     {
                     "Name" = "8:BibleNoteLinker.exe"
                     "Attributes" = "3:512"
@@ -361,6 +452,66 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_77CC2EEEEBDD48158591A06A8138FDCF"
+            {
+            "SourcePath" = "8:..\\..\\OneNoteTemplates\\Библия.onepkg"
+            "TargetName" = "8:Библия.onepkg"
+            "Tag" = "8:"
+            "Folder" = "8:_C3956FCEAD3C4AD2997FF12787DF4B4C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_87EB3BB4D0E25ABCB47DC11B48D56C67"
+            {
+            "SourcePath" = "8:RibbonButtons.tlb"
+            "TargetName" = "8:RibbonButtons.tlb"
+            "Tag" = "8:"
+            "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:2"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CAE36FDC923F4DE8A5FCDED1D8BDB8E2"
+            {
+            "SourcePath" = "8:..\\..\\OneNoteTemplates\\Изучение Библии.onepkg"
+            "TargetName" = "8:Изучение Библии.onepkg"
+            "Tag" = "8:"
+            "Folder" = "8:_C3956FCEAD3C4AD2997FF12787DF4B4C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D3B8D8959A99C0CF0D1B8F032542DB82"
@@ -394,23 +545,12 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D85BAC55BB4951D1EBE30B9D348666DC"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DAE3F7C8C3D9494BB404D9417E4F2448"
             {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_D85BAC55BB4951D1EBE30B9D348666DC"
-                    {
-                    "Name" = "8:BibleCommon.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:BibleCommon.dll"
-            "TargetName" = "8:"
+            "SourcePath" = "8:..\\Instruction.docx"
+            "TargetName" = "8:Instruction.docx"
             "Tag" = "8:"
-            "Folder" = "8:_D7BA4F22777B48ECA39AA4EB92EA8BE0"
+            "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -422,7 +562,7 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
         }
@@ -483,6 +623,17 @@
                                 {
                                 }
                             }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_6B6F3FD25E6048F18D747FA6C8B01535"
+                            {
+                            "Name" = "8:BibleConfigurator"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_CC019E18DC5D41248D214615DCF31E6F"
+                                "Folders"
+                                {
+                                }
+                            }
                             "{9EF0B969-E518-4E46-987F-47570745A589}:_D7BA4F22777B48ECA39AA4EB92EA8BE0"
                             {
                             "Name" = "8:BibleVerseLinker"
@@ -494,6 +645,17 @@
                                 {
                                 }
                             }
+                        }
+                    }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_C3956FCEAD3C4AD2997FF12787DF4B4C"
+                    {
+                    "Name" = "8:OneNoteTemplates"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_DB2FF090316F47278FEF74CDE1A344E4"
+                        "Folders"
+                        {
                         }
                     }
                 }
@@ -518,22 +680,22 @@
         }
         "MsiBootstrapper"
         {
-        "LangId" = "3:1033"
+        "LangId" = "3:1049"
         "RequiresElevation" = "11:FALSE"
         }
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OneNote IStudyBibleTools"
-        "ProductCode" = "8:{278D3D72-780A-4281-A961-BA80DAFD80AF}"
-        "PackageCode" = "8:{B4AED56E-9F0B-4140-B6C9-2F6AAA7E1FBC}"
+        "ProductCode" = "8:{9808752A-AE35-4BD8-97E5-BF4B83A0FCF8}"
+        "PackageCode" = "8:{B0B93285-13F0-4528-8CA9-3F0E55816D3B}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.0.1"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -1411,6 +1573,34 @@
                 {
                 }
             }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4CE1B79E46764008A1969F6323ECDDE5"
+            {
+            "SourcePath" = "8:..\\..\\BibleCommon\\BibleCommon\\obj\\Debug\\BibleCommon.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_6B6F3FD25E6048F18D747FA6C8B01535"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{D2E40D0E-9786-49E9-B2A7-54088B42EAC5}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6EB90D269F004B0D8591B6DB745A2157"
             {
             "SourcePath" = "8:..\\..\\BibleCommon\\BibleCommon\\obj\\Debug\\BibleCommon.dll"
@@ -1518,6 +1708,34 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{D2E40D0E-9786-49E9-B2A7-54088B42EAC5}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CA4EBCE7EEAD491A924378B1B80C766E"
+            {
+            "SourcePath" = "8:..\\..\\BibleConfigurator\\BibleConfigurator\\obj\\x86\\Debug\\BibleConfigurator.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_6B6F3FD25E6048F18D747FA6C8B01535"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{11828968-B062-4A9D-BF56-60A008E8CBEE}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
