@@ -36,9 +36,23 @@ namespace BibleConfigurator
                         result = ElementIsBibleComments(notebookDoc.Root, xnm);
                         break;
                     case NotebookType.BibleStudy:
-                        result = !(ElementIsBible(notebookDoc.Root, xnm) || ElementIsBibleComments(notebookDoc.Root, xnm));
+                        result = ElementIsBibleStudy(notebookDoc.Root, xnm);
                         break;
                 }
+            }
+
+            return result;
+        }
+
+        public static bool ElementIsBibleStudy(XElement element, XmlNamespaceManager xnm)
+        {
+            bool result = !(ElementIsBible(element, xnm) || ElementIsBibleComments(element, xnm));
+
+            if (result)
+            {
+                string notebookName = (string)element.Attribute("name").Value;
+                if (notebookName == "Личная")
+                    result = false;
             }
 
             return result;
