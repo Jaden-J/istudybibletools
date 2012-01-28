@@ -68,17 +68,6 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="XMLFile1.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="XMLFile2.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="XMLFile3.xml" />
-    <Content Include="XMLFile4.xml" />
-    <Content Include="XMLFile5.xml" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
