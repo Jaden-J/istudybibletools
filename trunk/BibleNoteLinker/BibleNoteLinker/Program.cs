@@ -195,8 +195,8 @@ namespace BibleNoteLinker
 
             foreach (var subSectionGroup in sectionGroup.XPathSelectElements("one:SectionGroup", xnm))
             {                
-                string subSectionGroupName = (string)subSectionGroup.Attribute("name");
-                ProcessSectionGroup(subSectionGroup, subSectionGroupName, oneNoteApp, notebookId, xnm, linkDepth, force, deleteNotes);
+                string subSectionGroupId = (string)subSectionGroup.Attribute("ID");
+                ProcessSectionGroup(subSectionGroup, subSectionGroupId, oneNoteApp, notebookId, xnm, linkDepth, force, deleteNotes);
             }
 
             foreach (var subSection in sectionGroup.XPathSelectElements("one:Section", xnm))
