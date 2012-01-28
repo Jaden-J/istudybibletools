@@ -46,6 +46,28 @@ namespace BibleCommon.Services
         public string PageName_Notes { get; set; }
 
 
+        public bool IsConfigured()
+        {
+            bool result = !string.IsNullOrEmpty(this.NotebookId_Bible)
+                && !string.IsNullOrEmpty(this.NotebookId_BibleComments)
+                && !string.IsNullOrEmpty(this.NotebookId_BibleStudy)
+                && !string.IsNullOrEmpty(this.PageName_DefaultBookOverview)
+                && !string.IsNullOrEmpty(this.PageName_DefaultComments)
+                && !string.IsNullOrEmpty(this.PageName_Notes);
+
+            if (result)
+            {
+                if (this.IsSingleNotebook)
+                {
+                    result = !string.IsNullOrEmpty(this.SectionGroupId_Bible)
+                          && !string.IsNullOrEmpty(this.SectionGroupId_BibleComments)
+                          && !string.IsNullOrEmpty(this.SectionGroupId_BibleStudy);
+                }
+            }
+
+            return result;
+        }
+
         public bool IsSingleNotebook
         {
             get
