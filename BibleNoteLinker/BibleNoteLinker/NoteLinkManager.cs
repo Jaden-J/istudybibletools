@@ -896,7 +896,7 @@ namespace BibleNoteLinker
             }
 
             if (suchNoteLink != null)
-                suchNoteLink.Value = suchNoteLink.Value.Replace("\n", " ");
+                OneNoteUtils.NormalizaTextElement(suchNoteLink);
 
             string multiVerseString = GetMultiVerseString(suchNoteLink, vp, processedVerses, force);
             string verseCountString = GetVerseCountString(suchNoteLink, vp, processedVerses, force);

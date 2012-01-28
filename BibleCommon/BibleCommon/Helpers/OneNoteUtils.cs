@@ -68,5 +68,10 @@ namespace BibleCommon.Helpers
 
             return string.Format("<a href=\"{0}\">{1}</a>", link, title);
         }
+
+        public static void NormalizaTextElement(XElement textElement)  // must be one:T element
+        {
+            textElement.Value = textElement.Value.Replace("\n", " ");
+        }
     }
 }

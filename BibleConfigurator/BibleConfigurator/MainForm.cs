@@ -45,6 +45,9 @@ namespace BibleConfigurator
             BibleCommon.Services.Logger.Init("BibleConfigurator");
         }
 
+        public bool StopExternalProcess { get; set; }
+        
+
         private void btnOK_Click(object sender, EventArgs e)
         {          
             btnOK.Enabled = false;
@@ -182,10 +185,8 @@ namespace BibleConfigurator
 
         private void WaitAndLoadParameters(NotebookType notebookType, string notebookName)
         {   
-            tbcMain.Enabled = false;
-            pbLoadParameters.Visible = true;
-            pbLoadParameters.Value = 0;
-            lblCreateNotebookDescription.Text = string.Format("Создание записной книжки '{0}'", notebookName);
+            PrepareForExternalProcessing(100, 1, string.Format("Создание записной книжки '{0}'", notebookName));
+            
             bool parametersWasLoad = false;
 
             try
@@ -193,7 +194,7 @@ namespace BibleConfigurator
                 string notebookId;                
                 for (int i = 0; i <= LoadParametersAttemptsCount; i++)
                 {
-                    pbLoadParameters.PerformStep();
+                    pbMain.PerformStep();
                     System.Windows.Forms.Application.DoEvents();
 
                     if (TryToLoadNotebookParameters(notebookType, notebookName, out notebookId, true))
@@ -207,9 +208,7 @@ namespace BibleConfigurator
             }
             finally
             {
-                pbLoadParameters.Visible = false;
-                tbcMain.Enabled = true;
-                lblCreateNotebookDescription.Text = string.Empty;
+                ExternalProcessingDone(string.Empty);                
             }
 
             if (!parametersWasLoad)
@@ -616,12 +615,49 @@ namespace BibleConfigurator
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            BibleCommon.Services.Logger.Done();
+            StopExternalProcess = true;            
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            BibleCommon.Services.Logger.Done();        
         }
 
         private void btnRelinkComments_Click(object sender, EventArgs e)
         {
-            new RelinkAllBibleCommentsManager(_oneNoteApp).RelinkAllBibleComments();
+            new RelinkAllBibleCommentsManager(_oneNoteApp, this).RelinkAllBibleComments();
         }
+
+        public void PrepareForExternalProcessing(int pbMaxValue, int pbStep, string infoText)
+        {
+            pbMain.Value = 0;
+            pbMain.Maximum = pbMaxValue;
+            pbMain.Step = pbStep;
+            pbMain.Visible = true;
+
+            tbcMain.Enabled = false;
+            lblProgressInfo.Text = infoText;
+
+            btnOK.Enabled = false;
+        }
+
+        public void ExternalProcessingDone(string infoText)
+        {
+            pbMain.Value = 0;
+            pbMain.Maximum = 100;
+            pbMain.Step = 1;
+            pbMain.Visible = false;
+
+            tbcMain.Enabled = true;
+            lblProgressInfo.Text = infoText;
+
+            btnOK.Enabled = true;
+        }
+
+        public void PerformProgressStep(string infoText)
+        {
+            lblProgressInfo.Text = infoText;
+            System.Windows.Forms.Application.DoEvents();
+        }       
     }
 }
