@@ -13,7 +13,6 @@ using System.IO;
 using System.Drawing.Imaging;
 using System.Diagnostics;
 using System.Reflection;
-using BibleCommon.Helpers;
 
 namespace RibbonButtons
 {
