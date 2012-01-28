@@ -8,6 +8,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using BibleCommon.Services;
+using BibleCommon.Consts;
 
 namespace BibleConfigurator.Tools
 {
@@ -38,19 +39,34 @@ namespace BibleConfigurator.Tools
         private Dictionary<CommentPageId, string> _commentPagesIds = new Dictionary<CommentPageId, string>();
 
         private Application _oneNoteApp;
+        private MainForm _form;
 
-        public RelinkAllBibleCommentsManager(Application oneNoteApp)
+        public RelinkAllBibleCommentsManager(Application oneNoteApp, MainForm form)
         {
-            _oneNoteApp = oneNoteApp; 
+            _oneNoteApp = oneNoteApp;
+            _form = form;
         }
 
         public void RelinkAllBibleComments()
         {
-            BibleCommon.Services.Logger.Init("RelinkAllBibleCommentsManager");
+            try
+            {
+                BibleCommon.Services.Logger.Init("RelinkAllBibleCommentsManager");
 
-            ProcessNotebook(SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible);
+                _form.PrepareForExternalProcessing(1255, 1, "Старт обновления ссылок на комментарии.");
 
-            BibleCommon.Services.Logger.Done();
+                ProcessNotebook(SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible);
+            }
+            catch (ProcessAbortedByUserException)
+            {
+                BibleCommon.Services.Logger.LogMessage("Process aborted by user");
+            }
+            finally
+            {                
+                BibleCommon.Services.Logger.Done();
+
+                _form.ExternalProcessingDone("Обновление ссылок на комментарии успешно завершено");
+            }
         }
 
         private void ProcessNotebook(string notebookId, string sectionGroupId)
@@ -115,7 +131,7 @@ namespace BibleConfigurator.Tools
             string sectionName = (string)section.Attribute("name");
 
             BibleCommon.Services.Logger.LogMessage("Обработка секции '{0}'", sectionName);
-            BibleCommon.Services.Logger.MoveLevel(1);
+            BibleCommon.Services.Logger.MoveLevel(1);            
 
             foreach (var page in section.XPathSelectElements("one:Page", xnm))
             {
@@ -129,6 +145,9 @@ namespace BibleConfigurator.Tools
                 RelinkPageComments(sectionGroupId, sectionId, pageId, pageName);
                 
                 BibleCommon.Services.Logger.MoveLevel(-1);
+
+                if (_form.StopExternalProcess)
+                    throw new ProcessAbortedByUserException();
             }
 
             BibleCommon.Services.Logger.MoveLevel(-1);
@@ -136,46 +155,41 @@ namespace BibleConfigurator.Tools
 
         private void RelinkPageComments(string sectionGroupId, string sectionId, string pageId, string pageName)
         {
+            _form.PerformProgressStep(string.Format("Обработка страницы '{0}'", pageName));
+
             string pageContent;
             XmlNamespaceManager xnm;            
             _oneNoteApp.GetPageContent(pageId, out pageContent);
             XDocument pageDocument = OneNoteUtils.GetXDocument(pageContent, out xnm);            
             bool wasModified = false;
 
-            foreach (XElement rowElement in pageDocument.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]", xnm))
+            foreach (XElement textElement in pageDocument.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
             {
-                string rowElementValue = rowElement.Value.Replace("\n", " ");                
+                OneNoteUtils.NormalizaTextElement(textElement);
 
-                int linkIndex = rowElementValue.IndexOf("<a ");
+                int linkIndex = textElement.Value.IndexOf("<a ");
 
                 while (linkIndex > -1)
                 {
-                    int linkEnd = rowElementValue.IndexOf("</a>", linkIndex + 1);
+                    int linkEnd = textElement.Value.IndexOf("</a>", linkIndex + 1);
 
                     if (linkEnd != -1)
                     {
-                        if (RelinkPageComment(sectionId, pageId, pageName, rowElement, rowElementValue, linkIndex, linkEnd))
-                            wasModified = true;
-
-                        if (wasModified)
-                            break;
+                        if (RelinkPageComment(sectionId, pageId, pageName, textElement, linkIndex, linkEnd))                          
+                            wasModified = true;                        
                     }
 
-                    linkIndex = rowElementValue.IndexOf("<a ", linkIndex + 1);
-                }
-                if (wasModified)
-                    break;
+                    linkIndex = textElement.Value.IndexOf("<a ", linkIndex + 1);
+                }                
             }
 
             if (wasModified)
                 _oneNoteApp.UpdatePageContent(pageDocument.ToString());
-
-            //ProgressBar.Progress()
         }
 
-        private bool RelinkPageComment(string bibleSectionId, string biblePageId, string biblePageName, XElement rowElement, string rowElementValue, int linkIndex, int linkEnd)
+        private bool RelinkPageComment(string bibleSectionId, string biblePageId, string biblePageName, XElement textElement, int linkIndex, int linkEnd)
         {
-            string commentLink = rowElementValue.Substring(linkIndex, linkEnd - linkIndex + "</a>".Length);
+            string commentLink = textElement.Value.Substring(linkIndex, linkEnd - linkIndex + "</a>".Length);
             string commentText = GetLinkText(commentLink);
 
             string commentPageName = GetCommentPageName(commentLink);
@@ -186,11 +200,7 @@ namespace BibleConfigurator.Tools
             {
                 string newCommentLink = OneNoteUtils.GenerateHref(_oneNoteApp, commentText, commentPageId, commentObjectId);
 
-                rowElement.Value = rowElementValue.Replace(commentLink, newCommentLink);
-                    //string.Concat(
-                    //            rowElement.Value.Substring(0, linkIndex),
-                    //            newCommentLink,
-                    //            rowElement.Value.Substring(linkEnd + "</a>".Length));
+                textElement.Value = textElement.Value.Replace(commentLink, newCommentLink);               
 
                 return true;
             }
@@ -205,6 +215,8 @@ namespace BibleConfigurator.Tools
 
             foreach (XElement el in pageDoc.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:T", xnm))
             {
+                OneNoteUtils.NormalizaTextElement(el);
+
                 bool needToSearchVerse = true;
                 int boldTagIndex = el.Value.IndexOf("font-weight:bold");
                 if (boldTagIndex != -1)
@@ -239,17 +251,17 @@ namespace BibleConfigurator.Tools
                     int temp;
                     if (int.TryParse(commentText, out temp))  // значит скорее всего указали стих
                     {
-                        string verseStartSearchString = "\">:";
+                        string verseStartSearchString = ">:";
                         int verseStartIndex = el.Value.IndexOf(verseStartSearchString);
                         if (verseStartIndex != -1)
                         {
                             int breakIndex;
-                            string textBefore = StringUtils.GetPrevString(el.Value, verseStartIndex + 2, new SearchMissInfo(verseStartIndex, SearchMissInfo.MissMode.CancelOnNextMiss),
+                            string textBefore = StringUtils.GetPrevString(el.Value, verseStartIndex + 1, new SearchMissInfo(verseStartIndex, SearchMissInfo.MissMode.CancelOnNextMiss),
                                     out breakIndex, StringSearchIgnorance.None, StringSearchMode.NotSpecified).Replace("&nbsp;", "");
 
                             if (textBefore.Length == 0)  // чотб убедиться, что мы взяли текст в начале строки
                             {
-                                int verseEndIndex = el.Value.IndexOf("</a>", verseStartIndex + 1);
+                                int verseEndIndex = el.Value.IndexOf("<", verseStartIndex + 1);
 
                                 if (verseEndIndex != -1)
                                 {

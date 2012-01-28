@@ -64,8 +64,8 @@
             this.btnRelinkComments = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.lblCreateNotebookDescription = new System.Windows.Forms.Label();
-            this.pbLoadParameters = new System.Windows.Forms.ProgressBar();
+            this.lblProgressInfo = new System.Windows.Forms.Label();
+            this.pbMain = new System.Windows.Forms.ProgressBar();
             this.tbcMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -84,7 +84,7 @@
             this.tbcMain.Location = new System.Drawing.Point(0, 0);
             this.tbcMain.Name = "tbcMain";
             this.tbcMain.SelectedIndex = 0;
-            this.tbcMain.Size = new System.Drawing.Size(533, 310);
+            this.tbcMain.Size = new System.Drawing.Size(490, 310);
             this.tbcMain.TabIndex = 16;
             // 
             // tabPage1
@@ -112,7 +112,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(525, 284);
+            this.tabPage1.Size = new System.Drawing.Size(482, 284);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Параметры OneNote";
             // 
@@ -425,7 +425,7 @@
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(446, 16);
+            this.btnOK.Location = new System.Drawing.Point(392, 16);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 16;
@@ -448,42 +448,43 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.lblCreateNotebookDescription);
-            this.splitContainer1.Panel2.Controls.Add(this.pbLoadParameters);
+            this.splitContainer1.Panel2.Controls.Add(this.lblProgressInfo);
+            this.splitContainer1.Panel2.Controls.Add(this.pbMain);
             this.splitContainer1.Panel2.Controls.Add(this.btnOK);
-            this.splitContainer1.Size = new System.Drawing.Size(533, 365);
+            this.splitContainer1.Size = new System.Drawing.Size(490, 365);
             this.splitContainer1.SplitterDistance = 310;
             this.splitContainer1.TabIndex = 17;
             // 
-            // lblCreateNotebookDescription
+            // lblProgressInfo
             // 
-            this.lblCreateNotebookDescription.AutoSize = true;
-            this.lblCreateNotebookDescription.Location = new System.Drawing.Point(12, 0);
-            this.lblCreateNotebookDescription.Name = "lblCreateNotebookDescription";
-            this.lblCreateNotebookDescription.Size = new System.Drawing.Size(0, 13);
-            this.lblCreateNotebookDescription.TabIndex = 18;
+            this.lblProgressInfo.AutoSize = true;
+            this.lblProgressInfo.Location = new System.Drawing.Point(12, 0);
+            this.lblProgressInfo.Name = "lblProgressInfo";
+            this.lblProgressInfo.Size = new System.Drawing.Size(0, 13);
+            this.lblProgressInfo.TabIndex = 18;
             // 
-            // pbLoadParameters
+            // pbMain
             // 
-            this.pbLoadParameters.Location = new System.Drawing.Point(12, 16);
-            this.pbLoadParameters.Name = "pbLoadParameters";
-            this.pbLoadParameters.Size = new System.Drawing.Size(423, 23);
-            this.pbLoadParameters.Step = 3;
-            this.pbLoadParameters.TabIndex = 17;
-            this.pbLoadParameters.Visible = false;
+            this.pbMain.Location = new System.Drawing.Point(12, 16);
+            this.pbMain.Name = "pbMain";
+            this.pbMain.Size = new System.Drawing.Size(374, 23);
+            this.pbMain.Step = 3;
+            this.pbMain.TabIndex = 17;
+            this.pbMain.Visible = false;
             // 
             // MainForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(533, 365);
+            this.ClientSize = new System.Drawing.Size(490, 365);
             this.Controls.Add(this.splitContainer1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Укажите параметры программы";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.tbcMain.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -537,8 +538,8 @@
         private System.Windows.Forms.Button btnSingleNotebookSetPath;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.CheckBox chkDefaultPageNameParameters;
-        private System.Windows.Forms.ProgressBar pbLoadParameters;
-        private System.Windows.Forms.Label lblCreateNotebookDescription;
+        private System.Windows.Forms.ProgressBar pbMain;
+        private System.Windows.Forms.Label lblProgressInfo;
 
     }
 }

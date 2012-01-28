@@ -63,16 +63,20 @@ namespace BibleCommon.Services
 
             if (newLine)
             {
-                Console.WriteLine(message);
-                _streamWriter.WriteLine(messageEx);                    
+                Console.WriteLine(message);                
+
+                if (_streamWriter != null && _streamWriter.BaseStream != null)
+                    _streamWriter.WriteLine(messageEx);                    
             }
             else
             {
                 Console.Write(message);
-                _streamWriter.Write(messageEx);
+                if (_streamWriter != null && _streamWriter.BaseStream != null)
+                    _streamWriter.Write(messageEx);
             }
 
-            _streamWriter.Flush();
+            if (_streamWriter != null && _streamWriter.BaseStream != null)
+                _streamWriter.Flush();
         }
 
         public static void LogMessage(string message, params object[] args)

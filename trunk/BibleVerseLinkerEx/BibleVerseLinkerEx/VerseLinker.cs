@@ -68,7 +68,7 @@ namespace BibleVerseLinkerEx
 
                         if (pointerElement != null)
                         {
-                            pointerElement.Value = pointerElement.Value.Replace("\n", " ");
+                            OneNoteUtils.NormalizaTextElement(pointerElement);
                             break;
                         }
                     }

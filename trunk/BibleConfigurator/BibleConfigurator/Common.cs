@@ -35,4 +35,8 @@ namespace BibleConfigurator
     public class LoadParametersException : Exception
     {
     }
+
+    public class ProcessAbortedByUserException : Exception
+    {
+    }
 }
