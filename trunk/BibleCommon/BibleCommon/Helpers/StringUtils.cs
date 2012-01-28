@@ -41,6 +41,23 @@ namespace BibleCommon.Helpers
 
     public static class StringUtils
     {
+        public static int LastIndexOf(string s, string value, int startIndex, int endIndex)
+        {
+            int result = -1;
+            int i = s.IndexOf(value, startIndex);
+
+            while (i > -1)
+            {
+                if (i <= endIndex)
+                    result = i;
+                else
+                    break;
+
+                i = s.IndexOf(value, i + 1);
+            }
+            
+            return result;
+        }
 
         public static bool IsSurroundedBy(string s, string leftSymbol, string rightSymbol, int startPosition = 0)
         {

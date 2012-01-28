@@ -136,54 +136,61 @@ namespace BibleConfigurator.Tools
 
         private void RelinkPageComments(string sectionGroupId, string sectionId, string pageId, string pageName)
         {
-            XmlNamespaceManager xnm;
-            XDocument pageDocument = OneNoteUtils.GetXDocument(OneNoteProxy.Instance.GetPageContent(_oneNoteApp, pageId), out xnm);            
+            string pageContent;
+            XmlNamespaceManager xnm;            
+            _oneNoteApp.GetPageContent(pageId, out pageContent);
+            XDocument pageDocument = OneNoteUtils.GetXDocument(pageContent, out xnm);            
             bool wasModified = false;
 
             foreach (XElement rowElement in pageDocument.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]", xnm))
             {
-                rowElement.Value = rowElement.Value.Replace("\n", " ");
+                string rowElementValue = rowElement.Value.Replace("\n", " ");                
 
-                int linkIndex = rowElement.Value.IndexOf("<a ");
+                int linkIndex = rowElementValue.IndexOf("<a ");
 
                 while (linkIndex > -1)
                 {
-                    int linkEnd = rowElement.Value.IndexOf("</a>", linkIndex + 1);
+                    int linkEnd = rowElementValue.IndexOf("</a>", linkIndex + 1);
 
                     if (linkEnd != -1)
                     {
-                        if (RelinkPageComment(sectionId, pageId, pageName, rowElement, linkIndex, linkEnd))
+                        if (RelinkPageComment(sectionId, pageId, pageName, rowElement, rowElementValue, linkIndex, linkEnd))
                             wasModified = true;
+
+                        if (wasModified)
+                            break;
                     }
 
-                    linkIndex = rowElement.Value.IndexOf("<a ", linkIndex + 1);
+                    linkIndex = rowElementValue.IndexOf("<a ", linkIndex + 1);
                 }
+                if (wasModified)
+                    break;
             }
 
-            //if (wasModified)
-            //    _oneNoteApp.UpdatePageContent(pageDocument.ToString());
+            if (wasModified)
+                _oneNoteApp.UpdatePageContent(pageDocument.ToString());
 
             //ProgressBar.Progress()
         }
 
-        private bool RelinkPageComment(string bibleSectionId, string biblePageId, string biblePageName, XElement rowElement, int linkIndex, int linkEnd)
+        private bool RelinkPageComment(string bibleSectionId, string biblePageId, string biblePageName, XElement rowElement, string rowElementValue, int linkIndex, int linkEnd)
         {
-            string commentLink = rowElement.Value.Substring(linkIndex, linkEnd - linkIndex + "</a>".Length);
+            string commentLink = rowElementValue.Substring(linkIndex, linkEnd - linkIndex + "</a>".Length);
             string commentText = GetLinkText(commentLink);
 
             string commentPageName = GetCommentPageName(commentLink);
             string commentPageId = GetCommentPageId(bibleSectionId, biblePageId, biblePageName, commentPageName);
             string commentObjectId = GetComentobjectId(commentPageId, commentText);
 
-            string newCommentLink;
-            _oneNoteApp.GetHyperlinkToObject(commentPageId, commentObjectId, out newCommentLink);
-
             if (!string.IsNullOrEmpty(commentObjectId))
             {
-                rowElement.Value = string.Concat(
-                                rowElement.Value.Substring(0, linkIndex + 1),
-                                newCommentLink,
-                                rowElement.Value.Substring(linkEnd));
+                string newCommentLink = OneNoteUtils.GenerateHref(_oneNoteApp, commentText, commentPageId, commentObjectId);
+
+                rowElement.Value = rowElementValue.Replace(commentLink, newCommentLink);
+                    //string.Concat(
+                    //            rowElement.Value.Substring(0, linkIndex),
+                    //            newCommentLink,
+                    //            rowElement.Value.Substring(linkEnd + "</a>".Length));
 
                 return true;
             }
@@ -192,14 +199,72 @@ namespace BibleConfigurator.Tools
         }
 
         private string GetComentobjectId(string commentPageId, string commentText)
-        {            
-            string pageContent;
+        {
             XmlNamespaceManager xnm;
-            _oneNoteApp.GetPageContent(commentPageId, out pageContent);
+            XDocument pageDoc = OneNoteUtils.GetXDocument(OneNoteProxy.Instance.GetPageContent(_oneNoteApp, commentPageId), out xnm);
 
-            XDocument pageDoc = OneNoteUtils.GetXDocument(pageContent, out xnm);            
+            foreach (XElement el in pageDoc.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:T", xnm))
+            {
+                bool needToSearchVerse = true;
+                int boldTagIndex = el.Value.IndexOf("font-weight:bold");
+                if (boldTagIndex != -1)
+                {
+                    boldTagIndex = el.Value.IndexOf(">", boldTagIndex + 1);
 
-            
+                    if (boldTagIndex != -1)
+                    {
+                        int breakIndex;
+                        string textBefore = StringUtils.GetPrevString(el.Value, boldTagIndex + 1, new SearchMissInfo(boldTagIndex, SearchMissInfo.MissMode.CancelOnNextMiss),
+                                out breakIndex, StringSearchIgnorance.None, StringSearchMode.NotSpecified).Replace("&nbsp;", "");
+
+                        if (textBefore.Length <= 5)  // чотб убедиться, что мы взяли текст в начале строки
+                        {
+                            int boldEndIndex = el.Value.IndexOf("</span>", boldTagIndex + 1);
+
+                            if (boldEndIndex != -1)
+                            {
+                                string commentValue = el.Value.Substring(boldTagIndex + 1, boldEndIndex - boldTagIndex - 1);
+                                if (commentValue == commentText)
+                                    return (string)el.Parent.Attribute("objectID");
+                                else
+                                    needToSearchVerse = false;  // это точно не стих, это просто другой комментарий
+                            }
+                        }
+                    }
+                }
+
+                if (needToSearchVerse)
+                {
+                    // если дошли до сюда, значит не нашли там
+                    int temp;
+                    if (int.TryParse(commentText, out temp))  // значит скорее всего указали стих
+                    {
+                        string verseStartSearchString = "\">:";
+                        int verseStartIndex = el.Value.IndexOf(verseStartSearchString);
+                        if (verseStartIndex != -1)
+                        {
+                            int breakIndex;
+                            string textBefore = StringUtils.GetPrevString(el.Value, verseStartIndex + 2, new SearchMissInfo(verseStartIndex, SearchMissInfo.MissMode.CancelOnNextMiss),
+                                    out breakIndex, StringSearchIgnorance.None, StringSearchMode.NotSpecified).Replace("&nbsp;", "");
+
+                            if (textBefore.Length == 0)  // чотб убедиться, что мы взяли текст в начале строки
+                            {
+                                int verseEndIndex = el.Value.IndexOf("</a>", verseStartIndex + 1);
+
+                                if (verseEndIndex != -1)
+                                {
+                                    string verse = el.Value.Substring(verseStartIndex + verseStartSearchString.Length, verseEndIndex - verseStartIndex - verseStartSearchString.Length);
+
+                                    if (verse == commentText)
+                                        return (string)el.Parent.Attribute("objectID");
+                                }
+                            }
+                        }
+                    }
+                }
+            }            
+
+            return null;
         }
 
         private string GetCommentPageId(string bibleSectionId, string biblePageId, string biblePageName, string commentPageName)
@@ -229,6 +294,7 @@ namespace BibleConfigurator.Tools
                 if (ii != -1)
                 {
                     result = commentLink.Substring(i + beginSearchString.Length, ii - i - beginSearchString.Length);
+                    result = Uri.UnescapeDataString(result);
                 }
             }
 
@@ -238,7 +304,7 @@ namespace BibleConfigurator.Tools
         private string GetLinkText(string commentLink)
         {            
             int breakIndex;
-            string s = StringUtils.GetNextString(commentLink, -1, new SearchMissInfo(int.MaxValue, SearchMissInfo.MissMode.CancelOnNextMiss),
+            string s = StringUtils.GetNextString(commentLink, -1, new SearchMissInfo(commentLink.Length, SearchMissInfo.MissMode.CancelOnNextMiss),
                 out breakIndex, StringSearchIgnorance.None, StringSearchMode.NotSpecified);
 
             return s;
