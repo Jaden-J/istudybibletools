@@ -40,6 +40,12 @@
         "Entry"
         {
         "MsmKey" = "8:_2E95AEAF63CF73A90E9D59B78268E721"
+        "OwnerKey" = "8:_3FC71294DAB247EDA89368E781DCDC4E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2E95AEAF63CF73A90E9D59B78268E721"
         "OwnerKey" = "8:_4D43A8950BBA61E95A29FFE061FD6641"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -131,6 +137,12 @@
         {
         "MsmKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
         "OwnerKey" = "8:_2E95AEAF63CF73A90E9D59B78268E721"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
+        "OwnerKey" = "8:_3FC71294DAB247EDA89368E781DCDC4E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -329,6 +341,34 @@
     {
         "CustomAction"
         {
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_1F1936802F76453A9C0619EB26DCEC34"
+            {
+            "Name" = "8:Primary output from BibleConfigurator (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_CA4EBCE7EEAD491A924378B1B80C766E"
+            "FileType" = "3:2"
+            "InstallAction" = "3:1"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_7B33AB83_A15D_456E_A728_5ED0FC8D55E1"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_3423F2455619406A9034DB75CF6EFF27"
+            {
+            "Name" = "8:Primary output from BibleConfigurator (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_CA4EBCE7EEAD491A924378B1B80C766E"
+            "FileType" = "3:2"
+            "InstallAction" = "3:2"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_8B8DE3B1_19EF_449D_8E32_3761A81FC2ED"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
         }
         "DefaultFeature"
         {
@@ -396,7 +436,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=1.0.1.3, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_2E95AEAF63CF73A90E9D59B78268E721"
@@ -427,7 +467,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleNoteLinker, Version=1.0.1.0, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:BibleNoteLinker, Version=1.0.1.3, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_4D43A8950BBA61E95A29FFE061FD6641"
@@ -687,15 +727,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OneNote IStudyBibleTools"
-        "ProductCode" = "8:{81C915B9-9BA1-4D7E-AB23-82920BE36450}"
-        "PackageCode" = "8:{6E4DACB0-134F-4B68-8963-38FCD57B44A9}"
+        "ProductCode" = "8:{BF0B4207-D902-4323-B24C-F086B806793A}"
+        "PackageCode" = "8:{ADF26DA7-6BD8-4576-B127-7F1AB26B9B92}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.1.12"
+        "ProductVersion" = "8:1.1.15"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://IStudyBibleTools.ru"

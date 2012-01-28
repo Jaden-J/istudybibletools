@@ -13,6 +13,7 @@ using System.IO;
 using System.Drawing.Imaging;
 using System.Diagnostics;
 using System.Reflection;
+using BibleCommon.Helpers;
 
 namespace RibbonButtons
 {
@@ -68,19 +69,19 @@ namespace RibbonButtons
             switch (control.Id)
             {
                 case "VersePointerButton":                                            
-                    path = Path.Combine(Utils.GetApplicationFolder(), "tools\\BibleVersePointer\\BibleVersePointer.exe");
+                    path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleVersePointer\\BibleVersePointer.exe");
                     break;
                 case "VerseLinkerButton":
-                    path = Path.Combine(Utils.GetApplicationFolder(), "tools\\BibleVerseLinker\\BibleVerseLinkerEx.exe");
+                    path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleVerseLinker\\BibleVerseLinkerEx.exe");
                     break;
                 case "NoteLinkerButton":
-                    path = Path.Combine(Utils.GetApplicationFolder(), "tools\\BibleNoteLinker\\BibleNoteLinkerEx.exe");
+                    path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleNoteLinker\\BibleNoteLinkerEx.exe");
                     break;
                 case "ConfigureButton":
-                    path = Path.Combine(Utils.GetApplicationFolder(), "tools\\BibleConfigurator\\BibleConfigurator.exe");
+                    path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleConfigurator\\BibleConfigurator.exe");
                     break;
                 case "HelpButton":
-                    path = Path.Combine(Utils.GetApplicationFolder(), "Instruction.docx");
+                    path = Path.Combine(Utils.GetCurrentDirectory(), "Instruction.docx");
                     break;
             }
              

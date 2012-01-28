@@ -28,5 +28,7 @@ namespace BibleConfigurator
         public const string PageNameDefaultBookOverview = "Общий обзор";
         public const string PageNameNotes = "Заметки";
         public const string PageNameDefaultComments = "Комментарии";
+
+        public static readonly List<string> NotBibleStudyNotebooks = new List<string>() { "Личная", "Руководство по OneNote 2010" };
     }
 }

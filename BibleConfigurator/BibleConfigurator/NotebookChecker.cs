@@ -51,7 +51,7 @@ namespace BibleConfigurator
             if (result)
             {
                 string notebookName = (string)element.Attribute("name").Value;
-                if (notebookName == "Личная")
+                if (Consts.NotBibleStudyNotebooks.Contains(notebookName))                
                     result = false;
             }
 
