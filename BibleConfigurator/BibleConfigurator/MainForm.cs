@@ -319,7 +319,8 @@ namespace BibleConfigurator
         private string CreateNotebookFromTemplate(string notebookTemplateFileName, string notebookFromTemplatePath)
         {
             string s;
-            string packageFilePath = Path.Combine(Path.Combine(Path.GetDirectoryName(Utils.GetCurrentDirectory()), Consts.TemplatesDirectory), notebookTemplateFileName);
+            string packageDirectory = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(Utils.GetCurrentDirectory())), Consts.TemplatesDirectory);
+            string packageFilePath = Path.Combine(packageDirectory, notebookTemplateFileName);
 
             if (File.Exists(packageFilePath))
             {

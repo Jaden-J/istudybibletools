@@ -60,6 +60,20 @@ namespace RibbonButtons.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap ConfigureButton {
+            get {
+                object obj = ResourceManager.GetObject("ConfigureButton", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap HelpButton {
+            get {
+                object obj = ResourceManager.GetObject("HelpButton", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap NoteLinkerButton {
             get {
                 object obj = ResourceManager.GetObject("NoteLinkerButton", resourceCulture);
@@ -72,14 +86,10 @@ namespace RibbonButtons.Properties {
         ///&lt;customUI xmlns=&quot;http://schemas.microsoft.com/office/2006/01/customui&quot; loadImage=&quot;GetImage&quot;&gt;
         ///	&lt;ribbon&gt;
         ///		&lt;tabs&gt;
-        ///			&lt;tab id=&quot;tabCustom&quot; label=&quot;Custom&quot;&gt;
-        ///				&lt;group id=&quot;groupHello&quot; label=&quot;Hello&quot;&gt;
-        ///					&lt;button id=&quot;buttonHello&quot; label=&quot;Hello World!&quot; size=&quot;large&quot; screentip=&quot;Press this for a &apos;Hello World&apos; message&quot; onAction=&quot;showHello&quot; image=&quot;VersePointerButton.png&quot;/&gt;
-        ///				&lt;/group&gt;
-        ///			&lt;/tab&gt;
-        ///		&lt;/tabs&gt;
-        ///	&lt;/ribbon&gt;
-        ///&lt;/customUI&gt;.
+        ///			&lt;tab id=&quot;tabCustom&quot; label=&quot;IStudyBibleTools&quot;&gt;
+        ///				&lt;group id=&quot;Tools&quot; label=&quot;Tools&quot;&gt;
+        ///					&lt;button id=&quot;VersePointerButton&quot; label=&quot;Открыть стих&quot; size=&quot;large&quot; screentip=&quot;Нажмите, чтобы перейти к нужному месту Писания&quot; onAction=&quot;ButtonClick&quot; image=&quot;VersePointerButton.png&quot;/&gt;
+        ///          &lt;button id=&quot;VerseLinkerButton&quot; label=&quot;Написать комментарий&quot; size=&quot;large [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ribbon {
             get {

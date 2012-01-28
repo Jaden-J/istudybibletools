@@ -76,6 +76,12 @@ namespace RibbonButtons
                 case "NoteLinkerButton":
                     path = Path.Combine(Utils.GetApplicationFolder(), "tools\\BibleNoteLinker\\BibleNoteLinkerEx.exe");
                     break;
+                case "ConfigureButton":
+                    path = Path.Combine(Utils.GetApplicationFolder(), "tools\\BibleConfigurator\\BibleConfigurator.exe");
+                    break;
+                case "HelpButton":
+                    path = Path.Combine(Utils.GetApplicationFolder(), "Instruction.docx");
+                    break;
             }
              
 
@@ -101,6 +107,12 @@ namespace RibbonButtons
                     break;
                 case "NoteLinkerButton.png":
                     Properties.Resources.NoteLinkerButton.Save(mem, ImageFormat.Png);
+                    break;
+                case "ConfigureButton.png":
+                    Properties.Resources.ConfigureButton.Save(mem, ImageFormat.Png);
+                    break;
+                case "HelpButton.png":
+                    Properties.Resources.HelpButton.Save(mem, ImageFormat.Png);
                     break;
             }
 
