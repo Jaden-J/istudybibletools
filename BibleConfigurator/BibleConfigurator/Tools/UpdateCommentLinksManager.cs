@@ -49,6 +49,12 @@ namespace BibleConfigurator.Tools
 
         public void RelinkAllBibleComments()
         {
+            if (!SettingsManager.Instance.IsConfigured())
+            {
+                Logger.LogMessage("Программа не сконфигурирована");
+                return;
+            }   
+
             try
             {
                 BibleCommon.Services.Logger.Init("RelinkAllBibleCommentsManager");
