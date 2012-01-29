@@ -64,75 +64,84 @@ namespace BibleNoteLinker
         static void Main(string[] args)
         {
             Logger.Init("BibleNoteLinker");
-            DateTime dtStart = DateTime.Now;            
+            DateTime dtStart = DateTime.Now;
 
-            try
+
+            if (!SettingsManager.Instance.IsConfigured())
             {
-                Logger.LogMessage("Время старта: {0}", dtStart.ToLongTimeString());
+                Logger.LogError("Система не сконфигурирована");
+            }
+            else
+            {
 
-                Args userArgs = GetUserArgs(args);
-                if (userArgs.DeleteNotes)
-                    Logger.LogMessage("Удаляем страницы заметок и ссылки на них");
-                else
+                try
                 {
-                    Logger.LogMessage("Уровень текущего анализа: '{0} ({1})'", userArgs.AnalyzeDepth, (int)userArgs.AnalyzeDepth);
-                    if (userArgs.Force)
-                        Logger.LogMessage("Анализируем ссылки в том числе");
-                }
+                    Logger.LogMessage("Время старта: {0}", dtStart.ToLongTimeString());
 
-                Application oneNoteApp = new Application();                               
-
-                if (userArgs.AnalyzeAllPages)
-                {
-                    Logger.LogMessage("Старт обработки всей записной книжки");
-
+                    Args userArgs = GetUserArgs(args);
                     if (userArgs.DeleteNotes)
-                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, userArgs);
+                        Logger.LogMessage("Удаляем страницы заметок и ссылки на них");
                     else
                     {
-                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, SettingsManager.Instance.SectionGroupId_BibleComments, userArgs);
-                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleStudy, SettingsManager.Instance.SectionGroupId_BibleStudy, userArgs);
+                        Logger.LogMessage("Уровень текущего анализа: '{0} ({1})'", userArgs.AnalyzeDepth, (int)userArgs.AnalyzeDepth);
+                        if (userArgs.Force)
+                            Logger.LogMessage("Анализируем ссылки в том числе");
                     }
-                }
-                else
-                {
-                    Logger.LogMessage("Старт обработки текущей страницы");
 
-                    if (oneNoteApp.Windows.CurrentWindow != null)
+                    Application oneNoteApp = new Application();
+
+                    if (userArgs.AnalyzeAllPages)
                     {
-                        string currentPageId = oneNoteApp.Windows.CurrentWindow.CurrentPageId;
-                        string currentSectionId = oneNoteApp.Windows.CurrentWindow.CurrentSectionId;
-                        string currentSectionGroupId = oneNoteApp.Windows.CurrentWindow.CurrentSectionGroupId;
-                        string currentNotebookId = oneNoteApp.Windows.CurrentWindow.CurrentNotebookId;
+                        Logger.LogMessage("Старт обработки всей записной книжки");
 
-                        if (!string.IsNullOrEmpty(currentPageId))
+                        if (userArgs.DeleteNotes)
+                            ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, userArgs);
+                        else
                         {
+                            ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, SettingsManager.Instance.SectionGroupId_BibleComments, userArgs);
+                            ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleStudy, SettingsManager.Instance.SectionGroupId_BibleStudy, userArgs);
+                        }
+                    }
+                    else
+                    {
+                        Logger.LogMessage("Старт обработки текущей страницы");
 
-                            //if (currentNotebookId == SettingsManager.Instance.NotebookId_BibleComments
-                            //    || currentNotebookId == SettingsManager.Instance.NotebookId_BibleStudy)
-                            //{
+                        if (oneNoteApp.Windows.CurrentWindow != null)
+                        {
+                            string currentPageId = oneNoteApp.Windows.CurrentWindow.CurrentPageId;
+                            string currentSectionId = oneNoteApp.Windows.CurrentWindow.CurrentSectionId;
+                            string currentSectionGroupId = oneNoteApp.Windows.CurrentWindow.CurrentSectionGroupId;
+                            string currentNotebookId = oneNoteApp.Windows.CurrentWindow.CurrentNotebookId;
+
+                            if (!string.IsNullOrEmpty(currentPageId))
+                            {
+
+                                //if (currentNotebookId == SettingsManager.Instance.NotebookId_BibleComments
+                                //    || currentNotebookId == SettingsManager.Instance.NotebookId_BibleStudy)
+                                //{
                                 if (userArgs.DeleteNotes)
                                     NoteLinkManager.DeletePageNotes(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, OneNoteUtils.GetHierarchyElementName(oneNoteApp, currentPageId));
                                 else
                                     NoteLinkManager.LinkPageVerses(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);
-                            //}
-                            //else
+                                //}
+                                //else
                                 //Logger.LogError("Заметки к Библии необходимо писать только в записных книжках ");
+                            }
+                            else
+                                Logger.LogError("Не найдено открытой страницы заметок");
                         }
                         else
-                            Logger.LogError("Не найдено открытой страницы заметок");
+                        {
+                            Logger.LogError("Не найдено открытой записной книжки");
+                        }
                     }
-                    else
-                    {
-                        Logger.LogError("Не найдено открытой записной книжки");
-                    }
-                }
 
-                Logger.LogMessage("Успешно завершено");                
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
+                    Logger.LogMessage("Успешно завершено");
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
+                }
             }
 
             Logger.LogMessage("Времени затрачено: {0}", DateTime.Now.Subtract(dtStart));
