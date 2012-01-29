@@ -209,6 +209,7 @@ namespace BibleNoteLinker
 
             if (textElement != null && !string.IsNullOrEmpty(textElement.Value))
             {
+                OneNoteUtils.NormalizaTextElement(textElement);
                 string textElementValue = textElement.Value;
                 int numberIndex = textElement.Value
                         .IndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
@@ -218,13 +219,14 @@ namespace BibleNoteLinker
                     try
                     {
                         int number;
-                        int breakIndex;
+                        int textBreakIndex;
+                        int htmlBreakIndex;
                         bool isLink;
                         bool isInBrackets;
-                        if (CanProcessAtNumberPosition(textElement, numberIndex, out number, out breakIndex, out isLink, out isInBrackets))
+                        if (CanProcessAtNumberPosition(textElement, numberIndex, out number, out textBreakIndex, out htmlBreakIndex, out isLink, out isInBrackets))
                         {
                             VersePointerSearchResult searchResult = GetValidVersePointer(textElement,
-                                numberIndex, breakIndex - 1, number,
+                                numberIndex, textBreakIndex - 1, number,
                                 globalChapterSearchResult,
                                 localChapterName, prevResult, isInBrackets, isTitle);
 
@@ -332,19 +334,20 @@ namespace BibleNoteLinker
         /// <param name="isInBrackets">если в скобках []</param>
         /// <returns></returns>
         private static bool CanProcessAtNumberPosition(XElement textElement, int numberIndex, 
-            out int number, out int breakIndex, out bool isLink, out bool isInBrackets)
+            out int number, out int textBreakIndex, out int htmlBreakIndex, out bool isLink, out bool isInBrackets)
         {
             isLink = false;
             number = -1;
-            breakIndex = -1;
+            textBreakIndex = -1;
+            htmlBreakIndex = -1;
             isInBrackets = false;
 
             if (numberIndex == 0)  // не может начинаться с цифры
                 return false;
 
             char prevChar = StringUtils.GetChar(textElement.Value, numberIndex - 1);
-            string numberString = StringUtils.GetNextString(textElement.Value, numberIndex - 1, null, out breakIndex);
-            char nextChar = StringUtils.GetChar(textElement.Value, breakIndex);
+            string numberString = StringUtils.GetNextString(textElement.Value, numberIndex - 1, null, out textBreakIndex, out htmlBreakIndex);
+            char nextChar = StringUtils.GetChar(textElement.Value, htmlBreakIndex);
 
             if (((prevChar == '>' || prevChar == ' ' || prevChar == '.' || StringUtils.IsCharAlphabetical(prevChar))                             // нашли полную ссылку
                     && (nextChar == '<' || nextChar == ChapterVerseDelimiter 
@@ -387,32 +390,34 @@ namespace BibleNoteLinker
                                     { ResultType = VersePointerSearchResult.SearchResultType.Nothing };
             int startIndex;
             int endIndex;
-            int nextBreakIndex;
-            int prevBreakIndex;
+            int nextTextBreakIndex;
+            int nextHtmlBreakIndex;
+            int prevTextBreakIndex;
+            int prevHtmlBreakIndex;            
 
-            string prevChar = StringUtils.GetPrevString(textElement.Value, numberStartIndex, null, out prevBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar);
-            string nextChar = StringUtils.GetNextString(textElement.Value, numberEndIndex, null, out nextBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar);
+            string prevChar = StringUtils.GetPrevString(textElement.Value, numberStartIndex, null, out prevTextBreakIndex, out prevHtmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar);
+            string nextChar = StringUtils.GetNextString(textElement.Value, numberEndIndex, null, out nextTextBreakIndex, out nextHtmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar);
 
             if (nextChar == ChapterVerseDelimiter.ToString())  // как будто нашли полную ссылку
             {
-                string verseString = StringUtils.GetNextString(textElement.Value, nextBreakIndex, null, out endIndex);
+                string verseString = StringUtils.GetNextString(textElement.Value, nextHtmlBreakIndex, null, out endIndex, out nextHtmlBreakIndex);
                 int verseNumber;
                 if (int.TryParse(verseString, out verseNumber))
                 {
                     if (verseNumber <= 176 && verseNumber > 0)
                     {
-                        verseString = GetFullVerseString(textElement.Value, verseString, ref endIndex);                      
+                        verseString = GetFullVerseString(textElement.Value, verseString, ref endIndex, ref nextHtmlBreakIndex);                      
 
                         for (int maxMissCount = 2; maxMissCount >= 0; maxMissCount--)
                         {
                             string bookName = StringUtils.GetPrevString(textElement.Value,
-                                numberStartIndex, new SearchMissInfo(maxMissCount, SearchMissInfo.MissMode.CancelOnMissFound), out startIndex,
+                                numberStartIndex, new SearchMissInfo(maxMissCount, SearchMissInfo.MissMode.CancelOnMissFound), out startIndex, out prevHtmlBreakIndex,
                                 maxMissCount > 0 ? StringSearchIgnorance.IgnoreAllSpacesAndDots : StringSearchIgnorance.IgnoreFirstSpaceAndDot,
                                 StringSearchMode.SearchText);
 
                             if (!string.IsNullOrEmpty(bookName) && !string.IsNullOrEmpty(bookName.Trim()))
                             {
-                                char prevPrevChar = StringUtils.GetChar(textElement.Value, startIndex);
+                                char prevPrevChar = StringUtils.GetChar(textElement.Value, prevHtmlBreakIndex);
                                 if (!(StringUtils.IsCharAlphabetical(prevPrevChar) || StringUtils.IsDigit(prevPrevChar)))
                                 {
                                     string verseName = string.Format("{0}{1}{2}{3}{4}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number, ChapterVerseDelimiter, verseString);
@@ -421,11 +426,13 @@ namespace BibleNoteLinker
                                     if (vp.IsValid)
                                     {
                                         result.VersePointer = vp;
-                                        result.ResultType = startIndex == -1
+                                        result.ResultType = prevHtmlBreakIndex == -1
                                                     ? VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString
                                                     : VersePointerSearchResult.SearchResultType.ChapterAndVerse;
                                         result.VersePointerEndIndex = endIndex;
-                                        result.VersePointerStartIndex = startIndex;
+                                        result.VersePointerStartIndex = startIndex + 1;
+                                        result.VersePointerHtmlEndIndex = nextHtmlBreakIndex;
+                                        result.VersePointerHtmlStartIndex = prevHtmlBreakIndex;
                                         result.ChapterName = string.Format("{0}{1}{2}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number);
                                         result.TextElement = textElement;
                                         break;
@@ -438,8 +445,8 @@ namespace BibleNoteLinker
             }
             else if (prevChar == ChapterVerseDelimiter.ToString() || prevChar == ",") // как будто нашли ссылку только на стих                    
             {
-                int temp;
-                string prevPrevChar = StringUtils.GetPrevString(textElement.Value, prevBreakIndex, null, out temp, StringSearchIgnorance.None, StringSearchMode.SearchFirstChar);                
+                int temp, temp2;
+                string prevPrevChar = StringUtils.GetPrevString(textElement.Value, prevHtmlBreakIndex, null, out temp, out temp2, StringSearchIgnorance.None, StringSearchMode.SearchFirstChar);                
                 string globalChapterName = globalChapterResult != null ? globalChapterResult.ChapterName : string.Empty;
 
                 if (!string.IsNullOrEmpty(globalChapterName) || !string.IsNullOrEmpty(localChapterName))
@@ -474,7 +481,7 @@ namespace BibleNoteLinker
 
                             if (canContinue)
                             {
-                                if (prevBreakIndex - prevResult.VersePointerEndIndex > 1) // то есть рядом был предыдущий результат
+                                if (prevHtmlBreakIndex - prevResult.VersePointerHtmlEndIndex > 1) // то есть рядом был предыдущий результат
                                     canContinue = false;
                             }
                         }
@@ -506,9 +513,9 @@ namespace BibleNoteLinker
                         if (!string.IsNullOrEmpty(chapterName))
                         {
                             string verseString = number.ToString();
-                            endIndex = nextBreakIndex;
+                            endIndex = nextTextBreakIndex;
 
-                            verseString = GetFullVerseString(textElement.Value, verseString, ref endIndex);
+                            verseString = GetFullVerseString(textElement.Value, verseString, ref endIndex, ref nextHtmlBreakIndex);
 
                             string verseName = string.Format("{0}{1}{2}", chapterName, ChapterVerseDelimiter, verseString);
 
@@ -518,7 +525,9 @@ namespace BibleNoteLinker
                                 result.VersePointer = vp;
                                 result.ResultType = resultType;
                                 result.VersePointerEndIndex = endIndex;
-                                result.VersePointerStartIndex = prevChar == ChapterVerseDelimiter.ToString() ? prevBreakIndex - 1 : prevBreakIndex;
+                                result.VersePointerStartIndex = prevChar == ChapterVerseDelimiter.ToString() ? prevTextBreakIndex: prevTextBreakIndex + 1;
+                                result.VersePointerHtmlEndIndex = nextHtmlBreakIndex;
+                                result.VersePointerHtmlStartIndex = prevHtmlBreakIndex;
                                 result.VerseString = (prevChar == ChapterVerseDelimiter.ToString() ? prevChar : string.Empty) + verseString;
                                 result.ChapterName = chapterName;
                                 result.TextElement = textElement;
@@ -532,13 +541,13 @@ namespace BibleNoteLinker
                 for (int maxMissCount = 2; maxMissCount >= 0; maxMissCount--)
                 {
                     string bookName = StringUtils.GetPrevString(textElement.Value,
-                        numberStartIndex, new SearchMissInfo(maxMissCount, SearchMissInfo.MissMode.CancelOnMissFound), out startIndex,
+                        numberStartIndex, new SearchMissInfo(maxMissCount, SearchMissInfo.MissMode.CancelOnMissFound), out startIndex, out prevHtmlBreakIndex,
                         maxMissCount > 0 ? StringSearchIgnorance.IgnoreAllSpacesAndDots : StringSearchIgnorance.IgnoreFirstSpaceAndDot,
                         StringSearchMode.SearchText);
 
                     if (!string.IsNullOrEmpty(bookName) && !string.IsNullOrEmpty(bookName.Trim()))
                     {
-                        char prevPrevChar = StringUtils.GetChar(textElement.Value, startIndex);
+                        char prevPrevChar = StringUtils.GetChar(textElement.Value, prevHtmlBreakIndex);
                         if (!(StringUtils.IsCharAlphabetical(prevPrevChar) || StringUtils.IsDigit(prevPrevChar)))
                         {
                             string verseName = string.Format("{0}{1}{2}{3}{4}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number, ChapterVerseDelimiter, 0);
@@ -547,15 +556,17 @@ namespace BibleNoteLinker
                             if (vp.IsValid)
                             {
                                 result.ChapterName = string.Format("{0}{1}{2}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number);
-                                bool chapterOnlyAtStartString = startIndex == -1 && nextChar != "-";    // так как пока мы не поддерживаем Откр 1-2, и так как мы найдём в таком случае только Откр 1, то не считаем это ссылкой, как ChapterOnlyAtStartString
+                                bool chapterOnlyAtStartString = prevHtmlBreakIndex == -1 && nextChar != "-";    // так как пока мы не поддерживаем Откр 1-2, и так как мы найдём в таком случае только Откр 1, то не считаем это ссылкой, как ChapterOnlyAtStartString
                                 if (isInBrackets && isTitle)
                                     result.ResultType = VersePointerSearchResult.SearchResultType.ExcludableChapter;
                                 else
                                     result.ResultType = chapterOnlyAtStartString                                     
                                                 ? VersePointerSearchResult.SearchResultType.ChapterOnlyAtStartString
                                                 : VersePointerSearchResult.SearchResultType.ChapterOnly;
-                                result.VersePointerEndIndex = nextBreakIndex;
-                                result.VersePointerStartIndex = startIndex;
+                                result.VersePointerEndIndex = nextTextBreakIndex;
+                                result.VersePointerStartIndex = startIndex + 1;
+                                result.VersePointerHtmlEndIndex = nextHtmlBreakIndex;
+                                result.VersePointerHtmlStartIndex = prevHtmlBreakIndex;
                                 result.VersePointer = vp;
                                 result.TextElement = textElement;
                                 break;
@@ -568,16 +579,16 @@ namespace BibleNoteLinker
             return result;
         }
 
-        private static string GetFullVerseString(string textElementValue, string verseString, ref int endIndex)
+        private static string GetFullVerseString(string textElementValue, string verseString, ref int endIndex, ref int nextHtmlBreakIndex)
         {
-            if (StringUtils.GetChar(textElementValue, endIndex) == '-')
+            if (StringUtils.GetChar(textElementValue, nextHtmlBreakIndex) == '-')
             {
-                char tempNextChar = StringUtils.GetChar(textElementValue, endIndex + 1);
+                char tempNextChar = StringUtils.GetChar(textElementValue, nextHtmlBreakIndex + 1);
                 if (StringUtils.IsDigit(tempNextChar))
                 {
                     verseString = string.Format("{0}-{1}",
                         verseString,
-                        StringUtils.GetNextString(textElementValue, endIndex, null, out endIndex));  // чтоб учесть случай Откр 4:5-9 - чтоб определить, где заканчивается ссылка
+                        StringUtils.GetNextString(textElementValue, nextHtmlBreakIndex, null, out endIndex, out nextHtmlBreakIndex));  // чтоб учесть случай Откр 4:5-9 - чтоб определить, где заканчивается ссылка
                 }
             }
 
@@ -639,11 +650,11 @@ namespace BibleNoteLinker
 
                            link = string.Format("<span style='font-weight:normal'>{0}</span>", link);
 
-                            CorrectTextToChangeBoundary(textElementValue.Substring(startVerseNameIndex + 1, endVerseNameIndex - startVerseNameIndex - 1), 
+                            CorrectTextToChangeBoundary(textElementValue, isLink,
                                 ref startVerseNameIndex, ref endVerseNameIndex);
 
                             textElementValue = string.Concat(
-                                textElementValue.Substring(0, startVerseNameIndex + 1),
+                                textElementValue.Substring(0, startVerseNameIndex),
                                 link,
                                 textElementValue.Substring(endVerseNameIndex));                                
 
@@ -710,22 +721,22 @@ namespace BibleNoteLinker
             return textElementValue;
         }
 
-        /// <summary>
-        /// Временное решение для проблемы "неправильно выдирает текст html, когда заменяет его ссылкой".
-        /// </summary>
-        /// <param name="textToChangeHtml"></param>
-        /// <param name="startVerseNameIndex"></param>
-        /// <param name="endVerseNameIndex"></param>
-        private static void CorrectTextToChangeBoundary(string textToChangeHtml, ref int startVerseNameIndex, ref int endVerseNameIndex)
+        
+        private static void CorrectTextToChangeBoundary(string textElementValue, bool isLink, ref int startVerseNameIndex, ref int endVerseNameIndex)
         {
-            if (textToChangeHtml[textToChangeHtml.Length - 1] == '>') // пока только в таком случае корректируем
+            if (isLink)
             {
-                int openSpanTagsCount = StringUtils.GetEntranceCount(textToChangeHtml, "<span");
-                int closedSpantagsCount = StringUtils.GetEntranceCount(textToChangeHtml, "</span");
-
-                if (closedSpantagsCount - openSpanTagsCount == 1)  // рассматриваем случай, когда на вход пришло значение, например :2</span>
+                string beginSearchString = "<a ";
+                string endSearchString = "</a>";
+                int linkStartIndex = StringUtils.LastIndexOf(textElementValue, beginSearchString, 0, startVerseNameIndex);
+                if (linkStartIndex != -1)
                 {
-                    endVerseNameIndex -= "</span>".Length;
+                    int linkEndIndex = textElementValue.IndexOf(endSearchString, endVerseNameIndex);
+                    if (linkEndIndex != -1)
+                    {
+                        startVerseNameIndex = linkStartIndex;
+                        endVerseNameIndex = linkEndIndex + endSearchString.Length;
+                    }
                 }
             }
         }

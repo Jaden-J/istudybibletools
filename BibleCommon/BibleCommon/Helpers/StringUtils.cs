@@ -188,11 +188,11 @@ namespace BibleCommon.Helpers
         /// <param name="s"></param>
         /// <param name="index"></param>
         /// <param name="maxMissCount">максимальное количество "промахов" - допустимое количество ошибочных символов</param>
-        /// <param name="breakIndex"></param>
+        /// <param name="textBreakIndex"></param>
         /// <param name="ignoreSpaces">Правила игнорирования проблелов. Но если режим searchMode установлен в SearchFirstValueChar, то данный параметр игнорируется, так как пробел тоже считается разделителем</param>
         /// <param name="searchMode">что ищем</param>
         /// <returns></returns>
-        public static string GetPrevString(string s, int index, SearchMissInfo missInfo, out int breakIndex,
+        public static string GetPrevString(string s, int index, SearchMissInfo missInfo, out int textBreakIndex, out int htmlBreakIndex,
             StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
         {
             if (searchMode == StringSearchMode.SearchFirstValueChar || searchMode == StringSearchMode.SearchFirstChar)
@@ -219,6 +219,7 @@ namespace BibleCommon.Helpers
             else if (searchMode == StringSearchMode.SearchNumber)
                 isDigits = true;
 
+            int iBeforeHtml = -1;
             int i;
             for (i = index - 1; i >= 0; i--)
             {
@@ -226,6 +227,8 @@ namespace BibleCommon.Helpers
 
                 if (c == '>')
                 {
+                    if (iBeforeHtml == -1)  // если мы уже не идём чисто по тэгам
+                        iBeforeHtml = i;
                     i = s.LastIndexOf('<', i - 1);
                     continue;
                 }
@@ -331,13 +334,16 @@ namespace BibleCommon.Helpers
                         }
                     }
                 }
+
+                iBeforeHtml = -1;  // то есть сделали удачный круг, символ был нужным, значит нам нет смысла возвращаться вначало
             }
 
-            breakIndex = i;
+            textBreakIndex = iBeforeHtml != -1 ? iBeforeHtml : i;
+            htmlBreakIndex = i;
             return result;
         }
 
-        public static string GetNextString(string s, int index, SearchMissInfo missInfo, out int breakIndex,
+        public static string GetNextString(string s, int index, SearchMissInfo missInfo, out int textBreakIndex, out int htmlBreakIndex,
             StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
         {
             if (searchMode == StringSearchMode.SearchFirstValueChar || searchMode == StringSearchMode.SearchFirstChar)
@@ -364,6 +370,7 @@ namespace BibleCommon.Helpers
             else if (searchMode == StringSearchMode.SearchNumber)
                 isDigits = true;
 
+            int iBeforeHtml = -1;
             int i;
             for (i = index + 1; i < s.Length; i++)
             {
@@ -371,6 +378,8 @@ namespace BibleCommon.Helpers
 
                 if (c == '<')
                 {
+                    if (iBeforeHtml == -1)  // если мы уже не идём чисто по тэгам
+                        iBeforeHtml = i;
                     i = s.IndexOf('>', i + 1);
                     continue;
                 }
@@ -470,9 +479,12 @@ namespace BibleCommon.Helpers
                         }
                     }
                 }
+
+                iBeforeHtml = -1;  // то есть сделали удачный круг, символ был нужным, значит нам нет смысла возвращаться вначало
             }
 
-            breakIndex = i;
+            textBreakIndex = iBeforeHtml != -1 ? iBeforeHtml : i;
+            htmlBreakIndex = i;
             return result;
         }
 

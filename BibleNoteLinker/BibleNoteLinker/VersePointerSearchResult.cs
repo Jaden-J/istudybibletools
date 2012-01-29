@@ -45,6 +45,8 @@ namespace BibleNoteLinker
         public VersePointer VersePointer { get; set; }
         public int VersePointerStartIndex { get; set; }
         public int VersePointerEndIndex { get; set; }
+        public int VersePointerHtmlStartIndex { get; set; }
+        public int VersePointerHtmlEndIndex { get; set; }
         public string ChapterName { get; set; }
         public string VerseString { get; set; }
         public SearchResultType ResultType { get; set; }

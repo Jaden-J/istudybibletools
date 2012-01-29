@@ -52,39 +52,46 @@ namespace BibleVersePointer
         {
             Logger.Initialize();
 
-
-            if (!string.IsNullOrEmpty(tbVerse.Text))
+            if (!SettingsManager.Instance.IsConfigured())
             {
-                btnOk.Enabled = false;
-                System.Windows.Forms.Application.DoEvents();
-
-                try
+                Logger.LogError("Система не сконфигурирована");
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(tbVerse.Text))
                 {
-                    VersePointer vp = new VersePointer(tbVerse.Text);
+                    btnOk.Enabled = false;
+                    System.Windows.Forms.Application.DoEvents();
 
-                    if (!vp.IsValid)
-                        vp = VersePointer.GetChapterVersePointer(tbVerse.Text);
 
-                    if (!vp.IsValid)
-                        vp = new VersePointer(tbVerse.Text + " 1:0");  // может только название книги
-
-                    if (vp.IsValid)
+                    try
                     {
-                        if (OneNoteApp.Windows.CurrentWindow == null)
-                            OneNoteApp.NavigateTo(string.Empty);
+                        VersePointer vp = new VersePointer(tbVerse.Text);
 
-                        if (GoToVerse(vp))
+                        if (!vp.IsValid)
+                            vp = VersePointer.GetChapterVersePointer(tbVerse.Text);
+
+                        if (!vp.IsValid)
+                            vp = new VersePointer(tbVerse.Text + " 1:0");  // может только название книги
+
+                        if (vp.IsValid)
                         {
-                            Properties.Settings.Default.LastVerse = tbVerse.Text;
-                            Properties.Settings.Default.Save();
+                            if (OneNoteApp.Windows.CurrentWindow == null)
+                                OneNoteApp.NavigateTo(string.Empty);
+
+                            if (GoToVerse(vp))
+                            {
+                                Properties.Settings.Default.LastVerse = tbVerse.Text;
+                                Properties.Settings.Default.Save();
+                            }
                         }
+                        else
+                            throw new Exception("Не удалось распознать строку");
                     }
-                    else
-                        throw new Exception("Не удалось распознать строку");
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex.Message);
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex.Message);
+                    }
                 }
 
                 btnOk.Enabled = true;

@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using BibleCommon;
 using BibleCommon.Helpers;
+using BibleCommon.Services;
 
 namespace BibleVerseLinkerEx
 {
@@ -36,21 +37,28 @@ namespace BibleVerseLinkerEx
 
             Logger.Initialize();
 
-            try
+            if (!SettingsManager.Instance.IsConfigured())
             {
-                VerseLinker vlManager = new VerseLinker();
-                vlManager.SearchForUnderlineText = cbSearchForUnderlineText.Checked;
-                if (!string.IsNullOrEmpty(tbPageName.Text))
-                    vlManager.DescriptionPageName = tbPageName.Text;
-
-                vlManager.Do();
-
-                if (!Logger.WasLogged)                
-                    SetForegroundWindow(new IntPtr((long)vlManager.OneNoteApp.Windows.CurrentWindow.WindowHandle));
+                Logger.LogError("Система не сконфигурирована");
             }
-            catch (Exception ex)
+            else
             {
-                Logger.LogError(ex.Message);
+                try
+                {
+                    VerseLinker vlManager = new VerseLinker();
+                    vlManager.SearchForUnderlineText = cbSearchForUnderlineText.Checked;
+                    if (!string.IsNullOrEmpty(tbPageName.Text))
+                        vlManager.DescriptionPageName = tbPageName.Text;
+
+                    vlManager.Do();
+
+                    if (!Logger.WasLogged)
+                        SetForegroundWindow(new IntPtr((long)vlManager.OneNoteApp.Windows.CurrentWindow.WindowHandle));
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex.Message);
+                }
             }
 
             btnOk.Enabled = true;
