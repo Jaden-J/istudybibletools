@@ -659,7 +659,7 @@ namespace BibleNoteLinker
                                 textElementValue.Substring(endVerseNameIndex));                                
 
                             newEndVerseIndex = startVerseNameIndex + link.Length;
-                            searchResult.VersePointerEndIndex = newEndVerseIndex;
+                            searchResult.VersePointerHtmlEndIndex = newEndVerseIndex;
                         }
 
                         if (!isChapter && linkDepth >= AnalyzeDepth.Full)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем
