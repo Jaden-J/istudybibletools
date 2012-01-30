@@ -361,9 +361,9 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(13, 63);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(190, 13);
+            this.label6.Size = new System.Drawing.Size(302, 13);
             this.label6.TabIndex = 2;
-            this.label6.Text = "Название страницы комментариев ";
+            this.label6.Text = "Название страницы комментариев к книге по умолчанию";
             // 
             // tbPageDescriptionName
             // 
@@ -377,9 +377,9 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(13, 13);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(261, 13);
+            this.label5.Size = new System.Drawing.Size(302, 13);
             this.label5.TabIndex = 0;
-            this.label5.Text = "Название страницы комментариев по умолчанию";
+            this.label5.Text = "Название страницы комментариев к главе по умолчанию";
             // 
             // tabPage3
             // 

@@ -99,45 +99,45 @@ namespace BibleConfigurator
                     SettingsManager.Instance.SectionGroupId_BibleComments = string.Empty;
                     SettingsManager.Instance.SectionGroupId_BibleStudy = string.Empty;
 
-                    if (chkCreateBibleStudyNotebookFromTemplate.Checked)
+                    if (chkCreateBibleNotebookFromTemplate.Checked)  
                     {
-                        notebookName = CreateNotebookFromTemplate(Consts.BibleStudyNotebookTemplateFileName, BibleStudyNotebookFromTemplatePath);
-                        if (!string.IsNullOrEmpty(notebookName))                        
-                            WaitAndLoadParameters(NotebookType.BibleStudy, notebookName);                         // выйдем из метода только когда OneNote отработает                        
+                        notebookName = CreateNotebookFromTemplate(Consts.BibleNotebookTemplateFileName, BibleNotebookFromTemplatePath);
+                        if (!string.IsNullOrEmpty(notebookName))
+                            WaitAndLoadParameters(NotebookType.Bible, notebookName);                         // выйдем из метода только когда OneNote отработает
                     }
                     else
                     {
-                        notebookName = (string)cbBibleStudyNotebook.SelectedItem;
-                        TryToLoadNotebookParameters(NotebookType.BibleStudy, notebookName, out notebookId);
-                    }
+                        notebookName = (string)cbBibleNotebook.SelectedItem;
+                        TryToLoadNotebookParameters(NotebookType.Bible, notebookName, out notebookId);
+                    }                   
 
                     if (!Logger.WasErrorLogged)
                     {
-                        if (chkCreateBibleCommentsNotebookFromTemplate.Checked)
+                        if (chkCreateBibleStudyNotebookFromTemplate.Checked)
                         {
-                            notebookName = CreateNotebookFromTemplate(Consts.BibleCommentsNotebookTemplateFileName, BibleCommentsNotebookFromTemplatePath);
+                            notebookName = CreateNotebookFromTemplate(Consts.BibleStudyNotebookTemplateFileName, BibleStudyNotebookFromTemplatePath);
                             if (!string.IsNullOrEmpty(notebookName))
-                                WaitAndLoadParameters(NotebookType.BibleComments, notebookName);                         // выйдем из метода только когда OneNote отработает                                                
+                                WaitAndLoadParameters(NotebookType.BibleStudy, notebookName);                         // выйдем из метода только когда OneNote отработает                        
                         }
                         else
                         {
-                            notebookName = (string)cbBibleCommentsNotebook.SelectedItem;
-                            TryToLoadNotebookParameters(NotebookType.BibleComments, notebookName, out notebookId);
-                        }
+                            notebookName = (string)cbBibleStudyNotebook.SelectedItem;
+                            TryToLoadNotebookParameters(NotebookType.BibleStudy, notebookName, out notebookId);
+                        }                        
 
                         if (!Logger.WasErrorLogged)
                         {
-                            if (chkCreateBibleNotebookFromTemplate.Checked)  // записную книжку для Библии создаём в самом конце, так как она дольше всех создаётся
+                            if (chkCreateBibleCommentsNotebookFromTemplate.Checked)
                             {
-                                notebookName = CreateNotebookFromTemplate(Consts.BibleNotebookTemplateFileName, BibleNotebookFromTemplatePath);
+                                notebookName = CreateNotebookFromTemplate(Consts.BibleCommentsNotebookTemplateFileName, BibleCommentsNotebookFromTemplatePath);
                                 if (!string.IsNullOrEmpty(notebookName))
-                                    WaitAndLoadParameters(NotebookType.Bible, notebookName);                         // выйдем из метода только когда OneNote отработает
+                                    WaitAndLoadParameters(NotebookType.BibleComments, notebookName);                         // выйдем из метода только когда OneNote отработает                                                
                             }
                             else
                             {
-                                notebookName = (string)cbBibleNotebook.SelectedItem;
-                                TryToLoadNotebookParameters(NotebookType.Bible, notebookName, out notebookId);
-                            }
+                                notebookName = (string)cbBibleCommentsNotebook.SelectedItem;
+                                TryToLoadNotebookParameters(NotebookType.BibleComments, notebookName, out notebookId);
+                            } 
                         }
                     }
                 }

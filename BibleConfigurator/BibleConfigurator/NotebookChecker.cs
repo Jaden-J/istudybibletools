@@ -47,13 +47,18 @@ namespace BibleConfigurator
         public static bool ElementIsBibleStudy(XElement element, XmlNamespaceManager xnm)
         {
             bool result = !(ElementIsBible(element, xnm) || ElementIsBibleComments(element, xnm));
+            
 
             if (result)
             {
                 string notebookName = (string)element.Attribute("name").Value;
-                if (Consts.NotBibleStudyNotebooks.Contains(notebookName))                
+                //if (Consts.NotBibleStudyNotebooks.Contains(notebookName))                
+                //    result = false;
+
+                if (!notebookName.StartsWith(Consts.BibleStudyNotebookDefaultName))
                     result = false;
             }
+
 
             return result;
         }
