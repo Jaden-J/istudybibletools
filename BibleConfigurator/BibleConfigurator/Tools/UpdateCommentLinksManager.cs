@@ -97,13 +97,13 @@ namespace BibleConfigurator.Tools
                                                 string.Format("one:SectionGroup[@ID='{0}']", sectionGroupId), xnm);
 
             if (sectionGroup != null)
-                ProcessSectionGroup(sectionGroup, sectionGroupId, notebookId, xnm);
+                ProcessSectionGroup(sectionGroup, sectionGroupId, notebookId, xnm, true);
             else
                 BibleCommon.Services.Logger.LogError("Не удаётся найти группу секций '{0}'", sectionGroupId);
         }
 
         private  void ProcessSectionGroup(XElement sectionGroup, string sectionGroupId,
-            string notebookId, XmlNamespaceManager xnm)
+            string notebookId, XmlNamespaceManager xnm, bool isRootSectionGroup)
         {
             string sectionGroupName = (string)sectionGroup.Attribute("name");
 
@@ -113,15 +113,20 @@ namespace BibleConfigurator.Tools
                 BibleCommon.Services.Logger.MoveLevel(1);
             }
 
-            foreach (var subSectionGroup in sectionGroup.XPathSelectElements("one:SectionGroup", xnm))
+            if (isRootSectionGroup)
             {
-                string subSectionGroupName = (string)subSectionGroup.Attribute("name");
-                ProcessSectionGroup(subSectionGroup, subSectionGroupName, notebookId, xnm);
+                foreach (var subSectionGroup in sectionGroup.XPathSelectElements("one:SectionGroup", xnm))
+                {
+                    string subSectionGroupName = (string)subSectionGroup.Attribute("name");
+                    ProcessSectionGroup(subSectionGroup, subSectionGroupName, notebookId, xnm, false);
+                }
             }
-
-            foreach (var subSection in sectionGroup.XPathSelectElements("one:Section", xnm))
+            else
             {
-                ProcessSection(subSection, sectionGroupId, notebookId, xnm);
+                foreach (var subSection in sectionGroup.XPathSelectElements("one:Section", xnm))
+                {
+                    ProcessSection(subSection, sectionGroupId, notebookId, xnm);
+                }
             }
 
             if (!string.IsNullOrEmpty(sectionGroupName))
