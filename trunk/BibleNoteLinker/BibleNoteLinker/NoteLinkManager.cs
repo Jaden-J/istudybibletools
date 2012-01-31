@@ -480,9 +480,11 @@ namespace BibleNoteLinker
                             }
 
                             if (canContinue)
-                            {
-                                if (prevHtmlBreakIndex - prevResult.VersePointerHtmlEndIndex > 1) // то есть рядом был предыдущий результат
-                                    canContinue = false;
+                            {                                
+                                string stringBetweenThisAndLastResultHTML = textElement.Value
+                                                                .Substring(prevResult.VersePointerHtmlEndIndex, prevHtmlBreakIndex - prevResult.VersePointerHtmlEndIndex);
+                                if (StringUtils.GetText(stringBetweenThisAndLastResultHTML).Length > 1)  // то есть не рядом был предыдущий результат
+                                    canContinue = false;                                
                             }
                         }
                     }
