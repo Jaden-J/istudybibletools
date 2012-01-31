@@ -19,14 +19,16 @@ namespace BibleNoteLinker
     {
         const string Arg_AllPages = "-allpages";
         const string Arg_DeleteNotes = "-deletenotes";
-        const string Arg_Force = "-force";        
-
+        const string Arg_Force = "-force";
+        const string Arg_LastChanged = "-allChanged";
+            
         public class Args
         {
             public bool AnalyzeAllPages { get; set; }  // false - значит только текущую
             public NoteLinkManager.AnalyzeDepth AnalyzeDepth { get; set; }
             public bool Force { get; set; }            
             public bool DeleteNotes { get; set; }
+            public bool LastChanged { get; set; }
 
             public Args()
             {
@@ -34,6 +36,7 @@ namespace BibleNoteLinker
                 this.AnalyzeDepth = NoteLinkManager.AnalyzeDepth.Full;
                 this.Force = false;
                 this.DeleteNotes = false;
+                this.LastChanged = false;
             }
         }
 
@@ -49,7 +52,9 @@ namespace BibleNoteLinker
                 else if (argLower == Arg_Force)
                     result.Force = true;
                 else if (argLower == Arg_DeleteNotes)
-                    result.DeleteNotes = true;                
+                    result.DeleteNotes = true;
+                else if (argLower == Arg_LastChanged)
+                    result.LastChanged = true;
                 else
                 {
                     int temp;
@@ -66,14 +71,12 @@ namespace BibleNoteLinker
             Logger.Init("BibleNoteLinker");
             DateTime dtStart = DateTime.Now;
 
-
             if (!SettingsManager.Instance.IsConfigured())
             {
                 Logger.LogError("Система не сконфигурирована");
             }
             else
             {
-
                 try
                 {
                     Logger.LogMessage("Время старта: {0}", dtStart.ToLongTimeString());
@@ -86,9 +89,11 @@ namespace BibleNoteLinker
                         Logger.LogMessage("Уровень текущего анализа: '{0} ({1})'", userArgs.AnalyzeDepth, (int)userArgs.AnalyzeDepth);
                         if (userArgs.Force)
                             Logger.LogMessage("Анализируем ссылки в том числе");
+                        if (userArgs.LastChanged)
+                            Logger.LogMessage("Анализируем только последние модифицированные страницы");
                     }
 
-                    Application oneNoteApp = new Application();
+                    Application oneNoteApp = new Application();                    
 
                     if (userArgs.AnalyzeAllPages)
                     {
@@ -165,8 +170,29 @@ namespace BibleNoteLinker
             XDocument notebookDoc = OneNoteUtils.GetXDocument(hierarchyXml, out xnm);
 
             Logger.MoveLevel(1);
-            ProcessRootSectionGroup(oneNoteApp, notebookId, notebookDoc, sectionGroupId, xnm, userArgs.AnalyzeDepth, userArgs.Force, userArgs.DeleteNotes);
+            if (userArgs.LastChanged && SettingsManager.Instance.LastNotesLinkTime.HasValue)
+                ProcessLastChangedPages(oneNoteApp, notebookId, notebookDoc, xnm, userArgs.AnalyzeDepth, userArgs.Force);                
+            else
+                ProcessRootSectionGroup(oneNoteApp, notebookId, notebookDoc, sectionGroupId, xnm, userArgs.AnalyzeDepth, userArgs.Force, userArgs.DeleteNotes);
             Logger.MoveLevel(-1);
+        }
+
+        private static void ProcessLastChangedPages(Application oneNoteApp, string notebookId,
+            XDocument notebookDoc, XmlNamespaceManager xnm, NoteLinkManager.AnalyzeDepth linkDepth, bool force)
+        {
+            foreach(XElement page in notebookDoc.Root.XPathSelectElements("//one:Page", xnm))
+            {
+                //lastModifiedTime="2011-08-17T10:45:17.000Z"
+                XAttribute lastModifiedDateAttribute = page.Attribute("lastModifiedTime");
+                if (lastModifiedDateAttribute != null)
+                {
+                    DateTime lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value);
+                    if (lastModifiedDate > SettingsManager.Instance.LastNotesLinkTime.Value)
+                    {
+                        ProcessPage(oneNoteApp, page, sectionGroupId, sectionId, linkDepth, force, false);
+                    }
+                }
+            }
         }
 
         private static void ProcessRootSectionGroup(Application oneNoteApp, string notebookId, XDocument doc, string sectionGroupId,
@@ -230,19 +256,25 @@ namespace BibleNoteLinker
 
             foreach (var page in section.XPathSelectElements("one:Page", xnm))
             {
-                string pageId = (string)page.Attribute("ID");
-                string pageName = (string)page.Attribute("name");
-
-                Logger.LogMessage("Обработка страницы '{0}'", pageName);
-
-                Logger.MoveLevel(1);
-                if (deleteNotes)
-                    NoteLinkManager.DeletePageNotes(oneNoteApp, sectionGroupId, sectionId, pageId, pageName);
-                else
-                    NoteLinkManager.LinkPageVerses(oneNoteApp, sectionGroupId, sectionId, pageId, linkDepth, force);
-                Logger.MoveLevel(-1);
+                ProcessPage(oneNoteApp, page, sectionGroupId, sectionId, linkDepth, force, deleteNotes);
             }
 
+            Logger.MoveLevel(-1);
+        }
+
+        private static void ProcessPage(Application oneNoteApp, XElement page, string sectionGroupId, string sectionId,
+            NoteLinkManager.AnalyzeDepth linkDepth, bool force, bool deleteNotes)
+        {
+            string pageId = (string)page.Attribute("ID");
+            string pageName = (string)page.Attribute("name");
+
+            Logger.LogMessage("Обработка страницы '{0}'", pageName);
+
+            Logger.MoveLevel(1);
+            if (deleteNotes)
+                NoteLinkManager.DeletePageNotes(oneNoteApp, sectionGroupId, sectionId, pageId, pageName);
+            else
+                NoteLinkManager.LinkPageVerses(oneNoteApp, sectionGroupId, sectionId, pageId, linkDepth, force);
             Logger.MoveLevel(-1);
         }
     }

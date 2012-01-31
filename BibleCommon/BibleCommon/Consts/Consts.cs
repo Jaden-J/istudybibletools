@@ -28,6 +28,8 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_PageNameDefaultComments = "PageName_DefaultComments";
         public static readonly string ParameterName_PageNameDefaultBookOverview = "PageName_DefaultBookOverview";
         public static readonly string ParameterName_PageNamePageName_Notes = "PageName_Notes";
+        public static readonly string ParameterName_LastNotesLinkTime = "LastNotesLinkTime";
+        
 
 
         public static readonly Dictionary<string, StringCollection> BookNames = new Dictionary<string, StringCollection>()
