@@ -20,7 +20,7 @@ namespace BibleNoteLinker
         const string Arg_AllPages = "-allpages";
         const string Arg_DeleteNotes = "-deletenotes";
         const string Arg_Force = "-force";
-        const string Arg_LastChanged = "-allChanged";
+        const string Arg_LastChanged = "-changed";
             
         public class Args
         {
@@ -105,6 +105,8 @@ namespace BibleNoteLinker
                         {
                             ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, SettingsManager.Instance.SectionGroupId_BibleComments, userArgs);
                             ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleStudy, SettingsManager.Instance.SectionGroupId_BibleStudy, userArgs);
+                            SettingsManager.Instance.LastNotesLinkTime = DateTime.Now;
+                            SettingsManager.Instance.Save();
                         }
                     }
                     else
@@ -120,17 +122,10 @@ namespace BibleNoteLinker
 
                             if (!string.IsNullOrEmpty(currentPageId))
                             {
-
-                                //if (currentNotebookId == SettingsManager.Instance.NotebookId_BibleComments
-                                //    || currentNotebookId == SettingsManager.Instance.NotebookId_BibleStudy)
-                                //{
                                 if (userArgs.DeleteNotes)
                                     NoteLinkManager.DeletePageNotes(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, OneNoteUtils.GetHierarchyElementName(oneNoteApp, currentPageId));
                                 else
-                                    NoteLinkManager.LinkPageVerses(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);
-                                //}
-                                //else
-                                //Logger.LogError("Заметки к Библии необходимо писать только в записных книжках ");
+                                    NoteLinkManager.LinkPageVerses(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);                            
                             }
                             else
                                 Logger.LogError("Не найдено открытой страницы заметок");
@@ -189,6 +184,13 @@ namespace BibleNoteLinker
                     DateTime lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value);
                     if (lastModifiedDate > SettingsManager.Instance.LastNotesLinkTime.Value)
                     {
+                        string sectionGroupId = string.Empty;
+                        XElement sectionGroup = page.Parent.Parent;
+                        if (sectionGroup.Name == "SectionGroup")
+                            sectionGroupId = (string)page.Parent.Parent.Attribute("ID").Value;
+
+                        string sectionId = (string)page.Parent.Attribute("ID").Value;
+
                         ProcessPage(oneNoteApp, page, sectionGroupId, sectionId, linkDepth, force, false);
                     }
                 }
