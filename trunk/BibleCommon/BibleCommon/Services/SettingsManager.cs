@@ -45,6 +45,8 @@ namespace BibleCommon.Services
         public string PageName_DefaultBookOverview { get; set; }
         public string PageName_Notes { get; set; }
 
+        public DateTime? LastNotesLinkTime { get; set; }
+
 
         public bool IsConfigured()
         {
@@ -107,6 +109,10 @@ namespace BibleCommon.Services
                 this.PageName_DefaultBookOverview = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameDefaultBookOverview).Value;
                 this.PageName_DefaultComments = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameDefaultComments).Value;
                 this.PageName_Notes = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNamePageName_Notes).Value;
+
+                XElement lastNotesLinkTimeElement = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_LastNotesLinkTime);
+                this.LastNotesLinkTime = (lastNotesLinkTimeElement != null && !string.IsNullOrEmpty(lastNotesLinkTimeElement.Value)) 
+                                            ? (DateTime?)DateTime.Parse(lastNotesLinkTimeElement.Value) : null;
             }
             catch (Exception ex)
             {
@@ -138,7 +144,9 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBibleStudy, this.SectionGroupId_BibleStudy),
                                   new XElement(Consts.Constants.ParameterName_PageNameDefaultBookOverview, this.PageName_DefaultBookOverview),
                                   new XElement(Consts.Constants.ParameterName_PageNameDefaultComments, this.PageName_DefaultComments),
-                                  new XElement(Consts.Constants.ParameterName_PageNamePageName_Notes, this.PageName_Notes)
+                                  new XElement(Consts.Constants.ParameterName_PageNamePageName_Notes, this.PageName_Notes),
+                                  new XElement(Consts.Constants.ParameterName_LastNotesLinkTime, this.LastNotesLinkTime.HasValue 
+                                                ? this.LastNotesLinkTime.Value.ToString() : string.Empty)
                                   );
 
                     xDoc.Save(sw);
