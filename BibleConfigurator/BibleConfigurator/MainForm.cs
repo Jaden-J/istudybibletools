@@ -421,11 +421,14 @@ namespace BibleConfigurator
             return null;
         }
 
-        private static void SetNotebookParameters(bool loadNameFromSettings, string defaultName, Dictionary<string, string> notebooks, string notebookId, ComboBox cb, CheckBox chk)
+        private static void SetNotebookParameters(bool loadNameFromSettings, string defaultName, Dictionary<string, string> notebooks, 
+            string notebookIdFromSettings, ComboBox cb, CheckBox chk)
         {
-            string notebookName = (loadNameFromSettings && !string.IsNullOrEmpty(notebookId)) ? TryToGetNotebookName(notebooks, notebookId) : defaultName;
-            if (cb.Items.Contains(notebookName))
+            string notebookName = (loadNameFromSettings && !string.IsNullOrEmpty(notebookIdFromSettings)) ? TryToGetNotebookName(notebooks, notebookIdFromSettings) : string.Empty;
+            if (!string.IsNullOrEmpty(notebookName) && cb.Items.Contains(notebookName))
                 cb.SelectedItem = notebookName;
+            else if (cb.Items.Contains(defaultName))
+                cb.SelectedItem = defaultName;
             else
                 chk.Checked = true;
         }

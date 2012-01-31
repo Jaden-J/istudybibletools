@@ -37,10 +37,19 @@ namespace BibleCommon.Helpers
             this.MaxMissCount = maxMissCount;
             this.Mode = mode;
         }
-    }
+    }    
 
     public static class StringUtils
     {
+        public static string GetText(string htmlString)
+        {
+            int t1,t2;
+            string s = StringUtils.GetNextString(htmlString, -1,
+                                    new SearchMissInfo(htmlString.Length, SearchMissInfo.MissMode.CancelOnNextMiss), out t1, out t2);
+
+            return s;
+        }
+
         public static int LastIndexOf(string s, string value, int startIndex, int endIndex)
         {
             int result = -1;

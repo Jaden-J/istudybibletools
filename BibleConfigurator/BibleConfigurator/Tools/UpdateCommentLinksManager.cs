@@ -201,7 +201,7 @@ namespace BibleConfigurator.Tools
         private bool RelinkPageComment(string bibleSectionId, string biblePageId, string biblePageName, XElement textElement, int linkIndex, int linkEnd)
         {
             string commentLink = textElement.Value.Substring(linkIndex, linkEnd - linkIndex + "</a>".Length);
-            string commentText = GetLinkText(commentLink);
+            string commentText = StringUtils.GetText(commentLink);
 
             string commentPageName = GetCommentPageName(commentLink);
             string commentPageId = GetCommentPageId(bibleSectionId, biblePageId, biblePageName, commentPageName);
@@ -325,16 +325,5 @@ namespace BibleConfigurator.Tools
 
             return result;
         }
-
-        private string GetLinkText(string commentLink)
-        {            
-            int textBreakIndex;
-            int htmlBreakIndex;
-            string s = StringUtils.GetNextString(commentLink, -1, new SearchMissInfo(commentLink.Length, SearchMissInfo.MissMode.CancelOnNextMiss),
-                out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.NotSpecified);
-
-            return s;
-        }
-       
     }
 }
