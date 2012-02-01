@@ -301,6 +301,8 @@ namespace BibleNoteLinker
                                         wasModified = true;
                                     }
                                 }
+                                else
+                                    numberIndex = searchResult.VersePointerHtmlEndIndex;
 
                                 prevResult = searchResult;
 
@@ -482,7 +484,7 @@ namespace BibleNoteLinker
                             if (canContinue)
                             {                                
                                 string stringBetweenThisAndLastResultHTML = textElement.Value
-                                                                .Substring(prevResult.VersePointerHtmlEndIndex, prevHtmlBreakIndex - prevResult.VersePointerHtmlEndIndex);
+                                                                .Substring(prevResult.VersePointerHtmlEndIndex, prevHtmlBreakIndex - prevResult.VersePointerHtmlEndIndex + 1);
                                 if (StringUtils.GetText(stringBetweenThisAndLastResultHTML).Length > 1)  // то есть не рядом был предыдущий результат
                                     canContinue = false;                                
                             }
