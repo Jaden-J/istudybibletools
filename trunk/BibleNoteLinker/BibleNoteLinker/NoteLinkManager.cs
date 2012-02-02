@@ -919,12 +919,30 @@ namespace BibleNoteLinker
 
             if (suchNoteLink == null)  // если нет ссылки на такую же заметку
             {
-                notesCellElement.Add(new XElement(nms + "OE",
-                                        new XElement(nms + "List",
-                                                    new XElement(nms + "Number", new XAttribute("numberSequence", 0), new XAttribute("numberFormat", "##."))),
-                                        new XElement(nms + "T",
-                                            new XCData(
-                                                fullLinkString))));
+                XElement prevLink = null;
+                foreach (XElement existingLink in rowElement.XPathSelectElements("one:Cell[2]/one:OEChildren/one:OE/one:T", xnm))
+                {
+                    string existingNoteTitle = StringUtils.GetText(existingLink.Value);
+                    if (noteTitle.CompareTo(existingNoteTitle) < 0)
+                        break;
+                    prevLink = existingLink;
+                }
+
+                XElement linkElement = new XElement(nms + "OE",
+                                            new XElement(nms + "List",
+                                                        new XElement(nms + "Number", new XAttribute("numberSequence", 0), new XAttribute("numberFormat", "##."))),
+                                            new XElement(nms + "T",
+                                                new XCData(
+                                                    fullLinkString)));
+
+                if (prevLink == null)
+                {
+                    notesCellElement.AddFirst(linkElement);
+                }
+                else
+                {
+                    prevLink.Parent.AddAfterSelf(linkElement);
+                }
             }
             else
             {
