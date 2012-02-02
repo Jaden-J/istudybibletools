@@ -22,6 +22,7 @@ namespace BibleNoteLinkerEx
     {
         const string Arg_AllPages = "-allpages";
         const string Arg_DeleteNotes = "-deletenotes";
+        const string Arg_Changed = "-changed";
         const string Arg_Force = "-force";
 
         public MainForm()
@@ -38,6 +39,7 @@ namespace BibleNoteLinkerEx
             if (!chkDeleteNotes.Checked)
             {
                 BibleNoteLinkerEx.Properties.Settings.Default.AllPages = rbAnalyzeAllPages.Checked;
+                BibleNoteLinkerEx.Properties.Settings.Default.Changed = rbAnalyzeChangedPages.Checked;
                 BibleNoteLinkerEx.Properties.Settings.Default.Force = chkForce.Checked;
                 BibleNoteLinkerEx.Properties.Settings.Default.Save();
             }
@@ -68,8 +70,10 @@ namespace BibleNoteLinkerEx
 
             if (rbAnalyzeAllPages.Enabled && rbAnalyzeAllPages.Checked)
                 sb.AppendFormat(" {0}", Arg_AllPages);
+            else if (rbAnalyzeChangedPages.Enabled && rbAnalyzeChangedPages.Checked)
+                sb.AppendFormat(" {0} {1}", Arg_AllPages, Arg_Changed);
             else if (chkDeleteNotes.Checked)
-                sb.AppendFormat(" {0} {1}", Arg_AllPages, Arg_DeleteNotes);
+                sb.AppendFormat(" {0} {1}", Arg_AllPages, Arg_DeleteNotes);            
 
             if (chkForce.Enabled && chkForce.Checked)
                 sb.AppendFormat(" {0}", Arg_Force);            
@@ -96,6 +100,8 @@ namespace BibleNoteLinkerEx
         {
             if (BibleNoteLinkerEx.Properties.Settings.Default.AllPages)
                 rbAnalyzeAllPages.Checked = true;
+            else if (BibleNoteLinkerEx.Properties.Settings.Default.Changed)
+                rbAnalyzeChangedPages.Checked = true;
 
             if (BibleNoteLinkerEx.Properties.Settings.Default.Force)
                 chkForce.Checked = true;            
@@ -115,7 +121,8 @@ namespace BibleNoteLinkerEx
         {
             rbAnalyzeAllPages.Enabled = 
                 rbAnalyzeCurrentPage.Enabled = 
-                    chkForce.Enabled = !chkDeleteNotes.Checked;
+                    rbAnalyzeChangedPages.Enabled =
+                        chkForce.Enabled = !chkDeleteNotes.Checked;
         }
     }
 }
