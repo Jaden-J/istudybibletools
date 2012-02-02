@@ -20,7 +20,7 @@ namespace BibleNoteLinker
         const string Arg_AllPages = "-allpages";
         const string Arg_DeleteNotes = "-deletenotes";
         const string Arg_Force = "-force";
-        const string Arg_LastChanged = "-changed";
+        const string Arg_Changed = "-changed";
             
         public class Args
         {
@@ -53,7 +53,7 @@ namespace BibleNoteLinker
                     result.Force = true;
                 else if (argLower == Arg_DeleteNotes)
                     result.DeleteNotes = true;
-                else if (argLower == Arg_LastChanged)
+                else if (argLower == Arg_Changed)
                     result.LastChanged = true;
                 else
                 {
@@ -164,20 +164,16 @@ namespace BibleNoteLinker
             XmlNamespaceManager xnm;
             XDocument notebookDoc = OneNoteUtils.GetXDocument(hierarchyXml, out xnm);
 
-            Logger.MoveLevel(1);
-            if (userArgs.LastChanged && SettingsManager.Instance.LastNotesLinkTime.HasValue)
-                ProcessLastChangedPages(oneNoteApp, notebookId, notebookDoc, xnm, userArgs.AnalyzeDepth, userArgs.Force);                
-            else
-                ProcessRootSectionGroup(oneNoteApp, notebookId, notebookDoc, sectionGroupId, xnm, userArgs.AnalyzeDepth, userArgs.Force, userArgs.DeleteNotes);
+            Logger.MoveLevel(1);            
+            ProcessRootSectionGroup(oneNoteApp, notebookId, notebookDoc, sectionGroupId, xnm, userArgs.AnalyzeDepth, userArgs.Force, userArgs.LastChanged, userArgs.DeleteNotes);
             Logger.MoveLevel(-1);
         }
 
-        private static void ProcessLastChangedPages(Application oneNoteApp, string notebookId,
-            XDocument notebookDoc, XmlNamespaceManager xnm, NoteLinkManager.AnalyzeDepth linkDepth, bool force)
+        private static void ProcessLastChangedPages(Application oneNoteApp, 
+            XElement rootSectionGroup, XmlNamespaceManager xnm, NoteLinkManager.AnalyzeDepth linkDepth, bool force)
         {
-            foreach(XElement page in notebookDoc.Root.XPathSelectElements("//one:Page", xnm))
-            {
-                //lastModifiedTime="2011-08-17T10:45:17.000Z"
+            foreach (XElement page in rootSectionGroup.XPathSelectElements(".//one:Page", xnm))
+            {                
                 XAttribute lastModifiedDateAttribute = page.Attribute("lastModifiedTime");
                 if (lastModifiedDateAttribute != null)
                 {
@@ -186,7 +182,7 @@ namespace BibleNoteLinker
                     {
                         string sectionGroupId = string.Empty;
                         XElement sectionGroup = page.Parent.Parent;
-                        if (sectionGroup.Name == "SectionGroup")
+                        if (sectionGroup.Name.LocalName == "SectionGroup")
                             sectionGroupId = (string)page.Parent.Parent.Attribute("ID").Value;
 
                         string sectionId = (string)page.Parent.Attribute("ID").Value;
@@ -198,15 +194,20 @@ namespace BibleNoteLinker
         }
 
         private static void ProcessRootSectionGroup(Application oneNoteApp, string notebookId, XDocument doc, string sectionGroupId,
-            XmlNamespaceManager xnm, NoteLinkManager.AnalyzeDepth linkDepth, bool force, bool deleteNotes)
+            XmlNamespaceManager xnm, NoteLinkManager.AnalyzeDepth linkDepth, bool force, bool lastChanged, bool deleteNotes)
         {
             XElement sectionGroup = string.IsNullOrEmpty(sectionGroupId) 
                                         ? doc.Root 
                                         : doc.Root.XPathSelectElement(
-                                                string.Format("one:SectionGroup[@ID='{0}']", sectionGroupId), xnm);                        
+                                                string.Format("one:SectionGroup[@ID='{0}']", sectionGroupId), xnm);
 
             if (sectionGroup != null)
-                ProcessSectionGroup(sectionGroup, sectionGroupId, oneNoteApp, notebookId, xnm, linkDepth, force, deleteNotes);
+            {
+                if (lastChanged && SettingsManager.Instance.LastNotesLinkTime.HasValue)
+                    ProcessLastChangedPages(oneNoteApp, sectionGroup, xnm, linkDepth, force);
+                else
+                    ProcessSectionGroup(sectionGroup, sectionGroupId, oneNoteApp, notebookId, xnm, linkDepth, force, deleteNotes);
+            }
             else
                 Logger.LogError("Не удаётся найти группу секций '{0}'", sectionGroupId);
         }

@@ -46,5 +46,17 @@ namespace BibleNoteLinkerEx.Properties {
                 this["Force"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Changed {
+            get {
+                return ((bool)(this["Changed"]));
+            }
+            set {
+                this["Changed"] = value;
+            }
+        }
     }
 }
