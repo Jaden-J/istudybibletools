@@ -57,7 +57,7 @@
             this.cbSearchForUnderlineText.Name = "cbSearchForUnderlineText";
             this.cbSearchForUnderlineText.Size = new System.Drawing.Size(168, 17);
             this.cbSearchForUnderlineText.TabIndex = 2;
-            this.cbSearchForUnderlineText.Text = "Искать подчёркнутый текст";
+            this.cbSearchForUnderlineText.Text = "Искать подчеркнутый текст";
             this.cbSearchForUnderlineText.UseVisualStyleBackColor = true;
             // 
             // MainForm

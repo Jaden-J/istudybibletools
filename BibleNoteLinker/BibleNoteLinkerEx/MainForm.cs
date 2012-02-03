@@ -15,6 +15,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using BibleCommon.Helpers;
+using BibleCommon.Services;
 
 namespace BibleNoteLinkerEx
 {
@@ -28,7 +29,20 @@ namespace BibleNoteLinkerEx
         public MainForm()
         {
             InitializeComponent();            
+        }
 
+        private delegate void SetControlPropertyThreadSafeDelegate(Control control, string propertyName, object propertyValue);
+
+        public static void SetControlPropertyThreadSafe(Control control, string propertyName, object propertyValue)
+        {
+            if (control.InvokeRequired)
+            {
+                control.Invoke(new SetControlPropertyThreadSafeDelegate(SetControlPropertyThreadSafe), new object[] { control, propertyName, propertyValue });
+            }
+            else
+            {
+                control.GetType().InvokeMember(propertyName, BindingFlags.SetProperty, null, control, new object[] { propertyValue });
+            }
         }
 
         [DllImport("user32.dll")]
@@ -63,7 +77,7 @@ namespace BibleNoteLinkerEx
                 throw;
             }
         }
-
+        
         private string BuildArgs()
         {
             StringBuilder sb = new StringBuilder();
@@ -104,8 +118,23 @@ namespace BibleNoteLinkerEx
                 rbAnalyzeChangedPages.Checked = true;
 
             if (BibleNoteLinkerEx.Properties.Settings.Default.Force)
-                chkForce.Checked = true;            
+                chkForce.Checked = true;
+
+            new Thread(CheckForNewerVersion).Start();
         }       
+
+        public void CheckForNewerVersion()
+        {
+            if (VersionOnServerManager.NeedToUpdate())
+            {
+                SetControlPropertyThreadSafe(lblInfo, "Text",
+@"Доступна новая версия программы
+на сайте http://IStudyBibleTools.ru. 
+Кликните, чтобы перейти на страницу загрузки.");
+
+                SetControlPropertyThreadSafe(this, "Size", new Size(this.Size.Width, this.Size.Height + 50));
+            }
+        }
 
         private bool _wasShown = false;
         private void MainForm_Shown(object sender, EventArgs e)
@@ -123,6 +152,11 @@ namespace BibleNoteLinkerEx
                 rbAnalyzeCurrentPage.Enabled = 
                     rbAnalyzeChangedPages.Enabled =
                         chkForce.Enabled = !chkDeleteNotes.Checked;
+        }
+
+        private void lblInfo_Click(object sender, EventArgs e)
+        {
+            Process.Start(BibleCommon.Consts.Constants.DownloadPageUrl);
         }
     }
 }
