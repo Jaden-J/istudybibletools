@@ -482,11 +482,16 @@ namespace BibleNoteLinker
                             }
 
                             if (canContinue)
-                            {                                
-                                string stringBetweenThisAndLastResultHTML = textElement.Value
-                                                                .Substring(prevResult.VersePointerHtmlEndIndex, prevHtmlBreakIndex - prevResult.VersePointerHtmlEndIndex + 1);
-                                if (StringUtils.GetText(stringBetweenThisAndLastResultHTML).Length > 1)  // то есть не рядом был предыдущий результат
-                                    canContinue = false;                                
+                            {
+                                if (prevHtmlBreakIndex < prevResult.VersePointerHtmlEndIndex)
+                                    canContinue = false;
+                                else
+                                {
+                                    string stringBetweenThisAndLastResultHTML = textElement.Value
+                                                                    .Substring(prevResult.VersePointerHtmlEndIndex, prevHtmlBreakIndex - prevResult.VersePointerHtmlEndIndex + 1);
+                                    if (StringUtils.GetText(stringBetweenThisAndLastResultHTML).Length > 1)  // то есть не рядом был предыдущий результат
+                                        canContinue = false;
+                                }
                             }
                         }
                     }
