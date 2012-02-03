@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using BibleCommon.Helpers;
 using Microsoft.Office.Interop.OneNote;
+using System.Reflection;
 
 namespace BibleCommon.Services
 {
@@ -46,6 +47,28 @@ namespace BibleCommon.Services
         public string PageName_Notes { get; set; }
 
         public DateTime? LastNotesLinkTime { get; set; }
+        public Version NewVersionOnServer { get; set; }
+        public DateTime? NewVersionOnServerLatestCheckTime { get; set; }
+
+        private Version _currentVersion = null;
+        public Version CurrentVersion
+        {
+            get
+            {
+                if (_currentVersion == null)
+                {
+                    Assembly assembly = Assembly.GetCallingAssembly();
+                    _currentVersion = assembly.GetName().Version;
+                }
+
+                return _currentVersion;
+            }
+        }
+
+        
+        
+
+        
 
 
         public bool IsConfigured()
@@ -113,6 +136,14 @@ namespace BibleCommon.Services
                 XElement lastNotesLinkTimeElement = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_LastNotesLinkTime);
                 this.LastNotesLinkTime = (lastNotesLinkTimeElement != null && !string.IsNullOrEmpty(lastNotesLinkTimeElement.Value)) 
                                             ? (DateTime?)DateTime.Parse(lastNotesLinkTimeElement.Value) : null;
+
+                XElement newVersionOnServerElement = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NewVersionOnServer);
+                this.NewVersionOnServer = (newVersionOnServerElement != null && !string.IsNullOrEmpty(newVersionOnServerElement.Value))
+                                            ? new Version(newVersionOnServerElement.Value) : null;
+
+                XElement newVersionOnServerLatestCheckTimeElement = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime);
+                this.NewVersionOnServerLatestCheckTime = (newVersionOnServerLatestCheckTimeElement != null && !string.IsNullOrEmpty(newVersionOnServerLatestCheckTimeElement.Value))
+                                            ? (DateTime?)DateTime.Parse(newVersionOnServerLatestCheckTimeElement.Value) : null;
             }
             catch (Exception ex)
             {
@@ -146,7 +177,10 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_PageNameDefaultComments, this.PageName_DefaultComments),
                                   new XElement(Consts.Constants.ParameterName_PageNamePageName_Notes, this.PageName_Notes),
                                   new XElement(Consts.Constants.ParameterName_LastNotesLinkTime, this.LastNotesLinkTime.HasValue 
-                                                ? this.LastNotesLinkTime.Value.ToString() : string.Empty)
+                                                ? this.LastNotesLinkTime.Value.ToString() : string.Empty),
+                                  new XElement(Consts.Constants.ParameterName_NewVersionOnServer, this.NewVersionOnServer),
+                                  new XElement(Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, this.NewVersionOnServerLatestCheckTime.HasValue
+                                                ? this.NewVersionOnServerLatestCheckTime.Value.ToString() : string.Empty)
                                   );
 
                     xDoc.Save(sw);

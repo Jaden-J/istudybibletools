@@ -29,6 +29,13 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_PageNameDefaultBookOverview = "PageName_DefaultBookOverview";
         public static readonly string ParameterName_PageNamePageName_Notes = "PageName_Notes";
         public static readonly string ParameterName_LastNotesLinkTime = "LastNotesLinkTime";
+        public static readonly string ParameterName_NewVersionOnServer = "NewVersionOnServer";
+        public static readonly string ParameterName_NewVersionOnServerLatestCheckTime = "NewVersionOnServerLatestCheckTime";
+
+        public static readonly string NewVersionOnServerFileUrl = "http://IStudyBibleTools.ru/ServerVariables.xml";
+        public static readonly TimeSpan NewVersionCheckPeriod = new TimeSpan(1, 0, 0, 0);
+
+        public static readonly string DownloadPageUrl = "http://IStudyBibleTools.ru/download.htm";
         
 
 

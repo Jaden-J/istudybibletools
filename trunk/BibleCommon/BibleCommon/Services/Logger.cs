@@ -14,32 +14,41 @@ namespace BibleCommon.Services
         private static FileStream _fileStream = null;
         private static StreamWriter _streamWriter = null;
 
-
-
         public static void MoveLevel(int levelDiv)
         {
             _level += levelDiv;
         }
 
+        private static bool _isInitialized = false;
+
         public static void Init(string systemName)
         {
+            if (!_isInitialized)
+            {
+                string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Consts.Constants.ToolsName);
 
-            string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Consts.Constants.ToolsName);
+                if (!Directory.Exists(directoryPath))
+                    Directory.CreateDirectory(directoryPath);
 
-            if (!Directory.Exists(directoryPath))
-                Directory.CreateDirectory(directoryPath);
+                _fileStream = new FileStream(Path.Combine(directoryPath, systemName + ".txt"), FileMode.Create);
+                _streamWriter = new StreamWriter(_fileStream);
 
-            _fileStream = new FileStream(Path.Combine(directoryPath, systemName + ".txt"), FileMode.Create);
-            _streamWriter = new StreamWriter(_fileStream);
+                _isInitialized = true;
+            }
         }
 
         public static void Done()
         {
-            if (_streamWriter != null)
-                _streamWriter.Close();
+            if (_isInitialized)
+            {
+                if (_streamWriter != null)
+                    _streamWriter.Close();
 
-            if (_fileStream != null)
-                _fileStream.Close();
+                if (_fileStream != null)
+                    _fileStream.Close();
+
+                _isInitialized = false;
+            }
         }
 
         public static void LogMessage(string message, bool leveled, bool newLine, bool writeDateTime = true)
@@ -99,6 +108,6 @@ namespace BibleCommon.Services
         {            
             LogMessageToFileAndConsole(true, "ОШИБКА: " + string.Format(message, args));
             ErrorWasLogged = true;
-        }
+        }        
     }
 }

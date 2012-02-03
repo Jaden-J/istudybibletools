@@ -67,7 +67,7 @@ namespace BibleNoteLinker
         }
 
         static void Main(string[] args)
-        {
+        {        
             Logger.Init("BibleNoteLinker");
             DateTime dtStart = DateTime.Now;
 
