@@ -51,7 +51,7 @@ namespace BibleConfigurator
         private void btnOK_Click(object sender, EventArgs e)
         {          
             btnOK.Enabled = false;
-
+            lblWarning.Text = string.Empty;
             try
             {
                 Logger.Initialize();
@@ -373,6 +373,9 @@ namespace BibleConfigurator
 
         private void LoadParameters()
         {
+            if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
+                lblWarning.Text = "Необходимо сохранить изменения";
+
             Dictionary<string, string> notebooks = GetNotebooks();
             string singleNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.Single);
             string bibleNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.Bible);

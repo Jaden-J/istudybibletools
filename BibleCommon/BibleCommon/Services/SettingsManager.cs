@@ -65,13 +65,7 @@ namespace BibleCommon.Services
             }
         }
 
-        
-        
-
-        
-
-
-        public bool IsConfigured()
+        public bool IsConfigured(Application oneNoteApp)
         {
             bool result = !string.IsNullOrEmpty(this.NotebookId_Bible)
                 && !string.IsNullOrEmpty(this.NotebookId_BibleComments)
@@ -87,7 +81,13 @@ namespace BibleCommon.Services
                     result = !string.IsNullOrEmpty(this.SectionGroupId_Bible)
                           && !string.IsNullOrEmpty(this.SectionGroupId_BibleComments)
                           && !string.IsNullOrEmpty(this.SectionGroupId_BibleStudy);
+
+                    //todo: чтоб проверял и наличие секций
                 }
+                
+                result = OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_Bible)
+                    && OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_BibleComments)
+                    && OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_BibleStudy);
             }
 
             return result;

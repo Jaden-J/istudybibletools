@@ -49,9 +49,9 @@ namespace BibleConfigurator.Tools
 
         public void RelinkAllBibleComments()
         {
-            if (!SettingsManager.Instance.IsConfigured())
+            if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
             {
-                Logger.LogError("Программа не сконфигурирована");
+                Logger.LogError(Constants.Error_SystemIsNotConfigures);
                 return;
             }   
 

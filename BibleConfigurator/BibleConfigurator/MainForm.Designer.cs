@@ -66,6 +66,7 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lblProgressInfo = new System.Windows.Forms.Label();
             this.pbMain = new System.Windows.Forms.ProgressBar();
+            this.lblWarning = new System.Windows.Forms.Label();
             this.tbcMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -448,6 +449,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.lblWarning);
             this.splitContainer1.Panel2.Controls.Add(this.lblProgressInfo);
             this.splitContainer1.Panel2.Controls.Add(this.pbMain);
             this.splitContainer1.Panel2.Controls.Add(this.btnOK);
@@ -471,6 +473,15 @@
             this.pbMain.Step = 3;
             this.pbMain.TabIndex = 17;
             this.pbMain.Visible = false;
+            // 
+            // lblWarning
+            // 
+            this.lblWarning.AutoSize = true;
+            this.lblWarning.ForeColor = System.Drawing.Color.Red;
+            this.lblWarning.Location = new System.Drawing.Point(299, 0);
+            this.lblWarning.Name = "lblWarning";
+            this.lblWarning.Size = new System.Drawing.Size(0, 13);
+            this.lblWarning.TabIndex = 19;
             // 
             // MainForm
             // 
@@ -541,6 +552,7 @@
         private System.Windows.Forms.CheckBox chkDefaultPageNameParameters;
         private System.Windows.Forms.ProgressBar pbMain;
         private System.Windows.Forms.Label lblProgressInfo;
+        private System.Windows.Forms.Label lblWarning;
 
     }
 }

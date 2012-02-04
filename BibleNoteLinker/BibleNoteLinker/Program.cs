@@ -12,6 +12,7 @@ using BibleCommon.Services;
 using BibleCommon.Helpers;
 using System.IO;
 using System.Diagnostics;
+using BibleCommon.Consts;
 
 namespace BibleNoteLinker
 {
@@ -70,10 +71,11 @@ namespace BibleNoteLinker
         {        
             Logger.Init("BibleNoteLinker");
             DateTime dtStart = DateTime.Now;
+            Application oneNoteApp = new Application();                    
 
-            if (!SettingsManager.Instance.IsConfigured())
+            if (!SettingsManager.Instance.IsConfigured(oneNoteApp))
             {
-                Logger.LogError("Система не сконфигурирована");
+                Logger.LogError(Constants.Error_SystemIsNotConfigures);
             }
             else
             {
@@ -91,9 +93,7 @@ namespace BibleNoteLinker
                             Logger.LogMessage("Анализируем ссылки в том числе");
                         if (userArgs.LastChanged)
                             Logger.LogMessage("Анализируем только последние модифицированные страницы");
-                    }
-
-                    Application oneNoteApp = new Application();                    
+                    }                                       
 
                     if (userArgs.AnalyzeAllPages)
                     {
