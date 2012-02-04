@@ -247,7 +247,7 @@ namespace BibleNoteLinker
                                 localChapterName = searchResult.ChapterName;   // всегда запоминаем
 
 
-                                if (!isLink || (isLink && force))
+                                if (!isLink || (isLink && force) || (isTitle && isInBrackets))
                                 {
                                     if (VersePointerSearchResult.IsVerse(searchResult.ResultType))
                                         textToChange = searchResult.VerseString;
@@ -552,10 +552,13 @@ namespace BibleNoteLinker
                     string bookName = StringUtils.GetPrevString(textElement.Value,
                         numberStartIndex, new SearchMissInfo(maxMissCount, SearchMissInfo.MissMode.CancelOnMissFound), out startIndex, out prevHtmlBreakIndex,
                         maxMissCount > 0 ? StringSearchIgnorance.IgnoreAllSpacesAndDots : StringSearchIgnorance.IgnoreFirstSpaceAndDot,
-                        StringSearchMode.SearchText);
+                        StringSearchMode.SearchText);                    
 
                     if (!string.IsNullOrEmpty(bookName) && !string.IsNullOrEmpty(bookName.Trim()))
                     {
+                        if (isInBrackets)
+                            bookName = bookName.Trim('[', ']');
+
                         char prevPrevChar = StringUtils.GetChar(textElement.Value, prevHtmlBreakIndex);
                         if (!(StringUtils.IsCharAlphabetical(prevPrevChar) || StringUtils.IsDigit(prevPrevChar)))
                         {
