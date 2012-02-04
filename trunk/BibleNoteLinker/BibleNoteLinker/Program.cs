@@ -177,7 +177,7 @@ namespace BibleNoteLinker
                 XAttribute lastModifiedDateAttribute = page.Attribute("lastModifiedTime");
                 if (lastModifiedDateAttribute != null)
                 {
-                    DateTime lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value).ToUniversalTime();
+                    DateTime lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value);
                     if (lastModifiedDate > SettingsManager.Instance.LastNotesLinkTime.Value)
                     {
                         string sectionGroupId = string.Empty;
