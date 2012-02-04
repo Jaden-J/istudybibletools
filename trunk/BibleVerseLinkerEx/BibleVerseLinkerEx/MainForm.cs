@@ -13,6 +13,7 @@ using System.Threading;
 using BibleCommon;
 using BibleCommon.Helpers;
 using BibleCommon.Services;
+using BibleCommon.Consts;
 
 namespace BibleVerseLinkerEx
 {
@@ -35,11 +36,13 @@ namespace BibleVerseLinkerEx
             btnOk.Enabled = false;
             Application.DoEvents();
 
+            Microsoft.Office.Interop.OneNote.Application oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+
             Logger.Initialize();
 
-            if (!SettingsManager.Instance.IsConfigured())
+            if (!SettingsManager.Instance.IsConfigured(oneNoteApp))
             {
-                Logger.LogError("Система не сконфигурирована");
+                Logger.LogError(Constants.Error_SystemIsNotConfigures);
             }
             else
             {

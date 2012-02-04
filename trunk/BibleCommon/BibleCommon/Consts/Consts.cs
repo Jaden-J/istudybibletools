@@ -36,6 +36,8 @@ namespace BibleCommon.Consts
         public static readonly TimeSpan NewVersionCheckPeriod = new TimeSpan(1, 0, 0, 0);
 
         public static readonly string DownloadPageUrl = "http://IStudyBibleTools.ru/download.htm";
+
+        public static readonly string Error_SystemIsNotConfigures = "Программа не сконфигурирована";
         
 
 

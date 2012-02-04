@@ -17,6 +17,7 @@ using System.Threading;
 using BibleCommon.Common;
 using BibleCommon.Services;
 using BibleCommon.Helpers;
+using BibleCommon.Consts;
 
 namespace BibleVersePointer
 {
@@ -52,9 +53,9 @@ namespace BibleVersePointer
         {
             Logger.Initialize();
 
-            if (!SettingsManager.Instance.IsConfigured())
+            if (!SettingsManager.Instance.IsConfigured(OneNoteApp))
             {
-                Logger.LogError("Система не сконфигурирована");
+                Logger.LogError(Constants.Error_SystemIsNotConfigures);
             }
             else
             {
@@ -62,7 +63,6 @@ namespace BibleVersePointer
                 {
                     btnOk.Enabled = false;
                     System.Windows.Forms.Application.DoEvents();
-
 
                     try
                     {

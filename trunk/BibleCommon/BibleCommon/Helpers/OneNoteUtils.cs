@@ -15,6 +15,16 @@ namespace BibleCommon.Helpers
 {
     public static class OneNoteUtils
     {
+        public static bool NotebookExists(Application oneNoteApp, string notebookId)
+        {
+            string xml;
+            XmlNamespaceManager xnm;
+            oneNoteApp.GetHierarchy(null, HierarchyScope.hsNotebooks, out xml);
+            XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
+            XElement bibleNotebook = doc.Root.XPathSelectElement(string.Format("one:Notebook[@ID='{0}']", notebookId), xnm);
+            return bibleNotebook != null;            
+        }
+
         public static string GetNotebookIdByName(Application oneNoteApp, string notebookName)
         {
             string xml;
