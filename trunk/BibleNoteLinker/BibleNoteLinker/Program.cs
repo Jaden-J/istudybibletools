@@ -217,13 +217,8 @@ namespace BibleNoteLinker
         {
             string sectionGroupName = (string)sectionGroup.Attribute("name");
 
-            if (sectionGroup.Attribute("isRecycleBin") != null)
-            {
-                string isRecycleBin = (string)sectionGroup.Attribute("isRecycleBin").Value;
-
-                if (bool.Parse(isRecycleBin))
-                    return;
-            }
+            if (OneNoteUtils.IsRecycleSectionGroup(sectionGroup))
+                return;
 
             if (!string.IsNullOrEmpty(sectionGroupName))
             {

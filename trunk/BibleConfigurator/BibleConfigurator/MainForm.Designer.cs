@@ -64,9 +64,9 @@
             this.btnRelinkComments = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.lblWarning = new System.Windows.Forms.Label();
             this.lblProgressInfo = new System.Windows.Forms.Label();
             this.pbMain = new System.Windows.Forms.ProgressBar();
-            this.lblWarning = new System.Windows.Forms.Label();
             this.tbcMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -457,6 +457,15 @@
             this.splitContainer1.SplitterDistance = 310;
             this.splitContainer1.TabIndex = 17;
             // 
+            // lblWarning
+            // 
+            this.lblWarning.AutoSize = true;
+            this.lblWarning.ForeColor = System.Drawing.Color.Red;
+            this.lblWarning.Location = new System.Drawing.Point(299, 0);
+            this.lblWarning.Name = "lblWarning";
+            this.lblWarning.Size = new System.Drawing.Size(0, 13);
+            this.lblWarning.TabIndex = 19;
+            // 
             // lblProgressInfo
             // 
             this.lblProgressInfo.AutoSize = true;
@@ -474,15 +483,6 @@
             this.pbMain.TabIndex = 17;
             this.pbMain.Visible = false;
             // 
-            // lblWarning
-            // 
-            this.lblWarning.AutoSize = true;
-            this.lblWarning.ForeColor = System.Drawing.Color.Red;
-            this.lblWarning.Location = new System.Drawing.Point(299, 0);
-            this.lblWarning.Name = "lblWarning";
-            this.lblWarning.Size = new System.Drawing.Size(0, 13);
-            this.lblWarning.TabIndex = 19;
-            // 
             // MainForm
             // 
             this.AcceptButton = this.btnOK;
@@ -493,7 +493,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Укажите параметры программы OneNote IStudyBibleTools";
+            this.Text = "Конфигуратор OneNote IStudyBibleTools";
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);

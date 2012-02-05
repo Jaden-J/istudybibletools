@@ -69,7 +69,19 @@ namespace BibleCommon.Helpers
             }
 
             return result;
-        }      
+        }
+
+        public static bool IsRecycleSectionGroup(XElement sectionGroup)
+        {
+            if (sectionGroup.Attribute("isRecycleBin") != null)
+            {
+                string isRecycleBin = (string)sectionGroup.Attribute("isRecycleBin").Value;
+
+                return bool.Parse(isRecycleBin);
+            }
+
+            return false;
+        }
 
         public static string GenerateHref(Application oneNoteApp, string title, string pageId, string objectId)        
         {

@@ -65,7 +65,7 @@ namespace BibleConfigurator
 
         public static bool ElementIsSingleNotebook(XDocument notebookDoc, XmlNamespaceManager xnm)
         {
-            List<XElement> sectionsGroups = notebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm).ToList();
+            List<XElement> sectionsGroups = notebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm).Where(sg => !OneNoteUtils.IsRecycleSectionGroup(sg)).ToList();
 
             if (sectionsGroups.Count == 3)
             {
