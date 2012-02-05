@@ -80,7 +80,7 @@ namespace RibbonButtons
                     path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleConfigurator\\BibleConfigurator.exe");
                     break;
                 case "HelpButton":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), "Instruction (v 1.3.1).docx");
+                    path = Path.Combine(Utils.GetCurrentDirectory(), "Instruction (v 1.3.2).docx");
                     break;
             }
              
