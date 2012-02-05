@@ -55,8 +55,11 @@ namespace BibleNoteLinker
                 notePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
                 string notePageName = (string)notePageDocument.Root.Attribute("name");
 
-                if (!CanProcessPage(notePageDocument, notePageName))
-                    return;
+                if (!IsNotesPage(notePageDocument, notePageName))
+                {
+                    if (linkDepth > AnalyzeDepth.GetVersesLinks)
+                        linkDepth = AnalyzeDepth.GetVersesLinks;  // на странице заметок только обновляем ссылки
+                }
 
                 string noteSectionGroupName = OneNoteUtils.GetHierarchyElementName(oneNoteApp, sectionGroupId);
                 string noteSectionName = OneNoteUtils.GetHierarchyElementName(oneNoteApp, sectionId);
@@ -127,7 +130,7 @@ namespace BibleNoteLinker
             return pageChaptersSearchResult;
         }
 
-        private static bool CanProcessPage(XDocument pageDocument, string pageName)
+        private static bool IsNotesPage(XDocument pageDocument, string pageName)
         {
             if (pageName.StartsWith(SettingsManager.Instance.PageName_Notes + "."))
                 return false;
@@ -269,12 +272,12 @@ namespace BibleNoteLinker
 
                                     if (searchResult.ResultType == VersePointerSearchResult.SearchResultType.SingleVerseOnly)  // то есть нашли стих, а до этого значит была скорее всего просто глава!
                                     {
-                                        List<FoundChapterInfo> chaptersInfo = foundChapters.Where(fch =>
+                                        FoundChapterInfo chapterInfo = foundChapters.FirstOrDefault(fch =>
                                                 fch.VersePointerSearchResult.ResultType != VersePointerSearchResult.SearchResultType.ExcludableChapter
-                                                 && fch.VersePointerSearchResult.VersePointer.ChapterName == searchResult.VersePointer.ChapterName).ToList();
+                                                 && fch.VersePointerSearchResult.VersePointer.ChapterName == searchResult.VersePointer.ChapterName);
 
-                                        if (chaptersInfo.Count > 0)
-                                            foundChapters.Remove(chaptersInfo[chaptersInfo.Count - 1]);
+                                        if (chapterInfo != null)
+                                            foundChapters.Remove(chapterInfo);
                                     }
                                     else if (VersePointerSearchResult.IsChapter(searchResult.ResultType))
                                     {
@@ -305,7 +308,6 @@ namespace BibleNoteLinker
                                     numberIndex = searchResult.VersePointerHtmlEndIndex;
 
                                 prevResult = searchResult;
-
                             }
                         }
                     }
@@ -641,6 +643,15 @@ namespace BibleNoteLinker
             bool isChapter = VersePointerSearchResult.IsChapter(searchResult.ResultType);
 
             newEndVerseIndex = endVerseNameIndex;
+
+            if (!CorrectTextToChangeBoundary(textElementValue, isLink,
+                              ref startVerseNameIndex, ref endVerseNameIndex))
+            {
+                newEndVerseIndex = searchResult.VersePointerHtmlEndIndex; // потому что это же значение мы присваиваем, если стоит !force и встретили гиперссылку
+                hierarchySearchResult = new HierarchySearchManager.HierarchySearchResult() { ResultType = HierarchySearchManager.HierarchySearchResultType.NotFound };
+                return textElementValue;
+            }
+
             hierarchySearchResult = HierarchySearchManager.GetHierarchyObject(
                                                 oneNoteApp, SettingsManager.Instance.NotebookId_Bible, searchResult.VersePointer);
             if (hierarchySearchResult.ResultType == HierarchySearchManager.HierarchySearchResultType.Successfully)
@@ -660,10 +671,7 @@ namespace BibleNoteLinker
                             string link = OneNoteUtils.GenerateHref(oneNoteApp, textToChange,
                                 hierarchySearchResult.HierarchyObjectInfo.PageId, hierarchySearchResult.HierarchyObjectInfo.ContentObjectId);
 
-                           link = string.Format("<span style='font-weight:normal'>{0}</span>", link);
-
-                            CorrectTextToChangeBoundary(textElementValue, isLink,
-                                ref startVerseNameIndex, ref endVerseNameIndex);
+                           link = string.Format("<span style='font-weight:normal'>{0}</span>", link);                          
 
                             textElementValue = string.Concat(
                                 textElementValue.Substring(0, startVerseNameIndex),
@@ -734,7 +742,15 @@ namespace BibleNoteLinker
         }
 
         
-        private static void CorrectTextToChangeBoundary(string textElementValue, bool isLink, ref int startVerseNameIndex, ref int endVerseNameIndex)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="textElementValue"></param>
+        /// <param name="isLink"></param>
+        /// <param name="startVerseNameIndex"></param>
+        /// <param name="endVerseNameIndex"></param>
+        /// <returns>false - если помимо библейской ссылки, в гиперссылке содержится и другой текст. Не обрабатываем такие ссылки</returns>
+        private static bool CorrectTextToChangeBoundary(string textElementValue, bool isLink, ref int startVerseNameIndex, ref int endVerseNameIndex)
         {
             if (isLink)
             {
@@ -746,11 +762,28 @@ namespace BibleNoteLinker
                     int linkEndIndex = textElementValue.IndexOf(endSearchString, endVerseNameIndex);
                     if (linkEndIndex != -1)
                     {
-                        startVerseNameIndex = linkStartIndex;
-                        endVerseNameIndex = linkEndIndex + endSearchString.Length;
+                        int startVerseNameIndexTemp = linkStartIndex;
+                        int endVerseNameIndexTemp = linkEndIndex + endSearchString.Length;
+
+                        string textBefore = StringUtils.GetText(textElementValue.Substring(startVerseNameIndexTemp, startVerseNameIndex - startVerseNameIndexTemp));                        
+                        if (string.IsNullOrEmpty(textBefore))                        
+                        {
+                            string textAfter = StringUtils.GetText(textElementValue.Substring(endVerseNameIndex, endVerseNameIndexTemp - endVerseNameIndex));
+                            if (string.IsNullOrEmpty(textAfter))
+                            {
+                                startVerseNameIndex = startVerseNameIndexTemp;
+                                endVerseNameIndex = endVerseNameIndexTemp;
+                                return true;
+                            }
+                        }
+                        
+                        return false; // иначе помимо библеской ссылке есть и другой текст в этой гиперссылке. 
                     }
                 }
             }
+
+
+            return true;
         }
 
         private static void LinkVerseToNotesPage(Application oneNoteApp, VersePointer vp, bool isChapter,
