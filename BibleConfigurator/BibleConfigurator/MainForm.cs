@@ -369,6 +369,8 @@ namespace BibleConfigurator
             SetNotebooksDefaultPaths();
 
             LoadParameters();
+
+            this.Text += string.Format(" v{0}", SettingsManager.Instance.CurrentVersion);
         }
 
         private void LoadParameters()
