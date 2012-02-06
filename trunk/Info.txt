@@ -2,8 +2,8 @@
 1. открыть проект setup
 2. обновить версию в файле VersionInfo.cs
 3. Обновить версию установщика
-4. Обновить версию инструкции (свойство TargetName в VisualStudio у файла инструкции)
-5. Обновить строку в файле RibbonButtons.ButtonsDefinition.cs "path = Path.Combine(Utils.GetCurrentDirectory(), "Instruction (v 1.3.1).docx");"
+4. Обновить версию инструкции (свойство TargetName в VisualStudio у файла инструкции) (Если изменилась инструкция)
+5. Обновить строку в файле RibbonButtons.ButtonsDefinition.cs "path = Path.Combine(Utils.GetCurrentDirectory(), "Instruction (v 1.3.1).docx");" (Если изменилась инструкция)
 6. Обновить версию в файле BibleCommon.ServerVariables.xml
 7. Выполнить Rebuild всего солюшена
 8. Выполнить Build проекта Setup для x86 и x64.
