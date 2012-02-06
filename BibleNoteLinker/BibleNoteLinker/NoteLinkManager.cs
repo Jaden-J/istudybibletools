@@ -55,8 +55,11 @@ namespace BibleNoteLinker
                 notePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
                 string notePageName = (string)notePageDocument.Root.Attribute("name");
 
-                if (!IsNotesPage(notePageDocument, notePageName))
+                bool isSumaryNotesPage = false;
+
+                if (!IsSummaryNotesPage(notePageDocument, notePageName))
                 {
+                    isSumaryNotesPage = true;
                     if (linkDepth > AnalyzeDepth.GetVersesLinks)
                         linkDepth = AnalyzeDepth.GetVersesLinks;  // на странице заметок только обновляем ссылки
                 }
@@ -66,7 +69,7 @@ namespace BibleNoteLinker
                 List<FoundChapterInfo> foundChapters = new List<FoundChapterInfo>();
                 List<VersePointer> processedVerses = new List<VersePointer>();   // отслеживаем обработанные стихи, чтобы, например, верно подсчитывать verseCount, когда анализируем ссылки в том числе
                 List<VersePointerSearchResult> pageChaptersSearchResult = ProcessPageTitle(oneNoteApp, notePageDocument,
-                    noteSectionGroupName, noteSectionName, notePageName, pageId, processedVerses, foundChapters, xnm, linkDepth, force,
+                    noteSectionGroupName, noteSectionName, notePageName, pageId, processedVerses, foundChapters, xnm, linkDepth, force, isSumaryNotesPage,
                     out wasModified);  // получаем главы текущей страницы, указанные в заголовке (глобальные главы, если больше одной - то не используем их при определении принадлежности только ситхов (:3))                
 
                 List<XElement> processedTextElements = new List<XElement>();
@@ -75,7 +78,7 @@ namespace BibleNoteLinker
                 {
                     if (ProcessTextElements(oneNoteApp, oeChildrenElement, noteSectionGroupName, noteSectionName,
                          notePageName, pageId, processedVerses, foundChapters, processedTextElements, pageChaptersSearchResult,
-                         xnm, linkDepth, force))
+                         xnm, linkDepth, force, isSumaryNotesPage))
                         wasModified = true;
                 }
 
@@ -110,7 +113,7 @@ namespace BibleNoteLinker
         private static List<VersePointerSearchResult> ProcessPageTitle(Application oneNoteApp, XDocument notePageDocument,
             string noteSectionGroupName, string noteSectionName, string notePageName, string pageId,
             List<VersePointer> processedVerses, List<FoundChapterInfo> foundChapters, XmlNamespaceManager xnm,
-            AnalyzeDepth linkDepth, bool force, out bool wasModified)
+            AnalyzeDepth linkDepth, bool force, bool isSummaryNotesPage, out bool wasModified)
         {
             wasModified = false;
             List<VersePointerSearchResult> pageChaptersSearchResult = new List<VersePointerSearchResult>();
@@ -119,7 +122,7 @@ namespace BibleNoteLinker
 
             if (ProcessTextElement(oneNoteApp, notePageDocument.Root.XPathSelectElement("one:Title/one:OE/one:T", xnm),
                         noteSectionGroupName, noteSectionName, notePageName, pageId,
-                        processedVerses, foundChapters, ref globalChapterSearchResult, ref prevResult, null, linkDepth, force, true, searchResult =>
+                        processedVerses, foundChapters, ref globalChapterSearchResult, ref prevResult, null, linkDepth, force, true, isSummaryNotesPage, searchResult =>
                         {
                             if (VersePointerSearchResult.IsChapter(searchResult.ResultType))
                                 pageChaptersSearchResult.Add(searchResult);
@@ -130,7 +133,7 @@ namespace BibleNoteLinker
             return pageChaptersSearchResult;
         }
 
-        private static bool IsNotesPage(XDocument pageDocument, string pageName)
+        private static bool IsSummaryNotesPage(XDocument pageDocument, string pageName)
         {
             if (pageName.StartsWith(SettingsManager.Instance.PageName_Notes + "."))
                 return false;
@@ -142,7 +145,7 @@ namespace BibleNoteLinker
             string noteSectionGroupName, string noteSectionName, string notePageName, string pageId,
             List<VersePointer> processedVerses, List<FoundChapterInfo> foundChapters, List<XElement> processedTextElements,
             List<VersePointerSearchResult> pageChaptersSearchResult,
-            XmlNamespaceManager xnm, AnalyzeDepth linkDepth, bool force)
+            XmlNamespaceManager xnm, AnalyzeDepth linkDepth, bool force, bool isSummaryNotesPage)
         {
             bool wasModified = false;
 
@@ -153,7 +156,7 @@ namespace BibleNoteLinker
             {
                 if (ProcessTextElements(oneNoteApp, cellElement, noteSectionGroupName, noteSectionName,
                         notePageName, pageId, processedVerses, foundChapters, processedTextElements, pageChaptersSearchResult,
-                        xnm, linkDepth, force))
+                        xnm, linkDepth, force, isSummaryNotesPage))
                     wasModified = true;
             }
             
@@ -171,7 +174,7 @@ namespace BibleNoteLinker
 
                 if (ProcessTextElement(oneNoteApp, textElement, noteSectionGroupName, noteSectionName,
                                          notePageName, pageId, processedVerses, foundChapters,
-                                         ref globalChapterSearchResult, ref prevResult, pageChaptersSearchResult, linkDepth, force, false, null))
+                                         ref globalChapterSearchResult, ref prevResult, pageChaptersSearchResult, linkDepth, force, false, isSummaryNotesPage, null))
                     wasModified = true;
 
                 processedTextElements.Add(textElement);
@@ -205,7 +208,7 @@ namespace BibleNoteLinker
             string noteSectionName, string notePageName, string pageId, List<VersePointer> processedVerses, List<FoundChapterInfo> foundChapters,
             ref VersePointerSearchResult globalChapterSearchResult, ref VersePointerSearchResult prevResult, 
             List<VersePointerSearchResult> pageChaptersSearchResult,
-            AnalyzeDepth linkDepth, bool force, bool isTitle, Action<VersePointerSearchResult> onVersePointerFound)
+            AnalyzeDepth linkDepth, bool force, bool isTitle, bool isSummaryNotesPage, Action<VersePointerSearchResult> onVersePointerFound)
         {
             bool wasModified = false;
             string localChapterName = string.Empty;    // имя главы в пределах данного стиха. например, действительно только для девятки в "Откр 5:7,9"
@@ -232,6 +235,13 @@ namespace BibleNoteLinker
                                 numberIndex, textBreakIndex - 1, number,
                                 globalChapterSearchResult,
                                 localChapterName, prevResult, isInBrackets, isTitle);
+
+                            if (searchResult.ResultType != VersePointerSearchResult.SearchResultType.Nothing && isSummaryNotesPage)
+                                if (searchResult.VersePointer != null && searchResult.VersePointer.IsMultiVerse)  // если находимся на странице сводной заметок и нашли мультивёрс ссылку (например :4-7) - то такие ссылки не обрабатываем
+                                {
+                                    searchResult.ResultType = VersePointerSearchResult.SearchResultType.Nothing;
+                                    numberIndex = searchResult.VersePointerHtmlEndIndex;
+                                }
 
                             if (searchResult.ResultType != VersePointerSearchResult.SearchResultType.Nothing)
                             {
@@ -1048,16 +1058,20 @@ namespace BibleNoteLinker
             string topVerseTextSearchPattern = string.Format(":{0}-", vp.Verse);            
             bool needSetTopVerse = false;
             int topVerseIndex = -1;
-            
+            string suchNoteLinkText = string.Empty;
+
             if (suchNoteLink != null)
-                topVerseIndex = suchNoteLink.Value.IndexOf(topVerseSearchPattern);
+                suchNoteLinkText = StringUtils.GetText(suchNoteLink.Value);
+
+            if (!string.IsNullOrEmpty(suchNoteLinkText))
+                topVerseIndex = suchNoteLinkText.IndexOf(topVerseSearchPattern);
 
             if (topVerseIndex != -1)
             {
-                int topVerseEndIndex = suchNoteLink.Value.IndexOf(topVerseEndSearchPattern, topVerseIndex + 1);
+                int topVerseEndIndex = suchNoteLinkText.IndexOf(topVerseEndSearchPattern, topVerseIndex + 1);
                 if (topVerseEndIndex != -1)
                 {
-                    multiVerseString = suchNoteLink.Value.Substring(topVerseIndex, topVerseEndIndex - topVerseIndex + 1);
+                    multiVerseString = suchNoteLinkText.Substring(topVerseIndex, topVerseEndIndex - topVerseIndex + 1);
 
                     if (force && !processedVerses.Contains(vp))  // если в первый раз и force
                         multiVerseString = string.Empty;
