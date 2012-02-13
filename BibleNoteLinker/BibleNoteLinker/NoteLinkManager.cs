@@ -569,7 +569,12 @@ namespace BibleNoteLinker
                     if (!string.IsNullOrEmpty(bookName) && !string.IsNullOrEmpty(bookName.Trim()))
                     {
                         if (isInBrackets)
+                        {
+                            if (textElement.Value[startIndex + 1] == '[')  // временное решение проблемы: когда указана в заголовке только глава в квадратных скобках, то первая скобка удаляется 
+                                startIndex++;                           
+                            
                             bookName = bookName.Trim('[', ']');
+                        }
 
                         char prevPrevChar = StringUtils.GetChar(textElement.Value, prevHtmlBreakIndex);
                         if (!(StringUtils.IsCharAlphabetical(prevPrevChar) || StringUtils.IsDigit(prevPrevChar)))
