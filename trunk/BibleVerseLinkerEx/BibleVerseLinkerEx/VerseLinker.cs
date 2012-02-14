@@ -352,9 +352,7 @@ namespace BibleVerseLinkerEx
             pointerValueString = string.Empty;
             string result = string.Empty;
 
-            int index = sourceString.IndexOf(PointerStrings[0]);
-            if (index == -1)
-                index = sourceString.IndexOf(PointerStrings[1]);
+            int index = StringUtils.IndexOfAny(sourceString, PointerStrings);            
 
             if (index != -1)
             {
