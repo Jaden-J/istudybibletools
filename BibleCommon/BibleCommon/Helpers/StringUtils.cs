@@ -50,6 +50,24 @@ namespace BibleCommon.Helpers
             return s;
         }
 
+        public static int IndexOfAny(string s, params string[] anyOf)
+        {
+            int minIndex = -1;
+
+            foreach (string pattern in anyOf)
+            {
+                int i = s.IndexOf(pattern);
+                if (i != -1)
+                {
+                    if (minIndex == -1 || i < minIndex)                    
+                        minIndex = i;                    
+                }                
+            }
+
+            return minIndex;
+
+        }
+
         public static int LastIndexOf(string s, string value, int startIndex, int endIndex)
         {
             int result = -1;
