@@ -531,5 +531,13 @@ namespace BibleCommon.Helpers
         //    }
         //    return string.Empty;
         //}
+
+        //public static string RemoveAllEntries(string s, IEnumerable<string> entries)
+        //{
+        //    foreach (var entry in entries)
+        //        s = s.Replace(entry, string.Empty);
+
+        //    return s;
+        //}
     }
 }

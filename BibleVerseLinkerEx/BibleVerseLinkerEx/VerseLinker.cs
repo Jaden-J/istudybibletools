@@ -121,7 +121,8 @@ namespace BibleVerseLinkerEx
 
                     if (pointerElement != null)
                     {
-                        pointerString = CutPointerString(pointerElement.Value, out pointerValueString);
+                        int firstLetterIndex;
+                        pointerString = CutPointerString(pointerElement.Value, out pointerValueString, out firstLetterIndex);
                         verseNumber = GetVerseNumber(pointerElement.Value);
                         currentObjectId = (string)pointerElement.Parent.Attribute("objectID");
                     }
@@ -149,7 +150,7 @@ namespace BibleVerseLinkerEx
 
                             if (!string.IsNullOrEmpty(pointerString))
                             {
-                                string href = OneNoteUtils.GenerateHref(OneNoteApp, pointerValueString, verseLinkPageId, objectId);
+                                string href = OneNoteUtils.GenerateHref(OneNoteApp, pointerString, verseLinkPageId, objectId);
 
                                 pointerElement.Value = pointerElement.Value.Replace(pointerString, href);
                             }
@@ -347,8 +348,9 @@ namespace BibleVerseLinkerEx
         /// <param name="sourceString">сожержимое всего pointerElement</param>
         /// <param name="pointerValueString">сам текст (не html)</param>
         /// <returns></returns>
-        private static string CutPointerString(string sourceString, out string pointerValueString)
+        private static string CutPointerString(string sourceString, out string pointerValueString, out int firstLetterIndex)
         {
+            firstLetterIndex = -1;
             pointerValueString = string.Empty;
             string result = string.Empty;
 
@@ -358,7 +360,7 @@ namespace BibleVerseLinkerEx
             {
                 string leftPart = sourceString.Substring(0, index);
 
-                int firstLetterIndex = leftPart.LastIndexOf("<");
+                firstLetterIndex = leftPart.LastIndexOf("<");
                 int lastLetterIndex = sourceString.IndexOf(">", index);
                 if (lastLetterIndex != -1)
                 {
@@ -376,10 +378,11 @@ namespace BibleVerseLinkerEx
                     string otherString = sourceString.Substring(lastLetterIndex + 1);
 
                     string otherPointerValue;
-                    string otherPointerString = CutPointerString(otherString, out otherPointerValue);
+                    int otherFirstLetterIndex;
+                    string otherPointerString = CutPointerString(otherString, out otherPointerValue, out otherFirstLetterIndex);
 
-                    if (!string.IsNullOrEmpty(otherPointerString))
-                    {
+                    if (!string.IsNullOrEmpty(otherPointerString) && otherFirstLetterIndex == 0)   // то есть следующая подчёркнутая строка идёт сразу за этой
+                    {   
                         result += otherPointerString;
                         pointerValueString += otherPointerValue;
                     }
