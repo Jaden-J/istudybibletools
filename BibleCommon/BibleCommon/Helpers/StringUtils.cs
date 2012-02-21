@@ -207,6 +207,42 @@ namespace BibleCommon.Helpers
             return default(char);
         }
 
+        public static string GetAttributeValue(string s, string attributeName)
+        {
+            string result = null;
+
+            string searchString = string.Format("{0}=", attributeName);
+
+            int startIndex = s.IndexOf(searchString);
+
+            int symbolIndex = startIndex + searchString.Length;
+
+            if (startIndex > -1 && s.Length > symbolIndex)
+            {
+                char c = s[symbolIndex];
+                int endIndex = s.IndexOf(c, symbolIndex + 1);
+
+                if (endIndex > -1)
+                {
+                    result = s.Substring(symbolIndex + 1, endIndex - symbolIndex - 1);
+                }
+            }
+
+            return result;
+        }
+
+
+        public static string MultiplyString(string s, int count)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < count; i++)
+            {
+                sb.Append(s);
+            }
+
+            return sb.ToString();
+        }
+
 
 
         /// <summary>
