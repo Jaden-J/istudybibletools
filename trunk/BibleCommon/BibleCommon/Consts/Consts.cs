@@ -38,6 +38,9 @@ namespace BibleCommon.Consts
         public static readonly string DownloadPageUrl = "http://IStudyBibleTools.ru/download.htm";
 
         public static readonly string Error_SystemIsNotConfigures = "Программа не сконфигурирована";
+
+        public static readonly string VerseLinkTemplate = "ссылка {0}";
+        public static readonly string VerseLinksDelimiter = "; ";
         
 
 
