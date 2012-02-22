@@ -988,9 +988,9 @@ namespace BibleNoteLinker
             if (suchNoteLink != null)
                 OneNoteUtils.NormalizaTextElement(suchNoteLink);
 
-            string multiVerseString = GetMultiVerseString(suchNoteLink, vp, processedVerses, force);
-            //string verseCountString = GetVerseCountString(suchNoteLink, vp, processedVerses, force);
-            string fullLinkString = string.Format("{0} <b>{1}</b>", link, multiVerseString);
+            //string multiVerseString = GetExistingMultiVerseString(suchNoteLink, vp, processedVerses, force);
+            ////string verseCountString = GetVerseCountString(suchNoteLink, vp, processedVerses, force);
+            //string fullLinkString = string.Format("{0}{1}", link, multiVerseString);
 
             if (suchNoteLink == null)  // если нет ссылки на такую же заметку
             {
@@ -1012,7 +1012,7 @@ namespace BibleNoteLinker
                                                         new XElement(nms + "Number", new XAttribute("numberSequence", 0), new XAttribute("numberFormat", "##."))),
                                             new XElement(nms + "T",
                                                 new XCData(
-                                                    fullLinkString)));
+                                                    link + GetMultiVerseString(vp))));
 
                 if (prevLink == null)
                 {
@@ -1029,7 +1029,7 @@ namespace BibleNoteLinker
             else
             {
                 string pageLink = OneNoteUtils.GenerateHref(oneNoteApp, noteTitle, notePageId, notePageTitleId);
-                pageLink = string.Format("{0} <b>{1}</b>", pageLink, multiVerseString);
+                //pageLink = string.Format("{0} <b>{1}</b>", pageLink, multiVerseString);
 
                 var verseLinksOE = suchNoteLink.Parent.NextNode;
                 if (verseLinksOE != null && verseLinksOE.XPathSelectElement("one:List", xnm) == null)  // значит следующая строка без номера, то есть значит идут ссылки
@@ -1040,13 +1040,8 @@ namespace BibleNoteLinker
                     int currentVerseIndex = existingVerseLinksElement.Value.Split(new string[] { "</a>" }, StringSplitOptions.RemoveEmptyEntries).Length + 1;
 
                     existingVerseLinksElement.Value += Constants.VerseLinksDelimiter + OneNoteUtils.GenerateHref(oneNoteApp,
-                                string.Format(Constants.VerseLinkTemplate, currentVerseIndex), notePageId, notePageContentObjectId);
-                    
-                    //int verseCount = 1;  // один раз уже встречается стих, так как suchNoteLink != null
-
-                    //if (force && !processedVerses.Contains(vp))  // если в первый раз и force
-                    //    verseCount = 0;
-
+                                string.Format(Constants.VerseLinkTemplate, currentVerseIndex), notePageId, notePageContentObjectId)
+                                + GetMultiVerseString(vp);
 
                 }
                 else  // значит мы нашли второе упоминание данной ссылки в заметке
@@ -1056,17 +1051,17 @@ namespace BibleNoteLinker
                     XElement verseLinksElement = new XElement(nms + "OE",
                                                     new XElement(nms + "T",
                                                         new XCData(StringUtils.MultiplyString("&nbsp;", 8) + 
-                                                            string.Join(Constants.VerseLinksDelimiter, new string[] { firstVerseLink, 
+                                                            string.Join(Constants.VerseLinksDelimiter, new string[] { 
+                                                                firstVerseLink + GetExistingMultiVerseString(suchNoteLink), 
                                                                 OneNoteUtils.GenerateHref(oneNoteApp, 
-                                                                    string.Format(Constants.VerseLinkTemplate, 2), notePageId, notePageContentObjectId) })
+                                                                    string.Format(Constants.VerseLinkTemplate, 2), notePageId, notePageContentObjectId)
+                                                                    + GetMultiVerseString(vp) })
                                                             )));
 
                     suchNoteLink.Parent.AddAfterSelf(verseLinksElement);                   
                 }
 
                 suchNoteLink.Value = pageLink;
-
-                //suchNoteLink.Value = fullLinkString;
 
                 if (suchNoteLink.Parent.XPathSelectElement("one:List", xnm) == null)  // почему то нет номера у строки
                     suchNoteLink.Parent.AddFirst(new XElement(nms + "List",
@@ -1077,55 +1072,62 @@ namespace BibleNoteLinker
             oneNoteApp.UpdatePageContent(notesPageDocument.ToString());
         }
 
-        private static string GetVerseCountString(XElement suchNoteLink, VersePointer vp, List<VersePointer> processedVerses, bool force)
+        //private static string GetVerseCountString(XElement suchNoteLink, VersePointer vp, List<VersePointer> processedVerses, bool force)
+        //{
+        //    string verseCountString = string.Empty;
+
+        //    if (suchNoteLink != null)
+        //    {
+        //        string verseCountSearchPattern = "[";
+        //        string verseCountEndSearchPattern = "]";
+
+        //        int verseCount = 1;  // один раз уже встречается стих, так как suchNoteLink != null
+
+        //        if (force && !processedVerses.Contains(vp))  // если в первый раз и force
+        //            verseCount = 0;
+
+        //        int linkEndIndex = suchNoteLink.Value.IndexOf("</a");
+        //        int verseCountIndex = suchNoteLink.Value.IndexOf(verseCountSearchPattern, linkEndIndex != -1 ? linkEndIndex : 0);
+
+        //        if ((verseCountIndex != -1) && ((force && processedVerses.Contains(vp)) || !force))                    
+        //        {
+        //            int verseCountEndIndex = suchNoteLink.Value.IndexOf(verseCountEndSearchPattern, verseCountIndex + 1);
+        //            if (verseCountEndIndex != -1)
+        //            {
+        //                int? prevVerseCount = StringUtils.GetStringFirstNumber(suchNoteLink.Value.Substring(verseCountIndex + verseCountSearchPattern.Length, verseCountEndIndex - verseCountIndex));
+        //                if (prevVerseCount.HasValue)
+        //                {
+        //                    verseCount = prevVerseCount.Value + 1;
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            verseCount++;                    
+        //        }
+
+        //        if (verseCount > 1)  // [1] не пишем
+        //            verseCountString = string.Format("{0}{1}{2}", verseCountSearchPattern, verseCount, verseCountEndSearchPattern);
+        //    }
+
+        //    return verseCountString;
+        //}
+
+        private static string GetMultiVerseString(VersePointer vp)
         {
-            string verseCountString = string.Empty;
-
-            if (suchNoteLink != null)
-            {
-                string verseCountSearchPattern = "[";
-                string verseCountEndSearchPattern = "]";
-
-                int verseCount = 1;  // один раз уже встречается стих, так как suchNoteLink != null
-
-                if (force && !processedVerses.Contains(vp))  // если в первый раз и force
-                    verseCount = 0;
-
-                int linkEndIndex = suchNoteLink.Value.IndexOf("</a");
-                int verseCountIndex = suchNoteLink.Value.IndexOf(verseCountSearchPattern, linkEndIndex != -1 ? linkEndIndex : 0);
-
-                if ((verseCountIndex != -1) && ((force && processedVerses.Contains(vp)) || !force))                    
-                {
-                    int verseCountEndIndex = suchNoteLink.Value.IndexOf(verseCountEndSearchPattern, verseCountIndex + 1);
-                    if (verseCountEndIndex != -1)
-                    {
-                        int? prevVerseCount = StringUtils.GetStringFirstNumber(suchNoteLink.Value.Substring(verseCountIndex + verseCountSearchPattern.Length, verseCountEndIndex - verseCountIndex));
-                        if (prevVerseCount.HasValue)
-                        {
-                            verseCount = prevVerseCount.Value + 1;
-                        }
-                    }
-                }
-                else
-                {
-                    verseCount++;                    
-                }
-
-                if (verseCount > 1)  // [1] не пишем
-                    verseCountString = string.Format("{0}{1}{2}", verseCountSearchPattern, verseCount, verseCountEndSearchPattern);
-            }
-
-            return verseCountString;
+            if (vp.IsMultiVerse)
+                return string.Format(" <b>(:{0}-{1})</b>", vp.Verse, vp.TopVerse);
+            else
+                return string.Empty;
         }
 
-        private static string GetMultiVerseString(XElement suchNoteLink, VersePointer vp, List<VersePointer> processedVerses, bool force)
+        private static string GetExistingMultiVerseString(XElement suchNoteLink)
         {
             string multiVerseString = string.Empty;
 
             string topVerseSearchPattern = "(:";
-            string topVerseEndSearchPattern = ")";
-            string topVerseTextSearchPattern = string.Format(":{0}-", vp.Verse);            
-            bool needSetTopVerse = false;
+            string topVerseEndSearchPattern = ")";                
+           
             int topVerseIndex = -1;
             string suchNoteLinkText = string.Empty;
 
@@ -1140,40 +1142,12 @@ namespace BibleNoteLinker
                 int topVerseEndIndex = suchNoteLinkText.IndexOf(topVerseEndSearchPattern, topVerseIndex + 1);
                 if (topVerseEndIndex != -1)
                 {
-                    multiVerseString = suchNoteLinkText.Substring(topVerseIndex, topVerseEndIndex - topVerseIndex + 1);
-
-                    if (force && !processedVerses.Contains(vp))  // если в первый раз и force
-                        multiVerseString = string.Empty;
-
-                    if (vp.IsMultiVerse)
-                    {
-                        int topVerseTextIndex = multiVerseString.IndexOf(topVerseTextSearchPattern);
-
-                        if (topVerseTextIndex != -1)
-                        {
-                            int? prevTopVerse = StringUtils.GetStringFirstNumber(
-                                multiVerseString.Substring(topVerseTextIndex + topVerseTextSearchPattern.Length));
-                            if (prevTopVerse.HasValue)
-                            {
-                                if (vp.TopVerse > prevTopVerse)
-                                {
-                                    needSetTopVerse = true;
-                                }
-                            }
-                        }
-                        else
-                            needSetTopVerse = true;
-                    }
+                    multiVerseString = suchNoteLinkText.Substring(topVerseIndex, topVerseEndIndex - topVerseIndex + 1);                    
                 }
-            }
-            else
-            {
-                if (vp.IsMultiVerse)
-                    needSetTopVerse = true;
-            }
+            }             
 
-            if (needSetTopVerse)
-                multiVerseString = string.Format("{0}{1}-{2}{3}", topVerseSearchPattern, vp.Verse, vp.TopVerse, topVerseEndSearchPattern);
+            if (!string.IsNullOrEmpty(multiVerseString))
+                return string.Format(" <b>{0}</b>", multiVerseString);
 
             return multiVerseString;
         }        
