@@ -27,10 +27,18 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_SectionGroupIdBibleStudy = "SectionGroupId_BibleStudy";
         public static readonly string ParameterName_PageNameDefaultComments = "PageName_DefaultComments";
         public static readonly string ParameterName_PageNameDefaultBookOverview = "PageName_DefaultBookOverview";
-        public static readonly string ParameterName_PageNamePageName_Notes = "PageName_Notes";
+        public static readonly string ParameterName_PageNameNotes = "PageName_Notes";
         public static readonly string ParameterName_LastNotesLinkTime = "LastNotesLinkTime";
         public static readonly string ParameterName_NewVersionOnServer = "NewVersionOnServer";
         public static readonly string ParameterName_NewVersionOnServerLatestCheckTime = "NewVersionOnServerLatestCheckTime";
+
+
+        public static readonly string ParameterName_ExpandMultiVersesLinking = "ExpandMultiVersesLinking";
+        public static readonly string ParameterName_ExcludedVersesLinking = "ExcludedVersesLinking";
+        public static readonly string ParameterName_RubbishPageUse = "RubbishPage_Use";
+        public static readonly string ParameterName_RubbishPageNotesPageName = "RubbishPage_NotesPageName";
+        public static readonly string ParameterName_RubbishPageExpandMultiVersesLinking = "RubbishPage_ExpandMultiVersesLinking";
+        public static readonly string ParameterName_RubbishPageExcludedVersesLinking = "RubbishPage_ExcludedVersesLinking";
 
         public static readonly string NewVersionOnServerFileUrl = "http://IStudyBibleTools.ru/ServerVariables.xml";
         public static readonly TimeSpan NewVersionCheckPeriod = new TimeSpan(1, 0, 0, 0);
