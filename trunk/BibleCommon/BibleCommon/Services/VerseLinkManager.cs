@@ -24,35 +24,35 @@ namespace BibleCommon.Services
         /// <param name="descriptionPageName"></param>
         /// <returns>target pageId</returns>
         public static string FindVerseLinkPageAndCreateIfNeeded(Application oneNoteApp, 
-            string currentSectionId, string currentPageId, string currentPageName, string descriptionPageName)
+            string currentSectionId, string currentPageId, string currentPageName, string descriptionPageName, bool createIfNeeded = true)
         {
 
-            string sectionGroupId = FindDescriptionSectionGroupForCurrentPage(oneNoteApp, currentSectionId);
+            string sectionGroupId = FindDescriptionSectionGroupForCurrentPage(oneNoteApp, currentSectionId, createIfNeeded);
             if (!string.IsNullOrEmpty(sectionGroupId))
             {
-                string sectionId = FindDescriptionSectionForCurrentPage(oneNoteApp, currentPageName, sectionGroupId);
+                string sectionId = FindDescriptionSectionForCurrentPage(oneNoteApp, currentPageName, sectionGroupId, createIfNeeded);
                 if (!string.IsNullOrEmpty(sectionId))
                 {
                     string currentSectionName = OneNoteUtils.GetHierarchyElementName(oneNoteApp, currentSectionId);
                     string pageId = FindDescriptionPageForCurrentPage(oneNoteApp, sectionId,
-                        currentSectionName, currentPageId, currentPageName, descriptionPageName);
+                        currentSectionName, currentPageId, currentPageName, descriptionPageName, createIfNeeded);
                     if (!string.IsNullOrEmpty(pageId))
                     {
                         return pageId;
                     }
                     else
-                        throw new Exception("Не найдена страница для комментариев");
+                        throw new NotFoundVerseLinkPageExceptions("Не найдена страница для комментариев");
                 }
                 else
-                    throw new Exception("Не найдена секция для комментариев");
+                    throw new NotFoundVerseLinkPageExceptions("Не найдена секция для комментариев");
             }
             else
-                throw new Exception("Не найдена группа секций для комментариев");
+                throw new NotFoundVerseLinkPageExceptions("Не найдена группа секций для комментариев");
         }
 
 
         private static string FindDescriptionSectionGroupForCurrentPage(Application oneNoteApp,
-            string currentSectionId, bool refreshCache = false)
+            string currentSectionId, bool createIfNeeded, bool refreshCache = false)
         {
             XmlNamespaceManager xnm;
 
@@ -85,9 +85,12 @@ namespace BibleCommon.Services
 
                     if (targetSectionGroup == null)
                     {
-                        CreateDescriptionSectionGroupForCurrentPage(oneNoteApp, commentsDocument, targetParentSectionGroup, sectionName);
+                        if (createIfNeeded)
+                        {
+                            CreateDescriptionSectionGroupForCurrentPage(oneNoteApp, commentsDocument, targetParentSectionGroup, sectionName);
 
-                        return FindDescriptionSectionGroupForCurrentPage(oneNoteApp, currentSectionId, true);  // надо обновить XML
+                            return FindDescriptionSectionGroupForCurrentPage(oneNoteApp, currentSectionId, createIfNeeded, true);  // надо обновить XML
+                        }
                     }
                     else
                         return (string)targetSectionGroup.Attribute("ID");
@@ -111,7 +114,7 @@ namespace BibleCommon.Services
         }
 
         private static string FindDescriptionSectionForCurrentPage(Application oneNoteApp,
-            string currentPageName, string targetSectionGroupId, bool refreshCache = false)
+            string currentPageName, string targetSectionGroupId, bool createIfNeeded, bool refreshCache = false)
         {
             XmlNamespaceManager xnm;
 
@@ -127,12 +130,17 @@ namespace BibleCommon.Services
 
             if (targetSection == null)
             {
-                CreateDescriptionSectionForCurrentPage(oneNoteApp, sectionGroupDocument, currentPageName);
+                if (createIfNeeded)
+                {
+                    CreateDescriptionSectionForCurrentPage(oneNoteApp, sectionGroupDocument, currentPageName);
 
-                return FindDescriptionSectionForCurrentPage(oneNoteApp, currentPageName, targetSectionGroupId, true);  // надо обновить XML
+                    return FindDescriptionSectionForCurrentPage(oneNoteApp, currentPageName, targetSectionGroupId, createIfNeeded, true);  // надо обновить XML
+                }
             }
             else
                 return (string)targetSection.Attribute("ID");
+
+            return string.Empty;
         }
 
         private static void CreateDescriptionSectionForCurrentPage(Application oneNoteApp, XDocument sectionGroupDocument, string pageName)
@@ -168,7 +176,7 @@ namespace BibleCommon.Services
         }
 
         private static string FindDescriptionPageForCurrentPage(Application oneNoteApp, string sectionId, 
-            string currentSectionName, string currentPageId, string currentPageName, string descriptionPageName)
+            string currentSectionName, string currentPageId, string currentPageName, string descriptionPageName, bool createIfNeeded)
         {
             XmlNamespaceManager xnm;
             string sectionContentXml = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages);
@@ -186,24 +194,27 @@ namespace BibleCommon.Services
 
             XElement page = sectionDocument.Root.XPathSelectElement(string.Format("one:Page[@name='{0}']", pageDisplayName), xnm);
 
-            string pageId;
+            string pageId = string.Empty;
 
             if (page == null)
             {
-                oneNoteApp.CreateNewPage(sectionId, out pageId, NewPageStyle.npsBlankPageWithTitle);
+                if (createIfNeeded)
+                {
+                    oneNoteApp.CreateNewPage(sectionId, out pageId, NewPageStyle.npsBlankPageWithTitle);
 
-                XDocument currentPageDoc = OneNoteUtils.GetXDocument(
-                    OneNoteProxy.Instance.GetPageContent(oneNoteApp, currentPageId), out xnm);
-                string currentPagetitleId = (string)currentPageDoc.Root
-                    .XPathSelectElement("one:Title/one:OE", xnm).Attribute("objectID");
+                    XDocument currentPageDoc = OneNoteUtils.GetXDocument(
+                        OneNoteProxy.Instance.GetPageContent(oneNoteApp, currentPageId), out xnm);
+                    string currentPagetitleId = (string)currentPageDoc.Root
+                        .XPathSelectElement("one:Title/one:OE", xnm).Attribute("objectID");
 
-                string linkToCurrentPage;
-                oneNoteApp.GetHyperlinkToObject(currentPageId, currentPagetitleId, out linkToCurrentPage);
-                string pageName = string.Format("{0}. <span style='font-size:10pt;'>[<a href='{1}'>{2}</a>]</span>", 
-                                    descriptionPageName, linkToCurrentPage, vp.FriendlyChapterName);
-                SetPageName(oneNoteApp, pageId, pageName);
+                    string linkToCurrentPage;
+                    oneNoteApp.GetHyperlinkToObject(currentPageId, currentPagetitleId, out linkToCurrentPage);
+                    string pageName = string.Format("{0}. <span style='font-size:10pt;'>[<a href='{1}'>{2}</a>]</span>",
+                                        descriptionPageName, linkToCurrentPage, vp.FriendlyChapterName);
+                    SetPageName(oneNoteApp, pageId, pageName);
 
-                OneNoteProxy.Instance.RefreshHierarchyCache(oneNoteApp, sectionId, HierarchyScope.hsPages); 
+                    OneNoteProxy.Instance.RefreshHierarchyCache(oneNoteApp, sectionId, HierarchyScope.hsPages);
+                }
             }
             else
                 pageId = (string)page.Attribute("ID");

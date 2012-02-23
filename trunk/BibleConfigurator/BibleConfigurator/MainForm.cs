@@ -556,27 +556,27 @@ namespace BibleConfigurator
 
         private void chkCreateSingleNotebookFromTemplate_CheckedChanged(object sender, EventArgs e)
         {
-            cbSingleNotebook.Enabled = !chkCreateSingleNotebookFromTemplate.Checked;
-            btnSingleNotebookParameters.Enabled = !chkCreateSingleNotebookFromTemplate.Checked;
-            btnSingleNotebookSetPath.Enabled = chkCreateSingleNotebookFromTemplate.Checked;
+            cbSingleNotebook.Enabled = chkCreateSingleNotebookFromTemplate.Enabled && !chkCreateSingleNotebookFromTemplate.Checked;
+            btnSingleNotebookParameters.Enabled = chkCreateSingleNotebookFromTemplate.Enabled && !chkCreateSingleNotebookFromTemplate.Checked;
+            btnSingleNotebookSetPath.Enabled = chkCreateSingleNotebookFromTemplate.Enabled && chkCreateSingleNotebookFromTemplate.Checked;
         }
 
         private void chkCreateBibleNotebookFromTemplate_CheckedChanged(object sender, EventArgs e)
         {
-            cbBibleNotebook.Enabled = !chkCreateBibleNotebookFromTemplate.Checked;
-            btnBibleNotebookSetPath.Enabled = chkCreateBibleNotebookFromTemplate.Checked;
+            cbBibleNotebook.Enabled = chkCreateBibleNotebookFromTemplate.Enabled && !chkCreateBibleNotebookFromTemplate.Checked;
+            btnBibleNotebookSetPath.Enabled = chkCreateBibleNotebookFromTemplate.Enabled && chkCreateBibleNotebookFromTemplate.Checked;
         }
 
         private void chkCreateBibleCommentsNotebookFromTemplate_CheckedChanged(object sender, EventArgs e)
         {
-            cbBibleCommentsNotebook.Enabled = !chkCreateBibleCommentsNotebookFromTemplate.Checked;
-            btnBibleCommentsNotebookSetPath.Enabled = chkCreateBibleCommentsNotebookFromTemplate.Checked;
+            cbBibleCommentsNotebook.Enabled = chkCreateBibleCommentsNotebookFromTemplate.Enabled && !chkCreateBibleCommentsNotebookFromTemplate.Checked;
+            btnBibleCommentsNotebookSetPath.Enabled = chkCreateBibleCommentsNotebookFromTemplate.Enabled && chkCreateBibleCommentsNotebookFromTemplate.Checked;
         }
 
         private void chkCreateBibleStudyNotebookFromTemplate_CheckedChanged(object sender, EventArgs e)
         {
-            cbBibleStudyNotebook.Enabled = !chkCreateBibleStudyNotebookFromTemplate.Checked;
-            btnBibleStudyNotebookSetPath.Enabled = chkCreateBibleStudyNotebookFromTemplate.Checked;
+            cbBibleStudyNotebook.Enabled = chkCreateBibleStudyNotebookFromTemplate.Enabled && !chkCreateBibleStudyNotebookFromTemplate.Checked;
+            btnBibleStudyNotebookSetPath.Enabled = chkCreateBibleStudyNotebookFromTemplate.Enabled && chkCreateBibleStudyNotebookFromTemplate.Checked;
         }
 
         private void btnSingleNotebookParameters_Click(object sender, EventArgs e)

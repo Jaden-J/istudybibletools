@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using BibleCommon.Services;
 using BibleCommon.Consts;
+using BibleCommon.Common;
 
 namespace BibleConfigurator.Tools
 {
@@ -114,7 +115,10 @@ namespace BibleConfigurator.Tools
             try
             {
                 notesPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(_oneNoteApp,
-                    bibleSectionId, biblePageId, biblePageName, notesPageName);
+                    bibleSectionId, biblePageId, biblePageName, notesPageName, false);
+            }
+            catch (NotFoundVerseLinkPageExceptions) // просто не нашли, а нам и не надо
+            {
             }
             catch (Exception ex)
             {
