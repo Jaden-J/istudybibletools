@@ -32,8 +32,12 @@ namespace BibleConfigurator
     {
     }
 
-    public class LoadParametersException : Exception
+    public class SaveParametersException : Exception
     {
+        public SaveParametersException(string message)
+            : base(message)
+        {
+        }
     }
 
     public class ProcessAbortedByUserException : Exception

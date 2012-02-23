@@ -14,6 +14,9 @@ namespace BibleCommon.Common
         public int? Chapter { get; set; }
         public int? Verse { get; set; }
         public string OriginalVerseName { get; set; }   // первоначально переданная строка в конструктор
+        public string OriginalBookName { get; set; }
+
+        public VersePointer ParentVersePointer { get; set; } // родительская ссылка. Например если мы имеем дело со стихом диапазона, то здесь хранится стих, являющийся диапазоном
 
         public override string ToString()
         {
@@ -55,6 +58,12 @@ namespace BibleCommon.Common
             }
         }
 
+        public VersePointer(string bookName, int chapter, int verse)
+            : this(string.Format("{0} {1}:{2}", bookName, chapter, verse))
+        {
+
+        }
+
         public VersePointer(string s)
         {
             if (!string.IsNullOrEmpty(s))
@@ -93,7 +102,8 @@ namespace BibleCommon.Common
                     }
                 }
 
-                BookName = GetFullBookName(TrimBookName(s));
+                OriginalBookName = TrimBookName(s);
+                BookName = GetFullBookName(OriginalBookName);
             }
         }
 
@@ -215,6 +225,26 @@ namespace BibleCommon.Common
             }
 
             return string.Empty;
+        }
+
+        /// <summary>
+        /// возвращает список всех вложенных стихов (за исключением первого) если Multiverse. 
+        /// </summary>
+        /// <returns></returns>
+        public List<VersePointer> GetAllIncludedVersesExceptFirst()
+        {
+            List<VersePointer> result = new List<VersePointer>();
+            if (IsValid && IsMultiVerse && !IsChapter)
+            {
+                for (int i = Verse.GetValueOrDefault(0) + 1; i <= TopVerse; i++)
+                {
+                    VersePointer vp = new VersePointer(this.OriginalBookName, this.Chapter.Value, i);
+                    vp.ParentVersePointer = this;
+                    result.Add(vp);                   
+                }
+            }
+
+            return result;
         }
 
         public override bool Equals(object obj)
