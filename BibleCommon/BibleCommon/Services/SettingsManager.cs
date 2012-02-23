@@ -44,11 +44,13 @@ namespace BibleCommon.Services
         public string SectionGroupId_BibleStudy { get; set; }
         public string PageName_DefaultComments { get; set; }
         public string PageName_DefaultBookOverview { get; set; }
-        public string PageName_Notes { get; set; }
+        public string PageName_Notes { get; set; }        
 
         public DateTime? LastNotesLinkTime { get; set; }
         public Version NewVersionOnServer { get; set; }
         public DateTime? NewVersionOnServerLatestCheckTime { get; set; }
+
+        public int PageWidth_Notes { get; set; }
 
         /// <summary>
         /// Необходимо ли линковать каждый стих, входящий в MultiVerse
@@ -64,7 +66,8 @@ namespace BibleCommon.Services
         /// Параметры "мусорной" страницы
         /// </summary>
         public bool RubbishPage_Use { get; set; }
-        public string RubbishPage_NotesPageName { get; set; }
+        public string PageName_RubbishNotes { get; set; }
+        public int PageWidth_RubbishNotes { get; set; }
         public bool RubbishPage_ExpandMultiVersesLinking { get; set; }
         public bool RubbishPage_ExcludedVersesLinking { get; set; }
 
@@ -151,16 +154,19 @@ namespace BibleCommon.Services
                 this.PageName_DefaultComments = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameDefaultComments).Value;
                 this.PageName_Notes = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameNotes).Value;
                 
-                this.LastNotesLinkTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_LastNotesLinkTime);                
-                this.NewVersionOnServer = GetParameterValue<Version>(xdoc, Consts.Constants.ParameterName_NewVersionOnServer, null, value => new Version(value));                
-                this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime);
+                this.LastNotesLinkTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_LastNotesLinkTime, null, value => DateTime.Parse(value));                
+                this.NewVersionOnServer = GetParameterValue<Version>(xdoc, Consts.Constants.ParameterName_NewVersionOnServer, null, value => new Version(value));
+                this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, null, value => DateTime.Parse(value));
 
+
+                this.PageWidth_Notes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthNotes, 500);
                 this.ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_ExpandMultiVersesLinking);
                 this.ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_ExcludedVersesLinking);
                 this.RubbishPage_Use = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageUse);
-                this.RubbishPage_NotesPageName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_RubbishPageNotesPageName, string.Empty);
-                this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking);
-                this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking);
+                this.PageName_RubbishNotes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameRubbishNotes, Consts.Constants.DefaultPageName_RubbishNotes);
+                this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
+                this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, true);
+                this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);
             }
             catch (Exception ex)
             {
@@ -189,9 +195,9 @@ namespace BibleCommon.Services
             }
         }
 
-        public static T ConvertFromString<T>(string value)
+        private static T ConvertFromString<T>(string value)
         {
-            if (String.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value))
                 return default(T);
 
             Type typeParameterType = typeof(T);
@@ -199,11 +205,20 @@ namespace BibleCommon.Services
             return (T)Convert.ChangeType(value, typeParameterType);
         }
 
-        private void LoadDefaultSettings()
+        public void LoadDefaultSettings()
         {                       
             this.PageName_DefaultBookOverview = Consts.Constants.DefaultPageNameDefaultBookOverview;
             this.PageName_DefaultComments = Consts.Constants.DefaultPageNameDefaultComments;
             this.PageName_Notes = Consts.Constants.DefaultPageName_Notes;
+            this.PageWidth_Notes = Consts.Constants.DefaultPageWidth_Notes;
+            this.ExpandMultiVersesLinking = false;
+            this.ExcludedVersesLinking = false;
+
+            this.RubbishPage_Use = false;
+            this.PageName_RubbishNotes = Consts.Constants.DefaultPageName_RubbishNotes;
+            this.PageWidth_RubbishNotes = Consts.Constants.DefaultPageWidth_RubbishNotes;
+            this.RubbishPage_ExpandMultiVersesLinking = true;
+            this.RubbishPage_ExcludedVersesLinking = true;
         }
 
         public void Save()
@@ -228,10 +243,12 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_NewVersionOnServer, this.NewVersionOnServer),
                                   new XElement(Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, this.NewVersionOnServerLatestCheckTime.HasValue
                                                 ? this.NewVersionOnServerLatestCheckTime.Value.ToString() : string.Empty),
+                                  new XElement(Consts.Constants.ParameterName_PageWidthNotes, this.PageWidth_Notes),
                                   new XElement(Consts.Constants.ParameterName_ExpandMultiVersesLinking, this.ExpandMultiVersesLinking),
                                   new XElement(Consts.Constants.ParameterName_ExcludedVersesLinking, this.ExcludedVersesLinking),
                                   new XElement(Consts.Constants.ParameterName_RubbishPageUse, this.RubbishPage_Use),
-                                  new XElement(Consts.Constants.ParameterName_RubbishPageNotesPageName, this.RubbishPage_NotesPageName),
+                                  new XElement(Consts.Constants.ParameterName_PageNameRubbishNotes, this.PageName_RubbishNotes),
+                                  new XElement(Consts.Constants.ParameterName_PageWidthRubbishNotes, this.PageWidth_RubbishNotes),
                                   new XElement(Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, this.RubbishPage_ExpandMultiVersesLinking),
                                   new XElement(Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, this.RubbishPage_ExcludedVersesLinking)
                                   );

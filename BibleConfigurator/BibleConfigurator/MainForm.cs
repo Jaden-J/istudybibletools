@@ -17,6 +17,7 @@ using System.Diagnostics;
 using BibleCommon;
 using System.Threading;
 using BibleConfigurator.Tools;
+using BibleCommon.Consts;
 
 namespace BibleConfigurator
 {
@@ -144,16 +145,16 @@ namespace BibleConfigurator
 
                 if (!Logger.WasErrorLogged)
                 {
-                    SetPageNameParameters();
+                    SetProgramParameters();
 
                     SettingsManager.Instance.Save();
                     Close();
                 }
 
             }
-            catch (LoadParametersException)
+            catch (SaveParametersException ex)
             {
-                Logger.LogError("Не удалось запросить данные о записных книжках из OneNote. Повторите операцию.");
+                Logger.LogError(ex.Message);
                 LoadParameters();                
             }
             finally
@@ -162,13 +163,11 @@ namespace BibleConfigurator
             }
         }
 
-        private void SetPageNameParameters()
+        private void SetProgramParameters()
         {
             if (chkDefaultPageNameParameters.Checked)
             {
-                SettingsManager.Instance.PageName_DefaultBookOverview = Consts.PageNameDefaultBookOverview;
-                SettingsManager.Instance.PageName_Notes = Consts.PageNameNotes;
-                SettingsManager.Instance.PageName_DefaultComments = Consts.PageNameDefaultComments;
+                SettingsManager.Instance.LoadDefaultSettings();                
             }
             else
             {
@@ -180,6 +179,29 @@ namespace BibleConfigurator
 
                 if (!string.IsNullOrEmpty(tbPageDescriptionName.Text))
                     SettingsManager.Instance.PageName_DefaultComments = tbPageDescriptionName.Text;
+
+                if (!string.IsNullOrEmpty(tbNotesPageWidth.Text))
+                {
+                    int notesPageWidth;
+                    if (!int.TryParse(tbNotesPageWidth.Text, out notesPageWidth))
+                        throw new SaveParametersException(string.Format("Неверное значение параметра '{0}'", lblNotesPageWidth.Text));
+                    SettingsManager.Instance.PageWidth_Notes = notesPageWidth;
+                }
+
+                if (!string.IsNullOrEmpty(tbRubbishNotesPageWidth.Text))
+                {
+                    int rubbishNotesPageWidth;
+                    if (!int.TryParse(tbRubbishNotesPageWidth.Text, out rubbishNotesPageWidth))
+                        throw new SaveParametersException(string.Format("Неверное значение параметра '{0}'", lblRubbishNotesPageWidth.Text));
+                    SettingsManager.Instance.PageWidth_RubbishNotes = rubbishNotesPageWidth;
+                }
+
+                SettingsManager.Instance.ExpandMultiVersesLinking = chkExpandMultiVersesLinking.Checked;
+                SettingsManager.Instance.ExcludedVersesLinking = chkExcludedVersesLinking.Checked;
+
+                SettingsManager.Instance.RubbishPage_Use = chkUseRubbishPage.Checked;
+                SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking = chkRubbishExpandMultiVersesLinking.Checked;
+                SettingsManager.Instance.RubbishPage_ExcludedVersesLinking = chkRubbishExcludedVersesLinking.Checked;
             }
         }
 
@@ -212,7 +234,7 @@ namespace BibleConfigurator
             }
 
             if (!parametersWasLoad)
-                throw new LoadParametersException();
+                throw new SaveParametersException("Не удалось запросить данные о записных книжках из OneNote. Повторите операцию.");
         }
 
         private bool TryToLoadNotebookParameters(NotebookType notebookType, string notebookName, out string notebookId, bool silientMode = false)
@@ -411,6 +433,17 @@ namespace BibleConfigurator
             tbBookOverviewName.Text = SettingsManager.Instance.PageName_DefaultBookOverview;
             tbNotesPageName.Text = SettingsManager.Instance.PageName_Notes;
             tbPageDescriptionName.Text = SettingsManager.Instance.PageName_DefaultComments;
+            tbNotesPageWidth.Text = SettingsManager.Instance.PageWidth_Notes.ToString();
+            chkExpandMultiVersesLinking.Checked = SettingsManager.Instance.ExpandMultiVersesLinking;
+            chkExcludedVersesLinking.Checked = SettingsManager.Instance.ExcludedVersesLinking;
+
+            chkUseRubbishPage.Checked = SettingsManager.Instance.RubbishPage_Use;
+            tbRubbishNotesPageName.Text = SettingsManager.Instance.PageName_RubbishNotes;
+            tbRubbishNotesPageWidth.Text = SettingsManager.Instance.PageWidth_RubbishNotes.ToString();
+            chkRubbishExpandMultiVersesLinking.Checked = SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking;
+            chkRubbishExcludedVersesLinking.Checked = SettingsManager.Instance.RubbishPage_ExcludedVersesLinking;
+
+            chkUseRubbishPage_CheckedChanged(this, new EventArgs());
         }
 
         private string SearchForNotebook(IEnumerable<string> notebooksIds, NotebookType notebookType)
@@ -623,6 +656,16 @@ namespace BibleConfigurator
             tbPageDescriptionName.Enabled = !chkDefaultPageNameParameters.Checked;
             tbNotesPageName.Enabled = !chkDefaultPageNameParameters.Checked;
             tbBookOverviewName.Enabled = !chkDefaultPageNameParameters.Checked;
+            tbNotesPageWidth.Enabled = !chkDefaultPageNameParameters.Checked;
+            chkExpandMultiVersesLinking.Enabled = !chkDefaultPageNameParameters.Checked;
+            chkExcludedVersesLinking.Enabled = !chkDefaultPageNameParameters.Checked;
+            chkUseRubbishPage.Enabled = !chkDefaultPageNameParameters.Checked;
+            tbRubbishNotesPageName.Enabled = !chkDefaultPageNameParameters.Checked;
+            tbRubbishNotesPageWidth.Enabled = !chkDefaultPageNameParameters.Checked;
+            chkRubbishExpandMultiVersesLinking.Enabled = !chkDefaultPageNameParameters.Checked;
+            chkRubbishExcludedVersesLinking.Enabled = !chkDefaultPageNameParameters.Checked;
+
+            chkUseRubbishPage_CheckedChanged(this, new EventArgs());
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -671,6 +714,14 @@ namespace BibleConfigurator
             lblProgressInfo.Text = infoText;
             pbMain.PerformStep();
             System.Windows.Forms.Application.DoEvents();
+        }
+
+        private void chkUseRubbishPage_CheckedChanged(object sender, EventArgs e)
+        {
+            tbRubbishNotesPageName.Enabled = chkUseRubbishPage.Checked;
+            tbRubbishNotesPageWidth.Enabled = chkUseRubbishPage.Checked;
+            chkRubbishExpandMultiVersesLinking.Enabled = chkUseRubbishPage.Checked;
+            chkRubbishExcludedVersesLinking.Enabled = chkUseRubbishPage.Checked;            
         }       
     }
 }

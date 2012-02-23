@@ -18,6 +18,9 @@ namespace BibleCommon.Consts
         public static readonly string DefaultPageNameDefaultBookOverview = "Общий обзор";
         public static readonly string DefaultPageNameDefaultComments = "Комментарии";
         public static readonly string DefaultPageName_Notes = "Заметки";
+        public static readonly string DefaultPageName_RubbishNotes = "Подробные заметки";
+        public static readonly int DefaultPageWidth_Notes = 500;
+        public static readonly int DefaultPageWidth_RubbishNotes = 500;
 
         public static readonly string ParameterName_NotebookIdBible = "NotebookId_Bible";
         public static readonly string ParameterName_NotebookIdBibleComments = "NotebookId_BibleComments";
@@ -33,10 +36,12 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_NewVersionOnServerLatestCheckTime = "NewVersionOnServerLatestCheckTime";
 
 
+        public static readonly string ParameterName_PageWidthNotes = "Width_NotesPage";
         public static readonly string ParameterName_ExpandMultiVersesLinking = "ExpandMultiVersesLinking";
         public static readonly string ParameterName_ExcludedVersesLinking = "ExcludedVersesLinking";
         public static readonly string ParameterName_RubbishPageUse = "RubbishPage_Use";
-        public static readonly string ParameterName_RubbishPageNotesPageName = "RubbishPage_NotesPageName";
+        public static readonly string ParameterName_PageNameRubbishNotes = "RubbishPage_NotesPageName";
+        public static readonly string ParameterName_PageWidthRubbishNotes = "RubbishPage_NotesPageWidth";
         public static readonly string ParameterName_RubbishPageExpandMultiVersesLinking = "RubbishPage_ExpandMultiVersesLinking";
         public static readonly string ParameterName_RubbishPageExcludedVersesLinking = "RubbishPage_ExcludedVersesLinking";
 

@@ -19,15 +19,7 @@ namespace BibleConfigurator
         public const string TemplatesDirectory = "OneNoteTemplates";
 
         public const string OldTestamentName = "Ветхий Завет";
-        public const string NewTestamentName = "Новый Завет";
-
-        public const string BibleSectionGroupDefaultName = "Библия";
-        public const string BibleCommentsSectionGroupDefaultName = "Комментарии к Библии";
-        public const string BibleStudySectionGroupDefaultName = "Изучение Библии";
-
-        public const string PageNameDefaultBookOverview = "Общий обзор";
-        public const string PageNameNotes = "Заметки";
-        public const string PageNameDefaultComments = "Комментарии";
+        public const string NewTestamentName = "Новый Завет";                
 
         public static readonly List<string> NotBibleStudyNotebooks = new List<string>() { "Личная", "Руководство по OneNote 2010" };
     }

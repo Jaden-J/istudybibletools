@@ -64,7 +64,7 @@ namespace BibleCommon.Services
             }
             catch (Exception ex)
             {
-                //throw;
+                //todo: log it in system log (ont in common log)
             }
 
             return result;
