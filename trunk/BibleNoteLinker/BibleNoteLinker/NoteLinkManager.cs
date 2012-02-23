@@ -55,6 +55,10 @@ namespace BibleNoteLinker
                 notePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
                 string notePageName = (string)notePageDocument.Root.Attribute("name");
 
+
+                if (OneNoteUtils.IsRecycleBin(notePageDocument.Root))
+                    return;
+
                 bool isSumaryNotesPage = false;
 
                 if (!IsSummaryNotesPage(notePageDocument, notePageName))
@@ -1344,95 +1348,9 @@ namespace BibleNoteLinker
                 prevRow.AddAfterSelf(newRow);
         }
 
-        public static void DeletePageNotes(Application oneNoteApp, string bibleSectionGroupId, string bibleSectionId, string biblePageId, string biblePageName)
-        {
-            try
-            {
-                bool wasModified = false;
-                string pageContentXml;
-                XDocument notePageDocument;
-                XmlNamespaceManager xnm;
-                oneNoteApp.GetPageContent(biblePageId, out pageContentXml);
-                notePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
-
-                foreach (XElement noteTextElement in notePageDocument.Root.XPathSelectElements("//one:Table/one:Row/one:Cell[2]/one:OEChildren/one:OE/one:T", xnm))
-                {
-                    if (!string.IsNullOrEmpty(noteTextElement.Value))
-                    {
-                        if (CantainsLinkToNotesPage(noteTextElement))
-                        {
-                            noteTextElement.Value = string.Empty;
-                            wasModified = true;
-                        }
-                    }
-                }
-
-                XElement chapterNotesLink = FindChapterNotesLink(notePageDocument, xnm);
-                if (chapterNotesLink != null)
-                {
-                    oneNoteApp.DeletePageContent(biblePageId, (string)chapterNotesLink.Attribute("objectID"));
-                    chapterNotesLink.Remove();
-                    wasModified = true;
-                }
-
-                if (wasModified)  // значит есть страница заметок
-                {                    
-                    string notesPageId = null;
-                    try
-                    {
-                        notesPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(oneNoteApp,
-                            bibleSectionId, biblePageId, biblePageName, SettingsManager.Instance.PageName_Notes);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError(ex);
-                    }
-
-                    if (!string.IsNullOrEmpty(notesPageId))
-                    {
-                        string sectionId;
-                        oneNoteApp.GetHierarchyParent(notesPageId, out sectionId);
-
-                        oneNoteApp.DeleteHierarchy(notesPageId);
-
-                        string sectionPagesXml;
-                        oneNoteApp.GetHierarchy(sectionId, HierarchyScope.hsPages, out sectionPagesXml);
-                        XDocument sectionPages = OneNoteUtils.GetXDocument(sectionPagesXml, out xnm);
-                        if (sectionPages.Root.XPathSelectElements("one:Page", xnm).Count() == 0)
-                            oneNoteApp.DeleteHierarchy(sectionId);  // удаляем раздел, если нет больше в нём страниц
-                    }
-                }
-
-                if (wasModified)
-                    oneNoteApp.UpdatePageContent(notePageDocument.ToString());
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError("Ошибки при обработке страницы.", ex);
-            }
-        }
+      
         
 
-        private static XElement FindChapterNotesLink(XDocument notePageDocument, XmlNamespaceManager xnm)
-        {
-            foreach (XElement outline in notePageDocument.Root.XPathSelectElements("//one:Outline", xnm))
-            {
-                List<XElement> textElements = outline.XPathSelectElements(".//one:T", xnm).ToList();
-                if (textElements.Count == 1)
-                {
-                    if (CantainsLinkToNotesPage(textElements.First()))
-                    {
-                        return outline;
-                    }
-                }                
-            }
-
-            return null;
-        }
-
-        private static bool CantainsLinkToNotesPage(XElement textElement)
-        {
-            return textElement.Value.IndexOf(string.Format(">{0}<", SettingsManager.Instance.PageName_Notes)) != -1;                
-        }
+       
     }
 }

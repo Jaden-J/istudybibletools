@@ -425,13 +425,13 @@
             // 
             // btnDeleteNotesPages
             // 
-            this.btnDeleteNotesPages.Enabled = false;
             this.btnDeleteNotesPages.Location = new System.Drawing.Point(13, 53);
             this.btnDeleteNotesPages.Name = "btnDeleteNotesPages";
             this.btnDeleteNotesPages.Size = new System.Drawing.Size(230, 23);
             this.btnDeleteNotesPages.TabIndex = 1;
             this.btnDeleteNotesPages.Text = "Удалить страницы \"Сводные заметок\"";
             this.btnDeleteNotesPages.UseVisualStyleBackColor = true;
+            this.btnDeleteNotesPages.Click += new System.EventHandler(this.btnDeleteNotesPages_Click);
             // 
             // btnRelinkComments
             // 

@@ -725,6 +725,13 @@ namespace BibleConfigurator
             tbRubbishNotesPageWidth.Enabled = chkUseRubbishPage.Checked;
             chkRubbishExpandMultiVersesLinking.Enabled = chkUseRubbishPage.Checked;
             chkRubbishExcludedVersesLinking.Enabled = chkUseRubbishPage.Checked;            
-        }       
+        }
+
+        private void btnDeleteNotesPages_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Удалить все сводные страницы заметок и ссылки на них?", "Внимание!",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
+                new DeleteNotesPagesManager(_oneNoteApp, this).DeleteNotesPages();
+        }
     }
 }

@@ -49,6 +49,7 @@
     <Compile Include="Helpers\StringUtils.cs" />
     <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Services\Logger.cs" />
+    <Compile Include="Services\NotebookIterator.cs" />
     <Compile Include="Services\OneNoteProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\HierarchySearchManager.cs" />
