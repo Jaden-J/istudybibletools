@@ -119,21 +119,25 @@ namespace BibleNoteLinker
                             string currentSectionId = oneNoteApp.Windows.CurrentWindow.CurrentSectionId;
                             string currentSectionGroupId = oneNoteApp.Windows.CurrentWindow.CurrentSectionGroupId;
                             string currentNotebookId = oneNoteApp.Windows.CurrentWindow.CurrentNotebookId;
-
+                            
                             if (!string.IsNullOrEmpty(currentPageId))
                             {
-                                if (userArgs.DeleteNotes)
-                                    NoteLinkManager.DeletePageNotes(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, OneNoteUtils.GetHierarchyElementName(oneNoteApp, currentPageId));
+                                if (currentNotebookId == SettingsManager.Instance.NotebookId_BibleComments
+                                    || currentNotebookId == SettingsManager.Instance.NotebookId_BibleStudy)
+                                {
+                                    if (userArgs.DeleteNotes)
+                                        NoteLinkManager.DeletePageNotes(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, OneNoteUtils.GetHierarchyElementName(oneNoteApp, currentPageId));
+                                    else
+                                        NoteLinkManager.LinkPageVerses(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);
+                                }
                                 else
-                                    NoteLinkManager.LinkPageVerses(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);                            
+                                    Logger.LogError(string.Format("Текущая записная книжка не настроена на обработку программой {0}", Constants.ToolsName));
                             }
                             else
                                 Logger.LogError("Не найдено открытой страницы заметок");
                         }
-                        else
-                        {
-                            Logger.LogError("Не найдено открытой записной книжки");
-                        }
+                        else                        
+                            Logger.LogError("Не найдено открытой записной книжки");                        
                     }
 
                     Logger.LogMessage("Успешно завершено");

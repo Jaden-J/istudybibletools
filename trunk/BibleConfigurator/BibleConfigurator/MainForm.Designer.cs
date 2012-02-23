@@ -445,7 +445,7 @@
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(566, 18);
+            this.btnOK.Location = new System.Drawing.Point(566, 14);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 16;
@@ -472,7 +472,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.lblProgressInfo);
             this.splitContainer1.Panel2.Controls.Add(this.pbMain);
             this.splitContainer1.Panel2.Controls.Add(this.btnOK);
-            this.splitContainer1.Size = new System.Drawing.Size(664, 419);
+            this.splitContainer1.Size = new System.Drawing.Size(664, 409);
             this.splitContainer1.SplitterDistance = 359;
             this.splitContainer1.TabIndex = 17;
             // 
@@ -480,7 +480,7 @@
             // 
             this.lblWarning.AutoSize = true;
             this.lblWarning.ForeColor = System.Drawing.Color.Red;
-            this.lblWarning.Location = new System.Drawing.Point(400, 2);
+            this.lblWarning.Location = new System.Drawing.Point(456, -2);
             this.lblWarning.Name = "lblWarning";
             this.lblWarning.Size = new System.Drawing.Size(0, 13);
             this.lblWarning.TabIndex = 19;
@@ -495,7 +495,7 @@
             // 
             // pbMain
             // 
-            this.pbMain.Location = new System.Drawing.Point(20, 18);
+            this.pbMain.Location = new System.Drawing.Point(20, 14);
             this.pbMain.Name = "pbMain";
             this.pbMain.Size = new System.Drawing.Size(530, 23);
             this.pbMain.Step = 3;
@@ -660,7 +660,7 @@
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(664, 419);
+            this.ClientSize = new System.Drawing.Size(664, 409);
             this.Controls.Add(this.splitContainer1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "MainForm";

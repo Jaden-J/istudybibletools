@@ -34,9 +34,12 @@ namespace BibleConfigurator
 
     public class SaveParametersException : Exception
     {
-        public SaveParametersException(string message)
+        public bool NeedToReload { get; set; }
+
+        public SaveParametersException(string message, bool needToReload)
             : base(message)
         {
+            this.NeedToReload = needToReload;
         }
     }
 
