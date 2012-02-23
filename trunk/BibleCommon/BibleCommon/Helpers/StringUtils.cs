@@ -324,6 +324,7 @@ namespace BibleCommon.Helpers
 
                         if (missInfo.Mode == SearchMissInfo.MissMode.CancelOnMissFound && missCount.GetValueOrDefault(-1) == missInfo.MaxMissCount.GetValueOrDefault(0))  // -1 специально передаётся, чтобы отсечь варианты, когда missCount == null
                         {
+                            iBeforeHtml = -1;  // мы взяли последний символ и он для нас был важным. значит и текст идёт до сюда, а не заканчивается там, где мы в прошлый раз начали какой нибудь тэг.
                             i--;
                             break;
                         }
@@ -351,6 +352,7 @@ namespace BibleCommon.Helpers
 
                         if (missInfo.Mode == SearchMissInfo.MissMode.CancelOnMissFound && missCount.GetValueOrDefault(-1) == missInfo.MaxMissCount.GetValueOrDefault(0))  // -1 специально передаётся, чтобы отсечь варианты, когда missCount == null
                         {
+                            iBeforeHtml = -1;  // мы взяли последний символ и он для нас был важным. значит и текст идёт до сюда, а не заканчивается там, где мы в прошлый раз начали какой нибудь тэг.
                             i--;
                             break;
                         }
@@ -392,6 +394,7 @@ namespace BibleCommon.Helpers
 
                         if (missInfo.Mode == SearchMissInfo.MissMode.CancelOnMissFound && missCount.GetValueOrDefault(-1) == missInfo.MaxMissCount.GetValueOrDefault(0))  // -1 специально передаётся, чтобы отсечь варианты, когда missCount == null
                         {
+                            iBeforeHtml = -1;  // мы взяли последний символ и он для нас был важным. значит и текст идёт до сюда, а не заканчивается там, где мы в прошлый раз начали какой нибудь тэг.
                             i--;
                             break;
                         }
@@ -469,6 +472,7 @@ namespace BibleCommon.Helpers
 
                         if (missInfo.Mode == SearchMissInfo.MissMode.CancelOnMissFound && missCount.GetValueOrDefault(-1) == missInfo.MaxMissCount.GetValueOrDefault(0))  // -1 специально передаётся, чтобы отсечь варианты, когда missCount == null
                         {
+                            iBeforeHtml = -1;  // мы взяли последний символ и он для нас был важным. значит и текст идёт до сюда, а не заканчивается там, где мы в прошлый раз начали какой нибудь тэг.
                             i++;
                             break;
                         }
@@ -496,6 +500,7 @@ namespace BibleCommon.Helpers
 
                         if (missInfo.Mode == SearchMissInfo.MissMode.CancelOnMissFound && missCount.GetValueOrDefault(-1) == missInfo.MaxMissCount.GetValueOrDefault(0))  // -1 специально передаётся, чтобы отсечь варианты, когда missCount == null
                         {
+                            iBeforeHtml = -1;  // мы взяли последний символ и он для нас был важным. значит и текст идёт до сюда, а не заканчивается там, где мы в прошлый раз начали какой нибудь тэг.
                             i++;
                             break;
                         }
@@ -537,6 +542,7 @@ namespace BibleCommon.Helpers
 
                         if (missInfo.Mode == SearchMissInfo.MissMode.CancelOnMissFound && missCount.GetValueOrDefault(-1) == missInfo.MaxMissCount.GetValueOrDefault(0))  // -1 специально передаётся, чтобы отсечь варианты, когда missCount == null
                         {
+                            iBeforeHtml = -1;  // мы взяли последний символ и он для нас был важным. значит и текст идёт до сюда, а не заканчивается там, где мы в прошлый раз начали какой нибудь тэг.
                             i++;
                             break;
                         }
