@@ -57,11 +57,24 @@ namespace BibleConfigurator.Tools
 
             try
             {
-                BibleCommon.Services.Logger.Init("RelinkAllBibleCommentsManager");
-
                 _form.PrepareForExternalProcessing(1255, 1, "Старт обновления ссылок на комментарии.");
 
-                ProcessNotebook(SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible);
+                new NotebookIterator(_oneNoteApp).Iterate("RelinkAllBibleCommentsManager",
+                    SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
+                        {
+                            try
+                            {
+                                RelinkPageComments(pageInfo.SectionGroupId, pageInfo.SectionId, pageInfo.PageId, pageInfo.PageName);
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogError(ex.ToString());
+                            }
+
+                            if (_form.StopExternalProcess)
+                                throw new ProcessAbortedByUserException();
+                        });
+                
             }
             catch (ProcessAbortedByUserException)
             {
@@ -73,95 +86,6 @@ namespace BibleConfigurator.Tools
 
                 _form.ExternalProcessingDone("Обновление ссылок на комментарии успешно завершено");
             }
-        }
-
-        private void ProcessNotebook(string notebookId, string sectionGroupId)
-        {
-            BibleCommon.Services.Logger.LogMessage("Обработка записной книжки: '{0}'", OneNoteUtils.GetHierarchyElementName(_oneNoteApp, notebookId));  // чтобы точно убедиться
-
-            string hierarchyXml;
-            _oneNoteApp.GetHierarchy(notebookId, HierarchyScope.hsPages, out hierarchyXml);
-            XmlNamespaceManager xnm;
-            XDocument notebookDoc = OneNoteUtils.GetXDocument(hierarchyXml, out xnm);
-
-            BibleCommon.Services.Logger.MoveLevel(1);
-            ProcessRootSectionGroup(notebookId, notebookDoc, sectionGroupId, xnm);
-            BibleCommon.Services.Logger.MoveLevel(-1);
-        }
-
-        private void ProcessRootSectionGroup(string notebookId, XDocument doc, string sectionGroupId, XmlNamespaceManager xnm)
-        {
-            XElement sectionGroup = string.IsNullOrEmpty(sectionGroupId)
-                                        ? doc.Root
-                                        : doc.Root.XPathSelectElement(
-                                                string.Format("one:SectionGroup[@ID='{0}']", sectionGroupId), xnm);
-
-            if (sectionGroup != null)
-                ProcessSectionGroup(sectionGroup, sectionGroupId, notebookId, xnm, true);
-            else
-                BibleCommon.Services.Logger.LogError("Не удаётся найти группу секций '{0}'", sectionGroupId);
-        }
-
-        private  void ProcessSectionGroup(XElement sectionGroup, string sectionGroupId,
-            string notebookId, XmlNamespaceManager xnm, bool isRootSectionGroup)
-        {
-            string sectionGroupName = (string)sectionGroup.Attribute("name");
-
-            if (!string.IsNullOrEmpty(sectionGroupName))
-            {
-                BibleCommon.Services.Logger.LogMessage("Обработка группы секций '{0}'", sectionGroupName);
-                BibleCommon.Services.Logger.MoveLevel(1);
-            }
-
-            if (isRootSectionGroup)
-            {
-                foreach (var subSectionGroup in sectionGroup.XPathSelectElements("one:SectionGroup", xnm))
-                {
-                    string subSectionGroupName = (string)subSectionGroup.Attribute("name");
-                    ProcessSectionGroup(subSectionGroup, subSectionGroupName, notebookId, xnm, false);
-                }
-            }
-            else
-            {
-                foreach (var subSection in sectionGroup.XPathSelectElements("one:Section", xnm))
-                {
-                    ProcessSection(subSection, sectionGroupId, notebookId, xnm);
-                }
-            }
-
-            if (!string.IsNullOrEmpty(sectionGroupName))
-            {
-                BibleCommon.Services.Logger.MoveLevel(-1);
-            }
-        }
-
-        private void ProcessSection(XElement section, string sectionGroupId,
-           string notebookId, XmlNamespaceManager xnm)
-        {
-            string sectionId = (string)section.Attribute("ID");
-            string sectionName = (string)section.Attribute("name");
-
-            BibleCommon.Services.Logger.LogMessage("Обработка секции '{0}'", sectionName);
-            BibleCommon.Services.Logger.MoveLevel(1);            
-
-            foreach (var page in section.XPathSelectElements("one:Page", xnm))
-            {
-                string pageId = (string)page.Attribute("ID");
-                string pageName = (string)page.Attribute("name");
-
-                BibleCommon.Services.Logger.LogMessage("Обработка страницы '{0}'", pageName);
-
-                BibleCommon.Services.Logger.MoveLevel(1);
-
-                RelinkPageComments(sectionGroupId, sectionId, pageId, pageName);
-                
-                BibleCommon.Services.Logger.MoveLevel(-1);
-
-                if (_form.StopExternalProcess)
-                    throw new ProcessAbortedByUserException();
-            }
-
-            BibleCommon.Services.Logger.MoveLevel(-1);
         }
 
         private void RelinkPageComments(string sectionGroupId, string sectionId, string pageId, string pageName)
