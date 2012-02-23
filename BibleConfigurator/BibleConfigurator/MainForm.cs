@@ -155,7 +155,8 @@ namespace BibleConfigurator
             catch (SaveParametersException ex)
             {
                 Logger.LogError(ex.Message);
-                LoadParameters();                
+                if (ex.NeedToReload)
+                    LoadParameters();                
             }
             finally
             {
@@ -183,16 +184,17 @@ namespace BibleConfigurator
                 if (!string.IsNullOrEmpty(tbNotesPageWidth.Text))
                 {
                     int notesPageWidth;
-                    if (!int.TryParse(tbNotesPageWidth.Text, out notesPageWidth))
-                        throw new SaveParametersException(string.Format("Неверное значение параметра '{0}'", lblNotesPageWidth.Text));
+                    if (!int.TryParse(tbNotesPageWidth.Text, out notesPageWidth) || notesPageWidth < 200 || notesPageWidth > 1000)
+                        throw new SaveParametersException(string.Format("Неверное значение параметра '{0}'", lblNotesPageWidth.Text), false);
+
                     SettingsManager.Instance.PageWidth_Notes = notesPageWidth;
                 }
 
                 if (!string.IsNullOrEmpty(tbRubbishNotesPageWidth.Text))
                 {
                     int rubbishNotesPageWidth;
-                    if (!int.TryParse(tbRubbishNotesPageWidth.Text, out rubbishNotesPageWidth))
-                        throw new SaveParametersException(string.Format("Неверное значение параметра '{0}'", lblRubbishNotesPageWidth.Text));
+                    if (!int.TryParse(tbRubbishNotesPageWidth.Text, out rubbishNotesPageWidth) || rubbishNotesPageWidth < 200 || rubbishNotesPageWidth > 1000)
+                        throw new SaveParametersException(string.Format("Неверное значение параметра '{0}'", lblRubbishNotesPageWidth.Text), false);
                     SettingsManager.Instance.PageWidth_RubbishNotes = rubbishNotesPageWidth;
                 }
 
@@ -200,6 +202,7 @@ namespace BibleConfigurator
                 SettingsManager.Instance.ExcludedVersesLinking = chkExcludedVersesLinking.Checked;
 
                 SettingsManager.Instance.RubbishPage_Use = chkUseRubbishPage.Checked;
+                SettingsManager.Instance.PageName_RubbishNotes = tbRubbishNotesPageName.Text;
                 SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking = chkRubbishExpandMultiVersesLinking.Checked;
                 SettingsManager.Instance.RubbishPage_ExcludedVersesLinking = chkRubbishExcludedVersesLinking.Checked;
             }
@@ -234,7 +237,7 @@ namespace BibleConfigurator
             }
 
             if (!parametersWasLoad)
-                throw new SaveParametersException("Не удалось запросить данные о записных книжках из OneNote. Повторите операцию.");
+                throw new SaveParametersException("Не удалось запросить данные о записных книжках из OneNote. Повторите операцию.", true);
         }
 
         private bool TryToLoadNotebookParameters(NotebookType notebookType, string notebookName, out string notebookId, bool silientMode = false)
