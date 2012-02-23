@@ -21,8 +21,7 @@ namespace BibleNoteLinkerEx
 {
     public partial class MainForm : Form
     {
-        const string Arg_AllPages = "-allpages";
-        const string Arg_DeleteNotes = "-deletenotes";
+        const string Arg_AllPages = "-allpages";        
         const string Arg_Changed = "-changed";
         const string Arg_Force = "-force";
 
@@ -46,19 +45,14 @@ namespace BibleNoteLinkerEx
         }
 
         [DllImport("user32.dll")]
-        static extern bool SetForegroundWindow(IntPtr hWnd);        
+        static extern bool SetForegroundWindow(IntPtr hWnd);
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            if (!chkDeleteNotes.Checked)
-            {
-                BibleNoteLinkerEx.Properties.Settings.Default.AllPages = rbAnalyzeAllPages.Checked;
-                BibleNoteLinkerEx.Properties.Settings.Default.Changed = rbAnalyzeChangedPages.Checked;
-                BibleNoteLinkerEx.Properties.Settings.Default.Force = chkForce.Checked;
-                BibleNoteLinkerEx.Properties.Settings.Default.Save();
-            }
-            else if (MessageBox.Show("Удалить все сводные страницы заметок и ссылки на них?", "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.No)
-                return;            
+            BibleNoteLinkerEx.Properties.Settings.Default.AllPages = rbAnalyzeAllPages.Checked;
+            BibleNoteLinkerEx.Properties.Settings.Default.Changed = rbAnalyzeChangedPages.Checked;
+            BibleNoteLinkerEx.Properties.Settings.Default.Force = chkForce.Checked;
+            BibleNoteLinkerEx.Properties.Settings.Default.Save();
 
             this.Hide();
             try
@@ -85,9 +79,7 @@ namespace BibleNoteLinkerEx
             if (rbAnalyzeAllPages.Enabled && rbAnalyzeAllPages.Checked)
                 sb.AppendFormat(" {0}", Arg_AllPages);
             else if (rbAnalyzeChangedPages.Enabled && rbAnalyzeChangedPages.Checked)
-                sb.AppendFormat(" {0} {1}", Arg_AllPages, Arg_Changed);
-            else if (chkDeleteNotes.Checked)
-                sb.AppendFormat(" {0} {1}", Arg_AllPages, Arg_DeleteNotes);            
+                sb.AppendFormat(" {0} {1}", Arg_AllPages, Arg_Changed);            
 
             if (chkForce.Enabled && chkForce.Checked)
                 sb.AppendFormat(" {0}", Arg_Force);            
@@ -144,15 +136,7 @@ namespace BibleNoteLinkerEx
                 this.SetFocus();
                 _wasShown = true;               
             }
-        }
-
-        private void cbDeleteNotes_CheckedChanged(object sender, EventArgs e)
-        {
-            rbAnalyzeAllPages.Enabled = 
-                rbAnalyzeCurrentPage.Enabled = 
-                    rbAnalyzeChangedPages.Enabled =
-                        chkForce.Enabled = !chkDeleteNotes.Checked;
-        }
+        }     
 
         private void lblInfo_Click(object sender, EventArgs e)
         {

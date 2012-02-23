@@ -27,16 +27,14 @@ namespace BibleNoteLinker
         {
             public bool AnalyzeAllPages { get; set; }  // false - значит только текущую
             public NoteLinkManager.AnalyzeDepth AnalyzeDepth { get; set; }
-            public bool Force { get; set; }            
-            public bool DeleteNotes { get; set; }
+            public bool Force { get; set; }                        
             public bool LastChanged { get; set; }
 
             public Args()
             {
                 this.AnalyzeAllPages = false;
                 this.AnalyzeDepth = NoteLinkManager.AnalyzeDepth.Full;
-                this.Force = false;
-                this.DeleteNotes = false;
+                this.Force = false;                
                 this.LastChanged = false;
             }
         }
@@ -51,9 +49,7 @@ namespace BibleNoteLinker
                 if (argLower == Arg_AllPages)
                     result.AnalyzeAllPages = true;
                 else if (argLower == Arg_Force)
-                    result.Force = true;
-                else if (argLower == Arg_DeleteNotes)
-                    result.DeleteNotes = true;
+                    result.Force = true;                
                 else if (argLower == Arg_Changed)
                     result.LastChanged = true;
                 else
@@ -84,30 +80,22 @@ namespace BibleNoteLinker
                     Logger.LogMessage("Время старта: {0}", dtStart.ToLongTimeString());
 
                     Args userArgs = GetUserArgs(args);
-                    if (userArgs.DeleteNotes)
-                        Logger.LogMessage("Удаляем страницы заметок и ссылки на них");
-                    else
-                    {
-                        Logger.LogMessage("Уровень текущего анализа: '{0} ({1})'", userArgs.AnalyzeDepth, (int)userArgs.AnalyzeDepth);
-                        if (userArgs.Force)
-                            Logger.LogMessage("Анализируем ссылки в том числе");
-                        if (userArgs.LastChanged)
-                            Logger.LogMessage("Анализируем только последние модифицированные страницы");
-                    }                                       
+                    
+                    Logger.LogMessage("Уровень текущего анализа: '{0} ({1})'", userArgs.AnalyzeDepth, (int)userArgs.AnalyzeDepth);
+                    if (userArgs.Force)
+                        Logger.LogMessage("Анализируем ссылки в том числе");
+                    if (userArgs.LastChanged)
+                        Logger.LogMessage("Анализируем только последние модифицированные страницы");
+                    
 
                     if (userArgs.AnalyzeAllPages)
                     {
                         Logger.LogMessage("Старт обработки всей записной книжки");
 
-                        if (userArgs.DeleteNotes)
-                            ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, userArgs);
-                        else
-                        {
-                            ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, SettingsManager.Instance.SectionGroupId_BibleComments, userArgs);
-                            ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleStudy, SettingsManager.Instance.SectionGroupId_BibleStudy, userArgs);
-                            SettingsManager.Instance.LastNotesLinkTime = DateTime.Now;
-                            SettingsManager.Instance.Save();
-                        }
+                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, SettingsManager.Instance.SectionGroupId_BibleComments, userArgs);
+                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleStudy, SettingsManager.Instance.SectionGroupId_BibleStudy, userArgs);
+                        SettingsManager.Instance.LastNotesLinkTime = DateTime.Now;
+                        SettingsManager.Instance.Save();
                     }
                     else
                     {
@@ -119,16 +107,13 @@ namespace BibleNoteLinker
                             string currentSectionId = oneNoteApp.Windows.CurrentWindow.CurrentSectionId;
                             string currentSectionGroupId = oneNoteApp.Windows.CurrentWindow.CurrentSectionGroupId;
                             string currentNotebookId = oneNoteApp.Windows.CurrentWindow.CurrentNotebookId;
-                            
+
                             if (!string.IsNullOrEmpty(currentPageId))
                             {
                                 if (currentNotebookId == SettingsManager.Instance.NotebookId_BibleComments
                                     || currentNotebookId == SettingsManager.Instance.NotebookId_BibleStudy)
                                 {
-                                    if (userArgs.DeleteNotes)
-                                        NoteLinkManager.DeletePageNotes(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, OneNoteUtils.GetHierarchyElementName(oneNoteApp, currentPageId));
-                                    else
-                                        NoteLinkManager.LinkPageVerses(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);
+                                    NoteLinkManager.LinkPageVerses(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);
                                 }
                                 else
                                     Logger.LogError(string.Format("Текущая записная книжка не настроена на обработку программой {0}", Constants.ToolsName));
@@ -136,8 +121,8 @@ namespace BibleNoteLinker
                             else
                                 Logger.LogError("Не найдено открытой страницы заметок");
                         }
-                        else                        
-                            Logger.LogError("Не найдено открытой записной книжки");                        
+                        else
+                            Logger.LogError("Не найдено открытой записной книжки");
                     }
 
                     Logger.LogMessage("Успешно завершено");
@@ -169,7 +154,7 @@ namespace BibleNoteLinker
             XDocument notebookDoc = OneNoteUtils.GetXDocument(hierarchyXml, out xnm);
 
             Logger.MoveLevel(1);            
-            ProcessRootSectionGroup(oneNoteApp, notebookId, notebookDoc, sectionGroupId, xnm, userArgs.AnalyzeDepth, userArgs.Force, userArgs.LastChanged, userArgs.DeleteNotes);
+            ProcessRootSectionGroup(oneNoteApp, notebookId, notebookDoc, sectionGroupId, xnm, userArgs.AnalyzeDepth, userArgs.Force, userArgs.LastChanged);
             Logger.MoveLevel(-1);
         }
 
@@ -191,14 +176,14 @@ namespace BibleNoteLinker
 
                         string sectionId = (string)page.Parent.Attribute("ID").Value;
 
-                        ProcessPage(oneNoteApp, page, sectionGroupId, sectionId, linkDepth, force, false);
+                        ProcessPage(oneNoteApp, page, sectionGroupId, sectionId, linkDepth, force);
                     }
                 }
             }
         }
 
         private static void ProcessRootSectionGroup(Application oneNoteApp, string notebookId, XDocument doc, string sectionGroupId,
-            XmlNamespaceManager xnm, NoteLinkManager.AnalyzeDepth linkDepth, bool force, bool lastChanged, bool deleteNotes)
+            XmlNamespaceManager xnm, NoteLinkManager.AnalyzeDepth linkDepth, bool force, bool lastChanged)
         {
             XElement sectionGroup = string.IsNullOrEmpty(sectionGroupId) 
                                         ? doc.Root 
@@ -210,18 +195,18 @@ namespace BibleNoteLinker
                 if (lastChanged && SettingsManager.Instance.LastNotesLinkTime.HasValue)
                     ProcessLastChangedPages(oneNoteApp, sectionGroup, xnm, linkDepth, force);
                 else
-                    ProcessSectionGroup(sectionGroup, sectionGroupId, oneNoteApp, notebookId, xnm, linkDepth, force, deleteNotes);
+                    ProcessSectionGroup(sectionGroup, sectionGroupId, oneNoteApp, notebookId, xnm, linkDepth, force);
             }
             else
                 Logger.LogError("Не удаётся найти группу секций '{0}'", sectionGroupId);
         }
 
         private static void ProcessSectionGroup(XElement sectionGroup, string sectionGroupId,
-            Application oneNoteApp, string notebookId, XmlNamespaceManager xnm, NoteLinkManager.AnalyzeDepth linkDepth, bool force, bool deleteNotes)
+            Application oneNoteApp, string notebookId, XmlNamespaceManager xnm, NoteLinkManager.AnalyzeDepth linkDepth, bool force)
         {
             string sectionGroupName = (string)sectionGroup.Attribute("name");
 
-            if (OneNoteUtils.IsRecycleSectionGroup(sectionGroup))
+            if (OneNoteUtils.IsRecycleBin(sectionGroup))
                 return;
 
             if (!string.IsNullOrEmpty(sectionGroupName))
@@ -233,12 +218,12 @@ namespace BibleNoteLinker
             foreach (var subSectionGroup in sectionGroup.XPathSelectElements("one:SectionGroup", xnm))
             {                
                 string subSectionGroupId = (string)subSectionGroup.Attribute("ID");
-                ProcessSectionGroup(subSectionGroup, subSectionGroupId, oneNoteApp, notebookId, xnm, linkDepth, force, deleteNotes);
+                ProcessSectionGroup(subSectionGroup, subSectionGroupId, oneNoteApp, notebookId, xnm, linkDepth, force);
             }
 
             foreach (var subSection in sectionGroup.XPathSelectElements("one:Section", xnm))
             {
-                ProcessSection(subSection, sectionGroupId, oneNoteApp, notebookId, xnm, linkDepth, force, deleteNotes);
+                ProcessSection(subSection, sectionGroupId, oneNoteApp, notebookId, xnm, linkDepth, force);
             }
 
             if (!string.IsNullOrEmpty(sectionGroupName))
@@ -248,7 +233,7 @@ namespace BibleNoteLinker
         }
 
         private static void ProcessSection(XElement section, string sectionGroupId,
-            Application oneNoteApp, string notebookId, XmlNamespaceManager xnm, NoteLinkManager.AnalyzeDepth linkDepth, bool force, bool deleteNotes)
+            Application oneNoteApp, string notebookId, XmlNamespaceManager xnm, NoteLinkManager.AnalyzeDepth linkDepth, bool force)
         {
             string sectionId = (string)section.Attribute("ID");
             string sectionName = (string)section.Attribute("name");
@@ -258,14 +243,14 @@ namespace BibleNoteLinker
 
             foreach (var page in section.XPathSelectElements("one:Page", xnm))
             {
-                ProcessPage(oneNoteApp, page, sectionGroupId, sectionId, linkDepth, force, deleteNotes);
+                ProcessPage(oneNoteApp, page, sectionGroupId, sectionId, linkDepth, force);
             }
 
             Logger.MoveLevel(-1);
         }
 
         private static void ProcessPage(Application oneNoteApp, XElement page, string sectionGroupId, string sectionId,
-            NoteLinkManager.AnalyzeDepth linkDepth, bool force, bool deleteNotes)
+            NoteLinkManager.AnalyzeDepth linkDepth, bool force)
         {
             string pageId = (string)page.Attribute("ID");
             string pageName = (string)page.Attribute("name");
@@ -273,10 +258,9 @@ namespace BibleNoteLinker
             Logger.LogMessage("Обработка страницы '{0}'", pageName);
 
             Logger.MoveLevel(1);
-            if (deleteNotes)
-                NoteLinkManager.DeletePageNotes(oneNoteApp, sectionGroupId, sectionId, pageId, pageName);
-            else
-                NoteLinkManager.LinkPageVerses(oneNoteApp, sectionGroupId, sectionId, pageId, linkDepth, force);
+            
+            NoteLinkManager.LinkPageVerses(oneNoteApp, sectionGroupId, sectionId, pageId, linkDepth, force);
+
             Logger.MoveLevel(-1);
         }
     }
