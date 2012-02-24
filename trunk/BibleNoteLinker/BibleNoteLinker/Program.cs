@@ -123,7 +123,7 @@ namespace BibleNoteLinker
                         }
                         else
                             Logger.LogError("Не найдено открытой записной книжки");
-                    }
+                    }                    
 
                     Logger.LogMessage("Успешно завершено");
                 }

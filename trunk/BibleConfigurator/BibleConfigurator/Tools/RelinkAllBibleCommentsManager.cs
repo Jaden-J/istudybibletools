@@ -145,10 +145,10 @@ namespace BibleConfigurator.Tools
 
         private string GetComentobjectId(string commentPageId, string commentText)
         {
-            XmlNamespaceManager xnm;
-            XDocument pageDoc = OneNoteUtils.GetXDocument(OneNoteProxy.Instance.GetPageContent(_oneNoteApp, commentPageId), out xnm);
+            
+            OneNoteProxy.PageContent pageDoc = OneNoteProxy.Instance.GetPageContent(_oneNoteApp, commentPageId);
 
-            foreach (XElement el in pageDoc.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:T", xnm))
+            foreach (XElement el in pageDoc.Content.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:T", pageDoc.Xnm))
             {
                 OneNoteUtils.NormalizaTextElement(el);
 

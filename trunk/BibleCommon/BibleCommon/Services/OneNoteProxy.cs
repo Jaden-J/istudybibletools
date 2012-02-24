@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Office.Interop.OneNote;
+using System.Xml.Linq;
+using BibleCommon.Helpers;
+using System.Xml;
 
 namespace BibleCommon.Services
 {
@@ -25,6 +28,14 @@ namespace BibleCommon.Services
             {
                 return this.ID.GetHashCode() ^ this.ContentScope.GetHashCode();
             }
+        }
+
+        public class PageContent
+        {            
+            public string PageId { get; set; }
+            public XDocument Content { get; set; }
+            public XmlNamespaceManager Xnm { get; set; }
+            public bool WasModified { get; set; }
         }
 
         private static object _locker = new object();
@@ -50,7 +61,7 @@ namespace BibleCommon.Services
         }
 
         private Dictionary<OneNoteHierarchyContentId, string> _hierarchyContentCache = new Dictionary<OneNoteHierarchyContentId, string>();
-        private Dictionary<string, string> _pageContentCache = new Dictionary<string, string>();
+        private Dictionary<string, PageContent> _pageContentCache = new Dictionary<string, PageContent>();
 
         protected OneNoteProxy()
         {
@@ -88,23 +99,34 @@ namespace BibleCommon.Services
             return result;
         }
 
-        public string GetPageContent(Application oneNoteApp, string pageId, bool refreshCache = false)
+        public PageContent GetPageContent(Application oneNoteApp, string pageId)
         {
-            string result;
+            return GetPageContent(oneNoteApp, pageId, false);
+        }
+
+
+        private PageContent GetPageContent(Application oneNoteApp, string pageId, bool refreshCache)
+        {
+            PageContent result;
+
             if (!_pageContentCache.ContainsKey(pageId) || refreshCache)
             {
                 lock (_locker)
                 {
-                    oneNoteApp.GetPageContent(pageId, out result);
+                    string xml;
+                    oneNoteApp.GetPageContent(pageId, out xml);
+
+                    XmlNamespaceManager xnm;
+                    XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
 
                     if (!_pageContentCache.ContainsKey(pageId))
-                        _pageContentCache.Add(pageId, result);
+                        _pageContentCache.Add(pageId, new PageContent() { PageId = pageId, Content = doc, Xnm = xnm });
                     else
-                        _pageContentCache[pageId] = result;
+                        _pageContentCache[pageId].Content = doc;
                 }
             }
-            else
-                result = _pageContentCache[pageId];
+
+            result = _pageContentCache[pageId];
 
             return result;
         }
@@ -114,9 +136,19 @@ namespace BibleCommon.Services
             GetHierarchy(oneNoteApp, hierarchyId, scope, true);
         }
 
-        public void RefreshPageContentCache(Application oneNoteApp, string pageId)
+        public void CommitAllModifiedPages(Application oneNoteApp)
         {
-            GetPageContent(oneNoteApp, pageId, true);
+            foreach (PageContent pageContent in _pageContentCache.Values.Where(pg => pg.WasModified))
+            {
+                oneNoteApp.UpdatePageContent(pageContent.Content.ToString());
+                pageContent.WasModified = false;
+                GetPageContent(oneNoteApp, pageContent.PageId, true);  // обновляем, так как OneNote сам модифицирует контен страницы при обновлении
+            }
         }
+
+        //public void RefreshPageContentCache(Application oneNoteApp, string pageId)
+        //{
+        //    GetPageContent(oneNoteApp, pageId, true);
+        //}
     }
 }
