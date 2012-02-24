@@ -136,14 +136,22 @@ namespace BibleCommon.Services
             GetHierarchy(oneNoteApp, hierarchyId, scope, true);
         }
 
-        public void CommitAllModifiedPages(Application oneNoteApp)
+        public void CommitAllModifiedPages(Application oneNoteApp, Action<PageContent> onPageProcessed)
         {
+            List<string> toRemove = new List<string>();
             foreach (PageContent pageContent in _pageContentCache.Values.Where(pg => pg.WasModified))
             {
                 oneNoteApp.UpdatePageContent(pageContent.Content.ToString());
-                pageContent.WasModified = false;
-                GetPageContent(oneNoteApp, pageContent.PageId, true);  // обновляем, так как OneNote сам модифицирует контен страницы при обновлении
+                //pageContent.WasModified = false;
+                //GetPageContent(oneNoteApp, pageContent.PageId, true);  // обновляем, так как OneNote сам модифицирует контен страницы при обновлении
+                toRemove.Add(pageContent.PageId);
+
+                if (onPageProcessed != null)
+                    onPageProcessed(pageContent);
             }
+
+            foreach (var pageId in toRemove)  // нам нет смысла их заново загружать в кэш, так как возможно они больше не понадобятся. 
+                _pageContentCache.Remove(pageId);
         }
 
         //public void RefreshPageContentCache(Application oneNoteApp, string pageId)
