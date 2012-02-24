@@ -676,7 +676,6 @@ namespace BibleNoteLinker
         {
             int startVerseNameIndex = searchResult.VersePointerStartIndex;
             int endVerseNameIndex = searchResult.VersePointerEndIndex;
-            bool isChapter = VersePointerSearchResult.IsChapter(searchResult.ResultType);
 
             newEndVerseIndex = endVerseNameIndex;
 
@@ -693,7 +692,7 @@ namespace BibleNoteLinker
                 noteSectionGroupName, noteSectionName, notePageName, notePageId, notePageTitleId, notePageContentObjectId, linkDepth, 
                 true, SettingsManager.Instance.ExcludedVersesLinking, SettingsManager.Instance.PageName_Notes, SettingsManager.Instance.PageWidth_Notes,
                 globalChapterSearchResult, pageChaptersSearchResult,
-                isInBrackets, force, out hierarchySearchResult, hsr =>
+                isInBrackets, false, force, out hierarchySearchResult, hsr =>
                     {
                         if (hsr.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder)
                             Logger.LogMessage("Обработка стиха: {0}", searchResult.VersePointer.OriginalVerseName);
@@ -727,7 +726,7 @@ namespace BibleNoteLinker
                         noteSectionGroupName, noteSectionName, notePageName, notePageId, notePageTitleId, notePageContentObjectId, linkDepth,
                         false, SettingsManager.Instance.ExcludedVersesLinking, SettingsManager.Instance.PageName_Notes, SettingsManager.Instance.PageWidth_Notes,
                         globalChapterSearchResult, pageChaptersSearchResult,
-                        isInBrackets, force, out hierarchySearchResult, null);
+                        isInBrackets, false, force, out hierarchySearchResult, null);
                 }
             }
 
@@ -744,7 +743,7 @@ namespace BibleNoteLinker
                         noteSectionGroupName, noteSectionName, notePageName, notePageId, notePageTitleId, notePageContentObjectId, linkDepth,
                         false, SettingsManager.Instance.RubbishPage_ExcludedVersesLinking, SettingsManager.Instance.PageName_RubbishNotes, SettingsManager.Instance.PageWidth_RubbishNotes,
                         globalChapterSearchResult, pageChaptersSearchResult,
-                        isInBrackets, force, out hierarchySearchResult, null);
+                        isInBrackets, true, force, out hierarchySearchResult, null);
                 }
             }
 
@@ -780,7 +779,7 @@ namespace BibleNoteLinker
             string notePageTitleId, string notePageContentObjectId, AnalyzeDepth linkDepth,
             bool createLinkToNotesPage, bool excludedVersesLinking, string notesPageName, int notesPageWidth,
             VersePointerSearchResult globalChapterSearchResult, List<VersePointerSearchResult> pageChaptersSearchResult,
-            bool isInBrackets, bool force, out HierarchySearchManager.HierarchySearchResult hierarchySearchResult,
+            bool isInBrackets, bool forceLinkChapter, bool force, out HierarchySearchManager.HierarchySearchResult hierarchySearchResult,
             Action<HierarchySearchManager.HierarchySearchResult> onHierarchyElementFound)
         {
 
@@ -796,7 +795,7 @@ namespace BibleNoteLinker
 
                     bool isChapter = VersePointerSearchResult.IsChapter(resultType);
 
-                    if (!isChapter && linkDepth >= AnalyzeDepth.Full)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем
+                    if ((!isChapter || forceLinkChapter) && linkDepth >= AnalyzeDepth.Full)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем
                     {
                         bool canContinue = true;
 
