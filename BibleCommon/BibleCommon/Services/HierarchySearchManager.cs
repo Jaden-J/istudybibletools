@@ -87,10 +87,7 @@ namespace BibleCommon.Services
 
         private static XElement FindVerse(Application oneNoteApp, string pageId, VersePointer vp)
         {
-            string pageContentXml = OneNoteProxy.Instance.GetPageContent(oneNoteApp, pageId);            
-
-            XmlNamespaceManager xnm;
-            XDocument document = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
+            OneNoteProxy.PageContent pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, pageId);            
 
             XElement pointerElement = null;
 
@@ -112,7 +109,7 @@ namespace BibleCommon.Services
 
                 foreach (string pattern in searchPatterns)
                 {
-                    pointerElement = document.XPathSelectElement(string.Format(pattern, vp.Verse), xnm);
+                    pointerElement = pageContent.Content.XPathSelectElement(string.Format(pattern, vp.Verse), pageContent.Xnm);
 
                     if (pointerElement != null)
                     {                        
@@ -122,7 +119,7 @@ namespace BibleCommon.Services
             }
             else               // тогда возвращаем хотя бы ссылку на заголовок
             {
-                pointerElement = document.Root.XPathSelectElement("one:Title/one:OE/one:T", xnm);
+                pointerElement = pageContent.Content.Root.XPathSelectElement("one:Title/one:OE/one:T", pageContent.Xnm);
             }
 
             return pointerElement;

@@ -47,30 +47,24 @@ namespace BibleNoteLinker
             try
             {
                 bool wasModified = false;
-
-                string pageContentXml;
-                XDocument notePageDocument;
-                XmlNamespaceManager xnm;
-                oneNoteApp.GetPageContent(pageId, out pageContentXml);
-                notePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
-                string notePageName = (string)notePageDocument.Root.Attribute("name");
+                OneNoteProxy.PageContent notePageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, pageId);
+                
+                string notePageName = (string)notePageDocument.Content.Root.Attribute("name");
 
 
-                if (OneNoteUtils.IsRecycleBin(notePageDocument.Root))
+                if (OneNoteUtils.IsRecycleBin(notePageDocument.Content.Root))
                     return;
 
                 bool isSumaryNotesPage = false;
 
-                if (!IsSummaryNotesPage(notePageDocument, notePageName))
+                if (!IsSummaryNotesPage(notePageDocument.Content, notePageName))
                 {
                     isSumaryNotesPage = true;
                     if (linkDepth > AnalyzeDepth.GetVersesLinks)
                         linkDepth = AnalyzeDepth.GetVersesLinks;  // на странице заметок только обновляем ссылки
                 }
 
-                XElement titleElement = OneNoteUtils.GetXDocument(
-                                            OneNoteProxy.Instance.GetPageContent(oneNoteApp, pageId), out xnm)
-                                                .Root.XPathSelectElement("one:Title/one:OE", xnm);
+                XElement titleElement = notePageDocument.Content.Root.XPathSelectElement("one:Title/one:OE", notePageDocument.Xnm);
                 string pageTitleId = titleElement != null ? titleElement.Attribute("objectID").Value : null;
 
 
@@ -78,17 +72,17 @@ namespace BibleNoteLinker
                 string noteSectionName = OneNoteUtils.GetHierarchyElementName(oneNoteApp, sectionId);
                 List<FoundChapterInfo> foundChapters = new List<FoundChapterInfo>();
                 Dictionary<string, List<VersePointer>> processedVerses = new Dictionary<string, List<VersePointer>>();   // отслеживаем обработанные стихи, чтобы, например, верно подсчитывать verseCount, когда анализируем ссылки в том числе
-                List<VersePointerSearchResult> pageChaptersSearchResult = ProcessPageTitle(oneNoteApp, notePageDocument,
-                    noteSectionGroupName, noteSectionName, notePageName, pageId, pageTitleId, processedVerses, foundChapters, xnm, linkDepth, force, isSumaryNotesPage,
+                List<VersePointerSearchResult> pageChaptersSearchResult = ProcessPageTitle(oneNoteApp, notePageDocument.Content,
+                    noteSectionGroupName, noteSectionName, notePageName, pageId, pageTitleId, processedVerses, foundChapters, notePageDocument.Xnm, linkDepth, force, isSumaryNotesPage,
                     out wasModified);  // получаем главы текущей страницы, указанные в заголовке (глобальные главы, если больше одной - то не используем их при определении принадлежности только ситхов (:3))                
 
                 List<XElement> processedTextElements = new List<XElement>();
 
-                foreach (XElement oeChildrenElement in notePageDocument.Root.XPathSelectElements("one:Outline/one:OEChildren", xnm))
+                foreach (XElement oeChildrenElement in notePageDocument.Content.Root.XPathSelectElements("one:Outline/one:OEChildren", notePageDocument.Xnm))
                 {
                     if (ProcessTextElements(oneNoteApp, oeChildrenElement, noteSectionGroupName, noteSectionName,
                          notePageName, pageId, pageTitleId, processedVerses, foundChapters, processedTextElements, pageChaptersSearchResult,
-                         xnm, linkDepth, force, isSumaryNotesPage))
+                         notePageDocument.Xnm, linkDepth, force, isSumaryNotesPage))
                         wasModified = true;
                 }
 
@@ -122,7 +116,10 @@ namespace BibleNoteLinker
                 }
 
                 if (wasModified)
-                    oneNoteApp.UpdatePageContent(notePageDocument.ToString());
+                    notePageDocument.WasModified = true;
+
+                Logger.LogMessage("Обновление страниц в OneNote");                
+                OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp);
             }
             catch (Exception ex)
             {
@@ -929,13 +926,9 @@ namespace BibleNoteLinker
             Dictionary<string, List<VersePointer>> processedVerses, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
             string noteSectionGroupName, string noteSectionName, string notePageName, string notePageId, string notePageTitleId, string notePageContentObjectId, bool createLinkToNotesPage,
             string notesPageName, int notesPageWidth, bool force)
-        {
-            string pageContentXml;
-            XDocument versePageDocument;
-            XmlNamespaceManager xnm;
-            oneNoteApp.GetPageContent(verseHierarchyObjectInfo.PageId, out pageContentXml);
-            versePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
-            string pageName = (string)versePageDocument.Root.Attribute("name");
+        {            
+            OneNoteProxy.PageContent versePageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, verseHierarchyObjectInfo.PageId);       
+            string pageName = (string)versePageDocument.Content.Root.Attribute("name");
 
             string notesPageId = null;
             try
@@ -964,17 +957,17 @@ namespace BibleNoteLinker
 
                     if (isChapter)
                     {
-                        if (SetLinkToNotesPageForChapter(versePageDocument, link, xnm))
+                        if (SetLinkToNotesPageForChapter(versePageDocument.Content, link, versePageDocument.Xnm))
                             wasModified = true;
                     }
                     else
                     {
-                        if (SetLinkToNotesPageForVerse(versePageDocument, link, vp, verseHierarchyObjectInfo, xnm))
+                        if (SetLinkToNotesPageForVerse(versePageDocument.Content, link, vp, verseHierarchyObjectInfo, versePageDocument.Xnm))
                             wasModified = true;
                     }
 
                     if (wasModified)
-                        oneNoteApp.UpdatePageContent(versePageDocument.ToString());
+                        versePageDocument.WasModified = true;                        
                 }
 
                 if (!processedVerses.ContainsKey(notesPageName))
@@ -1057,20 +1050,17 @@ namespace BibleNoteLinker
             string notesPageId, string notePageName, string notePageId, string notePageTitleId, string notePageContentObjectId,
             string notesPageName, int notesPageWidth, bool force)
         {
-            string targetContentObjectId = string.Empty;
-            string notesPageContentXml;
-            XDocument notesPageDocument;
-            XmlNamespaceManager xnm;
+            string targetContentObjectId = string.Empty;            
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
-            oneNoteApp.GetPageContent(notesPageId, out notesPageContentXml);
-            notesPageDocument = OneNoteUtils.GetXDocument(notesPageContentXml, out xnm);
+            OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, notesPageId);
 
-            XElement rowElement = GetNotesRowAndCreateIfNotExists(oneNoteApp, vp, isChapter, notesPageWidth, verseHierarchyObjectInfo, notesPageDocument, xnm, nms);            
+            XElement rowElement = GetNotesRowAndCreateIfNotExists(oneNoteApp, vp, isChapter, notesPageWidth, verseHierarchyObjectInfo,
+                notesPageDocument.Content, notesPageDocument.Xnm, nms);            
 
             if (rowElement != null)
             {
                 AddLinkToNotePage(oneNoteApp, vp, processedVerses, rowElement, noteSectionGroupName, noteSectionName,
-                    notePageName, notePageId, notePageTitleId, notePageContentObjectId, notesPageDocument, xnm, nms, notesPageName, force);
+                    notePageName, notePageId, notePageTitleId, notePageContentObjectId, notesPageDocument, notesPageDocument.Xnm, nms, notesPageName, force);
 
                 targetContentObjectId = GetNotesRowObjectId(oneNoteApp, notesPageId, vp, isChapter);               
             }            
@@ -1081,7 +1071,7 @@ namespace BibleNoteLinker
         private static void AddLinkToNotePage(Application oneNoteApp, VersePointer vp, Dictionary<string, List<VersePointer>> processedVerses, XElement rowElement, 
             string noteSectionGroupName, string noteSectionName,
             string notePageName, string notePageId, string notePageTitleId, string notePageContentObjectId,
-            XDocument notesPageDocument, XmlNamespaceManager xnm, XNamespace nms, string notesPageName, bool force)
+            OneNoteProxy.PageContent notesPageDocument, XmlNamespaceManager xnm, XNamespace nms, string notesPageName, bool force)
         {
             string noteTitle = (noteSectionGroupName != noteSectionName && !string.IsNullOrEmpty(noteSectionGroupName))
                 ? string.Format("{0} / {1} / {2}", noteSectionGroupName, noteSectionName, notePageName)
@@ -1194,7 +1184,7 @@ namespace BibleNoteLinker
             
             }
 
-            oneNoteApp.UpdatePageContent(notesPageDocument.ToString());
+            notesPageDocument.WasModified = true;            
         }      
 
         private static string GetMultiVerseString(VersePointer vp)
@@ -1239,16 +1229,12 @@ namespace BibleNoteLinker
         private static string GetNotesRowObjectId(Application oneNoteApp, string notesPageId, VersePointer vp, bool isChapter)
         {
             string result = string.Empty;
-
-            XmlNamespaceManager xnm;
-            string notesPageContentXml;
-            oneNoteApp.GetPageContent(notesPageId, out notesPageContentXml);
-            XDocument notesPageDocument = OneNoteUtils.GetXDocument(notesPageContentXml, out xnm);
-            XElement tableElement = notesPageDocument.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", xnm);
-            XElement targetElement = GetNotesRow(tableElement, vp, isChapter, xnm);
+            OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, notesPageId);
+            XElement tableElement = notesPageDocument.Content.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", notesPageDocument.Xnm);
+            XElement targetElement = GetNotesRow(tableElement, vp, isChapter, notesPageDocument.Xnm);
 
             if (targetElement != null)
-                result = (string)targetElement.XPathSelectElement("one:Cell/one:OEChildren/one:OE", xnm).Attribute("objectID");
+                result = (string)targetElement.XPathSelectElement("one:Cell/one:OEChildren/one:OE", notesPageDocument.Xnm).Attribute("objectID");
 
             return result;
         }
