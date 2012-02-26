@@ -128,33 +128,28 @@ namespace BibleCommon.Services
 
         private static XElement FindPage(Application oneNoteApp, string sectionId, VersePointer vp)
         {
-            string sectionContentXml = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages);
+            OneNoteProxy.HierarchyElement sectionDocument = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages);
 
-            XmlNamespaceManager xnm;
-            XDocument sectionDocument = OneNoteUtils.GetXDocument(sectionContentXml, out xnm);
-
-            XElement page = sectionDocument.Root.XPathSelectElement(string.Format("one:Page[starts-with(@name,'{0} ')]", vp.Chapter), xnm);
+            XElement page = sectionDocument.Content.Root.XPathSelectElement(string.Format("one:Page[starts-with(@name,'{0} ')]", vp.Chapter), sectionDocument.Xnm);
 
             if (page == null)  // нужно для Псалтыря, потому что там главы называются, например "Псалом 5"
-                page = sectionDocument.Root.XPathSelectElement(string.Format("one:Page[' {0}'=substring(@name,string-length(@name)-{1})]", vp.Chapter, vp.Chapter.ToString().Length), xnm);
+                page = sectionDocument.Content.Root.XPathSelectElement(
+                    string.Format("one:Page[' {0}'=substring(@name,string-length(@name)-{1})]", vp.Chapter, vp.Chapter.ToString().Length), sectionDocument.Xnm);
 
             return page;
         }
 
         private static XElement FindSection(Application oneNoteApp, string notebookId, VersePointer vp)
         {
-            string notebookContentXml = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, HierarchyScope.hsSections);
+            OneNoteProxy.HierarchyElement document = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, HierarchyScope.hsSections);
 
-            XmlNamespaceManager xnm;
-            XDocument document = OneNoteUtils.GetXDocument(notebookContentXml, out xnm);
-
-            XElement targetSection = document.Root.XPathSelectElement(
+            XElement targetSection = document.Content.Root.XPathSelectElement(
                 string.Format("{0}one:SectionGroup/one:Section[@name='{1}']",
                     !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_Bible)
                         ? string.Format("one:SectionGroup[@ID='{0}']/", SettingsManager.Instance.SectionGroupId_Bible) 
                         : string.Empty,
-                    vp.BookName), 
-                xnm);
+                    vp.BookName),
+                document.Xnm);
 
             return targetSection;
         }      

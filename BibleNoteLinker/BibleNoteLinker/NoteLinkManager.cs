@@ -51,7 +51,6 @@ namespace BibleNoteLinker
                 
                 string notePageName = (string)notePageDocument.Content.Root.Attribute("name");
 
-
                 if (OneNoteUtils.IsRecycleBin(notePageDocument.Content.Root))
                     return;
 
@@ -124,11 +123,6 @@ namespace BibleNoteLinker
 
                 if (wasModified)
                     notePageDocument.WasModified = true;
-
-                //Logger.LogMessage("Обновление страниц в OneNote", true, false);          
-                //OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp, 
-                //    pageContent => Logger.LogMessage(".", false, false, false));
-                //Logger.LogMessage(string.Empty, false, true, false);
             }
             catch (Exception ex)
             {
@@ -273,7 +267,7 @@ namespace BibleNoteLinker
                             if (searchResult.ResultType != VersePointerSearchResult.SearchResultType.Nothing)
                             {
                                 if (onVersePointerFound != null)
-                                    onVersePointerFound(searchResult);
+                                    onVersePointerFound(searchResult);                                
 
                                 string textToChange;
                                 HierarchySearchManager.HierarchySearchResult hierarchySearchResult;
@@ -936,14 +930,14 @@ namespace BibleNoteLinker
             string notesPageName, int notesPageWidth, bool force)
         {            
             OneNoteProxy.PageContent versePageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, verseHierarchyObjectInfo.PageId);       
-            string pageName = (string)versePageDocument.Content.Root.Attribute("name");
+            string biblePageName = (string)versePageDocument.Content.Root.Attribute("name");
 
             string notesPageId = null;
             try
             {
-                notesPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(oneNoteApp,
+                notesPageId = OneNoteProxy.Instance.GetCommentPageId(oneNoteApp,
                     verseHierarchyObjectInfo.SectionId,
-                    verseHierarchyObjectInfo.PageId, pageName, notesPageName);
+                    verseHierarchyObjectInfo.PageId, biblePageName, notesPageName);                    
             }
             catch (Exception ex)
             {
@@ -975,7 +969,10 @@ namespace BibleNoteLinker
                     }
 
                     if (wasModified)
-                        versePageDocument.WasModified = true;                        
+                    {
+                        versePageDocument.WasModified = true;
+                        OneNoteProxy.Instance.AddProcessedBiblePages(verseHierarchyObjectInfo.SectionId, verseHierarchyObjectInfo.PageId, biblePageName);
+                    }
                 }
 
                 if (!processedVerses.ContainsKey(notesPageName))
@@ -1013,18 +1010,32 @@ namespace BibleNoteLinker
             return result;
         }
 
-        private static bool SetLinkToNotesPageForChapter(XDocument pageDocument, string link, XmlNamespaceManager xnm)
-        {
-            bool result = false;
 
+        /// <summary>
+        /// Возвращает элемент - ссылку на страницу сводную заметок на ряд для главы
+        /// </summary>
+        /// <param name="pageDocument"></param>
+        /// <param name="xnm"></param>
+        /// <returns></returns>
+        internal static XElement GetChapterNotesPageLink(XDocument pageDocument, XmlNamespaceManager xnm)
+        {
             XElement notesLinkElement = pageDocument.Root.XPathSelectElement("one:Outline/one:OEChildren", xnm);
 
             if (notesLinkElement != null && notesLinkElement.Nodes().Count() == 1)   // похоже на правду                        
             {
-                notesLinkElement = notesLinkElement.XPathSelectElement(string.Format("one:OE/one:T[contains(.,'{0}')]",
+                notesLinkElement = notesLinkElement.XPathSelectElement(string.Format("one:OE/one:T[contains(.,'>{0}<')]",
                     SettingsManager.Instance.PageName_Notes), xnm);
             }
             else notesLinkElement = null;
+
+            return notesLinkElement;
+        }
+
+        private static bool SetLinkToNotesPageForChapter(XDocument pageDocument, string link, XmlNamespaceManager xnm)
+        {
+            bool result = false;
+
+            XElement notesLinkElement = GetChapterNotesPageLink(pageDocument, xnm);                
 
             if (notesLinkElement == null)
             {
@@ -1070,7 +1081,7 @@ namespace BibleNoteLinker
                 AddLinkToNotePage(oneNoteApp, vp, processedVerses, rowElement, noteSectionGroupName, noteSectionName,
                     notePageName, notePageId, notePageTitleId, notePageContentObjectId, notesPageDocument, notesPageDocument.Xnm, nms, notesPageName, force);
 
-                targetContentObjectId = GetNotesRowObjectId(oneNoteApp, notesPageId, vp, isChapter);               
+                targetContentObjectId = GetNotesRowObjectId(oneNoteApp, notesPageId, vp.Verse, isChapter);               
             }            
 
             return targetContentObjectId;
@@ -1234,12 +1245,12 @@ namespace BibleNoteLinker
             return multiVerseString;
         }        
 
-        private static string GetNotesRowObjectId(Application oneNoteApp, string notesPageId, VersePointer vp, bool isChapter)
+        internal static string GetNotesRowObjectId(Application oneNoteApp, string notesPageId, int? verseNumber, bool isChapter)
         {
             string result = string.Empty;
             OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, notesPageId);
             XElement tableElement = notesPageDocument.Content.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", notesPageDocument.Xnm);
-            XElement targetElement = GetNotesRow(tableElement, vp, isChapter, notesPageDocument.Xnm);
+            XElement targetElement = GetNotesRow(tableElement, verseNumber, isChapter, notesPageDocument.Xnm);
 
             if (targetElement != null)
                 result = (string)targetElement.XPathSelectElement("one:Cell/one:OEChildren/one:OE", notesPageDocument.Xnm).Attribute("objectID");
@@ -1273,37 +1284,30 @@ namespace BibleNoteLinker
                 tableElement = rootElement.XPathSelectElement("one:Table", xnm);
             }
 
-            XElement rowElement = GetNotesRow(tableElement, vp, isChapter, xnm);                
+            XElement rowElement = GetNotesRow(tableElement, vp.Verse, isChapter, xnm);                
 
             if (rowElement == null)
             {
                 AddNewNotesRow(oneNoteApp, vp, isChapter, verseHierarchyObjectInfo, tableElement, xnm, nms);
 
-                rowElement = GetNotesRow(tableElement, vp, isChapter, xnm);                
+                rowElement = GetNotesRow(tableElement, vp.Verse, isChapter, xnm);                
             }
 
             return rowElement;
         }
 
-        private static XElement GetNotesRow(XElement tableElement, VersePointer vp, bool isChapter, XmlNamespaceManager xnm)
+        private static XElement GetNotesRow(XElement tableElement, int? verseNumber, bool isChapter, XmlNamespaceManager xnm)
         {
 
             XElement result = !isChapter ? 
                                 tableElement
-                                   .XPathSelectElement(string.Format("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>:{0}<')]", vp.Verse.GetValueOrDefault(0)), xnm)
-                              : tableElement
-                              //      .XPathSelectElement(string.Format("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>{0}<')]", "глава"), xnm);
-                                   .XPathSelectElement(string.Format("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[normalize-space(.)='']", vp.Verse), xnm)
+                                   .XPathSelectElement(string.Format("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>:{0}<')]", verseNumber.GetValueOrDefault(0)), xnm)
+                              : tableElement                              
+                                   .XPathSelectElement("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[normalize-space(.)='']", xnm)
                                 ;
 
             if (result != null)
-                result = result.Parent.Parent.Parent.Parent;
-
-            //if (isChapter && result != null)
-            //{
-            //    if (result.NodesBeforeSelf().Count() > 1)  // почему то иногда появляется в середине
-            //        result = null;
-            //}
+                result = result.Parent.Parent.Parent.Parent;            
 
             return result;
         }
@@ -1349,10 +1353,6 @@ namespace BibleNoteLinker
             else
                 prevRow.AddAfterSelf(newRow);
         }
-
-      
-        
-
        
     }
 }

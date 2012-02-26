@@ -49,6 +49,7 @@
     <Compile Include="NoteLinkManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RelinkAllBibleNotesManager.cs" />
     <Compile Include="VersePointerSearchResult.cs" />
     <Compile Include="..\..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>

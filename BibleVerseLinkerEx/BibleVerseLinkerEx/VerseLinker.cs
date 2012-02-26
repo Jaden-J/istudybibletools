@@ -123,7 +123,7 @@ namespace BibleVerseLinkerEx
                     {
                         int firstLetterIndex;
                         pointerString = CutPointerString(pointerElement.Value, out pointerValueString, out firstLetterIndex);
-                        verseNumber = GetVerseNumber(pointerElement.Value);
+                        verseNumber = Utils.GetVerseNumber(pointerElement.Value);
                         currentObjectId = (string)pointerElement.Parent.Attribute("objectID");
                     }
 
@@ -171,21 +171,7 @@ namespace BibleVerseLinkerEx
                 Logger.LogError("Программа OneNote не запущена");
         }
 
-        private int? GetVerseNumber(string textElementValue)
-        {
-            int? result = null;
-            if (textElementValue.StartsWith("<a href"))                         
-            {
-                string searchPattern = ">";
-                int i = textElementValue.IndexOf(searchPattern);
-                if (i != -1)
-                    result = StringUtils.GetStringFirstNumber(textElementValue, i + searchPattern.Length);
-            }
-            else
-                result = StringUtils.GetStringFirstNumber(textElementValue);
-
-            return result;
-        }
+       
 
         private string GetNewObjectContent(string currentPageId, string currentObjectId, string pointerValueString, int? verseNumber)
         {

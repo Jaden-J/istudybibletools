@@ -14,30 +14,6 @@ namespace BibleConfigurator.Tools
 {
     public class RelinkAllBibleCommentsManager
     {
-        public class CommentPageId
-        {
-            public string BibleSectionId { get; set; }
-            public string BiblePageId { get; set; }
-            public string BiblePageName { get; set; }
-            public string CommentsPageName { get; set; }
-
-            public override int GetHashCode()
-            {
-                return BibleSectionId.GetHashCode() ^ BiblePageId.GetHashCode() ^ BiblePageName.GetHashCode() ^ CommentsPageName.GetHashCode();
-            }
-
-            public override bool Equals(object obj)
-            {
-                CommentPageId otherObject = (CommentPageId)obj;
-                return BibleSectionId == otherObject.BibleSectionId
-                    && BiblePageId == otherObject.BiblePageId
-                    && BiblePageName == otherObject.BiblePageName
-                    && CommentsPageName == otherObject.CommentsPageName;
-            }
-        }
-
-        private Dictionary<CommentPageId, string> _commentPagesIds = new Dictionary<CommentPageId, string>();
-
         private Application _oneNoteApp;
         private MainForm _form;
 
@@ -64,7 +40,7 @@ namespace BibleConfigurator.Tools
                         {
                             try
                             {
-                                RelinkPageComments(pageInfo.SectionGroupId, pageInfo.SectionId, pageInfo.PageId, pageInfo.PageName);
+                                RelinkPageComments(pageInfo.SectionId, pageInfo.PageId, pageInfo.PageName);
                             }
                             catch (Exception ex)
                             {
@@ -88,7 +64,7 @@ namespace BibleConfigurator.Tools
             }
         }
 
-        private void RelinkPageComments(string sectionGroupId, string sectionId, string pageId, string pageName)
+        private void RelinkPageComments(string sectionId, string pageId, string pageName)
         {
             _form.PerformProgressStep(string.Format("Обработка страницы '{0}'", pageName));
 
@@ -128,8 +104,8 @@ namespace BibleConfigurator.Tools
             string commentText = StringUtils.GetText(commentLink);
 
             string commentPageName = GetCommentPageName(commentLink);
-            string commentPageId = GetCommentPageId(bibleSectionId, biblePageId, biblePageName, commentPageName);
-            string commentObjectId = GetComentobjectId(commentPageId, commentText);
+            string commentPageId = OneNoteProxy.Instance.GetCommentPageId(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName);
+            string commentObjectId = GetComentObjectId(commentPageId, commentText);
 
             if (!string.IsNullOrEmpty(commentObjectId))
             {
@@ -143,7 +119,7 @@ namespace BibleConfigurator.Tools
             return false;
         }
 
-        private string GetComentobjectId(string commentPageId, string commentText)
+        private string GetComentObjectId(string commentPageId, string commentText)
         {
             
             OneNoteProxy.PageContent pageDoc = OneNoteProxy.Instance.GetPageContent(_oneNoteApp, commentPageId);
@@ -214,19 +190,6 @@ namespace BibleConfigurator.Tools
             }            
 
             return null;
-        }
-
-        private string GetCommentPageId(string bibleSectionId, string biblePageId, string biblePageName, string commentPageName)
-        {
-            CommentPageId key = new CommentPageId() { 
-                BibleSectionId = bibleSectionId, BiblePageId = biblePageId, BiblePageName = biblePageName, CommentsPageName = commentPageName };
-            if (!_commentPagesIds.ContainsKey(key))
-            {
-                string commentPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName);                
-                _commentPagesIds.Add(key, commentPageId);
-            }
-
-            return _commentPagesIds[key];
         }
 
         private string GetCommentPageName(string commentLink)
