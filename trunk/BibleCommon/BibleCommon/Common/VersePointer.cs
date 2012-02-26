@@ -111,8 +111,13 @@ namespace BibleCommon.Common
         {
             get
             {
-                return this.Verse.GetValueOrDefault(0) == 0;
+                return IsVerseChapter(this.Verse);
             }
+        }
+
+        public static bool IsVerseChapter(int? verseNumber)
+        {
+            return verseNumber.GetValueOrDefault(0) == 0;
         }
 
 

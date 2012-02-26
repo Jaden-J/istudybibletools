@@ -51,14 +51,28 @@
             this.rbMultiNotebook = new System.Windows.Forms.RadioButton();
             this.rbSingleNotebook = new System.Windows.Forms.RadioButton();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.chkDefaultPageNameParameters = new System.Windows.Forms.CheckBox();
-            this.tbNotesPageName = new System.Windows.Forms.TextBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.tbNotesPageName = new System.Windows.Forms.TextBox();
+            this.chkExcludedVersesLinking = new System.Windows.Forms.CheckBox();
+            this.tbNotesPageWidth = new System.Windows.Forms.TextBox();
+            this.chkExpandMultiVersesLinking = new System.Windows.Forms.CheckBox();
+            this.lblNotesPageWidth = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chkUseRubbishPage = new System.Windows.Forms.CheckBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.chkRubbishExcludedVersesLinking = new System.Windows.Forms.CheckBox();
+            this.tbRubbishNotesPageName = new System.Windows.Forms.TextBox();
+            this.chkRubbishExpandMultiVersesLinking = new System.Windows.Forms.CheckBox();
+            this.tbRubbishNotesPageWidth = new System.Windows.Forms.TextBox();
+            this.lblRubbishNotesPageWidth = new System.Windows.Forms.Label();
+            this.chkDefaultPageNameParameters = new System.Windows.Forms.CheckBox();
             this.tbBookOverviewName = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.tbPageDescriptionName = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btnBackup = new System.Windows.Forms.Button();
             this.btnResizeBibleTables = new System.Windows.Forms.Button();
             this.btnDeleteNotesPages = new System.Windows.Forms.Button();
             this.btnRelinkComments = new System.Windows.Forms.Button();
@@ -67,29 +81,15 @@
             this.lblWarning = new System.Windows.Forms.Label();
             this.lblProgressInfo = new System.Windows.Forms.Label();
             this.pbMain = new System.Windows.Forms.ProgressBar();
-            this.btnBackup = new System.Windows.Forms.Button();
-            this.tbNotesPageWidth = new System.Windows.Forms.TextBox();
-            this.lblNotesPageWidth = new System.Windows.Forms.Label();
-            this.chkExpandMultiVersesLinking = new System.Windows.Forms.CheckBox();
-            this.chkExcludedVersesLinking = new System.Windows.Forms.CheckBox();
-            this.chkRubbishExcludedVersesLinking = new System.Windows.Forms.CheckBox();
-            this.chkRubbishExpandMultiVersesLinking = new System.Windows.Forms.CheckBox();
-            this.lblRubbishNotesPageWidth = new System.Windows.Forms.Label();
-            this.tbRubbishNotesPageWidth = new System.Windows.Forms.TextBox();
-            this.tbRubbishNotesPageName = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.chkUseRubbishPage = new System.Windows.Forms.CheckBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tbcMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbcMain
@@ -339,24 +339,21 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Параметры программы";
             // 
-            // chkDefaultPageNameParameters
+            // groupBox2
             // 
-            this.chkDefaultPageNameParameters.AutoSize = true;
-            this.chkDefaultPageNameParameters.Location = new System.Drawing.Point(16, 307);
-            this.chkDefaultPageNameParameters.Name = "chkDefaultPageNameParameters";
-            this.chkDefaultPageNameParameters.Size = new System.Drawing.Size(223, 17);
-            this.chkDefaultPageNameParameters.TabIndex = 6;
-            this.chkDefaultPageNameParameters.Text = "Использовать значения по умолчанию";
-            this.chkDefaultPageNameParameters.UseVisualStyleBackColor = true;
-            this.chkDefaultPageNameParameters.CheckedChanged += new System.EventHandler(this.chkDefaultPageNameParameters_CheckedChanged);
-            // 
-            // tbNotesPageName
-            // 
-            this.tbNotesPageName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbNotesPageName.Location = new System.Drawing.Point(9, 55);
-            this.tbNotesPageName.Name = "tbNotesPageName";
-            this.tbNotesPageName.Size = new System.Drawing.Size(248, 20);
-            this.tbNotesPageName.TabIndex = 5;
+            this.groupBox2.Controls.Add(this.label7);
+            this.groupBox2.Controls.Add(this.tbNotesPageName);
+            this.groupBox2.Controls.Add(this.chkExcludedVersesLinking);
+            this.groupBox2.Controls.Add(this.tbNotesPageWidth);
+            this.groupBox2.Controls.Add(this.chkExpandMultiVersesLinking);
+            this.groupBox2.Controls.Add(this.lblNotesPageWidth);
+            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.groupBox2.Location = new System.Drawing.Point(16, 115);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(296, 175);
+            this.groupBox2.TabIndex = 19;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Страница \"Сводная заметок\"";
             // 
             // label7
             // 
@@ -367,6 +364,152 @@
             this.label7.Size = new System.Drawing.Size(211, 13);
             this.label7.TabIndex = 4;
             this.label7.Text = "Название страницы \"Сводная заметок\"";
+            // 
+            // tbNotesPageName
+            // 
+            this.tbNotesPageName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbNotesPageName.Location = new System.Drawing.Point(9, 55);
+            this.tbNotesPageName.Name = "tbNotesPageName";
+            this.tbNotesPageName.Size = new System.Drawing.Size(248, 20);
+            this.tbNotesPageName.TabIndex = 5;
+            // 
+            // chkExcludedVersesLinking
+            // 
+            this.chkExcludedVersesLinking.AutoSize = true;
+            this.chkExcludedVersesLinking.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.chkExcludedVersesLinking.Location = new System.Drawing.Point(9, 150);
+            this.chkExcludedVersesLinking.Name = "chkExcludedVersesLinking";
+            this.chkExcludedVersesLinking.Size = new System.Drawing.Size(252, 17);
+            this.chkExcludedVersesLinking.TabIndex = 10;
+            this.chkExcludedVersesLinking.Text = "Анализировать исключаемые главы и стихи";
+            this.chkExcludedVersesLinking.UseVisualStyleBackColor = true;
+            // 
+            // tbNotesPageWidth
+            // 
+            this.tbNotesPageWidth.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbNotesPageWidth.Location = new System.Drawing.Point(9, 100);
+            this.tbNotesPageWidth.Name = "tbNotesPageWidth";
+            this.tbNotesPageWidth.Size = new System.Drawing.Size(75, 20);
+            this.tbNotesPageWidth.TabIndex = 7;
+            // 
+            // chkExpandMultiVersesLinking
+            // 
+            this.chkExpandMultiVersesLinking.AutoSize = true;
+            this.chkExpandMultiVersesLinking.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.chkExpandMultiVersesLinking.Location = new System.Drawing.Point(9, 126);
+            this.chkExpandMultiVersesLinking.Name = "chkExpandMultiVersesLinking";
+            this.chkExpandMultiVersesLinking.Size = new System.Drawing.Size(238, 17);
+            this.chkExpandMultiVersesLinking.TabIndex = 9;
+            this.chkExpandMultiVersesLinking.Text = "Анализировать каждый стих в диапазоне";
+            this.chkExpandMultiVersesLinking.UseVisualStyleBackColor = true;
+            // 
+            // lblNotesPageWidth
+            // 
+            this.lblNotesPageWidth.AutoSize = true;
+            this.lblNotesPageWidth.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblNotesPageWidth.Location = new System.Drawing.Point(6, 84);
+            this.lblNotesPageWidth.Name = "lblNotesPageWidth";
+            this.lblNotesPageWidth.Size = new System.Drawing.Size(200, 13);
+            this.lblNotesPageWidth.TabIndex = 8;
+            this.lblNotesPageWidth.Text = "Ширина страницы \"Сводная заметок\"";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.chkUseRubbishPage);
+            this.groupBox1.Controls.Add(this.label10);
+            this.groupBox1.Controls.Add(this.chkRubbishExcludedVersesLinking);
+            this.groupBox1.Controls.Add(this.tbRubbishNotesPageName);
+            this.groupBox1.Controls.Add(this.chkRubbishExpandMultiVersesLinking);
+            this.groupBox1.Controls.Add(this.tbRubbishNotesPageWidth);
+            this.groupBox1.Controls.Add(this.lblRubbishNotesPageWidth);
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.groupBox1.Location = new System.Drawing.Point(341, 115);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(296, 175);
+            this.groupBox1.TabIndex = 18;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Страница \"Подробная сводная заметок\"";
+            // 
+            // chkUseRubbishPage
+            // 
+            this.chkUseRubbishPage.AutoSize = true;
+            this.chkUseRubbishPage.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.chkUseRubbishPage.Location = new System.Drawing.Point(6, 19);
+            this.chkUseRubbishPage.Name = "chkUseRubbishPage";
+            this.chkUseRubbishPage.Size = new System.Drawing.Size(249, 17);
+            this.chkUseRubbishPage.TabIndex = 17;
+            this.chkUseRubbishPage.Text = "Использовать подробную сводную заметок";
+            this.chkUseRubbishPage.UseVisualStyleBackColor = true;
+            this.chkUseRubbishPage.CheckedChanged += new System.EventHandler(this.chkUseRubbishPage_CheckedChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label10.Location = new System.Drawing.Point(14, 39);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(269, 13);
+            this.label10.TabIndex = 11;
+            this.label10.Text = "Название страницы \"Подробная сводная заметок\"";
+            // 
+            // chkRubbishExcludedVersesLinking
+            // 
+            this.chkRubbishExcludedVersesLinking.AutoSize = true;
+            this.chkRubbishExcludedVersesLinking.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.chkRubbishExcludedVersesLinking.Location = new System.Drawing.Point(17, 150);
+            this.chkRubbishExcludedVersesLinking.Name = "chkRubbishExcludedVersesLinking";
+            this.chkRubbishExcludedVersesLinking.Size = new System.Drawing.Size(252, 17);
+            this.chkRubbishExcludedVersesLinking.TabIndex = 16;
+            this.chkRubbishExcludedVersesLinking.Text = "Анализировать исключаемые главы и стихи";
+            this.chkRubbishExcludedVersesLinking.UseVisualStyleBackColor = true;
+            // 
+            // tbRubbishNotesPageName
+            // 
+            this.tbRubbishNotesPageName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbRubbishNotesPageName.Location = new System.Drawing.Point(17, 55);
+            this.tbRubbishNotesPageName.Name = "tbRubbishNotesPageName";
+            this.tbRubbishNotesPageName.Size = new System.Drawing.Size(248, 20);
+            this.tbRubbishNotesPageName.TabIndex = 12;
+            // 
+            // chkRubbishExpandMultiVersesLinking
+            // 
+            this.chkRubbishExpandMultiVersesLinking.AutoSize = true;
+            this.chkRubbishExpandMultiVersesLinking.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.chkRubbishExpandMultiVersesLinking.Location = new System.Drawing.Point(17, 126);
+            this.chkRubbishExpandMultiVersesLinking.Name = "chkRubbishExpandMultiVersesLinking";
+            this.chkRubbishExpandMultiVersesLinking.Size = new System.Drawing.Size(238, 17);
+            this.chkRubbishExpandMultiVersesLinking.TabIndex = 15;
+            this.chkRubbishExpandMultiVersesLinking.Text = "Анализировать каждый стих в диапазоне";
+            this.chkRubbishExpandMultiVersesLinking.UseVisualStyleBackColor = true;
+            // 
+            // tbRubbishNotesPageWidth
+            // 
+            this.tbRubbishNotesPageWidth.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbRubbishNotesPageWidth.Location = new System.Drawing.Point(17, 100);
+            this.tbRubbishNotesPageWidth.Name = "tbRubbishNotesPageWidth";
+            this.tbRubbishNotesPageWidth.Size = new System.Drawing.Size(75, 20);
+            this.tbRubbishNotesPageWidth.TabIndex = 13;
+            // 
+            // lblRubbishNotesPageWidth
+            // 
+            this.lblRubbishNotesPageWidth.AutoSize = true;
+            this.lblRubbishNotesPageWidth.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblRubbishNotesPageWidth.Location = new System.Drawing.Point(14, 84);
+            this.lblRubbishNotesPageWidth.Name = "lblRubbishNotesPageWidth";
+            this.lblRubbishNotesPageWidth.Size = new System.Drawing.Size(258, 13);
+            this.lblRubbishNotesPageWidth.TabIndex = 14;
+            this.lblRubbishNotesPageWidth.Text = "Ширина страницы \"Подробная сводная заметок\"";
+            // 
+            // chkDefaultPageNameParameters
+            // 
+            this.chkDefaultPageNameParameters.AutoSize = true;
+            this.chkDefaultPageNameParameters.Location = new System.Drawing.Point(16, 307);
+            this.chkDefaultPageNameParameters.Name = "chkDefaultPageNameParameters";
+            this.chkDefaultPageNameParameters.Size = new System.Drawing.Size(223, 17);
+            this.chkDefaultPageNameParameters.TabIndex = 6;
+            this.chkDefaultPageNameParameters.Text = "Использовать значения по умолчанию";
+            this.chkDefaultPageNameParameters.UseVisualStyleBackColor = true;
+            this.chkDefaultPageNameParameters.CheckedChanged += new System.EventHandler(this.chkDefaultPageNameParameters_CheckedChanged);
             // 
             // tbBookOverviewName
             // 
@@ -412,6 +555,16 @@
             this.tabPage3.Size = new System.Drawing.Size(656, 333);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Дополнительные утилиты";
+            // 
+            // btnBackup
+            // 
+            this.btnBackup.Enabled = false;
+            this.btnBackup.Location = new System.Drawing.Point(13, 133);
+            this.btnBackup.Name = "btnBackup";
+            this.btnBackup.Size = new System.Drawing.Size(230, 23);
+            this.btnBackup.TabIndex = 3;
+            this.btnBackup.Text = "Создать резервную копию данных";
+            this.btnBackup.UseVisualStyleBackColor = true;
             // 
             // btnResizeBibleTables
             // 
@@ -502,159 +655,6 @@
             this.pbMain.TabIndex = 17;
             this.pbMain.Visible = false;
             // 
-            // btnBackup
-            // 
-            this.btnBackup.Enabled = false;
-            this.btnBackup.Location = new System.Drawing.Point(13, 133);
-            this.btnBackup.Name = "btnBackup";
-            this.btnBackup.Size = new System.Drawing.Size(230, 23);
-            this.btnBackup.TabIndex = 3;
-            this.btnBackup.Text = "Создать резервную копию данных";
-            this.btnBackup.UseVisualStyleBackColor = true;
-            // 
-            // tbNotesPageWidth
-            // 
-            this.tbNotesPageWidth.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbNotesPageWidth.Location = new System.Drawing.Point(9, 100);
-            this.tbNotesPageWidth.Name = "tbNotesPageWidth";
-            this.tbNotesPageWidth.Size = new System.Drawing.Size(75, 20);
-            this.tbNotesPageWidth.TabIndex = 7;
-            // 
-            // lblNotesPageWidth
-            // 
-            this.lblNotesPageWidth.AutoSize = true;
-            this.lblNotesPageWidth.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblNotesPageWidth.Location = new System.Drawing.Point(6, 84);
-            this.lblNotesPageWidth.Name = "lblNotesPageWidth";
-            this.lblNotesPageWidth.Size = new System.Drawing.Size(200, 13);
-            this.lblNotesPageWidth.TabIndex = 8;
-            this.lblNotesPageWidth.Text = "Ширина страницы \"Сводная заметок\"";
-            // 
-            // chkExpandMultiVersesLinking
-            // 
-            this.chkExpandMultiVersesLinking.AutoSize = true;
-            this.chkExpandMultiVersesLinking.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.chkExpandMultiVersesLinking.Location = new System.Drawing.Point(9, 126);
-            this.chkExpandMultiVersesLinking.Name = "chkExpandMultiVersesLinking";
-            this.chkExpandMultiVersesLinking.Size = new System.Drawing.Size(238, 17);
-            this.chkExpandMultiVersesLinking.TabIndex = 9;
-            this.chkExpandMultiVersesLinking.Text = "Анализировать каждый стих в диапазоне";
-            this.chkExpandMultiVersesLinking.UseVisualStyleBackColor = true;
-            // 
-            // chkExcludedVersesLinking
-            // 
-            this.chkExcludedVersesLinking.AutoSize = true;
-            this.chkExcludedVersesLinking.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.chkExcludedVersesLinking.Location = new System.Drawing.Point(9, 150);
-            this.chkExcludedVersesLinking.Name = "chkExcludedVersesLinking";
-            this.chkExcludedVersesLinking.Size = new System.Drawing.Size(209, 17);
-            this.chkExcludedVersesLinking.TabIndex = 10;
-            this.chkExcludedVersesLinking.Text = "Анализировать исключаемые стихи";
-            this.chkExcludedVersesLinking.UseVisualStyleBackColor = true;
-            // 
-            // chkRubbishExcludedVersesLinking
-            // 
-            this.chkRubbishExcludedVersesLinking.AutoSize = true;
-            this.chkRubbishExcludedVersesLinking.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.chkRubbishExcludedVersesLinking.Location = new System.Drawing.Point(17, 150);
-            this.chkRubbishExcludedVersesLinking.Name = "chkRubbishExcludedVersesLinking";
-            this.chkRubbishExcludedVersesLinking.Size = new System.Drawing.Size(209, 17);
-            this.chkRubbishExcludedVersesLinking.TabIndex = 16;
-            this.chkRubbishExcludedVersesLinking.Text = "Анализировать исключаемые стихи";
-            this.chkRubbishExcludedVersesLinking.UseVisualStyleBackColor = true;
-            // 
-            // chkRubbishExpandMultiVersesLinking
-            // 
-            this.chkRubbishExpandMultiVersesLinking.AutoSize = true;
-            this.chkRubbishExpandMultiVersesLinking.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.chkRubbishExpandMultiVersesLinking.Location = new System.Drawing.Point(17, 126);
-            this.chkRubbishExpandMultiVersesLinking.Name = "chkRubbishExpandMultiVersesLinking";
-            this.chkRubbishExpandMultiVersesLinking.Size = new System.Drawing.Size(238, 17);
-            this.chkRubbishExpandMultiVersesLinking.TabIndex = 15;
-            this.chkRubbishExpandMultiVersesLinking.Text = "Анализировать каждый стих в диапазоне";
-            this.chkRubbishExpandMultiVersesLinking.UseVisualStyleBackColor = true;
-            // 
-            // lblRubbishNotesPageWidth
-            // 
-            this.lblRubbishNotesPageWidth.AutoSize = true;
-            this.lblRubbishNotesPageWidth.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblRubbishNotesPageWidth.Location = new System.Drawing.Point(14, 84);
-            this.lblRubbishNotesPageWidth.Name = "lblRubbishNotesPageWidth";
-            this.lblRubbishNotesPageWidth.Size = new System.Drawing.Size(258, 13);
-            this.lblRubbishNotesPageWidth.TabIndex = 14;
-            this.lblRubbishNotesPageWidth.Text = "Ширина страницы \"Подробная сводная заметок\"";
-            // 
-            // tbRubbishNotesPageWidth
-            // 
-            this.tbRubbishNotesPageWidth.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbRubbishNotesPageWidth.Location = new System.Drawing.Point(17, 100);
-            this.tbRubbishNotesPageWidth.Name = "tbRubbishNotesPageWidth";
-            this.tbRubbishNotesPageWidth.Size = new System.Drawing.Size(75, 20);
-            this.tbRubbishNotesPageWidth.TabIndex = 13;
-            // 
-            // tbRubbishNotesPageName
-            // 
-            this.tbRubbishNotesPageName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbRubbishNotesPageName.Location = new System.Drawing.Point(17, 55);
-            this.tbRubbishNotesPageName.Name = "tbRubbishNotesPageName";
-            this.tbRubbishNotesPageName.Size = new System.Drawing.Size(248, 20);
-            this.tbRubbishNotesPageName.TabIndex = 12;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label10.Location = new System.Drawing.Point(14, 39);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(269, 13);
-            this.label10.TabIndex = 11;
-            this.label10.Text = "Название страницы \"Подробная сводная заметок\"";
-            // 
-            // chkUseRubbishPage
-            // 
-            this.chkUseRubbishPage.AutoSize = true;
-            this.chkUseRubbishPage.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.chkUseRubbishPage.Location = new System.Drawing.Point(6, 19);
-            this.chkUseRubbishPage.Name = "chkUseRubbishPage";
-            this.chkUseRubbishPage.Size = new System.Drawing.Size(249, 17);
-            this.chkUseRubbishPage.TabIndex = 17;
-            this.chkUseRubbishPage.Text = "Использовать подробную сводную заметок";
-            this.chkUseRubbishPage.UseVisualStyleBackColor = true;
-            this.chkUseRubbishPage.CheckedChanged += new System.EventHandler(this.chkUseRubbishPage_CheckedChanged);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.chkUseRubbishPage);
-            this.groupBox1.Controls.Add(this.label10);
-            this.groupBox1.Controls.Add(this.chkRubbishExcludedVersesLinking);
-            this.groupBox1.Controls.Add(this.tbRubbishNotesPageName);
-            this.groupBox1.Controls.Add(this.chkRubbishExpandMultiVersesLinking);
-            this.groupBox1.Controls.Add(this.tbRubbishNotesPageWidth);
-            this.groupBox1.Controls.Add(this.lblRubbishNotesPageWidth);
-            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.groupBox1.Location = new System.Drawing.Point(341, 115);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(296, 175);
-            this.groupBox1.TabIndex = 18;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Страница \"Подробная сводная заметок\"";
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.label7);
-            this.groupBox2.Controls.Add(this.tbNotesPageName);
-            this.groupBox2.Controls.Add(this.chkExcludedVersesLinking);
-            this.groupBox2.Controls.Add(this.tbNotesPageWidth);
-            this.groupBox2.Controls.Add(this.chkExpandMultiVersesLinking);
-            this.groupBox2.Controls.Add(this.lblNotesPageWidth);
-            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.groupBox2.Location = new System.Drawing.Point(16, 115);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(296, 175);
-            this.groupBox2.TabIndex = 19;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Страница \"Сводная заметок\"";
-            // 
             // MainForm
             // 
             this.AcceptButton = this.btnOK;
@@ -675,15 +675,15 @@
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
             this.splitContainer1.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }

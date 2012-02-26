@@ -30,12 +30,57 @@ namespace BibleCommon.Services
             }
         }
 
+        public class BiblePageId
+        {
+            public string SectionId { get; set; }
+            public string PageId { get; set; }
+            public string PageName { get; set; }
+
+            public override int GetHashCode()
+            {
+                return SectionId.GetHashCode() ^ PageId.GetHashCode() ^ PageName.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                BiblePageId otherObject = (BiblePageId)obj;
+                return SectionId == otherObject.SectionId
+                    && PageId == otherObject.PageId
+                    && PageName == otherObject.PageName;
+            }
+        }
+
+        public class CommentPageId 
+        {
+            public BiblePageId BiblePageId { get; set; }
+            public string CommentsPageName { get; set; }
+
+            public override int GetHashCode()
+            {
+                return BiblePageId.GetHashCode() ^ CommentsPageName.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                CommentPageId otherObject = (CommentPageId)obj;
+                return BiblePageId.Equals(otherObject.BiblePageId)
+                    && CommentsPageName == otherObject.CommentsPageName;
+            }
+        }
+
         public class PageContent
         {            
             public string PageId { get; set; }
             public XDocument Content { get; set; }
             public XmlNamespaceManager Xnm { get; set; }
             public bool WasModified { get; set; }
+        }
+
+        public class HierarchyElement
+        {
+            public OneNoteHierarchyContentId Id { get; set; }
+            public XDocument Content { get; set;}
+            public XmlNamespaceManager Xnm { get; set; }
         }
 
         private static object _locker = new object();
@@ -60,13 +105,58 @@ namespace BibleCommon.Services
             }
         }
 
-        private Dictionary<OneNoteHierarchyContentId, string> _hierarchyContentCache = new Dictionary<OneNoteHierarchyContentId, string>();
+        private Dictionary<OneNoteHierarchyContentId, HierarchyElement> _hierarchyContentCache = new Dictionary<OneNoteHierarchyContentId, HierarchyElement>();
         private Dictionary<string, PageContent> _pageContentCache = new Dictionary<string, PageContent>();
+        private Dictionary<CommentPageId, string> _commentPagesIds = new Dictionary<CommentPageId, string>();
+        private Dictionary<string, OneNoteProxy.BiblePageId> _processedBiblePages = new Dictionary<string, BiblePageId>();
 
         protected OneNoteProxy()
         {
 
         }
+
+        public Dictionary<string, OneNoteProxy.BiblePageId> ProcessedBiblePages
+        {
+            get
+            {
+                return _processedBiblePages;
+            }
+        }
+
+        public void AddProcessedBiblePages(string bibleSectionId, string biblePageId, string biblePageName)
+        {
+            if (!_processedBiblePages.ContainsKey(biblePageId))
+            {
+                _processedBiblePages.Add(biblePageId, new BiblePageId()
+                {
+                    SectionId = bibleSectionId,
+                    PageId = biblePageId,
+                    PageName = biblePageName
+                });
+            }
+        }
+
+        public string GetCommentPageId(Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName, string commentPageName)
+        {
+            CommentPageId key = new CommentPageId()
+            {
+                BiblePageId = new BiblePageId()
+                {
+                    SectionId = bibleSectionId,
+                    PageId = biblePageId,
+                    PageName = biblePageName
+                },
+                CommentsPageName = commentPageName
+            };
+            if (!_commentPagesIds.ContainsKey(key))
+            {
+                string commentPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName);
+                _commentPagesIds.Add(key, commentPageId);
+            }
+
+            return _commentPagesIds[key];
+        }
+
 
         /// <summary>
         /// 
@@ -76,25 +166,30 @@ namespace BibleCommon.Services
         /// <param name="scope"></param>
         /// <param name="refreshCache">Стоит ли загружать данные из OneNote (true) или из кэша (false)</param>
         /// <returns></returns>
-        public string GetHierarchy(Application oneNoteApp, string hierarchyId, HierarchyScope scope, bool refreshCache = false)
+        public HierarchyElement GetHierarchy(Application oneNoteApp, string hierarchyId, HierarchyScope scope, bool refreshCache = false)
         {
             OneNoteHierarchyContentId contentId = new OneNoteHierarchyContentId() { ID = hierarchyId, ContentScope = scope };
 
-            string result;
+            HierarchyElement result;
+
             if (!_hierarchyContentCache.ContainsKey(contentId) || refreshCache)
             {
                 lock (_locker)
                 {
-                    oneNoteApp.GetHierarchy(hierarchyId, scope, out result);
+                    string xml;
+                    oneNoteApp.GetHierarchy(hierarchyId, scope, out xml);
+
+                    XmlNamespaceManager xnm;
+                    XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
 
                     if (!_hierarchyContentCache.ContainsKey(contentId))
-                        _hierarchyContentCache.Add(contentId, result);
+                        _hierarchyContentCache.Add(contentId, new HierarchyElement() { Id = contentId, Content = doc, Xnm = xnm });
                     else
-                        _hierarchyContentCache[contentId] = result;
+                        _hierarchyContentCache[contentId].Content = doc;
                 }
             }
-            else
-                result = _hierarchyContentCache[contentId];
+            
+            result = _hierarchyContentCache[contentId];
             
             return result;
         }

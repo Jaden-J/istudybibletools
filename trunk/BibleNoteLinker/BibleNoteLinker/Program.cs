@@ -113,7 +113,7 @@ namespace BibleNoteLinker
                                 if (currentNotebookId == SettingsManager.Instance.NotebookId_BibleComments
                                     || currentNotebookId == SettingsManager.Instance.NotebookId_BibleStudy)
                                 {
-                                    NoteLinkManager.LinkPageVerses(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);
+                                    NoteLinkManager.LinkPageVerses(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);                                   
                                 }
                                 else
                                     Logger.LogError(string.Format("Текущая записная книжка не настроена на обработку программой {0}", Constants.ToolsName));
@@ -130,6 +130,15 @@ namespace BibleNoteLinker
                     Logger.LogMessage("Обновление страниц в OneNote", true, false);          
                     OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp, 
                         pageContent => Logger.LogMessage(".", false, false, false));
+                    Logger.LogMessage(string.Empty, false, true, false);
+
+                    Logger.LogMessage("Обновление ссылок на страницы сводные заметок", true, false);
+                    var relinkNotesManager = new RelinkAllBibleNotesManager(oneNoteApp);
+                    foreach (OneNoteProxy.BiblePageId processedBiblePageId in OneNoteProxy.Instance.ProcessedBiblePages.Values)
+                    {
+                        relinkNotesManager.RelinkBiblePageNotes(processedBiblePageId.SectionId, processedBiblePageId.PageId, processedBiblePageId.PageName);
+                        Logger.LogMessage(".", false, false, false);
+                    }
                     Logger.LogMessage(string.Empty, false, true, false);
                 }
                 catch (Exception ex)

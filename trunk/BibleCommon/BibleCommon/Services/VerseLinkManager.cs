@@ -54,40 +54,35 @@ namespace BibleCommon.Services
         private static string FindDescriptionSectionGroupForCurrentPage(Application oneNoteApp,
             string currentSectionId, bool createIfNeeded, bool refreshCache = false)
         {
-            XmlNamespaceManager xnm;
+            OneNoteProxy.HierarchyElement bibleDocument = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, SettingsManager.Instance.NotebookId_Bible, HierarchyScope.hsSections, refreshCache);
+            OneNoteProxy.HierarchyElement commentsDocument = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, HierarchyScope.hsSections, refreshCache);             
 
-            string bibleNotebookContentXml = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, SettingsManager.Instance.NotebookId_Bible, HierarchyScope.hsSections, refreshCache);
-            XDocument bibleDocument = OneNoteUtils.GetXDocument(bibleNotebookContentXml, out xnm);
-
-            string commentsNotebookContentXml = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, HierarchyScope.hsSections, refreshCache);
-            XDocument commentsDocument = OneNoteUtils.GetXDocument(commentsNotebookContentXml, out xnm);
-
-            XElement currentSection = bibleDocument.Root.XPathSelectElement(string.Format("{0}one:SectionGroup/one:Section[@ID='{1}']",
-                !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_Bible) ? "one:SectionGroup/" : string.Empty, currentSectionId), xnm);
+            XElement currentSection = bibleDocument.Content.Root.XPathSelectElement(string.Format("{0}one:SectionGroup/one:Section[@ID='{1}']",
+                !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_Bible) ? "one:SectionGroup/" : string.Empty, currentSectionId), bibleDocument.Xnm);
 
             if (currentSection != null && currentSection.Parent != null && currentSection.Parent.Parent != null)
             {
                 string sectionName = (string)currentSection.Attribute("name");                          // 01. От Матфея
                 string sectionGroupName = (string)currentSection.Parent.Attribute("name");              // Новый Завет                
 
-                XElement targetParentSectionGroup = commentsDocument.Root.XPathSelectElement(
+                XElement targetParentSectionGroup = commentsDocument.Content.Root.XPathSelectElement(
                         string.Format("{0}one:SectionGroup[@name='{1}']",                    
                             !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_BibleComments) 
                                 ? string.Format("one:SectionGroup[@ID='{0}']/", SettingsManager.Instance.SectionGroupId_BibleComments)
                                 : string.Empty,
                             sectionGroupName), 
-                        xnm);                                        // Изучение Библии/Новый Завет
+                        commentsDocument.Xnm);                                        // Изучение Библии/Новый Завет
 
                 if (targetParentSectionGroup != null)
                 {
                     XElement targetSectionGroup = targetParentSectionGroup.XPathSelectElement(
-                        string.Format("one:SectionGroup[@name='{0}']", sectionName), xnm);             // Изучение Библии/Новый Завет/01. От Матфея
+                        string.Format("one:SectionGroup[@name='{0}']", sectionName), commentsDocument.Xnm);             // Изучение Библии/Новый Завет/01. От Матфея
 
                     if (targetSectionGroup == null)
                     {
                         if (createIfNeeded)
                         {
-                            CreateDescriptionSectionGroupForCurrentPage(oneNoteApp, commentsDocument, targetParentSectionGroup, sectionName);
+                            CreateDescriptionSectionGroupForCurrentPage(oneNoteApp, commentsDocument.Content, targetParentSectionGroup, sectionName);
 
                             return FindDescriptionSectionGroupForCurrentPage(oneNoteApp, currentSectionId, createIfNeeded, true);  // надо обновить XML
                         }
@@ -116,23 +111,20 @@ namespace BibleCommon.Services
         private static string FindDescriptionSectionForCurrentPage(Application oneNoteApp,
             string currentPageName, string targetSectionGroupId, bool createIfNeeded, bool refreshCache = false)
         {
-            XmlNamespaceManager xnm;
-
-            string sectionGroupXml = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, targetSectionGroupId, HierarchyScope.hsSections, refreshCache);
-            XDocument sectionGroupDocument = OneNoteUtils.GetXDocument(sectionGroupXml, out xnm);
-            string sectionGroupName = (string)sectionGroupDocument.Root.Attribute("name");
+            OneNoteProxy.HierarchyElement sectionGroupDocument = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, targetSectionGroupId, HierarchyScope.hsSections, refreshCache);            
+            string sectionGroupName = (string)sectionGroupDocument.Content.Root.Attribute("name");
 
             if (sectionGroupName.IndexOf(currentPageName) != -1)
                 currentPageName = SettingsManager.Instance.PageName_DefaultBookOverview;
 
-            XElement targetSection = sectionGroupDocument.Root.XPathSelectElement(
-                string.Format("one:Section[@name='{0}']", currentPageName), xnm);
+            XElement targetSection = sectionGroupDocument.Content.Root.XPathSelectElement(
+                string.Format("one:Section[@name='{0}']", currentPageName), sectionGroupDocument.Xnm);
 
             if (targetSection == null)
             {
                 if (createIfNeeded)
                 {
-                    CreateDescriptionSectionForCurrentPage(oneNoteApp, sectionGroupDocument, currentPageName);
+                    CreateDescriptionSectionForCurrentPage(oneNoteApp, sectionGroupDocument.Content, currentPageName);
 
                     return FindDescriptionSectionForCurrentPage(oneNoteApp, currentPageName, targetSectionGroupId, createIfNeeded, true);  // надо обновить XML
                 }
@@ -177,10 +169,8 @@ namespace BibleCommon.Services
 
         private static string FindDescriptionPageForCurrentPage(Application oneNoteApp, string sectionId, 
             string currentSectionName, string currentPageId, string currentPageName, string descriptionPageName, bool createIfNeeded)
-        {
-            XmlNamespaceManager xnm;
-            string sectionContentXml = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages);
-            XDocument sectionDocument = OneNoteUtils.GetXDocument(sectionContentXml, out xnm);
+        {   
+            OneNoteProxy.HierarchyElement sectionDocument = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages);            
 
             VersePointer vp = GetCurrentVersePointer(currentSectionName, currentPageName);
 
@@ -192,7 +182,7 @@ namespace BibleCommon.Services
 
             string pageDisplayName = string.Format("{0}. [{1}]", descriptionPageName, vp.FriendlyChapterName);
 
-            XElement page = sectionDocument.Root.XPathSelectElement(string.Format("one:Page[@name='{0}']", pageDisplayName), xnm);
+            XElement page = sectionDocument.Content.Root.XPathSelectElement(string.Format("one:Page[@name='{0}']", pageDisplayName), sectionDocument.Xnm);
 
             string pageId = string.Empty;
 
@@ -204,7 +194,7 @@ namespace BibleCommon.Services
 
                     OneNoteProxy.PageContent currentPageDoc = OneNoteProxy.Instance.GetPageContent(oneNoteApp, currentPageId);
                     string currentPageTitleId = (string)currentPageDoc.Content.Root
-                        .XPathSelectElement("one:Title/one:OE", xnm).Attribute("objectID");
+                        .XPathSelectElement("one:Title/one:OE", currentPageDoc.Xnm).Attribute("objectID");
 
                     string linkToCurrentPage;
                     oneNoteApp.GetHyperlinkToObject(currentPageId, currentPageTitleId, out linkToCurrentPage);

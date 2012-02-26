@@ -43,11 +43,9 @@ namespace BibleCommon.Helpers
         }     
 
         public static string GetHierarchyElementName(Application oneNoteApp, string elementId)
-        {
-            XmlNamespaceManager xnm;
-            string xml = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, elementId, HierarchyScope.hsSelf);
-            XDocument doc = GetXDocument(xml, out xnm);
-            return (string)doc.Root.Attribute("name");
+        {   
+            OneNoteProxy.HierarchyElement doc = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, elementId, HierarchyScope.hsSelf);
+            return (string)doc.Content.Root.Attribute("name");
         }
 
         public static XDocument GetXDocument(string xml, out XmlNamespaceManager xnm)
@@ -98,7 +96,13 @@ namespace BibleCommon.Helpers
 
         public static void NormalizaTextElement(XElement textElement)  // must be one:T element
         {
-            textElement.Value = textElement.Value.Replace("\n", " ");
+            if (textElement != null)
+            {
+                if (!string.IsNullOrEmpty(textElement.Value))
+                {
+                    textElement.Value = textElement.Value.Replace("\n", " ");
+                }
+            }
         }
     }
 }

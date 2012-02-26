@@ -15,5 +15,21 @@ namespace BibleCommon.Helpers
             var uri = new Uri(assembly);
             return Path.GetDirectoryName(uri.LocalPath);
         }
+
+        public static int? GetVerseNumber(string textElementValue)
+        {
+            int? result = null;
+            if (textElementValue.StartsWith("<a href"))
+            {
+                string searchPattern = ">";
+                int i = textElementValue.IndexOf(searchPattern);
+                if (i != -1)
+                    result = StringUtils.GetStringFirstNumber(textElementValue, i + searchPattern.Length);
+            }
+            else
+                result = StringUtils.GetStringFirstNumber(textElementValue);
+
+            return result;
+        }
     }
 }
