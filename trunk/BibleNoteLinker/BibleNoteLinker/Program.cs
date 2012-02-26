@@ -125,8 +125,6 @@ namespace BibleNoteLinker
                             Logger.LogError("Не найдено открытой записной книжки");
                     }                    
 
-                    Logger.LogMessage("Успешно завершено");
-
                     Logger.LogMessage("Обновление страниц в OneNote", true, false);          
                     OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp, 
                         pageContent => Logger.LogMessage(".", false, false, false));
@@ -140,6 +138,8 @@ namespace BibleNoteLinker
                         Logger.LogMessage(".", false, false, false);
                     }
                     Logger.LogMessage(string.Empty, false, true, false);
+
+                    Logger.LogMessage("Успешно завершено");
                 }
                 catch (Exception ex)
                 {
