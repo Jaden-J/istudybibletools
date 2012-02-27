@@ -75,7 +75,8 @@ namespace BibleCommon.Services
         {
             Bible,
             NotePage,
-            NotesPage
+            NotesPage,
+            CommentPage
         }
 
         public class PageContent
