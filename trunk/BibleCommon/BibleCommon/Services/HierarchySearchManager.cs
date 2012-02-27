@@ -87,7 +87,7 @@ namespace BibleCommon.Services
 
         private static XElement FindVerse(Application oneNoteApp, string pageId, VersePointer vp)
         {
-            OneNoteProxy.PageContent pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, pageId);            
+            OneNoteProxy.PageContent pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, pageId, OneNoteProxy.PageType.Bible);            
 
             XElement pointerElement = null;
 

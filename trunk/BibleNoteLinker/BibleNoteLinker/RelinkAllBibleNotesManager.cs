@@ -22,20 +22,18 @@ namespace BibleNoteLinker
         }
 
         public void RelinkBiblePageNotes(string bibleSectionId, string biblePageId, string biblePageName)
-        {
-            string pageContent;
-            XmlNamespaceManager xnm;
-            _oneNoteApp.GetPageContent(biblePageId, out pageContent);
-            XDocument biblePageDocument = OneNoteUtils.GetXDocument(pageContent, out xnm);
+        {   
+            OneNoteProxy.PageContent biblePageDocument = OneNoteProxy.Instance.GetPageContent(_oneNoteApp, biblePageId, OneNoteProxy.PageType.Bible);
             bool wasModified = false;
 
-            XElement chapterNotesPageLink = NoteLinkManager.GetChapterNotesPageLink(biblePageDocument, xnm);
+            XElement chapterNotesPageLink = NoteLinkManager.GetChapterNotesPageLink(biblePageDocument.Content, biblePageDocument.Xnm);
 
             if (chapterNotesPageLink != null)
                 if (RelinkBiblePageNote(bibleSectionId, biblePageId, biblePageName, chapterNotesPageLink, 0))
                     wasModified = true;
 
-            foreach (XElement textElement in biblePageDocument.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[2]/one:OEChildren/one:OE/one:T", xnm))
+            foreach (XElement textElement in biblePageDocument.Content.Root
+                .XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[2]/one:OEChildren/one:OE/one:T", biblePageDocument.Xnm))
             {
                 if (!string.IsNullOrEmpty(textElement.Value))
                 {
@@ -43,7 +41,7 @@ namespace BibleNoteLinker
 
                     if (CantainsLinkToNotesPage(textElement))
                     {
-                        XElement bibleVerseElement = textElement.Parent.Parent.Parent.Parent.XPathSelectElement("one:Cell[1]/one:OEChildren/one:OE/one:T", xnm);
+                        XElement bibleVerseElement = textElement.Parent.Parent.Parent.Parent.XPathSelectElement("one:Cell[1]/one:OEChildren/one:OE/one:T", biblePageDocument.Xnm);
                         OneNoteUtils.NormalizaTextElement(bibleVerseElement);
                         int? verseNumber = Utils.GetVerseNumber(bibleVerseElement.Value);
 
@@ -55,7 +53,7 @@ namespace BibleNoteLinker
             }
 
             if (wasModified)
-                _oneNoteApp.UpdatePageContent(biblePageDocument.ToString());
+                biblePageDocument.WasModified = true;
         }
 
         private bool RelinkBiblePageNote(string bibleSectionId, string biblePageId, string biblePageName, XElement textElement, int? verseNumber)
@@ -67,7 +65,7 @@ namespace BibleNoteLinker
             if (!string.IsNullOrEmpty(notesRowObjectId))
             {
                 string newNotesPageLink = string.Format("<font size='2pt'>{0}</font>",
-                                    OneNoteUtils.GenerateHref(_oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, notesRowObjectId));
+                                    OneNoteProxy.Instance.GenerateHref(_oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, notesRowObjectId));
 
                 textElement.Value = newNotesPageLink;
 

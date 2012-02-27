@@ -47,7 +47,7 @@ namespace BibleNoteLinker
             try
             {
                 bool wasModified = false;
-                OneNoteProxy.PageContent notePageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, pageId);
+                OneNoteProxy.PageContent notePageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, pageId, OneNoteProxy.PageType.NotePage);
                 
                 string notePageName = (string)notePageDocument.Content.Root.Attribute("name");
 
@@ -703,7 +703,7 @@ namespace BibleNoteLinker
             {
                 if (linkDepth >= AnalyzeDepth.GetVersesLinks)
                 {
-                    string link = OneNoteUtils.GenerateHref(oneNoteApp, textToChange,
+                    string link = OneNoteProxy.Instance.GenerateHref(oneNoteApp, textToChange,
                         hierarchySearchResult.HierarchyObjectInfo.PageId, hierarchySearchResult.HierarchyObjectInfo.ContentObjectId);
 
                     link = string.Format("<span style='font-weight:normal'>{0}</span>", link);
@@ -929,7 +929,7 @@ namespace BibleNoteLinker
             string noteSectionGroupName, string noteSectionName, string notePageName, string notePageId, string notePageTitleId, string notePageContentObjectId, bool createLinkToNotesPage,
             string notesPageName, int notesPageWidth, bool force)
         {            
-            OneNoteProxy.PageContent versePageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, verseHierarchyObjectInfo.PageId);       
+            OneNoteProxy.PageContent versePageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, verseHierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);       
             string biblePageName = (string)versePageDocument.Content.Root.Attribute("name");
 
             string notesPageId = null;
@@ -953,7 +953,7 @@ namespace BibleNoteLinker
                 if (createLinkToNotesPage)
                 {
                     string link = string.Format("<font size='2pt'>{0}</font>",
-                                    OneNoteUtils.GenerateHref(oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, targetContentObjectId));
+                                    OneNoteProxy.Instance.GenerateHref(oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, null)); // здесь всегда передаём null, так как в частых случаях он и так null, потому что страница в кэше, и в OneNote она ещё не обновлялась (то есть идентификаторы ещё не проставлены). Так как эти идентификаторы проставятся в самом конце, то и ссылки обновим в конце.
 
                     bool wasModified = false;
 
@@ -1071,7 +1071,7 @@ namespace BibleNoteLinker
         {
             string targetContentObjectId = string.Empty;            
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
-            OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, notesPageId);
+            OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
 
             XElement rowElement = GetNotesRowAndCreateIfNotExists(oneNoteApp, vp, isChapter, notesPageWidth, verseHierarchyObjectInfo,
                 notesPageDocument.Content, notesPageDocument.Xnm, nms);            
@@ -1099,7 +1099,7 @@ namespace BibleNoteLinker
             XElement suchNoteLink = null;            
             XElement notesCellElement = rowElement.XPathSelectElement("one:Cell[2]/one:OEChildren", xnm);
 
-            string link = OneNoteUtils.GenerateHref(oneNoteApp, noteTitle, notePageId, notePageContentObjectId);
+            string link = OneNoteProxy.Instance.GenerateHref(oneNoteApp, noteTitle, notePageId, notePageContentObjectId);
             int pageIdStringIndex = link.IndexOf("page-id={");
             if (pageIdStringIndex != -1)
             {
@@ -1163,7 +1163,7 @@ namespace BibleNoteLinker
             }
             else
             {
-                string pageLink = OneNoteUtils.GenerateHref(oneNoteApp, noteTitle, notePageId, notePageTitleId);                
+                string pageLink = OneNoteProxy.Instance.GenerateHref(oneNoteApp, noteTitle, notePageId, notePageTitleId);                
 
                 var verseLinksOE = suchNoteLink.Parent.NextNode;
                 if (verseLinksOE != null && verseLinksOE.XPathSelectElement("one:List", xnm) == null)  // значит следующая строка без номера, то есть значит идут ссылки
@@ -1173,7 +1173,7 @@ namespace BibleNoteLinker
 
                     int currentVerseIndex = existingVerseLinksElement.Value.Split(new string[] { "</a>" }, StringSplitOptions.None).Length;
 
-                    existingVerseLinksElement.Value += Constants.VerseLinksDelimiter + OneNoteUtils.GenerateHref(oneNoteApp,
+                    existingVerseLinksElement.Value += Constants.VerseLinksDelimiter + OneNoteProxy.Instance.GenerateHref(oneNoteApp,
                                 string.Format(Constants.VerseLinkTemplate, currentVerseIndex), notePageId, notePageContentObjectId)
                                 + GetMultiVerseString(vp.ParentVersePointer ?? vp);
 
@@ -1187,7 +1187,7 @@ namespace BibleNoteLinker
                                                         new XCData(StringUtils.MultiplyString("&nbsp;", 8) + 
                                                             string.Join(Constants.VerseLinksDelimiter, new string[] { 
                                                                 firstVerseLink + GetExistingMultiVerseString(suchNoteLink), 
-                                                                OneNoteUtils.GenerateHref(oneNoteApp, 
+                                                                OneNoteProxy.Instance.GenerateHref(oneNoteApp, 
                                                                     string.Format(Constants.VerseLinkTemplate, 2), notePageId, notePageContentObjectId)
                                                                     + GetMultiVerseString(vp.ParentVersePointer ?? vp) })
                                                             )));
@@ -1248,7 +1248,7 @@ namespace BibleNoteLinker
         internal static string GetNotesRowObjectId(Application oneNoteApp, string notesPageId, int? verseNumber, bool isChapter)
         {
             string result = string.Empty;
-            OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, notesPageId);
+            OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
             XElement tableElement = notesPageDocument.Content.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", notesPageDocument.Xnm);
             XElement targetElement = GetNotesRow(tableElement, verseNumber, isChapter, notesPageDocument.Xnm);
 
@@ -1322,7 +1322,7 @@ namespace BibleNoteLinker
                                                 new XElement(nms + "T",
                                                     new XCData(
                                                         !isChapter ?
-                                                            OneNoteUtils.GenerateHref(oneNoteApp, string.Format(":{0}", vp.Verse.GetValueOrDefault(0)),
+                                                            OneNoteProxy.Instance.GenerateHref(oneNoteApp, string.Format(":{0}", vp.Verse.GetValueOrDefault(0)),
                                                                 verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.ContentObjectId)
                                                             :
                                                             string.Empty
@@ -1336,7 +1336,7 @@ namespace BibleNoteLinker
             {
                 foreach (var row in tableElement.XPathSelectElements("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
                 {
-                    XCData verseData = (XCData)row.Nodes().First();
+                    XText verseData = (XText)row.Nodes().First();
                     int? verseNumber = StringUtils.GetStringLastNumber(verseData.Value);
                     if (verseNumber.GetValueOrDefault(0) > vp.Verse)
                         break;
