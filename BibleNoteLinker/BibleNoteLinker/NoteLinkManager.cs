@@ -54,11 +54,11 @@ namespace BibleNoteLinker
                 if (OneNoteUtils.IsRecycleBin(notePageDocument.Content.Root))
                     return;
 
-                bool isSumaryNotesPage = false;
+                bool isSummaryNotesPage = false;
 
-                if (!IsSummaryNotesPage(notePageDocument.Content, notePageName))
+                if (IsSummaryNotesPage(notePageDocument.Content, notePageName))
                 {
-                    isSumaryNotesPage = true;
+                    isSummaryNotesPage = true;
                     if (linkDepth > AnalyzeDepth.GetVersesLinks)
                         linkDepth = AnalyzeDepth.GetVersesLinks;  // на странице заметок только обновляем ссылки
                     notePageDocument.PageType = OneNoteProxy.PageType.NotesPage;  // уточняем тип страницы
@@ -73,7 +73,7 @@ namespace BibleNoteLinker
                 List<FoundChapterInfo> foundChapters = new List<FoundChapterInfo>();
                 Dictionary<string, List<VersePointer>> processedVerses = new Dictionary<string, List<VersePointer>>();   // отслеживаем обработанные стихи, чтобы, например, верно подсчитывать verseCount, когда анализируем ссылки в том числе
                 List<VersePointerSearchResult> pageChaptersSearchResult = ProcessPageTitle(oneNoteApp, notePageDocument.Content,
-                    noteSectionGroupName, noteSectionName, notePageName, pageId, pageTitleId, processedVerses, foundChapters, notePageDocument.Xnm, linkDepth, force, isSumaryNotesPage,
+                    noteSectionGroupName, noteSectionName, notePageName, pageId, pageTitleId, processedVerses, foundChapters, notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage,
                     out wasModified);  // получаем главы текущей страницы, указанные в заголовке (глобальные главы, если больше одной - то не используем их при определении принадлежности только ситхов (:3))                
 
                 List<XElement> processedTextElements = new List<XElement>();
@@ -82,7 +82,7 @@ namespace BibleNoteLinker
                 {
                     if (ProcessTextElements(oneNoteApp, oeChildrenElement, noteSectionGroupName, noteSectionName,
                          notePageName, pageId, pageTitleId, processedVerses, foundChapters, processedTextElements, pageChaptersSearchResult,
-                         notePageDocument.Xnm, linkDepth, force, isSumaryNotesPage))
+                         notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage))
                         wasModified = true;
                 }
 
@@ -158,9 +158,9 @@ namespace BibleNoteLinker
         {
             if (pageName.StartsWith(SettingsManager.Instance.PageName_Notes + ".") 
                 || pageName.StartsWith(SettingsManager.Instance.PageName_RubbishNotes + "."))
-                return false;
+                return true;
 
-            return true;
+            return false;
         }
 
         private static bool ProcessTextElements(Application oneNoteApp, XElement parent,
