@@ -120,9 +120,8 @@ namespace BibleConfigurator.Tools
         }
 
         private string GetComentObjectId(string commentPageId, string commentText)
-        {
-            
-            OneNoteProxy.PageContent pageDoc = OneNoteProxy.Instance.GetPageContent(_oneNoteApp, commentPageId);
+        {            
+            OneNoteProxy.PageContent pageDoc = OneNoteProxy.Instance.GetPageContent(_oneNoteApp, commentPageId, OneNoteProxy.PageType.CommentPage);
 
             foreach (XElement el in pageDoc.Content.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:T", pageDoc.Xnm))
             {
