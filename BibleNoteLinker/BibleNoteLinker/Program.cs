@@ -125,18 +125,28 @@ namespace BibleNoteLinker
                             Logger.LogError("Не найдено открытой записной книжки");
                     }                    
 
-                    Logger.LogMessage("Обновление страниц в OneNote", true, false);          
+                    Logger.LogMessage("Обновление страниц 'Сводные заметок' в OneNote", true, false);          
                     OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp, 
+                        pageContent => pageContent.PageType == OneNoteProxy.PageType.NotesPage,
+                        pageCount => Logger.LogMessage(string.Format(" ({0} страниц)", pageCount), false, false, false),
                         pageContent => Logger.LogMessage(".", false, false, false));
                     Logger.LogMessage(string.Empty, false, true, false);
 
-                    Logger.LogMessage("Обновление ссылок на страницы сводные заметок", true, false);
+                    Logger.LogMessage(string.Format("Обновление ссылок на страницы 'Сводные заметок' ({0} страниц)", 
+                        OneNoteProxy.Instance.ProcessedBiblePages.Values.Count), true, false);
                     var relinkNotesManager = new RelinkAllBibleNotesManager(oneNoteApp);
                     foreach (OneNoteProxy.BiblePageId processedBiblePageId in OneNoteProxy.Instance.ProcessedBiblePages.Values)
                     {
                         relinkNotesManager.RelinkBiblePageNotes(processedBiblePageId.SectionId, processedBiblePageId.PageId, processedBiblePageId.PageName);
                         Logger.LogMessage(".", false, false, false);
                     }
+                    Logger.LogMessage(string.Empty, false, true, false);
+
+                    Logger.LogMessage("Обновление страниц в OneNote", true, false);
+                    OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp,
+                        null,
+                        pageCount => Logger.LogMessage(string.Format(" ({0} страниц)", pageCount), false, false, false),
+                        pageContent => Logger.LogMessage(".", false, false, false));
                     Logger.LogMessage(string.Empty, false, true, false);
 
                     Logger.LogMessage("Успешно завершено");

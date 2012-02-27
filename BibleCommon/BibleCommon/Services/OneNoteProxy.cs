@@ -14,6 +14,9 @@ namespace BibleCommon.Services
     /// </summary>
     public class OneNoteProxy
     {
+
+        #region Helper classes
+
         public class OneNoteHierarchyContentId
         {
             public string ID { get; set; }
@@ -68,12 +71,20 @@ namespace BibleCommon.Services
             }
         }
 
+        public enum PageType
+        {
+            Bible,
+            NotePage,
+            NotesPage
+        }
+
         public class PageContent
         {            
             public string PageId { get; set; }
             public XDocument Content { get; set; }
             public XmlNamespaceManager Xnm { get; set; }
             public bool WasModified { get; set; }
+            public PageType PageType { get; set; }
         }
 
         public class HierarchyElement
@@ -82,6 +93,35 @@ namespace BibleCommon.Services
             public XDocument Content { get; set;}
             public XmlNamespaceManager Xnm { get; set; }
         }
+
+
+        public class LinkId
+        {
+            public string Title { get; set; }
+            public string PageId { get; set; }
+            public string ObjectId { get; set; }
+
+            public override int GetHashCode()
+            {
+                int result = this.Title.GetHashCode() ^ this.PageId.GetHashCode();
+
+                if (!string.IsNullOrEmpty(this.ObjectId))
+                    result = result ^ this.ObjectId.GetHashCode();
+
+                return result;
+            }
+
+            public override bool Equals(object obj)
+            {
+                LinkId otherObj = (LinkId)obj;
+
+                return this.Title == otherObj.Title
+                    && this.PageId == otherObj.PageId
+                    && this.ObjectId == otherObj.ObjectId;
+            }
+        }
+
+        #endregion
 
         private static object _locker = new object();
 
@@ -107,12 +147,35 @@ namespace BibleCommon.Services
 
         private Dictionary<OneNoteHierarchyContentId, HierarchyElement> _hierarchyContentCache = new Dictionary<OneNoteHierarchyContentId, HierarchyElement>();
         private Dictionary<string, PageContent> _pageContentCache = new Dictionary<string, PageContent>();
-        private Dictionary<CommentPageId, string> _commentPagesIds = new Dictionary<CommentPageId, string>();
+        private Dictionary<CommentPageId, string> _commentPagesIdsCache = new Dictionary<CommentPageId, string>();
         private Dictionary<string, OneNoteProxy.BiblePageId> _processedBiblePages = new Dictionary<string, BiblePageId>();
+        private Dictionary<LinkId, string> _linksCache = new Dictionary<LinkId, string>();
 
         protected OneNoteProxy()
         {
 
+        }
+
+        public string GenerateHref(Application oneNoteApp, string title, string pageId, string objectId)
+        {
+            LinkId key = new LinkId()
+            {
+                Title = title,
+                PageId = pageId,
+                ObjectId = objectId
+            };
+
+            if (!_linksCache.ContainsKey(key))
+            {
+                lock (_locker)
+                {
+                    string link = OneNoteUtils.GenerateHref(oneNoteApp, title, pageId, objectId);
+                    //if (!_linksCache.ContainsKey(key))   // пока в этом нет смысла
+                        _linksCache.Add(key, link);
+                }
+            }
+
+            return _linksCache[key];
         }
 
         public Dictionary<string, OneNoteProxy.BiblePageId> ProcessedBiblePages
@@ -127,12 +190,18 @@ namespace BibleCommon.Services
         {
             if (!_processedBiblePages.ContainsKey(biblePageId))
             {
-                _processedBiblePages.Add(biblePageId, new BiblePageId()
+                lock (_locker)
                 {
-                    SectionId = bibleSectionId,
-                    PageId = biblePageId,
-                    PageName = biblePageName
-                });
+                    //if (!_processedBiblePages.ContainsKey(biblePageId))  // пока в этом нет смысла
+                    {
+                        _processedBiblePages.Add(biblePageId, new BiblePageId()
+                        {
+                            SectionId = bibleSectionId,
+                            PageId = biblePageId,
+                            PageName = biblePageName
+                        });
+                    }
+                }
             }
         }
 
@@ -148,13 +217,17 @@ namespace BibleCommon.Services
                 },
                 CommentsPageName = commentPageName
             };
-            if (!_commentPagesIds.ContainsKey(key))
+            if (!_commentPagesIdsCache.ContainsKey(key))
             {
-                string commentPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName);
-                _commentPagesIds.Add(key, commentPageId);
+                lock (_locker)
+                {
+                    string commentPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName);
+                    //if (!_commentPagesIdsCache.ContainsKey(key))     // пока в этом нет смысла
+                        _commentPagesIdsCache.Add(key, commentPageId);
+                }
             }
 
-            return _commentPagesIds[key];
+            return _commentPagesIdsCache[key];
         }
 
 
@@ -194,13 +267,13 @@ namespace BibleCommon.Services
             return result;
         }
 
-        public PageContent GetPageContent(Application oneNoteApp, string pageId)
+        public PageContent GetPageContent(Application oneNoteApp, string pageId, PageType pageType)
         {
-            return GetPageContent(oneNoteApp, pageId, false);
+            return GetPageContent(oneNoteApp, pageId, pageType, false);
         }
 
 
-        private PageContent GetPageContent(Application oneNoteApp, string pageId, bool refreshCache)
+        private PageContent GetPageContent(Application oneNoteApp, string pageId, PageType pageType, bool refreshCache)
         {
             PageContent result;
 
@@ -215,7 +288,7 @@ namespace BibleCommon.Services
                     XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
 
                     if (!_pageContentCache.ContainsKey(pageId))
-                        _pageContentCache.Add(pageId, new PageContent() { PageId = pageId, Content = doc, Xnm = xnm });
+                        _pageContentCache.Add(pageId, new PageContent() { PageId = pageId, Content = doc, Xnm = xnm, PageType = pageType });
                     else
                         _pageContentCache[pageId].Content = doc;
                 }
@@ -231,22 +304,26 @@ namespace BibleCommon.Services
             GetHierarchy(oneNoteApp, hierarchyId, scope, true);
         }
 
-        public void CommitAllModifiedPages(Application oneNoteApp, Action<PageContent> onPageProcessed)
-        {
-            List<string> toRemove = new List<string>();
-            foreach (PageContent pageContent in _pageContentCache.Values.Where(pg => pg.WasModified))
+        public void CommitAllModifiedPages(Application oneNoteApp, Func<PageContent, bool> filter, 
+            Action<int> onAllPagesToCommitFound, Action<PageContent> onPageProcessed)
+        {   
+            List<PageContent> toCommit = _pageContentCache.Values.Where(pg => pg.WasModified && (filter == null || filter(pg))).ToList();
+            if (onAllPagesToCommitFound != null)
+                onAllPagesToCommitFound(toCommit.Count);
+            
+            foreach (PageContent page in toCommit)
             {
-                oneNoteApp.UpdatePageContent(pageContent.Content.ToString());
-                //pageContent.WasModified = false;
-                //GetPageContent(oneNoteApp, pageContent.PageId, true);  // обновляем, так как OneNote сам модифицирует контен страницы при обновлении
-                toRemove.Add(pageContent.PageId);
+                oneNoteApp.UpdatePageContent(page.Content.ToString());
 
                 if (onPageProcessed != null)
-                    onPageProcessed(pageContent);
+                    onPageProcessed(page);
             }
 
-            foreach (var pageId in toRemove)  // нам нет смысла их заново загружать в кэш, так как возможно они больше не понадобятся. 
-                _pageContentCache.Remove(pageId);
+            lock (_locker)
+            {
+                foreach (var page in toCommit)  
+                    _pageContentCache.Remove(page.PageId);
+            }
         }
 
         //public void RefreshPageContentCache(Application oneNoteApp, string pageId)
