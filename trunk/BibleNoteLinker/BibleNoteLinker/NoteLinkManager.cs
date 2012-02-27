@@ -61,6 +61,7 @@ namespace BibleNoteLinker
                     isSumaryNotesPage = true;
                     if (linkDepth > AnalyzeDepth.GetVersesLinks)
                         linkDepth = AnalyzeDepth.GetVersesLinks;  // на странице заметок только обновляем ссылки
+                    notePageDocument.PageType = OneNoteProxy.PageType.NotesPage;  // уточняем тип страницы
                 }
 
                 XElement titleElement = notePageDocument.Content.Root.XPathSelectElement("one:Title/one:OE", notePageDocument.Xnm);
