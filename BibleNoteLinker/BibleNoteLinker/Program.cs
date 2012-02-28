@@ -128,12 +128,12 @@ namespace BibleNoteLinker
                     Logger.LogMessage("Обновление страниц 'Сводные заметок' в OneNote", true, false);          
                     OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp, 
                         pageContent => pageContent.PageType == OneNoteProxy.PageType.NotesPage,
-                        pageCount => Logger.LogMessage(string.Format(" ({0} страниц)", pageCount), false, false, false),
+                        pagesCount => Logger.LogMessage(string.Format(" ({0})", GetRightPagesString(pagesCount)), false, false, false),
                         pageContent => Logger.LogMessage(".", false, false, false));
                     Logger.LogMessage(string.Empty, false, true, false);
 
-                    Logger.LogMessage(string.Format("Обновление ссылок на страницы 'Сводные заметок' ({0} страниц)", 
-                        OneNoteProxy.Instance.ProcessedBiblePages.Values.Count), true, false);
+                    Logger.LogMessage(string.Format("Обновление ссылок на страницы 'Сводные заметок' ({0})",
+                        GetRightPagesString(OneNoteProxy.Instance.ProcessedBiblePages.Values.Count)), true, false);
                     var relinkNotesManager = new RelinkAllBibleNotesManager(oneNoteApp);
                     foreach (OneNoteProxy.BiblePageId processedBiblePageId in OneNoteProxy.Instance.ProcessedBiblePages.Values)
                     {
@@ -145,7 +145,7 @@ namespace BibleNoteLinker
                     Logger.LogMessage("Обновление страниц в OneNote", true, false);
                     OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp,
                         null,
-                        pageCount => Logger.LogMessage(string.Format(" ({0} страниц)", pageCount), false, false, false),
+                        pagesCount => Logger.LogMessage(string.Format(" ({0})", GetRightPagesString(pagesCount)), false, false, false),
                         pageContent => Logger.LogMessage(".", false, false, false));
                     Logger.LogMessage(string.Empty, false, true, false);
 
@@ -166,6 +166,17 @@ namespace BibleNoteLinker
                 Console.WriteLine("Во время работы программы произошли ошибки");
                 Console.ReadKey();
             }
+        }
+
+        private static string GetRightPagesString(int pagesCount)
+        {
+            string s = "страниц";
+            if (pagesCount == 1)
+                s = "страница";
+            else if (pagesCount >= 2 && pagesCount <= 4)
+                s = "страницы";
+
+            return string.Format("{0} {1}", pagesCount, s);
         }
 
         private static void ProcessNotebook(Application oneNoteApp, string notebookId, string sectionGroupId, Args userArgs)
