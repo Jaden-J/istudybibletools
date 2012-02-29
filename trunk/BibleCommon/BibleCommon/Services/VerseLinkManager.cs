@@ -196,7 +196,7 @@ namespace BibleCommon.Services
                     string currentPageTitleId = (string)currentPageDoc.Content.Root
                         .XPathSelectElement("one:Title/one:OE", currentPageDoc.Xnm).Attribute("objectID");
 
-                    string linkToCurrentPage = OneNoteProxy.Instance.GenerateHref(oneNoteApp, vp.FriendlyChapterName, currentPageId, currentPageTitleId);
+                    string linkToCurrentPage = OneNoteUtils.GenerateHref(oneNoteApp, vp.FriendlyChapterName, currentPageId, currentPageTitleId);
                     
                     string pageName = string.Format("{0}. <span style='font-size:10pt;'>[{1}]</span>",
                                         descriptionPageName, linkToCurrentPage);

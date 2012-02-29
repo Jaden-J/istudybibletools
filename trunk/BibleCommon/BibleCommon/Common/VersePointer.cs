@@ -58,6 +58,12 @@ namespace BibleCommon.Common
             }
         }
 
+        public VersePointer(VersePointer chapterPointer, int verse)
+            : this(string.Format("{0} {1}:{2}", chapterPointer.OriginalBookName, chapterPointer.Chapter, verse))
+        {
+
+        }
+
         public VersePointer(string bookName, int chapter, int verse)
             : this(string.Format("{0} {1}:{2}", bookName, chapter, verse))
         {
@@ -230,6 +236,11 @@ namespace BibleCommon.Common
             }
 
             return string.Empty;
+        }
+
+        public VersePointer GetChapterPointer()
+        {
+            return new VersePointer(this.OriginalBookName, this.Chapter.Value, 0);
         }
 
         /// <summary>

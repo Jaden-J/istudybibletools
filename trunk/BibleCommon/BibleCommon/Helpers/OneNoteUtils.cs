@@ -96,8 +96,7 @@ namespace BibleCommon.Helpers
 
         public static string GenerateHref(Application oneNoteApp, string title, string pageId, string objectId)        
         {
-            string link;
-            oneNoteApp.GetHyperlinkToObject(pageId, objectId, out link);
+            string link = OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, objectId);            
 
             return string.Format("<a href=\"{0}\">{1}</a>", link, title);
         }
