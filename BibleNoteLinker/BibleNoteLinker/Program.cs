@@ -135,10 +135,14 @@ namespace BibleNoteLinker
 
                     Logger.LogMessage(string.Format("Обновление ссылок на страницы 'Сводные заметок' ({0})",
                         GetRightPagesString(OneNoteProxy.Instance.ProcessedBiblePages.Values.Count)), true, false);
-                    var relinkNotesManager = new RelinkAllBibleNotesManager(oneNoteApp);
+                    var relinkNotesManager = new RelinkAllBibleNotesManager(oneNoteApp, 
+                        OneNoteProxy.Instance.ProcessedVerses.ContainsKey(SettingsManager.Instance.PageName_RubbishNotes)
+                        ? OneNoteProxy.Instance.ProcessedVerses[SettingsManager.Instance.PageName_RubbishNotes]
+                        : OneNoteProxy.Instance.ProcessedVerses[SettingsManager.Instance.PageName_Notes]);
                     foreach (OneNoteProxy.BiblePageId processedBiblePageId in OneNoteProxy.Instance.ProcessedBiblePages.Values)
                     {
-                        relinkNotesManager.RelinkBiblePageNotes(processedBiblePageId.SectionId, processedBiblePageId.PageId, processedBiblePageId.PageName);
+                        relinkNotesManager.RelinkBiblePageNotes(processedBiblePageId.SectionId, processedBiblePageId.PageId, 
+                            processedBiblePageId.PageName, processedBiblePageId.ChapterPointer);
                         Logger.LogMessage(".", false, false, false);
                     }
                     Logger.LogMessage(string.Empty, false, true, false);

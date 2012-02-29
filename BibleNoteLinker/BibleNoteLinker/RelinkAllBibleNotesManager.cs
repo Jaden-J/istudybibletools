@@ -15,13 +15,15 @@ namespace BibleNoteLinker
     public class RelinkAllBibleNotesManager
     {
         private Application _oneNoteApp;
+        private HashSet<VersePointer> _processedVerses;
 
-        public RelinkAllBibleNotesManager(Application oneNoteApp)
+        public RelinkAllBibleNotesManager(Application oneNoteApp, HashSet<VersePointer> processedVerses)
         {
-            _oneNoteApp = oneNoteApp;            
+            _oneNoteApp = oneNoteApp;
+            _processedVerses = processedVerses;
         }
 
-        public void RelinkBiblePageNotes(string bibleSectionId, string biblePageId, string biblePageName)
+        public void RelinkBiblePageNotes(string bibleSectionId, string biblePageId, string biblePageName, VersePointer chapterPointer)
         {   
             OneNoteProxy.PageContent biblePageDocument = OneNoteProxy.Instance.GetPageContent(_oneNoteApp, biblePageId, OneNoteProxy.PageType.Bible);
             bool wasModified = false;
@@ -45,8 +47,16 @@ namespace BibleNoteLinker
                         OneNoteUtils.NormalizaTextElement(bibleVerseElement);
                         int? verseNumber = Utils.GetVerseNumber(bibleVerseElement.Value);
 
-                        if (RelinkBiblePageNote(bibleSectionId, biblePageId, biblePageName, textElement, verseNumber))
-                            wasModified = true;
+                        if (verseNumber.GetValueOrDefault(0) > 0)
+                        {
+                            VersePointer vp = new VersePointer(chapterPointer, verseNumber.Value);
+
+                            if (_processedVerses.Contains(vp))  // если мы обрабатывали этот стих
+                            {
+                                if (RelinkBiblePageNote(bibleSectionId, biblePageId, biblePageName, textElement, verseNumber))
+                                    wasModified = true;
+                            }
+                        }
                     }
                 }
 
@@ -65,7 +75,7 @@ namespace BibleNoteLinker
             if (!string.IsNullOrEmpty(notesRowObjectId))
             {
                 string newNotesPageLink = string.Format("<font size='2pt'>{0}</font>",
-                                    OneNoteProxy.Instance.GenerateHref(_oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, notesRowObjectId));
+                                    OneNoteUtils.GenerateHref(_oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, notesRowObjectId));
 
                 textElement.Value = newNotesPageLink;
 

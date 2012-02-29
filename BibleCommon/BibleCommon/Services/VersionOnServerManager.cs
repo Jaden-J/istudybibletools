@@ -62,7 +62,7 @@ namespace BibleCommon.Services
                     result = new Version(latestVersion.Value);
                 }                
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //todo: log it in system log (ont in common log)
             }
