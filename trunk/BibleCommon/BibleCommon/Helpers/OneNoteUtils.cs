@@ -75,6 +75,14 @@ namespace BibleCommon.Helpers
                 || bool.Parse(GetAttributeValue(hierarchyElement, "isRecycleBin", false.ToString()));
         }
 
+        public static string NotInRecycleXPathCondition
+        {
+            get
+            {
+                return "not(@isInRecycleBin) and not(@isRecycleBin)";
+            }
+        }
+
         public static string GetAttributeValue(XElement el, string attributeName, string defaultValue)
         {
             if (el.Attribute(attributeName) != null)
