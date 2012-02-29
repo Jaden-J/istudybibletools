@@ -88,7 +88,7 @@ namespace BibleConfigurator
             _oneNoteApp.GetHierarchy(_notebookId, HierarchyScope.hsSections, out xml);
             XDocument notebookDoc = OneNoteUtils.GetXDocument(xml, out xnm);
 
-            foreach (XElement sectionGroup in notebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm))
+            foreach (XElement sectionGroup in notebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm).Where(sg => !OneNoteUtils.IsRecycleBin(sg)))
             {
                 string name = (string)sectionGroup.Attribute("name");
                 string id = (string)sectionGroup.Attribute("ID");

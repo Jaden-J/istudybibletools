@@ -156,6 +156,7 @@
             this.Name = "NotebookParametersForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "NotebookParameters";
+            this.TopMost = true;
             this.Load += new System.EventHandler(this.NotebookParametersForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NotebookParametersForm_KeyDown);
             this.ResumeLayout(false);

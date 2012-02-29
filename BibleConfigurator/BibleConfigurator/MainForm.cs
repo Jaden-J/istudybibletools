@@ -292,7 +292,7 @@ namespace BibleConfigurator
 
             List<SectionGroupType> sectionGroups = new List<SectionGroupType>();
 
-            foreach (XElement sectionGroup in notebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm))
+            foreach (XElement sectionGroup in notebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm).Where(sg => !OneNoteUtils.IsRecycleBin(sg)))
             {
                 string id = (string)sectionGroup.Attribute("ID");
 
