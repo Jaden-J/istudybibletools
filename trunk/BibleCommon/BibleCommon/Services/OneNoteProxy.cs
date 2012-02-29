@@ -18,6 +18,24 @@ namespace BibleCommon.Services
 
         #region Helper classes
 
+        public class NotePageProcessedVerseId
+        {
+            public string NotePageId { get; set; }
+            public string NotesPageName { get; set; }
+
+            public override int GetHashCode()
+            {
+                return this.NotePageId.GetHashCode() ^ this.NotesPageName.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                NotePageProcessedVerseId otherObj = (NotePageProcessedVerseId)obj;
+                return this.NotePageId == otherObj.NotePageId
+                    && this.NotesPageName == otherObj.NotesPageName;
+            }
+        }
+
         public class OneNoteHierarchyContentId
         {
             public string ID { get; set; }
@@ -151,7 +169,8 @@ namespace BibleCommon.Services
         private Dictionary<CommentPageId, string> _commentPagesIdsCache = new Dictionary<CommentPageId, string>();
         private Dictionary<string, OneNoteProxy.BiblePageId> _processedBiblePages = new Dictionary<string, BiblePageId>();
         private Dictionary<LinkId, string> _linksCache = new Dictionary<LinkId, string>();
-        private Dictionary<string, HashSet<VersePointer>> _processedVerses = new Dictionary<string, HashSet<VersePointer>>();
+        private Dictionary<NotePageProcessedVerseId, HashSet<VersePointer>> _notePageProcessedVerses = new Dictionary<NotePageProcessedVerseId, HashSet<VersePointer>>();  //todo: как только сделаем NoteLInkManager не статичным, перенести туда
+        private HashSet<VersePointer> _processedVerses = new HashSet<VersePointer>();
 
         protected OneNoteProxy()
         {
@@ -168,7 +187,7 @@ namespace BibleCommon.Services
 
             if (!_linksCache.ContainsKey(key))
             {
-                lock (_locker)
+                //lock (_locker)
                 {
                     string link;
                     oneNoteApp.GetHyperlinkToObject(pageId, objectId, out link);
@@ -189,51 +208,56 @@ namespace BibleCommon.Services
             }
         }
 
-        public Dictionary<string, HashSet<VersePointer>> ProcessedVerses
+        public HashSet<VersePointer> ProcessedVerses
         {
             get
             {
                 return _processedVerses;
             }
         }
-
-        public void AddProcessedVerse(string notesPageName, VersePointer vp)
+        public void AddProcessedVerse(VersePointer vp)
         {
-            if (!_processedVerses.ContainsKey(notesPageName))
+            if (!_processedVerses.Contains(vp))
+                _processedVerses.Add(vp);
+        }
+
+        public void AddNotePageProcessedVerse(NotePageProcessedVerseId verseId, VersePointer vp)
+        {
+            if (!_notePageProcessedVerses.ContainsKey(verseId))
             {
-                lock (_locker)
+                //lock (_locker)
                 {
-                    _processedVerses.Add(notesPageName, new HashSet<VersePointer>());
+                    _notePageProcessedVerses.Add(verseId, new HashSet<VersePointer>());
                 }
             }
 
-            if (!_processedVerses[notesPageName].Contains(vp))   // отслеживаем обработанные стихи для каждой из страниц сводной заметок
+            if (!_notePageProcessedVerses[verseId].Contains(vp))   // отслеживаем обработанные стихи для каждой из страниц сводной заметок
             {
-                lock (_locker)
+                //lock (_locker)
                 {
-                    _processedVerses[notesPageName].Add(vp);
+                    _notePageProcessedVerses[verseId].Add(vp);
                 }
             }
         }
 
-        public bool ContainsProcessedVerse(string notesPageName, VersePointer vp)
+        public bool ContainsNotePageProcessedVerse(NotePageProcessedVerseId verseId, VersePointer vp)
         {
-            if (!_processedVerses.ContainsKey(notesPageName))
+            if (!_notePageProcessedVerses.ContainsKey(verseId))
             {
-                lock (_locker)
+                //lock (_locker)
                 {
-                    _processedVerses.Add(notesPageName, new HashSet<VersePointer>());
+                    _notePageProcessedVerses.Add(verseId, new HashSet<VersePointer>());
                 }
             }
 
-            return _processedVerses[notesPageName].Contains(vp);
+            return _notePageProcessedVerses[verseId].Contains(vp);
         }
 
         public void AddProcessedBiblePages(string bibleSectionId, string biblePageId, string biblePageName, VersePointer chapterPointer)
         {
             if (!_processedBiblePages.ContainsKey(biblePageId))
             {
-                lock (_locker)
+                //lock (_locker)
                 {
                     //if (!_processedBiblePages.ContainsKey(biblePageId))  // пока в этом нет смысла
                     {
@@ -263,7 +287,7 @@ namespace BibleCommon.Services
             };
             if (!_commentPagesIdsCache.ContainsKey(key))
             {
-                lock (_locker)
+                //lock (_locker)
                 {
                     string commentPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName);
                     //if (!_commentPagesIdsCache.ContainsKey(key))     // пока в этом нет смысла
@@ -291,7 +315,7 @@ namespace BibleCommon.Services
 
             if (!_hierarchyContentCache.ContainsKey(contentId) || refreshCache)
             {
-                lock (_locker)
+                //lock (_locker)
                 {
                     string xml;
                     oneNoteApp.GetHierarchy(hierarchyId, scope, out xml);
@@ -322,7 +346,7 @@ namespace BibleCommon.Services
 
             if (!_pageContentCache.ContainsKey(pageId) || refreshCache)
             {
-                lock (_locker)
+                //lock (_locker)
                 {
                     string xml;
                     oneNoteApp.GetPageContent(pageId, out xml);
@@ -362,7 +386,7 @@ namespace BibleCommon.Services
                     onPageProcessed(page);
             }
 
-            lock (_locker)
+            //lock (_locker)
             {
                 foreach (var page in toCommit)  
                     _pageContentCache.Remove(page.PageId);
