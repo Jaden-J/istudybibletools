@@ -90,7 +90,8 @@ namespace BibleNoteLinker
 
                     if (userArgs.AnalyzeAllPages)
                     {
-                        Logger.LogMessage("Старт обработки всей записной книжки");
+                        if (!userArgs.LastChanged)
+                            Logger.LogMessage("Старт обработки всех страниц");
 
                         ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, SettingsManager.Instance.SectionGroupId_BibleComments, userArgs);
                         ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleStudy, SettingsManager.Instance.SectionGroupId_BibleStudy, userArgs);
@@ -171,10 +172,17 @@ namespace BibleNoteLinker
         private static string GetRightPagesString(int pagesCount)
         {
             string s = "страниц";
-            if (pagesCount == 1)
-                s = "страница";
-            else if (pagesCount >= 2 && pagesCount <= 4)
-                s = "страницы";
+
+            pagesCount = pagesCount / 100;
+            if (pagesCount < 10 && pagesCount > 20)
+            {
+                pagesCount = pagesCount / 10;
+
+                if (pagesCount == 1)
+                    s = "страница";
+                else if (pagesCount >= 2 && pagesCount <= 4)
+                    s = "страницы";
+            }
 
             return string.Format("{0} {1}", pagesCount, s);
         }
@@ -206,8 +214,8 @@ namespace BibleNoteLinker
                     {
                         string sectionGroupId = string.Empty;
                         XElement sectionGroup = page.Parent.Parent;
-                        if (sectionGroup.Name.LocalName == "SectionGroup")
-                            sectionGroupId = (string)page.Parent.Parent.Attribute("ID").Value;
+                        if (sectionGroup.Name.LocalName == "SectionGroup" && !OneNoteUtils.IsRecycleBin(sectionGroup))
+                            sectionGroupId = (string)sectionGroup.Attribute("ID").Value;
 
                         string sectionId = (string)page.Parent.Attribute("ID").Value;
 
@@ -250,7 +258,7 @@ namespace BibleNoteLinker
                 Logger.MoveLevel(1);
             }
 
-            foreach (var subSectionGroup in sectionGroup.XPathSelectElements("one:SectionGroup", xnm))
+            foreach (var subSectionGroup in sectionGroup.XPathSelectElements("one:SectionGroup", xnm).Where(sg => !OneNoteUtils.IsRecycleBin(sg)))
             {                
                 string subSectionGroupId = (string)subSectionGroup.Attribute("ID");
                 ProcessSectionGroup(subSectionGroup, subSectionGroupId, oneNoteApp, notebookId, xnm, linkDepth, force);
