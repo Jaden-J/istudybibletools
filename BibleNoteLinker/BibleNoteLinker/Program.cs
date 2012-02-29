@@ -172,15 +172,16 @@ namespace BibleNoteLinker
         private static string GetRightPagesString(int pagesCount)
         {
             string s = "страниц";
+            int tempPagesCount = pagesCount;
 
-            pagesCount = pagesCount / 100;
-            if (pagesCount < 10 && pagesCount > 20)
+            tempPagesCount = tempPagesCount % 100;
+            if (!(tempPagesCount >= 10 && tempPagesCount <= 20))
             {
-                pagesCount = pagesCount / 10;
+                tempPagesCount = tempPagesCount % 10;
 
-                if (pagesCount == 1)
+                if (tempPagesCount == 1)
                     s = "страница";
-                else if (pagesCount >= 2 && pagesCount <= 4)
+                else if (tempPagesCount >= 2 && tempPagesCount <= 4)
                     s = "страницы";
             }
 
