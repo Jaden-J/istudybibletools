@@ -86,7 +86,7 @@ namespace BibleCommon.Services
 
             if (isRootSectionGroup)
             {
-                foreach (var subSectionGroup in sectionGroup.XPathSelectElements("one:SectionGroup", xnm))
+                foreach (var subSectionGroup in sectionGroup.XPathSelectElements("one:SectionGroup", xnm).Where(sg => !OneNoteUtils.IsRecycleBin(sg)))
                 {
                     string subSectionGroupName = (string)subSectionGroup.Attribute("name");
                     ProcessSectionGroup(subSectionGroup, subSectionGroupName, notebookId, xnm, false, pageAction);
