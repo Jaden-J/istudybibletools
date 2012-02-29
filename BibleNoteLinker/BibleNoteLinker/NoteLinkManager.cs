@@ -971,10 +971,13 @@ namespace BibleNoteLinker
                     {
                         versePageDocument.WasModified = true;
                         OneNoteProxy.Instance.AddProcessedBiblePages(verseHierarchyObjectInfo.SectionId, verseHierarchyObjectInfo.PageId, biblePageName, vp.GetChapterPointer());
-                    }
+
+                        OneNoteProxy.Instance.AddProcessedVerse(vp);  // добавляем только стихи, отмеченные на "Сводной заметок"
+                    }                    
                 }
 
-                OneNoteProxy.Instance.AddProcessedVerse(notesPageName, vp);
+                var key = new OneNoteProxy.NotePageProcessedVerseId() { NotePageId = notePageId, NotesPageName = notesPageName };
+                OneNoteProxy.Instance.AddNotePageProcessedVerse(key, vp);                
             }
         }
 
@@ -1105,7 +1108,8 @@ namespace BibleNoteLinker
 
             if (suchNoteLink != null)
             {
-                if (force && !OneNoteProxy.Instance.ContainsProcessedVerse(notesPageName, vp))  // если в первый раз и force
+                var key = new OneNoteProxy.NotePageProcessedVerseId() { NotePageId = notePageId, NotesPageName = notesPageName };
+                if (force && !OneNoteProxy.Instance.ContainsNotePageProcessedVerse(key, vp))  // если в первый раз и force
                 {  // удаляем старые ссылки на текущую странцу, так как мы начали новый анализ с параметром "force" и мы только в первый раз зашли сюда
                     var verseLinks = suchNoteLink.Parent.NextNode;
                     if (verseLinks != null && verseLinks.XPathSelectElement("one:List", xnm) == null)

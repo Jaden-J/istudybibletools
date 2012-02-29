@@ -14,13 +14,11 @@ namespace BibleNoteLinker
 {
     public class RelinkAllBibleNotesManager
     {
-        private Application _oneNoteApp;
-        private HashSet<VersePointer> _processedVerses;
+        private Application _oneNoteApp;        
 
-        public RelinkAllBibleNotesManager(Application oneNoteApp, HashSet<VersePointer> processedVerses)
+        public RelinkAllBibleNotesManager(Application oneNoteApp)
         {
-            _oneNoteApp = oneNoteApp;
-            _processedVerses = processedVerses;
+            _oneNoteApp = oneNoteApp;            
         }
 
         public void RelinkBiblePageNotes(string bibleSectionId, string biblePageId, string biblePageName, VersePointer chapterPointer)
@@ -50,8 +48,8 @@ namespace BibleNoteLinker
                         if (verseNumber.GetValueOrDefault(0) > 0)
                         {
                             VersePointer vp = new VersePointer(chapterPointer, verseNumber.Value);
-
-                            if (_processedVerses.Contains(vp))  // если мы обрабатывали этот стих
+                            
+                            if (OneNoteProxy.Instance.ProcessedVerses.Contains(vp))  // если мы обрабатывали этот стих
                             {
                                 if (RelinkBiblePageNote(bibleSectionId, biblePageId, biblePageName, textElement, verseNumber))
                                     wasModified = true;
