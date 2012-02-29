@@ -35,6 +35,12 @@ namespace BibleConfigurator.Tools
             {
                 _form.PrepareForExternalProcessing(1255, 1, "Старт обновления ссылок на комментарии.");
 
+                //для тестирования
+                //RelinkPageComments(_oneNoteApp.Windows.CurrentWindow.CurrentSectionId, 
+                //    _oneNoteApp.Windows.CurrentWindow.CurrentPageId, 
+                //    OneNoteUtils.GetHierarchyElementName(_oneNoteApp, _oneNoteApp.Windows.CurrentWindow.CurrentPageId));
+                //return;
+
                 new NotebookIterator(_oneNoteApp).Iterate("RelinkAllBibleCommentsManager",
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
                         {
@@ -105,7 +111,7 @@ namespace BibleConfigurator.Tools
 
             string commentPageName = GetCommentPageName(commentLink);
             string commentPageId = OneNoteProxy.Instance.GetCommentPageId(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName);
-            string commentObjectId = GetComentObjectId(commentPageId, commentText);
+            string commentObjectId = GetComentObjectId(commentPageId, commentText, null, 0);
 
             if (!string.IsNullOrEmpty(commentObjectId))
             {
@@ -119,38 +125,55 @@ namespace BibleConfigurator.Tools
             return false;
         }
 
-        private string GetComentObjectId(string commentPageId, string commentText)
+        private string GetComentObjectId(string commentPageId, string commentText, string textElementId, int startIndex)
         {            
             OneNoteProxy.PageContent pageDoc = OneNoteProxy.Instance.GetPageContent(_oneNoteApp, commentPageId, OneNoteProxy.PageType.CommentPage);
 
-            foreach (XElement el in pageDoc.Content.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:T", pageDoc.Xnm))
+            foreach (XElement el in pageDoc.Content.Root.XPathSelectElements(string.Format("one:Outline/one:OEChildren/one:OE{0}/one:T", 
+                !string.IsNullOrEmpty(textElementId) ? string.Format("[@objectID='{0}']", textElementId) : string.Empty), pageDoc.Xnm))
             {
                 OneNoteUtils.NormalizaTextElement(el);
 
                 bool needToSearchVerse = true;
-                int boldTagIndex = el.Value.IndexOf("font-weight:bold");
-                if (boldTagIndex != -1)
+                if (el.Value.Length > startIndex + 1)
                 {
-                    boldTagIndex = el.Value.IndexOf(">", boldTagIndex + 1);
-
+                    int boldTagIndex = el.Value.IndexOf("font-weight:bold", startIndex + 1);
                     if (boldTagIndex != -1)
                     {
-                        int textBreakIndex;
-                        int htmlBreakIndex;
-                        string textBefore = StringUtils.GetPrevString(el.Value, boldTagIndex + 1, new SearchMissInfo(boldTagIndex, SearchMissInfo.MissMode.CancelOnNextMiss),
-                                out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.NotSpecified).Replace("&nbsp;", "");
+                        boldTagIndex = el.Value.IndexOf(">", boldTagIndex + 1);
 
-                        if (textBefore.Length <= 5)  // чотб убедиться, что мы взяли текст в начале строки
+                        if (boldTagIndex != -1)
                         {
-                            int boldEndIndex = el.Value.IndexOf("</span>", boldTagIndex + 1);
+                            int textBreakIndex;
+                            int htmlBreakIndex;
+                            string textBefore = StringUtils.GetPrevString(el.Value, boldTagIndex + 1, new SearchMissInfo(boldTagIndex, SearchMissInfo.MissMode.CancelOnNextMiss),
+                                    out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.NotSpecified).Replace("&nbsp;", "");
 
-                            if (boldEndIndex != -1)
+                            if (textBefore.Trim().Length <= 5)  // чтоб убедиться, что мы взяли текст в начале строки
                             {
-                                string commentValue = el.Value.Substring(boldTagIndex + 1, boldEndIndex - boldTagIndex - 1);
-                                if (commentValue == commentText)
-                                    return (string)el.Parent.Attribute("objectID");
-                                else
-                                    needToSearchVerse = false;  // это точно не стих, это просто другой комментарий
+                                int boldEndIndex = el.Value.IndexOf("</span>", boldTagIndex + 1);
+
+                                if (boldEndIndex != -1)
+                                {
+                                    string commentValue = el.Value.Substring(boldTagIndex + 1, boldEndIndex - boldTagIndex - 1);
+
+                                    if (!string.IsNullOrEmpty(commentValue))
+                                    {
+                                        string objectId = (string)el.Parent.Attribute("objectID");
+
+                                        if (string.IsNullOrEmpty(commentValue.Trim()))
+                                        {
+                                            string nextCommentObjectId = GetComentObjectId(commentPageId, commentText, objectId, boldEndIndex);
+                                            if (!string.IsNullOrEmpty(nextCommentObjectId))
+                                                return nextCommentObjectId;
+                                        }
+
+                                        if (commentValue == commentText)
+                                            return objectId;
+                                        else
+                                            needToSearchVerse = false;  // это точно не стих, это просто другой комментарий
+                                    }
+                                }
                             }
                         }
                     }
