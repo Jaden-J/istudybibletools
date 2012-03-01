@@ -94,9 +94,7 @@ namespace BibleNoteLinker
                             Logger.LogMessage("Старт обработки всех страниц");
 
                         ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, SettingsManager.Instance.SectionGroupId_BibleComments, userArgs);
-                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleStudy, SettingsManager.Instance.SectionGroupId_BibleStudy, userArgs);
-                        SettingsManager.Instance.LastNotesLinkTime = DateTime.Now;
-                        SettingsManager.Instance.Save();
+                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleStudy, SettingsManager.Instance.SectionGroupId_BibleStudy, userArgs);                      
                     }
                     else
                     {
@@ -150,6 +148,13 @@ namespace BibleNoteLinker
                         pagesCount => Logger.LogMessage(string.Format(" ({0})", GetRightPagesString(pagesCount)), false, false, false),
                         pageContent => Logger.LogMessage(".", false, false, false));
                     Logger.LogMessage(string.Empty, false, true, false);
+
+
+                    if (userArgs.AnalyzeAllPages)
+                    {
+                        SettingsManager.Instance.LastNotesLinkTime = DateTime.Now;
+                        SettingsManager.Instance.Save();
+                    }
 
                     Logger.LogMessage("Успешно завершено");
                 }
