@@ -62,6 +62,9 @@ namespace BibleCommon.Services
         /// </summary>
         public bool ExcludedVersesLinking { get; set; }
 
+
+        public bool UseDifferentPagesForEachVerse { get; set; }
+
         /// <summary>
         /// Параметры "мусорной" страницы
         /// </summary>
@@ -69,7 +72,7 @@ namespace BibleCommon.Services
         public string PageName_RubbishNotes { get; set; }
         public int PageWidth_RubbishNotes { get; set; }
         public bool RubbishPage_ExpandMultiVersesLinking { get; set; }
-        public bool RubbishPage_ExcludedVersesLinking { get; set; }
+        public bool RubbishPage_ExcludedVersesLinking { get; set; }        
 
         private Version _currentVersion = null;
         public Version CurrentVersion
@@ -162,6 +165,7 @@ namespace BibleCommon.Services
                 this.PageWidth_Notes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthNotes, 500);
                 this.ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_ExpandMultiVersesLinking);
                 this.ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_ExcludedVersesLinking);
+                this.UseDifferentPagesForEachVerse = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseDifferentPagesForEachVerse);
                 this.RubbishPage_Use = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageUse);
                 this.PageName_RubbishNotes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameRubbishNotes, Consts.Constants.DefaultPageName_RubbishNotes);
                 this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
@@ -211,8 +215,9 @@ namespace BibleCommon.Services
             this.PageName_DefaultComments = Consts.Constants.DefaultPageNameDefaultComments;
             this.PageName_Notes = Consts.Constants.DefaultPageName_Notes;
             this.PageWidth_Notes = Consts.Constants.DefaultPageWidth_Notes;
-            this.ExpandMultiVersesLinking = false;
+            this.ExpandMultiVersesLinking = false;            
             this.ExcludedVersesLinking = false;
+            this.UseDifferentPagesForEachVerse = false;
 
             this.RubbishPage_Use = false;
             this.PageName_RubbishNotes = Consts.Constants.DefaultPageName_RubbishNotes;
@@ -246,6 +251,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_PageWidthNotes, this.PageWidth_Notes),
                                   new XElement(Consts.Constants.ParameterName_ExpandMultiVersesLinking, this.ExpandMultiVersesLinking),
                                   new XElement(Consts.Constants.ParameterName_ExcludedVersesLinking, this.ExcludedVersesLinking),
+                                  new XElement(Consts.Constants.ParameterName_UseDifferentPagesForEachVerse, this.UseDifferentPagesForEachVerse),
                                   new XElement(Consts.Constants.ParameterName_RubbishPageUse, this.RubbishPage_Use),
                                   new XElement(Consts.Constants.ParameterName_PageNameRubbishNotes, this.PageName_RubbishNotes),
                                   new XElement(Consts.Constants.ParameterName_PageWidthRubbishNotes, this.PageWidth_RubbishNotes),

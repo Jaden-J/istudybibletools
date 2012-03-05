@@ -273,7 +273,19 @@ namespace BibleCommon.Services
             }
         }
 
+
+        public string GetNotesPageId(Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName, string notesPageName, int pageLevel = 1)
+        {
+            return GetVerseLinkPageId(oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName, true, pageLevel);
+        }
+
         public string GetCommentPageId(Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName, string commentPageName)
+        {
+            return GetVerseLinkPageId(oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName, false, 1);
+        }
+
+        private string GetVerseLinkPageId(Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName, string commentPageName,
+            bool isSummaryNotesPage, int pageLevel)
         {
             CommentPageId key = new CommentPageId()
             {
@@ -289,7 +301,8 @@ namespace BibleCommon.Services
             {
                 //lock (_locker)
                 {
-                    string commentPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName);
+                    string commentPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(oneNoteApp, bibleSectionId, biblePageId, biblePageName,
+                        commentPageName, isSummaryNotesPage, pageLevel);
                     //if (!_commentPagesIdsCache.ContainsKey(key))     // пока в этом нет смысла
                         _commentPagesIdsCache.Add(key, commentPageId);
                 }

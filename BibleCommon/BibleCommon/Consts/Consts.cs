@@ -39,6 +39,7 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_PageWidthNotes = "Width_NotesPage";
         public static readonly string ParameterName_ExpandMultiVersesLinking = "ExpandMultiVersesLinking";
         public static readonly string ParameterName_ExcludedVersesLinking = "ExcludedVersesLinking";
+        public static readonly string ParameterName_UseDifferentPagesForEachVerse = "UseDifferentPagesForEachVerse";
         public static readonly string ParameterName_RubbishPageUse = "RubbishPage_Use";
         public static readonly string ParameterName_PageNameRubbishNotes = "RubbishPage_NotesPageName";
         public static readonly string ParameterName_PageWidthRubbishNotes = "RubbishPage_NotesPageWidth";
@@ -55,7 +56,8 @@ namespace BibleCommon.Consts
 
         public static readonly string VerseLinkTemplate = "ссылка {0}";
         public static readonly string VerseLinksDelimiter = "; ";
-        
+
+        public static readonly string Key_IsSummaryNotesPage = "IsSummaryNotesPage";
 
 
         public static readonly Dictionary<string, StringCollection> BookNames = new Dictionary<string, StringCollection>()

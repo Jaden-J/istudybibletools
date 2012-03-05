@@ -127,5 +127,33 @@ namespace BibleCommon.Helpers
                     throw;
             }
         }
+
+        public static void UpdatePageMetaData(Application oneNoteApp, XDocument pageContent, string key, string value, XmlNamespaceManager xnm)
+        {
+            var metaElement = pageContent.Root.XPathSelectElement(string.Format("one:Meta[@name='{0}']", key), xnm);
+            if (metaElement != null)
+            {
+                metaElement.SetAttributeValue("content", value);
+            }
+            else
+            {
+                XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
+                pageContent.Root.AddFirst(new XElement(nms + "Meta",
+                                            new XAttribute("name", key),
+                                            new XAttribute("content", value)));
+            }
+        }
+
+
+        public static string GetPageMetaData(Application oneNoteApp, XDocument pageContent, string key, XmlNamespaceManager xnm)
+        {
+            var metaElement = pageContent.Root.XPathSelectElement(string.Format("one:Meta[@name='{0}']", key), xnm);
+            if (metaElement != null)
+            {
+                return metaElement.Attribute("content").Value;
+            }
+
+            return string.Empty;
+        }
     }
 }

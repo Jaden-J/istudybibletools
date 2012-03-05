@@ -66,8 +66,8 @@ namespace BibleNoteLinker
 
         private bool RelinkBiblePageNote(string bibleSectionId, string biblePageId, string biblePageName, XElement textElement, int? verseNumber)
         {
-            string notesPageName = SettingsManager.Instance.PageName_Notes;
-            string notesPageId = OneNoteProxy.Instance.GetCommentPageId(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName);
+            string notesPageName = NoteLinkManager.GetDefaultNotesPageName(verseNumber);
+            string notesPageId = OneNoteProxy.Instance.GetNotesPageId(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName);
             string notesRowObjectId = NoteLinkManager.GetNotesRowObjectId(_oneNoteApp, notesPageId, verseNumber, VersePointer.IsVerseChapter(verseNumber));
 
             if (!string.IsNullOrEmpty(notesRowObjectId))
