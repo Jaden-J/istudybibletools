@@ -101,7 +101,7 @@ namespace BibleConfigurator.Tools
             }
 
             if (wasModified)
-                _oneNoteApp.UpdatePageContent(pageDocument.ToString());
+                OneNoteUtils.UpdatePageContentSafe(_oneNoteApp, pageDocument);
         }
 
         private bool RelinkPageComment(string bibleSectionId, string biblePageId, string biblePageName, XElement textElement, int linkIndex, int linkEnd)

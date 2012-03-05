@@ -11,6 +11,7 @@ using BibleCommon;
 using BibleCommon.Helpers;
 using BibleCommon.Consts;
 using BibleCommon.Services;
+using System.Runtime.InteropServices;
 
 namespace BibleVerseLinkerEx
 {
@@ -25,18 +26,18 @@ namespace BibleVerseLinkerEx
         /// </summary>
         public bool SearchForUnderlineText { get; set; }
 
-        private Application _onenoteApp = null;
+        private Application _oneNoteApp = null;
         public Application OneNoteApp
         {
             get
             {
-                return _onenoteApp;
+                return _oneNoteApp;
             }
         }
 
         public VerseLinker()
         {
-            _onenoteApp = new Application();
+            _oneNoteApp = new Application();
             DescriptionPageName = SettingsManager.Instance.PageName_DefaultComments;
             SearchForUnderlineText = true;
         }
@@ -156,7 +157,9 @@ namespace BibleVerseLinkerEx
                             }
 
                             if (SearchForUnderlineText)
-                                OneNoteApp.UpdatePageContent(currentPageDocument.ToString());
+                            {
+                                OneNoteUtils.UpdatePageContentSafe(_oneNoteApp, currentPageDocument);
+                            }
                             
                             OneNoteApp.NavigateTo(verseLinkPageId, objectId);
                         }
@@ -262,7 +265,7 @@ namespace BibleVerseLinkerEx
             else
                 pageDocument.Root.Add(newCommentElement);
 
-            OneNoteApp.UpdatePageContent(pageDocument.ToString());
+            OneNoteUtils.UpdatePageContentSafe(OneNoteApp, pageDocument);
 
             XElement addedObject = GetLastPageObject(pageId, GetOutlinePosition(pageDocument, newCommentElement, xnm));
 

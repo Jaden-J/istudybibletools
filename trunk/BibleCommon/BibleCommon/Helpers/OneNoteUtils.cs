@@ -10,6 +10,7 @@ using System.IO;
 using BibleCommon.Consts;
 using BibleCommon.Services;
 using System.Xml.XPath;
+using System.Runtime.InteropServices;
 
 namespace BibleCommon.Helpers
 {
@@ -109,6 +110,21 @@ namespace BibleCommon.Helpers
                 {
                     textElement.Value = textElement.Value.Replace("\n", " ");
                 }
+            }
+        }
+
+        public static void UpdatePageContentSafe(Application oneNoteApp, XDocument pageContent)
+        {
+            try
+            {
+                oneNoteApp.UpdatePageContent(pageContent.ToString());
+            }
+            catch (COMException ex)
+            {
+                if (ex.ErrorCode == -2147213304)
+                    throw new Exception(Constants.Error_UpdateError_InksOnPages);
+                else
+                    throw;
             }
         }
     }

@@ -50,7 +50,8 @@ namespace BibleCommon.Consts
 
         public static readonly string DownloadPageUrl = "http://IStudyBibleTools.ru/download.htm";
 
-        public static readonly string Error_SystemIsNotConfigures = "Программа не сконфигурирована";
+        public static readonly string Error_SystemIsNotConfigures = "Программа не сконфигурирована. Откройте 'Параметры программы' и укажите все необходимые настройки.";
+        public static readonly string Error_UpdateError_InksOnPages = "Не удалось обновить страницу Библии. Возможно на странице присутствуют нарисованные кистью элементы, которые на текущий момент не поддерживаются программой. \nУдалите такие элементы и повторите операцию.";
 
         public static readonly string VerseLinkTemplate = "ссылка {0}";
         public static readonly string VerseLinksDelimiter = "; ";
