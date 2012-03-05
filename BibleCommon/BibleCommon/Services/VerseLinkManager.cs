@@ -236,7 +236,7 @@ namespace BibleCommon.Services
                                             pageName
                                             ))))));
 
-            oneNoteApp.UpdatePageContent(pageDocument.ToString());
+            OneNoteUtils.UpdatePageContentSafe(oneNoteApp, pageDocument);
         }
     }
 }

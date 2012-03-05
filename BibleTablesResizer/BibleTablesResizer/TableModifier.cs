@@ -35,9 +35,9 @@ namespace BibleTablesResizer
                     SetLockedAttribute(column1);
 
                     SetWidthAttribute(column2, "37");
-                    SetLockedAttribute(column2);  
-                 
-                    oneNoteApp.UpdatePageContent(notePageDocument.ToString());
+                    SetLockedAttribute(column2);
+
+                    OneNoteUtils.UpdatePageContentSafe(oneNoteApp, notePageDocument);
                 }
             }
             catch (Exception ex)

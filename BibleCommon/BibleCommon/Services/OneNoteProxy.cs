@@ -380,7 +380,7 @@ namespace BibleCommon.Services
             
             foreach (PageContent page in toCommit)
             {
-                oneNoteApp.UpdatePageContent(page.Content.ToString());
+                OneNoteUtils.UpdatePageContentSafe(oneNoteApp, page.Content);                
 
                 if (onPageProcessed != null)
                     onPageProcessed(page);
