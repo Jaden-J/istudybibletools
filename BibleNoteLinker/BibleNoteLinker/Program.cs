@@ -154,9 +154,7 @@ namespace BibleNoteLinker
                     {
                         SettingsManager.Instance.LastNotesLinkTime = DateTime.Now;
                         SettingsManager.Instance.Save();
-                    }
-
-                    Logger.LogMessage("Успешно завершено");
+                    }                    
                 }
                 catch (Exception ex)
                 {
@@ -173,6 +171,8 @@ namespace BibleNoteLinker
                 Console.WriteLine("Во время работы программы произошли ошибки");
                 Console.ReadKey();
             }
+            else
+                Logger.LogMessage("Успешно завершено");
         }
 
         private static string GetRightPagesString(int pagesCount)
