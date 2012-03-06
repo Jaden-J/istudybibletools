@@ -5,6 +5,9 @@ using System.Text;
 using BibleCommon.Consts;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using System.Net;
+using System.Xml;
+using System.IO;
 
 namespace BibleCommon.Services
 {
@@ -54,7 +57,7 @@ namespace BibleCommon.Services
 
             try
             {                
-                XDocument xDoc = XDocument.Load(Constants.NewVersionOnServerFileUrl);
+                XDocument xDoc = Load(Constants.NewVersionOnServerFileUrl);
 
                 XElement latestVersion = xDoc.Root.XPathSelectElement("LatestVersion_IStudyBibleTools_RU");
                 if (latestVersion != null)
@@ -64,10 +67,48 @@ namespace BibleCommon.Services
             }
             catch (Exception)
             {
-                //todo: log it in system log (ont in common log)
+                //todo: log it in system log (not in common log)
             }
 
             return result;
+        }
+
+
+        private static XDocument Load(string fullServiceUrl)
+        {
+            var httpRequest = GetWebRequest(fullServiceUrl);
+            var httpResponse = (HttpWebResponse)httpRequest.GetResponse();
+            using (var stream = httpResponse.GetResponseStream())
+            {
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    var xDoc = XDocument.Load(reader);
+                    return xDoc;
+                }
+            }
+        }
+
+        private static HttpWebRequest GetWebRequest(string url)
+        {
+            ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+
+            var httpRequest = (HttpWebRequest)WebRequest.Create(url);
+
+            httpRequest.Proxy = GetProxy();
+            httpRequest.Method = WebRequestMethods.Http.Get;
+
+            return httpRequest;
+        }
+
+        private static WebProxy GetProxy()
+        {
+            var proxy = WebProxy.GetDefaultProxy();
+            if (proxy.Address != null)
+            {
+                proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
+                WebRequest.DefaultWebProxy = new WebProxy(proxy.Address, proxy.BypassProxyOnLocal, proxy.BypassList, proxy.Credentials);
+            }
+            return proxy;
         }
     }
 }
