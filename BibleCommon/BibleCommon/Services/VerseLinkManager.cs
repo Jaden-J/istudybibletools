@@ -26,8 +26,8 @@ namespace BibleCommon.Services
         /// <param name="pageLevel">1, 2 or 3</param>
         /// <returns>target pageId</returns>
         public static string FindVerseLinkPageAndCreateIfNeeded(Application oneNoteApp, 
-            string bibleSectionId, string biblePageId, string biblePageName, string descriptionPageName, 
-            bool isSummaryNotesPage = false, int pageLevel = 1, bool createIfNeeded = true)
+            string bibleSectionId, string biblePageId, string biblePageName, string descriptionPageName,
+            bool isSummaryNotesPage = false, string verseLinkParentPageId = null, int pageLevel = 1, bool createIfNeeded = true)
         {
 
             string sectionGroupId = FindDescriptionSectionGroupForBiblePage(oneNoteApp, bibleSectionId, createIfNeeded);
@@ -38,7 +38,7 @@ namespace BibleCommon.Services
                 {
                     string bibleSectionName = OneNoteUtils.GetHierarchyElementName(oneNoteApp, bibleSectionId);
                     string pageId = FindDescriptionPageForBiblePage(oneNoteApp, sectionId,
-                        bibleSectionName, biblePageId, biblePageName, descriptionPageName, isSummaryNotesPage, pageLevel, createIfNeeded);
+                        bibleSectionName, biblePageId, biblePageName, descriptionPageName, isSummaryNotesPage, verseLinkParentPageId, pageLevel, createIfNeeded);
                     if (!string.IsNullOrEmpty(pageId))
                     {
                         return pageId;
@@ -184,7 +184,7 @@ namespace BibleCommon.Services
         /// <returns></returns>
         private static string FindDescriptionPageForBiblePage(Application oneNoteApp, string sectionId, 
             string bibleSectionName, string biblePageId, string biblePageName, string descriptionPageName,
-            bool isSummaryNotesPage, int pageLevel, bool createIfNeeded)
+            bool isSummaryNotesPage, string verseLinkParentPageId, int pageLevel, bool createIfNeeded)
         {   
             OneNoteProxy.HierarchyElement sectionDocument = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages);            
 
@@ -218,13 +218,69 @@ namespace BibleCommon.Services
                                         descriptionPageName, linkToBiblePage);
                     SetPageName(oneNoteApp, pageId, pageName, isSummaryNotesPage, pageLevel, biblePageDoc.Xnm);
 
-                    OneNoteProxy.Instance.RefreshHierarchyCache(oneNoteApp, sectionId, HierarchyScope.hsPages);
+                    // необходимо отсортировать страницы. Точнее переместить созданную страницу в правильное место
+                    SortVerseLinkPages(oneNoteApp, sectionId, pageId, verseLinkParentPageId, pageLevel);
                 }
             }
             else
                 pageId = (string)page.Attribute("ID");
 
             return pageId;
+        }
+
+        private static void SortVerseLinkPages(Application oneNoteApp, string sectionId, string newPageId, string verseLinkParentPageId, int pageLevel)
+        {
+            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages, true);
+            var newPage = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Page[@ID='{0}']", newPageId), hierarchy.Xnm);
+            string newPageName = (string)newPage.Attribute("name");
+
+            XElement prevPage = null;
+            foreach (XElement oldPage in hierarchy.Content.Root.XPathSelectElements(string.Format("one:Page[@ID != '{0}']", newPageId), hierarchy.Xnm))
+            {
+                if (prevPage == null)
+                {
+                    if (!string.IsNullOrEmpty(verseLinkParentPageId))
+                    {
+                        string oldPageId = (string)oldPage.Attribute("ID");
+
+                        if (oldPageId == verseLinkParentPageId)
+                        {
+                            prevPage = oldPage;
+                            continue;
+                        }
+                        else
+                            continue;
+                    }
+                }
+
+                string oldPageLevel = (string)oldPage.Attribute("pageLevel");
+                if (pageLevel == int.Parse(oldPageLevel))
+                {
+                    string oldPageName = (string)oldPage.Attribute("name");
+
+                    if (StringUtils.CompareTo(newPageName, oldPageName) < 0)
+                        break;
+
+                    prevPage = oldPage;
+                }
+                else
+                    if (prevPage != null)  // если уже нашли страницу, после которой вставляем
+                        break;
+            }
+
+            hierarchy.Content.Root.XPathSelectElement(string.Format("one:Page[@ID='{0}']", newPageId), hierarchy.Xnm).Remove();
+            if (prevPage == null)
+            {
+                hierarchy.Content.Root.AddFirst(newPage);
+            }
+            else
+            {
+                prevPage.AddAfterSelf(newPage);
+            }
+
+            oneNoteApp.UpdateHierarchy(hierarchy.Content.ToString());
+
+            OneNoteProxy.Instance.RefreshHierarchyCache(oneNoteApp, sectionId, HierarchyScope.hsPages);
         }
 
         private static VersePointer GetVersePointer(string bibleSectionName, string biblePageName)
