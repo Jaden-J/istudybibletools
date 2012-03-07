@@ -115,7 +115,7 @@ namespace BibleConfigurator.Tools
             try
             {
                 notesPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(_oneNoteApp,
-                    bibleSectionId, biblePageId, biblePageName, notesPageName, true, 1, false);
+                    bibleSectionId, biblePageId, biblePageName, notesPageName, true, null, 1, false);
             }
             catch (NotFoundVerseLinkPageExceptions) // просто не нашли, а нам и не надо
             {

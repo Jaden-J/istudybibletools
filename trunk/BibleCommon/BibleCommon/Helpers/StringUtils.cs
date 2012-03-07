@@ -49,6 +49,34 @@ namespace BibleCommon.Helpers
 
             return s;
         }
+        
+        /// <summary>
+        /// Сортирует, учитывая тот факт, что переданные строки могут содержать вначале цифры и сортировать надо по этим цифрам
+        /// </summary>
+        /// <param name="s1"></param>
+        /// <param name="s2"></param>
+        /// <returns></returns>
+        public static int CompareTo(string s1, string s2)
+        {
+            if (!string.IsNullOrEmpty(s1))
+            {
+                if (string.IsNullOrEmpty(s2))
+                    return 1;
+                
+                int temp;
+                if (int.TryParse(s1[0].ToString(), out temp) && int.TryParse(s2[0].ToString(), out temp))
+                {
+                    int i1 = GetStringFirstNumber(s1).Value;
+                    int i2 = GetStringFirstNumber(s2).Value;
+
+                    return i1.CompareTo(i2);
+                }
+                else
+                    return s1.CompareTo(s2);
+            }
+
+            return string.IsNullOrEmpty(s2) ? 0 : -1;
+        }
 
         public static int IndexOfAny(string s, params string[] anyOf)
         {
