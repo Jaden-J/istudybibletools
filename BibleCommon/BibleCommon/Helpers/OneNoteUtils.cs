@@ -18,23 +18,17 @@ namespace BibleCommon.Helpers
     {
         public static bool NotebookExists(Application oneNoteApp, string notebookId)
         {
-            string xml;
-            XmlNamespaceManager xnm;
-            oneNoteApp.GetHierarchy(null, HierarchyScope.hsNotebooks, out xml);
-            XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
-            XElement bibleNotebook = doc.Root.XPathSelectElement(string.Format("one:Notebook[@ID='{0}']", notebookId), xnm);
+            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, null, HierarchyScope.hsNotebooks);
+            XElement bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@ID='{0}']", notebookId), hierarchy.Xnm);
             return bibleNotebook != null;            
         }
 
         public static string GetNotebookIdByName(Application oneNoteApp, string notebookName)
         {
-            string xml;
-            XmlNamespaceManager xnm;
-            oneNoteApp.GetHierarchy(null, HierarchyScope.hsNotebooks, out xml);
-            XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
-            XElement bibleNotebook = doc.Root.XPathSelectElement(string.Format("one:Notebook[@nickname='{0}']", notebookName), xnm);
+            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, null, HierarchyScope.hsNotebooks);
+            XElement bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@nickname='{0}']", notebookName), hierarchy.Xnm);
             if (bibleNotebook == null)
-                bibleNotebook = doc.Root.XPathSelectElement(string.Format("one:Notebook[@name='{0}']", notebookName), xnm);
+                bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@name='{0}']", notebookName), hierarchy.Xnm);
             if (bibleNotebook != null)
             {
                 return (string)bibleNotebook.Attribute("ID");

@@ -49,22 +49,7 @@ namespace BibleTablesResizer
                 Console.WriteLine("Во время работы программы произошли ошибки.");
                 Console.ReadKey();
             }
-        }
-
-        private static string GetBibleNotebookName(Application oneNoteApp, string notebookName)
-        {
-            string xml;
-            XmlNamespaceManager xnm;
-            oneNoteApp.GetHierarchy(null, HierarchyScope.hsNotebooks, out xml);
-            XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
-            XElement bibleNotebook = doc.Root.XPathSelectElement(string.Format("one:Notebook[@ID='{0}']", notebookName), xnm);
-            if (bibleNotebook != null)
-            {
-                return (string)bibleNotebook.Attribute("name");
-            }
-
-            return null;
-        }
+        }       
 
         private static void ProcessRootSectionGroup(Application oneNoteApp, string notebookId, XDocument doc, string sectionGroupId, XmlNamespaceManager xnm)
         {
