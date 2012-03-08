@@ -48,7 +48,12 @@ namespace BibleCommon.Services
 
             public override int GetHashCode()
             {
-                return this.ID.GetHashCode() ^ this.ContentScope.GetHashCode();
+                int result = this.ContentScope.GetHashCode();
+
+                if (!string.IsNullOrEmpty(this.ID))
+                    result = result ^ this.ID.GetHashCode();
+
+                return result;
             }
         }
 

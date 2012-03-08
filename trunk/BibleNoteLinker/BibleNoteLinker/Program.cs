@@ -198,13 +198,10 @@ namespace BibleNoteLinker
         {
             Logger.LogMessage("Обработка записной книжки: '{0}'", OneNoteUtils.GetHierarchyElementName(oneNoteApp, notebookId));  // чтобы точно убедиться
 
-            string hierarchyXml;
-            oneNoteApp.GetHierarchy(notebookId, HierarchyScope.hsPages, out hierarchyXml);
-            XmlNamespaceManager xnm;
-            XDocument notebookDoc = OneNoteUtils.GetXDocument(hierarchyXml, out xnm);
+            OneNoteProxy.HierarchyElement notebookPages = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, HierarchyScope.hsPages);
 
-            Logger.MoveLevel(1);            
-            ProcessRootSectionGroup(oneNoteApp, notebookId, notebookDoc, sectionGroupId, xnm, userArgs.AnalyzeDepth, userArgs.Force, userArgs.LastChanged);
+            Logger.MoveLevel(1);
+            ProcessRootSectionGroup(oneNoteApp, notebookId, notebookPages.Content, sectionGroupId, notebookPages.Xnm, userArgs.AnalyzeDepth, userArgs.Force, userArgs.LastChanged);
             Logger.MoveLevel(-1);
         }
 

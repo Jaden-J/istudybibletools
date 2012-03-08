@@ -285,23 +285,20 @@ namespace BibleConfigurator
 
         private void SearchForCorrespondenceSectionGroups(string notebookId)
         {
-            string xml;
-            XmlNamespaceManager xnm;
-            _oneNoteApp.GetHierarchy(notebookId, HierarchyScope.hsSections, out xml);
-            XDocument notebookDoc = OneNoteUtils.GetXDocument(xml, out xnm);
+            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, notebookId, HierarchyScope.hsSections);
 
             List<SectionGroupType> sectionGroups = new List<SectionGroupType>();
 
-            foreach (XElement sectionGroup in notebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm).Where(sg => !OneNoteUtils.IsRecycleBin(sg)))
+            foreach (XElement sectionGroup in notebook.Content.Root.XPathSelectElements("one:SectionGroup", notebook.Xnm).Where(sg => !OneNoteUtils.IsRecycleBin(sg)))
             {
                 string id = (string)sectionGroup.Attribute("ID");
 
-                if (NotebookChecker.ElementIsBible(sectionGroup, xnm) && !sectionGroups.Contains(SectionGroupType.Bible))
+                if (NotebookChecker.ElementIsBible(sectionGroup, notebook.Xnm) && !sectionGroups.Contains(SectionGroupType.Bible))
                 {
                     SettingsManager.Instance.SectionGroupId_Bible = id;
                     sectionGroups.Add(SectionGroupType.Bible);
                 }
-                else if (NotebookChecker.ElementIsBibleComments(sectionGroup, xnm) && !sectionGroups.Contains(SectionGroupType.BibleComments))
+                else if (NotebookChecker.ElementIsBibleComments(sectionGroup, notebook.Xnm) && !sectionGroups.Contains(SectionGroupType.BibleComments))
                 {
                     SettingsManager.Instance.SectionGroupId_BibleComments = id;
                     sectionGroups.Add(SectionGroupType.BibleComments);
@@ -321,14 +318,11 @@ namespace BibleConfigurator
 
         private void RenameSectionGroupsForm(string notebookId, Dictionary<string, string> renamedSectionGroups)
         {
-            string xml;
-            XmlNamespaceManager xnm;
-            _oneNoteApp.GetHierarchy(notebookId, HierarchyScope.hsSections, out xml);
-            XDocument notebookDoc = OneNoteUtils.GetXDocument(xml, out xnm);
+            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, notebookId, HierarchyScope.hsSections);     
 
             foreach (string sectionGroupId in renamedSectionGroups.Keys)
             {
-                XElement sectionGroup = notebookDoc.Root.XPathSelectElement(string.Format("one:SectionGroup[@ID='{0}']", sectionGroupId), xnm);
+                XElement sectionGroup = notebook.Content.Root.XPathSelectElement(string.Format("one:SectionGroup[@ID='{0}']", sectionGroupId), notebook.Xnm);
 
                 if (sectionGroup != null)
                 {
@@ -338,7 +332,8 @@ namespace BibleConfigurator
                     Logger.LogError(string.Format("Не найдена группа разделов '{0}'.", sectionGroupId));
             }
 
-            _oneNoteApp.UpdateHierarchy(notebookDoc.ToString());
+            _oneNoteApp.UpdateHierarchy(notebook.Content.ToString());
+            OneNoteProxy.Instance.RefreshHierarchyCache(_oneNoteApp, notebookId, HierarchyScope.hsSections);     
         }
 
         private string CreateNotebookFromTemplate(string notebookTemplateFileName, string notebookFromTemplatePath)
@@ -507,12 +502,10 @@ namespace BibleConfigurator
         public Dictionary<string, string> GetNotebooks()
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
+            
+            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, null, HierarchyScope.hsNotebooks);
 
-            string xml;
-            XmlNamespaceManager xnm;
-            _oneNoteApp.GetHierarchy(null, HierarchyScope.hsNotebooks, out xml);
-            XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
-            foreach (XElement notebook in doc.Root.XPathSelectElements("one:Notebook", xnm))
+            foreach (XElement notebook in hierarchy.Content.Root.XPathSelectElements("one:Notebook", hierarchy.Xnm))
             {
                 string name = (string)notebook.Attribute("nickname");
                 if (string.IsNullOrEmpty(name))

@@ -12,6 +12,7 @@ using System.Xml.Linq;
 using Microsoft.Office.Interop.OneNote;
 using System.Xml.XPath;
 using BibleCommon;
+using BibleCommon.Services;
 
 namespace BibleConfigurator
 {
@@ -83,19 +84,16 @@ namespace BibleConfigurator
         {
             Dictionary<SectionGroupType, SectionGroupInfo> result = new Dictionary<SectionGroupType, SectionGroupInfo>();
 
-            string xml;
-            XmlNamespaceManager xnm;
-            _oneNoteApp.GetHierarchy(_notebookId, HierarchyScope.hsSections, out xml);
-            XDocument notebookDoc = OneNoteUtils.GetXDocument(xml, out xnm);
+            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, _notebookId, HierarchyScope.hsSections);                            
 
-            foreach (XElement sectionGroup in notebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm).Where(sg => !OneNoteUtils.IsRecycleBin(sg)))
+            foreach (XElement sectionGroup in notebook.Content.Root.XPathSelectElements("one:SectionGroup", notebook.Xnm).Where(sg => !OneNoteUtils.IsRecycleBin(sg)))
             {
                 string name = (string)sectionGroup.Attribute("name");
                 string id = (string)sectionGroup.Attribute("ID");
 
-                if (NotebookChecker.ElementIsBible(sectionGroup, xnm) && !result.ContainsKey(SectionGroupType.Bible))
+                if (NotebookChecker.ElementIsBible(sectionGroup, notebook.Xnm) && !result.ContainsKey(SectionGroupType.Bible))
                     result.Add(SectionGroupType.Bible, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.Bible });
-                else if (NotebookChecker.ElementIsBibleComments(sectionGroup, xnm) && !result.ContainsKey(SectionGroupType.BibleComments))
+                else if (NotebookChecker.ElementIsBibleComments(sectionGroup, notebook.Xnm) && !result.ContainsKey(SectionGroupType.BibleComments))
                     result.Add(SectionGroupType.BibleComments, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.BibleComments });
                 else if (!result.ContainsKey(SectionGroupType.BibleStudy))
                     result.Add(SectionGroupType.BibleStudy, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.BibleStudy });

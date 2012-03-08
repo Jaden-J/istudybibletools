@@ -7,6 +7,7 @@ using System.Xml;
 using System.Xml.XPath;
 using Microsoft.Office.Interop.OneNote;
 using BibleCommon.Helpers;
+using BibleCommon.Services;
 
 namespace BibleConfigurator
 {
@@ -19,24 +20,21 @@ namespace BibleConfigurator
 
             if (!string.IsNullOrEmpty(notebookId))
             {
-                string xml;
-                XmlNamespaceManager xnm;
-                oneNoteApp.GetHierarchy(notebookId, HierarchyScope.hsSections, out xml);
-                XDocument notebookDoc = OneNoteUtils.GetXDocument(xml, out xnm);
+                OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, HierarchyScope.hsSections);                
 
                 switch (notebookType)
                 {
                     case NotebookType.Single:
-                        result = ElementIsSingleNotebook(notebookDoc, xnm);
+                        result = ElementIsSingleNotebook(notebook.Content, notebook.Xnm);
                         break;
                     case NotebookType.Bible:
-                        result = ElementIsBible(notebookDoc.Root, xnm);
+                        result = ElementIsBible(notebook.Content.Root, notebook.Xnm);
                         break;
                     case NotebookType.BibleComments:
-                        result = ElementIsBibleComments(notebookDoc.Root, xnm);
+                        result = ElementIsBibleComments(notebook.Content.Root, notebook.Xnm);
                         break;
                     case NotebookType.BibleStudy:
-                        result = ElementIsBibleStudy(notebookDoc.Root, xnm);
+                        result = ElementIsBibleStudy(notebook.Content.Root, notebook.Xnm);
                         break;
                 }
             }

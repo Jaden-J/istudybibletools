@@ -47,15 +47,12 @@ namespace BibleCommon.Services
         private void ProcessNotebook(string notebookId, string sectionGroupId, Action<PageInfo> pageAction)
         {
             BibleCommon.Services.Logger.LogMessage("Обработка записной книжки: '{0}'", 
-                OneNoteUtils.GetHierarchyElementName(_oneNoteApp, notebookId));  
+                OneNoteUtils.GetHierarchyElementName(_oneNoteApp, notebookId));
 
-            string hierarchyXml;
-            _oneNoteApp.GetHierarchy(notebookId, HierarchyScope.hsPages, out hierarchyXml);
-            XmlNamespaceManager xnm;
-            XDocument notebookDoc = OneNoteUtils.GetXDocument(hierarchyXml, out xnm);
+            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, notebookId, HierarchyScope.hsPages);
 
             BibleCommon.Services.Logger.MoveLevel(1);
-            ProcessRootSectionGroup(notebookId, notebookDoc, sectionGroupId, xnm, pageAction);
+            ProcessRootSectionGroup(notebookId, notebook.Content, sectionGroupId, notebook.Xnm, pageAction);
             BibleCommon.Services.Logger.MoveLevel(-1);
         }
 
