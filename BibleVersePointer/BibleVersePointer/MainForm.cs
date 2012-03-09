@@ -81,6 +81,7 @@ namespace BibleVersePointer
 
                             if (GoToVerse(vp))
                             {
+                                this.Visible = false;
                                 Properties.Settings.Default.LastVerse = tbVerse.Text;
                                 Properties.Settings.Default.Save();
                             }
