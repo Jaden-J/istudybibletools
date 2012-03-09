@@ -683,6 +683,8 @@ namespace BibleNoteLinker
             AnalyzeDepth linkDepth, VersePointerSearchResult globalChapterSearchResult, List<VersePointerSearchResult> pageChaptersSearchResult,
             bool isLink, bool isInBrackets, bool force, out int newEndVerseIndex, out HierarchySearchManager.HierarchySearchResult hierarchySearchResult)
         {
+            hierarchySearchResult = new HierarchySearchManager.HierarchySearchResult() { ResultType = HierarchySearchManager.HierarchySearchResultType.NotFound };
+
             int startVerseNameIndex = searchResult.VersePointerStartIndex;
             int endVerseNameIndex = searchResult.VersePointerEndIndex;
 
@@ -691,75 +693,85 @@ namespace BibleNoteLinker
             if (!CorrectTextToChangeBoundary(textElementValue, isLink,
                               ref startVerseNameIndex, ref endVerseNameIndex))
             {
-                newEndVerseIndex = searchResult.VersePointerHtmlEndIndex; // потому что это же значение мы присваиваем, если стоит !force и встретили гиперссылку
-                hierarchySearchResult = new HierarchySearchManager.HierarchySearchResult() { ResultType = HierarchySearchManager.HierarchySearchResultType.NotFound };
+                newEndVerseIndex = searchResult.VersePointerHtmlEndIndex; // потому что это же значение мы присваиваем, если стоит !force и встретили гиперссылку                
                 return textElementValue;
             }
 
 
-            if (TryLinkVerseToNotesPage(oneNoteApp, searchResult.VersePointer, searchResult.ResultType,
-                noteSectionGroupName, noteSectionName, notePageName, notePageId, notePageTitleId, notePageContentObjectId, linkDepth, 
-                !SettingsManager.Instance.UseDifferentPagesForEachVerse, SettingsManager.Instance.ExcludedVersesLinking, 
-                SettingsManager.Instance.PageName_Notes, null, SettingsManager.Instance.PageWidth_Notes, 1,
-                globalChapterSearchResult, pageChaptersSearchResult,
-                isInBrackets, force, out hierarchySearchResult, hsr =>
-                    {
-                        if (hsr.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder)
-                            Logger.LogMessage("Обработка стиха: {0}", searchResult.VersePointer.OriginalVerseName);
-                        else
-                            Logger.LogMessage("Обработка главы: {0}", textToChange);
-                    }))
-            {
-                if (linkDepth >= AnalyzeDepth.GetVersesLinks)
-                {
-                    string link = OneNoteUtils.GenerateHref(oneNoteApp, textToChange,
-                        hierarchySearchResult.HierarchyObjectInfo.PageId, hierarchySearchResult.HierarchyObjectInfo.ContentObjectId);
+            #region linking main notes page
 
-                    link = string.Format("<span style='font-weight:normal'>{0}</span>", link);
 
-                    textElementValue = string.Concat(
-                        textElementValue.Substring(0, startVerseNameIndex),
-                        link,
-                        textElementValue.Substring(endVerseNameIndex));
 
-                    newEndVerseIndex = startVerseNameIndex + link.Length;
-                    searchResult.VersePointerHtmlEndIndex = newEndVerseIndex;
-                }
-            }
-
-            if (SettingsManager.Instance.UseDifferentPagesForEachVerse)  // для каждого стиха своя странциа
-            {
-                string notesPageName = GetDefaultNotesPageName(searchResult.VersePointer.Verse);
-                TryLinkVerseToNotesPage(oneNoteApp, searchResult.VersePointer, searchResult.ResultType,
-                    noteSectionGroupName, noteSectionName, notePageName, notePageId, notePageTitleId, notePageContentObjectId, linkDepth,
-                    true, SettingsManager.Instance.ExcludedVersesLinking,
-                    notesPageName, SettingsManager.Instance.PageName_Notes, SettingsManager.Instance.PageWidth_Notes, 2,
-                    globalChapterSearchResult, pageChaptersSearchResult,
-                    isInBrackets, force, out hierarchySearchResult, null);
-            }
-
+            List<VersePointer> verses = new List<VersePointer>() { searchResult.VersePointer };
 
             if (SettingsManager.Instance.ExpandMultiVersesLinking && searchResult.VersePointer.IsMultiVerse)
+                verses.AddRange(searchResult.VersePointer.GetAllIncludedVersesExceptFirst());
+
+            bool first = true;
+            foreach (VersePointer vp in verses)
             {
-                foreach (VersePointer vp in searchResult.VersePointer.GetAllIncludedVersesExceptFirst())
+                if (TryLinkVerseToNotesPage(oneNoteApp, vp, searchResult.ResultType,
+                        noteSectionGroupName, noteSectionName, notePageName, notePageId, notePageTitleId, notePageContentObjectId, linkDepth,
+                        !SettingsManager.Instance.UseDifferentPagesForEachVerse, SettingsManager.Instance.ExcludedVersesLinking,
+                        SettingsManager.Instance.PageName_Notes, null, SettingsManager.Instance.PageWidth_Notes, 1,
+                        globalChapterSearchResult, pageChaptersSearchResult,
+                        isInBrackets, force, out hierarchySearchResult, hsr =>
+                        {
+                            if (first)
+                            {
+                                if (hsr.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder)
+                                    Logger.LogMessage("Обработка стиха: {0}", searchResult.VersePointer.OriginalVerseName);
+                                else
+                                    Logger.LogMessage("Обработка главы: {0}", textToChange);
+                            }
+                        }))
                 {
+                    if (first)
+                    {
+                        if (linkDepth >= AnalyzeDepth.GetVersesLinks)
+                        {
+                            string link = OneNoteUtils.GenerateHref(oneNoteApp, textToChange,
+                                hierarchySearchResult.HierarchyObjectInfo.PageId, hierarchySearchResult.HierarchyObjectInfo.ContentObjectId);
+
+                            link = string.Format("<span style='font-weight:normal'>{0}</span>", link);
+
+                            textElementValue = string.Concat(
+                                textElementValue.Substring(0, startVerseNameIndex),
+                                link,
+                                textElementValue.Substring(endVerseNameIndex));
+
+                            newEndVerseIndex = startVerseNameIndex + link.Length;
+                            searchResult.VersePointerHtmlEndIndex = newEndVerseIndex;
+                        }
+                    }
+                }
+
+                if (SettingsManager.Instance.UseDifferentPagesForEachVerse)  // для каждого стиха своя страница
+                {
+                    string notesPageName = GetDefaultNotesPageName(vp.Verse);
                     TryLinkVerseToNotesPage(oneNoteApp, vp, searchResult.ResultType,
                         noteSectionGroupName, noteSectionName, notePageName, notePageId, notePageTitleId, notePageContentObjectId, linkDepth,
-                        false, SettingsManager.Instance.ExcludedVersesLinking, 
-                        SettingsManager.Instance.PageName_Notes, null, SettingsManager.Instance.PageWidth_Notes, 1,
+                        true, SettingsManager.Instance.ExcludedVersesLinking,
+                        notesPageName, SettingsManager.Instance.PageName_Notes, SettingsManager.Instance.PageWidth_Notes, 2,
                         globalChapterSearchResult, pageChaptersSearchResult,
                         isInBrackets, force, out hierarchySearchResult, null);
                 }
-            }
+
+                first = false;
+            }           
+
+            #endregion           
+
+            #region linking rubbish notes pages
 
             if (SettingsManager.Instance.RubbishPage_Use)
             {
-                List<VersePointer> verses = new List<VersePointer>() { searchResult.VersePointer };
+                List<VersePointer> rubbishVerses = new List<VersePointer>() { searchResult.VersePointer };
 
                 if (SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking && searchResult.VersePointer.IsMultiVerse)
-                    verses.AddRange(searchResult.VersePointer.GetAllIncludedVersesExceptFirst());
+                    rubbishVerses.AddRange(searchResult.VersePointer.GetAllIncludedVersesExceptFirst());
 
-                foreach (VersePointer vp in verses)
+                foreach (VersePointer vp in rubbishVerses)
                 {
                     TryLinkVerseToNotesPage(oneNoteApp, vp, searchResult.ResultType, 
                         noteSectionGroupName, noteSectionName, notePageName, notePageId, notePageTitleId, notePageContentObjectId, linkDepth,
@@ -769,6 +781,8 @@ namespace BibleNoteLinker
                         isInBrackets, force, out hierarchySearchResult, null);
                 }
             }
+
+            #endregion
 
             return textElementValue;
         }
