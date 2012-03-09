@@ -29,10 +29,6 @@ namespace BibleVerseLinkerEx
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.LastPageName = tbPageName.Text;
-            Properties.Settings.Default.LastSearchForUnderlineText = cbSearchForUnderlineText.Checked;
-            Properties.Settings.Default.Save();
-
             btnOk.Enabled = false;
             Application.DoEvents();
 
@@ -66,8 +62,14 @@ namespace BibleVerseLinkerEx
 
             btnOk.Enabled = true;
 
-            if (!Logger.WasLogged)                
+            if (!Logger.WasLogged)
+            {
+                this.Visible = false;
+                Properties.Settings.Default.LastPageName = tbPageName.Text;
+                Properties.Settings.Default.LastSearchForUnderlineText = cbSearchForUnderlineText.Checked;
+                Properties.Settings.Default.Save();
                 this.Close();
+            }
         }
 
         private void MainForm_Load(object sender, EventArgs e)
