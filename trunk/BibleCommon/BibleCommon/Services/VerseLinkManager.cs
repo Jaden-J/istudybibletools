@@ -29,7 +29,7 @@ namespace BibleCommon.Services
             string bibleSectionId, string biblePageId, string biblePageName, string descriptionPageName,
             bool isSummaryNotesPage = false, string verseLinkParentPageId = null, int pageLevel = 1, bool createIfNeeded = true)
         {
-
+            string exceptionResolveWay = "\nСкорее всего в OneNote открыта не страница Библии.";
             string sectionGroupId = FindDescriptionSectionGroupForBiblePage(oneNoteApp, bibleSectionId, createIfNeeded);
             if (!string.IsNullOrEmpty(sectionGroupId))
             {
@@ -44,13 +44,13 @@ namespace BibleCommon.Services
                         return pageId;
                     }
                     else
-                        throw new NotFoundVerseLinkPageExceptions("Не найдена страница для комментариев");
+                        throw new NotFoundVerseLinkPageExceptions("Не найдена страница для комментариев." + exceptionResolveWay);
                 }
                 else
-                    throw new NotFoundVerseLinkPageExceptions("Не найдена секция для комментариев");
+                    throw new NotFoundVerseLinkPageExceptions("Не найдена секция для комментариев." + exceptionResolveWay);
             }
             else
-                throw new NotFoundVerseLinkPageExceptions("Не найдена группа секций для комментариев");
+                throw new NotFoundVerseLinkPageExceptions("Не найдена группа секций для комментариев." + exceptionResolveWay);
         }
 
 
@@ -190,13 +190,14 @@ namespace BibleCommon.Services
 
             VersePointer vp = GetVersePointer(bibleSectionName, biblePageName);
 
-            if (vp == null)
-                throw new Exception(
-                    string.Format(
-                        "Не удаётся найти соответствующее место Писания для страницы. bibleSectionName = '{0}', biblePageName = '{1}'",
-                        bibleSectionName, biblePageName));
+            //if (vp == null)
+            //    throw new Exception(
+            //        string.Format(
+            //            "Не удаётся найти соответствующее место Писания для страницы. bibleSectionName = '{0}', biblePageName = '{1}'",
+            //            bibleSectionName, biblePageName));
 
-            string pageDisplayName = string.Format("{0}. [{1}]", descriptionPageName, vp.FriendlyChapterName);
+            string pageDisplayName = string.Format("{0}.{1}", descriptionPageName, 
+                                                               vp != null ? string.Format(" [{0}]", vp.FriendlyChapterName) : string.Empty);
 
             XElement page = sectionDocument.Content.Root.XPathSelectElement(string.Format("one:Page[@name='{0}']", pageDisplayName), sectionDocument.Xnm);
 
@@ -212,10 +213,14 @@ namespace BibleCommon.Services
                     string biblePageTitleId = (string)biblePageDoc.Content.Root
                         .XPathSelectElement("one:Title/one:OE", biblePageDoc.Xnm).Attribute("objectID");
 
-                    string linkToBiblePage = OneNoteUtils.GenerateHref(oneNoteApp, vp.FriendlyChapterName, biblePageId, biblePageTitleId);
-                    
-                    string pageName = string.Format("{0}. <span style='font-size:10pt;'>[{1}]</span>",
-                                        descriptionPageName, linkToBiblePage);
+                    string pageName = descriptionPageName + ".";
+
+                    if (vp != null)
+                    {
+                        string linkToBiblePage = OneNoteUtils.GenerateHref(oneNoteApp, vp.FriendlyChapterName, biblePageId, biblePageTitleId);
+                        pageName += string.Format(" <span style='font-size:10pt;'>[{0}]</span>", linkToBiblePage);
+                    }
+
                     SetPageName(oneNoteApp, pageId, pageName, isSummaryNotesPage, pageLevel, biblePageDoc.Xnm);
 
                     // необходимо отсортировать страницы. Точнее переместить созданную страницу в правильное место
