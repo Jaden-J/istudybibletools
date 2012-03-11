@@ -149,6 +149,22 @@ namespace BibleNoteLinker
                         pageContent => Logger.LogMessage(".", false, false, false));
                     Logger.LogMessage(string.Empty, false, true, false);
 
+                    Logger.LogMessage(string.Format("Сортировка страниц 'Сводные заметок' ({0})", 
+                        GetRightPagesString(OneNoteProxy.Instance.SortVerseLinkPagesInfo.Count)), true, false);
+                    foreach (var sortPageInfo in OneNoteProxy.Instance.SortVerseLinkPagesInfo)
+                    {
+                        VerseLinkManager.SortVerseLinkPages(oneNoteApp, 
+                            sortPageInfo.SectionId, sortPageInfo.PageId, sortPageInfo.ParentPageId, sortPageInfo.PageLevel);
+                        Logger.LogMessage(".", false, false, false);
+                    }
+                    Logger.LogMessage(string.Empty, false, true, false);
+
+                    Logger.LogMessage("Обновление иерархии в OneNote", true, false);
+                    OneNoteProxy.Instance.CommitAllModifiedHierarchy(oneNoteApp,                        
+                        pagesCount => Logger.LogMessage(string.Format(" ({0})", GetRightPagesString(pagesCount)), false, false, false),
+                        pageContent => Logger.LogMessage(".", false, false, false));
+                    Logger.LogMessage(string.Empty, false, true, false);
+
 
                     if (userArgs.AnalyzeAllPages)
                     {

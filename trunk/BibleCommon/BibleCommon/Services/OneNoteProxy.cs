@@ -118,8 +118,16 @@ namespace BibleCommon.Services
             public OneNoteHierarchyContentId Id { get; set; }
             public XDocument Content { get; set;}
             public XmlNamespaceManager Xnm { get; set; }
+            public bool WasModified { get; set; }
         }
 
+        public class SortPageInfo
+        {
+            public string SectionId { get; set;}
+            public string PageId { get; set;}
+            public string ParentPageId { get; set;}
+            public int PageLevel { get; set; }
+        }
 
         public class LinkId
         {   
@@ -176,10 +184,31 @@ namespace BibleCommon.Services
         private Dictionary<LinkId, string> _linksCache = new Dictionary<LinkId, string>();
         private Dictionary<NotePageProcessedVerseId, HashSet<VersePointer>> _notePageProcessedVerses = new Dictionary<NotePageProcessedVerseId, HashSet<VersePointer>>();  //todo: как только сделаем NoteLInkManager не статичным, перенести туда
         private HashSet<VersePointer> _processedVerses = new HashSet<VersePointer>();
+        private List<SortPageInfo> _sortVerseLinkPagesInfo = new List<SortPageInfo>();
+
 
         protected OneNoteProxy()
         {
 
+        }
+
+        public List<SortPageInfo> SortVerseLinkPagesInfo
+        {
+            get
+            {
+                return _sortVerseLinkPagesInfo;
+            }
+        }
+
+        public void RegisteVerseLinkSortPage(string sectionId, string newPageId, string verseLinkParentPageId, int pageLevel)
+        {
+            _sortVerseLinkPagesInfo.Add(new SortPageInfo()
+            {
+                SectionId = sectionId,
+                PageId = newPageId,
+                ParentPageId = verseLinkParentPageId,
+                PageLevel = pageLevel
+            });
         }
 
         public string GenerateHref(Application oneNoteApp, string pageId, string objectId)
@@ -414,6 +443,29 @@ namespace BibleCommon.Services
             {
                 foreach (var page in toCommit)  
                     _pageContentCache.Remove(page.PageId);
+            }
+        }
+
+        public void CommitAllModifiedHierarchy(Application oneNoteApp, Action<int> onAllHierarchyToCommitFound,
+            Action<HierarchyElement> onHierarchyElementProcessed)
+        {
+            var toCommit = _hierarchyContentCache.Values.Where(h => h.WasModified);
+
+            if (onAllHierarchyToCommitFound != null)
+                onAllHierarchyToCommitFound(toCommit.Count());
+
+            foreach (var hierarchy in toCommit)
+            {
+                oneNoteApp.UpdateHierarchy(hierarchy.Content.ToString());
+
+                if (onHierarchyElementProcessed != null)
+                    onHierarchyElementProcessed(hierarchy);
+            }
+
+            //lock (_locker)
+            {
+                foreach (var h in toCommit)
+                    _hierarchyContentCache.Remove(h.Id);
             }
         }
 

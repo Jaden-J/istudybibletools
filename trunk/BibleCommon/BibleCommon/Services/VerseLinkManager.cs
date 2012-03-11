@@ -221,10 +221,11 @@ namespace BibleCommon.Services
                         pageName += string.Format(" <span style='font-size:10pt;'>[{0}]</span>", linkToBiblePage);
                     }
 
-                    SetPageName(oneNoteApp, pageId, pageName, isSummaryNotesPage, pageLevel, biblePageDoc.Xnm);
+                    SetPageName(oneNoteApp, pageId, pageName, isSummaryNotesPage, pageLevel, biblePageDoc.Xnm);              
 
-                    // необходимо отсортировать страницы. Точнее переместить созданную страницу в правильное место
-                    SortVerseLinkPages(oneNoteApp, sectionId, pageId, verseLinkParentPageId, pageLevel);
+                    OneNoteProxy.Instance.RegisteVerseLinkSortPage(sectionId, pageId, verseLinkParentPageId, pageLevel);
+
+                    OneNoteProxy.Instance.RefreshHierarchyCache(oneNoteApp, sectionId, HierarchyScope.hsPages);                    
                 }
             }
             else
@@ -233,7 +234,7 @@ namespace BibleCommon.Services
             return pageId;
         }
 
-        private static void SortVerseLinkPages(Application oneNoteApp, string sectionId, string newPageId, string verseLinkParentPageId, int pageLevel)
+        public static void SortVerseLinkPages(Application oneNoteApp, string sectionId, string newPageId, string verseLinkParentPageId, int pageLevel)
         {
             OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages, true);
             var newPage = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Page[@ID='{0}']", newPageId), hierarchy.Xnm);
@@ -283,9 +284,11 @@ namespace BibleCommon.Services
                 prevPage.AddAfterSelf(newPage);
             }
 
-            oneNoteApp.UpdateHierarchy(hierarchy.Content.ToString());
+            hierarchy.WasModified = true;
 
-            OneNoteProxy.Instance.RefreshHierarchyCache(oneNoteApp, sectionId, HierarchyScope.hsPages);
+            //oneNoteApp.UpdateHierarchy(hierarchy.Content.ToString());
+
+            //OneNoteProxy.Instance.RefreshHierarchyCache(oneNoteApp, sectionId, HierarchyScope.hsPages);
         }
 
         private static VersePointer GetVersePointer(string bibleSectionName, string biblePageName)
