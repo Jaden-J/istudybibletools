@@ -449,10 +449,10 @@ namespace BibleCommon.Services
         public void CommitAllModifiedHierarchy(Application oneNoteApp, Action<int> onAllHierarchyToCommitFound,
             Action<HierarchyElement> onHierarchyElementProcessed)
         {
-            var toCommit = _hierarchyContentCache.Values.Where(h => h.WasModified);
+            var toCommit = _hierarchyContentCache.Values.Where(h => h.WasModified).ToList();
 
             if (onAllHierarchyToCommitFound != null)
-                onAllHierarchyToCommitFound(toCommit.Count());
+                onAllHierarchyToCommitFound(toCommit.Count);
 
             foreach (var hierarchy in toCommit)
             {
