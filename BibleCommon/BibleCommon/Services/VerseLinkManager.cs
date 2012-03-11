@@ -236,7 +236,7 @@ namespace BibleCommon.Services
 
         public static void SortVerseLinkPages(Application oneNoteApp, string sectionId, string newPageId, string verseLinkParentPageId, int pageLevel)
         {
-            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages, true);
+            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages);
             var newPage = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Page[@ID='{0}']", newPageId), hierarchy.Xnm);
             string newPageName = (string)newPage.Attribute("name");
 
