@@ -95,12 +95,10 @@
             this.lblInfo.AutoSize = true;
             this.lblInfo.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblInfo.ForeColor = System.Drawing.Color.Red;
-            this.lblInfo.Location = new System.Drawing.Point(9, 185);
+            this.lblInfo.Location = new System.Drawing.Point(9, 161);
             this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(251, 39);
+            this.lblInfo.Size = new System.Drawing.Size(0, 13);
             this.lblInfo.TabIndex = 7;
-            this.lblInfo.Text = "Доступна новая версия программы\r\nна сайте http://IStudyBibleTools.ru. \r\nКликните," +
-    " чтобы перейти на страницу загрузки.";
             this.lblInfo.Click += new System.EventHandler(this.lblInfo_Click);
             // 
             // MainForm
