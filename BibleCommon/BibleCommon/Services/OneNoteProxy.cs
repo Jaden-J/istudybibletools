@@ -339,7 +339,7 @@ namespace BibleCommon.Services
 
             if (!_commentPagesIdsCache.ContainsKey(key))
             {
-                //lock (_locker)
+                //lock (_locker)         // пока в этом нет смысла
                 {
                     string commentPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(oneNoteApp, bibleSectionId, biblePageId, biblePageName,
                         commentPageName, isSummaryNotesPage, verseLinkParentPageId, pageLevel);

@@ -63,7 +63,9 @@ namespace BibleCommon.Services
                 if (latestVersion != null)
                 {
                     result = new Version(latestVersion.Value);
-                }                
+                }
+
+                LoadHttpStream(Constants.NewVersionOnServerCheckFileUrl);   // чтобы с помощью metrika.yandex.ru отслеживать количество запросов новой версии
             }
             catch (Exception)
             {
@@ -74,11 +76,16 @@ namespace BibleCommon.Services
         }
 
 
-        private static XDocument Load(string fullServiceUrl)
+        private static Stream LoadHttpStream(string fullServiceUrl)
         {
             var httpRequest = GetWebRequest(fullServiceUrl);
             var httpResponse = (HttpWebResponse)httpRequest.GetResponse();
-            using (var stream = httpResponse.GetResponseStream())
+            return httpResponse.GetResponseStream();
+        }
+
+        private static XDocument Load(string fullServiceUrl)
+        {            
+            using (var stream = LoadHttpStream(fullServiceUrl))
             {
                 using (StreamReader reader = new StreamReader(stream))
                 {
