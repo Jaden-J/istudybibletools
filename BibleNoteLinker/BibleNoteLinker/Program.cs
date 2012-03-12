@@ -149,15 +149,12 @@ namespace BibleNoteLinker
                         pageContent => Logger.LogMessage(".", false, false, false));
                     Logger.LogMessage(string.Empty, false, true, false);
 
-                    Logger.LogMessage(string.Format("Сортировка страниц 'Сводные заметок' ({0})", 
-                        GetRightPagesString(OneNoteProxy.Instance.SortVerseLinkPagesInfo.Count)), true, false);
+                    //Сортировка страниц 'Сводные заметок'
                     foreach (var sortPageInfo in OneNoteProxy.Instance.SortVerseLinkPagesInfo)
                     {
                         VerseLinkManager.SortVerseLinkPages(oneNoteApp, 
-                            sortPageInfo.SectionId, sortPageInfo.PageId, sortPageInfo.ParentPageId, sortPageInfo.PageLevel);
-                        Logger.LogMessage(".", false, false, false);
-                    }
-                    Logger.LogMessage(string.Empty, false, true, false);
+                            sortPageInfo.SectionId, sortPageInfo.PageId, sortPageInfo.ParentPageId, sortPageInfo.PageLevel);                    
+                    }                    
 
                     Logger.LogMessage("Обновление иерархии в OneNote", true, false);
                     OneNoteProxy.Instance.CommitAllModifiedHierarchy(oneNoteApp,                        
@@ -179,16 +176,17 @@ namespace BibleNoteLinker
             }
 
             Logger.LogMessage("Времени затрачено: {0}", DateTime.Now.Subtract(dtStart));
+            
+
+            if (Logger.ErrorWasLogged)            
+                Console.WriteLine("Во время работы программы произошли ошибки");                            
+            else
+                Logger.LogMessage("Успешно завершено");
 
             Logger.Done();
 
             if (Logger.ErrorWasLogged)
-            {
-                Console.WriteLine("Во время работы программы произошли ошибки");
                 Console.ReadKey();
-            }
-            else
-                Logger.LogMessage("Успешно завершено");
         }
 
         private static string GetRightPagesString(int pagesCount)
