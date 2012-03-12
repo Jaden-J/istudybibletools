@@ -47,6 +47,7 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_RubbishPageExcludedVersesLinking = "RubbishPage_ExcludedVersesLinking";
 
         public static readonly string NewVersionOnServerFileUrl = "http://IStudyBibleTools.ru/ServerVariables.xml";
+        public static readonly string NewVersionOnServerCheckFileUrl = "http://IStudyBibleTools.ru/ServerVariables.htm";
         public static readonly TimeSpan NewVersionCheckPeriod = new TimeSpan(1, 0, 0, 0);
 
         public static readonly string DownloadPageUrl = "http://IStudyBibleTools.ru/download.htm";

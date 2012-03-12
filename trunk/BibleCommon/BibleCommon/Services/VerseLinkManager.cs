@@ -14,6 +14,26 @@ namespace BibleCommon.Services
 {
     public static class VerseLinkManager
     {
+
+        public static string FindVerseLinkPageAndCreateAndSortHierarchyIfNeeded(Application oneNoteApp,
+            string bibleSectionId, string biblePageId, string biblePageName, string descriptionPageName,
+            bool isSummaryNotesPage = false, string verseLinkParentPageId = null, int pageLevel = 1, bool createIfNeeded = true)
+        {
+            string result = FindVerseLinkPageAndCreateIfNeeded(oneNoteApp, bibleSectionId, biblePageId, biblePageName, descriptionPageName,
+                isSummaryNotesPage, verseLinkParentPageId, pageLevel, createIfNeeded);
+
+            //Сортировка страниц 'Сводные заметок'
+            foreach (var sortPageInfo in OneNoteProxy.Instance.SortVerseLinkPagesInfo)
+            {
+                VerseLinkManager.SortVerseLinkPages(oneNoteApp,
+                    sortPageInfo.SectionId, sortPageInfo.PageId, sortPageInfo.ParentPageId, sortPageInfo.PageLevel);
+            }
+            
+            OneNoteProxy.Instance.CommitAllModifiedHierarchy(oneNoteApp, null, null);
+
+            return result;
+        }
+
         /// <summary>
         /// 
         /// </summary>

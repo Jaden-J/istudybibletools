@@ -133,7 +133,7 @@ namespace BibleVerseLinkerEx
                         string verseLinkPageId = null;
                         try
                         {
-                            verseLinkPageId = BibleCommon.Services.VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(OneNoteApp, currentSectionId,
+                            verseLinkPageId = BibleCommon.Services.VerseLinkManager.FindVerseLinkPageAndCreateAndSortHierarchyIfNeeded(OneNoteApp, currentSectionId,
                                 currentPageId, currentPageName, DescriptionPageName);                            
                         }
                         catch (Exception ex)

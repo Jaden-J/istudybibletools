@@ -34,7 +34,9 @@ namespace BibleConfigurator.Tools
 
             try
             {
-                _form.PrepareForExternalProcessing(1255, 1, "Старт удаления страниц 'Сводные заметок'.");
+                Dictionary<string, string> pagesToDelete = GetAllNotesPagesIds();
+
+                _form.PrepareForExternalProcessing(1255 + pagesToDelete.Count, 1, "Старт удаления страниц 'Сводные заметок'.");
 
                 new NotebookIterator(_oneNoteApp).Iterate("DeleteNotesPagesManager",
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
@@ -52,6 +54,15 @@ namespace BibleConfigurator.Tools
                                 throw new ProcessAbortedByUserException();
                         });
 
+                foreach (var page in pagesToDelete)
+                {
+                    _form.PerformProgressStep(string.Format("Удаление страницы '{0}'", page.Value));
+
+                    DeleteNotesPage(page.Key);
+
+                    if (_form.StopExternalProcess)
+                        throw new ProcessAbortedByUserException();
+                }
             }
             catch (ProcessAbortedByUserException)
             {
@@ -63,6 +74,47 @@ namespace BibleConfigurator.Tools
 
                 _form.ExternalProcessingDone("Обновление ссылок на комментарии успешно завершено");
             }
+        }
+
+        private Dictionary<string, string> GetAllNotesPagesIds()
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+
+            var allPages = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, HierarchyScope.hsPages);
+
+            foreach(var page in allPages.Content.XPathSelectElements("//one:Page", allPages.Xnm))
+            {
+                if (!OneNoteUtils.IsRecycleBin(page))
+                {
+
+
+                    string pageName = (string)page.Attribute("name");
+                    bool isSummaryNotesPage = false;
+
+                    var metaData = page.XPathSelectElement("one:Meta", allPages.Xnm);
+                    if (metaData != null)
+                    {
+                        var name = (string)metaData.Attribute("name");
+                        var content = (string)metaData.Attribute("content");
+
+                        if (name == Constants.Key_IsSummaryNotesPage && bool.Parse(content))
+                            isSummaryNotesPage = true;
+                    }
+
+                    if (!isSummaryNotesPage)
+                    {
+                        // for back compatibility                    
+                        if (pageName.StartsWith(SettingsManager.Instance.PageName_Notes + ".")
+                            || pageName.StartsWith(SettingsManager.Instance.PageName_RubbishNotes + "."))
+                            isSummaryNotesPage = true;
+                    }
+
+                    if (isSummaryNotesPage)
+                        result.Add((string)page.Attribute("ID"), pageName);
+                }
+            }
+
+            return result;
         }
 
         private void DeleteAllNotesOnPage(string bibleSectionGroupId, string bibleSectionId, string biblePageId, string biblePageName)
@@ -94,37 +146,14 @@ namespace BibleConfigurator.Tools
                 _oneNoteApp.DeletePageContent(biblePageId, (string)chapterNotesLink.Attribute("objectID"));
                 chapterNotesLink.Remove();
                 wasModified = true;
-            }
-
-            if (wasModified)  // значит есть страница заметок
-            {
-                DeleteNotesPage(SettingsManager.Instance.PageName_Notes, bibleSectionId, biblePageId, biblePageName, xnm);
-
-                if (SettingsManager.Instance.RubbishPage_Use)
-                    DeleteNotesPage(SettingsManager.Instance.PageName_RubbishNotes, bibleSectionId, biblePageId, biblePageName, xnm);
-            }
+            }            
 
             if (wasModified)
                 OneNoteUtils.UpdatePageContentSafe(_oneNoteApp, notePageDocument);
         }
 
-        private void DeleteNotesPage(string notesPageName, string bibleSectionId, string biblePageId, 
-            string biblePageName, XmlNamespaceManager xnm)
+        private void DeleteNotesPage(string notesPageId)
         {
-            string notesPageId = null;
-            try
-            {
-                notesPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(_oneNoteApp,
-                    bibleSectionId, biblePageId, biblePageName, notesPageName, true, null, 1, false);
-            }
-            catch (NotFoundVerseLinkPageExceptions) // просто не нашли, а нам и не надо
-            {
-            }
-            catch (Exception ex)
-            {
-                BibleCommon.Services.Logger.LogError(ex);
-            }
-
             if (!string.IsNullOrEmpty(notesPageId))
             {
                 string sectionId;
@@ -133,6 +162,7 @@ namespace BibleConfigurator.Tools
                 _oneNoteApp.DeleteHierarchy(notesPageId);
 
                 string sectionPagesXml;
+                XmlNamespaceManager xnm;
                 _oneNoteApp.GetHierarchy(sectionId, HierarchyScope.hsPages, out sectionPagesXml);
                 XDocument sectionPages = OneNoteUtils.GetXDocument(sectionPagesXml, out xnm);
                 if (sectionPages.Root.XPathSelectElements("one:Page", xnm).Count() == 0)
