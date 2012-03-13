@@ -200,6 +200,7 @@ namespace BibleConfigurator
 
                 SettingsManager.Instance.ExpandMultiVersesLinking = chkExpandMultiVersesLinking.Checked;
                 SettingsManager.Instance.ExcludedVersesLinking = chkExcludedVersesLinking.Checked;
+                SettingsManager.Instance.UseDifferentPagesForEachVerse = chkUseDifferentPages.Checked;
 
                 SettingsManager.Instance.RubbishPage_Use = chkUseRubbishPage.Checked;
                 SettingsManager.Instance.PageName_RubbishNotes = tbRubbishNotesPageName.Text;
@@ -434,6 +435,7 @@ namespace BibleConfigurator
             tbNotesPageWidth.Text = SettingsManager.Instance.PageWidth_Notes.ToString();
             chkExpandMultiVersesLinking.Checked = SettingsManager.Instance.ExpandMultiVersesLinking;
             chkExcludedVersesLinking.Checked = SettingsManager.Instance.ExcludedVersesLinking;
+            chkUseDifferentPages.Checked = SettingsManager.Instance.UseDifferentPagesForEachVerse;
 
             chkUseRubbishPage.Checked = SettingsManager.Instance.RubbishPage_Use;
             tbRubbishNotesPageName.Text = SettingsManager.Instance.PageName_RubbishNotes;
@@ -655,6 +657,7 @@ namespace BibleConfigurator
             tbNotesPageWidth.Enabled = !chkDefaultPageNameParameters.Checked;
             chkExpandMultiVersesLinking.Enabled = !chkDefaultPageNameParameters.Checked;
             chkExcludedVersesLinking.Enabled = !chkDefaultPageNameParameters.Checked;
+            chkUseDifferentPages.Enabled = !chkDefaultPageNameParameters.Checked;
             chkUseRubbishPage.Enabled = !chkDefaultPageNameParameters.Checked;
             tbRubbishNotesPageName.Enabled = !chkDefaultPageNameParameters.Checked;
             tbRubbishNotesPageWidth.Enabled = !chkDefaultPageNameParameters.Checked;
