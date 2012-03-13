@@ -133,8 +133,8 @@ namespace BibleVerseLinkerEx
                         string verseLinkPageId = null;
                         try
                         {
-                            verseLinkPageId = BibleCommon.Services.VerseLinkManager.FindVerseLinkPageAndCreateAndSortHierarchyIfNeeded(OneNoteApp, currentSectionId,
-                                currentPageId, currentPageName, DescriptionPageName);                            
+                            verseLinkPageId = BibleCommon.Services.VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(OneNoteApp, currentSectionId,
+                                currentPageId, currentPageName, DescriptionPageName, false);                            
                         }
                         catch (Exception ex)
                         {
@@ -161,7 +161,7 @@ namespace BibleVerseLinkerEx
                                 OneNoteUtils.UpdatePageContentSafe(_oneNoteApp, currentPageDocument);
                             }
                             
-                            OneNoteApp.NavigateTo(verseLinkPageId, objectId);
+                            OneNoteApp.NavigateTo(verseLinkPageId, objectId);                            
                         }
                     }
                     else
@@ -174,7 +174,17 @@ namespace BibleVerseLinkerEx
                 Logger.LogError("Программа OneNote не запущена");
         }
 
-       
+        public void SortCommentsPages()
+        {
+            //Сортировка страниц 'Сводные заметок'
+            foreach (var sortPageInfo in OneNoteProxy.Instance.SortVerseLinkPagesInfo)
+            {
+                VerseLinkManager.SortVerseLinkPages(_oneNoteApp,
+                    sortPageInfo.SectionId, sortPageInfo.PageId, sortPageInfo.ParentPageId, sortPageInfo.PageLevel);
+            }
+
+            OneNoteProxy.Instance.CommitAllModifiedHierarchy(_oneNoteApp, null, null);
+        }
 
         private string GetNewObjectContent(string currentPageId, string currentObjectId, string pointerValueString, int? verseNumber)
         {

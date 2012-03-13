@@ -38,6 +38,7 @@ namespace BibleCommon.Services
         
         public string NotebookId_Bible { get; set; }
         public string NotebookId_BibleComments { get; set; }
+        public string NotebookId_BibleNotesPages { get; set; }        
         public string NotebookId_BibleStudy { get; set; }        
         public string SectionGroupId_Bible { get; set; }
         public string SectionGroupId_BibleComments { get; set; }
@@ -93,6 +94,7 @@ namespace BibleCommon.Services
         {
             bool result = !string.IsNullOrEmpty(this.NotebookId_Bible)
                 && !string.IsNullOrEmpty(this.NotebookId_BibleComments)
+                && !string.IsNullOrEmpty(this.NotebookId_BibleNotesPages)
                 && !string.IsNullOrEmpty(this.NotebookId_BibleStudy)
                 && !string.IsNullOrEmpty(this.PageName_DefaultBookOverview)
                 && !string.IsNullOrEmpty(this.PageName_DefaultComments)
@@ -111,7 +113,8 @@ namespace BibleCommon.Services
                 
                 result = OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_Bible)
                     && OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_BibleComments)
-                    && OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_BibleStudy);
+                    && OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_BibleStudy)
+                    && OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_BibleNotesPages);
             }
 
             return result;
@@ -122,7 +125,8 @@ namespace BibleCommon.Services
             get
             {
                 return this.NotebookId_Bible == this.NotebookId_BibleComments
-                    && this.NotebookId_Bible == this.NotebookId_BibleStudy;
+                    && this.NotebookId_Bible == this.NotebookId_BibleStudy
+                    && this.NotebookId_Bible == this.NotebookId_BibleNotesPages;
             }
         }       
 
@@ -149,6 +153,7 @@ namespace BibleCommon.Services
             {
                 this.NotebookId_Bible = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NotebookIdBible).Value;
                 this.NotebookId_BibleComments = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NotebookIdBibleComments).Value;
+                this.NotebookId_BibleNotesPages = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NotebookIdBibleNotesPages).Value;
                 this.NotebookId_BibleStudy = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NotebookIdBibleStudy).Value;
                 this.SectionGroupId_Bible = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupIdBible).Value;
                 this.SectionGroupId_BibleComments = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupIdBibleComments).Value;
@@ -236,6 +241,7 @@ namespace BibleCommon.Services
 
                     xDoc.Root.Add(new XElement(Consts.Constants.ParameterName_NotebookIdBible, this.NotebookId_Bible),
                                   new XElement(Consts.Constants.ParameterName_NotebookIdBibleComments, this.NotebookId_BibleComments),
+                                  new XElement(Consts.Constants.ParameterName_NotebookIdBibleNotesPages, this.NotebookId_BibleNotesPages),
                                   new XElement(Consts.Constants.ParameterName_NotebookIdBibleStudy, this.NotebookId_BibleStudy),                                  
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBible, this.SectionGroupId_Bible),
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBibleComments, this.SectionGroupId_BibleComments),

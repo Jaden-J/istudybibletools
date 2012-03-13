@@ -31,6 +31,7 @@ namespace BibleConfigurator
                         result = ElementIsBible(notebook.Content.Root, notebook.Xnm);
                         break;
                     case NotebookType.BibleComments:
+                    case NotebookType.BibleNotesPages:
                         result = ElementIsBibleComments(notebook.Content.Root, notebook.Xnm);
                         break;
                     case NotebookType.BibleStudy:

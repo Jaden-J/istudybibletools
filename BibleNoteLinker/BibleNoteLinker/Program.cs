@@ -93,8 +93,9 @@ namespace BibleNoteLinker
                         if (!userArgs.LastChanged)
                             Logger.LogMessage("Старт обработки всех страниц");
 
-                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, SettingsManager.Instance.SectionGroupId_BibleComments, userArgs);
-                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleStudy, SettingsManager.Instance.SectionGroupId_BibleStudy, userArgs);                      
+                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleNotesPages, SettingsManager.Instance.SectionGroupId_BibleStudy, userArgs);
+                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, SettingsManager.Instance.SectionGroupId_BibleComments, userArgs);                        
+                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleStudy, SettingsManager.Instance.SectionGroupId_BibleStudy, userArgs);                        
                     }
                     else
                     {
@@ -110,7 +111,8 @@ namespace BibleNoteLinker
                             if (!string.IsNullOrEmpty(currentPageId))
                             {
                                 if (currentNotebookId == SettingsManager.Instance.NotebookId_BibleComments
-                                    || currentNotebookId == SettingsManager.Instance.NotebookId_BibleStudy)
+                                    || currentNotebookId == SettingsManager.Instance.NotebookId_BibleStudy
+                                    || currentNotebookId == SettingsManager.Instance.NotebookId_BibleNotesPages)
                                 {
                                     NoteLinkManager.LinkPageVerses(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);                                   
                                 }

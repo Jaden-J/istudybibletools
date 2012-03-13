@@ -28,6 +28,7 @@ namespace BibleConfigurator
         private string SingleNotebookFromTemplatePath { get; set; }
         private string BibleNotebookFromTemplatePath { get; set; }
         private string BibleCommentsNotebookFromTemplatePath { get; set; }
+        private string BibleNotesPagesNotebookFromTemplatePath { get; set; }
         private string BibleStudyNotebookFromTemplatePath { get; set; }
 
         private bool _wasSearchedSectionGroupsInSingleNotebook = false;       
@@ -55,44 +56,11 @@ namespace BibleConfigurator
             lblWarning.Text = string.Empty;
             try
             {
-                Logger.Initialize();
-
-                string notebookId;
-                string notebookName;
+                Logger.Initialize();               
 
                 if (rbSingleNotebook.Checked)
                 {
-                    if (chkCreateSingleNotebookFromTemplate.Checked)
-                    {
-                        notebookName = CreateNotebookFromTemplate(Consts.SingleNotebookTemplateFileName, SingleNotebookFromTemplatePath);
-                        if (!string.IsNullOrEmpty(notebookName))
-                        {
-                            WaitAndLoadParameters(NotebookType.Single, notebookName);
-                            SearchForCorrespondenceSectionGroups(SettingsManager.Instance.NotebookId_Bible);
-                        }
-                    }
-                    else
-                    {
-                        notebookName = (string)cbSingleNotebook.SelectedItem;                        
-                        if (TryToLoadNotebookParameters(NotebookType.Single, notebookName, out notebookId))
-                        {
-                            if (_notebookParametersForm != null && _notebookParametersForm.RenamedSectionGroups.Count > 0)
-                                RenameSectionGroupsForm(notebookId, _notebookParametersForm.RenamedSectionGroups);
-
-                            if (!_wasSearchedSectionGroupsInSingleNotebook)
-                            {
-                                try
-                                {
-                                    SearchForCorrespondenceSectionGroups(notebookId);
-                                }
-                                catch (InvalidNotebookException)
-                                {
-                                    Logger.LogError("Указана неподходящая записная книжка.");
-                                }
-                            }
-                        }
-                        
-                    }
+                    SaveSingleNotebookParameters();
                 }
                 else
                 {
@@ -100,45 +68,20 @@ namespace BibleConfigurator
                     SettingsManager.Instance.SectionGroupId_BibleComments = string.Empty;
                     SettingsManager.Instance.SectionGroupId_BibleStudy = string.Empty;
 
-                    if (chkCreateBibleNotebookFromTemplate.Checked)  
-                    {
-                        notebookName = CreateNotebookFromTemplate(Consts.BibleNotebookTemplateFileName, BibleNotebookFromTemplatePath);
-                        if (!string.IsNullOrEmpty(notebookName))
-                            WaitAndLoadParameters(NotebookType.Bible, notebookName);                         // выйдем из метода только когда OneNote отработает
-                    }
-                    else
-                    {
-                        notebookName = (string)cbBibleNotebook.SelectedItem;
-                        TryToLoadNotebookParameters(NotebookType.Bible, notebookName, out notebookId);
-                    }                   
+                    SaveBibleNotebookParameters();             
 
                     if (!Logger.WasErrorLogged)
                     {
-                        if (chkCreateBibleStudyNotebookFromTemplate.Checked)
-                        {
-                            notebookName = CreateNotebookFromTemplate(Consts.BibleStudyNotebookTemplateFileName, BibleStudyNotebookFromTemplatePath);
-                            if (!string.IsNullOrEmpty(notebookName))
-                                WaitAndLoadParameters(NotebookType.BibleStudy, notebookName);                         // выйдем из метода только когда OneNote отработает                        
-                        }
-                        else
-                        {
-                            notebookName = (string)cbBibleStudyNotebook.SelectedItem;
-                            TryToLoadNotebookParameters(NotebookType.BibleStudy, notebookName, out notebookId);
-                        }                        
+                        SaveBibleStudyNotebookParameters();              
 
                         if (!Logger.WasErrorLogged)
                         {
-                            if (chkCreateBibleCommentsNotebookFromTemplate.Checked)
+                            SaveBibleCommentsNotebookParameters();
+
+                            if (!Logger.WasErrorLogged)
                             {
-                                notebookName = CreateNotebookFromTemplate(Consts.BibleCommentsNotebookTemplateFileName, BibleCommentsNotebookFromTemplatePath);
-                                if (!string.IsNullOrEmpty(notebookName))
-                                    WaitAndLoadParameters(NotebookType.BibleComments, notebookName);                         // выйдем из метода только когда OneNote отработает                                                
+                                SaveBibleNotesPagesNotebookParameters();
                             }
-                            else
-                            {
-                                notebookName = (string)cbBibleCommentsNotebook.SelectedItem;
-                                TryToLoadNotebookParameters(NotebookType.BibleComments, notebookName, out notebookId);
-                            } 
                         }
                     }
                 }
@@ -163,6 +106,117 @@ namespace BibleConfigurator
                 btnOK.Enabled = true;
             }
         }
+
+        private void SaveBibleNotesPagesNotebookParameters()
+        {
+            string notebookId;
+            string notebookName;
+
+            if (chkCreateBibleNotesPagesNotebookFromTemplate.Checked)
+            {
+                notebookName = CreateNotebookFromTemplate(Consts.BibleNotesPagesNotebookTemplateFileName, BibleNotesPagesNotebookFromTemplatePath);
+                if (!string.IsNullOrEmpty(notebookName))
+                    WaitAndLoadParameters(NotebookType.BibleNotesPages, notebookName);                         // выйдем из метода только когда OneNote отработает                                                
+            }
+            else
+            {
+                notebookName = (string)cbBibleNotesPagesNotebook.SelectedItem;
+                TryToLoadNotebookParameters(NotebookType.BibleNotesPages, notebookName, out notebookId);
+            }
+        }
+
+        private void SaveBibleCommentsNotebookParameters()
+        {
+            string notebookId;
+            string notebookName;
+
+            if (chkCreateBibleCommentsNotebookFromTemplate.Checked)
+            {
+                notebookName = CreateNotebookFromTemplate(Consts.BibleCommentsNotebookTemplateFileName, BibleCommentsNotebookFromTemplatePath);
+                if (!string.IsNullOrEmpty(notebookName))
+                    WaitAndLoadParameters(NotebookType.BibleComments, notebookName);                         // выйдем из метода только когда OneNote отработает                                                
+            }
+            else
+            {
+                notebookName = (string)cbBibleCommentsNotebook.SelectedItem;
+                TryToLoadNotebookParameters(NotebookType.BibleComments, notebookName, out notebookId);
+            }
+        }
+
+        private void SaveBibleStudyNotebookParameters()
+        {
+            string notebookId;
+            string notebookName;
+
+            if (chkCreateBibleStudyNotebookFromTemplate.Checked)
+            {
+                notebookName = CreateNotebookFromTemplate(Consts.BibleStudyNotebookTemplateFileName, BibleStudyNotebookFromTemplatePath);
+                if (!string.IsNullOrEmpty(notebookName))
+                    WaitAndLoadParameters(NotebookType.BibleStudy, notebookName);                         // выйдем из метода только когда OneNote отработает                        
+            }
+            else
+            {
+                notebookName = (string)cbBibleStudyNotebook.SelectedItem;
+                TryToLoadNotebookParameters(NotebookType.BibleStudy, notebookName, out notebookId);
+            }
+        }
+
+        private void SaveBibleNotebookParameters()
+        {
+            string notebookId;
+            string notebookName;
+
+            if (chkCreateBibleNotebookFromTemplate.Checked)
+            {
+                notebookName = CreateNotebookFromTemplate(Consts.BibleNotebookTemplateFileName, BibleNotebookFromTemplatePath);
+                if (!string.IsNullOrEmpty(notebookName))
+                    WaitAndLoadParameters(NotebookType.Bible, notebookName);                         // выйдем из метода только когда OneNote отработает
+            }
+            else
+            {
+                notebookName = (string)cbBibleNotebook.SelectedItem;
+                TryToLoadNotebookParameters(NotebookType.Bible, notebookName, out notebookId);
+            }
+        }
+
+        private void SaveSingleNotebookParameters()
+        {
+            string notebookId;
+            string notebookName;
+
+            if (chkCreateSingleNotebookFromTemplate.Checked)
+            {
+                notebookName = CreateNotebookFromTemplate(Consts.SingleNotebookTemplateFileName, SingleNotebookFromTemplatePath);
+                if (!string.IsNullOrEmpty(notebookName))
+                {
+                    WaitAndLoadParameters(NotebookType.Single, notebookName);
+                    SearchForCorrespondenceSectionGroups(SettingsManager.Instance.NotebookId_Bible);
+                }
+            }
+            else
+            {
+                notebookName = (string)cbSingleNotebook.SelectedItem;
+                if (TryToLoadNotebookParameters(NotebookType.Single, notebookName, out notebookId))
+                {
+                    if (_notebookParametersForm != null && _notebookParametersForm.RenamedSectionGroups.Count > 0)
+                        RenameSectionGroupsForm(notebookId, _notebookParametersForm.RenamedSectionGroups);
+
+                    if (!_wasSearchedSectionGroupsInSingleNotebook)
+                    {
+                        try
+                        {
+                            SearchForCorrespondenceSectionGroups(notebookId);
+                        }
+                        catch (InvalidNotebookException)
+                        {
+                            Logger.LogError("Указана неподходящая записная книжка.");
+                        }
+                    }
+                }
+
+            }
+        }
+
 
         private void SetProgramParameters()
         {
@@ -223,6 +277,7 @@ namespace BibleConfigurator
                     pbMain.PerformStep();
                     System.Windows.Forms.Application.DoEvents();
 
+                    OneNoteProxy.Instance.RefreshHierarchyCache(_oneNoteApp, null, HierarchyScope.hsNotebooks);
                     if (TryToLoadNotebookParameters(notebookType, notebookName, out notebookId, true))
                     {
                         parametersWasLoad = true;
@@ -255,6 +310,7 @@ namespace BibleConfigurator
                         case NotebookType.Single:
                             SettingsManager.Instance.NotebookId_Bible = notebookId;
                             SettingsManager.Instance.NotebookId_BibleComments = notebookId;
+                            SettingsManager.Instance.NotebookId_BibleNotesPages = notebookId;
                             SettingsManager.Instance.NotebookId_BibleStudy = notebookId;
                             break;
                         case NotebookType.Bible:
@@ -262,6 +318,9 @@ namespace BibleConfigurator
                             break;
                         case NotebookType.BibleComments:
                             SettingsManager.Instance.NotebookId_BibleComments = notebookId;
+                            break;
+                        case NotebookType.BibleNotesPages:
+                            SettingsManager.Instance.NotebookId_BibleNotesPages = notebookId;
                             break;
                         case NotebookType.BibleStudy:
                             SettingsManager.Instance.NotebookId_BibleStudy = notebookId;
@@ -403,10 +462,10 @@ namespace BibleConfigurator
             string singleNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.Single);
             string bibleNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.Bible);
             string bibleCommentsNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.BibleComments);
+            string bibleNotesPagesNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.BibleNotesPages);
             string bibleStudyNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.BibleStudy);
 
-            rbSingleNotebook.Checked = SettingsManager.Instance.NotebookId_Bible == SettingsManager.Instance.NotebookId_BibleComments
-                                    && SettingsManager.Instance.NotebookId_Bible == SettingsManager.Instance.NotebookId_BibleStudy
+            rbSingleNotebook.Checked = SettingsManager.Instance.IsSingleNotebook 
                                     && !string.IsNullOrEmpty(singleNotebookId);
 
             rbMultiNotebook.Checked = !rbSingleNotebook.Checked;
@@ -415,6 +474,7 @@ namespace BibleConfigurator
             cbSingleNotebook.DataSource = notebooks.Values.ToList();
             cbBibleNotebook.DataSource = notebooks.Values.ToList();
             cbBibleCommentsNotebook.DataSource = notebooks.Values.ToList();
+            cbBibleNotesPagesNotebook.DataSource = notebooks.Values.ToList();
             cbBibleStudyNotebook.DataSource = notebooks.Values.ToList();
 
             SetNotebookParameters(rbSingleNotebook.Checked, !string.IsNullOrEmpty(singleNotebookId) ? notebooks[singleNotebookId] :  Consts.SingleNotebookDefaultName, 
@@ -425,6 +485,9 @@ namespace BibleConfigurator
 
             SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleCommentsNotebookId) ? notebooks[bibleCommentsNotebookId] :  Consts.BibleCommentsNotebookDefaultName, 
                 notebooks, SettingsManager.Instance.NotebookId_BibleComments, cbBibleCommentsNotebook, chkCreateBibleCommentsNotebookFromTemplate);
+
+            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotesPagesNotebookId) ? notebooks[bibleNotesPagesNotebookId] : Consts.BibleNotesPagesNotebookDefaultName,
+                notebooks, SettingsManager.Instance.NotebookId_BibleNotesPages, cbBibleNotesPagesNotebook, chkCreateBibleNotesPagesNotebookFromTemplate);
 
             SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleStudyNotebookId) ? notebooks[bibleStudyNotebookId] :  Consts.BibleStudyNotebookDefaultName, 
                 notebooks, SettingsManager.Instance.NotebookId_BibleStudy, cbBibleStudyNotebook, chkCreateBibleStudyNotebookFromTemplate);
@@ -485,6 +548,7 @@ namespace BibleConfigurator
             SingleNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
             BibleNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
             BibleCommentsNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
+            BibleNotesPagesNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
             BibleStudyNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
         }
 
@@ -529,6 +593,7 @@ namespace BibleConfigurator
 
             cbBibleNotebook.Enabled = rbMultiNotebook.Checked;
             cbBibleCommentsNotebook.Enabled = rbMultiNotebook.Checked;
+            cbBibleNotesPagesNotebook.Enabled = rbMultiNotebook.Checked;
             cbBibleStudyNotebook.Enabled = rbMultiNotebook.Checked;
             chkCreateBibleNotebookFromTemplate.Enabled = rbMultiNotebook.Checked;
             chkCreateBibleCommentsNotebookFromTemplate.Enabled = rbMultiNotebook.Checked;
@@ -566,6 +631,12 @@ namespace BibleConfigurator
         {
             cbBibleCommentsNotebook.Enabled = chkCreateBibleCommentsNotebookFromTemplate.Enabled && !chkCreateBibleCommentsNotebookFromTemplate.Checked;
             btnBibleCommentsNotebookSetPath.Enabled = chkCreateBibleCommentsNotebookFromTemplate.Enabled && chkCreateBibleCommentsNotebookFromTemplate.Checked;
+        }
+
+        private void chkCreateBibleNotesPagesNotebookFromTemplate_CheckedChanged(object sender, EventArgs e)
+        {
+            cbBibleNotesPagesNotebook.Enabled = chkCreateBibleNotesPagesNotebookFromTemplate.Enabled && !chkCreateBibleNotesPagesNotebookFromTemplate.Checked;
+            btnBibleNotesPagesNotebookSetPath.Enabled = chkCreateBibleNotesPagesNotebookFromTemplate.Enabled && chkCreateBibleNotesPagesNotebookFromTemplate.Checked;
         }
 
         private void chkCreateBibleStudyNotebookFromTemplate_CheckedChanged(object sender, EventArgs e)
@@ -645,6 +716,18 @@ namespace BibleConfigurator
                 if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     BibleStudyNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
+                }
+            }
+        }
+
+        private void btnBibleNotesPagesNotebookSetPath_Click(object sender, EventArgs e)
+        {
+
+            if (chkCreateBibleNotesPagesNotebookFromTemplate.Checked)
+            {
+                if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    BibleNotesPagesNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
                 }
             }
         }
@@ -729,5 +812,9 @@ namespace BibleConfigurator
                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
                 new DeleteNotesPagesManager(_oneNoteApp, this).DeleteNotesPages();
         }
+
+      
+
+        
     }
 }
