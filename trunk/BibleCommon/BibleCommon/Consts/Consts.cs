@@ -24,6 +24,7 @@ namespace BibleCommon.Consts
 
         public static readonly string ParameterName_NotebookIdBible = "NotebookId_Bible";
         public static readonly string ParameterName_NotebookIdBibleComments = "NotebookId_BibleComments";
+        public static readonly string ParameterName_NotebookIdBibleNotesPages = "NotebookId_BibleNotesPages";
         public static readonly string ParameterName_NotebookIdBibleStudy = "NotebookId_BibleStudy";        
         public static readonly string ParameterName_SectionGroupIdBible = "SectionGroupId_Bible";
         public static readonly string ParameterName_SectionGroupIdBibleComments = "SectionGroupId_BibleComments";

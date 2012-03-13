@@ -14,26 +14,6 @@ namespace BibleCommon.Services
 {
     public static class VerseLinkManager
     {
-
-        public static string FindVerseLinkPageAndCreateAndSortHierarchyIfNeeded(Application oneNoteApp,
-            string bibleSectionId, string biblePageId, string biblePageName, string descriptionPageName,
-            bool isSummaryNotesPage = false, string verseLinkParentPageId = null, int pageLevel = 1, bool createIfNeeded = true)
-        {
-            string result = FindVerseLinkPageAndCreateIfNeeded(oneNoteApp, bibleSectionId, biblePageId, biblePageName, descriptionPageName,
-                isSummaryNotesPage, verseLinkParentPageId, pageLevel, createIfNeeded);
-
-            //Сортировка страниц 'Сводные заметок'
-            foreach (var sortPageInfo in OneNoteProxy.Instance.SortVerseLinkPagesInfo)
-            {
-                VerseLinkManager.SortVerseLinkPages(oneNoteApp,
-                    sortPageInfo.SectionId, sortPageInfo.PageId, sortPageInfo.ParentPageId, sortPageInfo.PageLevel);
-            }
-            
-            OneNoteProxy.Instance.CommitAllModifiedHierarchy(oneNoteApp, null, null);
-
-            return result;
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -47,13 +27,13 @@ namespace BibleCommon.Services
         /// <returns>target pageId</returns>
         public static string FindVerseLinkPageAndCreateIfNeeded(Application oneNoteApp, 
             string bibleSectionId, string biblePageId, string biblePageName, string descriptionPageName,
-            bool isSummaryNotesPage = false, string verseLinkParentPageId = null, int pageLevel = 1, bool createIfNeeded = true)
+            bool isSummaryNotesPage, string verseLinkParentPageId = null, int pageLevel = 1, bool createIfNeeded = true)
         {
             string exceptionResolveWay = "\nСкорее всего в OneNote открыта не страница Библии.";
-            string sectionGroupId = FindDescriptionSectionGroupForBiblePage(oneNoteApp, bibleSectionId, createIfNeeded);
+            string sectionGroupId = FindDescriptionSectionGroupForBiblePage(oneNoteApp, bibleSectionId, createIfNeeded, isSummaryNotesPage, false);
             if (!string.IsNullOrEmpty(sectionGroupId))
             {
-                string sectionId = FindDescriptionSectionForBiblePage(oneNoteApp, biblePageName, sectionGroupId, createIfNeeded);
+                string sectionId = FindDescriptionSectionForBiblePage(oneNoteApp, biblePageName, sectionGroupId, createIfNeeded, false);
                 if (!string.IsNullOrEmpty(sectionId))
                 {
                     string bibleSectionName = OneNoteUtils.GetHierarchyElementName(oneNoteApp, bibleSectionId);
@@ -75,10 +55,12 @@ namespace BibleCommon.Services
 
 
         private static string FindDescriptionSectionGroupForBiblePage(Application oneNoteApp,
-            string bibleSectionId, bool createIfNeeded, bool refreshCache = false)
+            string bibleSectionId, bool createIfNeeded, bool isSummaryNotesPage, bool refreshCache)
         {
             OneNoteProxy.HierarchyElement bibleDocument = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, SettingsManager.Instance.NotebookId_Bible, HierarchyScope.hsSections, refreshCache);
-            OneNoteProxy.HierarchyElement commentsDocument = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, HierarchyScope.hsSections, refreshCache);             
+            OneNoteProxy.HierarchyElement commentsDocument = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, 
+                isSummaryNotesPage ? SettingsManager.Instance.NotebookId_BibleNotesPages : SettingsManager.Instance.NotebookId_BibleComments, 
+                HierarchyScope.hsSections, refreshCache);             
 
             XElement bibleSection = bibleDocument.Content.Root.XPathSelectElement(string.Format("{0}one:SectionGroup/one:Section[@ID='{1}']",
                 !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_Bible) ? "one:SectionGroup/" : string.Empty, bibleSectionId), bibleDocument.Xnm);
@@ -107,7 +89,7 @@ namespace BibleCommon.Services
                         {
                             CreateDescriptionSectionGroupForBiblePage(oneNoteApp, commentsDocument.Content, targetParentSectionGroup, sectionName);
 
-                            return FindDescriptionSectionGroupForBiblePage(oneNoteApp, bibleSectionId, createIfNeeded, true);  // надо обновить XML
+                            return FindDescriptionSectionGroupForBiblePage(oneNoteApp, bibleSectionId, createIfNeeded, isSummaryNotesPage, true);  // надо обновить XML
                         }
                     }
                     else
@@ -132,7 +114,7 @@ namespace BibleCommon.Services
         }
 
         private static string FindDescriptionSectionForBiblePage(Application oneNoteApp,
-            string biblePageName, string targetSectionGroupId, bool createIfNeeded, bool refreshCache = false)
+            string biblePageName, string targetSectionGroupId, bool createIfNeeded, bool refreshCache)
         {
             OneNoteProxy.HierarchyElement sectionGroupDocument = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, targetSectionGroupId, HierarchyScope.hsSections, refreshCache);            
             string sectionGroupName = (string)sectionGroupDocument.Content.Root.Attribute("name");

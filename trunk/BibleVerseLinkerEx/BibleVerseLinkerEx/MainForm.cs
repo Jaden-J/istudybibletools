@@ -52,7 +52,11 @@ namespace BibleVerseLinkerEx
                     vlManager.Do();
 
                     if (!Logger.WasLogged)
+                    {                        
                         SetForegroundWindow(new IntPtr((long)vlManager.OneNoteApp.Windows.CurrentWindow.WindowHandle));
+                        this.Visible = false;
+                        vlManager.SortCommentsPages();
+                    }
                 }
                 catch (Exception ex)
                 {
