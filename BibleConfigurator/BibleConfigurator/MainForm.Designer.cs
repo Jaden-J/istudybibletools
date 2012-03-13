@@ -81,6 +81,7 @@
             this.lblWarning = new System.Windows.Forms.Label();
             this.lblProgressInfo = new System.Windows.Forms.Label();
             this.pbMain = new System.Windows.Forms.ProgressBar();
+            this.chkUseDifferentPages = new System.Windows.Forms.CheckBox();
             this.tbcMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -101,7 +102,7 @@
             this.tbcMain.Location = new System.Drawing.Point(0, 0);
             this.tbcMain.Name = "tbcMain";
             this.tbcMain.SelectedIndex = 0;
-            this.tbcMain.Size = new System.Drawing.Size(664, 359);
+            this.tbcMain.Size = new System.Drawing.Size(664, 378);
             this.tbcMain.TabIndex = 16;
             // 
             // tabPage1
@@ -335,12 +336,13 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(656, 333);
+            this.tabPage2.Size = new System.Drawing.Size(656, 352);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Параметры программы";
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.chkUseDifferentPages);
             this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.tbNotesPageName);
             this.groupBox2.Controls.Add(this.chkExcludedVersesLinking);
@@ -350,7 +352,7 @@
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupBox2.Location = new System.Drawing.Point(16, 115);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(296, 175);
+            this.groupBox2.Size = new System.Drawing.Size(296, 198);
             this.groupBox2.TabIndex = 19;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Страница \"Сводная заметок\"";
@@ -503,7 +505,7 @@
             // chkDefaultPageNameParameters
             // 
             this.chkDefaultPageNameParameters.AutoSize = true;
-            this.chkDefaultPageNameParameters.Location = new System.Drawing.Point(16, 307);
+            this.chkDefaultPageNameParameters.Location = new System.Drawing.Point(16, 329);
             this.chkDefaultPageNameParameters.Name = "chkDefaultPageNameParameters";
             this.chkDefaultPageNameParameters.Size = new System.Drawing.Size(223, 17);
             this.chkDefaultPageNameParameters.TabIndex = 6;
@@ -598,7 +600,7 @@
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(566, 14);
+            this.btnOK.Location = new System.Drawing.Point(566, 17);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 16;
@@ -610,7 +612,6 @@
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -625,15 +626,15 @@
             this.splitContainer1.Panel2.Controls.Add(this.lblProgressInfo);
             this.splitContainer1.Panel2.Controls.Add(this.pbMain);
             this.splitContainer1.Panel2.Controls.Add(this.btnOK);
-            this.splitContainer1.Size = new System.Drawing.Size(664, 409);
-            this.splitContainer1.SplitterDistance = 359;
+            this.splitContainer1.Size = new System.Drawing.Size(664, 434);
+            this.splitContainer1.SplitterDistance = 378;
             this.splitContainer1.TabIndex = 17;
             // 
             // lblWarning
             // 
             this.lblWarning.AutoSize = true;
             this.lblWarning.ForeColor = System.Drawing.Color.Red;
-            this.lblWarning.Location = new System.Drawing.Point(456, -2);
+            this.lblWarning.Location = new System.Drawing.Point(456, 0);
             this.lblWarning.Name = "lblWarning";
             this.lblWarning.Size = new System.Drawing.Size(0, 13);
             this.lblWarning.TabIndex = 19;
@@ -648,19 +649,30 @@
             // 
             // pbMain
             // 
-            this.pbMain.Location = new System.Drawing.Point(20, 14);
+            this.pbMain.Location = new System.Drawing.Point(20, 17);
             this.pbMain.Name = "pbMain";
             this.pbMain.Size = new System.Drawing.Size(530, 23);
             this.pbMain.Step = 3;
             this.pbMain.TabIndex = 17;
             this.pbMain.Visible = false;
             // 
+            // chkUseDifferentPages
+            // 
+            this.chkUseDifferentPages.AutoSize = true;
+            this.chkUseDifferentPages.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.chkUseDifferentPages.Location = new System.Drawing.Point(9, 173);
+            this.chkUseDifferentPages.Name = "chkUseDifferentPages";
+            this.chkUseDifferentPages.Size = new System.Drawing.Size(227, 17);
+            this.chkUseDifferentPages.TabIndex = 11;
+            this.chkUseDifferentPages.Text = "Отдельные страницы для кажого стиха";
+            this.chkUseDifferentPages.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(664, 409);
+            this.ClientSize = new System.Drawing.Size(664, 434);
             this.Controls.Add(this.splitContainer1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "MainForm";
@@ -743,6 +755,7 @@
         private System.Windows.Forms.CheckBox chkRubbishExpandMultiVersesLinking;
         private System.Windows.Forms.TextBox tbRubbishNotesPageWidth;
         private System.Windows.Forms.Label lblRubbishNotesPageWidth;
+        private System.Windows.Forms.CheckBox chkUseDifferentPages;
 
     }
 }
