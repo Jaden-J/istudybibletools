@@ -810,7 +810,12 @@ namespace BibleConfigurator
         {
             if (MessageBox.Show("Удалить все сводные страницы заметок и ссылки на них?", "Внимание!",
                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
-                new DeleteNotesPagesManager(_oneNoteApp, this).DeleteNotesPages();
+            {
+                if (SettingsManager.Instance.NotebookId_BibleComments == SettingsManager.Instance.NotebookId_BibleNotesPages
+                    || MessageBox.Show("Для страниц 'Сводные заметок' используется отдельная записная книжка. Рекомендуется вручную удалить записную книжку 'Сводные заметки' и создать её заново из шаблона. Продолжить?", "Внимание!",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
+                    new DeleteNotesPagesManager(_oneNoteApp, this).DeleteNotesPages();
+            }
         }
 
       
