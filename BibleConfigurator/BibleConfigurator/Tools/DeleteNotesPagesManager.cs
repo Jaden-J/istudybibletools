@@ -41,6 +41,8 @@ namespace BibleConfigurator.Tools
                 new NotebookIterator(_oneNoteApp).Iterate("DeleteNotesPagesManager",
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
                         {
+                            _form.PerformProgressStep(string.Format("Обработка страницы '{0}'",  pageInfo.PageName));         
+
                             try
                             {
                                 DeleteAllNotesOnPage(pageInfo.SectionGroupId, pageInfo.SectionId, pageInfo.PageId, pageInfo.PageName);
@@ -56,7 +58,9 @@ namespace BibleConfigurator.Tools
 
                 foreach (var page in pagesToDelete)
                 {
-                    _form.PerformProgressStep(string.Format("Удаление страницы '{0}'", page.Value));
+                    string message = string.Format("Удаление страницы '{0}'", page.Value);
+                    _form.PerformProgressStep(message);
+                    BibleCommon.Services.Logger.LogMessage(message);
 
                     DeleteNotesPage(page.Key);
 
@@ -86,8 +90,6 @@ namespace BibleConfigurator.Tools
             {
                 if (!OneNoteUtils.IsRecycleBin(page))
                 {
-
-
                     string pageName = (string)page.Attribute("name");
                     bool isSummaryNotesPage = false;
 
@@ -118,9 +120,7 @@ namespace BibleConfigurator.Tools
         }
 
         private void DeleteAllNotesOnPage(string bibleSectionGroupId, string bibleSectionId, string biblePageId, string biblePageName)
-        {
-            _form.PerformProgressStep(string.Format("Обработка страницы '{0}'", biblePageName));
-
+        {   
             bool wasModified = false;
             string pageContentXml;
             XDocument notePageDocument;

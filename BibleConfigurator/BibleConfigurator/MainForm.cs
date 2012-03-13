@@ -708,7 +708,7 @@ namespace BibleConfigurator
         public void PerformProgressStep(string infoText)
         {
             lblProgressInfo.Text = infoText;
-            pbMain.PerformStep();
+            pbMain.PerformStep();            
             System.Windows.Forms.Application.DoEvents();
         }
 
