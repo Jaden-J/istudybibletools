@@ -23,9 +23,9 @@ namespace BibleCommon.Helpers
             return bibleNotebook != null;            
         }
 
-        public static string GetNotebookIdByName(Application oneNoteApp, string notebookName)
+        public static string GetNotebookIdByName(Application oneNoteApp, string notebookName, bool refreshCache)
         {
-            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, null, HierarchyScope.hsNotebooks);
+            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, null, HierarchyScope.hsNotebooks, refreshCache);
             XElement bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@nickname='{0}']", notebookName), hierarchy.Xnm);
             if (bibleNotebook == null)
                 bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@name='{0}']", notebookName), hierarchy.Xnm);

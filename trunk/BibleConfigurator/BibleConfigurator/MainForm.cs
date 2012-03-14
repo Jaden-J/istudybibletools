@@ -276,8 +276,7 @@ namespace BibleConfigurator
                 {
                     pbMain.PerformStep();
                     System.Windows.Forms.Application.DoEvents();
-
-                    OneNoteProxy.Instance.RefreshHierarchyCache(_oneNoteApp, null, HierarchyScope.hsNotebooks);
+                    
                     if (TryToLoadNotebookParameters(notebookType, notebookName, out notebookId, true))
                     {
                         parametersWasLoad = true;
@@ -302,7 +301,7 @@ namespace BibleConfigurator
 
             try
             {
-                notebookId = OneNoteUtils.GetNotebookIdByName(_oneNoteApp, notebookName);                
+                notebookId = OneNoteUtils.GetNotebookIdByName(_oneNoteApp, notebookName, true);                
                 if (NotebookChecker.CheckNotebook(_oneNoteApp, notebookId, notebookType))
                 {
                     switch (notebookType)
@@ -345,7 +344,7 @@ namespace BibleConfigurator
 
         private void SearchForCorrespondenceSectionGroups(string notebookId)
         {
-            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, notebookId, HierarchyScope.hsSections);
+            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, notebookId, HierarchyScope.hsSections, true);
 
             List<SectionGroupType> sectionGroups = new List<SectionGroupType>();
 
@@ -378,7 +377,7 @@ namespace BibleConfigurator
 
         private void RenameSectionGroupsForm(string notebookId, Dictionary<string, string> renamedSectionGroups)
         {
-            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, notebookId, HierarchyScope.hsSections);     
+            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, notebookId, HierarchyScope.hsSections, true);     
 
             foreach (string sectionGroupId in renamedSectionGroups.Keys)
             {
@@ -569,7 +568,7 @@ namespace BibleConfigurator
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
             
-            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, null, HierarchyScope.hsNotebooks);
+            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, null, HierarchyScope.hsNotebooks, true);
 
             foreach (XElement notebook in hierarchy.Content.Root.XPathSelectElements("one:Notebook", hierarchy.Xnm))
             {
@@ -650,7 +649,7 @@ namespace BibleConfigurator
             if (!string.IsNullOrEmpty((string)cbSingleNotebook.SelectedItem))
             {
                 string notebookName = (string)cbSingleNotebook.SelectedItem;
-                string notebookId = OneNoteUtils.GetNotebookIdByName(_oneNoteApp, notebookName);
+                string notebookId = OneNoteUtils.GetNotebookIdByName(_oneNoteApp, notebookName, true);
                 if (NotebookChecker.CheckNotebook(_oneNoteApp, notebookId, NotebookType.Single))
                 {
                     if (_notebookParametersForm == null)

@@ -20,7 +20,7 @@ namespace BibleConfigurator
 
             if (!string.IsNullOrEmpty(notebookId))
             {
-                OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, HierarchyScope.hsSections);                
+                OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, HierarchyScope.hsSections, true);                
 
                 switch (notebookType)
                 {
