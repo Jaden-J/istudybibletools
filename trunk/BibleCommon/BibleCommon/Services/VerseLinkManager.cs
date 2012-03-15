@@ -262,7 +262,7 @@ namespace BibleCommon.Services
                 }
 
                 string oldPageLevel = (string)oldPage.Attribute("pageLevel");
-                if (pageLevel == int.Parse(oldPageLevel))
+                if (pageLevel <= int.Parse(oldPageLevel))
                 {
                     string oldPageName = (string)oldPage.Attribute("name");
 
