@@ -104,20 +104,25 @@ namespace BibleNoteLinker
                         if (oneNoteApp.Windows.CurrentWindow != null)
                         {
                             string currentPageId = oneNoteApp.Windows.CurrentWindow.CurrentPageId;
-                            string currentSectionId = oneNoteApp.Windows.CurrentWindow.CurrentSectionId;
-                            string currentSectionGroupId = oneNoteApp.Windows.CurrentWindow.CurrentSectionGroupId;
-                            string currentNotebookId = oneNoteApp.Windows.CurrentWindow.CurrentNotebookId;
-
                             if (!string.IsNullOrEmpty(currentPageId))
                             {
-                                if (currentNotebookId == SettingsManager.Instance.NotebookId_BibleComments
-                                    || currentNotebookId == SettingsManager.Instance.NotebookId_BibleStudy
-                                    || currentNotebookId == SettingsManager.Instance.NotebookId_BibleNotesPages)
+                                string currentSectionId = oneNoteApp.Windows.CurrentWindow.CurrentSectionId;
+                                string currentSectionGroupId = oneNoteApp.Windows.CurrentWindow.CurrentSectionGroupId;
+                                string currentNotebookId = oneNoteApp.Windows.CurrentWindow.CurrentNotebookId;
+
+                                if (!string.IsNullOrEmpty(currentPageId))
                                 {
-                                    NoteLinkManager.LinkPageVerses(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);                                   
+                                    if (currentNotebookId == SettingsManager.Instance.NotebookId_BibleComments
+                                        || currentNotebookId == SettingsManager.Instance.NotebookId_BibleStudy
+                                        || currentNotebookId == SettingsManager.Instance.NotebookId_BibleNotesPages)
+                                    {
+                                        NoteLinkManager.LinkPageVerses(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);
+                                    }
+                                    else
+                                        Logger.LogError(string.Format("Текущая записная книжка не настроена на обработку программой {0}", Constants.ToolsName));
                                 }
                                 else
-                                    Logger.LogError(string.Format("Текущая записная книжка не настроена на обработку программой {0}", Constants.ToolsName));
+                                    Logger.LogError("Не найдено открытой страницы заметок");
                             }
                             else
                                 Logger.LogError("Не найдено открытой страницы заметок");
