@@ -116,7 +116,7 @@ namespace BibleNoteLinker
                                         || currentNotebookId == SettingsManager.Instance.NotebookId_BibleStudy
                                         || currentNotebookId == SettingsManager.Instance.NotebookId_BibleNotesPages)
                                     {
-                                        NoteLinkManager.LinkPageVerses(oneNoteApp, currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);
+                                        new NoteLinkManager(oneNoteApp).LinkPageVerses(currentSectionGroupId, currentSectionId, currentPageId, userArgs.AnalyzeDepth, userArgs.Force);
                                     }
                                     else
                                         Logger.LogError(string.Format("Текущая записная книжка не настроена на обработку программой {0}", Constants.ToolsName));
@@ -168,13 +168,6 @@ namespace BibleNoteLinker
                         pagesCount => Logger.LogMessage(string.Format(" ({0})", GetRightPagesString(pagesCount)), false, false, false),
                         pageContent => Logger.LogMessage(".", false, false, false));
                     Logger.LogMessage(string.Empty, false, true, false);
-
-
-                    if (userArgs.AnalyzeAllPages)
-                    {
-                        SettingsManager.Instance.LastNotesLinkTime = DateTime.Now;
-                        SettingsManager.Instance.Save();
-                    }                    
                 }
                 catch (Exception ex)
                 {
@@ -235,16 +228,22 @@ namespace BibleNoteLinker
                 if (lastModifiedDateAttribute != null)
                 {
                     DateTime lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value);
-                    if (lastModifiedDate > SettingsManager.Instance.LastNotesLinkTime.Value)
+
+                    string lastAnalyzeTime = OneNoteUtils.GetPageMetaData(oneNoteApp, page, Constants.Key_LatestAnalyzeTime, xnm);
+
+                    if (!string.IsNullOrEmpty(lastAnalyzeTime))
                     {
-                        string sectionGroupId = string.Empty;
-                        XElement sectionGroup = page.Parent.Parent;
-                        if (sectionGroup.Name.LocalName == "SectionGroup" && !OneNoteUtils.IsRecycleBin(sectionGroup))
-                            sectionGroupId = (string)sectionGroup.Attribute("ID").Value;
+                        if (lastModifiedDate > DateTime.Parse(lastAnalyzeTime).ToUniversalTime())
+                        {
+                            string sectionGroupId = string.Empty;
+                            XElement sectionGroup = page.Parent.Parent;
+                            if (sectionGroup.Name.LocalName == "SectionGroup" && !OneNoteUtils.IsRecycleBin(sectionGroup))
+                                sectionGroupId = (string)sectionGroup.Attribute("ID").Value;
 
-                        string sectionId = (string)page.Parent.Attribute("ID").Value;
+                            string sectionId = (string)page.Parent.Attribute("ID").Value;
 
-                        ProcessPage(oneNoteApp, page, sectionGroupId, sectionId, linkDepth, force);
+                            ProcessPage(oneNoteApp, page, sectionGroupId, sectionId, linkDepth, force);
+                        }
                     }
                 }
             }
@@ -260,7 +259,7 @@ namespace BibleNoteLinker
 
             if (sectionGroup != null)
             {
-                if (lastChanged && SettingsManager.Instance.LastNotesLinkTime.HasValue)
+                if (lastChanged)
                     ProcessLastChangedPages(oneNoteApp, sectionGroup, xnm, linkDepth, force);
                 else
                     ProcessSectionGroup(sectionGroup, sectionGroupId, oneNoteApp, notebookId, xnm, linkDepth, force);
@@ -327,7 +326,7 @@ namespace BibleNoteLinker
 
             Logger.MoveLevel(1);
             
-            NoteLinkManager.LinkPageVerses(oneNoteApp, sectionGroupId, sectionId, pageId, linkDepth, force);
+            new NoteLinkManager(oneNoteApp).LinkPageVerses(sectionGroupId, sectionId, pageId, linkDepth, force);
 
             Logger.MoveLevel(-1);
         }

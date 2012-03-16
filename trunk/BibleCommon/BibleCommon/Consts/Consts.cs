@@ -60,6 +60,7 @@ namespace BibleCommon.Consts
         public static readonly string VerseLinksDelimiter = "; ";
 
         public static readonly string Key_IsSummaryNotesPage = "IsSummaryNotesPage";
+        public static readonly string Key_LatestAnalyzeTime = "LatestAnalyzeTime";
 
 
         public static readonly Dictionary<string, StringCollection> BookNames = new Dictionary<string, StringCollection>()

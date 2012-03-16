@@ -122,9 +122,9 @@ namespace BibleCommon.Helpers
             }
         }
 
-        public static void UpdatePageMetaData(Application oneNoteApp, XDocument pageContent, string key, string value, XmlNamespaceManager xnm)
+        public static void UpdatePageMetaData(Application oneNoteApp, XElement pageContent, string key, string value, XmlNamespaceManager xnm)
         {
-            var metaElement = pageContent.Root.XPathSelectElement(string.Format("one:Meta[@name='{0}']", key), xnm);
+            var metaElement = pageContent.XPathSelectElement(string.Format("one:Meta[@name='{0}']", key), xnm);
             if (metaElement != null)
             {
                 metaElement.SetAttributeValue("content", value);
@@ -132,16 +132,16 @@ namespace BibleCommon.Helpers
             else
             {
                 XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
-                pageContent.Root.AddFirst(new XElement(nms + "Meta",
+                pageContent.AddFirst(new XElement(nms + "Meta",
                                             new XAttribute("name", key),
                                             new XAttribute("content", value)));
             }
         }
 
 
-        public static string GetPageMetaData(Application oneNoteApp, XDocument pageContent, string key, XmlNamespaceManager xnm)
+        public static string GetPageMetaData(Application oneNoteApp, XElement pageContent, string key, XmlNamespaceManager xnm)
         {
-            var metaElement = pageContent.Root.XPathSelectElement(string.Format("one:Meta[@name='{0}']", key), xnm);
+            var metaElement = pageContent.XPathSelectElement(string.Format("one:Meta[@name='{0}']", key), xnm);
             if (metaElement != null)
             {
                 return metaElement.Attribute("content").Value;
