@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using BibleCommon.Helpers;
 using System.Xml;
 using BibleCommon.Common;
+using BibleCommon.Consts;
 
 namespace BibleCommon.Services
 {
@@ -93,6 +94,7 @@ namespace BibleCommon.Services
             public XmlNamespaceManager Xnm { get; set; }
             public bool WasModified { get; set; }
             public PageType PageType { get; set; }
+            public bool AddLatestAnalyzeTimeMetaAttribute { get; set; }
         }
 
         public class HierarchyElement
@@ -382,6 +384,9 @@ namespace BibleCommon.Services
             
             foreach (PageContent page in toCommit)
             {
+                if (page.AddLatestAnalyzeTimeMetaAttribute)
+                    OneNoteUtils.UpdatePageMetaData(oneNoteApp, page.Content.Root, Constants.Key_LatestAnalyzeTime, DateTime.UtcNow.AddSeconds(10).ToString(), page.Xnm);                
+
                 OneNoteUtils.UpdatePageContentSafe(oneNoteApp, page.Content);                
 
                 if (onPageProcessed != null)

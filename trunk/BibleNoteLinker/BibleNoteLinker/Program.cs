@@ -219,31 +219,32 @@ namespace BibleNoteLinker
             Logger.MoveLevel(-1);
         }
 
-        private static void ProcessLastChangedPages(Application oneNoteApp, 
+        private static void ProcessLastChangedPages(Application oneNoteApp,
             XElement rootSectionGroup, XmlNamespaceManager xnm, NoteLinkManager.AnalyzeDepth linkDepth, bool force)
         {
             foreach (XElement page in rootSectionGroup.XPathSelectElements(".//one:Page", xnm))
-            {                
+            {
                 XAttribute lastModifiedDateAttribute = page.Attribute("lastModifiedTime");
                 if (lastModifiedDateAttribute != null)
                 {
                     DateTime lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value);
 
+                    bool needToAnalyze = true;
+
                     string lastAnalyzeTime = OneNoteUtils.GetPageMetaData(oneNoteApp, page, Constants.Key_LatestAnalyzeTime, xnm);
+                    if (!string.IsNullOrEmpty(lastAnalyzeTime) && lastModifiedDate <= DateTime.Parse(lastAnalyzeTime).ToLocalTime())
+                        needToAnalyze = false;
 
-                    if (!string.IsNullOrEmpty(lastAnalyzeTime))
+                    if (needToAnalyze)
                     {
-                        if (lastModifiedDate > DateTime.Parse(lastAnalyzeTime).ToUniversalTime())
-                        {
-                            string sectionGroupId = string.Empty;
-                            XElement sectionGroup = page.Parent.Parent;
-                            if (sectionGroup.Name.LocalName == "SectionGroup" && !OneNoteUtils.IsRecycleBin(sectionGroup))
-                                sectionGroupId = (string)sectionGroup.Attribute("ID").Value;
+                        string sectionGroupId = string.Empty;
+                        XElement sectionGroup = page.Parent.Parent;
+                        if (sectionGroup.Name.LocalName == "SectionGroup" && !OneNoteUtils.IsRecycleBin(sectionGroup))
+                            sectionGroupId = (string)sectionGroup.Attribute("ID").Value;
 
-                            string sectionId = (string)page.Parent.Attribute("ID").Value;
+                        string sectionId = (string)page.Parent.Attribute("ID").Value;
 
-                            ProcessPage(oneNoteApp, page, sectionGroupId, sectionId, linkDepth, force);
-                        }
+                        ProcessPage(oneNoteApp, page, sectionGroupId, sectionId, linkDepth, force);
                     }
                 }
             }

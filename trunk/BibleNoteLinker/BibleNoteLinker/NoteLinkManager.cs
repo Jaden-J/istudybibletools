@@ -135,10 +135,8 @@ namespace BibleNoteLinker
                     Logger.LogMessage(string.Empty, false, true, false);
                 }
 
-                OneNoteUtils.UpdatePageMetaData(_oneNoteApp, notePageDocument.Content.Root, Constants.Key_LatestAnalyzeTime, DateTime.UtcNow.AddSeconds(10).ToString(), notePageDocument.Xnm);
-
-                //if (wasModified)  // по идее получается, что всегда обновляется, так как обновляется метадата
-                    notePageDocument.WasModified = true;                
+                notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
+                notePageDocument.WasModified = true;                         
             }
             catch (Exception ex)
             {
