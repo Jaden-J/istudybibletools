@@ -46,8 +46,7 @@ namespace BibleCommon.Services
         public string PageName_DefaultComments { get; set; }
         public string PageName_DefaultBookOverview { get; set; }
         public string PageName_Notes { get; set; }        
-
-        public DateTime? LastNotesLinkTime { get; set; }
+        
         public Version NewVersionOnServer { get; set; }
         public DateTime? NewVersionOnServerLatestCheckTime { get; set; }
 
@@ -160,9 +159,8 @@ namespace BibleCommon.Services
                 this.SectionGroupId_BibleStudy = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupIdBibleStudy).Value;
                 this.PageName_DefaultBookOverview = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameDefaultBookOverview).Value;
                 this.PageName_DefaultComments = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameDefaultComments).Value;
-                this.PageName_Notes = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameNotes).Value;
+                this.PageName_Notes = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameNotes).Value;                
                 
-                this.LastNotesLinkTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_LastNotesLinkTime, null, value => DateTime.Parse(value));                
                 this.NewVersionOnServer = GetParameterValue<Version>(xdoc, Consts.Constants.ParameterName_NewVersionOnServer, null, value => new Version(value));
                 this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, null, value => DateTime.Parse(value));
 
@@ -248,9 +246,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBibleStudy, this.SectionGroupId_BibleStudy),
                                   new XElement(Consts.Constants.ParameterName_PageNameDefaultBookOverview, this.PageName_DefaultBookOverview),
                                   new XElement(Consts.Constants.ParameterName_PageNameDefaultComments, this.PageName_DefaultComments),
-                                  new XElement(Consts.Constants.ParameterName_PageNameNotes, this.PageName_Notes),
-                                  new XElement(Consts.Constants.ParameterName_LastNotesLinkTime, this.LastNotesLinkTime.HasValue 
-                                                ? this.LastNotesLinkTime.Value.ToString() : string.Empty),
+                                  new XElement(Consts.Constants.ParameterName_PageNameNotes, this.PageName_Notes),                                  
                                   new XElement(Consts.Constants.ParameterName_NewVersionOnServer, this.NewVersionOnServer),
                                   new XElement(Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, this.NewVersionOnServerLatestCheckTime.HasValue
                                                 ? this.NewVersionOnServerLatestCheckTime.Value.ToString() : string.Empty),

@@ -327,7 +327,7 @@ namespace BibleCommon.Services
                                             ))))));
 
             if (isSummaryNotesPage)
-                OneNoteUtils.UpdatePageMetaData(oneNoteApp, pageDocument, Constants.Key_IsSummaryNotesPage, true.ToString(), xnm);
+                OneNoteUtils.UpdatePageMetaData(oneNoteApp, pageDocument.Root, Constants.Key_IsSummaryNotesPage, isSummaryNotesPage.ToString(), xnm);
 
             OneNoteUtils.UpdatePageContentSafe(oneNoteApp, pageDocument);
         }
