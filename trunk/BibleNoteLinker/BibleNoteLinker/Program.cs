@@ -93,7 +93,7 @@ namespace BibleNoteLinker
                         if (!userArgs.LastChanged)
                             Logger.LogMessage("Старт обработки всех страниц");
 
-                        //ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleNotesPages, SettingsManager.Instance.SectionGroupId_BibleNotesPages, userArgs);
+                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleNotesPages, SettingsManager.Instance.SectionGroupId_BibleNotesPages, userArgs);
                         ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, SettingsManager.Instance.SectionGroupId_BibleComments, userArgs);                        
                         ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleStudy, SettingsManager.Instance.SectionGroupId_BibleStudy, userArgs);                        
                     }
