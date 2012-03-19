@@ -70,10 +70,14 @@ namespace BibleCommon.Services
                 string sectionName = (string)bibleSection.Attribute("name");                          // 01. От Матфея
                 string sectionGroupName = (string)bibleSection.Parent.Attribute("name");              // Новый Завет                
 
+
+                string rootSectionGroupId = isSummaryNotesPage ? SettingsManager.Instance.SectionGroupId_BibleNotesPages 
+                                                        : SettingsManager.Instance.SectionGroupId_BibleComments;
+
                 XElement targetParentSectionGroup = commentsDocument.Content.Root.XPathSelectElement(
                         string.Format("{0}one:SectionGroup[@name='{1}']",                    
-                            !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_BibleComments) 
-                                ? string.Format("one:SectionGroup[@ID='{0}']/", SettingsManager.Instance.SectionGroupId_BibleComments)
+                            !string.IsNullOrEmpty(rootSectionGroupId) 
+                                ? string.Format("one:SectionGroup[@ID='{0}']/", rootSectionGroupId)
                                 : string.Empty,
                             sectionGroupName), 
                         commentsDocument.Xnm);                                        // Изучение Библии/Новый Завет

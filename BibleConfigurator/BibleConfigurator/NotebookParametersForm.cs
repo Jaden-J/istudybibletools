@@ -40,6 +40,7 @@ namespace BibleConfigurator
             GroupedSectionGroups.Add(SectionGroupType.Bible, OriginalSectionGroups[SectionGroupType.Bible].Id);
             GroupedSectionGroups.Add(SectionGroupType.BibleComments, OriginalSectionGroups[SectionGroupType.BibleComments].Id);
             GroupedSectionGroups.Add(SectionGroupType.BibleStudy, OriginalSectionGroups[SectionGroupType.BibleStudy].Id);
+            GroupedSectionGroups.Add(SectionGroupType.BibleNotesPages, OriginalSectionGroups[SectionGroupType.BibleNotesPages].Id);
         }
 
         private void NotebookParametersForm_KeyDown(object sender, KeyEventArgs e)
@@ -58,11 +59,13 @@ namespace BibleConfigurator
                 {
                     OriginalSectionGroups = GetAllSectionGroups();
 
-                    BindComboBox(cbBibleSection, OriginalSectionGroups[SectionGroupType.Bible]);
+                    BindComboBox(cbBibleSection, OriginalSectionGroups[SectionGroupType.Bible]);                    
+
+                    BindComboBox(cbBibleStudySection, OriginalSectionGroups[SectionGroupType.BibleStudy]);
 
                     BindComboBox(cbBibleCommentsSection, OriginalSectionGroups[SectionGroupType.BibleComments]);
 
-                    BindComboBox(cbBibleStudySection, OriginalSectionGroups[SectionGroupType.BibleStudy]);
+                    BindComboBox(cbBibleNotesPagesSection, OriginalSectionGroups[SectionGroupType.BibleNotesPages]);
 
                     _firstLoad = false;
                 }
@@ -95,6 +98,8 @@ namespace BibleConfigurator
                     result.Add(SectionGroupType.Bible, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.Bible });
                 else if (NotebookChecker.ElementIsBibleComments(sectionGroup, notebook.Xnm) && !result.ContainsKey(SectionGroupType.BibleComments))
                     result.Add(SectionGroupType.BibleComments, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.BibleComments });
+                else if (NotebookChecker.ElementIsBibleComments(sectionGroup, notebook.Xnm) && !result.ContainsKey(SectionGroupType.BibleNotesPages))
+                    result.Add(SectionGroupType.BibleNotesPages, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.BibleNotesPages});
                 else if (!result.ContainsKey(SectionGroupType.BibleStudy))
                     result.Add(SectionGroupType.BibleStudy, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.BibleStudy });
                 else
@@ -120,6 +125,11 @@ namespace BibleConfigurator
         private void btnBibleStudySectionRename_Click(object sender, EventArgs e)
         {
             TryToRenameSectionGroup(SectionGroupType.BibleStudy, (string)cbBibleStudySection.SelectedItem);
+        }
+
+        private void btnNotesPagesSectionRename_Click(object sender, EventArgs e)
+        {
+            TryToRenameSectionGroup(SectionGroupType.BibleNotesPages, (string)cbBibleNotesPagesSection.SelectedItem);
         }
 
         private void TryToRenameSectionGroup(SectionGroupType sectionGroupType, string originalSectionGroupName)
@@ -152,6 +162,10 @@ namespace BibleConfigurator
                 case SectionGroupType.BibleStudy:
                     cbBibleStudySection.Items[0] = result;
                     break;
+                case SectionGroupType.BibleNotesPages:
+                    cbBibleNotesPagesSection.Items[0] = result;
+                    break;
+                    
             }
         }      
 
@@ -167,5 +181,7 @@ namespace BibleConfigurator
 
             return result;
         }
+
+       
     }
 }

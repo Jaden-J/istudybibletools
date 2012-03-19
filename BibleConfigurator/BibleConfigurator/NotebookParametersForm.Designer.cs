@@ -38,6 +38,9 @@
             this.btnBibleCommentsSectionRename = new System.Windows.Forms.Button();
             this.btnBibleStudySectionRename = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
+            this.btnNotesPagesSectionRename = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.cbBibleNotesPagesSection = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // cbBibleSection
@@ -53,7 +56,7 @@
             // 
             this.cbBibleCommentsSection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbBibleCommentsSection.FormattingEnabled = true;
-            this.cbBibleCommentsSection.Location = new System.Drawing.Point(16, 79);
+            this.cbBibleCommentsSection.Location = new System.Drawing.Point(16, 129);
             this.cbBibleCommentsSection.Name = "cbBibleCommentsSection";
             this.cbBibleCommentsSection.Size = new System.Drawing.Size(248, 21);
             this.cbBibleCommentsSection.TabIndex = 5;
@@ -70,7 +73,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 63);
+            this.label2.Location = new System.Drawing.Point(13, 113);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(280, 13);
             this.label2.TabIndex = 7;
@@ -79,7 +82,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(13, 113);
+            this.label3.Location = new System.Drawing.Point(13, 63);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(242, 13);
             this.label3.TabIndex = 9;
@@ -89,7 +92,7 @@
             // 
             this.cbBibleStudySection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbBibleStudySection.FormattingEnabled = true;
-            this.cbBibleStudySection.Location = new System.Drawing.Point(16, 129);
+            this.cbBibleStudySection.Location = new System.Drawing.Point(16, 79);
             this.cbBibleStudySection.Name = "cbBibleStudySection";
             this.cbBibleStudySection.Size = new System.Drawing.Size(248, 21);
             this.cbBibleStudySection.TabIndex = 8;
@@ -106,7 +109,7 @@
             // 
             // btnBibleCommentsSectionRename
             // 
-            this.btnBibleCommentsSectionRename.Location = new System.Drawing.Point(270, 77);
+            this.btnBibleCommentsSectionRename.Location = new System.Drawing.Point(270, 127);
             this.btnBibleCommentsSectionRename.Name = "btnBibleCommentsSectionRename";
             this.btnBibleCommentsSectionRename.Size = new System.Drawing.Size(125, 23);
             this.btnBibleCommentsSectionRename.TabIndex = 11;
@@ -116,7 +119,7 @@
             // 
             // btnBibleStudySectionRename
             // 
-            this.btnBibleStudySectionRename.Location = new System.Drawing.Point(270, 127);
+            this.btnBibleStudySectionRename.Location = new System.Drawing.Point(270, 77);
             this.btnBibleStudySectionRename.Name = "btnBibleStudySectionRename";
             this.btnBibleStudySectionRename.Size = new System.Drawing.Size(125, 23);
             this.btnBibleStudySectionRename.TabIndex = 12;
@@ -127,7 +130,7 @@
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(320, 177);
+            this.btnOK.Location = new System.Drawing.Point(320, 221);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 13;
@@ -135,12 +138,43 @@
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
+            // btnNotesPagesSectionRename
+            // 
+            this.btnNotesPagesSectionRename.Location = new System.Drawing.Point(270, 177);
+            this.btnNotesPagesSectionRename.Name = "btnNotesPagesSectionRename";
+            this.btnNotesPagesSectionRename.Size = new System.Drawing.Size(125, 23);
+            this.btnNotesPagesSectionRename.TabIndex = 16;
+            this.btnNotesPagesSectionRename.Text = "Переименовать";
+            this.btnNotesPagesSectionRename.UseVisualStyleBackColor = true;
+            this.btnNotesPagesSectionRename.Click += new System.EventHandler(this.btnNotesPagesSectionRename_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(13, 163);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(301, 13);
+            this.label4.TabIndex = 15;
+            this.label4.Text = "Выберите группу секций для страниц \"Сводные заметок\"";
+            // 
+            // cbNotesPagesSection
+            // 
+            this.cbBibleNotesPagesSection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbBibleNotesPagesSection.FormattingEnabled = true;
+            this.cbBibleNotesPagesSection.Location = new System.Drawing.Point(16, 179);
+            this.cbBibleNotesPagesSection.Name = "cbNotesPagesSection";
+            this.cbBibleNotesPagesSection.Size = new System.Drawing.Size(248, 21);
+            this.cbBibleNotesPagesSection.TabIndex = 14;
+            // 
             // NotebookParametersForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(409, 212);
+            this.ClientSize = new System.Drawing.Size(409, 256);
+            this.Controls.Add(this.btnNotesPagesSectionRename);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.cbBibleNotesPagesSection);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnBibleStudySectionRename);
             this.Controls.Add(this.btnBibleCommentsSectionRename);
@@ -176,6 +210,9 @@
         private System.Windows.Forms.Button btnBibleCommentsSectionRename;
         private System.Windows.Forms.Button btnBibleStudySectionRename;
         private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnNotesPagesSectionRename;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox cbBibleNotesPagesSection;
 
     }
 }

@@ -26,9 +26,10 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_NotebookIdBibleComments = "NotebookId_BibleComments";
         public static readonly string ParameterName_NotebookIdBibleNotesPages = "NotebookId_BibleNotesPages";
         public static readonly string ParameterName_NotebookIdBibleStudy = "NotebookId_BibleStudy";        
-        public static readonly string ParameterName_SectionGroupIdBible = "SectionGroupId_Bible";
-        public static readonly string ParameterName_SectionGroupIdBibleComments = "SectionGroupId_BibleComments";
+        public static readonly string ParameterName_SectionGroupIdBible = "SectionGroupId_Bible";        
         public static readonly string ParameterName_SectionGroupIdBibleStudy = "SectionGroupId_BibleStudy";
+        public static readonly string ParameterName_SectionGroupIdBibleComments = "SectionGroupId_BibleComments";
+        public static readonly string ParameterName_SectionGroupIdBibleNotesPages = "SectionGroupId_BibleNotesPages";
         public static readonly string ParameterName_PageNameDefaultComments = "PageName_DefaultComments";
         public static readonly string ParameterName_PageNameDefaultBookOverview = "PageName_DefaultBookOverview";
         public static readonly string ParameterName_PageNameNotes = "PageName_Notes";
@@ -54,7 +55,7 @@ namespace BibleCommon.Consts
         public static readonly string DownloadPageUrl = "http://IStudyBibleTools.ru/download.htm?fromProgram=true";
 
         public static readonly string Error_SystemIsNotConfigures = "Программа не сконфигурирована. Откройте 'Параметры программы' и укажите все необходимые настройки.";
-        public static readonly string Error_UpdateError_InksOnPages = "Не удалось обновить страницу Библии. Возможно на странице присутствуют нарисованные кистью элементы, которые на текущий момент не поддерживаются программой. \nУдалите такие элементы и повторите операцию.";
+        public static readonly string Error_UpdateError_InksOnPages = "Не удалось обновить страницу. Возможно на странице присутствуют нарисованные кистью элементы, которые на текущий момент не поддерживаются программой. \nУдалите такие элементы и повторите операцию.";
 
         public static readonly string VerseLinkTemplate = "ссылка {0}";
         public static readonly string VerseLinksDelimiter = "; ";

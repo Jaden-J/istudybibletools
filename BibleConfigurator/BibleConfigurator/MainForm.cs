@@ -65,8 +65,9 @@ namespace BibleConfigurator
                 else
                 {
                     SettingsManager.Instance.SectionGroupId_Bible = string.Empty;
-                    SettingsManager.Instance.SectionGroupId_BibleComments = string.Empty;
                     SettingsManager.Instance.SectionGroupId_BibleStudy = string.Empty;
+                    SettingsManager.Instance.SectionGroupId_BibleComments = string.Empty;
+                    SettingsManager.Instance.SectionGroupId_BibleNotesPages = string.Empty;                    
 
                     SaveBibleNotebookParameters();             
 
@@ -367,6 +368,11 @@ namespace BibleConfigurator
                     SettingsManager.Instance.SectionGroupId_BibleStudy = id;
                     sectionGroups.Add(SectionGroupType.BibleStudy);
                 }
+                else if (NotebookChecker.ElementIsBibleComments(sectionGroup, notebook.Xnm) && !sectionGroups.Contains(SectionGroupType.BibleNotesPages))
+                {
+                    SettingsManager.Instance.SectionGroupId_BibleNotesPages = id;
+                    sectionGroups.Add(SectionGroupType.BibleNotesPages);
+                } 
                 else
                     throw new InvalidNotebookException();
             }
@@ -657,9 +663,10 @@ namespace BibleConfigurator
 
                     if (_notebookParametersForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {   
-                        SettingsManager.Instance.SectionGroupId_Bible = _notebookParametersForm.GroupedSectionGroups[SectionGroupType.Bible];                        
-                        SettingsManager.Instance.SectionGroupId_BibleComments = _notebookParametersForm.GroupedSectionGroups[SectionGroupType.BibleComments];                        
+                        SettingsManager.Instance.SectionGroupId_Bible = _notebookParametersForm.GroupedSectionGroups[SectionGroupType.Bible];
                         SettingsManager.Instance.SectionGroupId_BibleStudy = _notebookParametersForm.GroupedSectionGroups[SectionGroupType.BibleStudy];
+                        SettingsManager.Instance.SectionGroupId_BibleComments = _notebookParametersForm.GroupedSectionGroups[SectionGroupType.BibleComments];
+                        SettingsManager.Instance.SectionGroupId_BibleNotesPages = _notebookParametersForm.GroupedSectionGroups[SectionGroupType.BibleNotesPages];                                                
 
                         _wasSearchedSectionGroupsInSingleNotebook = true;  // нашли необходимые группы секций. 
                     }
