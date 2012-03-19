@@ -384,10 +384,17 @@ namespace BibleCommon.Services
             
             foreach (PageContent page in toCommit)
             {
-                if (page.AddLatestAnalyzeTimeMetaAttribute)
-                    OneNoteUtils.UpdatePageMetaData(oneNoteApp, page.Content.Root, Constants.Key_LatestAnalyzeTime, DateTime.UtcNow.AddSeconds(10).ToString(), page.Xnm);                
+                try
+                {
+                    if (page.AddLatestAnalyzeTimeMetaAttribute)
+                        OneNoteUtils.UpdatePageMetaData(oneNoteApp, page.Content.Root, Constants.Key_LatestAnalyzeTime, DateTime.UtcNow.AddSeconds(10).ToString(), page.Xnm);
 
-                OneNoteUtils.UpdatePageContentSafe(oneNoteApp, page.Content);                
+                    OneNoteUtils.UpdatePageContentSafe(oneNoteApp, page.Content);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(string.Format("Ошибка обновления страницы '{0}'.", (string)page.Content.Root.Attribute("name")), ex);
+                }
 
                 if (onPageProcessed != null)
                     onPageProcessed(page);

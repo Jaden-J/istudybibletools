@@ -93,7 +93,7 @@ namespace BibleNoteLinker
                         if (!userArgs.LastChanged)
                             Logger.LogMessage("Старт обработки всех страниц");
 
-                        ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleNotesPages, SettingsManager.Instance.SectionGroupId_BibleStudy, userArgs);
+                        //ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleNotesPages, SettingsManager.Instance.SectionGroupId_BibleNotesPages, userArgs);
                         ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments, SettingsManager.Instance.SectionGroupId_BibleComments, userArgs);                        
                         ProcessNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_BibleStudy, SettingsManager.Instance.SectionGroupId_BibleStudy, userArgs);                        
                     }
@@ -159,8 +159,15 @@ namespace BibleNoteLinker
                     //Сортировка страниц 'Сводные заметок'
                     foreach (var sortPageInfo in OneNoteProxy.Instance.SortVerseLinkPagesInfo)
                     {
-                        VerseLinkManager.SortVerseLinkPages(oneNoteApp, 
-                            sortPageInfo.SectionId, sortPageInfo.PageId, sortPageInfo.ParentPageId, sortPageInfo.PageLevel);                    
+                        try
+                        {
+                            VerseLinkManager.SortVerseLinkPages(oneNoteApp,
+                                sortPageInfo.SectionId, sortPageInfo.PageId, sortPageInfo.ParentPageId, sortPageInfo.PageLevel);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.LogError(string.Format("Ошибка во время сортировки страницы '{0}'", sortPageInfo.PageId), ex);
+                        }
                     }                    
 
                     Logger.LogMessage("Обновление иерархии в OneNote", true, false);
@@ -224,27 +231,30 @@ namespace BibleNoteLinker
         {
             foreach (XElement page in rootSectionGroup.XPathSelectElements(".//one:Page", xnm))
             {
-                XAttribute lastModifiedDateAttribute = page.Attribute("lastModifiedTime");
-                if (lastModifiedDateAttribute != null)
+                if (!OneNoteUtils.IsRecycleBin(page))
                 {
-                    DateTime lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value);
-
-                    bool needToAnalyze = true;
-
-                    string lastAnalyzeTime = OneNoteUtils.GetPageMetaData(oneNoteApp, page, Constants.Key_LatestAnalyzeTime, xnm);
-                    if (!string.IsNullOrEmpty(lastAnalyzeTime) && lastModifiedDate <= DateTime.Parse(lastAnalyzeTime).ToLocalTime())
-                        needToAnalyze = false;
-
-                    if (needToAnalyze)
+                    XAttribute lastModifiedDateAttribute = page.Attribute("lastModifiedTime");
+                    if (lastModifiedDateAttribute != null)
                     {
-                        string sectionGroupId = string.Empty;
-                        XElement sectionGroup = page.Parent.Parent;
-                        if (sectionGroup.Name.LocalName == "SectionGroup" && !OneNoteUtils.IsRecycleBin(sectionGroup))
-                            sectionGroupId = (string)sectionGroup.Attribute("ID").Value;
+                        DateTime lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value);
 
-                        string sectionId = (string)page.Parent.Attribute("ID").Value;
+                        bool needToAnalyze = true;
 
-                        ProcessPage(oneNoteApp, page, sectionGroupId, sectionId, linkDepth, force);
+                        string lastAnalyzeTime = OneNoteUtils.GetPageMetaData(oneNoteApp, page, Constants.Key_LatestAnalyzeTime, xnm);
+                        if (!string.IsNullOrEmpty(lastAnalyzeTime) && lastModifiedDate <= DateTime.Parse(lastAnalyzeTime).ToLocalTime())
+                            needToAnalyze = false;
+
+                        if (needToAnalyze)
+                        {
+                            string sectionGroupId = string.Empty;
+                            XElement sectionGroup = page.Parent.Parent;
+                            if (sectionGroup.Name.LocalName == "SectionGroup" && !OneNoteUtils.IsRecycleBin(sectionGroup))
+                                sectionGroupId = (string)sectionGroup.Attribute("ID").Value;
+
+                            string sectionId = (string)page.Parent.Attribute("ID").Value;
+
+                            ProcessPage(oneNoteApp, page, sectionGroupId, sectionId, linkDepth, force);
+                        }
                     }
                 }
             }

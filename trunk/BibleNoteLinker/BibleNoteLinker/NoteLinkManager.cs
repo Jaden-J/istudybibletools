@@ -15,7 +15,30 @@ using BibleCommon.Consts;
 namespace BibleNoteLinker
 {    
     public class NoteLinkManager
-    {        
+    {
+        #region Helper classes
+
+        public class NotePageProcessedVerseId
+        {
+            public string NotePageId { get; set; }
+            public string NotesPageName { get; set; }
+
+            public override int GetHashCode()
+            {
+                return this.NotePageId.GetHashCode() ^ this.NotesPageName.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                NotePageProcessedVerseId otherObj = (NotePageProcessedVerseId)obj;
+                return this.NotePageId == otherObj.NotePageId
+                    && this.NotesPageName == otherObj.NotesPageName;
+            }
+        }
+
+        #endregion
+
+
         internal const char ChapterVerseDelimiter = ':';
         internal const string DoNotAnalyzeAllPageSymbol = "{}";
         
@@ -34,7 +57,7 @@ namespace BibleNoteLinker
         }
 
         internal bool IsExcludedCurrentNotePage { get; set; }
-        private HashSet<VersePointer> _pageProcessedVerses = new HashSet<VersePointer>();  
+        private Dictionary<NotePageProcessedVerseId, HashSet<VersePointer>> _notePageProcessedVerses = new Dictionary<NotePageProcessedVerseId, HashSet<VersePointer>>();  
 
         private Application _oneNoteApp;
         public NoteLinkManager(Application oneNoteApp)
@@ -1044,8 +1067,9 @@ namespace BibleNoteLinker
                         OneNoteProxy.Instance.AddProcessedVerse(vp);  // добавляем только стихи, отмеченные на "Сводной заметок"
                     }                    
                 }
-                
-                AddPageProcessedVerse(vp);                
+
+                var key = new NotePageProcessedVerseId() { NotePageId = notePageId, NotesPageName = notesPageName };
+                AddNotePageProcessedVerse(key, vp);                
             }
         }
 
@@ -1175,8 +1199,9 @@ namespace BibleNoteLinker
             }
 
             if (suchNoteLink != null)
-            {                
-                if (force && !ContainsPageProcessedVerse(vp))  // если в первый раз и force
+            {
+                var key = new NotePageProcessedVerseId() { NotePageId = notePageId, NotesPageName = notesPageName };
+                if (force && !ContainsNotePageProcessedVerse(key, vp))  // если в первый раз и force                
                 {  // удаляем старые ссылки на текущую странцу, так как мы начали новый анализ с параметром "force" и мы только в первый раз зашли сюда
                     var verseLinks = suchNoteLink.Parent.NextNode;
                     if (verseLinks != null && verseLinks.XPathSelectElement("one:List", xnm) == null)
@@ -1419,17 +1444,27 @@ namespace BibleNoteLinker
 
         #region helper methods
 
-        public void AddPageProcessedVerse(VersePointer vp)
+        public void AddNotePageProcessedVerse(NotePageProcessedVerseId verseId, VersePointer vp)
         {
-            if (!_pageProcessedVerses.Contains(vp))
+            if (!_notePageProcessedVerses.ContainsKey(verseId))
             {
-                _pageProcessedVerses.Add(vp);
+                _notePageProcessedVerses.Add(verseId, new HashSet<VersePointer>());
+            }
+
+            if (!_notePageProcessedVerses[verseId].Contains(vp))   // отслеживаем обработанные стихи для каждой из страниц сводной заметок
+            {
+                _notePageProcessedVerses[verseId].Add(vp);
             }
         }
 
-        public bool ContainsPageProcessedVerse(VersePointer vp)
-        {            
-            return _pageProcessedVerses.Contains(vp);
+        public bool ContainsNotePageProcessedVerse(NotePageProcessedVerseId verseId, VersePointer vp)
+        {
+            if (!_notePageProcessedVerses.ContainsKey(verseId))
+            {
+                _notePageProcessedVerses.Add(verseId, new HashSet<VersePointer>());
+            }
+
+            return _notePageProcessedVerses[verseId].Contains(vp);
         }
 
         #endregion

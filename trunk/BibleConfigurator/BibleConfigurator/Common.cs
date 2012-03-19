@@ -18,7 +18,8 @@ namespace BibleConfigurator
     {
         Bible,
         BibleComments,
-        BibleStudy
+        BibleStudy,
+        BibleNotesPages
     }
 
     public class SectionGroupInfo

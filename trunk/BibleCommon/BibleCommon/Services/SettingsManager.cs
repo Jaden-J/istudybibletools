@@ -41,8 +41,9 @@ namespace BibleCommon.Services
         public string NotebookId_BibleNotesPages { get; set; }        
         public string NotebookId_BibleStudy { get; set; }        
         public string SectionGroupId_Bible { get; set; }
-        public string SectionGroupId_BibleComments { get; set; }
         public string SectionGroupId_BibleStudy { get; set; }
+        public string SectionGroupId_BibleComments { get; set; }        
+        public string SectionGroupId_BibleNotesPages { get; set; }
         public string PageName_DefaultComments { get; set; }
         public string PageName_DefaultBookOverview { get; set; }
         public string PageName_Notes { get; set; }        
@@ -105,7 +106,8 @@ namespace BibleCommon.Services
                 {
                     result = !string.IsNullOrEmpty(this.SectionGroupId_Bible)
                           && !string.IsNullOrEmpty(this.SectionGroupId_BibleComments)
-                          && !string.IsNullOrEmpty(this.SectionGroupId_BibleStudy);
+                          && !string.IsNullOrEmpty(this.SectionGroupId_BibleStudy)
+                          && !string.IsNullOrEmpty(this.SectionGroupId_BibleNotesPages);
 
                     //todo: чтоб проверял и наличие секций
                 }
@@ -154,9 +156,10 @@ namespace BibleCommon.Services
                 this.NotebookId_BibleComments = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NotebookIdBibleComments).Value;
                 this.NotebookId_BibleNotesPages = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NotebookIdBibleNotesPages).Value;
                 this.NotebookId_BibleStudy = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NotebookIdBibleStudy).Value;
-                this.SectionGroupId_Bible = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupIdBible).Value;
-                this.SectionGroupId_BibleComments = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupIdBibleComments).Value;
+                this.SectionGroupId_Bible = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupIdBible).Value;                
                 this.SectionGroupId_BibleStudy = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupIdBibleStudy).Value;
+                this.SectionGroupId_BibleComments = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupIdBibleComments).Value;
+                this.SectionGroupId_BibleNotesPages = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupIdBibleNotesPages).Value;
                 this.PageName_DefaultBookOverview = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameDefaultBookOverview).Value;
                 this.PageName_DefaultComments = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameDefaultComments).Value;
                 this.PageName_Notes = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameNotes).Value;                
@@ -241,9 +244,10 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_NotebookIdBibleComments, this.NotebookId_BibleComments),
                                   new XElement(Consts.Constants.ParameterName_NotebookIdBibleNotesPages, this.NotebookId_BibleNotesPages),
                                   new XElement(Consts.Constants.ParameterName_NotebookIdBibleStudy, this.NotebookId_BibleStudy),                                  
-                                  new XElement(Consts.Constants.ParameterName_SectionGroupIdBible, this.SectionGroupId_Bible),
-                                  new XElement(Consts.Constants.ParameterName_SectionGroupIdBibleComments, this.SectionGroupId_BibleComments),
+                                  new XElement(Consts.Constants.ParameterName_SectionGroupIdBible, this.SectionGroupId_Bible),                                  
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBibleStudy, this.SectionGroupId_BibleStudy),
+                                  new XElement(Consts.Constants.ParameterName_SectionGroupIdBibleComments, this.SectionGroupId_BibleComments),
+                                  new XElement(Consts.Constants.ParameterName_SectionGroupIdBibleNotesPages, this.SectionGroupId_BibleNotesPages),
                                   new XElement(Consts.Constants.ParameterName_PageNameDefaultBookOverview, this.PageName_DefaultBookOverview),
                                   new XElement(Consts.Constants.ParameterName_PageNameDefaultComments, this.PageName_DefaultComments),
                                   new XElement(Consts.Constants.ParameterName_PageNameNotes, this.PageName_Notes),                                  
