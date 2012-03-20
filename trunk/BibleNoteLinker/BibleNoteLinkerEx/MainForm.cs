@@ -23,12 +23,17 @@ namespace BibleNoteLinkerEx
     {
         const string Arg_AllPages = "-allpages";        
         const string Arg_Changed = "-changed";
-        const string Arg_Force = "-force";
+        const string Arg_Force = "-force";                
 
         public MainForm()
         {
             InitializeComponent();            
         }
+
+
+        private int _originalFormHeight;
+        const int FirstFormHeight = 185;
+        const int SecondFormHeight = 250;
 
         private delegate void SetControlPropertyThreadSafeDelegate(Control control, string propertyName, object propertyValue);
 
@@ -54,22 +59,38 @@ namespace BibleNoteLinkerEx
             BibleNoteLinkerEx.Properties.Settings.Default.Force = chkForce.Checked;
             BibleNoteLinkerEx.Properties.Settings.Default.Save();
 
-            this.Hide();
+
+            this.Height = SecondFormHeight;
+            EnableBaseElements(false);
+
             try
             {
-                string args = BuildArgs();
-                string fileName = "BibleNoteLinker.exe";
-                string filePath = Path.Combine(Utils.GetCurrentDirectory(), fileName);
+                //    string args = BuildArgs();
+                //    string fileName = "BibleNoteLinker.exe";
+                //    string filePath = Path.Combine(Utils.GetCurrentDirectory(), fileName);
 
-                Process.Start(filePath, args);
+                //    Process.Start(filePath, args);
 
-                this.Close();
+                //    this.Close();
             }
-            catch
+            catch (Exception ex)
             {
-                this.Show();
-                throw;
+                //Logger.lo
             }
+            finally
+            {
+                EnableBaseElements(true);
+            }
+        }
+
+        private void EnableBaseElements(bool enabled)
+        {
+            btnOk.Enabled = enabled;
+            rbAnalyzeAllPages.Enabled = enabled;
+            rbAnalyzeChangedPages.Enabled = enabled;
+            rbAnalyzeCurrentPage.Enabled = enabled;
+            chkForce.Enabled = enabled;
+            tsmiSeelctNotebooks.Enabled = enabled;
         }
         
         private string BuildArgs()
@@ -112,6 +133,10 @@ namespace BibleNoteLinkerEx
             if (BibleNoteLinkerEx.Properties.Settings.Default.Force)
                 chkForce.Checked = true;
 
+            lblInfo.Visible = false;
+            _originalFormHeight = this.Height;
+            this.Height = FirstFormHeight;
+
             new Thread(CheckForNewerVersion).Start();
         }       
 
@@ -141,6 +166,23 @@ namespace BibleNoteLinkerEx
         private void lblInfo_Click(object sender, EventArgs e)
         {
             Process.Start(BibleCommon.Consts.Constants.DownloadPageUrl);
+        }
+
+        private bool _detailsWereShown = false;
+        private void llblDetails_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (!_detailsWereShown)
+            {
+                llblDetails.Text = "Скрыть детали";
+                this.Height = _originalFormHeight;                
+            }
+            else
+            {
+                llblDetails.Text = "Показать детали";
+                this.Height = SecondFormHeight;                
+            }
+
+            _detailsWereShown = !_detailsWereShown;
         }
     }
 }
