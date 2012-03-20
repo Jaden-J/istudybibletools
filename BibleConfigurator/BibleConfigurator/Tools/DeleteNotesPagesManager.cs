@@ -34,18 +34,20 @@ namespace BibleConfigurator.Tools
 
             try
             {
+                BibleCommon.Services.Logger.Init("DeleteNotesPagesManager");
+
                 Dictionary<string, string> pagesToDelete = GetAllNotesPagesIds();
 
                 _form.PrepareForExternalProcessing(1255 + pagesToDelete.Count, 1, "Старт удаления страниц 'Сводные заметок'.");
 
-                new NotebookIterator(_oneNoteApp).Iterate("DeleteNotesPagesManager",
+                new NotebookIterator(_oneNoteApp).Iterate(
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
                         {
-                            _form.PerformProgressStep(string.Format("Обработка страницы '{0}'",  pageInfo.PageName));         
+                            _form.PerformProgressStep(string.Format("Обработка страницы '{0}'", pageInfo.Title));
 
                             try
                             {
-                                DeleteAllNotesOnPage(pageInfo.SectionGroupId, pageInfo.SectionId, pageInfo.PageId, pageInfo.PageName);
+                                DeleteAllNotesOnPage(pageInfo.SectionGroupId, pageInfo.SectionId, pageInfo.Id, pageInfo.Title);
                             }
                             catch (Exception ex)
                             {

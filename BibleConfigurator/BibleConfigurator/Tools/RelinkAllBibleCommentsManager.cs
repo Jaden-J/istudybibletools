@@ -33,6 +33,8 @@ namespace BibleConfigurator.Tools
 
             try
             {
+                BibleCommon.Services.Logger.Init("RelinkAllBibleCommentsManager");
+
                 _form.PrepareForExternalProcessing(1255, 1, "Старт обновления ссылок на комментарии.");
 
                 //для тестирования
@@ -41,12 +43,12 @@ namespace BibleConfigurator.Tools
                 //    OneNoteUtils.GetHierarchyElementName(_oneNoteApp, _oneNoteApp.Windows.CurrentWindow.CurrentPageId));
                 //return;
 
-                new NotebookIterator(_oneNoteApp).Iterate("RelinkAllBibleCommentsManager",
+                new NotebookIterator(_oneNoteApp).Iterate(
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
                         {
                             try
                             {
-                                RelinkPageComments(pageInfo.SectionId, pageInfo.PageId, pageInfo.PageName);
+                                RelinkPageComments(pageInfo.SectionId, pageInfo.Id, pageInfo.Title);
                             }
                             catch (Exception ex)
                             {

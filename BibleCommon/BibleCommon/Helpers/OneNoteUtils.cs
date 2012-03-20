@@ -157,6 +157,6 @@ namespace BibleCommon.Helpers
             }
 
             return string.Empty;
-        }
+        }        
     }
 }
