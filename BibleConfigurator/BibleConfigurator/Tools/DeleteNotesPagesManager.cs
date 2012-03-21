@@ -40,7 +40,7 @@ namespace BibleConfigurator.Tools
 
                 _form.PrepareForExternalProcessing(1255 + pagesToDelete.Count, 1, "Старт удаления страниц 'Сводные заметок'.");
 
-                new NotebookIterator(_oneNoteApp).Iterate(
+                NotebookIteratorHelper.Iterate(_oneNoteApp,
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
                         {
                             _form.PerformProgressStep(string.Format("Обработка страницы '{0}'", pageInfo.Title));

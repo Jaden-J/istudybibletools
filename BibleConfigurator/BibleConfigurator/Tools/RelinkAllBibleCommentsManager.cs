@@ -43,7 +43,7 @@ namespace BibleConfigurator.Tools
                 //    OneNoteUtils.GetHierarchyElementName(_oneNoteApp, _oneNoteApp.Windows.CurrentWindow.CurrentPageId));
                 //return;
 
-                new NotebookIterator(_oneNoteApp).Iterate(
+                NotebookIteratorHelper.Iterate(_oneNoteApp,
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
                         {
                             try
