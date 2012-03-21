@@ -52,6 +52,12 @@ namespace BibleNoteLinkerEx
         [DllImport("user32.dll")]
         static extern bool SetForegroundWindow(IntPtr hWnd);
 
+        private List<string> GetSelectedNotebookIds()
+        {
+        }
+
+
+
         private void btnOk_Click(object sender, EventArgs e)
         {
             BibleNoteLinkerEx.Properties.Settings.Default.AllPages = rbAnalyzeAllPages.Checked;
