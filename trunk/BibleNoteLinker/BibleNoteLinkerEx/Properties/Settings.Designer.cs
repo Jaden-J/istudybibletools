@@ -58,5 +58,17 @@ namespace BibleNoteLinkerEx.Properties {
                 this["Changed"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SelectedNotebooks {
+            get {
+                return ((string)(this["SelectedNotebooks"]));
+            }
+            set {
+                this["SelectedNotebooks"] = value;
+            }
+        }
     }
 }
