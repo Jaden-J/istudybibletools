@@ -21,13 +21,16 @@ namespace BibleNoteLinkerEx
 {
     public partial class MainForm : Form
     {
+        private Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
+ 
         const string Arg_AllPages = "-allpages";        
         const string Arg_Changed = "-changed";
         const string Arg_Force = "-force";                
 
         public MainForm()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
         }
 
 
@@ -52,9 +55,9 @@ namespace BibleNoteLinkerEx
         [DllImport("user32.dll")]
         static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        private List<string> GetSelectedNotebookIds()
-        {
-        }
+        //private List<string> GetSelectedNotebookIds()
+        //{
+        //}
 
 
 
@@ -189,6 +192,12 @@ namespace BibleNoteLinkerEx
             }
 
             _detailsWereShown = !_detailsWereShown;
+        }
+
+        private void tsmiSeelctNotebooks_Click(object sender, EventArgs e)
+        {
+            SelectNoteBooks form = new SelectNoteBooks(_oneNoteApp);
+            form.ShowDialog();
         }
     }
 }

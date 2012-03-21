@@ -170,6 +170,7 @@
             this.tsmiSeelctNotebooks.Name = "tsmiSeelctNotebooks";
             this.tsmiSeelctNotebooks.Size = new System.Drawing.Size(210, 22);
             this.tsmiSeelctNotebooks.Text = "Выбрать записные книжки";
+            this.tsmiSeelctNotebooks.Click += new System.EventHandler(this.tsmiSeelctNotebooks_Click);
             // 
             // MainForm
             // 
