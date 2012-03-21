@@ -18,7 +18,7 @@ namespace BibleCommon.Services
             public string Title { get; set; }
         }
 
-        public class SectionGroupInfo : HierarchyElementInfo
+        public class SectionGroupInfo: HierarchyElementInfo
         {            
             public List<SectionGroupInfo> SectionGroups { get; set; }
             public List<SectionInfo> Sections { get; set; }
@@ -31,16 +31,10 @@ namespace BibleCommon.Services
         }
    
 
-        public class NotebookInfo : SectionGroupInfo
+        public class NotebookInfo: HierarchyElementInfo
         {  
             public int PagesCount { get; set; }
-
-            public NotebookInfo(SectionGroupInfo container)
-            {
-                this.SectionGroups = container.SectionGroups;
-                this.Sections = container.Sections;
-                this.Title = container.Title;                
-            }
+            public SectionGroupInfo RootSectionGroup { get; set; }
         }
 
         public class SectionInfo : HierarchyElementInfo
@@ -79,61 +73,15 @@ namespace BibleCommon.Services
                 throw new Exception(string.Format("Не удаётся найти группу секций '{0}'", sectionGroupId));
             
             int pagesCount = 0;
-            var result = new NotebookInfo(ProcessSectionGroup(sectionGroup, notebookId, notebookElement.Xnm, ref pagesCount));
-            result.Id = notebookId;
-            result.PagesCount = pagesCount;
-            return result;
-        }
+            var rootSectionGroup = ProcessSectionGroup(sectionGroup, notebookId, notebookElement.Xnm, ref pagesCount);
 
-        public void Iterate(string notebookId, string sectionGroupId, Action<PageInfo> pageAction)
-        {
-            if (pageAction == null)
-                throw new ArgumentNullException("pageAction");
-
-            BibleCommon.Services.Logger.LogMessage("Обработка записной книжки: '{0}'",
-                OneNoteUtils.GetHierarchyElementName(_oneNoteApp, notebookId));
-            
-            NotebookInfo notebook = GetNotebookPages(notebookId, sectionGroupId, null);
-
-            BibleCommon.Services.Logger.MoveLevel(1);
-            IterateContainer(notebook, pageAction);
-            BibleCommon.Services.Logger.MoveLevel(-1);
-        }
-
-        private void IterateContainer(SectionGroupInfo container, Action<PageInfo> pageAction)
-        {
-            if (container is SectionGroupInfo)
+            return new NotebookInfo()
             {
-                BibleCommon.Services.Logger.LogMessage("Обработка группы секций '{0}'", container.Title);
-                BibleCommon.Services.Logger.MoveLevel(1);
-            }
-
-            foreach (SectionInfo section in container.Sections)
-            {
-                BibleCommon.Services.Logger.LogMessage("Обработка секции '{0}'", section.Title);
-                BibleCommon.Services.Logger.MoveLevel(1);
-
-                foreach (PageInfo page in section.Pages)
-                {
-                    BibleCommon.Services.Logger.LogMessage("Обработка страницы '{0}'", page.Title);
-                    BibleCommon.Services.Logger.MoveLevel(1);
-
-                    pageAction(page);
-
-                    BibleCommon.Services.Logger.MoveLevel(-1);
-                }
-
-                BibleCommon.Services.Logger.MoveLevel(-1);
-            }
-
-            foreach (SectionGroupInfo sectionGroup in container.SectionGroups)
-            {
-                IterateContainer(sectionGroup, pageAction);
-            }
-
-            if (container is SectionGroupInfo)
-                BibleCommon.Services.Logger.MoveLevel(-1);
-        }
+                RootSectionGroup = rootSectionGroup,
+                PagesCount = pagesCount,
+                Id = notebookId
+            };            
+        }       
 
 
         private SectionGroupInfo ProcessSectionGroup(XElement sectionGroupElement, string notebookId, XmlNamespaceManager xnm, ref int pagesCount)
