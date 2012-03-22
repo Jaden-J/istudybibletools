@@ -24,10 +24,7 @@ namespace BibleNoteLinkerEx
     public partial class MainForm : Form
     {
         private Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
- 
-        const string Arg_AllPages = "-allpages";        
-        const string Arg_Changed = "-changed";
-        const string Arg_Force = "-force";                
+        
 
         public MainForm()
         {
@@ -39,6 +36,7 @@ namespace BibleNoteLinkerEx
         private int _originalFormHeight;
         const int FirstFormHeight = 185;
         const int SecondFormHeight = 250;
+        //private bool _exited
 
         private delegate void SetControlPropertyThreadSafeDelegate(Control control, string propertyName, object propertyValue);
 
@@ -63,13 +61,13 @@ namespace BibleNoteLinkerEx
             BibleNoteLinkerEx.Properties.Settings.Default.AllPages = rbAnalyzeAllPages.Checked;
             BibleNoteLinkerEx.Properties.Settings.Default.Changed = rbAnalyzeChangedPages.Checked;
             BibleNoteLinkerEx.Properties.Settings.Default.Force = chkForce.Checked;
-            BibleNoteLinkerEx.Properties.Settings.Default.Save();
+            BibleNoteLinkerEx.Properties.Settings.Default.Save();            
 
             this.Height = SecondFormHeight;
             EnableBaseElements(false);
 
             BibleCommon.Services.Logger.Init("BibleNoteLinkerEx");
-            //BibleCommon.Services.Logger.SetOutputListBox(lbLog);
+            BibleCommon.Services.Logger.SetOutputListBox(lbLog);
 
             try
             {
@@ -83,33 +81,35 @@ namespace BibleNoteLinkerEx
                 else
                 {
                     pbMain.Maximum = 1;
-
                 }                
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                BibleCommon.Services.Logger.LogError(ex);
             }
             finally
             {
                 EnableBaseElements(true);
                 BibleCommon.Services.Logger.Done();
             }
-        }
-        private void LogMessage(string message)
-        {
-            lblProgress.Text = message;
-            lbLog.Items.Add(message);
-        }
+        }        
 
         public void ProcessNotebook(NotebookIterator.NotebookInfo notebook)
         {   
-
             BibleCommon.Services.Logger.LogMessage("Обработка записной книжки: '{0}'", notebook.Title);
 
             BibleCommon.Services.Logger.MoveLevel(1);
             ProcessSectionGroup(notebook.RootSectionGroup, true);
             BibleCommon.Services.Logger.MoveLevel(-1);
+        }
+
+        private void LogHighLevelMessage(string message, int? stage, int? maxStageCount)
+        {
+            if (stage.HasValue)
+                message = string.Format("Этап {0}/{1}: {2}", stage, maxStageCount, message);
+            
+            lblProgress.Text = message;
         }
 
         private void ProcessSectionGroup(BibleCommon.Services.NotebookIterator.SectionGroupInfo sectionGroup, bool isRoot)
@@ -127,7 +127,9 @@ namespace BibleNoteLinkerEx
 
                 foreach (BibleCommon.Services.NotebookIterator.PageInfo page in section.Pages)
                 {
-                    BibleCommon.Services.Logger.LogMessage("Обработка страницы '{0}'", page.Title);
+                    string message = string.Format("Обработка страницы '{0}'", page.Title.Replace("{", "{{").Replace("}", "}}"));
+                    LogHighLevelMessage(message, 1, 4);
+                    BibleCommon.Services.Logger.LogMessage(message);                    
                     BibleCommon.Services.Logger.MoveLevel(1);
 
                     NoteLinkManager noteLinkManager = new NoteLinkManager(_oneNoteApp);
@@ -292,6 +294,11 @@ namespace BibleNoteLinkerEx
         {
             SelectNoteBooks form = new SelectNoteBooks(_oneNoteApp);
             form.ShowDialog();
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
         }
     }
 }
