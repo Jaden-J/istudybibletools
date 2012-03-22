@@ -16,6 +16,8 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using BibleCommon.Helpers;
 using BibleCommon.Services;
+using System.Xml.Linq;
+using BibleCommon.Consts;
 
 namespace BibleNoteLinkerEx
 {
@@ -55,11 +57,6 @@ namespace BibleNoteLinkerEx
         [DllImport("user32.dll")]
         static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        //private List<string> GetSelectedNotebookIds()
-        //{
-        //}
-
-
 
         private void btnOk_Click(object sender, EventArgs e)
         {
@@ -68,28 +65,125 @@ namespace BibleNoteLinkerEx
             BibleNoteLinkerEx.Properties.Settings.Default.Force = chkForce.Checked;
             BibleNoteLinkerEx.Properties.Settings.Default.Save();
 
-
             this.Height = SecondFormHeight;
             EnableBaseElements(false);
 
+            BibleCommon.Services.Logger.Init("BibleNoteLinkerEx");
+            //BibleCommon.Services.Logger.SetOutputListBox(lbLog);
+
             try
             {
-                //    string args = BuildArgs();
-                //    string fileName = "BibleNoteLinker.exe";
-                //    string filePath = Path.Combine(Utils.GetCurrentDirectory(), fileName);
+                if (!rbAnalyzeCurrentPage.Checked)
+                {
+                    List<NotebookIterator.NotebookInfo> notebooks = GetNotebooksInfo();
+                    pbMain.Maximum = notebooks.Sum(notebook => notebook.PagesCount);
+                    foreach (NotebookIterator.NotebookInfo notebook in notebooks)
+                        ProcessNotebook(notebook);
+                }
+                else
+                {
+                    pbMain.Maximum = 1;
 
-                //    Process.Start(filePath, args);
-
-                //    this.Close();
+                }                
             }
             catch (Exception ex)
             {
-                //Logger.lo
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
                 EnableBaseElements(true);
+                BibleCommon.Services.Logger.Done();
             }
+        }
+        private void LogMessage(string message)
+        {
+            lblProgress.Text = message;
+            lbLog.Items.Add(message);
+        }
+
+        public void ProcessNotebook(NotebookIterator.NotebookInfo notebook)
+        {   
+
+            BibleCommon.Services.Logger.LogMessage("Обработка записной книжки: '{0}'", notebook.Title);
+
+            BibleCommon.Services.Logger.MoveLevel(1);
+            ProcessSectionGroup(notebook.RootSectionGroup, true);
+            BibleCommon.Services.Logger.MoveLevel(-1);
+        }
+
+        private void ProcessSectionGroup(BibleCommon.Services.NotebookIterator.SectionGroupInfo sectionGroup, bool isRoot)
+        {
+            if (!isRoot)
+            {
+                BibleCommon.Services.Logger.LogMessage("Обработка группы секций '{0}'", sectionGroup.Title);
+                BibleCommon.Services.Logger.MoveLevel(1);
+            }
+
+            foreach (BibleCommon.Services.NotebookIterator.SectionInfo section in sectionGroup.Sections)
+            {
+                BibleCommon.Services.Logger.LogMessage("Обработка секции '{0}'", section.Title);
+                BibleCommon.Services.Logger.MoveLevel(1);
+
+                foreach (BibleCommon.Services.NotebookIterator.PageInfo page in section.Pages)
+                {
+                    BibleCommon.Services.Logger.LogMessage("Обработка страницы '{0}'", page.Title);
+                    BibleCommon.Services.Logger.MoveLevel(1);
+
+                    NoteLinkManager noteLinkManager = new NoteLinkManager(_oneNoteApp);
+                    noteLinkManager.LinkPageVerses(page.SectionGroupId, page.SectionId, page.Id, NoteLinkManager.AnalyzeDepth.Full, chkForce.Checked);
+                    pbMain.PerformStep();
+                    System.Windows.Forms.Application.DoEvents();
+
+                    BibleCommon.Services.Logger.MoveLevel(-1);
+                }
+
+                BibleCommon.Services.Logger.MoveLevel(-1);
+            }
+
+            foreach (BibleCommon.Services.NotebookIterator.SectionGroupInfo subSectionGroup in sectionGroup.SectionGroups)
+            {
+                ProcessSectionGroup(subSectionGroup, false);
+            }
+
+            if (!isRoot)
+                BibleCommon.Services.Logger.MoveLevel(-1);
+        }
+
+
+        private List<NotebookIterator.NotebookInfo> GetNotebooksInfo()
+        {
+            NotebookIterator iterator = new NotebookIterator(_oneNoteApp);
+            List<NotebookIterator.NotebookInfo> result = new List<NotebookIterator.NotebookInfo>();
+
+            Func<NotebookIterator.PageInfo, bool> filter = null;
+            if (rbAnalyzeChangedPages.Checked)
+                filter = IsPageWasModifiedAfterLastAnalyze;
+
+            foreach (string id in Helper.GetSelectedNotebooksIds())
+            {
+                if (SettingsManager.Instance.IsSingleNotebook)                
+                    result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, id, filter));                
+                else                
+                    result.Add(iterator.GetNotebookPages(id, null, filter));                
+            }
+
+            return result;
+        }
+
+        private bool IsPageWasModifiedAfterLastAnalyze(NotebookIterator.PageInfo page)
+        {   
+            XAttribute lastModifiedDateAttribute = page.PageElement.Attribute("lastModifiedTime");
+            if (lastModifiedDateAttribute != null)
+            {
+                DateTime lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value);
+
+                string lastAnalyzeTime = OneNoteUtils.GetPageMetaData(_oneNoteApp, page.PageElement, Constants.Key_LatestAnalyzeTime, page.Xnm);
+                if (!string.IsNullOrEmpty(lastAnalyzeTime) && lastModifiedDate <= DateTime.Parse(lastAnalyzeTime).ToLocalTime())
+                    return false;                
+            }
+
+            return true;
         }
 
         private void EnableBaseElements(bool enabled)

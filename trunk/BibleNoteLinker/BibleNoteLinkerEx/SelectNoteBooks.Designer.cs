@@ -30,6 +30,7 @@
         {
             this.btnOk = new System.Windows.Forms.Button();
             this.pnMain = new System.Windows.Forms.Panel();
+            this.lblError = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnOk
@@ -40,6 +41,7 @@
             this.btnOk.TabIndex = 0;
             this.btnOk.Text = "Ok";
             this.btnOk.UseVisualStyleBackColor = true;
+            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 
             // pnMain
             // 
@@ -48,11 +50,23 @@
             this.pnMain.Size = new System.Drawing.Size(250, 100);
             this.pnMain.TabIndex = 1;
             // 
+            // lblError
+            // 
+            this.lblError.AutoSize = true;
+            this.lblError.ForeColor = System.Drawing.Color.Red;
+            this.lblError.Location = new System.Drawing.Point(12, 126);
+            this.lblError.Name = "lblError";
+            this.lblError.Size = new System.Drawing.Size(29, 13);
+            this.lblError.TabIndex = 2;
+            this.lblError.Text = "Error";
+            this.lblError.Visible = false;
+            // 
             // SelectNoteBooks
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(277, 161);
+            this.Controls.Add(this.lblError);
             this.Controls.Add(this.pnMain);
             this.Controls.Add(this.btnOk);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -62,6 +76,7 @@
             this.TopMost = true;
             this.Load += new System.EventHandler(this.SelectNoteBooks_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -69,5 +84,6 @@
 
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Panel pnMain;
+        private System.Windows.Forms.Label lblError;
     }
 }
