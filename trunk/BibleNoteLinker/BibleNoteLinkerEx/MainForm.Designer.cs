@@ -125,7 +125,7 @@
             this.lbLog.FormattingEnabled = true;
             this.lbLog.Location = new System.Drawing.Point(12, 228);
             this.lbLog.Name = "lbLog";
-            this.lbLog.Size = new System.Drawing.Size(488, 134);
+            this.lbLog.Size = new System.Drawing.Size(488, 199);
             this.lbLog.TabIndex = 10;
             // 
             // lblProgress
@@ -133,9 +133,9 @@
             this.lblProgress.AutoSize = true;
             this.lblProgress.Location = new System.Drawing.Point(9, 161);
             this.lblProgress.Name = "lblProgress";
-            this.lblProgress.Size = new System.Drawing.Size(58, 13);
+            this.lblProgress.Size = new System.Drawing.Size(96, 13);
             this.lblProgress.TabIndex = 12;
-            this.lblProgress.Text = "lblProgress";
+            this.lblProgress.Text = "Инициализация...";
             // 
             // llblDetails
             // 
@@ -178,7 +178,7 @@
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(514, 378);
+            this.ClientSize = new System.Drawing.Size(514, 440);
             this.Controls.Add(this.llblDetails);
             this.Controls.Add(this.lblProgress);
             this.Controls.Add(this.lbLog);
@@ -197,6 +197,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Укажите параметры";
             this.TopMost = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);

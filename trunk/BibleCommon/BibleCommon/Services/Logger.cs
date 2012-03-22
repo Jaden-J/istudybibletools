@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using BibleCommon.Helpers;
-using System.Web.UI.WebControls;
+using System.Windows.Forms;
 
 namespace BibleCommon.Services
 {
@@ -70,6 +70,8 @@ namespace BibleCommon.Services
             LogMessageToFileAndConsole(newLine, message, null, false);
         }
 
+
+        private static bool _newLineForListBox = false;
         private static void LogMessageToFileAndConsole(bool newLine, string message, string messageEx = null, bool writeDateTime = true)
         {
             if (string.IsNullOrEmpty(messageEx))
@@ -78,11 +80,24 @@ namespace BibleCommon.Services
             if (writeDateTime)
                 messageEx = string.Format("{0}: {1}", DateTime.Now, messageEx);
 
+
+            if (_lb != null)
+            {
+                if (_newLineForListBox || _lb.Items.Count == 0)
+                {
+                    _lb.Items.Add(message);
+                    _lb.SelectedIndex = _lb.Items.Count - 1;
+                }
+                else
+                    _lb.Items[_lb.Items.Count - 1] += message;                
+            }
+
             if (newLine)
             {
                 Console.WriteLine(message);
-                if (_lb != null)
-                    _lb.Items.Add(message);
+                if (_lb != null)                   
+                    _newLineForListBox = true;
+                
 
                 if (_streamWriter != null && _streamWriter.BaseStream != null)
                     _streamWriter.WriteLine(messageEx);                    
@@ -91,7 +106,7 @@ namespace BibleCommon.Services
             {
                 Console.Write(message);
                 if (_lb != null)
-                    _lb.Items[_lb.Items.Count - 1].Text += message;
+                    _newLineForListBox = false;
 
                 if (_streamWriter != null && _streamWriter.BaseStream != null)
                     _streamWriter.Write(messageEx);

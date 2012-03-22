@@ -276,6 +276,7 @@ namespace BibleCommon.Services
             List<VersePointerSearchResult> pageChaptersSearchResult,
             AnalyzeDepth linkDepth, bool force, bool isTitle, bool isSummaryNotesPage, Action<VersePointerSearchResult> onVersePointerFound)
         {
+            System.Windows.Forms.Application.DoEvents();
             bool wasModified = false;
             string localChapterName = string.Empty;    // имя главы в пределах данного стиха. например, действительно только для девятки в "Откр 5:7,9"
 
