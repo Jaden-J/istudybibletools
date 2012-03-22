@@ -14,14 +14,13 @@ namespace BibleConfigurator.Tools
         public static void Iterate(Application oneNoteApp, string notebookId, string sectionGroupId, Action<BibleCommon.Services.NotebookIterator.PageInfo> pageAction)
         {
             if (pageAction == null)
-                throw new ArgumentNullException("pageAction");
-
-            BibleCommon.Services.Logger.LogMessage("Обработка записной книжки: '{0}'",
-                OneNoteUtils.GetHierarchyElementName(oneNoteApp, notebookId));
+                throw new ArgumentNullException("pageAction");            
 
             NotebookIterator iterator = new NotebookIterator(oneNoteApp);
 
             BibleCommon.Services.NotebookIterator.NotebookInfo notebook = iterator.GetNotebookPages(notebookId, sectionGroupId, null);
+
+            BibleCommon.Services.Logger.LogMessage("Обработка записной книжки: '{0}'", notebook.Title);
 
             BibleCommon.Services.Logger.MoveLevel(1);
             IterateContainer(notebook.RootSectionGroup, true, pageAction);
