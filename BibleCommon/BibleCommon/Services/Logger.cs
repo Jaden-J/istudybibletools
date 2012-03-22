@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using BibleCommon.Helpers;
+using System.Web.UI.WebControls;
 
 namespace BibleCommon.Services
 {
@@ -13,6 +14,7 @@ namespace BibleCommon.Services
         private static int _level = 0;
         private static FileStream _fileStream = null;
         private static StreamWriter _streamWriter = null;
+        private static ListBox _lb = null;
 
         public static void MoveLevel(int levelDiv)
         {
@@ -37,6 +39,11 @@ namespace BibleCommon.Services
             }
         }
 
+        public static void SetOutputListBox(ListBox lb)
+        {
+            _lb = lb;
+        }
+
         public static void Done()
         {
             if (_isInitialized)
@@ -48,6 +55,7 @@ namespace BibleCommon.Services
                     _fileStream.Close();
 
                 _isInitialized = false;
+                _lb = null;
             }
         }
 
@@ -72,7 +80,9 @@ namespace BibleCommon.Services
 
             if (newLine)
             {
-                Console.WriteLine(message);                
+                Console.WriteLine(message);
+                if (_lb != null)
+                    _lb.Items.Add(message);
 
                 if (_streamWriter != null && _streamWriter.BaseStream != null)
                     _streamWriter.WriteLine(messageEx);                    
@@ -80,6 +90,9 @@ namespace BibleCommon.Services
             else
             {
                 Console.Write(message);
+                if (_lb != null)
+                    _lb.Items[_lb.Items.Count - 1].Text += message;
+
                 if (_streamWriter != null && _streamWriter.BaseStream != null)
                     _streamWriter.Write(messageEx);
             }

@@ -50,7 +50,9 @@ namespace BibleCommon.Services
         public class PageInfo : HierarchyElementInfo
         {
             public string SectionGroupId { get; set; }
-            public string SectionId { get; set; }            
+            public string SectionId { get; set; }
+            public XElement PageElement { get; set; }
+            public XmlNamespaceManager Xnm { get; set; }
         }
 
         private Application _oneNoteApp;
@@ -73,38 +75,46 @@ namespace BibleCommon.Services
                 throw new Exception(string.Format("Не удаётся найти группу секций '{0}'", sectionGroupId));
             
             int pagesCount = 0;
-            var rootSectionGroup = ProcessSectionGroup(sectionGroup, notebookId, notebookElement.Xnm, ref pagesCount);
+            var rootSectionGroup = ProcessSectionGroup(sectionGroup, notebookId, notebookElement.Xnm, filter, ref pagesCount);            
 
-            return new NotebookInfo()
+            var result =  new NotebookInfo()
             {
                 RootSectionGroup = rootSectionGroup,
-                PagesCount = pagesCount,
-                Id = notebookId
+                PagesCount = pagesCount               
             };            
+
+            ProcessHierarchyElement(result, notebookElement.Content.Root);
+
+            return result;
         }       
 
 
-        private SectionGroupInfo ProcessSectionGroup(XElement sectionGroupElement, string notebookId, XmlNamespaceManager xnm, ref int pagesCount)
+        private SectionGroupInfo ProcessSectionGroup(XElement sectionGroupElement, string notebookId, XmlNamespaceManager xnm, Func<PageInfo, bool> filter, ref int pagesCount)
         {
             SectionGroupInfo sectionGroup = new SectionGroupInfo();
             ProcessHierarchyElement(sectionGroup, sectionGroupElement);            
 
-            foreach (var subSectionGroup in sectionGroupElement.XPathSelectElements("one:SectionGroup", xnm)
+            foreach (var subSectionGroupElement in sectionGroupElement.XPathSelectElements("one:SectionGroup", xnm)
                 .Where(sg => !OneNoteUtils.IsRecycleBin(sg)))
-            {                
-                sectionGroup.SectionGroups.Add(ProcessSectionGroup(subSectionGroup, notebookId, xnm, ref pagesCount));
+            {
+                int oldPagesCount = pagesCount;
+                var subSectionGroup = ProcessSectionGroup(subSectionGroupElement, notebookId, xnm, filter, ref pagesCount);
+                if (pagesCount > oldPagesCount)
+                    sectionGroup.SectionGroups.Add(subSectionGroup);
             }
 
             foreach (var subSection in sectionGroupElement.XPathSelectElements("one:Section", xnm))
             {
-                sectionGroup.Sections.Add(ProcessSection(subSection, sectionGroup.Id, notebookId, xnm, ref pagesCount));
+                var section = ProcessSection(subSection, sectionGroup.Id, notebookId, xnm, filter, ref pagesCount);
+                if (section.Pages.Count > 0)
+                    sectionGroup.Sections.Add(section);
             }
 
             return sectionGroup;
         }
 
         private SectionInfo ProcessSection(XElement sectionElement, string sectionGroupId,
-           string notebookId, XmlNamespaceManager xnm, ref int pagesCount)
+           string notebookId, XmlNamespaceManager xnm,  Func<PageInfo, bool> filter, ref int pagesCount)
         {
             SectionInfo section = new SectionInfo();
             ProcessHierarchyElement(section, sectionElement);            
@@ -116,12 +126,17 @@ namespace BibleCommon.Services
                     var page = new PageInfo()
                                 {
                                     SectionGroupId = sectionGroupId,
-                                    SectionId = section.Id,                                 
+                                    SectionId = section.Id,              
+                                    PageElement = pageElement,
+                                    Xnm = xnm
                                 };                    
                     ProcessHierarchyElement(page, pageElement);
 
-                    section.Pages.Add(page);
-                    pagesCount++;
+                    if (filter == null || filter(page))
+                    {
+                        section.Pages.Add(page);
+                        pagesCount++;
+                    }
                 }
             }
 

@@ -117,6 +117,7 @@
             this.pbMain.Location = new System.Drawing.Point(12, 177);
             this.pbMain.Name = "pbMain";
             this.pbMain.Size = new System.Drawing.Size(488, 23);
+            this.pbMain.Step = 1;
             this.pbMain.TabIndex = 9;
             // 
             // lbLog

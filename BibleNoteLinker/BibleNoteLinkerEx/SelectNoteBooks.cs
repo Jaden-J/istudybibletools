@@ -33,8 +33,29 @@ namespace BibleNoteLinkerEx
                 RenderSelectRow(id, allNotebooks[id], i++);
             }
 
-            btnOk.Top = 25 * i + 20;
+            SetContainerAttributes(i);
+
+            LoadSelectedNotebooks();        
+                
+        }
+
+        private void LoadSelectedNotebooks()
+        {
+            List<string> notebooksIds = Helper.GetSelectedNotebooksIds();
+
+            foreach (CheckBox chk in pnMain.Controls)
+            {
+                if (notebooksIds.Contains(chk.Name))                
+                    chk.Checked = true;                
+            }
+        }
+
+        private void SetContainerAttributes(int notebooksCount)
+        {
+            int notebooksRowHeight = 25 * notebooksCount;
+            btnOk.Top = notebooksRowHeight + 20;
             this.Height = btnOk.Top + btnOk.Height + 35;
+            pnMain.Height = notebooksRowHeight;
         }
 
         private void RenderSelectRow(string id, string title, int index)
@@ -53,7 +74,13 @@ namespace BibleNoteLinkerEx
 
             if (SettingsManager.Instance.IsSingleNotebook)
             {
-                //todo
+                OneNoteProxy.HierarchyElement sectionGroups = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, 
+                    SettingsManager.Instance.NotebookId_Bible, HierarchyScope.hsChildren);
+
+                foreach (XElement sectionGroup in sectionGroups.Content.Root.XPathSelectElements("one:SectionGroup", sectionGroups.Xnm))
+                {
+                    result.Add((string)sectionGroup.Attribute("ID"), (string)sectionGroup.Attribute("name"));
+                }
             }
             else
             {
@@ -63,6 +90,35 @@ namespace BibleNoteLinkerEx
                 {
                     result.Add((string)notebook.Attribute("ID"), (string)notebook.Attribute("name"));
                 }
+            }
+
+            return result;
+        }
+
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+            List<string> selectedNotebooks = GetSelectedNotebooks();
+            if (selectedNotebooks.Count == 0)
+            {
+                lblError.Text = "Не выбран ни один элемент";
+                lblError.Visible = true;                
+            }
+            else
+            {
+                Helper.SaveSelectedNotebooksIds(selectedNotebooks);
+                this.DialogResult = System.Windows.Forms.DialogResult.OK;
+                this.Close();
+            }
+        }
+
+        private List<string> GetSelectedNotebooks()
+        {
+            List<string> result = new List<string>();
+
+            foreach (CheckBox chk in pnMain.Controls)
+            {
+                if (chk.Checked)
+                    result.Add(chk.Name);
             }
 
             return result;
