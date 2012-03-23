@@ -799,7 +799,7 @@ namespace BibleConfigurator
 
         public void PerformProgressStep(string infoText)
         {
-            lblProgressInfo.Text = infoText;
+            lblProgressInfo.Text = infoText;            
             pbMain.PerformStep();            
             System.Windows.Forms.Application.DoEvents();
         }

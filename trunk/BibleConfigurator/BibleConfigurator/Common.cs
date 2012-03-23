@@ -43,9 +43,5 @@ namespace BibleConfigurator
         {
             this.NeedToReload = needToReload;
         }
-    }
-
-    public class ProcessAbortedByUserException : Exception
-    {
-    }
+    }    
 }
