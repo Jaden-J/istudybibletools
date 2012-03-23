@@ -18,6 +18,7 @@ using BibleCommon.Helpers;
 using BibleCommon.Services;
 using System.Xml.Linq;
 using BibleCommon.Consts;
+using BibleCommon.Common;
 
 namespace BibleNoteLinkerEx
 {
@@ -36,7 +37,7 @@ namespace BibleNoteLinkerEx
         private int _originalFormHeight;
         const int FirstFormHeight = 185;
         const int SecondFormHeight = 250;
-        //private bool _exited
+        private bool _processAbortedByUser;
 
         private delegate void SetControlPropertyThreadSafeDelegate(Control control, string propertyName, object propertyValue);
 
@@ -71,17 +72,12 @@ namespace BibleNoteLinkerEx
 
             try
             {
-                if (!rbAnalyzeCurrentPage.Checked)
-                {
-                    List<NotebookIterator.NotebookInfo> notebooks = GetNotebooksInfo();
-                    pbMain.Maximum = notebooks.Sum(notebook => notebook.PagesCount);
-                    foreach (NotebookIterator.NotebookInfo notebook in notebooks)
-                        ProcessNotebook(notebook);
-                }
-                else
-                {
-                    pbMain.Maximum = 1;
-                }                
+                StartAnalyze();
+            }
+            catch (ProcessAbortedByUserException)
+            {
+                Logger.LogMessage(string.Empty, false, true, false);
+                Logger.LogMessage("Операция прервана пользователем.");
             }
             catch (Exception ex)
             {
@@ -93,125 +89,22 @@ namespace BibleNoteLinkerEx
                 EnableBaseElements(true);
                 BibleCommon.Services.Logger.Done();
             }
-        }        
 
-        public void ProcessNotebook(NotebookIterator.NotebookInfo notebook)
-        {   
-            BibleCommon.Services.Logger.LogMessage("Обработка записной книжки: '{0}'", notebook.Title);
+            pbMain.Value = pbMain.Maximum = 1;
 
-            BibleCommon.Services.Logger.MoveLevel(1);
-            ProcessSectionGroup(notebook.RootSectionGroup, true);
-            BibleCommon.Services.Logger.MoveLevel(-1);
-        }
-
-        private void LogHighLevelMessage(string message, int? stage, int? maxStageCount)
-        {
-            if (stage.HasValue)
-                message = string.Format("Этап {0}/{1}: {2}", stage, maxStageCount, message);
-            
-            lblProgress.Text = message;
-        }
-
-        private void ProcessSectionGroup(BibleCommon.Services.NotebookIterator.SectionGroupInfo sectionGroup, bool isRoot)
-        {
-            if (!isRoot)
-            {
-                BibleCommon.Services.Logger.LogMessage("Обработка группы секций '{0}'", sectionGroup.Title);
-                BibleCommon.Services.Logger.MoveLevel(1);
-            }
-
-            foreach (BibleCommon.Services.NotebookIterator.SectionInfo section in sectionGroup.Sections)
-            {
-                BibleCommon.Services.Logger.LogMessage("Обработка секции '{0}'", section.Title);
-                BibleCommon.Services.Logger.MoveLevel(1);
-
-                foreach (BibleCommon.Services.NotebookIterator.PageInfo page in section.Pages)
-                {
-                    string message = string.Format("Обработка страницы '{0}'", page.Title.Replace("{", "{{").Replace("}", "}}"));
-                    LogHighLevelMessage(message, 1, 4);
-                    BibleCommon.Services.Logger.LogMessage(message);                    
-                    BibleCommon.Services.Logger.MoveLevel(1);
-
-                    NoteLinkManager noteLinkManager = new NoteLinkManager(_oneNoteApp);
-                    noteLinkManager.LinkPageVerses(page.SectionGroupId, page.SectionId, page.Id, NoteLinkManager.AnalyzeDepth.Full, chkForce.Checked);
-                    pbMain.PerformStep();
-                    System.Windows.Forms.Application.DoEvents();
-
-                    BibleCommon.Services.Logger.MoveLevel(-1);
-                }
-
-                BibleCommon.Services.Logger.MoveLevel(-1);
-            }
-
-            foreach (BibleCommon.Services.NotebookIterator.SectionGroupInfo subSectionGroup in sectionGroup.SectionGroups)
-            {
-                ProcessSectionGroup(subSectionGroup, false);
-            }
-
-            if (!isRoot)
-                BibleCommon.Services.Logger.MoveLevel(-1);
-        }
-
-
-        private List<NotebookIterator.NotebookInfo> GetNotebooksInfo()
-        {
-            NotebookIterator iterator = new NotebookIterator(_oneNoteApp);
-            List<NotebookIterator.NotebookInfo> result = new List<NotebookIterator.NotebookInfo>();
-
-            Func<NotebookIterator.PageInfo, bool> filter = null;
-            if (rbAnalyzeChangedPages.Checked)
-                filter = IsPageWasModifiedAfterLastAnalyze;
-
-            foreach (string id in Helper.GetSelectedNotebooksIds())
-            {
-                if (SettingsManager.Instance.IsSingleNotebook)                
-                    result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, id, filter));                
-                else                
-                    result.Add(iterator.GetNotebookPages(id, null, filter));                
-            }
-
-            return result;
-        }
-
-        private bool IsPageWasModifiedAfterLastAnalyze(NotebookIterator.PageInfo page)
-        {   
-            XAttribute lastModifiedDateAttribute = page.PageElement.Attribute("lastModifiedTime");
-            if (lastModifiedDateAttribute != null)
-            {
-                DateTime lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value);
-
-                string lastAnalyzeTime = OneNoteUtils.GetPageMetaData(_oneNoteApp, page.PageElement, Constants.Key_LatestAnalyzeTime, page.Xnm);
-                if (!string.IsNullOrEmpty(lastAnalyzeTime) && lastModifiedDate <= DateTime.Parse(lastAnalyzeTime).ToLocalTime())
-                    return false;                
-            }
-
-            return true;
-        }
+            if (!Logger.ErrorWasLogged)
+                LogHighLevelMessage("Успешно завершено.", null, null);
+            else
+                LogHighLevelMessage("Завершено с ошибками.", null, null);
+        }    
+       
 
         private void EnableBaseElements(bool enabled)
         {
-            btnOk.Enabled = enabled;
-            rbAnalyzeAllPages.Enabled = enabled;
-            rbAnalyzeChangedPages.Enabled = enabled;
-            rbAnalyzeCurrentPage.Enabled = enabled;
-            chkForce.Enabled = enabled;
+            panel1.Enabled = enabled;
             tsmiSeelctNotebooks.Enabled = enabled;
-        }
-        
-        private string BuildArgs()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            if (rbAnalyzeAllPages.Enabled && rbAnalyzeAllPages.Checked)
-                sb.AppendFormat(" {0}", Arg_AllPages);
-            else if (rbAnalyzeChangedPages.Enabled && rbAnalyzeChangedPages.Checked)
-                sb.AppendFormat(" {0} {1}", Arg_AllPages, Arg_Changed);            
-
-            if (chkForce.Enabled && chkForce.Checked)
-                sb.AppendFormat(" {0}", Arg_Force);            
-
-            return sb.ToString();
-        }
+        }       
+      
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
@@ -298,7 +191,7 @@ namespace BibleNoteLinkerEx
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-
+            _processAbortedByUser = true;
         }
     }
 }
