@@ -41,5 +41,33 @@ namespace BibleNoteLinkerEx
             Settings.Default.SelectedNotebooks = string.Join(";", notebooksIds.ToArray());
             Settings.Default.Save();
         }
+
+        public static string GetRightFoundPagesString(int pagesCount)
+        {
+            string firstPart = pagesCount == 1 ? "Найдена" : "Найдено";
+
+            return string.Format("{0} {1}", firstPart, GetRightPagesString(pagesCount));
+        }
+
+
+        public static string GetRightPagesString(int pagesCount)
+        {
+            string s = "страниц";
+            int tempPagesCount = pagesCount;
+
+            tempPagesCount = tempPagesCount % 100;
+            if (!(tempPagesCount >= 10 && tempPagesCount <= 20))
+            {
+                tempPagesCount = tempPagesCount % 10;
+
+                if (tempPagesCount == 1)
+                    s = "страница";
+                else if (tempPagesCount >= 2 && tempPagesCount <= 4)
+                    s = "страницы";
+            }            
+
+            return string.Format("{0} {1}", pagesCount, s);
+        }
+
     }
 }

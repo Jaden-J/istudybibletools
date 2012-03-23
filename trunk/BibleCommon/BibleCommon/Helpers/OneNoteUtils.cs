@@ -157,6 +157,28 @@ namespace BibleCommon.Helpers
             }
 
             return string.Empty;
-        }        
+        }
+
+        public static  NotebookIterator.PageInfo GetCurrentPageInfo(Application oneNoteApp)
+        {
+            if (oneNoteApp.Windows.CurrentWindow == null)
+                throw new Exception("Не найдено открытой записной книжки");
+
+            string currentPageId = oneNoteApp.Windows.CurrentWindow.CurrentPageId;
+            if (string.IsNullOrEmpty(currentPageId))
+                throw new Exception("Не найдено открытой страницы заметок");
+
+            string currentSectionId = oneNoteApp.Windows.CurrentWindow.CurrentSectionId;
+            string currentSectionGroupId = oneNoteApp.Windows.CurrentWindow.CurrentSectionGroupId;
+            string currentNotebookId = oneNoteApp.Windows.CurrentWindow.CurrentNotebookId;
+
+
+            return new NotebookIterator.PageInfo()
+            {
+                SectionGroupId = currentSectionGroupId,
+                SectionId = currentSectionId,
+                Id = currentPageId
+            };
+        }
     }
 }

@@ -41,13 +41,15 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSeelctNotebooks = new System.Windows.Forms.ToolStripMenuItem();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.menuStrip1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // chkForce
             // 
             this.chkForce.AutoSize = true;
-            this.chkForce.Location = new System.Drawing.Point(57, 109);
+            this.chkForce.Location = new System.Drawing.Point(45, 81);
             this.chkForce.Name = "chkForce";
             this.chkForce.Size = new System.Drawing.Size(189, 17);
             this.chkForce.TabIndex = 0;
@@ -58,7 +60,7 @@
             // 
             this.rbAnalyzeCurrentPage.AutoSize = true;
             this.rbAnalyzeCurrentPage.Checked = true;
-            this.rbAnalyzeCurrentPage.Location = new System.Drawing.Point(15, 31);
+            this.rbAnalyzeCurrentPage.Location = new System.Drawing.Point(3, 3);
             this.rbAnalyzeCurrentPage.Name = "rbAnalyzeCurrentPage";
             this.rbAnalyzeCurrentPage.Size = new System.Drawing.Size(199, 17);
             this.rbAnalyzeCurrentPage.TabIndex = 1;
@@ -69,7 +71,7 @@
             // rbAnalyzeAllPages
             // 
             this.rbAnalyzeAllPages.AutoSize = true;
-            this.rbAnalyzeAllPages.Location = new System.Drawing.Point(15, 77);
+            this.rbAnalyzeAllPages.Location = new System.Drawing.Point(3, 49);
             this.rbAnalyzeAllPages.Name = "rbAnalyzeAllPages";
             this.rbAnalyzeAllPages.Size = new System.Drawing.Size(176, 17);
             this.rbAnalyzeAllPages.TabIndex = 2;
@@ -79,7 +81,7 @@
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(425, 127);
+            this.btnOk.Location = new System.Drawing.Point(413, 99);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 3;
@@ -90,7 +92,7 @@
             // rbAnalyzeChangedPages
             // 
             this.rbAnalyzeChangedPages.AutoSize = true;
-            this.rbAnalyzeChangedPages.Location = new System.Drawing.Point(15, 54);
+            this.rbAnalyzeChangedPages.Location = new System.Drawing.Point(3, 26);
             this.rbAnalyzeChangedPages.Name = "rbAnalyzeChangedPages";
             this.rbAnalyzeChangedPages.Size = new System.Drawing.Size(260, 17);
             this.rbAnalyzeChangedPages.TabIndex = 6;
@@ -104,7 +106,7 @@
             this.lblInfo.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.lblInfo.ForeColor = System.Drawing.Color.Red;
-            this.lblInfo.Location = new System.Drawing.Point(9, 127);
+            this.lblInfo.Location = new System.Drawing.Point(0, 99);
             this.lblInfo.Name = "lblInfo";
             this.lblInfo.Size = new System.Drawing.Size(368, 26);
             this.lblInfo.TabIndex = 7;
@@ -173,22 +175,30 @@
             this.tsmiSeelctNotebooks.Text = "Выбрать записные книжки";
             this.tsmiSeelctNotebooks.Click += new System.EventHandler(this.tsmiSeelctNotebooks_Click);
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.rbAnalyzeCurrentPage);
+            this.panel1.Controls.Add(this.chkForce);
+            this.panel1.Controls.Add(this.rbAnalyzeAllPages);
+            this.panel1.Controls.Add(this.btnOk);
+            this.panel1.Controls.Add(this.rbAnalyzeChangedPages);
+            this.panel1.Controls.Add(this.lblInfo);
+            this.panel1.Location = new System.Drawing.Point(12, 27);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(490, 133);
+            this.panel1.TabIndex = 16;
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(514, 440);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.llblDetails);
             this.Controls.Add(this.lblProgress);
             this.Controls.Add(this.lbLog);
             this.Controls.Add(this.pbMain);
-            this.Controls.Add(this.lblInfo);
-            this.Controls.Add(this.rbAnalyzeChangedPages);
-            this.Controls.Add(this.btnOk);
-            this.Controls.Add(this.rbAnalyzeAllPages);
-            this.Controls.Add(this.rbAnalyzeCurrentPage);
-            this.Controls.Add(this.chkForce);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.KeyPreview = true;
@@ -203,6 +213,8 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -223,6 +235,7 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem tsmiSeelctNotebooks;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 

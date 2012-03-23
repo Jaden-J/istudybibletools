@@ -36,18 +36,32 @@ namespace BibleCommon.Services
             }
         }
 
-        #endregion
+        public class ProcessVerseEventArgs : EventArgs
+        {
+            public bool FoundVerse { get; private set; }
+            public bool CancelProcess { get; set; }
+            
+            public ProcessVerseEventArgs(bool foundVerse)
+            {
+                FoundVerse = foundVerse;
+            }            
+        }
 
+      
 
-        internal const char ChapterVerseDelimiter = ':';
-        internal const string DoNotAnalyzeAllPageSymbol = "{}";
-        
         private class FoundChapterInfo  // в итоге здесь будут только те главы, которые представлены в текущей заметке без стихов
         {
             public string TextElementObjectId { get; set; }
             public VersePointerSearchResult VersePointerSearchResult { get; set; }
-            public HierarchySearchManager.HierarchySearchResult HierarchySearchResult { get; set; }            
-        }        
+            public HierarchySearchManager.HierarchySearchResult HierarchySearchResult { get; set; }
+        }    
+
+        #endregion
+
+
+        internal const char ChapterVerseDelimiter = ':';
+        internal const string DoNotAnalyzeAllPageSymbol = "{}";       
+          
 
         public enum AnalyzeDepth
         {
@@ -55,6 +69,8 @@ namespace BibleCommon.Services
             GetVersesLinks = 2,
             Full = 3
         }
+
+       
 
         internal bool IsExcludedCurrentNotePage { get; set; }
         private Dictionary<NotePageProcessedVerseId, HashSet<VersePointer>> _notePageProcessedVerses = new Dictionary<NotePageProcessedVerseId, HashSet<VersePointer>>();  
@@ -64,6 +80,8 @@ namespace BibleCommon.Services
         {
             _oneNoteApp = oneNoteApp;
         }
+
+        public event EventHandler<ProcessVerseEventArgs> OnNextVerseProcess;
 
         /// <summary>
         /// 
@@ -81,7 +99,7 @@ namespace BibleCommon.Services
             {
                 bool wasModified = false;
                 OneNoteProxy.PageContent notePageDocument = OneNoteProxy.Instance.GetPageContent(_oneNoteApp, pageId, OneNoteProxy.PageType.NotePage);
-                
+
                 string notePageName = (string)notePageDocument.Content.Root.Attribute("name");
 
                 if (OneNoteUtils.IsRecycleBin(notePageDocument.Content.Root))
@@ -107,7 +125,7 @@ namespace BibleCommon.Services
 
                 string noteSectionGroupName = OneNoteUtils.GetHierarchyElementName(_oneNoteApp, sectionGroupId);
                 string noteSectionName = OneNoteUtils.GetHierarchyElementName(_oneNoteApp, sectionId);
-                List<FoundChapterInfo> foundChapters = new List<FoundChapterInfo>();                
+                List<FoundChapterInfo> foundChapters = new List<FoundChapterInfo>();
                 List<VersePointerSearchResult> pageChaptersSearchResult = ProcessPageTitle(_oneNoteApp, notePageDocument.Content,
                     noteSectionGroupName, noteSectionName, notePageName, pageId, pageTitleId, foundChapters, notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage,
                     out wasModified);  // получаем главы текущей страницы, указанные в заголовке (глобальные главы, если больше одной - то не используем их при определении принадлежности только ситхов (:3))                
@@ -159,7 +177,10 @@ namespace BibleCommon.Services
                 }
 
                 notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
-                notePageDocument.WasModified = true;                         
+                notePageDocument.WasModified = true;
+            }
+            catch (ProcessAbortedByUserException)
+            {                
             }
             catch (Exception ex)
             {
@@ -250,6 +271,17 @@ namespace BibleCommon.Services
             return wasModified;
         }
 
+        private void FireProcessVerseEvent(bool foundVerse)
+        {
+            if (OnNextVerseProcess != null)
+            {
+                var args = new ProcessVerseEventArgs(foundVerse);
+                OnNextVerseProcess(this, args);
+                if (args.CancelProcess)
+                    throw new ProcessAbortedByUserException();
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -276,7 +308,9 @@ namespace BibleCommon.Services
             List<VersePointerSearchResult> pageChaptersSearchResult,
             AnalyzeDepth linkDepth, bool force, bool isTitle, bool isSummaryNotesPage, Action<VersePointerSearchResult> onVersePointerFound)
         {
-            System.Windows.Forms.Application.DoEvents();
+
+            FireProcessVerseEvent(false);
+
             bool wasModified = false;
             string localChapterName = string.Empty;    // имя главы в пределах данного стиха. например, действительно только для девятки в "Откр 5:7,9"
 
@@ -314,6 +348,8 @@ namespace BibleCommon.Services
 
                             if (searchResult.ResultType != VersePointerSearchResult.SearchResultType.Nothing)
                             {
+                                FireProcessVerseEvent(true);
+
                                 if (onVersePointerFound != null)
                                     onVersePointerFound(searchResult);                                
 
