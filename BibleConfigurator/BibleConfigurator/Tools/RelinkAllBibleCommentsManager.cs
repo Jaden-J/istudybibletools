@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using BibleCommon.Services;
 using BibleCommon.Consts;
+using BibleCommon.Common;
 
 namespace BibleConfigurator.Tools
 {
