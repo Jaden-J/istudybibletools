@@ -22,5 +22,17 @@ namespace BibleConfigurator.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public int BiblePagesWidth {
+            get {
+                return ((int)(this["BiblePagesWidth"]));
+            }
+            set {
+                this["BiblePagesWidth"] = value;
+            }
+        }
     }
 }

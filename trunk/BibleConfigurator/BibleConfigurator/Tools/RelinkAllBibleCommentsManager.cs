@@ -69,7 +69,7 @@ namespace BibleConfigurator.Tools
             {                
                 BibleCommon.Services.Logger.Done();
 
-                _form.ExternalProcessingDone("Обновление ссылок на комментарии успешно завершено");
+                _form.ExternalProcessingDone("Обновление ссылок на комментарии успешно завершено.");
             }
         }
 

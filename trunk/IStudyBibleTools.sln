@@ -5,8 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibleCommon", "BibleCommon\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibleConfigurator", "BibleConfigurator\BibleConfigurator\BibleConfigurator.csproj", "{11828968-B062-4A9D-BF56-60A008E8CBEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibleNoteLinker", "BibleNoteLinker\BibleNoteLinker\BibleNoteLinker.csproj", "{0BFBA110-0694-4747-98A8-3691C596806A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibleNoteLinkerEx", "BibleNoteLinker\BibleNoteLinkerEx\BibleNoteLinkerEx.csproj", "{A9D49AEA-747E-4A38-98B5-3A8D62C2E992}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibleTablesResizer", "BibleTablesResizer\BibleTablesResizer\BibleTablesResizer.csproj", "{FA4D76CB-FCC3-4D28-96BC-578B39B1C4DF}"
@@ -45,16 +43,6 @@ Global
 		{11828968-B062-4A9D-BF56-60A008E8CBEE}.Release|Mixed Platforms.Build.0 = Release|x86
 		{11828968-B062-4A9D-BF56-60A008E8CBEE}.Release|x86.ActiveCfg = Release|x86
 		{11828968-B062-4A9D-BF56-60A008E8CBEE}.Release|x86.Build.0 = Release|x86
-		{0BFBA110-0694-4747-98A8-3691C596806A}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{0BFBA110-0694-4747-98A8-3691C596806A}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{0BFBA110-0694-4747-98A8-3691C596806A}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{0BFBA110-0694-4747-98A8-3691C596806A}.Debug|x86.ActiveCfg = Debug|x86
-		{0BFBA110-0694-4747-98A8-3691C596806A}.Debug|x86.Build.0 = Debug|x86
-		{0BFBA110-0694-4747-98A8-3691C596806A}.Release|Any CPU.ActiveCfg = Release|x86
-		{0BFBA110-0694-4747-98A8-3691C596806A}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{0BFBA110-0694-4747-98A8-3691C596806A}.Release|Mixed Platforms.Build.0 = Release|x86
-		{0BFBA110-0694-4747-98A8-3691C596806A}.Release|x86.ActiveCfg = Release|x86
-		{0BFBA110-0694-4747-98A8-3691C596806A}.Release|x86.Build.0 = Release|x86
 		{A9D49AEA-747E-4A38-98B5-3A8D62C2E992}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{A9D49AEA-747E-4A38-98B5-3A8D62C2E992}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{A9D49AEA-747E-4A38-98B5-3A8D62C2E992}.Debug|Mixed Platforms.Build.0 = Debug|x86

@@ -63,7 +63,6 @@
             this.Name = "RenameSectionGroupsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Укажите имя группы разделов";
-            this.TopMost = true;
             this.Load += new System.EventHandler(this.RenameSectionGroupsForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.RenameSectionGroupsForm_KeyDown);
             this.ResumeLayout(false);
