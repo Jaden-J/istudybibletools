@@ -55,8 +55,10 @@ namespace BibleNoteLinkerEx
 
         public static void SaveSelectedNotebooksIds(List<string> notebooksIds)
         {
-            SaveSelectedNotebooksIds(string.Join(";", 
-                SettingsManager.Instance.IsSingleNotebook.ToString().ToLower(), string.Join(",", notebooksIds.ToArray())));            
+            SaveSelectedNotebooksIds(string.Join(";", new string[] 
+            {
+                SettingsManager.Instance.IsSingleNotebook.ToString().ToLower(), string.Join(",", notebooksIds.ToArray())
+            }));            
         }
 
         public static string GetRightFoundPagesString(int pagesCount)

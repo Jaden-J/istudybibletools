@@ -41,7 +41,18 @@ namespace BibleConfigurator
         private void MyInstaller_Committed(object sender, InstallEventArgs e)
         {
             //Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            Process.Start(Path.Combine(Utils.GetCurrentDirectory(), "BibleConfigurator.exe"));
+            //Process.Start(Path.Combine(Utils.GetCurrentDirectory(), "BibleConfigurator.exe"), "-RunAfterSetup");
+
+
+            string currentDirectory = Utils.GetCurrentDirectory();
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.UseShellExecute = true;
+            startInfo.WorkingDirectory = currentDirectory;
+            startInfo.FileName = Path.Combine(currentDirectory, "BibleConfigurator.exe");
+            startInfo.Verb = "runas";
+            startInfo.Arguments = "-RunAfterSetup";
+
+            Process p = Process.Start(startInfo);
         }
 
         // Override the 'Install' method.
