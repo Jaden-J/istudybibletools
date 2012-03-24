@@ -41,9 +41,13 @@ namespace BibleConfigurator
 
 
         private NotebookParametersForm _notebookParametersForm = null;
+        private bool _runAfterSetup = false;
 
-        public MainForm()
+        public MainForm(params string[] args)
         {
+            if (args.Contains("RunAfterSetup"))
+                _runAfterSetup = true;
+
             InitializeComponent();
             BibleCommon.Services.Logger.Init("BibleConfigurator");
         }
@@ -444,16 +448,58 @@ namespace BibleConfigurator
 
             return string.Empty;
         }
+
+        private bool _firstShown = true;
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            if (_firstShown)
+            {
+                LoadForm form = new LoadForm();
+                form.Show();
+
+                try
+                {
+                    if (_runAfterSetup)
+                    {
+                        if (SettingsManager.Instance.IsConfigured(_oneNoteApp))
+                        {
+                            this.Close();
+                            return;
+                        }
+                    }
+                    PrepareFolderBrowser();
+                    SetNotebooksDefaultPaths();
+
+                    LoadParameters();
+
+                    this.Text += string.Format(" v{0}", SettingsManager.Instance.CurrentVersion);
+                    this.SetFocus();
+                    _firstShown = false;
+                }
+                finally
+                {
+                    form.Close();
+                }
+            }
+        }
+      
       
         private void MainForm_Load(object sender, EventArgs e)
-        {
-            PrepareFolderBrowser();
-            SetNotebooksDefaultPaths();
+        {         
 
-            LoadParameters();
-
-            this.Text += string.Format(" v{0}", SettingsManager.Instance.CurrentVersion);
-            this.SetFocus();
+            //ProcessStartInfo startInfo = new ProcessStartInfo();
+            //startInfo.UseShellExecute = true;
+            //startInfo.WorkingDirectory = "C:\\WINDOWS\\"; // Environment.CurrentDirectory;
+            //startInfo.FileName = "C:\\WINDOWS\\notepad.exe"; // Application.ExecutablePath;
+            //startInfo.Verb = "runas";
+            //try
+            //{
+            //    Process p = Process.Start(startInfo);
+            //}
+            //catch (System.ComponentModel.Win32Exception ex)
+            //{
+            //    return;
+            //}
         }
 
         private void LoadParameters()
@@ -834,5 +880,7 @@ namespace BibleConfigurator
                 manager.ResizeBiblePages(form.BiblePagesWidth);
             }
         }
+
+      
     }
 }
