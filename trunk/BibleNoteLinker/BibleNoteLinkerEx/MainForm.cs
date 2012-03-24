@@ -64,14 +64,10 @@ namespace BibleNoteLinkerEx
             BibleNoteLinkerEx.Properties.Settings.Default.Force = chkForce.Checked;
             BibleNoteLinkerEx.Properties.Settings.Default.Save();            
 
-            this.Height = SecondFormHeight;
-            EnableBaseElements(false);
-
-            BibleCommon.Services.Logger.Init("BibleNoteLinkerEx");
-            BibleCommon.Services.Logger.SetOutputListBox(lbLog);
-
             try
             {
+                PrepareForAnalyze();
+
                 StartAnalyze();
             }
             catch (ProcessAbortedByUserException)
@@ -81,12 +77,12 @@ namespace BibleNoteLinkerEx
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                BibleCommon.Services.Logger.LogError(ex);
+                Logger.LogError(ex);
             }
             finally
             {
                 EnableBaseElements(true);
-                BibleCommon.Services.Logger.Done();
+                Logger.Done();
             }
 
             pbMain.Value = pbMain.Maximum = 1;
@@ -98,6 +94,23 @@ namespace BibleNoteLinkerEx
                 LogHighLevelMessage("Завершено с ошибками.", null, null);
                 llblShowErrors.Visible = true;
             }
+        }
+
+        private void PrepareForAnalyze()
+        {
+            lbLog.Items.Clear();
+            lbLog.HorizontalExtent = 0;
+
+            Logger.Init("BibleNoteLinkerEx");
+            Logger.SetOutputListBox(lbLog);
+
+            if (!_detailsWereShown)
+                this.Height = SecondFormHeight;
+
+            EnableBaseElements(false);
+
+            llblShowErrors.Visible = false;
+            LogHighLevelMessage("Инициализация...", null, null);
         }    
        
 
@@ -172,17 +185,23 @@ namespace BibleNoteLinkerEx
         private void llblDetails_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             if (!_detailsWereShown)
-            {
-                llblDetails.Text = "Скрыть детали";
-                this.Height = _originalFormHeight;                
-            }
+                ShowDetails();
             else
-            {
-                llblDetails.Text = "Показать детали";
-                this.Height = SecondFormHeight;                
-            }
+                HideDetails();
+        }
 
-            _detailsWereShown = !_detailsWereShown;
+        private void ShowDetails()
+        {
+            llblDetails.Text = "Скрыть детали";
+            this.Height = _originalFormHeight;
+            _detailsWereShown = true;
+        }
+
+        private void HideDetails()
+        {
+            llblDetails.Text = "Показать детали";
+            this.Height = SecondFormHeight;
+            _detailsWereShown = false;
         }
 
         private void tsmiSeelctNotebooks_Click(object sender, EventArgs e)
