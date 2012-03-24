@@ -160,12 +160,12 @@ namespace BibleNoteLinkerEx
         {
             if (notebook.PagesCount > 0)
             {
-                BibleCommon.Services.Logger.LogMessage("Обработка записной книжки: '{0}'", notebook.Title);
-                BibleCommon.Services.Logger.MoveLevel(1);
+                Logger.LogMessage("Обработка записной книжки: '{0}'", notebook.Title);
+                Logger.MoveLevel(1);
 
                 ProcessSectionGroup(notebook.RootSectionGroup, true);
 
-                BibleCommon.Services.Logger.MoveLevel(-1);
+                Logger.MoveLevel(-1);
             }
         }
 
@@ -181,28 +181,28 @@ namespace BibleNoteLinkerEx
         {
             if (!isRoot)
             {
-                BibleCommon.Services.Logger.LogMessage("Обработка группы секций '{0}'", sectionGroup.Title);
-                BibleCommon.Services.Logger.MoveLevel(1);
+                Logger.LogMessage("Обработка группы секций '{0}'", sectionGroup.Title);
+                Logger.MoveLevel(1);
             }
 
             foreach (BibleCommon.Services.NotebookIterator.SectionInfo section in sectionGroup.Sections)
             {
-                BibleCommon.Services.Logger.LogMessage("Обработка секции '{0}'", section.Title);
-                BibleCommon.Services.Logger.MoveLevel(1);
+                Logger.LogMessage("Обработка секции '{0}'", section.Title);
+                Logger.MoveLevel(1);
 
                 foreach (BibleCommon.Services.NotebookIterator.PageInfo page in section.Pages)
                 {
                     string message = string.Format("Обработка страницы '{0}'", page.Title.Replace("{", "{{").Replace("}", "}}"));
                     LogHighLevelMessage(message, 1, StagesCount);
-                    BibleCommon.Services.Logger.LogMessage(message);
-                    BibleCommon.Services.Logger.MoveLevel(1);
+                    Logger.LogMessage(message);
+                    Logger.MoveLevel(1);
 
                     ProcessPage(page);                    
 
-                    BibleCommon.Services.Logger.MoveLevel(-1);
+                    Logger.MoveLevel(-1);
                 }
 
-                BibleCommon.Services.Logger.MoveLevel(-1);
+                Logger.MoveLevel(-1);
             }
 
             foreach (BibleCommon.Services.NotebookIterator.SectionGroupInfo subSectionGroup in sectionGroup.SectionGroups)
@@ -211,7 +211,7 @@ namespace BibleNoteLinkerEx
             }
 
             if (!isRoot)
-                BibleCommon.Services.Logger.MoveLevel(-1);
+                Logger.MoveLevel(-1);
         }
 
         private void ProcessPage(NotebookIterator.PageInfo page)
