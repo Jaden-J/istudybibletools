@@ -18,6 +18,7 @@ using BibleCommon;
 using System.Threading;
 using BibleConfigurator.Tools;
 using BibleCommon.Consts;
+using System.Runtime.InteropServices;
 
 namespace BibleConfigurator
 {
@@ -141,7 +142,7 @@ namespace BibleConfigurator
             {
                 notebookName = (string)cbBibleCommentsNotebook.SelectedItem;
                 TryToLoadNotebookParameters(NotebookType.BibleComments, notebookName, out notebookId);
-            }
+            }            
         }
 
         private void SaveBibleStudyNotebookParameters()
@@ -361,18 +362,14 @@ namespace BibleConfigurator
                 else if (NotebookChecker.ElementIsBibleComments(sectionGroup, notebook.Xnm) && !sectionGroups.Contains(SectionGroupType.BibleComments))
                 {
                     SettingsManager.Instance.SectionGroupId_BibleComments = id;
+                    SettingsManager.Instance.SectionGroupId_BibleNotesPages = id;
                     sectionGroups.Add(SectionGroupType.BibleComments);
                 }
                 else if (!sectionGroups.Contains(SectionGroupType.BibleStudy))
                 {
                     SettingsManager.Instance.SectionGroupId_BibleStudy = id;
                     sectionGroups.Add(SectionGroupType.BibleStudy);
-                }
-                else if (NotebookChecker.ElementIsBibleComments(sectionGroup, notebook.Xnm) && !sectionGroups.Contains(SectionGroupType.BibleNotesPages))
-                {
-                    SettingsManager.Instance.SectionGroupId_BibleNotesPages = id;
-                    sectionGroups.Add(SectionGroupType.BibleNotesPages);
-                } 
+                }              
                 else
                     throw new InvalidNotebookException();
             }
@@ -447,15 +444,16 @@ namespace BibleConfigurator
 
             return string.Empty;
         }
-
+      
         private void MainForm_Load(object sender, EventArgs e)
-        {            
+        {
             PrepareFolderBrowser();
             SetNotebooksDefaultPaths();
 
             LoadParameters();
 
             this.Text += string.Format(" v{0}", SettingsManager.Instance.CurrentVersion);
+            this.SetFocus();
         }
 
         private void LoadParameters()
@@ -466,9 +464,9 @@ namespace BibleConfigurator
             Dictionary<string, string> notebooks = GetNotebooks();
             string singleNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.Single);
             string bibleNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.Bible);
-            string bibleCommentsNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.BibleComments);
-            string bibleNotesPagesNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.BibleNotesPages);
+            string bibleCommentsNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.BibleComments);            
             string bibleStudyNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.BibleStudy);
+            string bibleNotesPagesNotebookId = SearchForNotebook(notebooks.Keys.ToList().Where(s => s != bibleCommentsNotebookId), NotebookType.BibleNotesPages);            
 
             rbSingleNotebook.Checked = SettingsManager.Instance.IsSingleNotebook 
                                     && !string.IsNullOrEmpty(singleNotebookId);
@@ -602,9 +600,11 @@ namespace BibleConfigurator
             cbBibleStudyNotebook.Enabled = rbMultiNotebook.Checked;
             chkCreateBibleNotebookFromTemplate.Enabled = rbMultiNotebook.Checked;
             chkCreateBibleCommentsNotebookFromTemplate.Enabled = rbMultiNotebook.Checked;
+            chkCreateBibleNotesPagesNotebookFromTemplate.Enabled = rbMultiNotebook.Checked;
             chkCreateBibleStudyNotebookFromTemplate.Enabled = rbMultiNotebook.Checked;
             btnBibleNotebookSetPath.Enabled = rbMultiNotebook.Checked;
             btnBibleCommentsNotebookSetPath.Enabled = rbMultiNotebook.Checked;
+            btnBibleNotesPagesNotebookSetPath.Enabled = rbMultiNotebook.Checked;
             btnBibleStudyNotebookSetPath.Enabled = rbMultiNotebook.Checked;
 
             if (rbSingleNotebook.Checked)
@@ -616,7 +616,8 @@ namespace BibleConfigurator
                 chkCreateBibleNotebookFromTemplate_CheckedChanged(this, null);
                 chkCreateBibleCommentsNotebookFromTemplate_CheckedChanged(this, null);
                 chkCreateBibleStudyNotebookFromTemplate_CheckedChanged(this, null);
-            }
+                chkCreateBibleNotesPagesNotebookFromTemplate_CheckedChanged(this, null);
+            }            
         }
 
         private void chkCreateSingleNotebookFromTemplate_CheckedChanged(object sender, EventArgs e)
@@ -666,7 +667,7 @@ namespace BibleConfigurator
                         SettingsManager.Instance.SectionGroupId_Bible = _notebookParametersForm.GroupedSectionGroups[SectionGroupType.Bible];
                         SettingsManager.Instance.SectionGroupId_BibleStudy = _notebookParametersForm.GroupedSectionGroups[SectionGroupType.BibleStudy];
                         SettingsManager.Instance.SectionGroupId_BibleComments = _notebookParametersForm.GroupedSectionGroups[SectionGroupType.BibleComments];
-                        SettingsManager.Instance.SectionGroupId_BibleNotesPages = _notebookParametersForm.GroupedSectionGroups[SectionGroupType.BibleNotesPages];                                                
+                        SettingsManager.Instance.SectionGroupId_BibleNotesPages = _notebookParametersForm.GroupedSectionGroups[SectionGroupType.BibleComments];
 
                         _wasSearchedSectionGroupsInSingleNotebook = true;  // нашли необходимые группы секций. 
                     }
@@ -824,8 +825,14 @@ namespace BibleConfigurator
             }
         }
 
-      
-
-        
+        private void btnResizeBibleTables_Click(object sender, EventArgs e)
+        {
+            SetWidthForm form = new SetWidthForm();
+            if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                ResizeBibleManager manager = new ResizeBibleManager(_oneNoteApp, this);
+                manager.ResizeBiblePages(form.BiblePagesWidth);
+            }
+        }
     }
 }

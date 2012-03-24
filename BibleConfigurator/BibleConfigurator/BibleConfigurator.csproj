@@ -76,6 +76,13 @@
     <Compile Include="RenameSectionGroupsForm.Designer.cs">
       <DependentUpon>RenameSectionGroupsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="SetWidthForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SetWidthForm.Designer.cs">
+      <DependentUpon>SetWidthForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\ResizeBibleManager.cs" />
     <Compile Include="Tools\DeleteNotesPagesManager.cs" />
     <Compile Include="Tools\NotebookIteratorHelper.cs" />
     <Compile Include="Tools\RelinkAllBibleCommentsManager.cs" />
@@ -98,6 +105,10 @@
     <EmbeddedResource Include="RenameSectionGroupsForm.resx">
       <DependentUpon>RenameSectionGroupsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SetWidthForm.resx">
+      <DependentUpon>SetWidthForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

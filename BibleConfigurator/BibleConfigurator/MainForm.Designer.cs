@@ -628,13 +628,13 @@
             // 
             // btnResizeBibleTables
             // 
-            this.btnResizeBibleTables.Enabled = false;
             this.btnResizeBibleTables.Location = new System.Drawing.Point(13, 93);
             this.btnResizeBibleTables.Name = "btnResizeBibleTables";
             this.btnResizeBibleTables.Size = new System.Drawing.Size(230, 23);
             this.btnResizeBibleTables.TabIndex = 2;
             this.btnResizeBibleTables.Text = "Изменить ширину страниц Библии";
             this.btnResizeBibleTables.UseVisualStyleBackColor = true;
+            this.btnResizeBibleTables.Click += new System.EventHandler(this.btnResizeBibleTables_Click);
             // 
             // btnDeleteNotesPages
             // 
@@ -725,7 +725,6 @@
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Параметры OneNote IStudyBibleTools";
-            this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_Load);

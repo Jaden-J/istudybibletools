@@ -45,7 +45,7 @@
             this.btnOk.Location = new System.Drawing.Point(182, 68);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
-            this.btnOk.TabIndex = 1;
+            this.btnOk.TabIndex = 2;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
@@ -56,7 +56,7 @@
             this.cbSearchForUnderlineText.Location = new System.Drawing.Point(13, 38);
             this.cbSearchForUnderlineText.Name = "cbSearchForUnderlineText";
             this.cbSearchForUnderlineText.Size = new System.Drawing.Size(168, 17);
-            this.cbSearchForUnderlineText.TabIndex = 2;
+            this.cbSearchForUnderlineText.TabIndex = 1;
             this.cbSearchForUnderlineText.Text = "Искать подчеркнутый текст";
             this.cbSearchForUnderlineText.UseVisualStyleBackColor = true;
             // 
