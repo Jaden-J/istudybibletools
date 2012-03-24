@@ -42,6 +42,7 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSeelctNotebooks = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.llblShowErrors = new System.Windows.Forms.LinkLabel();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -125,6 +126,7 @@
             // lbLog
             // 
             this.lbLog.FormattingEnabled = true;
+            this.lbLog.HorizontalScrollbar = true;
             this.lbLog.Location = new System.Drawing.Point(12, 228);
             this.lbLog.Name = "lbLog";
             this.lbLog.Size = new System.Drawing.Size(488, 199);
@@ -165,13 +167,13 @@
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiSeelctNotebooks});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(48, 20);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(53, 20);
             this.toolStripMenuItem1.Text = "Меню";
             // 
             // tsmiSeelctNotebooks
             // 
             this.tsmiSeelctNotebooks.Name = "tsmiSeelctNotebooks";
-            this.tsmiSeelctNotebooks.Size = new System.Drawing.Size(210, 22);
+            this.tsmiSeelctNotebooks.Size = new System.Drawing.Size(222, 22);
             this.tsmiSeelctNotebooks.Text = "Выбрать записные книжки";
             this.tsmiSeelctNotebooks.Click += new System.EventHandler(this.tsmiSeelctNotebooks_Click);
             // 
@@ -188,12 +190,25 @@
             this.panel1.Size = new System.Drawing.Size(490, 133);
             this.panel1.TabIndex = 16;
             // 
+            // llblShowErrors
+            // 
+            this.llblShowErrors.AutoSize = true;
+            this.llblShowErrors.Location = new System.Drawing.Point(403, 203);
+            this.llblShowErrors.Name = "llblShowErrors";
+            this.llblShowErrors.Size = new System.Drawing.Size(97, 13);
+            this.llblShowErrors.TabIndex = 17;
+            this.llblShowErrors.TabStop = true;
+            this.llblShowErrors.Text = "Показать ошибки";
+            this.llblShowErrors.Visible = false;
+            this.llblShowErrors.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llblShowErrors_LinkClicked);
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(514, 440);
+            this.Controls.Add(this.llblShowErrors);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.llblDetails);
             this.Controls.Add(this.lblProgress);
@@ -236,6 +251,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem tsmiSeelctNotebooks;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.LinkLabel llblShowErrors;
     }
 }
 

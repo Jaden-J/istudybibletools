@@ -1,6 +1,6 @@
 ﻿namespace BibleNoteLinkerEx
 {
-    partial class SelectNoteBooks
+    partial class ErrorsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,62 +28,49 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.lbErrors = new System.Windows.Forms.ListBox();
             this.btnOk = new System.Windows.Forms.Button();
-            this.pnMain = new System.Windows.Forms.Panel();
-            this.lblError = new System.Windows.Forms.Label();
             this.SuspendLayout();
+            // 
+            // lbErrors
+            // 
+            this.lbErrors.FormattingEnabled = true;
+            this.lbErrors.HorizontalScrollbar = true;
+            this.lbErrors.Location = new System.Drawing.Point(13, 13);
+            this.lbErrors.Name = "lbErrors";
+            this.lbErrors.Size = new System.Drawing.Size(479, 199);
+            this.lbErrors.TabIndex = 0;
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(188, 126);
+            this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnOk.Location = new System.Drawing.Point(417, 227);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
-            this.btnOk.TabIndex = 0;
-            this.btnOk.Text = "Ok";
+            this.btnOk.TabIndex = 1;
+            this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
-            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 
-            // pnMain
-            // 
-            this.pnMain.Location = new System.Drawing.Point(13, 13);
-            this.pnMain.Name = "pnMain";
-            this.pnMain.Size = new System.Drawing.Size(250, 100);
-            this.pnMain.TabIndex = 1;
-            // 
-            // lblError
-            // 
-            this.lblError.AutoSize = true;
-            this.lblError.ForeColor = System.Drawing.Color.Red;
-            this.lblError.Location = new System.Drawing.Point(12, 126);
-            this.lblError.Name = "lblError";
-            this.lblError.Size = new System.Drawing.Size(29, 13);
-            this.lblError.TabIndex = 2;
-            this.lblError.Text = "Error";
-            this.lblError.Visible = false;
-            // 
-            // SelectNoteBooks
+            // ErrorsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(277, 161);
-            this.Controls.Add(this.lblError);
-            this.Controls.Add(this.pnMain);
+            this.ClientSize = new System.Drawing.Size(504, 262);
             this.Controls.Add(this.btnOk);
+            this.Controls.Add(this.lbErrors);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "SelectNoteBooks";
+            this.Name = "ErrorsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Выберите записные книжки для анализа";
+            this.Text = "Ошибки";
             this.TopMost = true;
-            this.Load += new System.EventHandler(this.SelectNoteBooks_Load);
+            this.Load += new System.EventHandler(this.Errors_Load);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
+        private System.Windows.Forms.ListBox lbErrors;
         private System.Windows.Forms.Button btnOk;
-        private System.Windows.Forms.Panel pnMain;
-        private System.Windows.Forms.Label lblError;
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using BibleCommon.Helpers;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace BibleCommon.Services
 {
@@ -15,6 +16,10 @@ namespace BibleCommon.Services
         private static FileStream _fileStream = null;
         private static StreamWriter _streamWriter = null;
         private static ListBox _lb = null;
+
+        public static List<string> Errors { get; set; }
+
+        private const string ErrorText = "ОШИБКА: ";
 
         public static void MoveLevel(int levelDiv)
         {
@@ -35,6 +40,8 @@ namespace BibleCommon.Services
                 _fileStream = new FileStream(Path.Combine(directoryPath, systemName + ".txt"), FileMode.Create);
                 _streamWriter = new StreamWriter(_fileStream);
 
+                Errors = new List<string>();
+
                 _isInitialized = true;
             }
         }
@@ -42,6 +49,8 @@ namespace BibleCommon.Services
         public static void SetOutputListBox(ListBox lb)
         {
             _lb = lb;
+            //_lb.DrawMode = DrawMode.OwnerDrawVariable;
+            _lb.DrawItem += new DrawItemEventHandler(_lb_DrawItem);
         }
 
         public static void Done()
@@ -55,24 +64,24 @@ namespace BibleCommon.Services
                     _fileStream.Close();
 
                 _isInitialized = false;
-                _lb = null;
+                //_lb = null;
             }
         }
 
         public static void LogMessage(string message, bool leveled, bool newLine, bool writeDateTime = true)
         {
-            LogMessageToFileAndConsole(false, string.Empty, null, writeDateTime);
+            LogMessageToFileAndConsole(false, string.Empty, null, writeDateTime, false);
 
             if (leveled)
                 for (int i = 0; i < _level; i++)
-                    LogMessageToFileAndConsole(false, "  ", null, false);
+                    LogMessageToFileAndConsole(false, "  ", null, false, false);
 
-            LogMessageToFileAndConsole(newLine, message, null, false);
+            LogMessageToFileAndConsole(newLine, message, null, false, false);
         }
 
 
         private static bool _newLineForListBox = false;
-        private static void LogMessageToFileAndConsole(bool newLine, string message, string messageEx = null, bool writeDateTime = true)
+        private static void LogMessageToFileAndConsole(bool newLine, string message, string messageEx, bool writeDateTime, bool isError)
         {
             if (string.IsNullOrEmpty(messageEx))
                 messageEx = message;
@@ -82,14 +91,19 @@ namespace BibleCommon.Services
 
 
             if (_lb != null)
-            {
+            {       
                 if (_newLineForListBox || _lb.Items.Count == 0)
                 {
                     _lb.Items.Add(message);
                     _lb.SelectedIndex = _lb.Items.Count - 1;
                 }
                 else
-                    _lb.Items[_lb.Items.Count - 1] += message;                
+                    _lb.Items[_lb.Items.Count - 1] += message;
+                
+
+                int width = Convert.ToInt32(message.Length * 5.75);
+                if (width > _lb.HorizontalExtent)
+                    _lb.HorizontalExtent = width;                
             }
 
             if (newLine)
@@ -114,6 +128,30 @@ namespace BibleCommon.Services
 
             if (_streamWriter != null && _streamWriter.BaseStream != null)
                 _streamWriter.Flush();
+
+            if (isError)
+                Errors.Add(message);
+        }
+
+        static void _lb_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (_lb != null)
+                if (e.Index > -1)
+                {
+                    string text = (string)_lb.Items[e.Index];
+
+                    if (text.Length > 200)
+                    {
+                        _lb.HorizontalExtent = Convert.ToInt32(text.Length * 5.75);
+                    }
+
+                    
+                    e.Graphics.DrawString(text, e.Font, text.StartsWith(ErrorText) ? Brushes.Red : Brushes.Black, e.Bounds);
+
+                    e.DrawFocusRectangle();
+
+                    
+                }
         }
 
         public static void LogMessage(string message, params object[] args)
@@ -123,7 +161,7 @@ namespace BibleCommon.Services
 
         public static void LogError(string message, Exception ex)
         {
-            LogMessageToFileAndConsole(true, string.Format("ОШИБКА: {0} {1}", message, ex.Message), string.Format("{0} {1}", message, ex.ToString()));
+            LogMessageToFileAndConsole(true, string.Format("{0}{1} {2}", ErrorText, message, ex.Message), string.Format("{0} {1}", message, ex.ToString()), true, true);
             ErrorWasLogged = true;   
         }
 
@@ -134,7 +172,7 @@ namespace BibleCommon.Services
 
         public static void LogError(string message, params object[] args)
         {            
-            LogMessageToFileAndConsole(true, "ОШИБКА: " + string.Format(message, args));
+            LogMessageToFileAndConsole(true, ErrorText + string.Format(message, args), null, true, true);
             ErrorWasLogged = true;
         }        
     }
