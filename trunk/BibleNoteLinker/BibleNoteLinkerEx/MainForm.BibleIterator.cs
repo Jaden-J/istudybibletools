@@ -25,6 +25,7 @@ namespace BibleNoteLinkerEx
                 pagesCount = notebooks.Sum(notebook => notebook.PagesCount);
 
                 pbMain.Maximum = pagesCount;
+                pbMain.PerformStep();
                 Logger.LogMessage(Helper.GetRightFoundPagesString(pagesCount));
 
                 foreach (NotebookIterator.NotebookInfo notebook in notebooks)
