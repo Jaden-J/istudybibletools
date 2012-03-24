@@ -54,6 +54,12 @@
     <Compile Include="Installer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="LoadForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoadForm.Designer.cs">
+      <DependentUpon>LoadForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Logger.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -86,6 +92,9 @@
     <Compile Include="Tools\DeleteNotesPagesManager.cs" />
     <Compile Include="Tools\NotebookIteratorHelper.cs" />
     <Compile Include="Tools\RelinkAllBibleCommentsManager.cs" />
+    <EmbeddedResource Include="LoadForm.resx">
+      <DependentUpon>LoadForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -138,6 +147,9 @@
       <Project>{D2E40D0E-9786-49E9-B2A7-54088B42EAC5}</Project>
       <Name>BibleCommon</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="progress.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

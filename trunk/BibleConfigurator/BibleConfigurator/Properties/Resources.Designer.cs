@@ -59,5 +59,12 @@ namespace BibleConfigurator.Properties {
                 resourceCulture = value;
             }
         }
+        
+        internal static System.Drawing.Bitmap progress {
+            get {
+                object obj = ResourceManager.GetObject("progress", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

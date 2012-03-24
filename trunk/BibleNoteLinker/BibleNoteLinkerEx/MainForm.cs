@@ -53,10 +53,6 @@ namespace BibleNoteLinkerEx
             }
         }
 
-        [DllImport("user32.dll")]
-        static extern bool SetForegroundWindow(IntPtr hWnd);
-
-
         private bool _wasStartAnalyze = false;
         private bool _wasAnalyzed = false;
         private void btnOk_Click(object sender, EventArgs e)
