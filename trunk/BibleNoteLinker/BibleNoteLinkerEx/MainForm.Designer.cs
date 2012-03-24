@@ -112,7 +112,7 @@
             this.lblInfo.Size = new System.Drawing.Size(368, 26);
             this.lblInfo.TabIndex = 7;
             this.lblInfo.Text = "Доступна новая версия программы на сайте http://IStudyBibleTools.ru. \r\nКликните, " +
-    "чтобы перейти на страницу загрузки.";
+                "чтобы перейти на страницу загрузки.";
             this.lblInfo.Click += new System.EventHandler(this.lblInfo_Click);
             // 
             // pbMain
@@ -167,13 +167,13 @@
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiSeelctNotebooks});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(53, 20);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(48, 20);
             this.toolStripMenuItem1.Text = "Меню";
             // 
             // tsmiSeelctNotebooks
             // 
             this.tsmiSeelctNotebooks.Name = "tsmiSeelctNotebooks";
-            this.tsmiSeelctNotebooks.Size = new System.Drawing.Size(222, 22);
+            this.tsmiSeelctNotebooks.Size = new System.Drawing.Size(210, 22);
             this.tsmiSeelctNotebooks.Text = "Выбрать записные книжки";
             this.tsmiSeelctNotebooks.Click += new System.EventHandler(this.tsmiSeelctNotebooks_Click);
             // 
@@ -220,7 +220,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Укажите параметры";
+            this.Text = "Анализ заметок";
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);

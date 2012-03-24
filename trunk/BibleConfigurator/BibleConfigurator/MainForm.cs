@@ -45,7 +45,7 @@ namespace BibleConfigurator
 
         public MainForm(params string[] args)
         {
-            if (args.Contains("RunAfterSetup"))
+            if (args.Contains("-RunAfterSetup"))
                 _runAfterSetup = true;
 
             InitializeComponent();
@@ -512,7 +512,9 @@ namespace BibleConfigurator
             string bibleNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.Bible);
             string bibleCommentsNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.BibleComments);            
             string bibleStudyNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.BibleStudy);
-            string bibleNotesPagesNotebookId = SearchForNotebook(notebooks.Keys.ToList().Where(s => s != bibleCommentsNotebookId), NotebookType.BibleNotesPages);            
+            string bibleNotesPagesNotebookId = SearchForNotebook(notebooks.Keys.ToList().Where(s => s != bibleCommentsNotebookId), NotebookType.BibleNotesPages);
+            if (string.IsNullOrEmpty(bibleNotesPagesNotebookId))
+                bibleNotesPagesNotebookId = bibleCommentsNotebookId;
 
             rbSingleNotebook.Checked = SettingsManager.Instance.IsSingleNotebook 
                                     && !string.IsNullOrEmpty(singleNotebookId);
