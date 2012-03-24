@@ -13,11 +13,11 @@ using System.Xml.XPath;
 
 namespace BibleNoteLinkerEx
 {
-    public partial class SelectNoteBooks : Form
+    public partial class SelectNoteBooksForm : Form
     {
         private Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
 
-        public SelectNoteBooks(Microsoft.Office.Interop.OneNote.Application oneNoteApp)
+        public SelectNoteBooksForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp)
         {
             InitializeComponent();
             _oneNoteApp = oneNoteApp;

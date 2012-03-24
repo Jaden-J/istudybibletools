@@ -75,8 +75,7 @@ namespace BibleNoteLinkerEx
                 StartAnalyze();
             }
             catch (ProcessAbortedByUserException)
-            {
-                Logger.LogMessage(string.Empty, false, true, false);
+            {                
                 Logger.LogMessage("Операция прервана пользователем.");
             }
             catch (Exception ex)
@@ -95,7 +94,10 @@ namespace BibleNoteLinkerEx
             if (!Logger.ErrorWasLogged)
                 LogHighLevelMessage("Успешно завершено.", null, null);
             else
+            {
                 LogHighLevelMessage("Завершено с ошибками.", null, null);
+                llblShowErrors.Visible = true;
+            }
         }    
        
 
@@ -185,13 +187,24 @@ namespace BibleNoteLinkerEx
 
         private void tsmiSeelctNotebooks_Click(object sender, EventArgs e)
         {
-            SelectNoteBooks form = new SelectNoteBooks(_oneNoteApp);
+            SelectNoteBooksForm form = new SelectNoteBooksForm(_oneNoteApp);
             form.ShowDialog();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             _processAbortedByUser = true;
+        }
+
+        private void chkErrorsOnly_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void llblShowErrors_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            ErrorsForm errors = new ErrorsForm();
+            errors.ShowDialog();
         }
     }
 }

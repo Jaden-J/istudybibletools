@@ -26,11 +26,9 @@ namespace BibleNoteLinkerEx
 
                 pbMain.Maximum = pagesCount;
                 Logger.LogMessage(Helper.GetRightFoundPagesString(pagesCount));
-                if (pagesCount > 0)
-                {
-                    foreach (NotebookIterator.NotebookInfo notebook in notebooks)
-                        ProcessNotebook(notebook);
-                }
+
+                foreach (NotebookIterator.NotebookInfo notebook in notebooks)
+                    ProcessNotebook(notebook);
             }
             else
             {
@@ -41,7 +39,7 @@ namespace BibleNoteLinkerEx
 
                     pbMain.Maximum = 100;
                     pbMain.Value = 0;
-                    
+
                     LogHighLevelMessage(message, 1, StagesCount);
                     Logger.LogMessage(message);
                     pagesCount = 1;
@@ -84,10 +82,9 @@ namespace BibleNoteLinkerEx
                     pbMain.Maximum = pagesCount;
                     pbMain.Value = 0;
                     pbMain.PerformStep();
-                    Logger.LogMessage(string.Format(" ({0})", Helper.GetRightPagesString(pagesCount)), false, false, false);
+                    Logger.LogMessage(string.Format(" ({0})", Helper.GetRightPagesString(pagesCount)), false, true, false);
                 },
-                pageContent => PerformProcessStep());
-            Logger.LogMessage(string.Empty, false, true, false);
+                pageContent => PerformProcessStep());            
         }
 
         private void SortNotesPages()
@@ -119,10 +116,9 @@ namespace BibleNoteLinkerEx
                     pbMain.Maximum = pagesCount;
                     pbMain.Value = 0;
                     pbMain.PerformStep();
-                    Logger.LogMessage(string.Format(" ({0})", Helper.GetRightPagesString(pagesCount)), false, false, false);
+                    Logger.LogMessage(string.Format(" ({0})", Helper.GetRightPagesString(pagesCount)), false, true, false);
                 },
                 pageContent => PerformProcessStep());
-            Logger.LogMessage(string.Empty, false, true, false); 
         }
 
         private void UpdateLinksToNotesPages()
@@ -155,19 +151,22 @@ namespace BibleNoteLinkerEx
                     pbMain.Maximum = pagesCount;
                     pbMain.Value = 0;
                     pbMain.PerformStep();
-                    Logger.LogMessage(string.Format(" ({0})", Helper.GetRightPagesString(pagesCount)), false, false, false);
+                    Logger.LogMessage(string.Format(" ({0})", Helper.GetRightPagesString(pagesCount)), false, true, false);
                 },
                 pageContent => PerformProcessStep());
-            Logger.LogMessage(string.Empty, false, true, false);
         }    
 
         public void ProcessNotebook(NotebookIterator.NotebookInfo notebook)
         {
-            BibleCommon.Services.Logger.LogMessage("Обработка записной книжки: '{0}'", notebook.Title);
+            if (notebook.PagesCount > 0)
+            {
+                BibleCommon.Services.Logger.LogMessage("Обработка записной книжки: '{0}'", notebook.Title);
+                BibleCommon.Services.Logger.MoveLevel(1);
 
-            BibleCommon.Services.Logger.MoveLevel(1);
-            ProcessSectionGroup(notebook.RootSectionGroup, true);
-            BibleCommon.Services.Logger.MoveLevel(-1);
+                ProcessSectionGroup(notebook.RootSectionGroup, true);
+
+                BibleCommon.Services.Logger.MoveLevel(-1);
+            }
         }
 
         private void LogHighLevelMessage(string message, int? stage, int? maxStageCount)
