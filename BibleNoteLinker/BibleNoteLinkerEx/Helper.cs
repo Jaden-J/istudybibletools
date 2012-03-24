@@ -13,7 +13,17 @@ namespace BibleNoteLinkerEx
         {
             if (!string.IsNullOrEmpty(Settings.Default.SelectedNotebooks))
             {
-                return Settings.Default.SelectedNotebooks.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                string[] s = Settings.Default.SelectedNotebooks.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (s.Length == 2 && s[0] == SettingsManager.Instance.IsSingleNotebook.ToString().ToLower())
+                {
+                    return s[1].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                }
+                else
+                {
+                    SaveSelectedNotebooksIds(string.Empty);
+                    return GetSelectedNotebooksIds();
+                }                
             }
             else
             {
@@ -36,10 +46,17 @@ namespace BibleNoteLinkerEx
             }
         }
 
+        private static void SaveSelectedNotebooksIds(string notebookIds)
+        {
+            Settings.Default.SelectedNotebooks = notebookIds;
+            Settings.Default.Save();
+        }
+
+
         public static void SaveSelectedNotebooksIds(List<string> notebooksIds)
         {
-            Settings.Default.SelectedNotebooks = string.Join(";", notebooksIds.ToArray());
-            Settings.Default.Save();
+            SaveSelectedNotebooksIds(string.Join(";", 
+                SettingsManager.Instance.IsSingleNotebook.ToString().ToLower(), string.Join(",", notebooksIds.ToArray())));            
         }
 
         public static string GetRightFoundPagesString(int pagesCount)

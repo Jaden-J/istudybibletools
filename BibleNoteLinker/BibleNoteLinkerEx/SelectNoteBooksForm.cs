@@ -33,7 +33,7 @@ namespace BibleNoteLinkerEx
                 RenderSelectRow(id, allNotebooks[id], i++);
             }
 
-            SetContainerAttributes(i);
+            SetElementsAttributes(i);
 
             LoadSelectedNotebooks();        
                 
@@ -50,12 +50,13 @@ namespace BibleNoteLinkerEx
             }
         }
 
-        private void SetContainerAttributes(int notebooksCount)
+        private void SetElementsAttributes(int notebooksCount)
         {
             int notebooksRowHeight = 25 * notebooksCount;
             btnOk.Top = notebooksRowHeight + 20;
             this.Height = btnOk.Top + btnOk.Height + 35;
             pnMain.Height = notebooksRowHeight;
+            lblError.Top = notebooksRowHeight + 25;
         }
 
         private void RenderSelectRow(string id, string title, int index)

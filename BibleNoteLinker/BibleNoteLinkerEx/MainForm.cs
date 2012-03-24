@@ -57,21 +57,33 @@ namespace BibleNoteLinkerEx
         static extern bool SetForegroundWindow(IntPtr hWnd);
 
 
+        private bool _wasStartAnalyze = false;
+        private bool _wasAnalyzed = false;
         private void btnOk_Click(object sender, EventArgs e)
         {
+            if (_wasAnalyzed)
+            {
+                this.Close();
+                return;
+            }
+
+            _wasStartAnalyze = true;
+
             BibleNoteLinkerEx.Properties.Settings.Default.AllPages = rbAnalyzeAllPages.Checked;
             BibleNoteLinkerEx.Properties.Settings.Default.Changed = rbAnalyzeChangedPages.Checked;
             BibleNoteLinkerEx.Properties.Settings.Default.Force = chkForce.Checked;
-            BibleNoteLinkerEx.Properties.Settings.Default.Save();            
+            BibleNoteLinkerEx.Properties.Settings.Default.Save();
 
             try
             {
                 PrepareForAnalyze();
 
                 StartAnalyze();
+
+
             }
             catch (ProcessAbortedByUserException)
-            {                
+            {
                 Logger.LogMessage("Операция прервана пользователем.");
             }
             catch (Exception ex)
@@ -79,21 +91,26 @@ namespace BibleNoteLinkerEx
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Logger.LogError(ex);
             }
-            finally
-            {
-                EnableBaseElements(true);
-                Logger.Done();
-            }
 
             pbMain.Value = pbMain.Maximum = 1;
 
+
+            string message;
             if (!Logger.ErrorWasLogged)
-                LogHighLevelMessage("Успешно завершено.", null, null);
+                message = "Успешно завершено.";
             else
             {
-                LogHighLevelMessage("Завершено с ошибками.", null, null);
+                message = "Завершено с ошибками.";
                 llblShowErrors.Visible = true;
             }
+
+            LogHighLevelMessage(message, null, null);
+            Logger.LogMessage(message);
+
+            btnOk.Text = "Закрыть";
+            btnOk.Enabled = true;
+            _wasAnalyzed = true;
+            Logger.Done();
         }
 
         private void PrepareForAnalyze()
@@ -107,17 +124,18 @@ namespace BibleNoteLinkerEx
             if (!_detailsWereShown)
                 this.Height = SecondFormHeight;
 
-            EnableBaseElements(false);
+            EnableControls(false);
 
             llblShowErrors.Visible = false;
             LogHighLevelMessage("Инициализация...", null, null);
         }    
        
 
-        private void EnableBaseElements(bool enabled)
+        private void EnableControls(bool enabled)
         {
-            panel1.Enabled = enabled;
+            pbBaseElements.Enabled = enabled;
             tsmiSeelctNotebooks.Enabled = enabled;
+            btnOk.Enabled = enabled;
         }       
       
 
@@ -146,7 +164,7 @@ namespace BibleNoteLinkerEx
             if (BibleNoteLinkerEx.Properties.Settings.Default.Force)
                 chkForce.Checked = true;
 
-            lblInfo.Visible = false;
+            lblInfo.Text = string.Empty;
             _originalFormHeight = this.Height;
             this.Height = FirstFormHeight;
 
@@ -212,13 +230,20 @@ namespace BibleNoteLinkerEx
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _processAbortedByUser = true;
+            if (_wasStartAnalyze && !_wasAnalyzed)
+            {
+                if (MessageBox.Show("Вы действительно хотите прекратить работу программы? В некоторых случаях это может привести к неправильной сортировке страниц 'Сводные заметок', что решается только удалением всех страниц 'Сводные земеток'.",
+                    "Закрыть программу?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
+                else
+                {
+                    _processAbortedByUser = true;
+                }
+            }
         }
-
-        private void chkErrorsOnly_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
+        
 
         private void llblShowErrors_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
