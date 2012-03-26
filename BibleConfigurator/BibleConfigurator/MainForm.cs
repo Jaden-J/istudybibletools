@@ -449,14 +449,12 @@ namespace BibleConfigurator
             return string.Empty;
         }
 
+        private LoadForm _loadForm;
         private bool _firstShown = true;
         private void MainForm_Shown(object sender, EventArgs e)
         {
             if (_firstShown)
             {
-                LoadForm form = new LoadForm();
-                form.Show();
-
                 try
                 {
                     if (_runAfterSetup)
@@ -478,14 +476,16 @@ namespace BibleConfigurator
                 }
                 finally
                 {
-                    form.Close();
+                    _loadForm.Close();
                 }
             }
         }
       
       
         private void MainForm_Load(object sender, EventArgs e)
-        {         
+        {
+            _loadForm = new LoadForm();
+            _loadForm.Show();
 
             //ProcessStartInfo startInfo = new ProcessStartInfo();
             //startInfo.UseShellExecute = true;
@@ -802,7 +802,7 @@ namespace BibleConfigurator
             chkRubbishExpandMultiVersesLinking.Enabled = !chkDefaultPageNameParameters.Checked;
             chkRubbishExcludedVersesLinking.Enabled = !chkDefaultPageNameParameters.Checked;
 
-            chkUseRubbishPage_CheckedChanged(this, new EventArgs());
+            chkUseRubbishPage_CheckedChanged(this, new EventArgs());            
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -855,10 +855,10 @@ namespace BibleConfigurator
 
         private void chkUseRubbishPage_CheckedChanged(object sender, EventArgs e)
         {
-            tbRubbishNotesPageName.Enabled = chkUseRubbishPage.Checked;
-            tbRubbishNotesPageWidth.Enabled = chkUseRubbishPage.Checked;
-            chkRubbishExpandMultiVersesLinking.Enabled = chkUseRubbishPage.Checked;
-            chkRubbishExcludedVersesLinking.Enabled = chkUseRubbishPage.Checked;            
+            tbRubbishNotesPageName.Enabled = chkUseRubbishPage.Enabled && chkUseRubbishPage.Checked;
+            tbRubbishNotesPageWidth.Enabled = chkUseRubbishPage.Enabled && chkUseRubbishPage.Checked;
+            chkRubbishExpandMultiVersesLinking.Enabled = chkUseRubbishPage.Enabled && chkUseRubbishPage.Checked;
+            chkRubbishExcludedVersesLinking.Enabled = chkUseRubbishPage.Enabled && chkUseRubbishPage.Checked;            
         }
 
         private void btnDeleteNotesPages_Click(object sender, EventArgs e)

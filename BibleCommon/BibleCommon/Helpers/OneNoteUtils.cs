@@ -23,6 +23,13 @@ namespace BibleCommon.Helpers
             return bibleNotebook != null;            
         }
 
+        public static bool RootSectionGroupExists(Application oneNoteApp, string notebookId, string sectionGroupId)
+        {
+            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, HierarchyScope.hsChildren);
+            XElement sectionGroup = hierarchy.Content.Root.XPathSelectElement(string.Format("one:SectionGroup[@ID='{0}']", sectionGroupId), hierarchy.Xnm);
+            return sectionGroup != null;
+        }
+
         public static string GetNotebookIdByName(Application oneNoteApp, string notebookName, bool refreshCache)
         {
             OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, null, HierarchyScope.hsNotebooks, refreshCache);
