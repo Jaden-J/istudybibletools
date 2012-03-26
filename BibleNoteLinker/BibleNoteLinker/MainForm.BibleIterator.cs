@@ -14,19 +14,22 @@ namespace BibleNoteLinker
     public partial class MainForm
     {
         private const int StagesCount = 5;
+        private const int ApproximatePageVersesCount = 100;
+        private int _pagesForAnalyzeCount;
 
         private void StartAnalyze()
-        {
-            int pagesCount = 0;
+        {            
+            pbMain.Value = 0;
 
             if (!rbAnalyzeCurrentPage.Checked)
             {
                 List<NotebookIterator.NotebookInfo> notebooks = GetNotebooksInfo();
-                pagesCount = notebooks.Sum(notebook => notebook.PagesCount);
+                _pagesForAnalyzeCount = notebooks.Sum(notebook => notebook.PagesCount);
 
-                pbMain.Maximum = pagesCount;
+                pbMain.Maximum = _pagesForAnalyzeCount > 1 ? _pagesForAnalyzeCount : ApproximatePageVersesCount;
+                
                 pbMain.PerformStep();
-                Logger.LogMessage(Helper.GetRightFoundPagesString(pagesCount));
+                Logger.LogMessage(Helper.GetRightFoundPagesString(_pagesForAnalyzeCount));
 
                 foreach (NotebookIterator.NotebookInfo notebook in notebooks)
                     ProcessNotebook(notebook);
@@ -36,21 +39,20 @@ namespace BibleNoteLinker
                 var currentPage = OneNoteUtils.GetCurrentPageInfo(_oneNoteApp);
                 if (currentPage != null)
                 {
+                    _pagesForAnalyzeCount = 1;
                     string message = "Обработка текущей страницы";
 
-                    pbMain.Maximum = 100;
-                    pbMain.Value = 0;
+                    pbMain.Maximum = ApproximatePageVersesCount;                    
 
                     LogHighLevelMessage(message, 1, StagesCount);
-                    Logger.LogMessage(message);
-                    pagesCount = 1;
+                    Logger.LogMessage(message);                    
                     Logger.MoveLevel(1);
                     ProcessPage(currentPage);
                     Logger.MoveLevel(-1);
                 }
             }
 
-            if (pagesCount > 0)
+            if (_pagesForAnalyzeCount > 0)
             {
                 CommitNotesPages();
 
@@ -232,7 +234,7 @@ namespace BibleNoteLinker
             System.Windows.Forms.Application.DoEvents();
             e.CancelProcess = _processAbortedByUser;
 
-            if (rbAnalyzeCurrentPage.Checked && e.FoundVerse)
+            if (_pagesForAnalyzeCount == 1 && e.FoundVerse)
             {
                 if (pbMain.Value == pbMain.Maximum)
                     pbMain.Value = 0;
