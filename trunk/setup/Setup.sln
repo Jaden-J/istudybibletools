@@ -5,8 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RibbonButtons", "RibbonButt
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{4DC3056D-424A-4D52-AB20-FB7FC4AFA95F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibleNoteLinkerEx", "..\BibleNoteLinker\BibleNoteLinkerEx\BibleNoteLinkerEx.csproj", "{A9D49AEA-747E-4A38-98B5-3A8D62C2E992}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{98750266-722F-469D-943F-9D38CB36AA2D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibleVerseLinkerEx", "..\BibleVerseLinkerEx\BibleVerseLinkerEx\BibleVerseLinkerEx.csproj", "{5FC4C859-3DD1-429B-95A4-A831CBF51DF2}"
@@ -22,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\ServerVariables.xml = ..\ServerVariables.xml
 		..\VersionInfo.cs = ..\VersionInfo.cs
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibleNoteLinker", "..\BibleNoteLinker\BibleNoteLinker\BibleNoteLinker.csproj", "{8CF73E04-14AA-4510-B3E0-44934DDC5726}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,16 +53,6 @@ Global
 		{4DC3056D-424A-4D52-AB20-FB7FC4AFA95F}.Release|Mixed Platforms.Build.0 = Release
 		{4DC3056D-424A-4D52-AB20-FB7FC4AFA95F}.Release|x86.ActiveCfg = Release
 		{4DC3056D-424A-4D52-AB20-FB7FC4AFA95F}.Release|x86.Build.0 = Release
-		{A9D49AEA-747E-4A38-98B5-3A8D62C2E992}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{A9D49AEA-747E-4A38-98B5-3A8D62C2E992}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{A9D49AEA-747E-4A38-98B5-3A8D62C2E992}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{A9D49AEA-747E-4A38-98B5-3A8D62C2E992}.Debug|x86.ActiveCfg = Debug|x86
-		{A9D49AEA-747E-4A38-98B5-3A8D62C2E992}.Debug|x86.Build.0 = Debug|x86
-		{A9D49AEA-747E-4A38-98B5-3A8D62C2E992}.Release|Any CPU.ActiveCfg = Release|x86
-		{A9D49AEA-747E-4A38-98B5-3A8D62C2E992}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{A9D49AEA-747E-4A38-98B5-3A8D62C2E992}.Release|Mixed Platforms.Build.0 = Release|x86
-		{A9D49AEA-747E-4A38-98B5-3A8D62C2E992}.Release|x86.ActiveCfg = Release|x86
-		{A9D49AEA-747E-4A38-98B5-3A8D62C2E992}.Release|x86.Build.0 = Release|x86
 		{5FC4C859-3DD1-429B-95A4-A831CBF51DF2}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{5FC4C859-3DD1-429B-95A4-A831CBF51DF2}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{5FC4C859-3DD1-429B-95A4-A831CBF51DF2}.Debug|Mixed Platforms.Build.0 = Debug|x86
@@ -103,15 +93,25 @@ Global
 		{11828968-B062-4A9D-BF56-60A008E8CBEE}.Release|Mixed Platforms.Build.0 = Release|x86
 		{11828968-B062-4A9D-BF56-60A008E8CBEE}.Release|x86.ActiveCfg = Release|x86
 		{11828968-B062-4A9D-BF56-60A008E8CBEE}.Release|x86.Build.0 = Release|x86
+		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Debug|x86.ActiveCfg = Debug|x86
+		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Debug|x86.Build.0 = Debug|x86
+		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Release|Any CPU.ActiveCfg = Release|x86
+		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Release|Mixed Platforms.Build.0 = Release|x86
+		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Release|x86.ActiveCfg = Release|x86
+		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{A9D49AEA-747E-4A38-98B5-3A8D62C2E992} = {98750266-722F-469D-943F-9D38CB36AA2D}
 		{5FC4C859-3DD1-429B-95A4-A831CBF51DF2} = {98750266-722F-469D-943F-9D38CB36AA2D}
 		{B2933354-9EF6-4975-B263-9BE374FF9940} = {98750266-722F-469D-943F-9D38CB36AA2D}
 		{D2E40D0E-9786-49E9-B2A7-54088B42EAC5} = {98750266-722F-469D-943F-9D38CB36AA2D}
 		{11828968-B062-4A9D-BF56-60A008E8CBEE} = {98750266-722F-469D-943F-9D38CB36AA2D}
+		{8CF73E04-14AA-4510-B3E0-44934DDC5726} = {98750266-722F-469D-943F-9D38CB36AA2D}
 	EndGlobalSection
 EndGlobal

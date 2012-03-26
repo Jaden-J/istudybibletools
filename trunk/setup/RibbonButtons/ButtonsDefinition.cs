@@ -74,7 +74,7 @@ namespace RibbonButtons
                     path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleVerseLinker\\BibleVerseLinkerEx.exe");
                     break;
                 case "NoteLinkerButton":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleNoteLinker\\BibleNoteLinkerEx.exe");
+                    path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleNoteLinker\\BibleNoteLinker.exe");
                     break;
                 case "ConfigureButton":
                     path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleConfigurator\\BibleConfigurator.exe");
