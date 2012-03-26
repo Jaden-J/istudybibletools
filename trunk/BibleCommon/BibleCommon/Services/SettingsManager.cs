@@ -107,15 +107,24 @@ namespace BibleCommon.Services
                     result = !string.IsNullOrEmpty(this.SectionGroupId_Bible)
                           && !string.IsNullOrEmpty(this.SectionGroupId_BibleComments)
                           && !string.IsNullOrEmpty(this.SectionGroupId_BibleStudy)
-                          && !string.IsNullOrEmpty(this.SectionGroupId_BibleNotesPages);
+                          && !string.IsNullOrEmpty(this.SectionGroupId_BibleNotesPages);                    
 
-                    //todo: чтоб проверял и наличие секций
+                    if (result)
+                    {
+                        result = OneNoteUtils.RootSectionGroupExists(oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_Bible)
+                            && OneNoteUtils.RootSectionGroupExists(oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_BibleStudy)
+                            && OneNoteUtils.RootSectionGroupExists(oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_BibleComments)
+                            && OneNoteUtils.RootSectionGroupExists(oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_BibleNotesPages);
+                    }
                 }
-                
-                result = OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_Bible)
-                    && OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_BibleComments)
-                    && OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_BibleStudy)
-                    && OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_BibleNotesPages);
+
+                if (result)
+                {
+                    result = OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_Bible)
+                        && OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_BibleComments)
+                        && OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_BibleStudy)
+                        && OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_BibleNotesPages);
+                }
             }
 
             return result;
