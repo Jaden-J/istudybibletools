@@ -84,6 +84,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+<Compile Include="..\..\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
     <EmbeddedResource Include="SelectNoteBooksForm.resx">
       <DependentUpon>SelectNoteBooksForm.cs</DependentUpon>
     </EmbeddedResource>
