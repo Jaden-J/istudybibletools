@@ -67,8 +67,9 @@ namespace BibleNoteLinker
             {
                 PrepareForAnalyze();
 
+                DateTime dt = DateTime.Now;
                 StartAnalyze();
-
+                Logger.LogMessage("Времени затрачено: {0}", DateTime.Now.Subtract(dt));
 
             }
             catch (ProcessAbortedByUserException)
@@ -114,6 +115,7 @@ namespace BibleNoteLinker
                 this.Height = SecondFormHeight;
 
             EnableControls(false);
+            this.TopMost = false;
 
             llblShowErrors.Visible = false;
             LogHighLevelMessage("Инициализация...", null, null);
