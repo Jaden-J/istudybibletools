@@ -113,16 +113,18 @@ namespace BibleConfigurator.Tools
             string commentText = StringUtils.GetText(commentLink);
 
             string commentPageName = GetCommentPageName(commentLink);
-            string commentPageId = OneNoteProxy.Instance.GetCommentPageId(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName);
-            string commentObjectId = GetComentObjectId(commentPageId, commentText, null, 0);
-
-            if (!string.IsNullOrEmpty(commentObjectId))
+            string commentPageId = OneNoteProxy.Instance.GetCommentPageId(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName, false);
+            if (!string.IsNullOrEmpty(commentPageId))
             {
-                string newCommentLink = OneNoteUtils.GenerateHref(_oneNoteApp, commentText, commentPageId, commentObjectId);
+                string commentObjectId = GetComentObjectId(commentPageId, commentText, null, 0);
+                if (!string.IsNullOrEmpty(commentObjectId))
+                {
+                    string newCommentLink = OneNoteUtils.GenerateHref(_oneNoteApp, commentText, commentPageId, commentObjectId);
 
-                textElement.Value = textElement.Value.Replace(commentLink, newCommentLink);               
+                    textElement.Value = textElement.Value.Replace(commentLink, newCommentLink);
 
-                return true;
+                    return true;
+                }
             }
 
             return false;
