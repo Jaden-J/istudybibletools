@@ -29,6 +29,8 @@ namespace BibleCommon.Services
             string bibleSectionId, string biblePageId, string biblePageName, string descriptionPageName,
             bool isSummaryNotesPage, string verseLinkParentPageId = null, int pageLevel = 1, bool createIfNeeded = true)
         {
+            string result = string.Empty;
+
             string exceptionResolveWay = "\nСкорее всего в OneNote открыта не страница Библии.";
             string sectionGroupId = FindDescriptionSectionGroupForBiblePage(oneNoteApp, bibleSectionId, createIfNeeded, isSummaryNotesPage, false);
             if (!string.IsNullOrEmpty(sectionGroupId))
@@ -41,16 +43,18 @@ namespace BibleCommon.Services
                         bibleSectionName, biblePageId, biblePageName, descriptionPageName, isSummaryNotesPage, verseLinkParentPageId, pageLevel, createIfNeeded);
                     if (!string.IsNullOrEmpty(pageId))
                     {
-                        return pageId;
+                        result = pageId;
                     }
-                    else
+                    else if (createIfNeeded)
                         throw new NotFoundVerseLinkPageExceptions("Не найдена страница для комментариев." + exceptionResolveWay);
                 }
-                else
+                else if (createIfNeeded)
                     throw new NotFoundVerseLinkPageExceptions("Не найдена секция для комментариев." + exceptionResolveWay);
             }
-            else
+            else if (createIfNeeded)
                 throw new NotFoundVerseLinkPageExceptions("Не найдена группа секций для комментариев." + exceptionResolveWay);
+
+            return result;
         }
 
 

@@ -259,23 +259,26 @@ namespace BibleCommon.Services
         }
 
 
-        public string GetNotesPageId(Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName, 
+        public string GetNotesPageId(Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName,
             string notesPageName, string notesParentPageName = null, int pageLevel = 1)
         {
-            return GetVerseLinkPageId(oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName, true, notesParentPageName, pageLevel);
+            return GetVerseLinkPageId(oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName, true, 
+                notesParentPageName, pageLevel, true);
         }
 
-        public string GetCommentPageId(Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName, string commentPageName)
+        public string GetCommentPageId(Application oneNoteApp, string bibleSectionId, string biblePageId,
+            string biblePageName, string commentPageName, bool createNewPageIfNeeded = true)
         {
-            return GetVerseLinkPageId(oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName, false, null, 1);
+            return GetVerseLinkPageId(oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName, false, null, 1, createNewPageIfNeeded);
         }
 
         private string GetVerseLinkPageId(Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName, string commentPageName,
-            bool isSummaryNotesPage, string verseLinkParentPageName, int pageLevel)
+            bool isSummaryNotesPage, string verseLinkParentPageName, int pageLevel, bool createNewPageIfNeeded)
         {
             string verseLinkParentPageId = null;
             if (!string.IsNullOrEmpty(verseLinkParentPageName))
-                verseLinkParentPageId = GetVerseLinkPageId(oneNoteApp, bibleSectionId, biblePageId, biblePageName, verseLinkParentPageName, isSummaryNotesPage, null, 1);
+                verseLinkParentPageId = GetVerseLinkPageId(oneNoteApp, bibleSectionId, biblePageId, biblePageName, 
+                    verseLinkParentPageName, isSummaryNotesPage, null, 1, createNewPageIfNeeded);
 
             CommentPageId key = new CommentPageId()
             {
@@ -293,7 +296,7 @@ namespace BibleCommon.Services
                 //lock (_locker)         // пока в этом нет смысла
                 {
                     string commentPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(oneNoteApp, bibleSectionId, biblePageId, biblePageName,
-                        commentPageName, isSummaryNotesPage, verseLinkParentPageId, pageLevel);
+                        commentPageName, isSummaryNotesPage, verseLinkParentPageId, pageLevel, createNewPageIfNeeded);
                     //if (!_commentPagesIdsCache.ContainsKey(key))     // пока в этом нет смысла
                         _commentPagesIdsCache.Add(key, commentPageId);
                 }
