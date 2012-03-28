@@ -325,7 +325,14 @@ namespace BibleCommon.Services
                 //lock (_locker)
                 {
                     string xml;
-                    oneNoteApp.GetHierarchy(hierarchyId, scope, out xml);
+                    try
+                    {
+                        oneNoteApp.GetHierarchy(hierarchyId, scope, out xml);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(string.Format("Не удаётся найти иерархию типа '{0}' для элемента '{1}': {2}", scope, hierarchyId, ex.Message));
+                    }
 
                     XmlNamespaceManager xnm;
                     XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
