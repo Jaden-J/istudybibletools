@@ -19,6 +19,7 @@ namespace BibleConfigurator
         public const string BibleNotesPagesNotebookTemplateFileName = "Сводные заметок.onepkg";
         public const string BibleStudyNotebookTemplateFileName = "Изучение Библии.onepkg";
         public const string TemplatesDirectory = "OneNoteTemplates";
+        public const string TempDirectory = "Temp";
 
         public const string OldTestamentName = "Ветхий Завет";
         public const string NewTestamentName = "Новый Завет";                
