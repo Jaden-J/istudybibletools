@@ -88,6 +88,7 @@
     <Compile Include="SetWidthForm.Designer.cs">
       <DependentUpon>SetWidthForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\BackupManager.cs" />
     <Compile Include="Tools\ResizeBibleManager.cs" />
     <Compile Include="Tools\DeleteNotesPagesManager.cs" />
     <Compile Include="Tools\NotebookIteratorHelper.cs" />
