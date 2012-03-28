@@ -40,7 +40,7 @@ namespace BibleCommon.Services
         {
             public HierarchyObjectInfo HierarchyObjectInfo { get; set; } // дополнительная информация о найденном объекте            
             public HierarchyStage HierarchyStage { get; set; }
-            public HierarchySearchResultType ResultType { get; set; }                        
+            public HierarchySearchResultType ResultType { get; set; }     
 
             public HierarchySearchResult()
             {
