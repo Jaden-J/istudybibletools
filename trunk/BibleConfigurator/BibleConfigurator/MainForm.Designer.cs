@@ -86,6 +86,7 @@
             this.lblWarning = new System.Windows.Forms.Label();
             this.lblProgressInfo = new System.Windows.Forms.Label();
             this.pbMain = new System.Windows.Forms.ProgressBar();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.tbcMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -618,13 +619,13 @@
             // 
             // btnBackup
             // 
-            this.btnBackup.Enabled = false;
             this.btnBackup.Location = new System.Drawing.Point(13, 133);
             this.btnBackup.Name = "btnBackup";
             this.btnBackup.Size = new System.Drawing.Size(230, 23);
             this.btnBackup.TabIndex = 3;
             this.btnBackup.Text = "Создать резервную копию данных";
             this.btnBackup.UseVisualStyleBackColor = true;
+            this.btnBackup.Click += new System.EventHandler(this.btnBackup_Click);
             // 
             // btnResizeBibleTables
             // 
@@ -713,6 +714,10 @@
             this.pbMain.Step = 3;
             this.pbMain.TabIndex = 17;
             this.pbMain.Visible = false;
+            // 
+            // saveFileDialog
+            // 
+            this.saveFileDialog.DefaultExt = "zip";
             // 
             // MainForm
             // 
@@ -807,6 +812,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox chkCreateBibleNotesPagesNotebookFromTemplate;
         private System.Windows.Forms.ComboBox cbBibleNotesPagesNotebook;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
 
     }
 }
