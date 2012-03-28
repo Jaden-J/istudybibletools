@@ -68,6 +68,7 @@ namespace BibleNoteLinker
                 PrepareForAnalyze();
 
                 DateTime dt = DateTime.Now;
+                Logger.LogMessage("Время старта: {0}", dt.ToLongTimeString());
                 StartAnalyze();
                 Logger.LogMessage("Времени затрачено: {0}", DateTime.Now.Subtract(dt));
 

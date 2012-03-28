@@ -913,76 +913,79 @@ namespace BibleCommon.Services
                 if (hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder
                     || hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.Page)
                 {
-                    if (onHierarchyElementFound != null)
-                        onHierarchyElementFound(hierarchySearchResult);
-
-                    bool isChapter = VersePointerSearchResult.IsChapter(resultType);
-
-                    if ((!isChapter || excludedVersesLinking) && linkDepth >= AnalyzeDepth.Full)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем. Но если у нас стоит excludedVersesLinking, то сразу обрабатываем
+                    if (hierarchySearchResult.HierarchyObjectInfo.PageId != notePageId)
                     {
-                        bool canContinue = true;
+                        if (onHierarchyElementFound != null)
+                            onHierarchyElementFound(hierarchySearchResult);
 
-                        if (!excludedVersesLinking)  // иначе всё равно привязываем
+                        bool isChapter = VersePointerSearchResult.IsChapter(resultType);
+
+                        if ((!isChapter || excludedVersesLinking) && linkDepth >= AnalyzeDepth.Full)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем. Но если у нас стоит excludedVersesLinking, то сразу обрабатываем
                         {
-                            if (isExcluded || IsExcludedCurrentNotePage)
-                                canContinue = false;
+                            bool canContinue = true;
 
-                            if (canContinue)
+                            if (!excludedVersesLinking)  // иначе всё равно привязываем
                             {
-                                if (VersePointerSearchResult.IsVerse(resultType))
+                                if (isExcluded || IsExcludedCurrentNotePage)
+                                    canContinue = false;
+
+                                if (canContinue)
                                 {
-                                    if (globalChapterSearchResult != null)
+                                    if (VersePointerSearchResult.IsVerse(resultType))
                                     {
-                                        if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString)
+                                        if (globalChapterSearchResult != null)
                                         {
-                                            if (!isInBrackets)
+                                            if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString)
                                             {
-                                                if (globalChapterSearchResult.VersePointer.IsMultiVerse)
-                                                    if (globalChapterSearchResult.VersePointer.IsInVerseRange(vp.Verse.GetValueOrDefault(0)))
-                                                        canContinue = false;    // если указан уже диапазон, а далее идут пояснения, то не отмечаем их заметками
+                                                if (!isInBrackets)
+                                                {
+                                                    if (globalChapterSearchResult.VersePointer.IsMultiVerse)
+                                                        if (globalChapterSearchResult.VersePointer.IsInVerseRange(vp.Verse.GetValueOrDefault(0)))
+                                                            canContinue = false;    // если указан уже диапазон, а далее идут пояснения, то не отмечаем их заметками
+                                                }
                                             }
+                                            //else
+                                            //{
+                                            //    if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter)
+                                            //    {
+                                            //        if (!isInBrackets)
+                                            //        {
+                                            //            canContinue = false;
+                                            //        }
+                                            //    }
+                                            //}
                                         }
-                                        //else
-                                        //{
-                                        //    if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter)
-                                        //    {
-                                        //        if (!isInBrackets)
-                                        //        {
-                                        //            canContinue = false;
-                                        //        }
-                                        //    }
-                                        //}
+                                    }
+                                }
+
+                                if (canContinue)
+                                {
+                                    if (pageChaptersSearchResult != null)
+                                    {
+                                        if (!isInBrackets)
+                                        {
+                                            if (pageChaptersSearchResult.Any(pcsr =>
+                                            {
+                                                return pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
+                                                        && pcsr.VersePointer.ChapterName == vp.ChapterName;
+                                            }))
+                                                canContinue = false;  // то есть среди исключаемых глав есть текущая
+                                        }
                                     }
                                 }
                             }
 
                             if (canContinue)
                             {
-                                if (pageChaptersSearchResult != null)
-                                {
-                                    if (!isInBrackets)
-                                    {
-                                        if (pageChaptersSearchResult.Any(pcsr =>
-                                        {
-                                            return pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
-                                                    && pcsr.VersePointer.ChapterName == vp.ChapterName;
-                                        }))
-                                            canContinue = false;  // то есть среди исключаемых глав есть текущая
-                                    }
-                                }
+                                LinkVerseToNotesPage(oneNoteApp, vp, isChapter,
+                                    hierarchySearchResult.HierarchyObjectInfo,
+                                    noteSectionGroupName, noteSectionName, notePageName, notePageId, notePageTitleId,
+                                    notePageContentObjectId, createLinkToNotesPage, notesPageName, notesParentPageName, notesPageWidth, notesPageLevel, force);
                             }
                         }
 
-                        if (canContinue)
-                        {
-                            LinkVerseToNotesPage(oneNoteApp, vp, isChapter,
-                                hierarchySearchResult.HierarchyObjectInfo,
-                                noteSectionGroupName, noteSectionName, notePageName, notePageId, notePageTitleId,
-                                notePageContentObjectId, createLinkToNotesPage, notesPageName, notesParentPageName, notesPageWidth, notesPageLevel, force);
-                        }
+                        return true;
                     }
-
-                    return true;
                 }
             }
 
