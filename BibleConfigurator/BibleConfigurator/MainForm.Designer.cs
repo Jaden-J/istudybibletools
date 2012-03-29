@@ -86,6 +86,7 @@
             this.lblWarning = new System.Windows.Forms.Label();
             this.lblProgressInfo = new System.Windows.Forms.Label();
             this.pbMain = new System.Windows.Forms.ProgressBar();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.tbcMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -807,6 +808,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox chkCreateBibleNotesPagesNotebookFromTemplate;
         private System.Windows.Forms.ComboBox cbBibleNotesPagesNotebook;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
 
     }
 }
