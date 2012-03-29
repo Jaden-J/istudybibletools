@@ -53,7 +53,8 @@ namespace BibleConfigurator.Tools
                             if (_form.StopExternalProcess)
                                 throw new ProcessAbortedByUserException();
                         });
-                
+
+                _form.ExternalProcessingDone("Обновление ширины страниц Библии успешно завершено.");                
             }
             catch (ProcessAbortedByUserException)
             {
@@ -61,9 +62,7 @@ namespace BibleConfigurator.Tools
             }
             finally
             {                
-                BibleCommon.Services.Logger.Done();
-
-                _form.ExternalProcessingDone("Обновление ширины страниц Библии успешно завершено.");
+                BibleCommon.Services.Logger.Done();                
             }
         }      
 

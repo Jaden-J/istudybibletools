@@ -835,21 +835,32 @@ namespace BibleConfigurator
 
         public void ExternalProcessingDone(string infoText)
         {
-            pbMain.Value = 0;
-            pbMain.Maximum = 100;
-            pbMain.Step = 1;
-            pbMain.Visible = false;
+            FormExtensions.SetControlPropertyThreadSafe(pbMain, "Value", 0);
+            FormExtensions.SetControlPropertyThreadSafe(pbMain, "Maximum", 100);
+            FormExtensions.SetControlPropertyThreadSafe(pbMain, "Step", 1);
+            FormExtensions.SetControlPropertyThreadSafe(pbMain, "Visible", false);
+            FormExtensions.SetControlPropertyThreadSafe(tbcMain, "Enabled", true);
+            FormExtensions.SetControlPropertyThreadSafe(lblProgressInfo, "Text", infoText);
+            FormExtensions.SetControlPropertyThreadSafe(btnOK, "Enabled", true);
 
-            tbcMain.Enabled = true;
-            lblProgressInfo.Text = infoText;
+            //pbMain.Value = 0;
+            //pbMain.Maximum = 100;
+            //pbMain.Step = 1;
+            //pbMain.Visible = false;
 
-            btnOK.Enabled = true;
+            //tbcMain.Enabled = true;
+            //lblProgressInfo.Text = infoText;
+
+            //btnOK.Enabled = true;
         }
 
         public void PerformProgressStep(string infoText)
         {
-            lblProgressInfo.Text = infoText;            
-            pbMain.PerformStep();            
+            FormExtensions.SetControlPropertyThreadSafe(lblProgressInfo, "Text", infoText);
+            //lblProgressInfo.Text = infoText;            
+            if (pbMain.Value < pbMain.Maximum)
+                FormExtensions.SetControlPropertyThreadSafe(pbMain, "Value", pbMain.Value + 1);                
+            //pbMain.PerformStep();            
             System.Windows.Forms.Application.DoEvents();
         }
 
@@ -884,11 +895,14 @@ namespace BibleConfigurator
         }
 
         private void btnBackup_Click(object sender, EventArgs e)
-        {            
-            if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        {
+            saveFileDialog.DefaultExt = ".zip";
+            saveFileDialog.FileName = string.Format("{0}_backup_{1}", Constants.ToolsName, DateTime.Now.ToShortDateString());
+            
+            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 BackupManager manager = new BackupManager(_oneNoteApp, this);
-                manager.Backup(folderBrowserDialog.SelectedPath);
+                manager.Backup(saveFileDialog.FileName);
             }
         }
 
