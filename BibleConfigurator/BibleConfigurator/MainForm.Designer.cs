@@ -86,7 +86,6 @@
             this.lblWarning = new System.Windows.Forms.Label();
             this.lblProgressInfo = new System.Windows.Forms.Label();
             this.pbMain = new System.Windows.Forms.ProgressBar();
-            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.tbcMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -715,10 +714,6 @@
             this.pbMain.TabIndex = 17;
             this.pbMain.Visible = false;
             // 
-            // saveFileDialog
-            // 
-            this.saveFileDialog.DefaultExt = "zip";
-            // 
             // MainForm
             // 
             this.AcceptButton = this.btnOK;
@@ -812,7 +807,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox chkCreateBibleNotesPagesNotebookFromTemplate;
         private System.Windows.Forms.ComboBox cbBibleNotesPagesNotebook;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog;
 
     }
 }

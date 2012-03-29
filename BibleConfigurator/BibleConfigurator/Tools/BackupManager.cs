@@ -22,7 +22,7 @@ namespace BibleConfigurator.Tools
             _form = form;
         }
 
-        public void Backup(string filePath)
+        public void Backup(string folderPath)
         {
             if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
             {
@@ -34,26 +34,27 @@ namespace BibleConfigurator.Tools
             {
                 BibleCommon.Services.Logger.Init("BackupManager");
 
-                _form.PrepareForExternalProcessing(1255, 1, "Старт создания резервной копии данных");
-
-                string tempFolderPath = GetTempFolderPath();                
-
-                CleanFolder(tempFolderPath);
-
                 IEnumerable<string> notebookIds = GetDistinctNotebooksIds();
+
+                _form.PrepareForExternalProcessing(notebookIds.Count(), 1, "Старт создания резервной копии данных");
+
+                folderPath = Path.Combine(folderPath, string.Format("{0}_backup_{1}", Constants.ToolsName, DateTime.Now.ToShortDateString()));
+
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                
 
                 foreach (string id in notebookIds)
                 {
-                    BackupNotebook(id, tempFolderPath);
+                    string notebookName = OneNoteUtils.GetHierarchyElementName(_oneNoteApp, id);
+                    _form.PerformProgressStep(string.Format("Старт создания резервной копии записной книжки '{0}'", notebookName));
 
-
+                    BackupNotebook(id, notebookName, folderPath);                    
+                    
                     if (_form.StopExternalProcess)
                         throw new ProcessAbortedByUserException();
-                }
-
-                PackfilesToZip(tempFolderPath, filePath);
-
-                CleanFolder(tempFolderPath);                
+                }                
             }
             catch (ProcessAbortedByUserException)
             {
@@ -63,19 +64,14 @@ namespace BibleConfigurator.Tools
             {                
                 BibleCommon.Services.Logger.Done();
 
-                _form.ExternalProcessingDone("Создание резервной копии данных успешно завершено.");
+                _form.ExternalProcessingDone("Создание резервной копии данных инициировано. Операция займёт несколько минут. Данную программу можно закрыть.");
             }
-        }
+        }        
 
-        private void PackfilesToZip(string tempFolderPath, string filePath)
+        private void BackupNotebook(string notebookId, string notebookName, string tempFolderPath)
         {
-            //throw new NotImplementedException();
-        }
-
-        private void BackupNotebook(string notebookId, string tempFolderPath)
-        {
-            _oneNoteApp.Publish(notebookId, Path.Combine(tempFolderPath, 
-                OneNoteUtils.GetHierarchyElementName(_oneNoteApp, notebookId)  + ".pckg"), PublishFormat.pfOneNotePackage);
+            _oneNoteApp.Publish(notebookId, Path.Combine(tempFolderPath,
+                notebookName + ".onepkg"), PublishFormat.pfOneNotePackage);
         }
 
         private IEnumerable<string> GetDistinctNotebooksIds()
@@ -87,23 +83,6 @@ namespace BibleConfigurator.Tools
                 SettingsManager.Instance.NotebookId_BibleNotesPages,
                 SettingsManager.Instance.NotebookId_BibleStudy
             }.Distinct();
-        }
-
-        private void CleanFolder(string tempFolderPath)
-        {
-            foreach (string file in Directory.GetFiles(tempFolderPath))
-            {
-                File.Delete(file);
-            }
-        }
-
-        private string GetTempFolderPath()
-        {
-            string s = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(Utils.GetCurrentDirectory())), Consts.TempDirectory);
-            if (!Directory.Exists(s))
-                Directory.CreateDirectory(s);
-
-            return s;
-        }
+        }                
     }
 }

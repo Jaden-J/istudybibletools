@@ -884,12 +884,11 @@ namespace BibleConfigurator
         }
 
         private void btnBackup_Click(object sender, EventArgs e)
-        {
-            saveFileDialog.FileName = string.Format("{0}_backup_{1}.zip", Constants.ToolsName, DateTime.Now.ToShortDateString());
-            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        {            
+            if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 BackupManager manager = new BackupManager(_oneNoteApp, this);
-                manager.Backup(saveFileDialog.FileName);
+                manager.Backup(folderBrowserDialog.SelectedPath);
             }
         }
 
