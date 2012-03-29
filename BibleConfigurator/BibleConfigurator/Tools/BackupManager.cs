@@ -47,7 +47,9 @@ namespace BibleConfigurator.Tools
                 IEnumerable<string> notebookIds = GetDistinctNotebooksIds();
                 _notebooksCount = notebookIds.Count();
 
-                _form.PrepareForExternalProcessing(_notebooksCount + 1, 1, "Старт создания резервной копии данных");
+                string initMessage = "Старт создания резервной копии данных";
+                _form.PrepareForExternalProcessing(_notebooksCount + 2, 1, initMessage);
+                _form.PerformProgressStep(initMessage);
 
                 _tempFolderPath = GetTempFolderPath();
 
