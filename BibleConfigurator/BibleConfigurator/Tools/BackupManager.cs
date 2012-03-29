@@ -50,6 +50,7 @@ namespace BibleConfigurator.Tools
                 string initMessage = "Старт создания резервной копии данных";
                 _form.PrepareForExternalProcessing(_notebooksCount + 2, 1, initMessage);
                 _form.PerformProgressStep(initMessage);
+                BibleCommon.Services.Logger.LogMessage(initMessage);
 
                 _tempFolderPath = GetTempFolderPath();
 
@@ -99,7 +100,11 @@ namespace BibleConfigurator.Tools
             BibleCommon.Services.Logger.Done();
 
             if (successefully)
-                _form.ExternalProcessingDone("Создание резервной копии данных успешно завершено.");
+            {
+                string finalMessage = "Создание резервной копии данных успешно завершено.";
+                _form.ExternalProcessingDone(finalMessage);
+                BibleCommon.Services.Logger.LogMessage(finalMessage);
+            }
         }
 
         private void InitializeFileWatcher()
@@ -126,8 +131,10 @@ namespace BibleConfigurator.Tools
                             if (_notebookNames.Contains(e.Name))
                             {
                                 _notebookNames.Remove(e.Name);
-                                _form.PerformProgressStep(string.Format("Резервная копия записной книжки '{0}' успешно создана.", 
-                                    Path.GetFileNameWithoutExtension(e.Name)));
+                                string message = string.Format("Резервная копия записной книжки '{0}' успешно создана.",
+                                    Path.GetFileNameWithoutExtension(e.Name));
+                                _form.PerformProgressStep(message);
+                                BibleCommon.Services.Logger.LogMessage(message);
 
                                 if (++_processedNotebooksCount >= _notebooksCount)
                                 {
@@ -166,7 +173,10 @@ namespace BibleConfigurator.Tools
 
         private void PackfilesToZip()
         {
-            _form.PerformProgressStep("Упаковывание файлов в .zip архив");
+            string message = "Упаковывание файлов в .zip архив";
+            _form.PerformProgressStep(message);
+            BibleCommon.Services.Logger.LogMessage(message);
+
             try
             {
                 // Depending on the directory this could be very large and would require more attention
@@ -222,7 +232,8 @@ namespace BibleConfigurator.Tools
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.Message);                
+                Logger.LogError(ex.Message);
+                BibleCommon.Services.Logger.LogError(ex);
 
                 // No need to rethrow the exception as for our purposes its handled.
             }
