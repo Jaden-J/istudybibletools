@@ -8,11 +8,14 @@ using System.Management;
 using System.Security;
 using System.Diagnostics;
 using System.Security.Principal;
+using System.Reflection;
 
 namespace BibleCommon.Helpers
 {
     public static class FormExtensions
     {
+        private delegate void SetControlPropertyThreadSafeDelegate(Control control, string propertyName, object propertyValue);
+
         [DllImport("user32.dll", SetLastError = true)]
         static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
@@ -57,6 +60,19 @@ namespace BibleCommon.Helpers
                 ShowWindow(form.Handle, SW_SHOW);
             }
             form.Activate();
+        }
+
+
+        public static void SetControlPropertyThreadSafe(Control control, string propertyName, object propertyValue)
+        {
+            if (control.InvokeRequired)
+            {
+                control.Invoke(new SetControlPropertyThreadSafeDelegate(SetControlPropertyThreadSafe), new object[] { control, propertyName, propertyValue });
+            }
+            else
+            {
+                control.GetType().InvokeMember(propertyName, BindingFlags.SetProperty, null, control, new object[] { propertyValue });
+            }
         }
     }
 }

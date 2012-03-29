@@ -19,35 +19,19 @@ namespace BibleNoteLinker
     {
         private Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
 
-
         public MainForm()
         {
             InitializeComponent();
             _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
         }
 
-
         private int _originalFormHeight;
         const int FirstFormHeight = 185;
         const int SecondFormHeight = 250;
         private bool _processAbortedByUser;
-
-        private delegate void SetControlPropertyThreadSafeDelegate(Control control, string propertyName, object propertyValue);
-
-        public static void SetControlPropertyThreadSafe(Control control, string propertyName, object propertyValue)
-        {
-            if (control.InvokeRequired)
-            {
-                control.Invoke(new SetControlPropertyThreadSafeDelegate(SetControlPropertyThreadSafe), new object[] { control, propertyName, propertyValue });
-            }
-            else
-            {
-                control.GetType().InvokeMember(propertyName, BindingFlags.SetProperty, null, control, new object[] { propertyValue });
-            }
-        }
-
         private bool _wasStartAnalyze = false;
         private bool _wasAnalyzed = false;
+
         private void btnOk_Click(object sender, EventArgs e)
         {
             if (_wasAnalyzed)
@@ -167,12 +151,12 @@ namespace BibleNoteLinker
         {
             if (VersionOnServerManager.NeedToUpdate())
             {
-                SetControlPropertyThreadSafe(lblInfo, "Text",
+                FormExtensions.SetControlPropertyThreadSafe(lblInfo, "Text",
 @"Доступна новая версия программы
 на сайте http://IStudyBibleTools.ru. 
 Кликните, чтобы перейти на страницу загрузки.");
 
-                SetControlPropertyThreadSafe(this, "Size", new Size(this.Size.Width, this.Size.Height + 50));
+                FormExtensions.SetControlPropertyThreadSafe(this, "Size", new Size(this.Size.Width, this.Size.Height + 50));
             }
         }
 
