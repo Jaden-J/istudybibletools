@@ -81,6 +81,7 @@
             this.Controls.Add(this.tbBiblePageWidth);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "SetWidthForm";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Установить ширину страниц Библии";
             this.Load += new System.EventHandler(this.SetWidthForm_Load);
