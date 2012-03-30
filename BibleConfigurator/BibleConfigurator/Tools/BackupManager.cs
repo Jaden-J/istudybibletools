@@ -24,6 +24,7 @@ namespace BibleConfigurator.Tools
         private string _tempFolderPath;
         private string _targetFilePath;
         private volatile List<String> _notebookNames = new List<string>();
+        private DateTime _startTime;
         private static object _locker = new object();
 
         public BackupManager(Application oneNoteApp, MainForm form)
@@ -44,6 +45,9 @@ namespace BibleConfigurator.Tools
             {
                 BibleCommon.Services.Logger.Init("BackupManager");
 
+                _startTime = DateTime.Now;
+                BibleCommon.Services.Logger.LogMessage("Время старта: {0}", _startTime.ToLongTimeString());                
+
                 IEnumerable<string> notebookIds = GetDistinctNotebooksIds();
                 _notebooksCount = notebookIds.Count();
 
@@ -51,6 +55,7 @@ namespace BibleConfigurator.Tools
                 _form.PrepareForExternalProcessing(_notebooksCount + 2, 1, initMessage);
                 _form.PerformProgressStep(initMessage);
                 BibleCommon.Services.Logger.LogMessage(initMessage);
+                System.Windows.Forms.Application.DoEvents();
 
                 _tempFolderPath = GetTempFolderPath();
 
@@ -76,17 +81,13 @@ namespace BibleConfigurator.Tools
             {
                 BibleCommon.Services.Logger.LogMessage("Process aborted by user");
                 Finalize(false);
-            }
-            finally
-            {
-                BibleCommon.Services.Logger.Done();
-            }
+            }            
         }
 
         private void Finalize(bool successefully)
         {
             _fileWatcher.EnableRaisingEvents = false;
-            _fileWatcher.Dispose();
+            _fileWatcher.Dispose();           
 
             try
             {
@@ -97,6 +98,7 @@ namespace BibleConfigurator.Tools
                 BibleCommon.Services.Logger.LogError(ex.Message);
             }
 
+            BibleCommon.Services.Logger.LogMessage("Времени затрачено: {0}", DateTime.Now.Subtract(_startTime));
             BibleCommon.Services.Logger.Done();
 
             if (successefully)
