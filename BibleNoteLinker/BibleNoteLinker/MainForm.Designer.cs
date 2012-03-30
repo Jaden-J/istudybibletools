@@ -112,7 +112,7 @@
             this.lblInfo.Size = new System.Drawing.Size(368, 26);
             this.lblInfo.TabIndex = 7;
             this.lblInfo.Text = "Доступна новая версия программы на сайте http://IStudyBibleTools.ru. \r\nКликните, " +
-                "чтобы перейти на страницу загрузки.";
+    "чтобы перейти на страницу загрузки.";
             this.lblInfo.Click += new System.EventHandler(this.lblInfo_Click);
             // 
             // pbMain
@@ -215,9 +215,10 @@
             this.Controls.Add(this.lbLog);
             this.Controls.Add(this.pbMain);
             this.Controls.Add(this.menuStrip1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Анализ заметок";

@@ -61,7 +61,7 @@
             this.lblError.Text = "Error";
             this.lblError.Visible = false;
             // 
-            // SelectNoteBooks
+            // SelectNoteBooksForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -70,7 +70,8 @@
             this.Controls.Add(this.pnMain);
             this.Controls.Add(this.btnOk);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "SelectNoteBooks";
+            this.Name = "SelectNoteBooksForm";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Выберите записные книжки для анализа";
             this.TopMost = true;
