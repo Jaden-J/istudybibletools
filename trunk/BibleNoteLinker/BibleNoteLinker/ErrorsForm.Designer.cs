@@ -60,6 +60,7 @@
             this.Controls.Add(this.lbErrors);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ErrorsForm";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Ошибки";
             this.TopMost = true;
