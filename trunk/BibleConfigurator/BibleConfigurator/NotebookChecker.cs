@@ -78,13 +78,14 @@ namespace BibleConfigurator
 
         public static bool ElementIsBible(XElement element, XmlNamespaceManager xnm)
         {
+            //todo: переделать, когда будет поддержка модулей
             XElement oldTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", Consts.OldTestamentName), xnm);
 
             if (oldTestamentSectionGroup != null)
             {
                 int oldTestamentSectionsCount = oldTestamentSectionGroup.XPathSelectElements("one:Section", xnm).Count();
 
-                if (oldTestamentSectionsCount == 39)
+                if (oldTestamentSectionsCount > 35)  
                 {
                     XElement newTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", Consts.NewTestamentName), xnm);
 
@@ -92,7 +93,7 @@ namespace BibleConfigurator
                     {
                         int newTestamentSectionsCount = newTestamentSectionGroup.XPathSelectElements("one:Section", xnm).Count();
 
-                        if (newTestamentSectionsCount == 27)
+                        if (newTestamentSectionsCount > 25)
                         {
                             return true;
                         }
@@ -105,13 +106,14 @@ namespace BibleConfigurator
 
         public static bool ElementIsBibleComments(XElement element, XmlNamespaceManager xnm)
         {
+            //todo: переделать, когда будет поддержка модулей
             XElement oldTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", Consts.OldTestamentName), xnm);
 
             if (oldTestamentSectionGroup != null)
             {
                 int subSectionsCount = oldTestamentSectionGroup.XPathSelectElements("one:Section", xnm).Count();
 
-                if (subSectionsCount == 0)
+                if (subSectionsCount < 5)
                 {
                     XElement newTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", Consts.NewTestamentName), xnm);
 
@@ -119,7 +121,7 @@ namespace BibleConfigurator
                     {
                         subSectionsCount = newTestamentSectionGroup.XPathSelectElements("one:Section", xnm).Count();
 
-                        if (subSectionsCount == 0)
+                        if (subSectionsCount  < 5)
                         {
                             return true;
                         }

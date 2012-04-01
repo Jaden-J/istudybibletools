@@ -485,21 +485,7 @@ namespace BibleConfigurator
         private void MainForm_Load(object sender, EventArgs e)
         {
             _loadForm = new LoadForm();
-            _loadForm.Show();
-
-            //ProcessStartInfo startInfo = new ProcessStartInfo();
-            //startInfo.UseShellExecute = true;
-            //startInfo.WorkingDirectory = "C:\\WINDOWS\\"; // Environment.CurrentDirectory;
-            //startInfo.FileName = "C:\\WINDOWS\\notepad.exe"; // Application.ExecutablePath;
-            //startInfo.Verb = "runas";
-            //try
-            //{
-            //    Process p = Process.Start(startInfo);
-            //}
-            //catch (System.ComponentModel.Win32Exception ex)
-            //{
-            //    return;
-            //}
+            _loadForm.Show();           
         }
 
         private void LoadParameters()

@@ -70,7 +70,7 @@ namespace BibleConfigurator.Tools
                         throw new ProcessAbortedByUserException();
                 }
 
-                _form.ExternalProcessingDone("Обновление ссылок на комментарии успешно завершено.");
+                _form.ExternalProcessingDone("Удаление страниц 'Сводные заметок' успешно завершено.");
             }
             catch (ProcessAbortedByUserException)
             {
