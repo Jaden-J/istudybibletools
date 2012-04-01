@@ -63,9 +63,7 @@ namespace BibleCommon.Services
                 if (latestVersion != null)
                 {
                     result = new Version(latestVersion.Value);
-                }
-
-                LoadHttpStream(Constants.NewVersionOnServerCheckFileUrl);   // чтобы с помощью metrika.yandex.ru отслеживать количество запросов новой версии
+                }                
             }
             catch (Exception)
             {
