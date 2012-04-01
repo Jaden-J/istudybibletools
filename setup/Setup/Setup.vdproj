@@ -560,7 +560,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=1.5.6.202, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=1.5.7.205, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_D85BAC55BB4951D1EBE30B9D348666DC"
@@ -729,15 +729,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OneNote IStudyBibleTools"
-        "ProductCode" = "8:{47C8E490-8E47-4924-B30D-27A4D25C0953}"
-        "PackageCode" = "8:{72C67967-235B-4529-AE58-5361D3BD6AF2}"
+        "ProductCode" = "8:{62437C50-8CF1-4247-81B4-D18D964A3C52}"
+        "PackageCode" = "8:{9241AAE4-F989-4780-95BF-79B3E0DDD026}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.5.6"
+        "ProductVersion" = "8:1.5.7"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://IStudyBibleTools.ru"
