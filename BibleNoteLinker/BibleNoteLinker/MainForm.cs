@@ -140,7 +140,7 @@ namespace BibleNoteLinker
             if (BibleNoteLinker.Properties.Settings.Default.Force)
                 chkForce.Checked = true;
 
-            lblInfo.Text = string.Empty;
+            lblInfo.Visible = false;
             _originalFormHeight = this.Height;
             this.Height = FirstFormHeight;
 
@@ -151,12 +151,7 @@ namespace BibleNoteLinker
         {
             if (VersionOnServerManager.NeedToUpdate())
             {
-                FormExtensions.SetControlPropertyThreadSafe(lblInfo, "Text",
-@"Доступна новая версия программы
-на сайте http://IStudyBibleTools.ru. 
-Кликните, чтобы перейти на страницу загрузки.");
-
-                FormExtensions.SetControlPropertyThreadSafe(this, "Size", new Size(this.Size.Width, this.Size.Height + 50));
+                FormExtensions.SetControlPropertyThreadSafe(lblInfo, "Visible", true);           
             }
         }
 
