@@ -195,7 +195,7 @@ namespace BibleNoteLinker
 
                 foreach (BibleCommon.Services.NotebookIterator.PageInfo page in section.Pages)
                 {
-                    string message = string.Format("Обработка страницы '{0}'", page.Title.Replace("{", "{{").Replace("}", "}}"));
+                    string message = string.Format("Обработка страницы '{0}'", page.Title);
                     LogHighLevelMessage(message, 1, StagesCount);
                     Logger.LogMessage(message);
                     Logger.MoveLevel(1);
