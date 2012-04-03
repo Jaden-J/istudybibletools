@@ -156,7 +156,7 @@ namespace BibleCommon.Services
 
         public static void LogMessage(string message, params object[] args)
         {
-            LogMessage(string.Format(message, args), true, true);
+            LogMessage(FormatString(message, args), true, true);
         }
 
         public static void LogError(string message, Exception ex)
@@ -171,9 +171,14 @@ namespace BibleCommon.Services
         }
 
         public static void LogError(string message, params object[] args)
-        {            
-            LogMessageToFileAndConsole(true, ErrorText + string.Format(message, args), null, true, true);
+        {
+            LogMessageToFileAndConsole(true, ErrorText + FormatString(message, args), null, true, true);
             ErrorWasLogged = true;
-        }        
+        }
+
+        private static string FormatString(string message, params object[] args)
+        {
+            return args.Count() == 0 ? message : string.Format(message, args);
+        }
     }
 }
