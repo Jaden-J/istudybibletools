@@ -38,7 +38,7 @@ namespace BibleVerseLinkerEx
 
             if (!SettingsManager.Instance.IsConfigured(oneNoteApp))
             {
-                Logger.LogError(Constants.Error_SystemIsNotConfigures);
+                Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
             }
             else
             {

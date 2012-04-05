@@ -182,7 +182,7 @@ namespace BibleCommon.Services
                 this.ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_ExcludedVersesLinking);
                 this.UseDifferentPagesForEachVerse = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseDifferentPagesForEachVerse);
                 this.RubbishPage_Use = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageUse);
-                this.PageName_RubbishNotes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameRubbishNotes, Consts.Constants.DefaultPageName_RubbishNotes);
+                this.PageName_RubbishNotes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameRubbishNotes, Resources.Constants.DefaultPageName_RubbishNotes);
                 this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
                 this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, true);
                 this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);
@@ -225,17 +225,17 @@ namespace BibleCommon.Services
         }
 
         public void LoadDefaultSettings()
-        {                       
-            this.PageName_DefaultBookOverview = Consts.Constants.DefaultPageNameDefaultBookOverview;
-            this.PageName_DefaultComments = Consts.Constants.DefaultPageNameDefaultComments;
-            this.PageName_Notes = Consts.Constants.DefaultPageName_Notes;
+        {
+            this.PageName_DefaultBookOverview = Resources.Constants.DefaultPageNameDefaultBookOverview;
+            this.PageName_DefaultComments = Resources.Constants.DefaultPageNameDefaultComments;
+            this.PageName_Notes = Resources.Constants.DefaultPageName_Notes;
             this.PageWidth_Notes = Consts.Constants.DefaultPageWidth_Notes;
             this.ExpandMultiVersesLinking = false;            
             this.ExcludedVersesLinking = false;
             this.UseDifferentPagesForEachVerse = false;
 
             this.RubbishPage_Use = false;
-            this.PageName_RubbishNotes = Consts.Constants.DefaultPageName_RubbishNotes;
+            this.PageName_RubbishNotes = Resources.Constants.DefaultPageName_RubbishNotes;
             this.PageWidth_RubbishNotes = Consts.Constants.DefaultPageWidth_RubbishNotes;
             this.RubbishPage_ExpandMultiVersesLinking = true;
             this.RubbishPage_ExcludedVersesLinking = true;

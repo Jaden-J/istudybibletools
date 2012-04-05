@@ -37,7 +37,7 @@ namespace BibleConfigurator.Tools
         {
             if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
             {
-                Logger.LogError(Constants.Error_SystemIsNotConfigures);
+                Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
                 return;
             }   
 
@@ -46,12 +46,12 @@ namespace BibleConfigurator.Tools
                 BibleCommon.Services.Logger.Init("BackupManager");
 
                 _startTime = DateTime.Now;
-                BibleCommon.Services.Logger.LogMessage("Время старта: {0}", _startTime.ToLongTimeString());                
+                BibleCommon.Services.Logger.LogMessage("{0} {1}",BibleCommon.Resources.Constants.StartTime,  _startTime.ToLongTimeString());                
 
                 IEnumerable<string> notebookIds = GetDistinctNotebooksIds();
                 _notebooksCount = notebookIds.Count();
 
-                string initMessage = "Старт создания резервной копии данных";
+                string initMessage = BibleCommon.Resources.Constants.BackupStartInfo;
                 _form.PrepareForExternalProcessing(_notebooksCount + 2, 1, initMessage);
                 _form.PerformProgressStep(initMessage);
                 BibleCommon.Services.Logger.LogMessage(initMessage);
