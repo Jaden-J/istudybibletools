@@ -28,7 +28,7 @@ namespace BibleConfigurator.Tools
         {
             if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
             {
-                Logger.LogError(Constants.Error_SystemIsNotConfigures);
+                Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
                 return;
             }   
 

@@ -123,7 +123,7 @@ namespace BibleCommon.Helpers
             catch (COMException ex)
             {
                 if (ex.ErrorCode == -2147213304)
-                    throw new Exception(Constants.Error_UpdateError_InksOnPages);
+                    throw new Exception(Resources.Constants.Error_UpdateError_InksOnPages);
                 else
                     throw;
             }

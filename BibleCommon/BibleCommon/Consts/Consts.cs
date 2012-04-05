@@ -14,11 +14,7 @@ namespace BibleCommon.Consts
 
         public static readonly string DefaultNotebookNameBible = "Библия";
         public static readonly string DefaultNotebookNameBibleComments = "Комментарии к Библии";
-        public static readonly string DefaultNotebookNameBibleStudy = "Изучение Библии";
-        public static readonly string DefaultPageNameDefaultBookOverview = "Общий обзор";
-        public static readonly string DefaultPageNameDefaultComments = "Комментарии";
-        public static readonly string DefaultPageName_Notes = "Заметки";
-        public static readonly string DefaultPageName_RubbishNotes = "Подробные заметки";
+        public static readonly string DefaultNotebookNameBibleStudy = "Изучение Библии";        
         public static readonly int DefaultPageWidth_Notes = 500;
         public static readonly int DefaultPageWidth_RubbishNotes = 500;
 
@@ -52,13 +48,8 @@ namespace BibleCommon.Consts
         public static readonly string NewVersionOnServerCheckFileUrl = "http://IStudyBibleTools.ru/ServerVariables.htm";
         public static readonly TimeSpan NewVersionCheckPeriod = new TimeSpan(1, 0, 0, 0);
 
-        public static readonly string DownloadPageUrl = "http://IStudyBibleTools.ru/download.htm?fromProgram=true";
-
-        public static readonly string Error_SystemIsNotConfigures = "Программа не сконфигурирована. Откройте 'Параметры программы' и укажите все необходимые настройки.";
-        public static readonly string Error_UpdateError_InksOnPages = "Не удалось обновить страницу. Возможно на странице присутствуют нарисованные кистью элементы, которые на текущий момент не поддерживаются программой. \nУдалите такие элементы и повторите операцию.";
-
-        public static readonly string VerseLinkTemplate = "ссылка {0}";
-        public static readonly string VerseLinksDelimiter = "; ";
+        public static readonly string DownloadPageUrl = "http://IStudyBibleTools.ru/download.htm?fromProgram=true";               
+        
 
         public static readonly string Key_IsSummaryNotesPage = "IsSummaryNotesPage";
         public static readonly string Key_LatestAnalyzeTime = "LatestAnalyzeTime";

@@ -1301,22 +1301,22 @@ namespace BibleCommon.Services
 
                     int currentVerseIndex = existingVerseLinksElement.Value.Split(new string[] { "</a>" }, StringSplitOptions.None).Length;
 
-                    existingVerseLinksElement.Value += Constants.VerseLinksDelimiter + OneNoteUtils.GenerateHref(oneNoteApp,
-                                string.Format(Constants.VerseLinkTemplate, currentVerseIndex), notePageId, notePageContentObjectId)
+                    existingVerseLinksElement.Value += Resources.Constants.VerseLinksDelimiter + OneNoteUtils.GenerateHref(oneNoteApp,
+                                string.Format(Resources.Constants.VerseLinkTemplate, currentVerseIndex), notePageId, notePageContentObjectId)
                                 + GetMultiVerseString(vp.ParentVersePointer ?? vp);
 
                 }
                 else  // значит мы нашли второе упоминание данной ссылки в заметке
                 {
                     string firstVerseLink = StringUtils.GetAttributeValue(suchNoteLink.Value, "href");
-                    firstVerseLink = string.Format("<a href='{0}'>{1}</a>", firstVerseLink, string.Format(Constants.VerseLinkTemplate, 1));
+                    firstVerseLink = string.Format("<a href='{0}'>{1}</a>", firstVerseLink, string.Format(Resources.Constants.VerseLinkTemplate, 1));
                     XElement verseLinksElement = new XElement(nms + "OE",
                                                     new XElement(nms + "T",
-                                                        new XCData(StringUtils.MultiplyString("&nbsp;", 8) + 
-                                                            string.Join(Constants.VerseLinksDelimiter, new string[] { 
+                                                        new XCData(StringUtils.MultiplyString("&nbsp;", 8) +
+                                                            string.Join(Resources.Constants.VerseLinksDelimiter, new string[] { 
                                                                 firstVerseLink + GetExistingMultiVerseString(suchNoteLink), 
                                                                 OneNoteUtils.GenerateHref(oneNoteApp, 
-                                                                    string.Format(Constants.VerseLinkTemplate, 2), notePageId, notePageContentObjectId)
+                                                                    string.Format(Resources.Constants.VerseLinkTemplate, 2), notePageId, notePageContentObjectId)
                                                                     + GetMultiVerseString(vp.ParentVersePointer ?? vp) })
                                                             )));
 
