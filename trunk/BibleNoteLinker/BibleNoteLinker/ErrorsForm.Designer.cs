@@ -28,41 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ErrorsForm));
             this.lbErrors = new System.Windows.Forms.ListBox();
             this.btnOk = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lbErrors
             // 
+            resources.ApplyResources(this.lbErrors, "lbErrors");
             this.lbErrors.FormattingEnabled = true;
-            this.lbErrors.HorizontalScrollbar = true;
-            this.lbErrors.Location = new System.Drawing.Point(13, 13);
             this.lbErrors.Name = "lbErrors";
-            this.lbErrors.Size = new System.Drawing.Size(479, 199);
-            this.lbErrors.TabIndex = 0;
             // 
             // btnOk
             // 
+            resources.ApplyResources(this.btnOk, "btnOk");
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(417, 227);
             this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(75, 23);
-            this.btnOk.TabIndex = 1;
-            this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
             // 
             // ErrorsForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(504, 262);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.lbErrors);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ErrorsForm";
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Ошибки";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.Errors_Load);
             this.ResumeLayout(false);

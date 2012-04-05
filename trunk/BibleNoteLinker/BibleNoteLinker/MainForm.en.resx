@@ -117,79 +117,69 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="&gt;&gt;btnOk.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="lbErrors.Size" type="System.Drawing.Size, System.Drawing">
-    <value>479, 199</value>
+  <data name="chkForce.Size" type="System.Drawing.Size, System.Drawing">
+    <value>134, 17</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="lbErrors.HorizontalScrollbar" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="chkForce.Text" xml:space="preserve">
+    <value>Bible verses re-analyze</value>
   </data>
-  <data name="btnOk.Text" xml:space="preserve">
-    <value>OK</value>
+  <data name="rbAnalyzeCurrentPage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 17</value>
   </data>
-  <data name="btnOk.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
+  <data name="rbAnalyzeCurrentPage.Text" xml:space="preserve">
+    <value>Current page analyze</value>
   </data>
-  <data name="btnOk.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
+  <data name="rbAnalyzeAllPages.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 17</value>
   </data>
-  <data name="&gt;&gt;lbErrors.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="rbAnalyzeAllPages.Text" xml:space="preserve">
+    <value>All pages analyze</value>
   </data>
-  <data name="lbErrors.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
+  <data name="rbAnalyzeChangedPages.Size" type="System.Drawing.Size, System.Drawing">
+    <value>136, 17</value>
   </data>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 13</value>
+  <data name="rbAnalyzeChangedPages.Text" xml:space="preserve">
+    <value>Modified pages analyze</value>
   </data>
-  <data name="&gt;&gt;lbErrors.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="lblInfo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>362, 26</value>
   </data>
-  <data name="&gt;&gt;lbErrors.Name" xml:space="preserve">
-    <value>lbErrors</value>
+  <data name="lblInfo.Text" xml:space="preserve">
+    <value>A new version of program is available on the site http://IStudyBibleTools.ru.
+Click to go to the download page.</value>
   </data>
-  <data name="&gt;&gt;btnOk.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="lblProgress.Size" type="System.Drawing.Size, System.Drawing">
+    <value>70, 13</value>
   </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>ErrorsForm</value>
+  <data name="lblProgress.Text" xml:space="preserve">
+    <value>Initialization...</value>
   </data>
-  <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="llblDetails.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 13</value>
   </data>
-  <data name="&gt;&gt;lbErrors.ZOrder" xml:space="preserve">
-    <value>1</value>
+  <data name="llblDetails.Text" xml:space="preserve">
+    <value>Show details</value>
   </data>
-  <data name="lbErrors.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 13</value>
+  <data name="tsmiSeelctNotebooks.Size" type="System.Drawing.Size, System.Drawing">
+    <value>156, 22</value>
   </data>
-  <data name="btnOk.Location" type="System.Drawing.Point, System.Drawing">
-    <value>417, 227</value>
+  <data name="tsmiSeelctNotebooks.Text" xml:space="preserve">
+    <value>Select notebooks</value>
   </data>
-  <data name="&gt;&gt;btnOk.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>45, 20</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
-    <value>CenterParent</value>
+  <data name="toolStripMenuItem1.Text" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="llblShowErrors.Size" type="System.Drawing.Size, System.Drawing">
+    <value>63, 13</value>
+  </data>
+  <data name="llblShowErrors.Text" xml:space="preserve">
+    <value>Show errors</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Ошибки</value>
+    <value>Notes analyze </value>
   </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>504, 262</value>
-  </data>
-  <data name="&gt;&gt;btnOk.Name" xml:space="preserve">
-    <value>btnOk</value>
-  </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>en</value>
-  </metadata>
 </root>

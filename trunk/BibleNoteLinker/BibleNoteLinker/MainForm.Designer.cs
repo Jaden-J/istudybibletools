@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.chkForce = new System.Windows.Forms.CheckBox();
             this.rbAnalyzeCurrentPage = new System.Windows.Forms.RadioButton();
             this.rbAnalyzeAllPages = new System.Windows.Forms.RadioButton();
@@ -49,163 +50,112 @@
             // 
             // chkForce
             // 
-            this.chkForce.AutoSize = true;
-            this.chkForce.Location = new System.Drawing.Point(45, 81);
+            resources.ApplyResources(this.chkForce, "chkForce");
             this.chkForce.Name = "chkForce";
-            this.chkForce.Size = new System.Drawing.Size(189, 17);
-            this.chkForce.TabIndex = 3;
-            this.chkForce.Text = "Повторный анализ всех ссылок";
             this.chkForce.UseVisualStyleBackColor = true;
             // 
             // rbAnalyzeCurrentPage
             // 
-            this.rbAnalyzeCurrentPage.AutoSize = true;
+            resources.ApplyResources(this.rbAnalyzeCurrentPage, "rbAnalyzeCurrentPage");
             this.rbAnalyzeCurrentPage.Checked = true;
-            this.rbAnalyzeCurrentPage.Location = new System.Drawing.Point(3, 3);
             this.rbAnalyzeCurrentPage.Name = "rbAnalyzeCurrentPage";
-            this.rbAnalyzeCurrentPage.Size = new System.Drawing.Size(199, 17);
-            this.rbAnalyzeCurrentPage.TabIndex = 0;
             this.rbAnalyzeCurrentPage.TabStop = true;
-            this.rbAnalyzeCurrentPage.Text = "Анализировать текущую страницу";
             this.rbAnalyzeCurrentPage.UseVisualStyleBackColor = true;
             // 
             // rbAnalyzeAllPages
             // 
-            this.rbAnalyzeAllPages.AutoSize = true;
-            this.rbAnalyzeAllPages.Location = new System.Drawing.Point(3, 49);
+            resources.ApplyResources(this.rbAnalyzeAllPages, "rbAnalyzeAllPages");
             this.rbAnalyzeAllPages.Name = "rbAnalyzeAllPages";
-            this.rbAnalyzeAllPages.Size = new System.Drawing.Size(176, 17);
-            this.rbAnalyzeAllPages.TabIndex = 2;
             this.rbAnalyzeAllPages.TabStop = true;
-            this.rbAnalyzeAllPages.Text = "Анализировать все страницы";
             this.rbAnalyzeAllPages.UseVisualStyleBackColor = true;
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(425, 130);
+            resources.ApplyResources(this.btnOk, "btnOk");
             this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(75, 23);
-            this.btnOk.TabIndex = 4;
-            this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
             this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 
             // rbAnalyzeChangedPages
             // 
-            this.rbAnalyzeChangedPages.AutoSize = true;
-            this.rbAnalyzeChangedPages.Location = new System.Drawing.Point(3, 26);
+            resources.ApplyResources(this.rbAnalyzeChangedPages, "rbAnalyzeChangedPages");
             this.rbAnalyzeChangedPages.Name = "rbAnalyzeChangedPages";
-            this.rbAnalyzeChangedPages.Size = new System.Drawing.Size(260, 17);
-            this.rbAnalyzeChangedPages.TabIndex = 1;
             this.rbAnalyzeChangedPages.TabStop = true;
-            this.rbAnalyzeChangedPages.Text = "Анализировать только измененные страницы";
             this.rbAnalyzeChangedPages.UseVisualStyleBackColor = true;
             // 
             // lblInfo
             // 
-            this.lblInfo.AutoSize = true;
+            resources.ApplyResources(this.lblInfo, "lblInfo");
             this.lblInfo.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.lblInfo.ForeColor = System.Drawing.Color.Red;
-            this.lblInfo.Location = new System.Drawing.Point(12, 127);
             this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(368, 26);
-            this.lblInfo.TabIndex = 7;
-            this.lblInfo.Text = "Доступна новая версия программы на сайте http://IStudyBibleTools.ru. \r\nКликните, " +
-    "чтобы перейти на страницу загрузки.";
             this.lblInfo.Click += new System.EventHandler(this.lblInfo_Click);
             // 
             // pbMain
             // 
-            this.pbMain.Location = new System.Drawing.Point(12, 177);
+            resources.ApplyResources(this.pbMain, "pbMain");
             this.pbMain.Name = "pbMain";
-            this.pbMain.Size = new System.Drawing.Size(488, 23);
             this.pbMain.Step = 1;
-            this.pbMain.TabIndex = 9;
             // 
             // lbLog
             // 
+            resources.ApplyResources(this.lbLog, "lbLog");
             this.lbLog.FormattingEnabled = true;
-            this.lbLog.HorizontalScrollbar = true;
-            this.lbLog.Location = new System.Drawing.Point(12, 228);
             this.lbLog.Name = "lbLog";
-            this.lbLog.Size = new System.Drawing.Size(488, 199);
-            this.lbLog.TabIndex = 10;
             // 
             // lblProgress
             // 
-            this.lblProgress.AutoSize = true;
-            this.lblProgress.Location = new System.Drawing.Point(9, 161);
+            resources.ApplyResources(this.lblProgress, "lblProgress");
             this.lblProgress.Name = "lblProgress";
-            this.lblProgress.Size = new System.Drawing.Size(96, 13);
-            this.lblProgress.TabIndex = 12;
-            this.lblProgress.Text = "Инициализация...";
             // 
             // llblDetails
             // 
-            this.llblDetails.AutoSize = true;
-            this.llblDetails.Location = new System.Drawing.Point(9, 203);
+            resources.ApplyResources(this.llblDetails, "llblDetails");
             this.llblDetails.Name = "llblDetails";
-            this.llblDetails.Size = new System.Drawing.Size(94, 13);
-            this.llblDetails.TabIndex = 5;
             this.llblDetails.TabStop = true;
-            this.llblDetails.Text = "Показать детали";
             this.llblDetails.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llblDetails_LinkClicked);
             // 
             // menuStrip1
             // 
+            resources.ApplyResources(this.menuStrip1, "menuStrip1");
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem1});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(514, 24);
-            this.menuStrip1.TabIndex = 15;
-            this.menuStrip1.Text = "Файл";
             // 
             // toolStripMenuItem1
             // 
+            resources.ApplyResources(this.toolStripMenuItem1, "toolStripMenuItem1");
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiSeelctNotebooks});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(48, 20);
-            this.toolStripMenuItem1.Text = "Меню";
             // 
             // tsmiSeelctNotebooks
             // 
+            resources.ApplyResources(this.tsmiSeelctNotebooks, "tsmiSeelctNotebooks");
             this.tsmiSeelctNotebooks.Name = "tsmiSeelctNotebooks";
-            this.tsmiSeelctNotebooks.Size = new System.Drawing.Size(210, 22);
-            this.tsmiSeelctNotebooks.Text = "Выбрать записные книжки";
             this.tsmiSeelctNotebooks.Click += new System.EventHandler(this.tsmiSeelctNotebooks_Click);
             // 
             // pbBaseElements
             // 
+            resources.ApplyResources(this.pbBaseElements, "pbBaseElements");
             this.pbBaseElements.Controls.Add(this.rbAnalyzeCurrentPage);
             this.pbBaseElements.Controls.Add(this.chkForce);
             this.pbBaseElements.Controls.Add(this.rbAnalyzeAllPages);
             this.pbBaseElements.Controls.Add(this.rbAnalyzeChangedPages);
-            this.pbBaseElements.Location = new System.Drawing.Point(12, 27);
             this.pbBaseElements.Name = "pbBaseElements";
-            this.pbBaseElements.Size = new System.Drawing.Size(490, 100);
-            this.pbBaseElements.TabIndex = 16;
             // 
             // llblShowErrors
             // 
-            this.llblShowErrors.AutoSize = true;
-            this.llblShowErrors.Location = new System.Drawing.Point(403, 203);
+            resources.ApplyResources(this.llblShowErrors, "llblShowErrors");
             this.llblShowErrors.Name = "llblShowErrors";
-            this.llblShowErrors.Size = new System.Drawing.Size(97, 13);
-            this.llblShowErrors.TabIndex = 6;
             this.llblShowErrors.TabStop = true;
-            this.llblShowErrors.Text = "Показать ошибки";
-            this.llblShowErrors.Visible = false;
             this.llblShowErrors.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llblShowErrors_LinkClicked);
             // 
             // MainForm
             // 
             this.AcceptButton = this.btnOk;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(514, 440);
             this.Controls.Add(this.llblShowErrors);
             this.Controls.Add(this.pbBaseElements);
             this.Controls.Add(this.llblDetails);
@@ -220,8 +170,6 @@
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "MainForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Анализ заметок";
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
