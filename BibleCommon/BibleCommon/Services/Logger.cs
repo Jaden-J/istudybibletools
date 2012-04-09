@@ -130,7 +130,8 @@ namespace BibleCommon.Services
                 _streamWriter.Flush();
 
             if (isError)
-                Errors.Add(message);
+                if (Errors != null)
+                    Errors.Add(message);
         }
 
         static void _lb_DrawItem(object sender, DrawItemEventArgs e)
