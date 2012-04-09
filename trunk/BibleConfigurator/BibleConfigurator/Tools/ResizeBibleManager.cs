@@ -36,7 +36,7 @@ namespace BibleConfigurator.Tools
             {
                 BibleCommon.Services.Logger.Init("ResizeBibleManager");
 
-                _form.PrepareForExternalProcessing(1255, 1, "Старт обновления ширины страниц Библии.");
+                _form.PrepareForExternalProcessing(1255, 1, BibleCommon.Resources.Constants.ResizeBibleTableManagerStartMessage);
 
                 NotebookIteratorHelper.Iterate(_oneNoteApp,
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
@@ -54,7 +54,7 @@ namespace BibleConfigurator.Tools
                                 throw new ProcessAbortedByUserException();
                         });
 
-                _form.ExternalProcessingDone("Обновление ширины страниц Библии успешно завершено.");                
+                _form.ExternalProcessingDone(BibleCommon.Resources.Constants.ResizeBibleTableManagerFinishMessage);                
             }
             catch (ProcessAbortedByUserException)
             {
@@ -68,7 +68,7 @@ namespace BibleConfigurator.Tools
 
         private void ResizeBiblePage(string pageId, string pageName, int width)
         {
-            _form.PerformProgressStep(string.Format("Обработка страницы '{0}'", pageName));
+            _form.PerformProgressStep(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage, pageName));
 
             string pageContentXml;
             XDocument notePageDocument;

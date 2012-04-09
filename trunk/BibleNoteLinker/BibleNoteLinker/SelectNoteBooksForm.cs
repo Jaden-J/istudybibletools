@@ -101,7 +101,7 @@ namespace BibleNoteLinker
             List<string> selectedNotebooks = GetSelectedNotebooks();
             if (selectedNotebooks.Count == 0)
             {
-                lblError.Text = "Не выбран ни один элемент";
+                lblError.Text = BibleCommon.Resources.Constants.NoteLinkerNoElementSelected;
                 lblError.Visible = true;                
             }
             else

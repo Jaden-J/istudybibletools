@@ -19,7 +19,7 @@ namespace BibleCommon.Services
 
         public static List<string> Errors { get; set; }
 
-        private const string ErrorText = "ОШИБКА: ";
+        private const string ErrorText = BibleCommon.Resources.Constants.ErrorUpper + ": ";
 
         public static void MoveLevel(int levelDiv)
         {

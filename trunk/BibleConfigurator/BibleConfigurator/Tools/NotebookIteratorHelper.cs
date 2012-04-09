@@ -20,7 +20,7 @@ namespace BibleConfigurator.Tools
 
             BibleCommon.Services.NotebookIterator.NotebookInfo notebook = iterator.GetNotebookPages(notebookId, sectionGroupId, null);
 
-            BibleCommon.Services.Logger.LogMessage("Обработка записной книжки: '{0}'", notebook.Title);
+            BibleCommon.Services.Logger.LogMessage("{0}: '{1}'", BibleCommon.Resources.Constants.ProcessNotebook, notebook.Title);
 
             BibleCommon.Services.Logger.MoveLevel(1);
             IterateContainer(notebook.RootSectionGroup, true, pageAction);
@@ -32,18 +32,18 @@ namespace BibleConfigurator.Tools
         {
             if (!isRoot)
             {
-                BibleCommon.Services.Logger.LogMessage("Обработка группы секций '{0}'", sectionGroup.Title);
+                BibleCommon.Services.Logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSectionGroup, sectionGroup.Title);
                 BibleCommon.Services.Logger.MoveLevel(1);
             }
 
             foreach (BibleCommon.Services.NotebookIterator.SectionInfo section in sectionGroup.Sections)
             {
-                BibleCommon.Services.Logger.LogMessage("Обработка секции '{0}'", section.Title);
+                BibleCommon.Services.Logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSection, section.Title);
                 BibleCommon.Services.Logger.MoveLevel(1);
 
                 foreach (BibleCommon.Services.NotebookIterator.PageInfo page in section.Pages)
                 {
-                    BibleCommon.Services.Logger.LogMessage("Обработка страницы '{0}'", page.Title);
+                    BibleCommon.Services.Logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage, page.Title);
                     BibleCommon.Services.Logger.MoveLevel(1);
 
                     pageAction(page);

@@ -289,11 +289,11 @@ namespace BibleCommon.Helpers
             if (searchMode == StringSearchMode.SearchFirstValueChar || searchMode == StringSearchMode.SearchFirstChar)
             {
                 if (ignoreSpaces != StringSearchIgnorance.None)
-                    throw new ArgumentException("Противоречащие значения параметров searchMode и ignoreSpaces");
+                    throw new ArgumentException("Conflict parameters values: searchMode and ignoreSpaces");
 
                 if (missInfo != null)
                     if (missInfo.MaxMissCount.HasValue)
-                        throw new ArgumentException("Противоречащие значения параметров searchMode и maxMissCount");
+                        throw new ArgumentException("Conflict parameters values: searchMode and maxMissCount");
             }
 
             if (missInfo == null)
@@ -443,11 +443,11 @@ namespace BibleCommon.Helpers
             if (searchMode == StringSearchMode.SearchFirstValueChar || searchMode == StringSearchMode.SearchFirstChar)
             {
                 if (ignoreSpaces != StringSearchIgnorance.None)
-                    throw new ArgumentException("Противоречащие значения параметров searchMode и ignoreSpaces");
+                    throw new ArgumentException("Conflict parameters values: searchMode and ignoreSpaces");
 
                 if (missInfo != null)
                     if (missInfo.MaxMissCount.HasValue)
-                        throw new ArgumentException("Противоречащие значения параметров searchMode и maxMissCount");
+                        throw new ArgumentException("Conflict parameters values: searchMode and maxMissCount");
             }
 
             if (missInfo == null)

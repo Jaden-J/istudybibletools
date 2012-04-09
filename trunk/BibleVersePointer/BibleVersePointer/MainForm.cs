@@ -87,7 +87,7 @@ namespace BibleVersePointer
                             }
                         }
                         else
-                            throw new Exception("Не удалось распознать строку");
+                            throw new Exception(BibleCommon.Resources.Constants.BibleVersePointerCanNotParseString);
                     }
                     catch (Exception ex)
                     {
@@ -118,7 +118,7 @@ namespace BibleVersePointer
                 return true;
             }
             else
-                Logger.LogError("Не удалось определить место");
+                Logger.LogError(BibleCommon.Resources.Constants.BibleVersePointerCanNotFindPlace);
 
             return false;
         }

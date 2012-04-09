@@ -36,7 +36,7 @@ namespace BibleConfigurator.Tools
             {
                 BibleCommon.Services.Logger.Init("RelinkAllBibleCommentsManager");
 
-                _form.PrepareForExternalProcessing(1255, 1, "Старт обновления ссылок на комментарии.");
+                _form.PrepareForExternalProcessing(1255, 1, BibleCommon.Resources.Constants.RelinkBibleCommentsManagerStartMessage);
 
                 //для тестирования
                 //RelinkPageComments(_oneNoteApp.Windows.CurrentWindow.CurrentSectionId, 
@@ -60,7 +60,7 @@ namespace BibleConfigurator.Tools
                                 throw new ProcessAbortedByUserException();
                         });
 
-                _form.ExternalProcessingDone("Обновление ссылок на комментарии успешно завершено.");
+                _form.ExternalProcessingDone(BibleCommon.Resources.Constants.RelinkBibleCommentsManagerFinishMessage);
             }
             catch (ProcessAbortedByUserException)
             {
@@ -74,7 +74,7 @@ namespace BibleConfigurator.Tools
 
         private void RelinkPageComments(string sectionId, string pageId, string pageName)
         {
-            _form.PerformProgressStep(string.Format("Обработка страницы '{0}'", pageName));
+            _form.PerformProgressStep(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage, pageName));
 
             string pageContent;
             XmlNamespaceManager xnm;            

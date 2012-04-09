@@ -169,11 +169,11 @@ namespace BibleCommon.Helpers
         public static  NotebookIterator.PageInfo GetCurrentPageInfo(Application oneNoteApp)
         {
             if (oneNoteApp.Windows.CurrentWindow == null)
-                throw new Exception("Не найдено открытой записной книжки");
+                throw new Exception(BibleCommon.Resources.Constants.Error_OpenedNotebookNotFound);
 
             string currentPageId = oneNoteApp.Windows.CurrentWindow.CurrentPageId;
             if (string.IsNullOrEmpty(currentPageId))
-                throw new Exception("Не найдено открытой страницы заметок");
+                throw new Exception(BibleCommon.Resources.Constants.Error_OpenedNotePageNotFound);
 
             string currentSectionId = oneNoteApp.Windows.CurrentWindow.CurrentSectionId;
             string currentSectionGroupId = oneNoteApp.Windows.CurrentWindow.CurrentSectionGroupId;

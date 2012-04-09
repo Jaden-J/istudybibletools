@@ -38,12 +38,12 @@ namespace BibleConfigurator.Tools
 
                 Dictionary<string, string> pagesToDelete = GetAllNotesPagesIds();
 
-                _form.PrepareForExternalProcessing(1255 + pagesToDelete.Count, 1, "Старт удаления страниц 'Сводные заметок'.");
+                _form.PrepareForExternalProcessing(1255 + pagesToDelete.Count, 1, BibleCommon.Resources.Constants.DeleteNotesPagesManagerStartMessage);
 
                 NotebookIteratorHelper.Iterate(_oneNoteApp,
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
                         {
-                            _form.PerformProgressStep(string.Format("Обработка страницы '{0}'", pageInfo.Title));
+                            _form.PerformProgressStep(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage , pageInfo.Title));
 
                             try
                             {
@@ -60,7 +60,7 @@ namespace BibleConfigurator.Tools
 
                 foreach (var page in pagesToDelete)
                 {
-                    string message = string.Format("Удаление страницы '{0}'", page.Value);
+                    string message = string.Format("{0} '{1}'", BibleCommon.Resources.Constants.DeleteNotesPagesManagerRemovePage, page.Value);
                     _form.PerformProgressStep(message);
                     BibleCommon.Services.Logger.LogMessage(message);
 
@@ -70,7 +70,7 @@ namespace BibleConfigurator.Tools
                         throw new ProcessAbortedByUserException();
                 }
 
-                _form.ExternalProcessingDone("Удаление страниц 'Сводные заметок' успешно завершено.");
+                _form.ExternalProcessingDone(BibleCommon.Resources.Constants.DeleteNotesPagesManagerFinishMessage);
             }
             catch (ProcessAbortedByUserException)
             {

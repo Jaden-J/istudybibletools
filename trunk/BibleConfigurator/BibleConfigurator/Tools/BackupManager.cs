@@ -46,7 +46,7 @@ namespace BibleConfigurator.Tools
                 BibleCommon.Services.Logger.Init("BackupManager");
 
                 _startTime = DateTime.Now;
-                BibleCommon.Services.Logger.LogMessage("{0} {1}",BibleCommon.Resources.Constants.StartTime,  _startTime.ToLongTimeString());                
+                BibleCommon.Services.Logger.LogMessage("{0}: {1}",BibleCommon.Resources.Constants.StartTime,  _startTime.ToLongTimeString());                
 
                 IEnumerable<string> notebookIds = GetDistinctNotebooksIds();
                 _notebooksCount = notebookIds.Count();
@@ -98,12 +98,12 @@ namespace BibleConfigurator.Tools
                 BibleCommon.Services.Logger.LogError(ex.Message);
             }
 
-            BibleCommon.Services.Logger.LogMessage("Времени затрачено: {0}", DateTime.Now.Subtract(_startTime));
+            BibleCommon.Services.Logger.LogMessage(" {0}", DateTime.Now.Subtract(_startTime));
             BibleCommon.Services.Logger.Done();
 
             if (successefully)
             {
-                string finalMessage = "Создание резервной копии данных успешно завершено.";
+                string finalMessage = BibleCommon.Resources.Constants.BackupManagerFinishMessage;
                 _form.ExternalProcessingDone(finalMessage);
                 BibleCommon.Services.Logger.LogMessage(finalMessage);
             }
@@ -133,7 +133,7 @@ namespace BibleConfigurator.Tools
                             if (_notebookNames.Contains(e.Name))
                             {
                                 _notebookNames.Remove(e.Name);
-                                string message = string.Format("Резервная копия записной книжки '{0}' успешно создана.",
+                                string message = string.Format(BibleCommon.Resources.Constants.BackupManagerNotebookCompleted,
                                     Path.GetFileNameWithoutExtension(e.Name));
                                 _form.PerformProgressStep(message);
                                 BibleCommon.Services.Logger.LogMessage(message);
@@ -175,7 +175,7 @@ namespace BibleConfigurator.Tools
 
         private void PackfilesToZip()
         {
-            string message = "Упаковывание файлов в .zip архив";
+            string message = BibleCommon.Resources.Constants.BackupManagerToZipArchive;
             _form.PerformProgressStep(message);
             BibleCommon.Services.Logger.LogMessage(message);
 

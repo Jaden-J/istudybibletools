@@ -72,7 +72,7 @@ namespace BibleCommon.Services
                                                 string.Format("one:SectionGroup[@ID='{0}']", sectionGroupId), notebookElement.Xnm);
 
             if (sectionGroup == null)
-                throw new Exception(string.Format("Не удаётся найти группу секций '{0}'", sectionGroupId));
+                throw new Exception(string.Format("{0} '{0}'", BibleCommon.Resources.Constants.NotebookIteratorCanNotFindSectionGroup));
             
             int pagesCount = 0;
             var rootSectionGroup = ProcessSectionGroup(sectionGroup, notebookId, notebookElement.Xnm, filter, ref pagesCount);            

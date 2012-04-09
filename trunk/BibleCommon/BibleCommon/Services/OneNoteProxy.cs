@@ -331,7 +331,7 @@ namespace BibleCommon.Services
                     }
                     catch (Exception ex)
                     {
-                        throw new Exception(string.Format("Не удаётся найти иерархию типа '{0}' для элемента '{1}': {2}", scope, hierarchyId, ex.Message));
+                        throw new Exception(string.Format(BibleCommon.Resources.Constants.Error_CanNotFindHierarchy, scope, hierarchyId, ex.Message));
                     }
 
                     XmlNamespaceManager xnm;
@@ -403,7 +403,7 @@ namespace BibleCommon.Services
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(string.Format("Ошибка обновления страницы '{0}'.", (string)page.Content.Root.Attribute("name")), ex);
+                    Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.Error_UpdatePage, (string)page.Content.Root.Attribute("name")), ex);
                 }
 
                 if (onPageProcessed != null)
