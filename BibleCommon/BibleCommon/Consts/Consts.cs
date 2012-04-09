@@ -12,9 +12,7 @@ namespace BibleCommon.Consts
         public static readonly string ToolsName = "IStudyBibleTools";
         public static readonly string ConfigFileName = "settings.config";
 
-        public static readonly string DefaultNotebookNameBible = "Библия";
-        public static readonly string DefaultNotebookNameBibleComments = "Комментарии к Библии";
-        public static readonly string DefaultNotebookNameBibleStudy = "Изучение Библии";        
+        
         public static readonly int DefaultPageWidth_Notes = 500;
         public static readonly int DefaultPageWidth_RubbishNotes = 500;
 

@@ -215,7 +215,7 @@ namespace BibleConfigurator
                         }
                         catch (InvalidNotebookException)
                         {
-                            Logger.LogError("Указана неподходящая записная книжка.");
+                            Logger.LogError(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected);
                         }
                     }
                 }
@@ -245,7 +245,7 @@ namespace BibleConfigurator
                 {
                     int notesPageWidth;
                     if (!int.TryParse(tbNotesPageWidth.Text, out notesPageWidth) || notesPageWidth < 200 || notesPageWidth > 1000)
-                        throw new SaveParametersException(string.Format("Неверное значение параметра '{0}'", lblNotesPageWidth.Text), false);
+                        throw new SaveParametersException(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ConfiguratorWrongParameterValue, lblNotesPageWidth.Text), false);
 
                     SettingsManager.Instance.PageWidth_Notes = notesPageWidth;
                 }
@@ -254,7 +254,7 @@ namespace BibleConfigurator
                 {
                     int rubbishNotesPageWidth;
                     if (!int.TryParse(tbRubbishNotesPageWidth.Text, out rubbishNotesPageWidth) || rubbishNotesPageWidth < 200 || rubbishNotesPageWidth > 1000)
-                        throw new SaveParametersException(string.Format("Неверное значение параметра '{0}'", lblRubbishNotesPageWidth.Text), false);
+                        throw new SaveParametersException(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ConfiguratorWrongParameterValue, lblRubbishNotesPageWidth.Text), false);
                     SettingsManager.Instance.PageWidth_RubbishNotes = rubbishNotesPageWidth;
                 }
 
@@ -271,7 +271,7 @@ namespace BibleConfigurator
 
         private void WaitAndLoadParameters(NotebookType notebookType, string notebookName)
         {   
-            PrepareForExternalProcessing(100, 1, string.Format("Создание записной книжки '{0}'", notebookName));
+            PrepareForExternalProcessing(100, 1, string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ConfiguratorNotebookCreation, notebookName));
             
             bool parametersWasLoad = false;
 
@@ -298,7 +298,7 @@ namespace BibleConfigurator
             }
 
             if (!parametersWasLoad)
-                throw new SaveParametersException("Не удалось запросить данные о записных книжках из OneNote. Повторите операцию.", true);
+                throw new SaveParametersException(BibleCommon.Resources.Constants.ConfiguratorCanNotRequestDataFromOneNote, true);
         }
 
         private bool TryToLoadNotebookParameters(NotebookType notebookType, string notebookName, out string notebookId, bool silientMode = false)
@@ -337,7 +337,7 @@ namespace BibleConfigurator
                 else
                 {
                     if (!silientMode)
-                        Logger.LogError(string.Format("Указана неподходящая записная книжка '{0}'.", notebookName));
+                        Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected, notebookName));
                 }
             }
             catch (Exception ex)
@@ -395,7 +395,7 @@ namespace BibleConfigurator
                     sectionGroup.SetAttributeValue("name", renamedSectionGroups[sectionGroupId]);
                 }
                 else
-                    Logger.LogError(string.Format("Не найдена группа разделов '{0}'.", sectionGroupId));
+                    Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorSectionGroupNotFound, sectionGroupId));
             }
 
             _oneNoteApp.UpdateHierarchy(notebook.Content.ToString());
@@ -422,15 +422,15 @@ namespace BibleConfigurator
                     if (files.Length > 0)
                         Process.Start(files[0]);
                     else
-                        Logger.LogError(string.Format("Ошибка при открытии записной книжки '{0}'.", notebookTemplateFileName));
+                        Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorErrorWhileNotebookOpenning, notebookTemplateFileName));
 
                     return Path.GetFileNameWithoutExtension(folderPath);
                 }
                 else
-                    Logger.LogError("Не удаётся создать записную книжку. Выберите другую папку.");
+                    Logger.LogError(BibleCommon.Resources.Constants.ConfiguratorSelectAnotherFolder);
             }
             else
-                Logger.LogError(string.Format("Не найден шаблон записной книжки по адресу '{0}'.", packageFilePath));
+                Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorNotebookTemplateNotFound, packageFilePath));
 
             return string.Empty;
         }
@@ -491,7 +491,7 @@ namespace BibleConfigurator
         private void LoadParameters()
         {
             if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
-                lblWarning.Text = "Необходимо сохранить изменения";
+                lblWarning.Text = BibleCommon.Resources.Constants.ConfiguratorNeedSaveChanges;
 
             Dictionary<string, string> notebooks = GetNotebooks();
             string singleNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.Single);
@@ -598,7 +598,7 @@ namespace BibleConfigurator
             else
                 folderBrowserDialog.SelectedPath = myDocumentsPath;            
 
-            folderBrowserDialog.Description = "Укажите расположение записной книжки";
+            folderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetNotebookFolder;
             folderBrowserDialog.ShowNewFolderButton = true;            
         }
 
@@ -708,7 +708,7 @@ namespace BibleConfigurator
                 }
                 else
                 {
-                    Logger.LogError(string.Format("Указана неподходящая записная книжка '{0}'.", notebookName));                    
+                    Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected, notebookName));                    
                 }
             }
             else

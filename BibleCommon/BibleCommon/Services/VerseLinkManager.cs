@@ -31,7 +31,7 @@ namespace BibleCommon.Services
         {
             string result = string.Empty;
 
-            string exceptionResolveWay = "\nСкорее всего в OneNote открыта не страница Библии.";
+            string exceptionResolveWay = string.Format("\n{0}", BibleCommon.Resources.Constants.VerseLinkManagerOpenNotBiblePage);
             string sectionGroupId = FindDescriptionSectionGroupForBiblePage(oneNoteApp, bibleSectionId, createIfNeeded, isSummaryNotesPage, false);
             if (!string.IsNullOrEmpty(sectionGroupId))
             {
@@ -46,13 +46,13 @@ namespace BibleCommon.Services
                         result = pageId;
                     }
                     else if (createIfNeeded)
-                        throw new NotFoundVerseLinkPageExceptions("Не найдена страница для комментариев." + exceptionResolveWay);
+                        throw new NotFoundVerseLinkPageExceptions(BibleCommon.Resources.Constants.VerseLinkManagerCommentPageNotFound + exceptionResolveWay);
                 }
                 else if (createIfNeeded)
-                    throw new NotFoundVerseLinkPageExceptions("Не найдена секция для комментариев." + exceptionResolveWay);
+                    throw new NotFoundVerseLinkPageExceptions(BibleCommon.Resources.Constants.VerseLinkManagerCommentSectionNotFound + exceptionResolveWay);
             }
             else if (createIfNeeded)
-                throw new NotFoundVerseLinkPageExceptions("Не найдена группа секций для комментариев." + exceptionResolveWay);
+                throw new NotFoundVerseLinkPageExceptions(BibleCommon.Resources.Constants.VerseLinkManagerCommentSectionGroupNotFound + exceptionResolveWay);
 
             return result;
         }

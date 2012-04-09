@@ -52,18 +52,18 @@ namespace BibleNoteLinker
                 PrepareForAnalyze();
 
                 DateTime dt = DateTime.Now;
-                Logger.LogMessage("Время старта: {0}", dt.ToLongTimeString());
+                Logger.LogMessage("{0}: {1}", BibleCommon.Resources.Constants.StartTime, dt.ToLongTimeString());
                 StartAnalyze();
-                Logger.LogMessage("Времени затрачено: {0}", DateTime.Now.Subtract(dt));
+                Logger.LogMessage("{0}: {1}", BibleCommon.Resources.Constants.TimeSpend, DateTime.Now.Subtract(dt));
 
             }
             catch (ProcessAbortedByUserException)
             {
-                Logger.LogMessage("Операция прервана пользователем.");
+                Logger.LogMessage(BibleCommon.Resources.Constants.ProcessAbortedByUser);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, BibleCommon.Resources.Constants.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Logger.LogError(ex);
             }
 
@@ -72,17 +72,17 @@ namespace BibleNoteLinker
 
             string message;
             if (!Logger.ErrorWasLogged)
-                message = "Успешно завершено.";
+                message = BibleCommon.Resources.Constants.FinishSuccessfully;
             else
             {
-                message = "Завершено с ошибками.";
+                message = BibleCommon.Resources.Constants.FinishWithErrors;
                 llblShowErrors.Visible = true;
             }
 
             LogHighLevelMessage(message, null, null);
             Logger.LogMessage(message);
 
-            btnOk.Text = "Закрыть";
+            btnOk.Text = BibleCommon.Resources.Constants.Close;
             btnOk.Enabled = true;
             _wasAnalyzed = true;
             Logger.Done();
@@ -103,7 +103,7 @@ namespace BibleNoteLinker
             this.TopMost = false;
 
             llblShowErrors.Visible = false;
-            LogHighLevelMessage("Инициализация...", null, null);
+            LogHighLevelMessage(BibleCommon.Resources.Constants.NoteLinkerInitialization, null, null);
         }
 
 
@@ -181,14 +181,14 @@ namespace BibleNoteLinker
 
         private void ShowDetails()
         {
-            llblDetails.Text = "Скрыть детали";
+            llblDetails.Text = BibleCommon.Resources.Constants.NoteLinkerHideDetails;
             this.Height = _originalFormHeight;
             _detailsWereShown = true;
         }
 
         private void HideDetails()
         {
-            llblDetails.Text = "Показать детали";
+            llblDetails.Text = BibleCommon.Resources.Constants.NoteLinkerShowDetails;
             this.Height = SecondFormHeight;
             _detailsWereShown = false;
         }
@@ -203,8 +203,8 @@ namespace BibleNoteLinker
         {
             if (_wasStartAnalyze && !_wasAnalyzed)
             {
-                if (MessageBox.Show("Вы действительно хотите прекратить работу программы? В некоторых случаях это может привести к неправильной сортировке страниц 'Сводные заметок', что решается только удалением всех страниц 'Сводные земеток'.",
-                    "Закрыть программу?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)
+                if (MessageBox.Show(BibleCommon.Resources.Constants.NoteLinkerQuestionOnClosing,
+                    BibleCommon.Resources.Constants.NoteLinkerFormCaptionOnClosing, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)
                 {
                     e.Cancel = true;
                 }

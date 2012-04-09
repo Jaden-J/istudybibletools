@@ -109,7 +109,7 @@ namespace BibleCommon.Services
 
                 if (IsSummaryNotesPage(_oneNoteApp, notePageDocument, notePageName))
                 {
-                    Logger.LogMessage("Обрабатываем страницу 'Сводная заметок'");
+                    Logger.LogMessage(BibleCommon.Resources.Constants.NoteLinkManagerProcessNotesPage);
                     isSummaryNotesPage = true;
                     if (linkDepth > AnalyzeDepth.GetVersesLinks)
                         linkDepth = AnalyzeDepth.GetVersesLinks;  // на странице заметок только обновляем ссылки
@@ -142,7 +142,7 @@ namespace BibleCommon.Services
 
                 if (foundChapters.Count > 0)  // то есть имеются главы, которые указаны в тексте именно как главы, без стихов, и на которые надо делать тоже ссылки
                 {
-                    Logger.LogMessage("Заключительная обработка глав", true, false);
+                    Logger.LogMessage(BibleCommon.Resources.Constants.NoteLinkManagerChapterProcessing, true, false);
 
                     foreach (FoundChapterInfo chapterInfo in foundChapters)
                     {
@@ -184,7 +184,7 @@ namespace BibleCommon.Services
             }
             catch (Exception ex)
             {
-                Logger.LogError("Ошибки при обработке страницы.", ex);
+                Logger.LogError(BibleCommon.Resources.Constants.NoteLinkManagerProcessingPageErrors, ex);
             }
         }
 
@@ -796,9 +796,9 @@ namespace BibleCommon.Services
                             if (first)
                             {
                                 if (hsr.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder)
-                                    Logger.LogMessage("Обработка стиха: {0}", searchResult.VersePointer.OriginalVerseName);
+                                    Logger.LogMessage("{0}: {1}", BibleCommon.Resources.Constants.ProcessVerse, searchResult.VersePointer.OriginalVerseName);
                                 else
-                                    Logger.LogMessage("Обработка главы: {0}", textToChange);
+                                    Logger.LogMessage("{0}: {1}", BibleCommon.Resources.Constants.ProcessChapter, textToChange);
                             }
                         }))
                 {
@@ -866,7 +866,7 @@ namespace BibleCommon.Services
         internal static string GetDefaultNotesPageName(int? verseNumber)
         {
             if (verseNumber.GetValueOrDefault(0) > 0 && SettingsManager.Instance.UseDifferentPagesForEachVerse)
-                return string.Format("{1} стих", SettingsManager.Instance.PageName_Notes, verseNumber);
+                return string.Format("{1} {2}", SettingsManager.Instance.PageName_Notes, verseNumber, BibleCommon.Resources.Constants.Verse);
 
             return SettingsManager.Instance.PageName_Notes;
         }
@@ -1123,7 +1123,7 @@ namespace BibleCommon.Services
                 verseHierarchyObjectInfo.ContentObjectId), xnm);
             if (contentObject == null)
             {
-                Logger.LogError("Не найдена ячейка для стиха '{0}'", vp.OriginalVerseName);
+                Logger.LogError("{0} '{1}'", BibleCommon.Resources.Constants.NoteLinkManagerVerseCellNotFound,  vp.OriginalVerseName);
             }
             else
             {

@@ -165,13 +165,13 @@ namespace BibleVerseLinkerEx
                         }
                     }
                     else
-                        Logger.LogError("Не удалось выделить подчёркнутый текст");
+                        Logger.LogError(BibleCommon.Resources.Constants.VerseLinkerUnderlineTextNotExtracted);
                 }
                 else
-                    Logger.LogError("Подчёркнутый текст не найден");
+                    Logger.LogError(BibleCommon.Resources.Constants.VerseLinkerUnderlineTextNotFound);
             }
             else
-                Logger.LogError("Программа OneNote не запущена");
+                Logger.LogError(BibleCommon.Resources.Constants.VerseLinkerOneNoteNotStarted);
         }
 
         public void SortCommentsPages()

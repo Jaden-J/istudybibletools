@@ -40,7 +40,7 @@ namespace BibleNoteLinker
                 if (currentPage != null)
                 {
                     _pagesForAnalyzeCount = 1;
-                    string message = "Обработка текущей страницы";
+                    string message = BibleCommon.Resources.Constants.ProcessCurrentPage;
 
                     pbMain.Maximum = ApproximatePageVersesCount;                    
 
@@ -76,7 +76,7 @@ namespace BibleNoteLinker
 
         private void CommitNotesPagesHierarchy()
         {
-            string message = "Обновление иерархии в OneNote";
+            string message = BibleCommon.Resources.Constants.NoteLilnkerHierarchyUpdating;
             LogHighLevelMessage(message, 5, StagesCount);
             Logger.LogMessage(message, true, false);
             OneNoteProxy.Instance.CommitAllModifiedHierarchy(_oneNoteApp,
@@ -102,14 +102,14 @@ namespace BibleNoteLinker
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(string.Format("Ошибка во время сортировки страницы '{0}'", sortPageInfo.PageId), ex);
+                    Logger.LogError(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.NoteLinkerErrorWhilePageSorting, sortPageInfo.PageId), ex);
                 }
             }
         }
 
         private void CommitAllPages()
         {
-            string message = "Обновление страниц в OneNote";
+            string message = BibleCommon.Resources.Constants.NoteLinkerPagesUpdating;
             LogHighLevelMessage(message, 4, StagesCount);
             Logger.LogMessage(message, true, false);
             OneNoteProxy.Instance.CommitAllModifiedPages(_oneNoteApp,
@@ -126,7 +126,7 @@ namespace BibleNoteLinker
 
         private void UpdateLinksToNotesPages()
         {
-            string message = "Обновление ссылок на страницы 'Сводные заметок'";
+            string message = BibleCommon.Resources.Constants.NoteLinkerLinksToNotesPagesUpdating;
             LogHighLevelMessage(message, 3, StagesCount);
             Logger.LogMessage(string.Format("{0} ({1})", 
                 message, Helper.GetRightPagesString(OneNoteProxy.Instance.ProcessedBiblePages.Values.Count)));            
@@ -144,7 +144,7 @@ namespace BibleNoteLinker
 
         private void CommitNotesPages()
         {
-            string message = "Обновление страниц 'Сводные заметок' в OneNote";
+            string message = BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating;
             LogHighLevelMessage(message, 2, StagesCount);
             Logger.LogMessage(message, true, false);
             OneNoteProxy.Instance.CommitAllModifiedPages(_oneNoteApp,
@@ -163,7 +163,7 @@ namespace BibleNoteLinker
         {
             if (notebook.PagesCount > 0)
             {
-                Logger.LogMessage("Обработка записной книжки: '{0}'", notebook.Title);
+                Logger.LogMessage("{0}: '{1}'", BibleCommon.Resources.Constants.NoteLinkerProcessNotebook, notebook.Title);
                 Logger.MoveLevel(1);
 
                 ProcessSectionGroup(notebook.RootSectionGroup, true);
@@ -175,7 +175,7 @@ namespace BibleNoteLinker
         private void LogHighLevelMessage(string message, int? stage, int? maxStageCount)
         {
             if (stage.HasValue)
-                message = string.Format("Этап {0}/{1}: {2}", stage, maxStageCount, message);
+                message = string.Format("{0} {1}/{2}: {3}", BibleCommon.Resources.Constants.NoteLinkerStage, stage, maxStageCount, message);
 
             lblProgress.Text = message;
         }
@@ -184,18 +184,18 @@ namespace BibleNoteLinker
         {
             if (!isRoot)
             {
-                Logger.LogMessage("Обработка группы секций '{0}'", sectionGroup.Title);
+                Logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSectionGroup, sectionGroup.Title);
                 Logger.MoveLevel(1);
             }
 
             foreach (BibleCommon.Services.NotebookIterator.SectionInfo section in sectionGroup.Sections)
             {
-                Logger.LogMessage("Обработка секции '{0}'", section.Title);
+                Logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSection, section.Title);
                 Logger.MoveLevel(1);
 
                 foreach (BibleCommon.Services.NotebookIterator.PageInfo page in section.Pages)
                 {
-                    string message = string.Format("Обработка страницы '{0}'", page.Title);
+                    string message = string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage, page.Title);
                     LogHighLevelMessage(message, 1, StagesCount);
                     Logger.LogMessage(message);
                     Logger.MoveLevel(1);

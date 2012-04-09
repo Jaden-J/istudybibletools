@@ -61,11 +61,155 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Создание резервной копии данных успешно завершено..
+        /// </summary>
+        public static string BackupManagerFinishMessage {
+            get {
+                return ResourceManager.GetString("BackupManagerFinishMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Резервная копия записной книжки &apos;{0}&apos; успешно создана..
+        /// </summary>
+        public static string BackupManagerNotebookCompleted {
+            get {
+                return ResourceManager.GetString("BackupManagerNotebookCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Упаковывание файлов в .zip архив..
+        /// </summary>
+        public static string BackupManagerToZipArchive {
+            get {
+                return ResourceManager.GetString("BackupManagerToZipArchive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Старт создания резервной копии данных.
         /// </summary>
         public static string BackupStartInfo {
             get {
                 return ResourceManager.GetString("BackupStartInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не удалось определить место.
+        /// </summary>
+        public static string BibleVersePointerCanNotFindPlace {
+            get {
+                return ResourceManager.GetString("BibleVersePointerCanNotFindPlace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не удалось распознать строку.
+        /// </summary>
+        public static string BibleVersePointerCanNotParseString {
+            get {
+                return ResourceManager.GetString("BibleVersePointerCanNotParseString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Закрыть.
+        /// </summary>
+        public static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не удалось запросить данные о записных книжках из OneNote. Повторите операцию..
+        /// </summary>
+        public static string ConfiguratorCanNotRequestDataFromOneNote {
+            get {
+                return ResourceManager.GetString("ConfiguratorCanNotRequestDataFromOneNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ошибка при открытии записной книжки.
+        /// </summary>
+        public static string ConfiguratorErrorWhileNotebookOpenning {
+            get {
+                return ResourceManager.GetString("ConfiguratorErrorWhileNotebookOpenning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Необходимо сохранить изменения.
+        /// </summary>
+        public static string ConfiguratorNeedSaveChanges {
+            get {
+                return ResourceManager.GetString("ConfiguratorNeedSaveChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Создание записной книжки.
+        /// </summary>
+        public static string ConfiguratorNotebookCreation {
+            get {
+                return ResourceManager.GetString("ConfiguratorNotebookCreation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не найден шаблон записной книжки по адресу.
+        /// </summary>
+        public static string ConfiguratorNotebookTemplateNotFound {
+            get {
+                return ResourceManager.GetString("ConfiguratorNotebookTemplateNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не найдена группа разделов.
+        /// </summary>
+        public static string ConfiguratorSectionGroupNotFound {
+            get {
+                return ResourceManager.GetString("ConfiguratorSectionGroupNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не удаётся создать записную книжку. Выберите другую папку..
+        /// </summary>
+        public static string ConfiguratorSelectAnotherFolder {
+            get {
+                return ResourceManager.GetString("ConfiguratorSelectAnotherFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Укажите расположение записной книжки.
+        /// </summary>
+        public static string ConfiguratorSetNotebookFolder {
+            get {
+                return ResourceManager.GetString("ConfiguratorSetNotebookFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Указана неподходящая записная книжка.
+        /// </summary>
+        public static string ConfiguratorWrongNotebookSelected {
+            get {
+                return ResourceManager.GetString("ConfiguratorWrongNotebookSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Неверное значение параметра.
+        /// </summary>
+        public static string ConfiguratorWrongParameterValue {
+            get {
+                return ResourceManager.GetString("ConfiguratorWrongParameterValue", resourceCulture);
             }
         }
         
@@ -106,6 +250,69 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Удаление страниц &apos;Сводные заметок&apos; успешно завершено..
+        /// </summary>
+        public static string DeleteNotesPagesManagerFinishMessage {
+            get {
+                return ResourceManager.GetString("DeleteNotesPagesManagerFinishMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Удаление страницы.
+        /// </summary>
+        public static string DeleteNotesPagesManagerRemovePage {
+            get {
+                return ResourceManager.GetString("DeleteNotesPagesManagerRemovePage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Старт удаления страниц &apos;Сводные заметок&apos;..
+        /// </summary>
+        public static string DeleteNotesPagesManagerStartMessage {
+            get {
+                return ResourceManager.GetString("DeleteNotesPagesManagerStartMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ошибка.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не удаётся найти иерархию типа &apos;{0}&apos; для элемента &apos;{1}&apos;: {2}.
+        /// </summary>
+        public static string Error_CanNotFindHierarchy {
+            get {
+                return ResourceManager.GetString("Error_CanNotFindHierarchy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не найдено открытой записной книжки.
+        /// </summary>
+        public static string Error_OpenedNotebookNotFound {
+            get {
+                return ResourceManager.GetString("Error_OpenedNotebookNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не найдено открытой страницы заметок.
+        /// </summary>
+        public static string Error_OpenedNotePageNotFound {
+            get {
+                return ResourceManager.GetString("Error_OpenedNotePageNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Программа не сконфигурирована. Откройте &apos;Параметры программы&apos; и укажите все необходимые настройки..
         /// </summary>
         public static string Error_SystemIsNotConfigures {
@@ -124,11 +331,443 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Время старта:.
+        ///   Looks up a localized string similar to Ошибка обновления страницы.
+        /// </summary>
+        public static string Error_UpdatePage {
+            get {
+                return ResourceManager.GetString("Error_UpdatePage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ОШИБКА.
+        /// </summary>
+        public static string ErrorUpper {
+            get {
+                return ResourceManager.GetString("ErrorUpper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Успешно завершено..
+        /// </summary>
+        public static string FinishSuccessfully {
+            get {
+                return ResourceManager.GetString("FinishSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Завершено с ошибками..
+        /// </summary>
+        public static string FinishWithErrors {
+            get {
+                return ResourceManager.GetString("FinishWithErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не удаётся найти группу секций.
+        /// </summary>
+        public static string NotebookIteratorCanNotFindSectionGroup {
+            get {
+                return ResourceManager.GetString("NotebookIteratorCanNotFindSectionGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обновление иерархии в OneNote.
+        /// </summary>
+        public static string NoteLilnkerHierarchyUpdating {
+            get {
+                return ResourceManager.GetString("NoteLilnkerHierarchyUpdating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ошибка во время сортировки страницы.
+        /// </summary>
+        public static string NoteLinkerErrorWhilePageSorting {
+            get {
+                return ResourceManager.GetString("NoteLinkerErrorWhilePageSorting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Закрыть программу?.
+        /// </summary>
+        public static string NoteLinkerFormCaptionOnClosing {
+            get {
+                return ResourceManager.GetString("NoteLinkerFormCaptionOnClosing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Скрыть детали.
+        /// </summary>
+        public static string NoteLinkerHideDetails {
+            get {
+                return ResourceManager.GetString("NoteLinkerHideDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Инициализация....
+        /// </summary>
+        public static string NoteLinkerInitialization {
+            get {
+                return ResourceManager.GetString("NoteLinkerInitialization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обновление ссылок на страницы &apos;Сводные заметок&apos;.
+        /// </summary>
+        public static string NoteLinkerLinksToNotesPagesUpdating {
+            get {
+                return ResourceManager.GetString("NoteLinkerLinksToNotesPagesUpdating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Найдено.
+        /// </summary>
+        public static string NoteLinkerManyFound {
+            get {
+                return ResourceManager.GetString("NoteLinkerManyFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to страницы.
+        /// </summary>
+        public static string NoteLinkerManyPages {
+            get {
+                return ResourceManager.GetString("NoteLinkerManyPages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не выбран ни один элемент.
+        /// </summary>
+        public static string NoteLinkerNoElementSelected {
+            get {
+                return ResourceManager.GetString("NoteLinkerNoElementSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обновление страниц &apos;Сводные заметок&apos; в OneNote.
+        /// </summary>
+        public static string NoteLinkerNotesPagesUpdating {
+            get {
+                return ResourceManager.GetString("NoteLinkerNotesPagesUpdating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to страниц.
+        /// </summary>
+        public static string NoteLinkerOfManyPages {
+            get {
+                return ResourceManager.GetString("NoteLinkerOfManyPages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Найдена.
+        /// </summary>
+        public static string NoteLinkerOneFound {
+            get {
+                return ResourceManager.GetString("NoteLinkerOneFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to страница.
+        /// </summary>
+        public static string NoteLinkerOnePage {
+            get {
+                return ResourceManager.GetString("NoteLinkerOnePage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обновление страниц в OneNote.
+        /// </summary>
+        public static string NoteLinkerPagesUpdating {
+            get {
+                return ResourceManager.GetString("NoteLinkerPagesUpdating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обработка записной книжки.
+        /// </summary>
+        public static string NoteLinkerProcessNotebook {
+            get {
+                return ResourceManager.GetString("NoteLinkerProcessNotebook", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Вы действительно хотите прекратить работу программы? В некоторых случаях это может привести к неправильной сортировке страниц &apos;Сводные заметок&apos;, что решается только удалением всех страниц &apos;Сводные земеток&apos;..
+        /// </summary>
+        public static string NoteLinkerQuestionOnClosing {
+            get {
+                return ResourceManager.GetString("NoteLinkerQuestionOnClosing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Показать детали.
+        /// </summary>
+        public static string NoteLinkerShowDetails {
+            get {
+                return ResourceManager.GetString("NoteLinkerShowDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Этап.
+        /// </summary>
+        public static string NoteLinkerStage {
+            get {
+                return ResourceManager.GetString("NoteLinkerStage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Заключительная обработка глав.
+        /// </summary>
+        public static string NoteLinkManagerChapterProcessing {
+            get {
+                return ResourceManager.GetString("NoteLinkManagerChapterProcessing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ошибки при обработке страницы..
+        /// </summary>
+        public static string NoteLinkManagerProcessingPageErrors {
+            get {
+                return ResourceManager.GetString("NoteLinkManagerProcessingPageErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обрабатываем страницу &apos;Сводная заметок&apos;.
+        /// </summary>
+        public static string NoteLinkManagerProcessNotesPage {
+            get {
+                return ResourceManager.GetString("NoteLinkManagerProcessNotesPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не найдена ячейка для стиха.
+        /// </summary>
+        public static string NoteLinkManagerVerseCellNotFound {
+            get {
+                return ResourceManager.GetString("NoteLinkManagerVerseCellNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Операция прервана пользователем..
+        /// </summary>
+        public static string ProcessAbortedByUser {
+            get {
+                return ResourceManager.GetString("ProcessAbortedByUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обработка главы.
+        /// </summary>
+        public static string ProcessChapter {
+            get {
+                return ResourceManager.GetString("ProcessChapter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обработка текущей страницы.
+        /// </summary>
+        public static string ProcessCurrentPage {
+            get {
+                return ResourceManager.GetString("ProcessCurrentPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обработка записной книжки.
+        /// </summary>
+        public static string ProcessNotebook {
+            get {
+                return ResourceManager.GetString("ProcessNotebook", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обработка страницы.
+        /// </summary>
+        public static string ProcessPage {
+            get {
+                return ResourceManager.GetString("ProcessPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обработка секции.
+        /// </summary>
+        public static string ProcessSection {
+            get {
+                return ResourceManager.GetString("ProcessSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обработка группы секций.
+        /// </summary>
+        public static string ProcessSectionGroup {
+            get {
+                return ResourceManager.GetString("ProcessSectionGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обработка стиха.
+        /// </summary>
+        public static string ProcessVerse {
+            get {
+                return ResourceManager.GetString("ProcessVerse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обновление ссылок на комментарии успешно завершено..
+        /// </summary>
+        public static string RelinkBibleCommentsManagerFinishMessage {
+            get {
+                return ResourceManager.GetString("RelinkBibleCommentsManagerFinishMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Старт обновления ссылок на комментарии..
+        /// </summary>
+        public static string RelinkBibleCommentsManagerStartMessage {
+            get {
+                return ResourceManager.GetString("RelinkBibleCommentsManagerStartMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обновление ширины страниц Библии успешно завершено..
+        /// </summary>
+        public static string ResizeBibleTableManagerFinishMessage {
+            get {
+                return ResourceManager.GetString("ResizeBibleTableManagerFinishMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Старт обновления ширины страниц Библии..
+        /// </summary>
+        public static string ResizeBibleTableManagerStartMessage {
+            get {
+                return ResourceManager.GetString("ResizeBibleTableManagerStartMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Время старта.
         /// </summary>
         public static string StartTime {
             get {
                 return ResourceManager.GetString("StartTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Времени затрачено.
+        /// </summary>
+        public static string TimeSpend {
+            get {
+                return ResourceManager.GetString("TimeSpend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to стих.
+        /// </summary>
+        public static string Verse {
+            get {
+                return ResourceManager.GetString("Verse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Программа OneNote не запущена.
+        /// </summary>
+        public static string VerseLinkerOneNoteNotStarted {
+            get {
+                return ResourceManager.GetString("VerseLinkerOneNoteNotStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не удалось выделить подчёркнутый текст.
+        /// </summary>
+        public static string VerseLinkerUnderlineTextNotExtracted {
+            get {
+                return ResourceManager.GetString("VerseLinkerUnderlineTextNotExtracted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Подчёркнутый текст не найден.
+        /// </summary>
+        public static string VerseLinkerUnderlineTextNotFound {
+            get {
+                return ResourceManager.GetString("VerseLinkerUnderlineTextNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не найдена страница для комментариев..
+        /// </summary>
+        public static string VerseLinkManagerCommentPageNotFound {
+            get {
+                return ResourceManager.GetString("VerseLinkManagerCommentPageNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не найдена группа секций для комментариев..
+        /// </summary>
+        public static string VerseLinkManagerCommentSectionGroupNotFound {
+            get {
+                return ResourceManager.GetString("VerseLinkManagerCommentSectionGroupNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не найдена секция для комментариев..
+        /// </summary>
+        public static string VerseLinkManagerCommentSectionNotFound {
+            get {
+                return ResourceManager.GetString("VerseLinkManagerCommentSectionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Скорее всего в OneNote открыта не страница Библии..
+        /// </summary>
+        public static string VerseLinkManagerOpenNotBiblePage {
+            get {
+                return ResourceManager.GetString("VerseLinkManagerOpenNotBiblePage", resourceCulture);
             }
         }
         

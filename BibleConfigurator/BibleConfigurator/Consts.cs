@@ -24,6 +24,6 @@ namespace BibleConfigurator
         public const string OldTestamentName = "Ветхий Завет";
         public const string NewTestamentName = "Новый Завет";                
 
-        public static readonly List<string> NotBibleStudyNotebooks = new List<string>() { "Личная", "Руководство по OneNote 2010" };
+        //public static readonly List<string> NotBibleStudyNotebooks = new List<string>() { "Личная", "Руководство по OneNote 2010" };
     }
 }

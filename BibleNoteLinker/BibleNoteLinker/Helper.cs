@@ -63,7 +63,7 @@ namespace BibleNoteLinker
 
         public static string GetRightFoundPagesString(int pagesCount)
         {
-            string firstPart = pagesCount == 1 ? "Найдена" : "Найдено";
+            string firstPart = pagesCount == 1 ? BibleCommon.Resources.Constants.NoteLinkerOneFound : BibleCommon.Resources.Constants.NoteLinkerManyFound;
 
             return string.Format("{0} {1}", firstPart, GetRightPagesString(pagesCount));
         }
@@ -71,7 +71,7 @@ namespace BibleNoteLinker
 
         public static string GetRightPagesString(int pagesCount)
         {
-            string s = "страниц";
+            string s = BibleCommon.Resources.Constants.NoteLinkerOfManyPages;
             int tempPagesCount = pagesCount;
 
             tempPagesCount = tempPagesCount % 100;
@@ -80,9 +80,9 @@ namespace BibleNoteLinker
                 tempPagesCount = tempPagesCount % 10;
 
                 if (tempPagesCount == 1)
-                    s = "страница";
+                    s = BibleCommon.Resources.Constants.NoteLinkerOnePage;
                 else if (tempPagesCount >= 2 && tempPagesCount <= 4)
-                    s = "страницы";
+                    s = BibleCommon.Resources.Constants.NoteLinkerManyPages;
             }            
 
             return string.Format("{0} {1}", pagesCount, s);
