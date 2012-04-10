@@ -8,6 +8,7 @@ using System.Xml.XPath;
 using BibleCommon.Helpers;
 using Microsoft.Office.Interop.OneNote;
 using System.Reflection;
+using System.Threading;
 
 namespace BibleCommon.Services
 {
@@ -52,6 +53,8 @@ namespace BibleCommon.Services
         public DateTime? NewVersionOnServerLatestCheckTime { get; set; }
 
         public int PageWidth_Notes { get; set; }
+
+        public string Language { get; set; }
 
         /// <summary>
         /// Необходимо ли линковать каждый стих, входящий в MultiVerse
@@ -186,6 +189,8 @@ namespace BibleCommon.Services
                 this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
                 this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, true);
                 this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);
+
+                this.Language = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_Language, string.Empty);
             }
             catch (Exception ex)
             {
@@ -239,6 +244,7 @@ namespace BibleCommon.Services
             this.PageWidth_RubbishNotes = Consts.Constants.DefaultPageWidth_RubbishNotes;
             this.RubbishPage_ExpandMultiVersesLinking = true;
             this.RubbishPage_ExcludedVersesLinking = true;
+            this.Language = Thread.CurrentThread.CurrentUICulture.Name;
         }
 
         public void Save()
@@ -271,7 +277,8 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_PageNameRubbishNotes, this.PageName_RubbishNotes),
                                   new XElement(Consts.Constants.ParameterName_PageWidthRubbishNotes, this.PageWidth_RubbishNotes),
                                   new XElement(Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, this.RubbishPage_ExpandMultiVersesLinking),
-                                  new XElement(Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, this.RubbishPage_ExcludedVersesLinking)
+                                  new XElement(Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, this.RubbishPage_ExcludedVersesLinking),
+                                  new XElement(Consts.Constants.ParameterName_Language, this.Language)
                                   );
 
                     xDoc.Save(sw);

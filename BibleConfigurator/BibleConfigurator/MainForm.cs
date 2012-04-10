@@ -544,6 +544,19 @@ namespace BibleConfigurator
             chkRubbishExcludedVersesLinking.Checked = SettingsManager.Instance.RubbishPage_ExcludedVersesLinking;
 
             chkUseRubbishPage_CheckedChanged(this, new EventArgs());
+
+            InitLanguagesMenu();
+        }
+
+        private void InitLanguagesMenu()
+        {
+            var languages = LanguageManager.GetDisplayedNames();
+
+            foreach (var pair in languages)
+            {
+                cbLanguage.Items.Add(pair.Value);
+            }
+            cbLanguage.SelectedValue = LanguageManager.UserLanguage.DisplayName;              
         }
 
         private string SearchForNotebook(IEnumerable<string> notebooksIds, NotebookType notebookType)

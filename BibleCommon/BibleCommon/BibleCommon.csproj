@@ -62,6 +62,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Services\LanguageManager.cs" />
     <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\NotebookIterator.cs" />
     <Compile Include="Services\NoteLinkManager.cs" />
