@@ -68,7 +68,7 @@ namespace BibleConfigurator
                 }
                 catch (InvalidNotebookException)
                 {
-                    Logger.LogError("Указана неподходящая записная книжка.");
+                    Logger.LogError(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected);
                     this.Close();
                 }
             }
