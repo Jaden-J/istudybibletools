@@ -372,4 +372,7 @@
   <data name="Warning" xml:space="preserve">
     <value>Внимание!</value>
   </data>
+  <data name="_LANGUAGE_NAME" xml:space="preserve">
+    <value>Русский</value>
+  </data>
 </root>

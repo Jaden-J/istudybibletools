@@ -19,7 +19,7 @@ namespace BibleCommon.Services
 
         public static List<string> Errors { get; set; }
 
-        private const string ErrorText = BibleCommon.Resources.Constants.ErrorUpper + ": ";
+        private static string _errorText = BibleCommon.Resources.Constants.ErrorUpper + ": ";
 
         public static void MoveLevel(int levelDiv)
         {
@@ -147,7 +147,7 @@ namespace BibleCommon.Services
                     }
 
                     
-                    e.Graphics.DrawString(text, e.Font, text.StartsWith(ErrorText) ? Brushes.Red : Brushes.Black, e.Bounds);
+                    e.Graphics.DrawString(text, e.Font, text.StartsWith(_errorText) ? Brushes.Red : Brushes.Black, e.Bounds);
 
                     e.DrawFocusRectangle();
 
@@ -162,7 +162,7 @@ namespace BibleCommon.Services
 
         public static void LogError(string message, Exception ex)
         {
-            LogMessageToFileAndConsole(true, string.Format("{0}{1} {2}", ErrorText, message, ex.Message), string.Format("{0} {1}", message, ex.ToString()), true, true);
+            LogMessageToFileAndConsole(true, string.Format("{0}{1} {2}", _errorText, message, ex.Message), string.Format("{0} {1}", message, ex.ToString()), true, true);
             ErrorWasLogged = true;   
         }
 
@@ -173,7 +173,7 @@ namespace BibleCommon.Services
 
         public static void LogError(string message, params object[] args)
         {
-            LogMessageToFileAndConsole(true, ErrorText + FormatString(message, args), null, true, true);
+            LogMessageToFileAndConsole(true, _errorText + FormatString(message, args), null, true, true);
             ErrorWasLogged = true;
         }
 

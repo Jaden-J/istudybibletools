@@ -61,6 +61,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Русский.
+        /// </summary>
+        public static string _LANGUAGE_NAME {
+            get {
+                return ResourceManager.GetString("_LANGUAGE_NAME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Создание резервной копии данных успешно завершено..
         /// </summary>
         public static string BackupManagerFinishMessage {
