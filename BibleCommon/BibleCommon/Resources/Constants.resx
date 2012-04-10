@@ -360,4 +360,16 @@
   <data name="VerseLinkManagerOpenNotBiblePage" xml:space="preserve">
     <value>Скорее всего в OneNote открыта не страница Библии.</value>
   </data>
+  <data name="ConfiguratorNotebookNotDefined" xml:space="preserve">
+    <value>Не указана записная книжка</value>
+  </data>
+  <data name="ConfiguratorQuestionDeleteAllNotesPages" xml:space="preserve">
+    <value>Удалить все сводные страницы заметок и ссылки на них?</value>
+  </data>
+  <data name="ConfiguratorQuestionDeleteAllNotesPagesManually" xml:space="preserve">
+    <value>Для страниц 'Сводные заметок' используется отдельная записная книжка. Рекомендуется вручную удалить записную книжку 'Сводные заметки' и создать её заново из шаблона. Продолжить?</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Внимание!</value>
+  </data>
 </root>
