@@ -160,11 +160,38 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Не указана записная книжка.
+        /// </summary>
+        public static string ConfiguratorNotebookNotDefined {
+            get {
+                return ResourceManager.GetString("ConfiguratorNotebookNotDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Не найден шаблон записной книжки по адресу.
         /// </summary>
         public static string ConfiguratorNotebookTemplateNotFound {
             get {
                 return ResourceManager.GetString("ConfiguratorNotebookTemplateNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Удалить все сводные страницы заметок и ссылки на них?.
+        /// </summary>
+        public static string ConfiguratorQuestionDeleteAllNotesPages {
+            get {
+                return ResourceManager.GetString("ConfiguratorQuestionDeleteAllNotesPages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Для страниц &apos;Сводные заметок&apos; используется отдельная записная книжка. Рекомендуется вручную удалить записную книжку &apos;Сводные заметки&apos; и создать её заново из шаблона. Продолжить?.
+        /// </summary>
+        public static string ConfiguratorQuestionDeleteAllNotesPagesManually {
+            get {
+                return ResourceManager.GetString("ConfiguratorQuestionDeleteAllNotesPagesManually", resourceCulture);
             }
         }
         
@@ -786,6 +813,15 @@ namespace BibleCommon.Resources {
         public static string VerseLinkTemplate {
             get {
                 return ResourceManager.GetString("VerseLinkTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Внимание!.
+        /// </summary>
+        public static string Warning {
+            get {
+                return ResourceManager.GetString("Warning", resourceCulture);
             }
         }
     }

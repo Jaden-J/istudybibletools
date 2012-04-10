@@ -713,7 +713,7 @@ namespace BibleConfigurator
             }
             else
             {
-                Logger.LogMessage("Не указана записная книжка.");
+                Logger.LogMessage(BibleCommon.Resources.Constants.ConfiguratorNotebookNotDefined);
             }
         }
 
@@ -860,11 +860,11 @@ namespace BibleConfigurator
 
         private void btnDeleteNotesPages_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Удалить все сводные страницы заметок и ссылки на них?", "Внимание!",
+            if (MessageBox.Show(BibleCommon.Resources.Constants.ConfiguratorQuestionDeleteAllNotesPages, BibleCommon.Resources.Constants.Warning,
                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
             {
                 if (SettingsManager.Instance.NotebookId_BibleComments == SettingsManager.Instance.NotebookId_BibleNotesPages
-                    || MessageBox.Show("Для страниц 'Сводные заметок' используется отдельная записная книжка. Рекомендуется вручную удалить записную книжку 'Сводные заметки' и создать её заново из шаблона. Продолжить?", "Внимание!",
+                    || MessageBox.Show(BibleCommon.Resources.Constants.ConfiguratorQuestionDeleteAllNotesPagesManually, BibleCommon.Resources.Constants.Warning,
                         MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
                     new DeleteNotesPagesManager(_oneNoteApp, this).DeleteNotesPages();
             }
