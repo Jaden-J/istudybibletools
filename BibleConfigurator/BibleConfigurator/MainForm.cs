@@ -59,14 +59,7 @@ namespace BibleConfigurator
             if (args.Contains("-RunAfterSetup"))
                 _runAfterSetup = true;
 
-
-            // настройки не влияют на работу в дизайнере
-            if (this.Site == null || !this.Site.DesignMode)
-            {
-                // устанавливаем культуру обязательно до InitializeComponent();
-                Thread.CurrentThread.CurrentUICulture = LanguageManager.UserLanguage;              
-            }
-
+            this.SetFormUICulture();
 
             InitializeComponent();
             BibleCommon.Services.Logger.Init("BibleConfigurator");

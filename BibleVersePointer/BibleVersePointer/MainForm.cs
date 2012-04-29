@@ -35,6 +35,8 @@ namespace BibleVersePointer
 
         public MainForm()
         {
+            this.SetFormUICulture();
+
             InitializeComponent();
 
             _onenoteApp = new Microsoft.Office.Interop.OneNote.Application();
