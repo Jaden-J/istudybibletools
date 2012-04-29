@@ -287,8 +287,6 @@ namespace BibleConfigurator
                 SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking = chkRubbishExpandMultiVersesLinking.Checked;
                 SettingsManager.Instance.RubbishPage_ExcludedVersesLinking = chkRubbishExcludedVersesLinking.Checked;
 
-
-
                 SettingsManager.Instance.Language = (int)((ComboBoxItem)cbLanguage.SelectedItem).Key;
             }
         }
