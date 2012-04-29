@@ -21,6 +21,8 @@ namespace BibleVerseLinkerEx
     {
         public MainForm()
         {
+            this.SetFormUICulture();
+
             InitializeComponent();
         }
 

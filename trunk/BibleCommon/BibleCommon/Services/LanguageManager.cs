@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Globalization;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace BibleCommon.Services
 {
@@ -48,6 +49,16 @@ namespace BibleCommon.Services
             }
 
             return names;
+        }
+
+        public static void SetFormUICulture(this Form form)
+        {
+            // настройки не влияют на работу в дизайнере
+            if (form.Site == null || !form.Site.DesignMode)
+            {
+                // устанавливаем культуру обязательно до InitializeComponent();
+                Thread.CurrentThread.CurrentUICulture = LanguageManager.UserLanguage;
+            }
         }
     }
 }

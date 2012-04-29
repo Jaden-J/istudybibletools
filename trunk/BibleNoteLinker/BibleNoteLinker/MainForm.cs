@@ -21,6 +21,8 @@ namespace BibleNoteLinker
 
         public MainForm()
         {
+            this.SetFormUICulture();
+
             InitializeComponent();
             _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
         }
