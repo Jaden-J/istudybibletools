@@ -24,6 +24,17 @@ namespace BibleConfigurator
 {
     public partial class MainForm : Form
     {
+        internal class ComboBoxItem
+        {
+            public string Value { get; set; }
+            public object Key { get; set; }
+
+            public override string ToString()
+            {
+                return Value;
+            }
+        }
+
         private Microsoft.Office.Interop.OneNote.Application _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
 
         private string SingleNotebookFromTemplatePath { get; set; }
@@ -47,6 +58,15 @@ namespace BibleConfigurator
         {
             if (args.Contains("-RunAfterSetup"))
                 _runAfterSetup = true;
+
+
+            // настройки не влияют на работу в дизайнере
+            if (this.Site == null || !this.Site.DesignMode)
+            {
+                // устанавливаем культуру обязательно до InitializeComponent();
+                Thread.CurrentThread.CurrentUICulture = LanguageManager.UserLanguage;              
+            }
+
 
             InitializeComponent();
             BibleCommon.Services.Logger.Init("BibleConfigurator");
@@ -266,6 +286,10 @@ namespace BibleConfigurator
                 SettingsManager.Instance.PageName_RubbishNotes = tbRubbishNotesPageName.Text;
                 SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking = chkRubbishExpandMultiVersesLinking.Checked;
                 SettingsManager.Instance.RubbishPage_ExcludedVersesLinking = chkRubbishExcludedVersesLinking.Checked;
+
+
+
+                SettingsManager.Instance.Language = (int)((ComboBoxItem)cbLanguage.SelectedItem).Key;
             }
         }
 
@@ -556,7 +580,7 @@ namespace BibleConfigurator
 
             foreach (var pair in languages)
             {
-                cbLanguage.Items.Add(pair.Value);
+                cbLanguage.Items.Add(new ComboBoxItem() { Key = pair.Key, Value = pair.Value });
                 if (pair.Key == currentLanguage.LCID)
                     cbLanguage.SelectedIndex = cbLanguage.Items.Count - 1;
 

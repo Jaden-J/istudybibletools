@@ -14,9 +14,9 @@ namespace BibleCommon.Services
             get
             {
                 return new CultureInfo(
-                    !string.IsNullOrEmpty(SettingsManager.Instance.Language)
+                    SettingsManager.Instance.Language != 0
                     ? SettingsManager.Instance.Language
-                    : Thread.CurrentThread.CurrentUICulture.Name);
+                    : Thread.CurrentThread.CurrentUICulture.LCID);
             }
         }
 
