@@ -54,7 +54,7 @@ namespace BibleCommon.Services
 
         public int PageWidth_Notes { get; set; }
 
-        public string Language { get; set; }
+        public int Language { get; set; }
 
         /// <summary>
         /// Необходимо ли линковать каждый стих, входящий в MultiVerse
@@ -190,7 +190,7 @@ namespace BibleCommon.Services
                 this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, true);
                 this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);
 
-                this.Language = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_Language, string.Empty);
+                this.Language = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_Language, 0);
             }
             catch (Exception ex)
             {
@@ -244,7 +244,7 @@ namespace BibleCommon.Services
             this.PageWidth_RubbishNotes = Consts.Constants.DefaultPageWidth_RubbishNotes;
             this.RubbishPage_ExpandMultiVersesLinking = true;
             this.RubbishPage_ExcludedVersesLinking = true;
-            this.Language = Thread.CurrentThread.CurrentUICulture.Name;
+            this.Language = Thread.CurrentThread.CurrentUICulture.LCID;
         }
 
         public void Save()
