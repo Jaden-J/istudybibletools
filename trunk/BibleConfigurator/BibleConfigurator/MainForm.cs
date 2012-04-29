@@ -927,36 +927,16 @@ namespace BibleConfigurator
 
         private void tabPage1_Enter(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(SettingsManager.Instance.ModuleName))
+            if (string.IsNullOrEmpty(SettingsManager.Instance.ModuleName) || ModulesManager.GetModuleInfo(SettingsManager.Instance.ModuleName) == null)            
                 tbcMain.SelectedTab = tbcMain.TabPages[tabPage4.Name];
+
         }
 
         private void btnUploadModule_Click(object sender, EventArgs e)
         {
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                string moduleName = Path.GetFileNameWithoutExtension(openFileDialog.FileName);
-                string destFilePath = Path.Combine(GetModulesPackagesDirectory(), Path.GetFileName(openFileDialog.FileName));
-
-                bool canContinue = true;
-
-                if (File.Exists(destFilePath))
-                {
-                    if (MessageBox.Show("Модуль с таким именем уже существует. Существующий модуль будет полностью заменён загружаемым. Продолжить?", "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.No)
-                        canContinue = false;
-                }
-
-                if (canContinue)
-                {
-                    UploadModule(openFileDialog.FileName, destFilePath, moduleName);                    
-
-                    if (string.IsNullOrEmpty(SettingsManager.Instance.ModuleName))
-                    {
-                        SettingsManager.Instance.ModuleName = moduleName;
-                    }
-
-                    ReLoadModulesInfo();
-                }                
+                AddNewModule(openFileDialog.FileName);
             }            
         }
 
@@ -966,18 +946,42 @@ namespace BibleConfigurator
             LoadModulesInfo();
         }
 
-        private static void UploadModule(string originalFilePath, string destFilePath, string moduleName)
+        public void AddNewModule(string filePath)
         {
-            File.Copy(originalFilePath, destFilePath, true);
+            string moduleName = Path.GetFileNameWithoutExtension(filePath);
+            string destFilePath = Path.Combine(ModulesManager.GetModulesPackagesDirectory(), Path.GetFileName(filePath));
 
-            string destFolder = Path.Combine(GetModulesDirectory(), moduleName);
-            if (Directory.Exists(destFolder))
-                Directory.Delete(destFolder, true);
+            bool canContinue = true;
 
-            Directory.CreateDirectory(destFolder);
+            if (File.Exists(destFilePath))
+            {
+                if (MessageBox.Show("Модуль с таким именем уже существует. Существующий модуль будет полностью заменён загружаемым. Продолжить?", "Внимание!",     //todo: локализовать
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.No)
+                    canContinue = false;
+            }
 
-            ZipLibHelper.ExtractZipFile(File.ReadAllBytes(destFilePath), destFolder);
+            if (canContinue)
+            {
+                try
+                {
+                    ModulesManager.UploadModule(filePath, destFilePath, moduleName);
+
+                    if (string.IsNullOrEmpty(SettingsManager.Instance.ModuleName))
+                    {
+                        SettingsManager.Instance.ModuleName = moduleName;
+                    }
+
+                    ReLoadModulesInfo();
+                }
+                catch (InvalidModuleException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    Thread.Sleep(500);
+                    ModulesManager.DeleteModule(moduleName);
+                }
+            }                
         }
+        
 
         private bool wasLoadedModulesInfo = false;
 
@@ -991,13 +995,14 @@ namespace BibleConfigurator
 
         private void LoadModulesInfo()
         {
-            string modulesDirectory = GetModulesDirectory();
+            string modulesDirectory = ModulesManager.GetModulesDirectory();
 
             int top = 10;
             var modules = Directory.GetDirectories(modulesDirectory, "*", SearchOption.TopDirectoryOnly);
             foreach (var moduleDirectory in modules)
-            {
-                string moduleName = Path.GetFileNameWithoutExtension(moduleDirectory);
+            {   
+                string moduleDirectoryName = Path.GetFileNameWithoutExtension(moduleDirectory);
+                string moduleName = ModulesManager.GetModuleInfo(moduleDirectoryName).Name;
 
                 Label l = new Label();
                 l.Text = moduleName;
@@ -1008,16 +1013,16 @@ namespace BibleConfigurator
 
                 CheckBox cb = new CheckBox();
                 cb.AutoCheck = false;
-                cb.Checked = SettingsManager.Instance.ModuleName == moduleName;
+                cb.Checked = SettingsManager.Instance.ModuleName == moduleDirectoryName;
                 cb.Top = top;
                 cb.Left = 420;
                 cb.Width = 20;
                 pnModules.Controls.Add(cb);
 
                 Button b = new Button();
-                b.Text = "Использовать данный модуль";
-                b.Enabled = SettingsManager.Instance.ModuleName != moduleName;
-                b.Tag = moduleName;
+                b.Text = "Использовать данный модуль";      //todo: локализовать
+                b.Enabled = SettingsManager.Instance.ModuleName != moduleDirectoryName;
+                b.Tag = moduleDirectoryName;
                 b.Top = top;
                 b.Left = 450;
                 b.Width = 180;
@@ -1055,29 +1060,7 @@ namespace BibleConfigurator
             ReLoadModulesInfo();
         }
 
-        private static string GetModulesDirectory()
-        {
-            string directoryPath = SettingsManager.GetProgramDirectory();
-
-            string modulesDirectory = Path.Combine(directoryPath, Constants.ModulesDirectoryName);
-
-            if (!Directory.Exists(modulesDirectory))            
-                Directory.CreateDirectory(modulesDirectory);
-
-            return modulesDirectory;
-        }
-
-        private static string GetModulesPackagesDirectory()
-        {
-            string directoryPath = SettingsManager.GetProgramDirectory();
-
-            string modulesDirectory = Path.Combine(directoryPath, Constants.ModulesPackagesDirectoryName);
-
-            if (!Directory.Exists(modulesDirectory))
-                Directory.CreateDirectory(modulesDirectory);
-
-            return modulesDirectory;
-        }
+       
       
     }
 }

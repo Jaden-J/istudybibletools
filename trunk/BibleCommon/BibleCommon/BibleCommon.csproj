@@ -68,6 +68,7 @@
     </Compile>
     <Compile Include="Services\LanguageManager.cs" />
     <Compile Include="Services\Logger.cs" />
+    <Compile Include="Services\ModulesManager.cs" />
     <Compile Include="Services\NotebookIterator.cs" />
     <Compile Include="Services\NoteLinkManager.cs" />
     <Compile Include="Services\OneNoteProxy.cs" />

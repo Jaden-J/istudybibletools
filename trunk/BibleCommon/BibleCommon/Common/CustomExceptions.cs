@@ -10,6 +10,14 @@ namespace BibleCommon.Common
         public NotFoundVerseLinkPageExceptions(string message)
             : base(message)
         {
-        }
+        }        
+    }
+
+    public class InvalidModuleException : Exception
+    {
+        public InvalidModuleException(string message)
+            : base("Invalid module file: " + message)
+        {
+        }     
     }
 }

@@ -13,7 +13,8 @@ namespace BibleCommon.Consts
         public static readonly string ConfigFileName = "settings.config";
         public static readonly string ModulesDirectoryName = "Modules";
         public static readonly string ModulesPackagesDirectoryName = "ModulesPackages";
-
+        public static readonly string ManifestFileName = "manifest.xml";
+        public static readonly string IsbtFileExtension = ".isbt";
 
         
         public static readonly int DefaultPageWidth_Notes = 500;

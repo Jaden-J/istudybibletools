@@ -16,7 +16,7 @@ namespace BibleConfigurator
         [STAThread]
         static void Main(params string[] args)
         {
-            GenerateModuleInfo();
+           // GenerateModuleInfo();
 
 
             Application.EnableVisualStyles();
@@ -48,12 +48,12 @@ namespace BibleConfigurator
                 {
                     BibleBooks = new List<BibleBookInfo>()
                     {
-                       new BibleBookInfo() { Name = "Бытие", SectionName = "01. Бытие", Shortenings = new List<string>() { "быт", "бт", "бытие" } },
-                       new BibleBookInfo() { Name = "Исход", SectionName = "02. Исход", Shortenings = new List<string>() { "исх", "исход" } },
-                       new BibleBookInfo() { Name = "Левит", SectionName = "03. Левит", Shortenings = new List<string>() { "лев", "лв", "левит" } },
-                       new BibleBookInfo() { Name = "Числа", SectionName = "04. Числа", Shortenings = new List<string>() { "чис", "чс", "числ", "числа" } },
-                       new BibleBookInfo() { Name = "Второзаконие", SectionName = "05. Второзаконие", Shortenings = new List<string>() { "втор", "вт", "втрзк", "второзаконие" } },
-                       new BibleBookInfo()  { Name = "Иисус Навин", SectionName = "06. Иисус Навин", Shortenings = new List<string>() { "иис.нав", "нав", "иисус навин", "ииснав", "ис. нав", "ис.нав", "навин" } },
+                        new BibleBookInfo() { Name = "Бытие", SectionName = "01. Бытие", Shortenings = new List<string>() { "быт", "бт", "бытие" } },
+                        new BibleBookInfo() { Name = "Исход", SectionName = "02. Исход", Shortenings = new List<string>() { "исх", "исход" } },
+                        new BibleBookInfo() { Name = "Левит", SectionName = "03. Левит", Shortenings = new List<string>() { "лев", "лв", "левит" } },
+                        new BibleBookInfo() { Name = "Числа", SectionName = "04. Числа", Shortenings = new List<string>() { "чис", "чс", "числ", "числа" } },
+                        new BibleBookInfo() { Name = "Второзаконие", SectionName = "05. Второзаконие", Shortenings = new List<string>() { "втор", "вт", "втрзк", "второзаконие" } },
+                        new BibleBookInfo() { Name = "Иисус Навин", SectionName = "06. Иисус Навин", Shortenings = new List<string>() { "иис.нав", "нав", "иисус навин", "ииснав", "ис. нав", "ис.нав", "навин" } },
                         new BibleBookInfo() { Name = "Судьи", SectionName = "07. Судьи", Shortenings = new List<string>() { "суд", "сд", "судьи", "судей" } },
                         new BibleBookInfo() { Name = "Руфь", SectionName = "08. Руфь", Shortenings = new List<string>() { "руф", "рф", "руфь" } },
                         new BibleBookInfo() { Name = "1-я Царств", SectionName = "09. 1-я Царств", Shortenings = new List<string>() { "1цар", "1 цар", "1цр", "1ц", "1царств", "1-я царств", "1 царств" } },
