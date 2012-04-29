@@ -552,11 +552,15 @@ namespace BibleConfigurator
         {
             var languages = LanguageManager.GetDisplayedNames();
 
+            var currentLanguage = LanguageManager.UserLanguage;
+
             foreach (var pair in languages)
             {
                 cbLanguage.Items.Add(pair.Value);
+                if (pair.Key == currentLanguage.LCID)
+                    cbLanguage.SelectedIndex = cbLanguage.Items.Count - 1;
+
             }
-            cbLanguage.SelectedValue = LanguageManager.UserLanguage.DisplayName;              
         }
 
         private string SearchForNotebook(IEnumerable<string> notebooksIds, NotebookType notebookType)
