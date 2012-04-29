@@ -84,12 +84,18 @@
             this.btnResizeBibleTables = new System.Windows.Forms.Button();
             this.btnDeleteNotesPages = new System.Windows.Forms.Button();
             this.btnRelinkComments = new System.Windows.Forms.Button();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.pnModules = new System.Windows.Forms.Panel();
+            this.lblMustSelectModule = new System.Windows.Forms.Label();
+            this.lblMustUploadModule = new System.Windows.Forms.Label();
+            this.btnUploadModule = new System.Windows.Forms.Button();
             this.lblWarning = new System.Windows.Forms.Label();
             this.lblProgressInfo = new System.Windows.Forms.Label();
             this.pbMain = new System.Windows.Forms.ProgressBar();
             this.btnOK = new System.Windows.Forms.Button();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -99,6 +105,7 @@
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -123,6 +130,7 @@
             this.tbcMain.Controls.Add(this.tabPage1);
             this.tbcMain.Controls.Add(this.tabPage2);
             this.tbcMain.Controls.Add(this.tabPage3);
+            this.tbcMain.Controls.Add(this.tabPage4);
             resources.ApplyResources(this.tbcMain, "tbcMain");
             this.tbcMain.Name = "tbcMain";
             this.tbcMain.SelectedIndex = 0;
@@ -155,6 +163,7 @@
             this.tabPage1.Controls.Add(this.rbSingleNotebook);
             resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Enter += new System.EventHandler(this.tabPage1_Enter);
             // 
             // btnBibleNotesPagesNotebookSetPath
             // 
@@ -503,6 +512,41 @@
             this.btnRelinkComments.UseVisualStyleBackColor = true;
             this.btnRelinkComments.Click += new System.EventHandler(this.btnRelinkComments_Click);
             // 
+            // tabPage4
+            // 
+            this.tabPage4.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage4.Controls.Add(this.pnModules);
+            this.tabPage4.Controls.Add(this.lblMustSelectModule);
+            this.tabPage4.Controls.Add(this.lblMustUploadModule);
+            this.tabPage4.Controls.Add(this.btnUploadModule);
+            resources.ApplyResources(this.tabPage4, "tabPage4");
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Enter += new System.EventHandler(this.tabPage4_Enter);
+            // 
+            // pnModules
+            // 
+            resources.ApplyResources(this.pnModules, "pnModules");
+            this.pnModules.Name = "pnModules";
+            // 
+            // lblMustSelectModule
+            // 
+            resources.ApplyResources(this.lblMustSelectModule, "lblMustSelectModule");
+            this.lblMustSelectModule.ForeColor = System.Drawing.Color.Red;
+            this.lblMustSelectModule.Name = "lblMustSelectModule";
+            // 
+            // lblMustUploadModule
+            // 
+            resources.ApplyResources(this.lblMustUploadModule, "lblMustUploadModule");
+            this.lblMustUploadModule.ForeColor = System.Drawing.Color.Red;
+            this.lblMustUploadModule.Name = "lblMustUploadModule";
+            // 
+            // btnUploadModule
+            // 
+            resources.ApplyResources(this.btnUploadModule, "btnUploadModule");
+            this.btnUploadModule.Name = "btnUploadModule";
+            this.btnUploadModule.UseVisualStyleBackColor = true;
+            this.btnUploadModule.Click += new System.EventHandler(this.btnUploadModule_Click);
+            // 
             // lblWarning
             // 
             resources.ApplyResources(this.lblWarning, "lblWarning");
@@ -526,6 +570,11 @@
             this.btnOK.Name = "btnOK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.DefaultExt = "isbt";
+            resources.ApplyResources(this.openFileDialog, "openFileDialog");
             // 
             // MainForm
             // 
@@ -554,6 +603,8 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -621,6 +672,12 @@
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox cbLanguage;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.Button btnUploadModule;
+        private System.Windows.Forms.Label lblMustUploadModule;
+        private System.Windows.Forms.Label lblMustSelectModule;
+        private System.Windows.Forms.Panel pnModules;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
 
     }
 }

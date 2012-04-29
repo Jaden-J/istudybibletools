@@ -13,6 +13,7 @@ using Microsoft.Office.Interop.OneNote;
 using System.Xml.XPath;
 using BibleCommon;
 using BibleCommon.Services;
+using BibleCommon.Common;
 
 namespace BibleConfigurator
 {

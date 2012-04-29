@@ -47,8 +47,10 @@ namespace BibleCommon.Services
         public string SectionGroupId_BibleNotesPages { get; set; }
         public string PageName_DefaultComments { get; set; }
         public string PageName_DefaultBookOverview { get; set; }
-        public string PageName_Notes { get; set; }        
-        
+        public string PageName_Notes { get; set; }
+
+        public string ModuleName { get; set; }
+
         public Version NewVersionOnServer { get; set; }
         public DateTime? NewVersionOnServerLatestCheckTime { get; set; }
 
@@ -141,16 +143,21 @@ namespace BibleCommon.Services
                     && this.NotebookId_Bible == this.NotebookId_BibleStudy
                     && this.NotebookId_Bible == this.NotebookId_BibleNotesPages;
             }
-        }       
+        }
 
-        protected SettingsManager()
+        public static string GetProgramDirectory()
         {
             string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Consts.Constants.ToolsName);
 
             if (!Directory.Exists(directoryPath))
                 Directory.CreateDirectory(directoryPath);
 
-            _filePath = Path.Combine(directoryPath, Consts.Constants.ConfigFileName);
+            return directoryPath;
+        }
+
+        protected SettingsManager()
+        {
+            _filePath = Path.Combine(GetProgramDirectory(), Consts.Constants.ConfigFileName);
 
             if (!File.Exists(_filePath))            
                 LoadDefaultSettings();                
@@ -191,6 +198,8 @@ namespace BibleCommon.Services
                 this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);
 
                 this.Language = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_Language, 0);
+
+                this.ModuleName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ModuleName, string.Empty);
             }
             catch (Exception ex)
             {
@@ -278,7 +287,8 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_PageWidthRubbishNotes, this.PageWidth_RubbishNotes),
                                   new XElement(Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, this.RubbishPage_ExpandMultiVersesLinking),
                                   new XElement(Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, this.RubbishPage_ExcludedVersesLinking),
-                                  new XElement(Consts.Constants.ParameterName_Language, this.Language)
+                                  new XElement(Consts.Constants.ParameterName_Language, this.Language),
+                                  new XElement(Consts.Constants.ParameterName_ModuleName, this.ModuleName)
                                   );
 
                     xDoc.Save(sw);

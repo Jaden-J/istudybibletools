@@ -11,6 +11,9 @@ namespace BibleCommon.Consts
         public static readonly string OneNoteXmlNs = "http://schemas.microsoft.com/office/onenote/2010/onenote";
         public static readonly string ToolsName = "IStudyBibleTools";
         public static readonly string ConfigFileName = "settings.config";
+        public static readonly string ModulesDirectoryName = "Modules";
+        public static readonly string ModulesPackagesDirectoryName = "ModulesPackages";
+
 
         
         public static readonly int DefaultPageWidth_Notes = 500;
@@ -31,6 +34,7 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_NewVersionOnServer = "NewVersionOnServer";
         public static readonly string ParameterName_NewVersionOnServerLatestCheckTime = "NewVersionOnServerLatestCheckTime";
 
+        public static readonly string ParameterName_ModuleName = "ModuleName";
 
         public static readonly string ParameterName_PageWidthNotes = "Width_NotesPage";
         public static readonly string ParameterName_ExpandMultiVersesLinking = "ExpandMultiVersesLinking";

@@ -19,6 +19,7 @@ using System.Threading;
 using BibleConfigurator.Tools;
 using BibleCommon.Consts;
 using System.Runtime.InteropServices;
+using BibleCommon.Common;
 
 namespace BibleConfigurator
 {
@@ -924,6 +925,159 @@ namespace BibleConfigurator
             }
         }
 
+        private void tabPage1_Enter(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(SettingsManager.Instance.ModuleName))
+                tbcMain.SelectedTab = tbcMain.TabPages[tabPage4.Name];
+        }
+
+        private void btnUploadModule_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string moduleName = Path.GetFileNameWithoutExtension(openFileDialog.FileName);
+                string destFilePath = Path.Combine(GetModulesPackagesDirectory(), Path.GetFileName(openFileDialog.FileName));
+
+                bool canContinue = true;
+
+                if (File.Exists(destFilePath))
+                {
+                    if (MessageBox.Show("Модуль с таким именем уже существует. Существующий модуль будет полностью заменён загружаемым. Продолжить?", "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.No)
+                        canContinue = false;
+                }
+
+                if (canContinue)
+                {
+                    UploadModule(openFileDialog.FileName, destFilePath, moduleName);                    
+
+                    if (string.IsNullOrEmpty(SettingsManager.Instance.ModuleName))
+                    {
+                        SettingsManager.Instance.ModuleName = moduleName;
+                    }
+
+                    ReLoadModulesInfo();
+                }                
+            }            
+        }
+
+        private void ReLoadModulesInfo()
+        {
+            pnModules.Controls.Clear();
+            LoadModulesInfo();
+        }
+
+        private static void UploadModule(string originalFilePath, string destFilePath, string moduleName)
+        {
+            File.Copy(originalFilePath, destFilePath, true);
+
+            string destFolder = Path.Combine(GetModulesDirectory(), moduleName);
+            if (Directory.Exists(destFolder))
+                Directory.Delete(destFolder, true);
+
+            Directory.CreateDirectory(destFolder);
+
+            ZipLibHelper.ExtractZipFile(File.ReadAllBytes(destFilePath), destFolder);
+        }
+
+        private bool wasLoadedModulesInfo = false;
+
+        private void tabPage4_Enter(object sender, EventArgs e)
+        {
+            if (!wasLoadedModulesInfo)
+            {
+                LoadModulesInfo();
+            }            
+        }
+
+        private void LoadModulesInfo()
+        {
+            string modulesDirectory = GetModulesDirectory();
+
+            int top = 10;
+            var modules = Directory.GetDirectories(modulesDirectory, "*", SearchOption.TopDirectoryOnly);
+            foreach (var moduleDirectory in modules)
+            {
+                string moduleName = Path.GetFileNameWithoutExtension(moduleDirectory);
+
+                Label l = new Label();
+                l.Text = moduleName;
+                l.Top = top + 5;
+                l.Left = 0;
+                l.Width = 400;
+                pnModules.Controls.Add(l);
+
+                CheckBox cb = new CheckBox();
+                cb.AutoCheck = false;
+                cb.Checked = SettingsManager.Instance.ModuleName == moduleName;
+                cb.Top = top;
+                cb.Left = 420;
+                cb.Width = 20;
+                pnModules.Controls.Add(cb);
+
+                Button b = new Button();
+                b.Text = "Использовать данный модуль";
+                b.Enabled = SettingsManager.Instance.ModuleName != moduleName;
+                b.Tag = moduleName;
+                b.Top = top;
+                b.Left = 450;
+                b.Width = 180;
+                b.Click += new EventHandler(btnUseThisModule_Click);
+                pnModules.Controls.Add(b);
+
+                top += 30;
+            }             
+
+            if (modules.Count() > 0)
+            {
+                pnModules.Height = top;
+                btnUploadModule.Top = top + 50;
+                btnUploadModule.Left = 450 + pnModules.Left;
+
+                lblMustUploadModule.Visible = false;
+                lblMustSelectModule.Visible = string.IsNullOrEmpty(SettingsManager.Instance.ModuleName);
+            }
+            else
+            {
+                lblMustUploadModule.Visible = true;
+                lblMustSelectModule.Visible = false;
+            }
+            
+            wasLoadedModulesInfo = true;
+        }
+
+        void btnUseThisModule_Click(object sender, EventArgs e)
+        {
+            var btn = (Button)sender;
+            var moduleName = (string)btn.Tag;
+
+            SettingsManager.Instance.ModuleName = moduleName;
+
+            ReLoadModulesInfo();
+        }
+
+        private static string GetModulesDirectory()
+        {
+            string directoryPath = SettingsManager.GetProgramDirectory();
+
+            string modulesDirectory = Path.Combine(directoryPath, Constants.ModulesDirectoryName);
+
+            if (!Directory.Exists(modulesDirectory))            
+                Directory.CreateDirectory(modulesDirectory);
+
+            return modulesDirectory;
+        }
+
+        private static string GetModulesPackagesDirectory()
+        {
+            string directoryPath = SettingsManager.GetProgramDirectory();
+
+            string modulesDirectory = Path.Combine(directoryPath, Constants.ModulesPackagesDirectoryName);
+
+            if (!Directory.Exists(modulesDirectory))
+                Directory.CreateDirectory(modulesDirectory);
+
+            return modulesDirectory;
+        }
       
     }
 }

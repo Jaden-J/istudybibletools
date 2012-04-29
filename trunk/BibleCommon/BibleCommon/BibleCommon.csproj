@@ -34,6 +34,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\..\ThirdParty\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -46,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\CustomExceptions.cs" />
+    <Compile Include="Common\ModuleInfo.cs" />
     <Compile Include="Common\ProcessAbortedByUserException.cs" />
     <Compile Include="Common\VersePointerSearchResult.cs" />
     <Compile Include="Consts\Consts.cs" />
@@ -78,6 +82,7 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Services\VersionOnServerManager.cs" />
+    <Compile Include="Services\ZipLibHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Interop.OneNote">
@@ -94,6 +99,7 @@
     <EmbeddedResource Include="Resources\Constants.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Constants.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Constants.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

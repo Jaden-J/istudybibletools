@@ -2,26 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BibleCommon.Common;
 
 namespace BibleConfigurator
 {
-    public enum NotebookType
-    {
-        Single,
-        Bible,
-        BibleComments,
-        BibleNotesPages,
-        BibleStudy
-    }
-
-    public enum SectionGroupType
-    {
-        Bible,
-        BibleComments,
-        BibleStudy,
-        BibleNotesPages
-    }
-
     public class SectionGroupInfo
     {
         public SectionGroupType Type { get; set; }
