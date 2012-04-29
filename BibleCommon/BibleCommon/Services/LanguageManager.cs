@@ -20,17 +20,17 @@ namespace BibleCommon.Services
             }
         }
 
-        private static string[] _locals =
+        private static int[] _localsLCID =
             {
-                "ru-RU",
-                "en-US"
+                1049,
+                1033
             };
 
         public static string[] GetLanguagesNames()
         {
             List<string> names = new List<string>();
 
-            foreach (string local in _locals)
+            foreach (var local in _localsLCID)
             {
                 names.Add(BibleCommon.Resources.Constants.ResourceManager.GetString("_LANGUAGE_NAME", new CultureInfo(local)));
             }
@@ -38,11 +38,11 @@ namespace BibleCommon.Services
             return names.ToArray();
         }
 
-        public static Dictionary<string, string> GetDisplayedNames()
+        public static Dictionary<int, string> GetDisplayedNames()
         {
-            Dictionary<string, string> names = new Dictionary<string, string>();
+            Dictionary<int, string> names = new Dictionary<int, string>();
 
-            foreach (string local in _locals)
+            foreach (var local in _localsLCID)
             {
                 names.Add(local, BibleCommon.Resources.Constants.ResourceManager.GetString("_LANGUAGE_NAME", new CultureInfo(local)));
             }
