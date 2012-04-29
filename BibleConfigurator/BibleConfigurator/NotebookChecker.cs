@@ -8,6 +8,7 @@ using System.Xml.XPath;
 using Microsoft.Office.Interop.OneNote;
 using BibleCommon.Helpers;
 using BibleCommon.Services;
+using BibleCommon.Common;
 
 namespace BibleConfigurator
 {
