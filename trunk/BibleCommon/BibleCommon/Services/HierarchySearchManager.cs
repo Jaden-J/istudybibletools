@@ -148,7 +148,7 @@ namespace BibleCommon.Services
                     !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_Bible)
                         ? string.Format("one:SectionGroup[@ID='{0}']/", SettingsManager.Instance.SectionGroupId_Bible) 
                         : string.Empty,
-                    vp.BookName, OneNoteUtils.NotInRecycleXPathCondition),
+                    vp.Book.SectionName, OneNoteUtils.NotInRecycleXPathCondition),
                 document.Xnm);
 
             return targetSection;

@@ -207,7 +207,7 @@ namespace BibleCommon.Services
             //            bibleSectionName, biblePageName));
 
             string pageDisplayName = string.Format("{0}.{1}", descriptionPageName, 
-                                                               vp != null ? string.Format(" [{0}]", vp.FriendlyChapterName) : string.Empty);
+                                                               vp != null ? string.Format(" [{0}]", vp.ChapterName) : string.Empty);
 
             XElement page = sectionDocument.Content.Root.XPathSelectElement(string.Format("one:Page[@name='{0}']", pageDisplayName), sectionDocument.Xnm);
 
@@ -227,7 +227,7 @@ namespace BibleCommon.Services
 
                     if (vp != null)
                     {
-                        string linkToBiblePage = OneNoteUtils.GenerateHref(oneNoteApp, vp.FriendlyChapterName, biblePageId, biblePageTitleId);
+                        string linkToBiblePage = OneNoteUtils.GenerateHref(oneNoteApp, vp.ChapterName, biblePageId, biblePageTitleId);
                         pageName += string.Format(" <span style='font-size:10pt;'>[{0}]</span>", linkToBiblePage);
                     }
 

@@ -137,7 +137,7 @@ namespace BibleConfigurator
         {
             if (createFromTemplate)
             {
-                string notebookTemplateFileName = module.Notebooks.First(n => n.Type == notebookType).Name;
+                string notebookTemplateFileName = module.GetNotebook(notebookType).Name;
                 string notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, BibleNotebookFromTemplatePath);
                 if (!string.IsNullOrEmpty(notebookName))
                     WaitAndLoadParameters(notebookType, notebookName);                         // выйдем из метода только когда OneNote отработает
@@ -156,7 +156,7 @@ namespace BibleConfigurator
 
             if (chkCreateSingleNotebookFromTemplate.Checked)
             {
-                string notebookTemplateFileName = module.Notebooks.First(n => n.Type == NotebookType.Single).Name;
+                string notebookTemplateFileName = module.GetNotebook(NotebookType.Single).Name;
                 notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, SingleNotebookFromTemplatePath);
                 if (!string.IsNullOrEmpty(notebookName))
                 {
@@ -490,23 +490,23 @@ namespace BibleConfigurator
             cbBibleStudyNotebook.DataSource = notebooks.Values.ToList();
 
             SetNotebookParameters(rbSingleNotebook.Checked, !string.IsNullOrEmpty(singleNotebookId) ? notebooks[singleNotebookId] : 
-                Path.GetFileNameWithoutExtension(module.Notebooks.First(n => n.Type == NotebookType.Single).Name), 
+                Path.GetFileNameWithoutExtension(module.GetNotebook(NotebookType.Single).Name), 
                 notebooks, SettingsManager.Instance.NotebookId_Bible, cbSingleNotebook, chkCreateSingleNotebookFromTemplate);
 
             SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotebookId) ? notebooks[bibleNotebookId] :
-                Path.GetFileNameWithoutExtension(module.Notebooks.First(n => n.Type == NotebookType.Bible).Name), 
+                Path.GetFileNameWithoutExtension(module.GetNotebook(NotebookType.Bible).Name), 
                 notebooks, SettingsManager.Instance.NotebookId_Bible, cbBibleNotebook, chkCreateBibleNotebookFromTemplate);
 
             SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleStudyNotebookId) ? notebooks[bibleStudyNotebookId] :
-                Path.GetFileNameWithoutExtension(module.Notebooks.First(n => n.Type == NotebookType.BibleStudy).Name),
+                Path.GetFileNameWithoutExtension(module.GetNotebook(NotebookType.BibleStudy).Name),
                 notebooks, SettingsManager.Instance.NotebookId_BibleStudy, cbBibleStudyNotebook, chkCreateBibleStudyNotebookFromTemplate);
 
             SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleCommentsNotebookId) ? notebooks[bibleCommentsNotebookId] :
-                Path.GetFileNameWithoutExtension(module.Notebooks.First(n => n.Type == NotebookType.BibleComments).Name), 
+                Path.GetFileNameWithoutExtension(module.GetNotebook(NotebookType.BibleComments).Name), 
                 notebooks, SettingsManager.Instance.NotebookId_BibleComments, cbBibleCommentsNotebook, chkCreateBibleCommentsNotebookFromTemplate);
 
             SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotesPagesNotebookId) ? notebooks[bibleNotesPagesNotebookId] :
-                Path.GetFileNameWithoutExtension(module.Notebooks.First(n => n.Type == NotebookType.BibleNotesPages).Name), 
+                Path.GetFileNameWithoutExtension(module.GetNotebook(NotebookType.BibleNotesPages).Name), 
                 notebooks, SettingsManager.Instance.NotebookId_BibleNotesPages, cbBibleNotesPagesNotebook, chkCreateBibleNotesPagesNotebookFromTemplate);            
 
             tbBookOverviewName.Text = SettingsManager.Instance.PageName_DefaultBookOverview;
