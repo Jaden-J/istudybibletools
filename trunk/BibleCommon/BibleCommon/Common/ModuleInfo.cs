@@ -81,6 +81,15 @@ namespace BibleCommon.Common
     [Serializable]
     public class BibleStructureInfo
     {
+        [XmlAttribute]
+        public string OldTestamentName { get; set; }
+
+        [XmlAttribute]
+        public string NewTestamentName { get; set; }        
+
+        [XmlAttribute]
+        public string Alphabet { get; set; }  // символы, встречающиеся в названии книг Библии            
+
         [XmlElement(typeof(BibleBookInfo), ElementName="BibleBook")]
         public List<BibleBookInfo> BibleBooks { get; set; }
     }

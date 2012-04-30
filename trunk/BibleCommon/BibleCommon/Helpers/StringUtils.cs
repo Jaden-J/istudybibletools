@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BibleCommon.Services;
 
 namespace BibleCommon.Helpers
 {
@@ -43,9 +44,14 @@ namespace BibleCommon.Helpers
     {
         public static string GetText(string htmlString)
         {
-            int t1,t2;
+            return GetText(htmlString, null);
+        }
+
+        public static string GetText(string htmlString, string alphabet)
+        {
+            int t1, t2;
             string s = StringUtils.GetNextString(htmlString, -1,
-                                    new SearchMissInfo(htmlString.Length, SearchMissInfo.MissMode.CancelOnNextMiss), out t1, out t2);
+                                    new SearchMissInfo(htmlString.Length, SearchMissInfo.MissMode.CancelOnNextMiss), alphabet, out t1, out t2);
 
             return s;
         }
@@ -144,11 +150,17 @@ namespace BibleCommon.Helpers
 
         public static bool IsCharAlphabetical(char c)
         {
-            return ((c >= 'а' && c <= 'я')
-                 || (c >= 'А' && c <= 'Я')
-                 || (c == 'ё' || c == 'Ё')
+            return IsCharAlphabetical(c, null);
+        }
+
+        public static bool IsCharAlphabetical(char c, string alphabet)
+        {
+            if (string.IsNullOrEmpty(alphabet))
+                alphabet = SettingsManager.Instance.CurrentModule.BibleStructure.Alphabet;
+
+            return alphabet.Contains(c)
                  || (c >= 'a' && c <= 'z')
-                 || (c >= 'A' && c <= 'Z'));
+                 || (c >= 'A' && c <= 'Z');
         }
 
         public static int GetEntranceCount(string s, string searchString)
@@ -440,6 +452,13 @@ namespace BibleCommon.Helpers
         public static string GetNextString(string s, int index, SearchMissInfo missInfo, out int textBreakIndex, out int htmlBreakIndex,
             StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
         {
+            return GetNextString(s, index, missInfo, null, out textBreakIndex, out htmlBreakIndex, ignoreSpaces, searchMode);
+        }
+
+
+        public static string GetNextString(string s, int index, SearchMissInfo missInfo, string alphabet, out int textBreakIndex, out int htmlBreakIndex,
+            StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
+        {
             if (searchMode == StringSearchMode.SearchFirstValueChar || searchMode == StringSearchMode.SearchFirstChar)
             {
                 if (ignoreSpaces != StringSearchIgnorance.None)
@@ -506,7 +525,7 @@ namespace BibleCommon.Helpers
                         }
                     }
                 }
-                else if (IsCharAlphabetical(c))
+                else if (IsCharAlphabetical(c, alphabet))
                 {
                     foundValidChars = true;
 

@@ -67,7 +67,9 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ModuleConverter\BibleQuotaConverter.cs" />
     <Compile Include="ModuleConverter\ConverterBase.cs" />
+    <Compile Include="ModuleConverter\ModuleGenerator.cs" />
     <Compile Include="NotebookChecker.cs" />
     <Compile Include="NotebookParametersForm.cs">
       <SubType>Form</SubType>

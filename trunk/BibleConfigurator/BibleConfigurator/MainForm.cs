@@ -161,7 +161,7 @@ namespace BibleConfigurator
                 if (!string.IsNullOrEmpty(notebookName))
                 {
                     WaitAndLoadParameters(NotebookType.Single, notebookName);
-                    SearchForCorrespondenceSectionGroups(SettingsManager.Instance.NotebookId_Bible);
+                    SearchForCorrespondenceSectionGroups(module, SettingsManager.Instance.NotebookId_Bible);
                 }
             }
             else
@@ -176,7 +176,7 @@ namespace BibleConfigurator
                     {
                         try
                         {
-                            SearchForCorrespondenceSectionGroups(notebookId);
+                            SearchForCorrespondenceSectionGroups(module, notebookId);
                         }
                         catch (InvalidNotebookException)
                         {
@@ -317,7 +317,7 @@ namespace BibleConfigurator
             return false;
         }
 
-        private void SearchForCorrespondenceSectionGroups(string notebookId)
+        private void SearchForCorrespondenceSectionGroups(ModuleInfo module, string notebookId)
         {
             OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, notebookId, HierarchyScope.hsSections, true);
 
@@ -327,12 +327,12 @@ namespace BibleConfigurator
             {
                 string id = (string)sectionGroup.Attribute("ID");
 
-                if (NotebookChecker.ElementIsBible(sectionGroup, notebook.Xnm) && !sectionGroups.Contains(SectionGroupType.Bible))
+                if (NotebookChecker.ElementIsBible(module, sectionGroup, notebook.Xnm) && !sectionGroups.Contains(SectionGroupType.Bible))
                 {
                     SettingsManager.Instance.SectionGroupId_Bible = id;
                     sectionGroups.Add(SectionGroupType.Bible);
                 }
-                else if (NotebookChecker.ElementIsBibleComments(sectionGroup, notebook.Xnm) && !sectionGroups.Contains(SectionGroupType.BibleComments))
+                else if (NotebookChecker.ElementIsBibleComments(module, sectionGroup, notebook.Xnm) && !sectionGroups.Contains(SectionGroupType.BibleComments))
                 {
                     SettingsManager.Instance.SectionGroupId_BibleComments = id;
                     SettingsManager.Instance.SectionGroupId_BibleNotesPages = id;
