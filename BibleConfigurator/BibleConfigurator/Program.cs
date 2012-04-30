@@ -36,8 +36,7 @@ namespace BibleConfigurator
                     {
                         new BibleCommon.Common.SectionGroupInfo() { Type = SectionGroupType.Bible, Name="Библия" },
                         new BibleCommon.Common.SectionGroupInfo() { Type = SectionGroupType.BibleStudy, Name="Изучение Библии" },
-                        new BibleCommon.Common.SectionGroupInfo() { Type = SectionGroupType.BibleComments, Name="Комментарии к Библии" },
-                        new BibleCommon.Common.SectionGroupInfo() { Type = SectionGroupType.BibleNotesPages, Name="Сводные заметок" }
+                        new BibleCommon.Common.SectionGroupInfo() { Type = SectionGroupType.BibleComments, Name="Комментарии к Библии" }                        
                     } },
                     new NotebookInfo() { Type = NotebookType.Bible, Name = "Библия.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Изучение Библии.onepkg" },

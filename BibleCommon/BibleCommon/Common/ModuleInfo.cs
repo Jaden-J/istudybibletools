@@ -19,8 +19,7 @@ namespace BibleCommon.Common
     {
         Bible,
         BibleComments,
-        BibleStudy,
-        BibleNotesPages
+        BibleStudy        
     }
 
     
