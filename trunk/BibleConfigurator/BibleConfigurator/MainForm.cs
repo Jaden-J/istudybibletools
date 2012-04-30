@@ -1008,14 +1008,14 @@ namespace BibleConfigurator
                 l.Text = moduleName;
                 l.Top = top + 5;
                 l.Left = 0;
-                l.Width = 400;
+                l.Width = 380;
                 pnModules.Controls.Add(l);
 
                 CheckBox cb = new CheckBox();
                 cb.AutoCheck = false;
                 cb.Checked = SettingsManager.Instance.ModuleName == moduleDirectoryName;
                 cb.Top = top;
-                cb.Left = 420;
+                cb.Left = 400;
                 cb.Width = 20;
                 pnModules.Controls.Add(cb);
 
@@ -1024,10 +1024,20 @@ namespace BibleConfigurator
                 b.Enabled = SettingsManager.Instance.ModuleName != moduleDirectoryName;
                 b.Tag = moduleDirectoryName;
                 b.Top = top;
-                b.Left = 450;
+                b.Left = 430;
                 b.Width = 180;
                 b.Click += new EventHandler(btnUseThisModule_Click);
                 pnModules.Controls.Add(b);
+
+                Button bDel = new Button();
+                bDel.Text = "Удалить";   //todo: локализовать
+                bDel.Enabled = SettingsManager.Instance.ModuleName != moduleDirectoryName;
+                bDel.Tag = moduleDirectoryName;
+                bDel.Top = top;
+                bDel.Left = 610;
+                //bDel.Width = 180;
+                bDel.Click += new EventHandler(btnDeleteModule_Click);
+                pnModules.Controls.Add(bDel);
 
                 top += 30;
             }             
@@ -1056,6 +1066,16 @@ namespace BibleConfigurator
             var moduleName = (string)btn.Tag;
 
             SettingsManager.Instance.ModuleName = moduleName;
+
+            ReLoadModulesInfo();
+        }
+
+        void btnDeleteModule_Click(object sender, EventArgs e)
+        {
+            var btn = (Button)sender;
+            var moduleName = (string)btn.Tag;
+
+            ModulesManager.DeleteModule(moduleName);
 
             ReLoadModulesInfo();
         }

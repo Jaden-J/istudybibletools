@@ -72,6 +72,9 @@ namespace BibleCommon.Services
 
         public static void UploadModule(string originalFilePath, string destFilePath, string moduleName)
         {
+            if (Path.GetExtension(originalFilePath).ToLower() != Constants.IsbtFileExtension)
+                throw new InvalidModuleException(string.Format("Выберите файл с расширением '{0}'", Constants.IsbtFileExtension));   //todo: локализовать
+
             File.Copy(originalFilePath, destFilePath, true);
 
             string destFolder = Path.Combine(ModulesManager.GetModulesDirectory(), moduleName);
@@ -94,10 +97,12 @@ namespace BibleCommon.Services
         public static void DeleteModule(string moduleDirectoryName)
         {
             string moduleDirectory = Path.Combine(GetModulesDirectory(), moduleDirectoryName);
-            Directory.Delete(moduleDirectory, true);
+            if (Directory.Exists(moduleDirectory))
+                Directory.Delete(moduleDirectory, true);
 
             string manifestFilePath = Path.Combine(GetModulesPackagesDirectory(), moduleDirectoryName + Constants.IsbtFileExtension);
-            File.Delete(manifestFilePath);
+            if (File.Exists(manifestFilePath))
+                File.Delete(manifestFilePath);
         }
     }
 }
