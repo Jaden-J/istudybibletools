@@ -9,12 +9,13 @@ using Microsoft.Office.Interop.OneNote;
 using BibleCommon.Helpers;
 using BibleCommon.Services;
 using BibleCommon.Common;
+using System.IO;
 
 namespace BibleConfigurator
 {
     public static class NotebookChecker
     {
-        public static bool CheckNotebook(Application oneNoteApp, string notebookId, NotebookType notebookType)
+        public static bool CheckNotebook(Application oneNoteApp, ModuleInfo module, string notebookId, NotebookType notebookType)
         {
             //string errorText = string.Empty;
             bool result = false;
@@ -36,7 +37,7 @@ namespace BibleConfigurator
                         result = ElementIsBibleComments(notebook.Content.Root, notebook.Xnm);
                         break;
                     case NotebookType.BibleStudy:
-                        result = ElementIsBibleStudy(notebook.Content.Root, notebook.Xnm);
+                        result = ElementIsBibleStudy(module, notebook.Content.Root, notebook.Xnm);
                         break;
                 }
             }
@@ -44,20 +45,23 @@ namespace BibleConfigurator
             return result;
         }
 
-        public static bool ElementIsBibleStudy(XElement element, XmlNamespaceManager xnm)
+        public static bool ElementIsBibleStudy(ModuleInfo module, XElement element, XmlNamespaceManager xnm)
         {
             bool result = !(ElementIsBible(element, xnm) || ElementIsBibleComments(element, xnm));
             
 
-            if (result)
-            {
-                string notebookName = (string)element.Attribute("name").Value;
-                //if (Consts.NotBibleStudyNotebooks.Contains(notebookName))                
-                //    result = false;
+            //if (result)
+            //{
+            //    //string notebookName = (string)element.Attribute("name").Value;
+            //    //if (Consts.NotBibleStudyNotebooks.Contains(notebookName))                
+            //    //    result = false;
 
-                if (!notebookName.StartsWith(Consts.BibleStudyNotebookDefaultName))
-                    result = false;
-            }
+            //    //string bibleStudyNotebookDefaultName =
+            //    //    Path.GetFileNameWithoutExtension(module.Notebooks.First(n => n.Type == NotebookType.BibleStudy).Name);
+
+            //    //if (!notebookName.StartsWith(bibleStudyNotebookDefaultName))
+            //    //    result = false;
+            //}
 
 
             return result;

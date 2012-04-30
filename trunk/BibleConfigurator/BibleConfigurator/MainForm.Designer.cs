@@ -331,6 +331,7 @@
             this.tabPage2.Controls.Add(this.label5);
             resources.ApplyResources(this.tabPage2, "tabPage2");
             this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Enter += new System.EventHandler(this.tabPage1_Enter);
             // 
             // label9
             // 
@@ -483,6 +484,7 @@
             this.tabPage3.Controls.Add(this.btnRelinkComments);
             resources.ApplyResources(this.tabPage3, "tabPage3");
             this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Enter += new System.EventHandler(this.tabPage1_Enter);
             // 
             // btnBackup
             // 
@@ -643,7 +645,7 @@
         private System.Windows.Forms.Button btnRelinkComments;
         private System.Windows.Forms.Button btnBibleStudyNotebookSetPath;
         private System.Windows.Forms.Button btnBibleCommentsNotebookSetPath;
-        private System.Windows.Forms.Button btnBibleNotebookSetPath;
+        private System.Windows.Forms.Button btnBibleNotebookSetPath; 
         private System.Windows.Forms.Button btnSingleNotebookSetPath;
         private System.Windows.Forms.Button btnResizeBibleTables;
         private System.Windows.Forms.CheckBox chkDefaultPageNameParameters;
