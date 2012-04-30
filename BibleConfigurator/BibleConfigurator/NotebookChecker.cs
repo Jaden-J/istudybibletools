@@ -27,14 +27,14 @@ namespace BibleConfigurator
                 switch (notebookType)
                 {
                     case NotebookType.Single:
-                        result = ElementIsSingleNotebook(notebook.Content, notebook.Xnm);
+                        result = ElementIsSingleNotebook(module, notebook.Content, notebook.Xnm);
                         break;
                     case NotebookType.Bible:
-                        result = ElementIsBible(notebook.Content.Root, notebook.Xnm);
+                        result = ElementIsBible(module, notebook.Content.Root, notebook.Xnm);
                         break;
                     case NotebookType.BibleComments:
                     case NotebookType.BibleNotesPages:
-                        result = ElementIsBibleComments(notebook.Content.Root, notebook.Xnm);
+                        result = ElementIsBibleComments(module, notebook.Content.Root, notebook.Xnm);
                         break;
                     case NotebookType.BibleStudy:
                         result = ElementIsBibleStudy(module, notebook.Content.Root, notebook.Xnm);
@@ -47,7 +47,7 @@ namespace BibleConfigurator
 
         public static bool ElementIsBibleStudy(ModuleInfo module, XElement element, XmlNamespaceManager xnm)
         {
-            bool result = !(ElementIsBible(element, xnm) || ElementIsBibleComments(element, xnm));
+            bool result = !(ElementIsBible(module, element, xnm) || ElementIsBibleComments(module, element, xnm));
             
 
             //if (result)
@@ -67,24 +67,24 @@ namespace BibleConfigurator
             return result;
         }
 
-        public static bool ElementIsSingleNotebook(XDocument notebookDoc, XmlNamespaceManager xnm)
+        public static bool ElementIsSingleNotebook(ModuleInfo module, XDocument notebookDoc, XmlNamespaceManager xnm)
         {
             List<XElement> sectionsGroups = notebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm).Where(sg => !OneNoteUtils.IsRecycleBin(sg)).ToList();
 
             if (sectionsGroups.Count == 3)
             {
-                if ((ElementIsBible(sectionsGroups[0], xnm) || ElementIsBible(sectionsGroups[1], xnm) || ElementIsBible(sectionsGroups[2], xnm))
-                    && (ElementIsBibleComments(sectionsGroups[0], xnm) || ElementIsBibleComments(sectionsGroups[1], xnm) || ElementIsBibleComments(sectionsGroups[2], xnm)))
+                if ((ElementIsBible(module, sectionsGroups[0], xnm) || ElementIsBible(module, sectionsGroups[1], xnm) || ElementIsBible(module, sectionsGroups[2], xnm))
+                    && (ElementIsBibleComments(module, sectionsGroups[0], xnm) || ElementIsBibleComments(module, sectionsGroups[1], xnm) || ElementIsBibleComments(module, sectionsGroups[2], xnm)))
                     return true;
             }
 
             return false;
         }
 
-        public static bool ElementIsBible(XElement element, XmlNamespaceManager xnm)
+        public static bool ElementIsBible(ModuleInfo module, XElement element, XmlNamespaceManager xnm)
         {
             //todo: переделать, когда будет поддержка модулей
-            XElement oldTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", Consts.OldTestamentName), xnm);
+            XElement oldTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", module.BibleStructure.OldTestamentName), xnm);
 
             if (oldTestamentSectionGroup != null)
             {
@@ -92,7 +92,7 @@ namespace BibleConfigurator
 
                 if (oldTestamentSectionsCount > 35)  
                 {
-                    XElement newTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", Consts.NewTestamentName), xnm);
+                    XElement newTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", module.BibleStructure.NewTestamentName), xnm);
 
                     if (newTestamentSectionGroup != null)
                     {
@@ -109,10 +109,10 @@ namespace BibleConfigurator
             return false;
         }
 
-        public static bool ElementIsBibleComments(XElement element, XmlNamespaceManager xnm)
+        public static bool ElementIsBibleComments(ModuleInfo module, XElement element, XmlNamespaceManager xnm)
         {
             //todo: переделать, когда будет поддержка модулей
-            XElement oldTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", Consts.OldTestamentName), xnm);
+            XElement oldTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", module.BibleStructure.OldTestamentName), xnm);
 
             if (oldTestamentSectionGroup != null)
             {
@@ -120,7 +120,7 @@ namespace BibleConfigurator
 
                 if (subSectionsCount < 5)
                 {
-                    XElement newTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", Consts.NewTestamentName), xnm);
+                    XElement newTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", module.BibleStructure.NewTestamentName), xnm);
 
                     if (newTestamentSectionGroup != null)
                     {

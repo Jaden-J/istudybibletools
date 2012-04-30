@@ -85,16 +85,17 @@ namespace BibleConfigurator
         {
             Dictionary<SectionGroupType, SectionGroupInfo> result = new Dictionary<SectionGroupType, SectionGroupInfo>();
 
-            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, _notebookId, HierarchyScope.hsSections, true);                            
+            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, _notebookId, HierarchyScope.hsSections, true);
+            var module = ModulesManager.GetCurrentModuleInfo();
 
             foreach (XElement sectionGroup in notebook.Content.Root.XPathSelectElements("one:SectionGroup", notebook.Xnm).Where(sg => !OneNoteUtils.IsRecycleBin(sg)))
             {
                 string name = (string)sectionGroup.Attribute("name");
                 string id = (string)sectionGroup.Attribute("ID");
 
-                if (NotebookChecker.ElementIsBible(sectionGroup, notebook.Xnm) && !result.ContainsKey(SectionGroupType.Bible))
+                if (NotebookChecker.ElementIsBible(module, sectionGroup, notebook.Xnm) && !result.ContainsKey(SectionGroupType.Bible))
                     result.Add(SectionGroupType.Bible, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.Bible });
-                else if (NotebookChecker.ElementIsBibleComments(sectionGroup, notebook.Xnm) && !result.ContainsKey(SectionGroupType.BibleComments))
+                else if (NotebookChecker.ElementIsBibleComments(module, sectionGroup, notebook.Xnm) && !result.ContainsKey(SectionGroupType.BibleComments))
                     result.Add(SectionGroupType.BibleComments, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.BibleComments });                
                 else if (!result.ContainsKey(SectionGroupType.BibleStudy))
                     result.Add(SectionGroupType.BibleStudy, new SectionGroupInfo() { Id = id, OriginalName = name, Type = SectionGroupType.BibleStudy });

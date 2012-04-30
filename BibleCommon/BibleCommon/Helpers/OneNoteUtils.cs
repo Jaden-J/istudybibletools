@@ -58,6 +58,13 @@ namespace BibleCommon.Helpers
             return xd;
         }
 
+        public static XDocument GetHierarchyElement(Application oneNoteApp, string hierarchyId, HierarchyScope scope, out XmlNamespaceManager xnm)
+        {
+            string xml;
+            oneNoteApp.GetHierarchy(hierarchyId, scope, out xml);
+            return GetXDocument(xml, out xnm);            
+        }
+
         // возвращает количество родительских узлов
         public static int GetDepthLevel(XElement element)
         {
