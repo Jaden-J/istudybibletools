@@ -65,6 +65,14 @@ namespace BibleCommon.Helpers
             return GetXDocument(xml, out xnm);            
         }
 
+
+        public static XDocument GetPageContent(Application oneNoteApp, string pageId, out XmlNamespaceManager xnm)
+        {
+            string xml;
+            oneNoteApp.GetPageContent(pageId, out xml);            
+            return OneNoteUtils.GetXDocument(xml, out xnm);
+        }
+
         // возвращает количество родительских узлов
         public static int GetDepthLevel(XElement element)
         {
@@ -173,7 +181,7 @@ namespace BibleCommon.Helpers
             return string.Empty;
         }
 
-        public static  NotebookIterator.PageInfo GetCurrentPageInfo(Application oneNoteApp)
+        public static NotebookIterator.PageInfo GetCurrentPageInfo(Application oneNoteApp)
         {
             if (oneNoteApp.Windows.CurrentWindow == null)
                 throw new Exception(BibleCommon.Resources.Constants.Error_OpenedNotebookNotFound);
