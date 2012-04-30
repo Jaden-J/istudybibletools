@@ -95,7 +95,7 @@ namespace BibleCommon.Services
 
             foreach (SectionGroupType sectionGroupType in Enum.GetValues(typeof(SectionGroupType)))
             {
-                if (!module.Notebooks.First(n => n.Type == NotebookType.Single).SectionGroups.Exists(sg => sg.Type == sectionGroupType))
+                if (!module.GetNotebook(NotebookType.Single).SectionGroups.Exists(sg => sg.Type == sectionGroupType))
                     throw new Exception(string.Format("Не указана группа разделов типа '{0}' в шаблоне записной книжки типа '{1}'.", sectionGroupType, NotebookType.Single));  //todo: локализовать
             }
 

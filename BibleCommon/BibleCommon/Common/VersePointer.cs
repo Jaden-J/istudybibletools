@@ -5,12 +5,13 @@ using System.Text;
 using System.Collections.Specialized;
 using BibleCommon.Consts;
 using BibleCommon.Helpers;
+using BibleCommon.Services;
 
 namespace BibleCommon.Common
 {
     public class VersePointer
     {      
-        public string BookName { get; set; }
+        public BibleBookInfo Book { get; set; }
         public int? Chapter { get; set; }
         public int? Verse { get; set; }
         public string OriginalVerseName { get; set; }   // первоначально переданная строка в конструктор
@@ -35,26 +36,15 @@ namespace BibleCommon.Common
         {
             get
             {
-                return string.Format("{0}:{1}", FriendlyChapterName, Verse);
+                return string.Format("{0}:{1}", ChapterName, Verse);
             }
-        }
-
-        public string FriendlyChapterName
-        {
-            get
-            {
-                if (BookName.Length < 4)
-                    throw new InvalidOperationException(string.Format("BookName can not be less than 4 symbols: '{0}'.", BookName));
-
-                return string.Format("{0} {1}", BookName.Substring(4), Chapter);
-            }
-        }
+        }    
 
         public string ChapterName
         {
             get
             {
-                return string.Format("{0} {1}", BookName, Chapter);
+                return string.Format("{0} {1}", Book.Name, Chapter);
             }
         }
 
@@ -109,7 +99,7 @@ namespace BibleCommon.Common
                 }
 
                 OriginalBookName = TrimBookName(s);
-                BookName = GetFullBookName(OriginalBookName);
+                Book = GetBibleBook(OriginalBookName);
             }
         }
 
@@ -219,23 +209,15 @@ namespace BibleCommon.Common
         {
             get
             {
-                return !string.IsNullOrEmpty(BookName)
+                return Book != null                    
                     && Chapter.HasValue
                     && Verse.HasValue;
             }
         }
 
-        private static string GetFullBookName(string s)
+        private static BibleBookInfo GetBibleBook(string s)
         {
-            s = s.ToLowerInvariant();
-
-            foreach (string key in Constants.BookNames.Keys)
-            {
-                if (Constants.BookNames[key].Contains(s))
-                    return key;  // возвращаться должно в правильном Case!
-            }
-
-            return string.Empty;
+            return SettingsManager.Instance.CurrentModule.GetBibleBook(s);
         }
 
         public VersePointer GetChapterPointer()
@@ -266,14 +248,19 @@ namespace BibleCommon.Common
         public override bool Equals(object obj)
         {
             VersePointer otherVp = (VersePointer)obj;
-            return this.BookName == otherVp.BookName
+            return this.Book != null && otherVp.Book != null
+                && this.Book.Name == otherVp.Book.Name
                 && this.Chapter == otherVp.Chapter
                 && this.Verse == otherVp.Verse;                
         }
 
         public override int GetHashCode()
         {
-            return this.BookName.GetHashCode() ^ this.Chapter.GetHashCode() ^ this.Verse.GetHashCode();
+            var result =  this.Chapter.GetHashCode() ^ this.Verse.GetHashCode();
+            if (this.Book != null)
+                result = result ^ this.Book.Name.GetHashCode();
+
+            return result;
         }
 
         public static bool operator ==(VersePointer vp1, VersePointer vp2)

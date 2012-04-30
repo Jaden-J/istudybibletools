@@ -9,6 +9,7 @@ using BibleCommon.Helpers;
 using Microsoft.Office.Interop.OneNote;
 using System.Reflection;
 using System.Threading;
+using BibleCommon.Common;
 
 namespace BibleCommon.Services
 {
@@ -92,6 +93,23 @@ namespace BibleCommon.Services
                 }
 
                 return _currentVersion;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Значение данного свойства сохраняется в памяти и не обновляется! нельзя использовать в коде, где текущий модуль может измениться
+        /// </summary>
+        private ModuleInfo _currentModule;
+        public ModuleInfo CurrentModule
+        {
+            get
+            {
+                if (_currentModule == null)
+                    _currentModule = ModulesManager.GetCurrentModuleInfo();
+
+                return _currentModule;
             }
         }
 

@@ -34,12 +34,25 @@ namespace BibleCommon.Common
         [XmlAttribute]
         public string Name { get; set; }
 
-
         [XmlElement(typeof(NotebookInfo), ElementName = "Notebook")]
         public List<NotebookInfo> Notebooks { get; set; }
 
         [XmlElement]
         public BibleStructureInfo BibleStructure { get; set; }
+
+        public NotebookInfo GetNotebook(NotebookType notebookType)
+        {
+            return Notebooks.First(n => n.Type == notebookType);
+        }
+
+        // возвращает книгу Библии с учётом всех сокращений
+        public BibleBookInfo GetBibleBook(string s)
+        {
+            s = s.ToLowerInvariant();
+
+            return BibleStructure.BibleBooks.FirstOrDefault(
+                book => book.Shortenings.Any(sh => sh.Contains(s)));
+        }
     }
 
     [Serializable]    
