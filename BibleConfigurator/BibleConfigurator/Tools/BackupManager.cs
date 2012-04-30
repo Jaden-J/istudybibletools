@@ -200,7 +200,7 @@ namespace BibleConfigurator.Tools
 
         private static string GetTempFolderPath()
         {
-            string s = Path.Combine(SettingsManager.GetProgramDirectory(), Consts.TempDirectory);
+            string s = Path.Combine(SettingsManager.GetProgramDirectory(), Constants.TempDirectory);
             if (!Directory.Exists(s))
                 Directory.CreateDirectory(s);
 

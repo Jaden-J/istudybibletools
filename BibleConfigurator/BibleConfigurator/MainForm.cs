@@ -72,35 +72,42 @@ namespace BibleConfigurator
         private void btnOK_Click(object sender, EventArgs e)
         {          
             btnOK.Enabled = false;
-            lblWarning.Text = string.Empty;
+            
+
+            var module = ModulesManager.GetCurrentModuleInfo();
+
             try
             {
-                Logger.Initialize();               
+                Logger.Initialize();                
 
                 if (rbSingleNotebook.Checked)
                 {
-                    SaveSingleNotebookParameters();
+                    SaveSingleNotebookParameters(module);
                 }
                 else
                 {
                     SettingsManager.Instance.SectionGroupId_Bible = string.Empty;
                     SettingsManager.Instance.SectionGroupId_BibleStudy = string.Empty;
                     SettingsManager.Instance.SectionGroupId_BibleComments = string.Empty;
-                    SettingsManager.Instance.SectionGroupId_BibleNotesPages = string.Empty;                    
+                    SettingsManager.Instance.SectionGroupId_BibleNotesPages = string.Empty;
 
-                    SaveBibleNotebookParameters();             
+                    SaveMultiNotebookParameters(module, NotebookType.Bible, 
+                        chkCreateBibleNotebookFromTemplate.Checked, (string)cbBibleNotebook.SelectedItem);             
 
                     if (!Logger.WasErrorLogged)
                     {
-                        SaveBibleStudyNotebookParameters();              
+                        SaveMultiNotebookParameters(module, NotebookType.BibleStudy, 
+                            chkCreateBibleStudyNotebookFromTemplate.Checked, (string)cbBibleStudyNotebook.SelectedItem);             
 
                         if (!Logger.WasErrorLogged)
                         {
-                            SaveBibleCommentsNotebookParameters();
+                            SaveMultiNotebookParameters(module, NotebookType.BibleComments,
+                                chkCreateBibleCommentsNotebookFromTemplate.Checked, (string)cbBibleCommentsNotebook.SelectedItem);             
 
                             if (!Logger.WasErrorLogged)
                             {
-                                SaveBibleNotesPagesNotebookParameters();
+                                SaveMultiNotebookParameters(module, NotebookType.BibleNotesPages,
+                                    chkCreateBibleNotesPagesNotebookFromTemplate.Checked, (string)cbBibleNotesPagesNotebook.SelectedItem);             
                             }
                         }
                     }
@@ -113,13 +120,12 @@ namespace BibleConfigurator
                     SettingsManager.Instance.Save();
                     Close();
                 }
-
             }
             catch (SaveParametersException ex)
             {
                 Logger.LogError(ex.Message);
                 if (ex.NeedToReload)
-                    LoadParameters();                
+                    LoadParameters(module, null);                
             }
             finally
             {
@@ -127,86 +133,31 @@ namespace BibleConfigurator
             }
         }
 
-        private void SaveBibleNotesPagesNotebookParameters()
+        private void SaveMultiNotebookParameters(ModuleInfo module, NotebookType notebookType, bool createFromTemplate, string selectedNotebookName)
         {
-            string notebookId;
-            string notebookName;
-
-            if (chkCreateBibleNotesPagesNotebookFromTemplate.Checked)
+            if (createFromTemplate)
             {
-                notebookName = CreateNotebookFromTemplate(Consts.BibleNotesPagesNotebookTemplateFileName, BibleNotesPagesNotebookFromTemplatePath);
+                string notebookTemplateFileName = module.Notebooks.First(n => n.Type == notebookType).Name;
+                string notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, BibleNotebookFromTemplatePath);
                 if (!string.IsNullOrEmpty(notebookName))
-                    WaitAndLoadParameters(NotebookType.BibleNotesPages, notebookName);                         // выйдем из метода только когда OneNote отработает                                                
+                    WaitAndLoadParameters(notebookType, notebookName);                         // выйдем из метода только когда OneNote отработает
             }
             else
             {
-                notebookName = (string)cbBibleNotesPagesNotebook.SelectedItem;
-                TryToLoadNotebookParameters(NotebookType.BibleNotesPages, notebookName, out notebookId);
+                string notebookId;
+                TryToLoadNotebookParameters(notebookType, selectedNotebookName, out notebookId);
             }
         }
 
-        private void SaveBibleCommentsNotebookParameters()
-        {
-            string notebookId;
-            string notebookName;
-
-            if (chkCreateBibleCommentsNotebookFromTemplate.Checked)
-            {
-                notebookName = CreateNotebookFromTemplate(Consts.BibleCommentsNotebookTemplateFileName, BibleCommentsNotebookFromTemplatePath);
-                if (!string.IsNullOrEmpty(notebookName))
-                    WaitAndLoadParameters(NotebookType.BibleComments, notebookName);                         // выйдем из метода только когда OneNote отработает                                                
-            }
-            else
-            {
-                notebookName = (string)cbBibleCommentsNotebook.SelectedItem;
-                TryToLoadNotebookParameters(NotebookType.BibleComments, notebookName, out notebookId);
-            }            
-        }
-
-        private void SaveBibleStudyNotebookParameters()
-        {
-            string notebookId;
-            string notebookName;
-
-            if (chkCreateBibleStudyNotebookFromTemplate.Checked)
-            {
-                notebookName = CreateNotebookFromTemplate(Consts.BibleStudyNotebookTemplateFileName, BibleStudyNotebookFromTemplatePath);
-                if (!string.IsNullOrEmpty(notebookName))
-                    WaitAndLoadParameters(NotebookType.BibleStudy, notebookName);                         // выйдем из метода только когда OneNote отработает                        
-            }
-            else
-            {
-                notebookName = (string)cbBibleStudyNotebook.SelectedItem;
-                TryToLoadNotebookParameters(NotebookType.BibleStudy, notebookName, out notebookId);
-            }
-        }
-
-        private void SaveBibleNotebookParameters()
-        {
-            string notebookId;
-            string notebookName;
-
-            if (chkCreateBibleNotebookFromTemplate.Checked)
-            {
-                notebookName = CreateNotebookFromTemplate(Consts.BibleNotebookTemplateFileName, BibleNotebookFromTemplatePath);
-                if (!string.IsNullOrEmpty(notebookName))
-                    WaitAndLoadParameters(NotebookType.Bible, notebookName);                         // выйдем из метода только когда OneNote отработает
-            }
-            else
-            {
-                notebookName = (string)cbBibleNotebook.SelectedItem;
-                TryToLoadNotebookParameters(NotebookType.Bible, notebookName, out notebookId);
-            }
-        }
-
-        private void SaveSingleNotebookParameters()
+        private void SaveSingleNotebookParameters(ModuleInfo module)
         {
             string notebookId;
             string notebookName;
 
             if (chkCreateSingleNotebookFromTemplate.Checked)
             {
-                notebookName = CreateNotebookFromTemplate(Consts.SingleNotebookTemplateFileName, SingleNotebookFromTemplatePath);
+                string notebookTemplateFileName = module.Notebooks.First(n => n.Type == NotebookType.Single).Name;
+                notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, SingleNotebookFromTemplatePath);
                 if (!string.IsNullOrEmpty(notebookName))
                 {
                     WaitAndLoadParameters(NotebookType.Single, notebookName);
@@ -323,8 +274,10 @@ namespace BibleConfigurator
 
             try
             {
-                notebookId = OneNoteUtils.GetNotebookIdByName(_oneNoteApp, notebookName, true);                
-                if (NotebookChecker.CheckNotebook(_oneNoteApp, notebookId, notebookType))
+                notebookId = OneNoteUtils.GetNotebookIdByName(_oneNoteApp, notebookName, true);
+                var module = ModulesManager.GetCurrentModuleInfo();
+
+                if (NotebookChecker.CheckNotebook(_oneNoteApp, module, notebookId, notebookType))
                 {
                     switch (notebookType)
                     {
@@ -353,7 +306,7 @@ namespace BibleConfigurator
                 else
                 {
                     if (!silientMode)
-                        Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected, notebookName));
+                        Logger.LogError(string.Format("{0} '{1}' для типа '{2}'.", BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected, notebookName, notebookType));  //todo: локализовать
                 }
             }
             catch (Exception ex)
@@ -421,7 +374,7 @@ namespace BibleConfigurator
         private string CreateNotebookFromTemplate(string notebookTemplateFileName, string notebookFromTemplatePath)
         {
             string s;
-            string packageDirectory = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(Utils.GetCurrentDirectory())), Consts.TemplatesDirectory);
+            string packageDirectory = ModulesManager.GetCurrentModuleDirectiory();                
             string packageFilePath = Path.Combine(packageDirectory, notebookTemplateFileName);
 
             if (File.Exists(packageFilePath))
@@ -484,15 +437,21 @@ namespace BibleConfigurator
                     PrepareFolderBrowser();
                     SetNotebooksDefaultPaths();
 
-                    LoadParameters();
+                    if (!CurrentModuleIsCorrect())
+                        tbcMain.SelectedTab = tbcMain.TabPages[tabPage4.Name];
+                    else
+                    {
+                        var module = ModulesManager.GetCurrentModuleInfo();
+                        LoadParameters(module, null);
+                    }
 
                     this.Text += string.Format(" v{0}", SettingsManager.Instance.CurrentVersion);
                     this.SetFocus();
                     _firstShown = false;
-                }
+                }                
                 finally
                 {
-                    _loadForm.Close();
+                    _loadForm.Hide();
                 }
             }
         }
@@ -504,17 +463,17 @@ namespace BibleConfigurator
             _loadForm.Show();           
         }
 
-        private void LoadParameters()
+        private void LoadParameters(ModuleInfo module, bool? needToSaveSettings)
         {
-            if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
+            if (!SettingsManager.Instance.IsConfigured(_oneNoteApp) || needToSaveSettings.GetValueOrDefault(false))
                 lblWarning.Text = BibleCommon.Resources.Constants.ConfiguratorNeedSaveChanges;
 
             Dictionary<string, string> notebooks = GetNotebooks();
-            string singleNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.Single);
-            string bibleNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.Bible);
-            string bibleCommentsNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.BibleComments);            
-            string bibleStudyNotebookId = SearchForNotebook(notebooks.Keys, NotebookType.BibleStudy);
-            string bibleNotesPagesNotebookId = SearchForNotebook(notebooks.Keys.ToList().Where(s => s != bibleCommentsNotebookId), NotebookType.BibleNotesPages);
+            string singleNotebookId = SearchForNotebook(module, notebooks.Keys, NotebookType.Single);
+            string bibleNotebookId = SearchForNotebook(module, notebooks.Keys, NotebookType.Bible);
+            string bibleCommentsNotebookId = SearchForNotebook(module, notebooks.Keys, NotebookType.BibleComments);
+            string bibleStudyNotebookId = SearchForNotebook(module, notebooks.Keys, NotebookType.BibleStudy);
+            string bibleNotesPagesNotebookId = SearchForNotebook(module, notebooks.Keys.ToList().Where(s => s != bibleCommentsNotebookId), NotebookType.BibleNotesPages);
             if (string.IsNullOrEmpty(bibleNotesPagesNotebookId))
                 bibleNotesPagesNotebookId = bibleCommentsNotebookId;
 
@@ -530,20 +489,25 @@ namespace BibleConfigurator
             cbBibleNotesPagesNotebook.DataSource = notebooks.Values.ToList();
             cbBibleStudyNotebook.DataSource = notebooks.Values.ToList();
 
-            SetNotebookParameters(rbSingleNotebook.Checked, !string.IsNullOrEmpty(singleNotebookId) ? notebooks[singleNotebookId] :  Consts.SingleNotebookDefaultName, 
+            SetNotebookParameters(rbSingleNotebook.Checked, !string.IsNullOrEmpty(singleNotebookId) ? notebooks[singleNotebookId] : 
+                Path.GetFileNameWithoutExtension(module.Notebooks.First(n => n.Type == NotebookType.Single).Name), 
                 notebooks, SettingsManager.Instance.NotebookId_Bible, cbSingleNotebook, chkCreateSingleNotebookFromTemplate);
 
-            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotebookId) ? notebooks[bibleNotebookId] :  Consts.BibleNotebookDefaultName, 
+            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotebookId) ? notebooks[bibleNotebookId] :
+                Path.GetFileNameWithoutExtension(module.Notebooks.First(n => n.Type == NotebookType.Bible).Name), 
                 notebooks, SettingsManager.Instance.NotebookId_Bible, cbBibleNotebook, chkCreateBibleNotebookFromTemplate);
 
-            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleCommentsNotebookId) ? notebooks[bibleCommentsNotebookId] :  Consts.BibleCommentsNotebookDefaultName, 
+            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleStudyNotebookId) ? notebooks[bibleStudyNotebookId] :
+                Path.GetFileNameWithoutExtension(module.Notebooks.First(n => n.Type == NotebookType.BibleStudy).Name),
+                notebooks, SettingsManager.Instance.NotebookId_BibleStudy, cbBibleStudyNotebook, chkCreateBibleStudyNotebookFromTemplate);
+
+            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleCommentsNotebookId) ? notebooks[bibleCommentsNotebookId] :
+                Path.GetFileNameWithoutExtension(module.Notebooks.First(n => n.Type == NotebookType.BibleComments).Name), 
                 notebooks, SettingsManager.Instance.NotebookId_BibleComments, cbBibleCommentsNotebook, chkCreateBibleCommentsNotebookFromTemplate);
 
-            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotesPagesNotebookId) ? notebooks[bibleNotesPagesNotebookId] : Consts.BibleNotesPagesNotebookDefaultName,
-                notebooks, SettingsManager.Instance.NotebookId_BibleNotesPages, cbBibleNotesPagesNotebook, chkCreateBibleNotesPagesNotebookFromTemplate);
-
-            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleStudyNotebookId) ? notebooks[bibleStudyNotebookId] :  Consts.BibleStudyNotebookDefaultName, 
-                notebooks, SettingsManager.Instance.NotebookId_BibleStudy, cbBibleStudyNotebook, chkCreateBibleStudyNotebookFromTemplate);
+            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotesPagesNotebookId) ? notebooks[bibleNotesPagesNotebookId] :
+                Path.GetFileNameWithoutExtension(module.Notebooks.First(n => n.Type == NotebookType.BibleNotesPages).Name), 
+                notebooks, SettingsManager.Instance.NotebookId_BibleNotesPages, cbBibleNotesPagesNotebook, chkCreateBibleNotesPagesNotebookFromTemplate);            
 
             tbBookOverviewName.Text = SettingsManager.Instance.PageName_DefaultBookOverview;
             tbNotesPageName.Text = SettingsManager.Instance.PageName_Notes;
@@ -579,11 +543,11 @@ namespace BibleConfigurator
             }
         }
 
-        private string SearchForNotebook(IEnumerable<string> notebooksIds, NotebookType notebookType)
+        private string SearchForNotebook(ModuleInfo module, IEnumerable<string> notebooksIds, NotebookType notebookType)
         {
             foreach (string notebookId in notebooksIds)
             {
-                if (NotebookChecker.CheckNotebook(_oneNoteApp, notebookId, notebookType))
+                if (NotebookChecker.CheckNotebook(_oneNoteApp, module, notebookId, notebookType))
                 {
                     return notebookId;
                 }
@@ -724,7 +688,8 @@ namespace BibleConfigurator
             {
                 string notebookName = (string)cbSingleNotebook.SelectedItem;
                 string notebookId = OneNoteUtils.GetNotebookIdByName(_oneNoteApp, notebookName, true);
-                if (NotebookChecker.CheckNotebook(_oneNoteApp, notebookId, NotebookType.Single))
+                var module = ModulesManager.GetCurrentModuleInfo();
+                if (NotebookChecker.CheckNotebook(_oneNoteApp, module, notebookId, NotebookType.Single))
                 {
                     if (_notebookParametersForm == null)
                         _notebookParametersForm = new NotebookParametersForm(_oneNoteApp, notebookId);
@@ -741,7 +706,7 @@ namespace BibleConfigurator
                 }
                 else
                 {
-                    Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected, notebookName));                    
+                    Logger.LogError(string.Format("{0} '{1}' для типа '{2}'.", BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected, notebookName, NotebookType.Single)); //todo: локализовать
                 }
             }
             else
@@ -860,26 +825,16 @@ namespace BibleConfigurator
             FormExtensions.SetControlPropertyThreadSafe(pbMain, "Visible", false);
             FormExtensions.SetControlPropertyThreadSafe(tbcMain, "Enabled", true);
             FormExtensions.SetControlPropertyThreadSafe(lblProgressInfo, "Text", infoText);
-            FormExtensions.SetControlPropertyThreadSafe(btnOK, "Enabled", true);
-
-            //pbMain.Value = 0;
-            //pbMain.Maximum = 100;
-            //pbMain.Step = 1;
-            //pbMain.Visible = false;
-
-            //tbcMain.Enabled = true;
-            //lblProgressInfo.Text = infoText;
-
-            //btnOK.Enabled = true;
+            FormExtensions.SetControlPropertyThreadSafe(btnOK, "Enabled", true);         
         }
 
         public void PerformProgressStep(string infoText)
         {
             FormExtensions.SetControlPropertyThreadSafe(lblProgressInfo, "Text", infoText);
-            //lblProgressInfo.Text = infoText;            
+            
             if (pbMain.Value < pbMain.Maximum)
                 FormExtensions.SetControlPropertyThreadSafe(pbMain, "Value", pbMain.Value + 1);                
-            //pbMain.PerformStep();            
+            
             System.Windows.Forms.Application.DoEvents();
         }
 
@@ -925,11 +880,15 @@ namespace BibleConfigurator
             }
         }
 
+        private static bool CurrentModuleIsCorrect()
+        {
+            return !string.IsNullOrEmpty(SettingsManager.Instance.ModuleName) && ModulesManager.ModuleIsCorrect(SettingsManager.Instance.ModuleName);
+        }
+
         private void tabPage1_Enter(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(SettingsManager.Instance.ModuleName) || ModulesManager.GetModuleInfo(SettingsManager.Instance.ModuleName) == null)            
+            if (!CurrentModuleIsCorrect())            
                 tbcMain.SelectedTab = tbcMain.TabPages[tabPage4.Name];
-
         }
 
         private void btnUploadModule_Click(object sender, EventArgs e)
@@ -956,7 +915,7 @@ namespace BibleConfigurator
             if (File.Exists(destFilePath))
             {
                 if (MessageBox.Show("Модуль с таким именем уже существует. Существующий модуль будет полностью заменён загружаемым. Продолжить?", "Внимание!",     //todo: локализовать
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.No)
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.No)
                     canContinue = false;
             }
 
@@ -964,14 +923,16 @@ namespace BibleConfigurator
             {
                 try
                 {
+                    bool currentModuleIsCorrect = CurrentModuleIsCorrect();  // а то может быть, что мы загрузили модуль, и он стал корретным, но UI не обновилось
+
                     ModulesManager.UploadModule(filePath, destFilePath, moduleName);
 
-                    if (string.IsNullOrEmpty(SettingsManager.Instance.ModuleName))
+                    if (!currentModuleIsCorrect)
                     {
-                        SettingsManager.Instance.ModuleName = moduleName;
+                        SetModuleToUse(moduleName);
                     }
-
-                    ReLoadModulesInfo();
+                    else
+                        ReLoadModulesInfo();
                 }
                 catch (InvalidModuleException ex)
                 {
@@ -1000,44 +961,21 @@ namespace BibleConfigurator
             int top = 10;
             var modules = Directory.GetDirectories(modulesDirectory, "*", SearchOption.TopDirectoryOnly);
             foreach (var moduleDirectory in modules)
-            {   
-                string moduleDirectoryName = Path.GetFileNameWithoutExtension(moduleDirectory);
-                string moduleName = ModulesManager.GetModuleInfo(moduleDirectoryName).Name;
+            {
+                string moduleName = Path.GetFileNameWithoutExtension(moduleDirectory);                
 
-                Label l = new Label();
-                l.Text = moduleName;
-                l.Top = top + 5;
-                l.Left = 0;
-                l.Width = 380;
-                pnModules.Controls.Add(l);
-
-                CheckBox cb = new CheckBox();
-                cb.AutoCheck = false;
-                cb.Checked = SettingsManager.Instance.ModuleName == moduleDirectoryName;
-                cb.Top = top;
-                cb.Left = 400;
-                cb.Width = 20;
-                pnModules.Controls.Add(cb);
-
-                Button b = new Button();
-                b.Text = "Использовать данный модуль";      //todo: локализовать
-                b.Enabled = SettingsManager.Instance.ModuleName != moduleDirectoryName;
-                b.Tag = moduleDirectoryName;
-                b.Top = top;
-                b.Left = 430;
-                b.Width = 180;
-                b.Click += new EventHandler(btnUseThisModule_Click);
-                pnModules.Controls.Add(b);
-
-                Button bDel = new Button();
-                bDel.Text = "Удалить";   //todo: локализовать
-                bDel.Enabled = SettingsManager.Instance.ModuleName != moduleDirectoryName;
-                bDel.Tag = moduleDirectoryName;
-                bDel.Top = top;
-                bDel.Left = 610;
-                //bDel.Width = 180;
-                bDel.Click += new EventHandler(btnDeleteModule_Click);
-                pnModules.Controls.Add(bDel);
+                try
+                {
+                    ModulesManager.CheckModule(moduleName);
+                    
+                    LoadModuleToUI(moduleName, top);                    
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogMessage(string.Format("При загрузке модуля '{0}' произошла ошибка: {1}", moduleDirectory, ex.Message));   //todo: локализовать
+                    if (DeleteModuleWithConfirm(moduleName))
+                        return;
+                }
 
                 top += 30;
             }             
@@ -1046,10 +984,10 @@ namespace BibleConfigurator
             {
                 pnModules.Height = top;
                 btnUploadModule.Top = top + 50;
-                btnUploadModule.Left = 450 + pnModules.Left;
+                btnUploadModule.Left = 415 + pnModules.Left;
 
                 lblMustUploadModule.Visible = false;
-                lblMustSelectModule.Visible = string.IsNullOrEmpty(SettingsManager.Instance.ModuleName);
+                lblMustSelectModule.Visible = !CurrentModuleIsCorrect();
             }
             else
             {
@@ -1060,14 +998,69 @@ namespace BibleConfigurator
             wasLoadedModulesInfo = true;
         }
 
+        private void LoadModuleToUI(string moduleName, int top)
+        {   
+            string moduleDisplayName = ModulesManager.GetModuleInfo(moduleName).Name;
+
+            Label l = new Label();
+            l.Text = moduleDisplayName;
+            l.Top = top + 5;
+            l.Left = 0;
+            l.Width = 365;
+            pnModules.Controls.Add(l);
+
+            CheckBox cb = new CheckBox();
+            cb.AutoCheck = false;
+            cb.Checked = SettingsManager.Instance.ModuleName == moduleName;
+            cb.Top = top;
+            cb.Left = 385;
+            cb.Width = 20;
+            pnModules.Controls.Add(cb);
+
+            Button b = new Button();
+            b.Text = "Использовать данный модуль";      //todo: локализовать
+            b.Enabled = SettingsManager.Instance.ModuleName != moduleName;
+            b.Tag = moduleName;
+            b.Top = top;
+            b.Left = 415;
+            b.Width = 180;
+            b.Click += new EventHandler(btnUseThisModule_Click);
+            pnModules.Controls.Add(b);
+
+            Button bDel = new Button();
+            bDel.Image = BibleConfigurator.Properties.Resources.del;
+            bDel.Enabled = SettingsManager.Instance.ModuleName != moduleName;
+            bDel.Tag = moduleName;
+            bDel.Top = top;
+            bDel.Left = 600;
+            bDel.Width = bDel.Height;
+            bDel.Click += new EventHandler(btnDeleteModule_Click);
+            pnModules.Controls.Add(bDel);
+        }
+
         void btnUseThisModule_Click(object sender, EventArgs e)
         {
             var btn = (Button)sender;
             var moduleName = (string)btn.Tag;
 
+            SetModuleToUse(moduleName);
+        }
+
+        private void SetModuleToUse(string moduleName)
+        {
             SettingsManager.Instance.ModuleName = moduleName;
 
             ReLoadModulesInfo();
+
+            _loadForm.Show();
+            try
+            {
+                LoadParameters(ModulesManager.GetCurrentModuleInfo(), true);
+            }
+            finally
+            {
+                _loadForm.Hide();
+            }
         }
 
         void btnDeleteModule_Click(object sender, EventArgs e)
@@ -1075,9 +1068,21 @@ namespace BibleConfigurator
             var btn = (Button)sender;
             var moduleName = (string)btn.Tag;
 
-            ModulesManager.DeleteModule(moduleName);
+            DeleteModuleWithConfirm(moduleName);
+        }
 
-            ReLoadModulesInfo();
+        private bool DeleteModuleWithConfirm(string moduleName)
+        {
+            if (MessageBox.Show("Удалить данный модуль?", "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)     //todo: локализовать
+               == System.Windows.Forms.DialogResult.Yes)
+            {
+                ModulesManager.DeleteModule(moduleName);
+
+                ReLoadModulesInfo();
+                return true;
+            }
+
+            return false;
         }
 
        

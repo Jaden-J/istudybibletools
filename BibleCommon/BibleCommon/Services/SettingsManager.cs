@@ -103,7 +103,9 @@ namespace BibleCommon.Services
                 && !string.IsNullOrEmpty(this.NotebookId_BibleStudy)
                 && !string.IsNullOrEmpty(this.PageName_DefaultBookOverview)
                 && !string.IsNullOrEmpty(this.PageName_DefaultComments)
-                && !string.IsNullOrEmpty(this.PageName_Notes);
+                && !string.IsNullOrEmpty(this.PageName_Notes)
+                && !string.IsNullOrEmpty(this.ModuleName)
+                && ModulesManager.ModuleIsCorrect(this.ModuleName);
 
             if (result)
             {

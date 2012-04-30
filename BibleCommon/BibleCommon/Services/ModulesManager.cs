@@ -18,20 +18,30 @@ namespace BibleCommon.Services
             _serializer = new XmlSerializer(typeof(ModuleInfo));
         }
 
+        public static ModuleInfo GetCurrentModuleInfo()
+        {
+            return GetModuleInfo(SettingsManager.Instance.ModuleName);
+        }
+
+        public static string GetCurrentModuleDirectiory()
+        {
+            return Path.Combine(GetModulesDirectory(), SettingsManager.Instance.ModuleName);
+        }
+
+
+
         public static ModuleInfo GetModuleInfo(string moduleDirectoryName)
         {
             string moduleDirectory = Path.Combine(GetModulesDirectory(), moduleDirectoryName);
             string manifestFilePath = Path.Combine(moduleDirectory, Consts.Constants.ManifestFileName);
-            if (File.Exists(manifestFilePath))
-            {
-                using (var fs = new FileStream(manifestFilePath, FileMode.Open))
-                {
-                    return ((ModuleInfo)_serializer.Deserialize(fs));
-                }
-            }
+            if (!File.Exists(manifestFilePath))
+                throw new InvalidModuleException(string.Format("File '{0}' was not found.", manifestFilePath));
 
-            return null;
-        }
+            using (var fs = new FileStream(manifestFilePath, FileMode.Open))
+            {
+                return ((ModuleInfo)_serializer.Deserialize(fs));
+            }
+        }       
 
         public static string GetModulesDirectory()
         {
@@ -57,17 +67,43 @@ namespace BibleCommon.Services
             return modulesDirectory;
         }
 
-        private static void CheckModule(string moduleDirectoryName)
+        public static bool ModuleIsCorrect(string moduleName)
+        {
+            try
+            {
+                ModulesManager.CheckModule(moduleName);
+            }
+            catch
+            {              
+                return false;
+            }
+
+            return true;
+        }
+
+        public static void CheckModule(string moduleDirectoryName)
         {
             ModuleInfo module = GetModuleInfo(moduleDirectoryName);
 
             string moduleDirectory = Path.Combine(GetModulesDirectory(), moduleDirectoryName);
 
+            foreach (NotebookType notebookType in Enum.GetValues(typeof(NotebookType)))
+            {
+                if (!module.Notebooks.Exists(n => n.Type == notebookType))
+                    throw new Exception(string.Format("Не указан шаблон записной книжки типа '{0}'.", notebookType));  //todo: локализовать
+            }
+
+            foreach (SectionGroupType sectionGroupType in Enum.GetValues(typeof(SectionGroupType)))
+            {
+                if (!module.Notebooks.First(n => n.Type == NotebookType.Single).SectionGroups.Exists(sg => sg.Type == sectionGroupType))
+                    throw new Exception(string.Format("Не указана группа разделов типа '{0}' в шаблоне записной книжки типа '{1}'.", sectionGroupType, NotebookType.Single));  //todo: локализовать
+            }
+
             foreach (var notebook in module.Notebooks)
             {
                 if (!File.Exists(Path.Combine(moduleDirectory, notebook.Name)))
-                    throw new Exception(string.Format("Не найдена записная книжка '{0}' типа '{1}'.", notebook.Name, notebook.Type));  //todo: локализовать
-            }
+                    throw new Exception(string.Format("Не найден шаблон записной книжки '{0}' типа '{1}'.", notebook.Name, notebook.Type));  //todo: локализовать
+            }            
         }
 
         public static void UploadModule(string originalFilePath, string destFilePath, string moduleName)
