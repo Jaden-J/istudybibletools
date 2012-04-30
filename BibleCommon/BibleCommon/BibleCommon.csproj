@@ -83,7 +83,7 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Services\VersionOnServerManager.cs" />
-    <Compile Include="Services\ZipLibHelper.cs" />
+    <Compile Include="Helpers\ZipLibHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Interop.OneNote">
