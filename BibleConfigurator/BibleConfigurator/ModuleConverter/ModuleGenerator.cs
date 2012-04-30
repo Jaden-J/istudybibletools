@@ -32,7 +32,7 @@ namespace BibleConfigurator.ModuleConverter
                 BibleStructure = new BibleStructureInfo()
                 {
                     OldTestamentName = "Ветхий Завет",
-                    NewTestamentName = "Ветхий Завет",
+                    NewTestamentName = "Новый Завет",
                     Alphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя",
                     BibleBooks = new List<BibleBookInfo>()
                     {
@@ -112,7 +112,6 @@ namespace BibleConfigurator.ModuleConverter
 
                 ser.Serialize(fs, module);
                 fs.Flush();
-
             }
         }
     }

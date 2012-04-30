@@ -51,7 +51,7 @@ namespace BibleCommon.Common
             s = s.ToLowerInvariant();
 
             return BibleStructure.BibleBooks.FirstOrDefault(
-                book => book.Shortenings.Any(sh => sh.Contains(s)));
+                book => book.Shortenings.Any(sh => sh == s));
         }
     }
 
