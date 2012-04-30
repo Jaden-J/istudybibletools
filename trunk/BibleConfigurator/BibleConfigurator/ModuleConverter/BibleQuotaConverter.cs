@@ -4,6 +4,13 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using BibleCommon.Helpers;
+using System.Xml.Linq;
+using BibleCommon.Consts;
+using System.Xml;
+using System.Xml.XPath;
+using System.Globalization;
+using BibleCommon.Common;
+using System.Xml.Serialization;
 
 namespace BibleConfigurator.ModuleConverter
 {
@@ -26,6 +33,7 @@ namespace BibleConfigurator.ModuleConverter
         public List<string> Shortenings { get; set; }
         public int ChaptersCount { get; set; }
         public string FileName { get; set; }
+        public string SectionName { get; set; }
     }
 
     public class BibleQuotaConverter: ConverterBase
@@ -33,22 +41,25 @@ namespace BibleConfigurator.ModuleConverter
         protected const string IniFileName = "bibleqt.ini";
 
         protected string ModuleFolder { get; set; }
+        protected Encoding FileEncoding { get; set; }
+        
+        
 
-        public BibleQuotaConverter(string emptyNotebookName, string moduleFolder)
-            : base(emptyNotebookName)
+        public BibleQuotaConverter(string emptyNotebookName, string moduleFolder, string manifestFilePathToSave, Encoding fileEncoding,
+            string oldTestamentName, string newTestamentName, int oldTestamentBooksCount, int newTestamentBooksCount, List<NotebookInfo> notebooksInfo)
+            : base(emptyNotebookName, manifestFilePathToSave, oldTestamentName, newTestamentName, oldTestamentBooksCount, newTestamentBooksCount, notebooksInfo)
         {
             this.ModuleFolder = moduleFolder;
+            this.FileEncoding = fileEncoding;            
         }
-
 
         protected override ExternalModuleInfo ReadExternalModuleInfo()
         {
-            string iniFilePath = Path.Combine(ModuleFolder, IniFileName);
-            string fileContent = File.ReadAllText(iniFilePath);
+            string iniFilePath = Path.Combine(ModuleFolder, IniFileName);            
 
             var result = new BibleQuotaModuleInfo();
 
-            foreach(string line in fileContent.Split(new char[] { '\n' }))
+            foreach (string line in File.ReadAllLines(iniFilePath, FileEncoding))
             {
                 var pair = line.Split(new char[] { '=' }, 2, StringSplitOptions.RemoveEmptyEntries);
                 if (pair.Length == 2)
@@ -73,7 +84,7 @@ namespace BibleConfigurator.ModuleConverter
                     else if (key == "FullName")
                         result.BibleBooksInfo[result.BibleBooksInfo.Count - 1].Name = value;
                     else if (key == "ShortName")
-                        result.BibleBooksInfo[result.BibleBooksInfo.Count - 1].Shortenings = value.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                        result.BibleBooksInfo[result.BibleBooksInfo.Count - 1].Shortenings = value.ToLowerInvariant().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                     else if (key == "ChapterQty")
                         result.BibleBooksInfo[result.BibleBooksInfo.Count - 1].ChaptersCount = int.Parse(value);
                 }
@@ -86,22 +97,67 @@ namespace BibleConfigurator.ModuleConverter
         {
             var moduleInfo = (BibleQuotaModuleInfo)externalModuleInfo;
 
-            foreach (var bibleBookInfo in moduleInfo.BibleBooksInfo)
+            XDocument currentChapterDoc = null;
+            XElement currentTableElement = null;            
+            string currentSectionGroupId = null;
+
+            for (int i = 0; i < moduleInfo.BibleBooksInfo.Count; i++) 
             {
-                var bookSectionId = AddNewBook(bibleBookInfo.Name);
+                var bibleBookInfo = moduleInfo.BibleBooksInfo[i];                
+                bibleBookInfo.SectionName = GetBookSectionName(bibleBookInfo.Name, i);
+
+                if (string.IsNullOrEmpty(currentSectionGroupId))
+                    currentSectionGroupId = AddTestamentSectionGroup(OldTestamentName);
+                else if (i == OldTestamentBooksCount)
+                    currentSectionGroupId = AddTestamentSectionGroup(NewTestamentName);
+
+                var bookSectionId = AddBookSection(currentSectionGroupId, bibleBookInfo.SectionName);
 
                 string bookFile = Path.Combine(ModuleFolder, bibleBookInfo.FileName);
-                string fileContent = File.ReadAllText(bookFile);
 
-                foreach (string line in fileContent.Split(new char[] { '\n' }))
+                foreach (string line in File.ReadAllLines(bookFile, FileEncoding))
                 {
+                    string lineText = StringUtils.GetText(line, moduleInfo.Alphabet).Trim();
+
                     if (line.StartsWith(moduleInfo.ChapterSign))
                     {
-                       string chapterTitle = StringUtils.GetText(line, moduleInfo.Alphabet).Trim();
+                        if (currentChapterDoc != null)
+                            oneNoteApp.UpdatePageContent(currentChapterDoc.ToString());
 
-                       var chpaterDoc = AddNewChapter(bookSectionId, chapterTitle);
+                        XmlNamespaceManager xnm;
+                        currentChapterDoc = AddChapterPage(bookSectionId, lineText, out xnm);
+
+                        currentTableElement = AddTableToChapterPage(currentChapterDoc, xnm);
+                    }
+                    else if (line.StartsWith(moduleInfo.VerseSign))
+                    {
+                        if (currentTableElement == null)
+                           throw new Exception("currentTableElement is null");
+
+                        AddVerseRowToTable(currentTableElement, lineText);       
                     }
                 }
+            }
+        }
+
+        protected override void GenerateManifest(ExternalModuleInfo externalModuleInfo)
+        {
+            var extModuleInfo = (BibleQuotaModuleInfo)externalModuleInfo;
+
+            ModuleInfo module = new ModuleInfo() { Name = extModuleInfo.Name, Version = "1.0", Notebooks = NotebooksInfo };
+            module.BibleStructure = new BibleStructureInfo() 
+                { Alphabet = extModuleInfo.Alphabet, NewTestamentName = NewTestamentName, OldTestamentName = OldTestamentName, BibleBooks = new List<BibleBookInfo>() };
+
+            foreach (var bibleBookInfo in extModuleInfo.BibleBooksInfo)
+            {
+                module.BibleStructure.BibleBooks.Add(new BibleBookInfo() { Name = bibleBookInfo.Name, SectionName = bibleBookInfo.SectionName, Shortenings = bibleBookInfo.Shortenings }); 
+            }
+
+            XmlSerializer ser = new XmlSerializer(typeof(ModuleInfo));
+            using (var fs = new FileStream(ManifestFilePath, FileMode.Create))
+            {
+                ser.Serialize(fs, module);
+                fs.Flush();
             }
         }
     }

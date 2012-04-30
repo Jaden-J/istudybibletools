@@ -183,7 +183,7 @@ namespace BibleCommon.Services
             }
         }
 
-        public void RegisteVerseLinkSortPage(string sectionId, string newPageId, string verseLinkParentPageId, int pageLevel)
+        public void RegisterVerseLinkSortPage(string sectionId, string newPageId, string verseLinkParentPageId, int pageLevel)
         {
             _sortVerseLinkPagesInfo.Add(new SortPageInfo()
             {

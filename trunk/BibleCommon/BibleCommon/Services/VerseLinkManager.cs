@@ -233,7 +233,7 @@ namespace BibleCommon.Services
 
                     SetPageName(oneNoteApp, pageId, pageName, isSummaryNotesPage, pageLevel, biblePageDoc.Xnm);              
 
-                    OneNoteProxy.Instance.RegisteVerseLinkSortPage(sectionId, pageId, verseLinkParentPageId, pageLevel);
+                    OneNoteProxy.Instance.RegisterVerseLinkSortPage(sectionId, pageId, verseLinkParentPageId, pageLevel);
 
                     OneNoteProxy.Instance.RefreshHierarchyCache(oneNoteApp, sectionId, HierarchyScope.hsPages);                    
                 }
