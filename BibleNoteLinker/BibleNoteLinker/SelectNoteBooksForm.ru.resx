@@ -118,35 +118,63 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>148, 13</value>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 13</value>
   </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Select the Bible section group</value>
+  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="lblError.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
   </data>
-  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>157, 26</value>
+  <data name="pnMain.Size" type="System.Drawing.Size, System.Drawing">
+    <value>250, 100</value>
   </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Select the Bible Comments and 
-Notes Summary section group</value>
+  <data name="btnOk.Location" type="System.Drawing.Point, System.Drawing">
+    <value>188, 126</value>
   </data>
-  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>178, 13</value>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>277, 161</value>
   </data>
-  <data name="label3.Text" xml:space="preserve">
-    <value>Select the Bible Study section group</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
   </data>
-  <data name="btnBibleSectionRename.Text" xml:space="preserve">
-    <value>Rename</value>
+  <data name="lblError.Size" type="System.Drawing.Size, System.Drawing">
+    <value>29, 13</value>
   </data>
-  <data name="btnBibleCommentsSectionRename.Text" xml:space="preserve">
-    <value>Rename</value>
+  <data name="lblError.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
-  <data name="btnBibleStudySectionRename.Text" xml:space="preserve">
-    <value>Rename</value>
+  <data name="btnOk.Text" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="pnMain.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 13</value>
+  </data>
+  <data name="lblError.Text" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="btnOk.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="pnMain.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="lblError.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 126</value>
+  </data>
+  <data name="lblError.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="btnOk.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Notebook parameters</value>
+    <value>Выберите записные книжки для анализа</value>
+  </data>
+  <data name="$this.Localizable" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="$this.Language" type="System.Globalization.CultureInfo, mscorlib">
+    <value>en</value>
   </data>
 </root>

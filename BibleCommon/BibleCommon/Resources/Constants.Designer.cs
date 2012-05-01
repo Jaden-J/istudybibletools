@@ -61,7 +61,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Русский.
+        ///   Looks up a localized string similar to English.
         /// </summary>
         public static string _LANGUAGE_NAME {
             get {
@@ -223,7 +223,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Указана неподходящая записная книжка.
+        ///   Looks up a localized string similar to Selected Notebook is incorrect.
         /// </summary>
         public static string ConfiguratorWrongNotebookSelected {
             get {

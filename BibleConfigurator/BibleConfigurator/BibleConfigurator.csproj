@@ -99,16 +99,16 @@
     <EmbeddedResource Include="LoadForm.resx">
       <DependentUpon>LoadForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.en.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NotebookParametersForm.en.resx">
-      <DependentUpon>NotebookParametersForm.cs</DependentUpon>
+    <EmbeddedResource Include="MainForm.ru.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NotebookParametersForm.resx">
+      <DependentUpon>NotebookParametersForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NotebookParametersForm.ru.resx">
       <DependentUpon>NotebookParametersForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -121,16 +121,16 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="RenameSectionGroupsForm.en.resx">
-      <DependentUpon>RenameSectionGroupsForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="RenameSectionGroupsForm.resx">
       <DependentUpon>RenameSectionGroupsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SetWidthForm.en.resx">
-      <DependentUpon>SetWidthForm.cs</DependentUpon>
+    <EmbeddedResource Include="RenameSectionGroupsForm.ru.resx">
+      <DependentUpon>RenameSectionGroupsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SetWidthForm.resx">
+      <DependentUpon>SetWidthForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SetWidthForm.ru.resx">
       <DependentUpon>SetWidthForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config">
