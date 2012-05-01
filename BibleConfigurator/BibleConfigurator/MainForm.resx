@@ -1663,13 +1663,19 @@
     <value>True</value>
   </data>
   <data name="lblWarning.Location" type="System.Drawing.Point, System.Drawing">
-    <value>456, 0</value>
+    <value>474, 0</value>
   </data>
   <data name="lblWarning.Size" type="System.Drawing.Size, System.Drawing">
-    <value>0, 13</value>
+    <value>184, 13</value>
   </data>
   <data name="lblWarning.TabIndex" type="System.Int32, mscorlib">
     <value>19</value>
+  </data>
+  <data name="lblWarning.Text" xml:space="preserve">
+    <value>Необходимо сохранить изменения</value>
+  </data>
+  <data name="lblWarning.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="&gt;&gt;lblWarning.Name" xml:space="preserve">
     <value>lblWarning</value>

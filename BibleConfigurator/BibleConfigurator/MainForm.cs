@@ -67,18 +67,34 @@ namespace BibleConfigurator
         }
 
         public bool StopExternalProcess { get; set; }
-        
+
+        private ToolTip _toolTip = null;
+        private void SetToolTip(Control c, string toolTip)
+        {
+            if (_toolTip == null)
+            {
+                _toolTip = new ToolTip();
+
+                _toolTip.AutoPopDelay = 5000;
+                _toolTip.InitialDelay = 1000;
+                _toolTip.ReshowDelay = 500;
+                _toolTip.ShowAlways = true;
+            }
+            
+            _toolTip.SetToolTip(c, toolTip);   
+        }
 
         private void btnOK_Click(object sender, EventArgs e)
         {          
             btnOK.Enabled = false;
-            
+            bool lblWarningVisibilityBefore = lblWarning.Visible;
+            lblWarning.Visible = false;
 
             var module = ModulesManager.GetCurrentModuleInfo();
 
             try
             {
-                Logger.Initialize();                
+                Logger.Initialize();
 
                 if (rbSingleNotebook.Checked)
                 {
@@ -91,26 +107,17 @@ namespace BibleConfigurator
                     SettingsManager.Instance.SectionGroupId_BibleComments = string.Empty;
                     SettingsManager.Instance.SectionGroupId_BibleNotesPages = string.Empty;
 
-                    SaveMultiNotebookParameters(module, NotebookType.Bible, 
-                        chkCreateBibleNotebookFromTemplate.Checked, (string)cbBibleNotebook.SelectedItem);             
+                    SaveMultiNotebookParameters(module, NotebookType.Bible,
+                        chkCreateBibleNotebookFromTemplate.Checked, (string)cbBibleNotebook.SelectedItem);
 
-                    if (!Logger.WasErrorLogged)
-                    {
-                        SaveMultiNotebookParameters(module, NotebookType.BibleStudy, 
-                            chkCreateBibleStudyNotebookFromTemplate.Checked, (string)cbBibleStudyNotebook.SelectedItem);             
+                    SaveMultiNotebookParameters(module, NotebookType.BibleStudy,
+                        chkCreateBibleStudyNotebookFromTemplate.Checked, (string)cbBibleStudyNotebook.SelectedItem);
 
-                        if (!Logger.WasErrorLogged)
-                        {
-                            SaveMultiNotebookParameters(module, NotebookType.BibleComments,
-                                chkCreateBibleCommentsNotebookFromTemplate.Checked, (string)cbBibleCommentsNotebook.SelectedItem);             
+                    SaveMultiNotebookParameters(module, NotebookType.BibleComments,
+                        chkCreateBibleCommentsNotebookFromTemplate.Checked, (string)cbBibleCommentsNotebook.SelectedItem);
 
-                            if (!Logger.WasErrorLogged)
-                            {
-                                SaveMultiNotebookParameters(module, NotebookType.BibleNotesPages,
-                                    chkCreateBibleNotesPagesNotebookFromTemplate.Checked, (string)cbBibleNotesPagesNotebook.SelectedItem);             
-                            }
-                        }
-                    }
+                    SaveMultiNotebookParameters(module, NotebookType.BibleNotesPages,
+                        chkCreateBibleNotesPagesNotebookFromTemplate.Checked, (string)cbBibleNotesPagesNotebook.SelectedItem);
                 }
 
                 if (!Logger.WasErrorLogged)
@@ -125,11 +132,14 @@ namespace BibleConfigurator
             {
                 Logger.LogError(ex.Message);
                 if (ex.NeedToReload)
-                    LoadParameters(module, null);                
+                    LoadParameters(module, null);
+
+                lblWarning.Visible = lblWarningVisibilityBefore;
             }
             finally
             {
                 btnOK.Enabled = true;
+                
             }
         }
 
@@ -145,7 +155,7 @@ namespace BibleConfigurator
             else
             {
                 string notebookId;
-                TryToLoadNotebookParameters(notebookType, selectedNotebookName, out notebookId);
+                TryToLoadNotebookParameters(notebookType, selectedNotebookName, false, out notebookId);
             }
         }
 
@@ -167,7 +177,7 @@ namespace BibleConfigurator
             else
             {
                 notebookName = (string)cbSingleNotebook.SelectedItem;
-                if (TryToLoadNotebookParameters(NotebookType.Single, notebookName, out notebookId))
+                if (TryToLoadNotebookParameters(NotebookType.Single, notebookName, false, out notebookId))
                 {
                     if (_notebookParametersForm != null && _notebookParametersForm.RenamedSectionGroups.Count > 0)
                         RenameSectionGroupsForm(notebookId, _notebookParametersForm.RenamedSectionGroups);
@@ -250,7 +260,7 @@ namespace BibleConfigurator
                     pbMain.PerformStep();
                     System.Windows.Forms.Application.DoEvents();
                     
-                    if (TryToLoadNotebookParameters(notebookType, notebookName, out notebookId, true))
+                    if (TryToLoadNotebookParameters(notebookType, notebookName, true, out notebookId))
                     {
                         parametersWasLoad = true;
                         break;
@@ -268,7 +278,7 @@ namespace BibleConfigurator
                 throw new SaveParametersException(BibleCommon.Resources.Constants.ConfiguratorCanNotRequestDataFromOneNote, true);
         }
 
-        private bool TryToLoadNotebookParameters(NotebookType notebookType, string notebookName, out string notebookId, bool silientMode = false)
+        private bool TryToLoadNotebookParameters(NotebookType notebookType, string notebookName, bool silientMode, out string notebookId)
         {
             notebookId = string.Empty;
 
@@ -305,13 +315,19 @@ namespace BibleConfigurator
                 }
                 else
                 {
+                    string message = string.Format("{0} '{1}' для типа '{2}'.", BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected, notebookName, notebookType);  //todo: локализовать
                     if (!silientMode)
-                        Logger.LogError(string.Format("{0} '{1}' для типа '{2}'.", BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected, notebookName, notebookType));  //todo: локализовать
+                        throw new SaveParametersException(message, false);  
+                    else
+                        BibleCommon.Services.Logger.LogError(message);
                 }
             }
             catch (Exception ex)
             {
-                BibleCommon.Services.Logger.LogError(ex);
+                if (!silientMode)
+                    throw new SaveParametersException(ex.Message, false);
+                else
+                    BibleCommon.Services.Logger.LogError(ex);
             }
 
             return false;
@@ -466,7 +482,7 @@ namespace BibleConfigurator
         private void LoadParameters(ModuleInfo module, bool? needToSaveSettings)
         {
             if (!SettingsManager.Instance.IsConfigured(_oneNoteApp) || needToSaveSettings.GetValueOrDefault(false))
-                lblWarning.Text = BibleCommon.Resources.Constants.ConfiguratorNeedSaveChanges;
+                lblWarning.Visible = true;
 
             Dictionary<string, string> notebooks = GetNotebooks();
             string singleNotebookId = SearchForNotebook(module, notebooks.Keys, NotebookType.Single);
@@ -596,7 +612,14 @@ namespace BibleConfigurator
                 folderBrowserDialog.SelectedPath = myDocumentsPath;            
 
             folderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetNotebookFolder;
-            folderBrowserDialog.ShowNewFolderButton = true;            
+            folderBrowserDialog.ShowNewFolderButton = true;
+
+            string toolTipMessage = "Указать директорию для записной книжки";  //todo: локализовать
+            SetToolTip(btnSingleNotebookSetPath, toolTipMessage);
+            SetToolTip(btnBibleNotebookSetPath, toolTipMessage);
+            SetToolTip(btnBibleStudyNotebookSetPath, toolTipMessage);
+            SetToolTip(btnBibleCommentsNotebookSetPath, toolTipMessage);
+            SetToolTip(btnBibleNotesPagesNotebookSetPath, toolTipMessage);
         }
 
         public Dictionary<string, string> GetNotebooks()
@@ -1030,12 +1053,14 @@ namespace BibleConfigurator
             Button bDel = new Button();
             bDel.Image = BibleConfigurator.Properties.Resources.del;
             bDel.Enabled = SettingsManager.Instance.ModuleName != moduleName;
+            SetToolTip(bDel, "Удалить данный модуль");             //todo: локализовать   
             bDel.Tag = moduleName;
-            bDel.Top = top;
+            bDel.Top = top;            
             bDel.Left = 600;
             bDel.Width = bDel.Height;
             bDel.Click += new EventHandler(btnDeleteModule_Click);
             pnModules.Controls.Add(bDel);
+            
         }
 
         void btnUseThisModule_Click(object sender, EventArgs e)
@@ -1043,7 +1068,17 @@ namespace BibleConfigurator
             var btn = (Button)sender;
             var moduleName = (string)btn.Tag;
 
-            SetModuleToUse(moduleName);
+            bool canContinue = true;
+
+            if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible) && OneNoteUtils.NotebookExists(_oneNoteApp, SettingsManager.Instance.NotebookId_Bible))
+            {
+                if (MessageBox.Show("Данный модуль содержит другой текст Библии и другие варианты сокращений названий книг. Для корректной работы программы необходимо будет пересоздать записную книжку Библии, комментариев Библии и сводных земеток. Продолжить?", "Внимание!",       //todo: локализовать 
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)       
+                    canContinue = false;
+            }
+            
+            if (canContinue)
+                SetModuleToUse(moduleName);            
         }
 
         private void SetModuleToUse(string moduleName)

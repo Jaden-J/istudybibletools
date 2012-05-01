@@ -171,9 +171,6 @@
   <data name="ConfiguratorErrorWhileNotebookOpenning" xml:space="preserve">
     <value>Ошибка при открытии записной книжки</value>
   </data>
-  <data name="ConfiguratorNeedSaveChanges" xml:space="preserve">
-    <value>Необходимо сохранить изменения</value>
-  </data>
   <data name="ConfiguratorNotebookCreation" xml:space="preserve">
     <value>Создание записной книжки</value>
   </data>
