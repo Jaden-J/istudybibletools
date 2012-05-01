@@ -117,231 +117,88 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="chkForce.Text" xml:space="preserve">
-    <value>Bible verses re-analyze</value>
-  </data>
-  <data name="rbAnalyzeCurrentPage.Text" xml:space="preserve">
-    <value>Current page analyze</value>
-  </data>
-  <data name="rbAnalyzeAllPages.Text" xml:space="preserve">
-    <value>All pages analyze</value>
-  </data>
-  <data name="rbAnalyzeChangedPages.Text" xml:space="preserve">
-    <value>Modified pages analyze</value>
-  </data>
-  <data name="lblInfo.Text" xml:space="preserve">
-    <value>A new version of program is available on the site http://IStudyBibleTools.ru.
-Click to go to the download page.</value>
-  </data>
-  <data name="lblProgress.Text" xml:space="preserve">
-    <value>Initialization...</value>
-  </data>
-  <data name="llblDetails.Text" xml:space="preserve">
-    <value>Show details</value>
-  </data>
-  <data name="tsmiSeelctNotebooks.Text" xml:space="preserve">
-    <value>Select notebooks</value>
-  </data>
-  <data name="toolStripMenuItem1.Text" xml:space="preserve">
-    <value>Menu</value>
-  </data>
-  <data name="llblShowErrors.Text" xml:space="preserve">
-    <value>Show errors</value>
-  </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Notes analyze </value>
-  </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 13</value>
-  </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>514, 440</value>
-  </data>
   <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.Language" type="System.Globalization.CultureInfo, mscorlib">
-    <value>en</value>
-  </data>
-  <data name="$this.Localizable" type="System.Boolean, mscorlib">
+  <data name="chkForce.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
-    <value>CenterScreen</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="chkForce.Location" type="System.Drawing.Point, System.Drawing">
+    <value>45, 81</value>
   </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>MainForm</value>
+  <data name="chkForce.Size" type="System.Drawing.Size, System.Drawing">
+    <value>134, 17</value>
   </data>
-  <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btnOk.Name" xml:space="preserve">
-    <value>btnOk</value>
-  </data>
-  <data name="&gt;&gt;btnOk.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;btnOk.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btnOk.ZOrder" xml:space="preserve">
+  <data name="chkForce.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
+  </data>
+  <data name="chkForce.Text" xml:space="preserve">
+    <value>Bible verses re-analyze</value>
   </data>
   <data name="&gt;&gt;chkForce.Name" xml:space="preserve">
     <value>chkForce</value>
   </data>
-  <data name="&gt;&gt;chkForce.Parent" xml:space="preserve">
-    <value>pbBaseElements</value>
-  </data>
   <data name="&gt;&gt;chkForce.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;chkForce.Parent" xml:space="preserve">
+    <value>pbBaseElements</value>
   </data>
   <data name="&gt;&gt;chkForce.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="&gt;&gt;lblInfo.Name" xml:space="preserve">
-    <value>lblInfo</value>
+  <data name="rbAnalyzeCurrentPage.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
-  <data name="&gt;&gt;lblInfo.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="rbAnalyzeCurrentPage.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
   </data>
-  <data name="&gt;&gt;lblInfo.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="rbAnalyzeCurrentPage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 17</value>
   </data>
-  <data name="&gt;&gt;lblInfo.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;lbLog.Name" xml:space="preserve">
-    <value>lbLog</value>
-  </data>
-  <data name="&gt;&gt;lbLog.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;lbLog.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;lbLog.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="&gt;&gt;lblProgress.Name" xml:space="preserve">
-    <value>lblProgress</value>
-  </data>
-  <data name="&gt;&gt;lblProgress.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;lblProgress.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;lblProgress.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;llblDetails.Name" xml:space="preserve">
-    <value>llblDetails</value>
-  </data>
-  <data name="&gt;&gt;llblDetails.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;llblDetails.Type" xml:space="preserve">
-    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;llblDetails.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;llblShowErrors.Name" xml:space="preserve">
-    <value>llblShowErrors</value>
-  </data>
-  <data name="&gt;&gt;llblShowErrors.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;llblShowErrors.Type" xml:space="preserve">
-    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;llblShowErrors.ZOrder" xml:space="preserve">
+  <data name="rbAnalyzeCurrentPage.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;menuStrip1.Name" xml:space="preserve">
-    <value>menuStrip1</value>
-  </data>
-  <data name="&gt;&gt;menuStrip1.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;menuStrip1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.MenuStrip, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="&gt;&gt;pbBaseElements.Name" xml:space="preserve">
-    <value>pbBaseElements</value>
-  </data>
-  <data name="&gt;&gt;pbBaseElements.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;pbBaseElements.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;pbBaseElements.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;pbMain.Name" xml:space="preserve">
-    <value>pbMain</value>
-  </data>
-  <data name="&gt;&gt;pbMain.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;pbMain.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ProgressBar, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;pbMain.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="&gt;&gt;rbAnalyzeAllPages.Name" xml:space="preserve">
-    <value>rbAnalyzeAllPages</value>
-  </data>
-  <data name="&gt;&gt;rbAnalyzeAllPages.Parent" xml:space="preserve">
-    <value>pbBaseElements</value>
-  </data>
-  <data name="&gt;&gt;rbAnalyzeAllPages.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;rbAnalyzeAllPages.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;rbAnalyzeChangedPages.Name" xml:space="preserve">
-    <value>rbAnalyzeChangedPages</value>
-  </data>
-  <data name="&gt;&gt;rbAnalyzeChangedPages.Parent" xml:space="preserve">
-    <value>pbBaseElements</value>
-  </data>
-  <data name="&gt;&gt;rbAnalyzeChangedPages.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;rbAnalyzeChangedPages.ZOrder" xml:space="preserve">
-    <value>3</value>
+  <data name="rbAnalyzeCurrentPage.Text" xml:space="preserve">
+    <value>Current page analyze</value>
   </data>
   <data name="&gt;&gt;rbAnalyzeCurrentPage.Name" xml:space="preserve">
     <value>rbAnalyzeCurrentPage</value>
   </data>
-  <data name="&gt;&gt;rbAnalyzeCurrentPage.Parent" xml:space="preserve">
-    <value>pbBaseElements</value>
-  </data>
   <data name="&gt;&gt;rbAnalyzeCurrentPage.Type" xml:space="preserve">
     <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbAnalyzeCurrentPage.Parent" xml:space="preserve">
+    <value>pbBaseElements</value>
   </data>
   <data name="&gt;&gt;rbAnalyzeCurrentPage.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;toolStripMenuItem1.Name" xml:space="preserve">
-    <value>toolStripMenuItem1</value>
+  <data name="rbAnalyzeAllPages.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
-  <data name="&gt;&gt;toolStripMenuItem1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="rbAnalyzeAllPages.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 49</value>
   </data>
-  <data name="&gt;&gt;tsmiSeelctNotebooks.Name" xml:space="preserve">
-    <value>tsmiSeelctNotebooks</value>
+  <data name="rbAnalyzeAllPages.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 17</value>
   </data>
-  <data name="&gt;&gt;tsmiSeelctNotebooks.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="rbAnalyzeAllPages.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="rbAnalyzeAllPages.Text" xml:space="preserve">
+    <value>All pages analyze</value>
+  </data>
+  <data name="&gt;&gt;rbAnalyzeAllPages.Name" xml:space="preserve">
+    <value>rbAnalyzeAllPages</value>
+  </data>
+  <data name="&gt;&gt;rbAnalyzeAllPages.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbAnalyzeAllPages.Parent" xml:space="preserve">
+    <value>pbBaseElements</value>
+  </data>
+  <data name="&gt;&gt;rbAnalyzeAllPages.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="btnOk.Location" type="System.Drawing.Point, System.Drawing">
     <value>425, 130</value>
@@ -352,16 +209,43 @@ Click to go to the download page.</value>
   <data name="btnOk.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
   </data>
-  <data name="chkForce.AutoSize" type="System.Boolean, mscorlib">
+  <data name="&gt;&gt;btnOk.Name" xml:space="preserve">
+    <value>btnOk</value>
+  </data>
+  <data name="&gt;&gt;btnOk.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnOk.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;btnOk.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="rbAnalyzeChangedPages.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="chkForce.Location" type="System.Drawing.Point, System.Drawing">
-    <value>45, 81</value>
+  <data name="rbAnalyzeChangedPages.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 26</value>
   </data>
-  <data name="chkForce.Size" type="System.Drawing.Size, System.Drawing">
-    <value>189, 17</value>
+  <data name="rbAnalyzeChangedPages.Size" type="System.Drawing.Size, System.Drawing">
+    <value>136, 17</value>
   </data>
-  <data name="chkForce.TabIndex" type="System.Int32, mscorlib">
+  <data name="rbAnalyzeChangedPages.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="rbAnalyzeChangedPages.Text" xml:space="preserve">
+    <value>Modified pages analyze</value>
+  </data>
+  <data name="&gt;&gt;rbAnalyzeChangedPages.Name" xml:space="preserve">
+    <value>rbAnalyzeChangedPages</value>
+  </data>
+  <data name="&gt;&gt;rbAnalyzeChangedPages.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbAnalyzeChangedPages.Parent" xml:space="preserve">
+    <value>pbBaseElements</value>
+  </data>
+  <data name="&gt;&gt;rbAnalyzeChangedPages.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
   <data name="lblInfo.AutoSize" type="System.Boolean, mscorlib">
@@ -374,9 +258,46 @@ Click to go to the download page.</value>
     <value>12, 127</value>
   </data>
   <data name="lblInfo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>368, 26</value>
+    <value>362, 26</value>
   </data>
   <data name="lblInfo.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="lblInfo.Text" xml:space="preserve">
+    <value>A new version of program is available on the site http://IStudyBibleTools.ru.
+Click to go to the download page.</value>
+  </data>
+  <data name="&gt;&gt;lblInfo.Name" xml:space="preserve">
+    <value>lblInfo</value>
+  </data>
+  <data name="&gt;&gt;lblInfo.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblInfo.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;lblInfo.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="pbMain.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 177</value>
+  </data>
+  <data name="pbMain.Size" type="System.Drawing.Size, System.Drawing">
+    <value>488, 23</value>
+  </data>
+  <data name="pbMain.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;pbMain.Name" xml:space="preserve">
+    <value>pbMain</value>
+  </data>
+  <data name="&gt;&gt;pbMain.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ProgressBar, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;pbMain.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;pbMain.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
   <data name="lbLog.HorizontalScrollbar" type="System.Boolean, mscorlib">
@@ -391,6 +312,18 @@ Click to go to the download page.</value>
   <data name="lbLog.TabIndex" type="System.Int32, mscorlib">
     <value>10</value>
   </data>
+  <data name="&gt;&gt;lbLog.Name" xml:space="preserve">
+    <value>lbLog</value>
+  </data>
+  <data name="&gt;&gt;lbLog.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lbLog.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;lbLog.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
   <data name="lblProgress.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -398,10 +331,25 @@ Click to go to the download page.</value>
     <value>9, 161</value>
   </data>
   <data name="lblProgress.Size" type="System.Drawing.Size, System.Drawing">
-    <value>96, 13</value>
+    <value>70, 13</value>
   </data>
   <data name="lblProgress.TabIndex" type="System.Int32, mscorlib">
     <value>12</value>
+  </data>
+  <data name="lblProgress.Text" xml:space="preserve">
+    <value>Initialization...</value>
+  </data>
+  <data name="&gt;&gt;lblProgress.Name" xml:space="preserve">
+    <value>lblProgress</value>
+  </data>
+  <data name="&gt;&gt;lblProgress.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblProgress.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;lblProgress.ZOrder" xml:space="preserve">
+    <value>5</value>
   </data>
   <data name="llblDetails.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -410,25 +358,40 @@ Click to go to the download page.</value>
     <value>9, 203</value>
   </data>
   <data name="llblDetails.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 13</value>
+    <value>67, 13</value>
   </data>
   <data name="llblDetails.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
   </data>
-  <data name="llblShowErrors.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="llblDetails.Text" xml:space="preserve">
+    <value>Show details</value>
   </data>
-  <data name="llblShowErrors.Location" type="System.Drawing.Point, System.Drawing">
-    <value>403, 203</value>
+  <data name="&gt;&gt;llblDetails.Name" xml:space="preserve">
+    <value>llblDetails</value>
   </data>
-  <data name="llblShowErrors.Size" type="System.Drawing.Size, System.Drawing">
-    <value>97, 13</value>
+  <data name="&gt;&gt;llblDetails.Type" xml:space="preserve">
+    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="llblShowErrors.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
+  <data name="&gt;&gt;llblDetails.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
-  <data name="llblShowErrors.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
+  <data name="&gt;&gt;llblDetails.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="tsmiSeelctNotebooks.Size" type="System.Drawing.Size, System.Drawing">
+    <value>164, 22</value>
+  </data>
+  <data name="tsmiSeelctNotebooks.Text" xml:space="preserve">
+    <value>Select notebooks</value>
+  </data>
+  <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>50, 20</value>
+  </data>
+  <data name="toolStripMenuItem1.Text" xml:space="preserve">
+    <value>Menu</value>
   </data>
   <data name="menuStrip1.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
@@ -439,8 +402,17 @@ Click to go to the download page.</value>
   <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
     <value>15</value>
   </data>
-  <data name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing">
-    <value>17, 17</value>
+  <data name="&gt;&gt;menuStrip1.Name" xml:space="preserve">
+    <value>menuStrip1</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.MenuStrip, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
+    <value>8</value>
   </data>
   <data name="pbBaseElements.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 27</value>
@@ -451,55 +423,80 @@ Click to go to the download page.</value>
   <data name="pbBaseElements.TabIndex" type="System.Int32, mscorlib">
     <value>16</value>
   </data>
-  <data name="pbMain.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 177</value>
+  <data name="&gt;&gt;pbBaseElements.Name" xml:space="preserve">
+    <value>pbBaseElements</value>
   </data>
-  <data name="pbMain.Size" type="System.Drawing.Size, System.Drawing">
-    <value>488, 23</value>
+  <data name="&gt;&gt;pbBaseElements.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="pbMain.TabIndex" type="System.Int32, mscorlib">
-    <value>9</value>
+  <data name="&gt;&gt;pbBaseElements.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
-  <data name="rbAnalyzeAllPages.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="rbAnalyzeAllPages.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 49</value>
-  </data>
-  <data name="rbAnalyzeAllPages.Size" type="System.Drawing.Size, System.Drawing">
-    <value>176, 17</value>
-  </data>
-  <data name="rbAnalyzeAllPages.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="rbAnalyzeChangedPages.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="rbAnalyzeChangedPages.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 26</value>
-  </data>
-  <data name="rbAnalyzeChangedPages.Size" type="System.Drawing.Size, System.Drawing">
-    <value>260, 17</value>
-  </data>
-  <data name="rbAnalyzeChangedPages.TabIndex" type="System.Int32, mscorlib">
+  <data name="&gt;&gt;pbBaseElements.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="rbAnalyzeCurrentPage.AutoSize" type="System.Boolean, mscorlib">
+  <data name="llblShowErrors.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="rbAnalyzeCurrentPage.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+  <data name="llblShowErrors.Location" type="System.Drawing.Point, System.Drawing">
+    <value>403, 203</value>
   </data>
-  <data name="rbAnalyzeCurrentPage.Size" type="System.Drawing.Size, System.Drawing">
-    <value>199, 17</value>
+  <data name="llblShowErrors.Size" type="System.Drawing.Size, System.Drawing">
+    <value>63, 13</value>
   </data>
-  <data name="rbAnalyzeCurrentPage.TabIndex" type="System.Int32, mscorlib">
+  <data name="llblShowErrors.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="llblShowErrors.Text" xml:space="preserve">
+    <value>Show errors</value>
+  </data>
+  <data name="llblShowErrors.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;llblShowErrors.Name" xml:space="preserve">
+    <value>llblShowErrors</value>
+  </data>
+  <data name="&gt;&gt;llblShowErrors.Type" xml:space="preserve">
+    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;llblShowErrors.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;llblShowErrors.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>48, 20</value>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 13</value>
   </data>
-  <data name="tsmiSeelctNotebooks.Size" type="System.Drawing.Size, System.Drawing">
-    <value>210, 22</value>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>514, 440</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterScreen</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Notes analyze </value>
+  </data>
+  <data name="&gt;&gt;toolStripMenuItem1.Name" xml:space="preserve">
+    <value>toolStripMenuItem1</value>
+  </data>
+  <data name="&gt;&gt;toolStripMenuItem1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tsmiSeelctNotebooks.Name" xml:space="preserve">
+    <value>tsmiSeelctNotebooks</value>
+  </data>
+  <data name="&gt;&gt;tsmiSeelctNotebooks.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>MainForm</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>
