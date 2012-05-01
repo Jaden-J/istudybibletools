@@ -56,13 +56,13 @@
     <Compile Include="Helpers\FormExtensions.cs" />
     <Compile Include="Helpers\StringUtils.cs" />
     <Compile Include="Helpers\Utils.cs" />
-    <Compile Include="Resources\Constants.Designer.cs">
+    <Compile Include="Resources\Constants.ru.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Constants.resx</DependentUpon>
+      <DependentUpon>Constants.ru.resx</DependentUpon>
     </Compile>
-    <Compile Include="Resources\Constants.en.Designer.cs">
-      <DependentUpon>Constants.en.resx</DependentUpon>
+    <Compile Include="Resources\Constants.Designer.cs">
+      <DependentUpon>Constants.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -97,14 +97,14 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\Constants.ru.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Constants.ru.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Constants.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Constants.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Constants.en.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Constants.en.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
