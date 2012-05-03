@@ -1036,9 +1036,19 @@ namespace BibleConfigurator
             cb.AutoCheck = false;
             cb.Checked = SettingsManager.Instance.ModuleName == moduleName;
             cb.Top = top;
-            cb.Left = 385;
+            cb.Left = 370;
             cb.Width = 20;
             pnModules.Controls.Add(cb);
+
+            Button bInfo = new Button();
+            bInfo.Text = "?";
+            SetToolTip(bInfo, BibleCommon.Resources.Constants.ModuleInformation);
+            bInfo.Tag = moduleName;
+            bInfo.Top = top;
+            bInfo.Left = 390;
+            bInfo.Width = 20;
+            bInfo.Click += new EventHandler(btnModuleInfo_Click);
+            pnModules.Controls.Add(bInfo);            
 
             Button b = new Button();
             b.Text = BibleCommon.Resources.Constants.UseThisModule;      
@@ -1061,6 +1071,15 @@ namespace BibleConfigurator
             bDel.Click += new EventHandler(btnDeleteModule_Click);
             pnModules.Controls.Add(bDel);
             
+        }
+
+        void btnModuleInfo_Click(object sender, EventArgs e)
+        {
+            var btn = (Button)sender;
+            var moduleName = (string)btn.Tag;
+
+            AboutModuleForm f = new AboutModuleForm(moduleName);
+            f.ShowDialog();                
         }
 
         void btnUseThisModule_Click(object sender, EventArgs e)
