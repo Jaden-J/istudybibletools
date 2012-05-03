@@ -35,14 +35,14 @@
             // 
             // lbErrors
             // 
-            resources.ApplyResources(this.lbErrors, "lbErrors");
             this.lbErrors.FormattingEnabled = true;
+            resources.ApplyResources(this.lbErrors, "lbErrors");
             this.lbErrors.Name = "lbErrors";
             // 
             // btnOk
             // 
-            resources.ApplyResources(this.btnOk, "btnOk");
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.btnOk, "btnOk");
             this.btnOk.Name = "btnOk";
             this.btnOk.UseVisualStyleBackColor = true;
             // 

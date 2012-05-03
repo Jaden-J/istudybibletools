@@ -45,29 +45,14 @@ namespace BibleConfigurator
             return result;
         }
 
-        public static bool ElementIsBibleStudy(ModuleInfo module, XElement element, XmlNamespaceManager xnm)
+        private static bool ElementIsBibleStudy(ModuleInfo module, XElement element, XmlNamespaceManager xnm)
         {
             bool result = !(ElementIsBible(module, element, xnm) || ElementIsBibleComments(module, element, xnm));
-            
-
-            //if (result)
-            //{
-            //    //string notebookName = (string)element.Attribute("name").Value;
-            //    //if (Consts.NotBibleStudyNotebooks.Contains(notebookName))                
-            //    //    result = false;
-
-            //    //string bibleStudyNotebookDefaultName =
-            //    //    Path.GetFileNameWithoutExtension(module.Notebooks.First(n => n.Type == NotebookType.BibleStudy).Name);
-
-            //    //if (!notebookName.StartsWith(bibleStudyNotebookDefaultName))
-            //    //    result = false;
-            //}
-
 
             return result;
         }
 
-        public static bool ElementIsSingleNotebook(ModuleInfo module, XDocument notebookDoc, XmlNamespaceManager xnm)
+        private static bool ElementIsSingleNotebook(ModuleInfo module, XDocument notebookDoc, XmlNamespaceManager xnm)
         {
             List<XElement> sectionsGroups = notebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm).Where(sg => !OneNoteUtils.IsRecycleBin(sg)).ToList();
 

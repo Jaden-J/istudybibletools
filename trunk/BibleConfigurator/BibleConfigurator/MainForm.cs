@@ -1118,8 +1118,7 @@ namespace BibleConfigurator
             }
 
             return false;
-        }
-
+        }        
        
       
     }

@@ -126,13 +126,13 @@
     <value>45, 81</value>
   </data>
   <data name="chkForce.Size" type="System.Drawing.Size, System.Drawing">
-    <value>134, 17</value>
+    <value>139, 17</value>
   </data>
   <data name="chkForce.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
   </data>
   <data name="chkForce.Text" xml:space="preserve">
-    <value>Bible verses re-analyze</value>
+    <value>Re-analyze Bible verses</value>
   </data>
   <data name="&gt;&gt;chkForce.Name" xml:space="preserve">
     <value>chkForce</value>
@@ -159,7 +159,7 @@
     <value>0</value>
   </data>
   <data name="rbAnalyzeCurrentPage.Text" xml:space="preserve">
-    <value>Current page analyze</value>
+    <value>Analyze current page</value>
   </data>
   <data name="&gt;&gt;rbAnalyzeCurrentPage.Name" xml:space="preserve">
     <value>rbAnalyzeCurrentPage</value>
@@ -186,7 +186,7 @@
     <value>2</value>
   </data>
   <data name="rbAnalyzeAllPages.Text" xml:space="preserve">
-    <value>All pages analyze</value>
+    <value>Analyze all pages</value>
   </data>
   <data name="&gt;&gt;rbAnalyzeAllPages.Name" xml:space="preserve">
     <value>rbAnalyzeAllPages</value>
@@ -208,6 +208,9 @@
   </data>
   <data name="btnOk.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
+  </data>
+  <data name="btnOk.Text" xml:space="preserve">
+    <value>OK</value>
   </data>
   <data name="&gt;&gt;btnOk.Name" xml:space="preserve">
     <value>btnOk</value>
@@ -234,7 +237,7 @@
     <value>1</value>
   </data>
   <data name="rbAnalyzeChangedPages.Text" xml:space="preserve">
-    <value>Modified pages analyze</value>
+    <value>Analyze modified pages</value>
   </data>
   <data name="&gt;&gt;rbAnalyzeChangedPages.Name" xml:space="preserve">
     <value>rbAnalyzeChangedPages</value>
@@ -378,9 +381,9 @@ Click to go to the download page.</value>
   <data name="&gt;&gt;llblDetails.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>17, 17</value>
-  </metadata>
+  </data>
   <data name="tsmiSeelctNotebooks.Size" type="System.Drawing.Size, System.Drawing">
     <value>164, 22</value>
   </data>
@@ -465,9 +468,9 @@ Click to go to the download page.</value>
   <data name="&gt;&gt;llblShowErrors.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <data name="$this.Localizable" type="System.Boolean, mscorlib">
     <value>True</value>
-  </metadata>
+  </data>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 13</value>
   </data>
@@ -498,5 +501,8 @@ Click to go to the download page.</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="menuStrip1.Text" xml:space="preserve">
+    <value>File</value>
   </data>
 </root>

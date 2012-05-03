@@ -1507,10 +1507,13 @@
     <value>9, 7</value>
   </data>
   <data name="lblMustSelectModule.Size" type="System.Drawing.Size, System.Drawing">
-    <value>0, 13</value>
+    <value>148, 13</value>
   </data>
   <data name="lblMustSelectModule.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
+  </data>
+  <data name="lblMustSelectModule.Text" xml:space="preserve">
+    <value>Need to select module for use</value>
   </data>
   <data name="&gt;&gt;lblMustSelectModule.Name" xml:space="preserve">
     <value>lblMustSelectModule</value>
@@ -1528,13 +1531,16 @@
     <value>True</value>
   </data>
   <data name="lblMustUploadModule.Location" type="System.Drawing.Point, System.Drawing">
-    <value>214, 102</value>
+    <value>277, 101</value>
   </data>
   <data name="lblMustUploadModule.Size" type="System.Drawing.Size, System.Drawing">
-    <value>0, 13</value>
+    <value>103, 13</value>
   </data>
   <data name="lblMustUploadModule.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
+  </data>
+  <data name="lblMustUploadModule.Text" xml:space="preserve">
+    <value>Need to add module</value>
   </data>
   <data name="&gt;&gt;lblMustUploadModule.Name" xml:space="preserve">
     <value>lblMustUploadModule</value>
@@ -1556,6 +1562,9 @@
   </data>
   <data name="btnUploadModule.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
+  </data>
+  <data name="btnUploadModule.Text" xml:space="preserve">
+    <value>Upload module</value>
   </data>
   <data name="&gt;&gt;btnUploadModule.Name" xml:space="preserve">
     <value>btnUploadModule</value>
@@ -1580,6 +1589,9 @@
   </data>
   <data name="tabPage4.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
+  </data>
+  <data name="tabPage4.Text" xml:space="preserve">
+    <value>Modules</value>
   </data>
   <data name="&gt;&gt;tabPage4.Name" xml:space="preserve">
     <value>tabPage4</value>
@@ -1633,16 +1645,16 @@
     <value>True</value>
   </data>
   <data name="lblWarning.Location" type="System.Drawing.Point, System.Drawing">
-    <value>474, 0</value>
+    <value>531, 0</value>
   </data>
   <data name="lblWarning.Size" type="System.Drawing.Size, System.Drawing">
-    <value>110, 13</value>
+    <value>126, 13</value>
   </data>
   <data name="lblWarning.TabIndex" type="System.Int32, mscorlib">
     <value>19</value>
   </data>
   <data name="lblWarning.Text" xml:space="preserve">
-    <value>Need to save settings</value>
+    <value>Need to save parameters</value>
   </data>
   <data name="lblWarning.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -1761,18 +1773,21 @@
   <data name="&gt;&gt;splitContainer1.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <metadata name="folderBrowserDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <data name="folderBrowserDialog.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>279, 17</value>
-  </metadata>
-  <metadata name="saveFileDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  </data>
+  <data name="saveFileDialog.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>150, 17</value>
-  </metadata>
-  <metadata name="openFileDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  </data>
+  <data name="openFileDialog.TrayLocation" type="System.Drawing.Point, System.Drawing">
     <value>17, 17</value>
-  </metadata>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  </data>
+  <data name="openFileDialog.Filter" xml:space="preserve">
+    <value>IStudyBibleTools Module|*.isbt</value>
+  </data>
+  <data name="$this.Localizable" type="System.Boolean, mscorlib">
     <value>True</value>
-  </metadata>
+  </data>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 13</value>
   </data>
@@ -1808,5 +1823,26 @@
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnBibleCommentsNotebookSetPath.Text" xml:space="preserve">
+    <value>...</value>
+  </data>
+  <data name="btnBibleNotebookSetPath.Text" xml:space="preserve">
+    <value>...</value>
+  </data>
+  <data name="btnBibleNotesPagesNotebookSetPath.Text" xml:space="preserve">
+    <value>...</value>
+  </data>
+  <data name="btnBibleStudyNotebookSetPath.Text" xml:space="preserve">
+    <value>...</value>
+  </data>
+  <data name="btnOK.Text" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="btnSingleNotebookSetPath.Text" xml:space="preserve">
+    <value>...</value>
+  </data>
+  <data name="label9.Text" xml:space="preserve">
+    <value>Language</value>
   </data>
 </root>
