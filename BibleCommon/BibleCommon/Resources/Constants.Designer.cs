@@ -124,6 +124,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Данный модуль содержит другой текст Библии и другие варианты сокращений названий книг. Для корректной работы программы необходимо будет пересоздать записную книжку Библии, комментариев Библии и сводных земеток. Продолжить?.
+        /// </summary>
+        public static string ChangeModuleWarning {
+            get {
+                return ResourceManager.GetString("ChangeModuleWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Закрыть.
         /// </summary>
         public static string Close {
@@ -223,7 +232,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Selected Notebook is incorrect.
+        ///   Looks up a localized string similar to Указана неподходящая записная книжка &apos;{0}&apos; для типа &apos;{1}&apos;..
         /// </summary>
         public static string ConfiguratorWrongNotebookSelected {
             get {
@@ -277,6 +286,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Указать директорию для записной книжки.
+        /// </summary>
+        public static string DefineNotebookDirectory {
+            get {
+                return ResourceManager.GetString("DefineNotebookDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Удаление страниц &apos;Сводные заметок&apos; успешно завершено..
         /// </summary>
         public static string DeleteNotesPagesManagerFinishMessage {
@@ -304,6 +322,24 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Удалить данный модуль.
+        /// </summary>
+        public static string DeleteThisModule {
+            get {
+                return ResourceManager.GetString("DeleteThisModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Удалить данный модуль?.
+        /// </summary>
+        public static string DeleteThisModuleQuestion {
+            get {
+                return ResourceManager.GetString("DeleteThisModuleQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ошибка.
         /// </summary>
         public static string Error {
@@ -322,6 +358,24 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Не указан шаблон записной книжки типа &apos;{0}&apos;..
+        /// </summary>
+        public static string Error_NotebookTemplateNotDefined {
+            get {
+                return ResourceManager.GetString("Error_NotebookTemplateNotDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не найден шаблон записной книжки &apos;{0}&apos; типа &apos;{1}&apos;..
+        /// </summary>
+        public static string Error_NotebookTemplateNotFound {
+            get {
+                return ResourceManager.GetString("Error_NotebookTemplateNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Не найдено открытой записной книжки.
         /// </summary>
         public static string Error_OpenedNotebookNotFound {
@@ -336,6 +390,15 @@ namespace BibleCommon.Resources {
         public static string Error_OpenedNotePageNotFound {
             get {
                 return ResourceManager.GetString("Error_OpenedNotePageNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не указана группа разделов типа &apos;{0}&apos; в шаблоне записной книжки типа &apos;{1}&apos;..
+        /// </summary>
+        public static string Error_SectionGroupNotDefined {
+            get {
+                return ResourceManager.GetString("Error_SectionGroupNotDefined", resourceCulture);
             }
         }
         
@@ -390,6 +453,24 @@ namespace BibleCommon.Resources {
         public static string FinishWithErrors {
             get {
                 return ResourceManager.GetString("FinishWithErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to При загрузке модуля &apos;{0}&apos; произошла ошибка: {1}&quot;.
+        /// </summary>
+        public static string ModuleUploadError {
+            get {
+                return ResourceManager.GetString("ModuleUploadError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Модуль с таким именем уже существует. Существующий модуль будет полностью заменён загружаемым. Продолжить?.
+        /// </summary>
+        public static string ModuleWithSameNameAlreadyExists {
+            get {
+                return ResourceManager.GetString("ModuleWithSameNameAlreadyExists", resourceCulture);
             }
         }
         
@@ -709,6 +790,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Выберите файл с расширением &apos;{0}&apos;..
+        /// </summary>
+        public static string SelectFileWithExtension {
+            get {
+                return ResourceManager.GetString("SelectFileWithExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Время старта.
         /// </summary>
         public static string StartTime {
@@ -723,6 +813,15 @@ namespace BibleCommon.Resources {
         public static string TimeSpend {
             get {
                 return ResourceManager.GetString("TimeSpend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Использовать данный модуль.
+        /// </summary>
+        public static string UseThisModule {
+            get {
+                return ResourceManager.GetString("UseThisModule", resourceCulture);
             }
         }
         

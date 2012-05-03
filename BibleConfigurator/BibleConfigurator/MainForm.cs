@@ -315,7 +315,7 @@ namespace BibleConfigurator
                 }
                 else
                 {
-                    string message = string.Format("{0} '{1}' для типа '{2}'.", BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected, notebookName, notebookType);  //todo: локализовать
+                    string message = string.Format(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected, notebookName, notebookType);
                     if (!silientMode)
                         throw new SaveParametersException(message, false);  
                     else
@@ -614,7 +614,7 @@ namespace BibleConfigurator
             folderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetNotebookFolder;
             folderBrowserDialog.ShowNewFolderButton = true;
 
-            string toolTipMessage = "Указать директорию для записной книжки";  //todo: локализовать
+            string toolTipMessage = BibleCommon.Resources.Constants.DefineNotebookDirectory;
             SetToolTip(btnSingleNotebookSetPath, toolTipMessage);
             SetToolTip(btnBibleNotebookSetPath, toolTipMessage);
             SetToolTip(btnBibleStudyNotebookSetPath, toolTipMessage);
@@ -729,7 +729,7 @@ namespace BibleConfigurator
                 }
                 else
                 {
-                    Logger.LogError(string.Format("{0} '{1}' для типа '{2}'.", BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected, notebookName, NotebookType.Single)); //todo: локализовать
+                    Logger.LogError(string.Format(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected, notebookName, NotebookType.Single));
                 }
             }
             else
@@ -937,7 +937,7 @@ namespace BibleConfigurator
 
             if (File.Exists(destFilePath))
             {
-                if (MessageBox.Show("Модуль с таким именем уже существует. Существующий модуль будет полностью заменён загружаемым. Продолжить?", "Внимание!",     //todo: локализовать
+                if (MessageBox.Show(BibleCommon.Resources.Constants.ModuleWithSameNameAlreadyExists, BibleCommon.Resources.Constants.Warning,
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.No)
                     canContinue = false;
             }
@@ -995,7 +995,7 @@ namespace BibleConfigurator
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogMessage(string.Format("При загрузке модуля '{0}' произошла ошибка: {1}", moduleDirectory, ex.Message));   //todo: локализовать
+                    Logger.LogMessage(string.Format(BibleCommon.Resources.Constants.ModuleUploadError, moduleDirectory, ex.Message));
                     if (DeleteModuleWithConfirm(moduleName))
                         return;
                 }
@@ -1041,7 +1041,7 @@ namespace BibleConfigurator
             pnModules.Controls.Add(cb);
 
             Button b = new Button();
-            b.Text = "Использовать данный модуль";      //todo: локализовать
+            b.Text = BibleCommon.Resources.Constants.UseThisModule;      
             b.Enabled = SettingsManager.Instance.ModuleName != moduleName;
             b.Tag = moduleName;
             b.Top = top;
@@ -1053,7 +1053,7 @@ namespace BibleConfigurator
             Button bDel = new Button();
             bDel.Image = BibleConfigurator.Properties.Resources.del;
             bDel.Enabled = SettingsManager.Instance.ModuleName != moduleName;
-            SetToolTip(bDel, "Удалить данный модуль");             //todo: локализовать   
+            SetToolTip(bDel, BibleCommon.Resources.Constants.DeleteThisModule);
             bDel.Tag = moduleName;
             bDel.Top = top;            
             bDel.Left = 600;
@@ -1072,7 +1072,7 @@ namespace BibleConfigurator
 
             if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible) && OneNoteUtils.NotebookExists(_oneNoteApp, SettingsManager.Instance.NotebookId_Bible))
             {
-                if (MessageBox.Show("Данный модуль содержит другой текст Библии и другие варианты сокращений названий книг. Для корректной работы программы необходимо будет пересоздать записную книжку Библии, комментариев Библии и сводных земеток. Продолжить?", "Внимание!",       //todo: локализовать 
+                if (MessageBox.Show(BibleCommon.Resources.Constants.ChangeModuleWarning, BibleCommon.Resources.Constants.Warning,       
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)       
                     canContinue = false;
             }
@@ -1108,7 +1108,7 @@ namespace BibleConfigurator
 
         private bool DeleteModuleWithConfirm(string moduleName)
         {
-            if (MessageBox.Show("Удалить данный модуль?", "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)     //todo: локализовать
+            if (MessageBox.Show(BibleCommon.Resources.Constants.DeleteThisModuleQuestion, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)  
                == System.Windows.Forms.DialogResult.Yes)
             {
                 ModulesManager.DeleteModule(moduleName);
