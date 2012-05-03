@@ -14,14 +14,21 @@ namespace BibleCommon.Services
         {
             get
             {
-                return new CultureInfo(
-                    SettingsManager.Instance.Language != 0
-                    ? SettingsManager.Instance.Language
-                    : Thread.CurrentThread.CurrentUICulture.LCID);
+                int lcid = _defaultLCID;
+
+                if (SettingsManager.Instance.Language != 0)
+                    lcid = SettingsManager.Instance.Language;
+                else if (_localesLCID.Contains(Thread.CurrentThread.CurrentUICulture.LCID))
+                    lcid = Thread.CurrentThread.CurrentUICulture.LCID;                
+
+                return new CultureInfo(lcid);
             }
         }
 
-        private static int[] _localsLCID =
+
+        private static int _defaultLCID = 1033;
+
+        private static int[] _localesLCID =
             {
                 1049,
                 1033
@@ -31,7 +38,7 @@ namespace BibleCommon.Services
         {
             List<string> names = new List<string>();
 
-            foreach (var local in _localsLCID)
+            foreach (var local in _localesLCID)
             {
                 names.Add(BibleCommon.Resources.Constants.ResourceManager.GetString("_LANGUAGE_NAME", new CultureInfo(local)));
             }
@@ -43,7 +50,7 @@ namespace BibleCommon.Services
         {
             Dictionary<int, string> names = new Dictionary<int, string>();
 
-            foreach (var local in _localsLCID)
+            foreach (var local in _localesLCID)
             {
                 names.Add(local, BibleCommon.Resources.Constants.ResourceManager.GetString("_LANGUAGE_NAME", new CultureInfo(local)));
             }

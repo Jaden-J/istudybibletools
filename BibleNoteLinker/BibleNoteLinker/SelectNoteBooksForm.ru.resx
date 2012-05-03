@@ -145,7 +145,7 @@
     <value>True</value>
   </data>
   <data name="btnOk.Text" xml:space="preserve">
-    <value>Ok</value>
+    <value>OK</value>
   </data>
   <data name="pnMain.Location" type="System.Drawing.Point, System.Drawing">
     <value>13, 13</value>

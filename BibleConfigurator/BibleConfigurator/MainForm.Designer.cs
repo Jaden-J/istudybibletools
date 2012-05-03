@@ -576,6 +576,7 @@
             // openFileDialog
             // 
             this.openFileDialog.DefaultExt = "isbt";
+            resources.ApplyResources(this.openFileDialog, "openFileDialog");
             // 
             // MainForm
             // 
