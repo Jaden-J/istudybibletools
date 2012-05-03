@@ -117,35 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BackupStartInfo" xml:space="preserve">
-    <value>Старт создания резервной копии данных</value>
-  </data>
-  <data name="DefaultPageNameDefaultBookOverview" xml:space="preserve">
-    <value>Общий обзор</value>
-  </data>
-  <data name="DefaultPageNameDefaultComments" xml:space="preserve">
-    <value>Комментарии</value>
-  </data>
-  <data name="DefaultPageName_Notes" xml:space="preserve">
-    <value>Заметки</value>
-  </data>
-  <data name="DefaultPageName_RubbishNotes" xml:space="preserve">
-    <value>Подробные заметки</value>
-  </data>
-  <data name="Error_SystemIsNotConfigures" xml:space="preserve">
-    <value>Программа не сконфигурирована. Откройте 'Параметры программы' и укажите все необходимые настройки.</value>
-  </data>
-  <data name="Error_UpdateError_InksOnPages" xml:space="preserve">
-    <value>Не удалось обновить страницу. Возможно на странице присутствуют нарисованные кистью элементы, которые на текущий момент не поддерживаются программой. \nУдалите такие элементы и повторите операцию.</value>
-  </data>
-  <data name="StartTime" xml:space="preserve">
-    <value>Время старта</value>
-  </data>
-  <data name="VerseLinksDelimiter" xml:space="preserve">
-    <value>; </value>
-  </data>
-  <data name="VerseLinkTemplate" xml:space="preserve">
-    <value>ссылка {0}</value>
+  <data name="_LANGUAGE_NAME" xml:space="preserve">
+    <value>Русский</value>
   </data>
   <data name="BackupManagerFinishMessage" xml:space="preserve">
     <value>Создание резервной копии данных успешно завершено.</value>
@@ -156,11 +129,20 @@
   <data name="BackupManagerToZipArchive" xml:space="preserve">
     <value>Упаковывание файлов в .zip архив.</value>
   </data>
+  <data name="BackupStartInfo" xml:space="preserve">
+    <value>Старт создания резервной копии данных</value>
+  </data>
   <data name="BibleVersePointerCanNotFindPlace" xml:space="preserve">
     <value>Не удалось определить место</value>
   </data>
   <data name="BibleVersePointerCanNotParseString" xml:space="preserve">
     <value>Не удалось распознать строку</value>
+  </data>
+  <data name="Books" xml:space="preserve">
+    <value>книг</value>
+  </data>
+  <data name="ChangeModuleWarning" xml:space="preserve">
+    <value>Данный модуль содержит другой текст Библии и другие варианты сокращений названий книг. Для корректной работы программы необходимо будет пересоздать записную книжку Библии, комментариев Библии и сводных земеток. Продолжить?</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>Закрыть</value>
@@ -174,8 +156,17 @@
   <data name="ConfiguratorNotebookCreation" xml:space="preserve">
     <value>Создание записной книжки</value>
   </data>
+  <data name="ConfiguratorNotebookNotDefined" xml:space="preserve">
+    <value>Не указана записная книжка</value>
+  </data>
   <data name="ConfiguratorNotebookTemplateNotFound" xml:space="preserve">
     <value>Не найден шаблон записной книжки по адресу</value>
+  </data>
+  <data name="ConfiguratorQuestionDeleteAllNotesPages" xml:space="preserve">
+    <value>Удалить все сводные страницы заметок и ссылки на них?</value>
+  </data>
+  <data name="ConfiguratorQuestionDeleteAllNotesPagesManually" xml:space="preserve">
+    <value>Для страниц 'Сводные заметок' используется отдельная записная книжка. Рекомендуется вручную удалить записную книжку 'Сводные заметки' и создать её заново из шаблона. Продолжить?</value>
   </data>
   <data name="ConfiguratorSectionGroupNotFound" xml:space="preserve">
     <value>Не найдена группа разделов</value>
@@ -187,10 +178,25 @@
     <value>Укажите расположение записной книжки</value>
   </data>
   <data name="ConfiguratorWrongNotebookSelected" xml:space="preserve">
-    <value>Указана неподходящая записная книжка</value>
+    <value>Указана неподходящая записная книжка '{0}' для типа '{1}'.</value>
   </data>
   <data name="ConfiguratorWrongParameterValue" xml:space="preserve">
     <value>Неверное значение параметра</value>
+  </data>
+  <data name="DefaultPageNameDefaultBookOverview" xml:space="preserve">
+    <value>Общий обзор</value>
+  </data>
+  <data name="DefaultPageNameDefaultComments" xml:space="preserve">
+    <value>Комментарии</value>
+  </data>
+  <data name="DefaultPageName_Notes" xml:space="preserve">
+    <value>Заметки</value>
+  </data>
+  <data name="DefaultPageName_RubbishNotes" xml:space="preserve">
+    <value>Подробные заметки</value>
+  </data>
+  <data name="DefineNotebookDirectory" xml:space="preserve">
+    <value>Указать директорию для записной книжки</value>
   </data>
   <data name="DeleteNotesPagesManagerFinishMessage" xml:space="preserve">
     <value>Удаление страниц 'Сводные заметок' успешно завершено.</value>
@@ -201,6 +207,12 @@
   <data name="DeleteNotesPagesManagerStartMessage" xml:space="preserve">
     <value>Старт удаления страниц 'Сводные заметок'.</value>
   </data>
+  <data name="DeleteThisModule" xml:space="preserve">
+    <value>Удалить данный модуль</value>
+  </data>
+  <data name="DeleteThisModuleQuestion" xml:space="preserve">
+    <value>Удалить данный модуль?</value>
+  </data>
   <data name="Error" xml:space="preserve">
     <value>Ошибка</value>
   </data>
@@ -210,11 +222,26 @@
   <data name="Error_CanNotFindHierarchy" xml:space="preserve">
     <value>Не удаётся найти иерархию типа '{0}' для элемента '{1}': {2}</value>
   </data>
+  <data name="Error_NotebookTemplateNotDefined" xml:space="preserve">
+    <value>Не указан шаблон записной книжки типа '{0}'.</value>
+  </data>
+  <data name="Error_NotebookTemplateNotFound" xml:space="preserve">
+    <value>Не найден шаблон записной книжки '{0}' типа '{1}'.</value>
+  </data>
   <data name="Error_OpenedNotebookNotFound" xml:space="preserve">
     <value>Не найдено открытой записной книжки</value>
   </data>
   <data name="Error_OpenedNotePageNotFound" xml:space="preserve">
     <value>Не найдено открытой страницы заметок</value>
+  </data>
+  <data name="Error_SectionGroupNotDefined" xml:space="preserve">
+    <value>Не указана группа разделов типа '{0}' в шаблоне записной книжки типа '{1}'.</value>
+  </data>
+  <data name="Error_SystemIsNotConfigures" xml:space="preserve">
+    <value>Программа не сконфигурирована. Откройте 'Параметры программы' и укажите все необходимые настройки.</value>
+  </data>
+  <data name="Error_UpdateError_InksOnPages" xml:space="preserve">
+    <value>Не удалось обновить страницу. Возможно на странице присутствуют нарисованные кистью элементы, которые на текущий момент не поддерживаются программой. \nУдалите такие элементы и повторите операцию.</value>
   </data>
   <data name="Error_UpdatePage" xml:space="preserve">
     <value>Ошибка обновления страницы</value>
@@ -224,6 +251,15 @@
   </data>
   <data name="FinishWithErrors" xml:space="preserve">
     <value>Завершено с ошибками.</value>
+  </data>
+  <data name="ModuleInformation" xml:space="preserve">
+    <value>Информация о модуле</value>
+  </data>
+  <data name="ModuleUploadError" xml:space="preserve">
+    <value>При загрузке модуля '{0}' произошла ошибка: {1}"</value>
+  </data>
+  <data name="ModuleWithSameNameAlreadyExists" xml:space="preserve">
+    <value>Модуль с таким именем уже существует. Существующий модуль будет полностью заменён загружаемым. Продолжить?</value>
   </data>
   <data name="NotebookIteratorCanNotFindSectionGroup" xml:space="preserve">
     <value>Не удаётся найти группу секций</value>
@@ -330,8 +366,17 @@
   <data name="ResizeBibleTableManagerStartMessage" xml:space="preserve">
     <value>Старт обновления ширины страниц Библии.</value>
   </data>
+  <data name="SelectFileWithExtension" xml:space="preserve">
+    <value>Выберите файл с расширением '{0}'.</value>
+  </data>
+  <data name="StartTime" xml:space="preserve">
+    <value>Время старта</value>
+  </data>
   <data name="TimeSpend" xml:space="preserve">
     <value>Времени затрачено</value>
+  </data>
+  <data name="UseThisModule" xml:space="preserve">
+    <value>Использовать данный модуль</value>
   </data>
   <data name="Verse" xml:space="preserve">
     <value>стих</value>
@@ -357,19 +402,13 @@
   <data name="VerseLinkManagerOpenNotBiblePage" xml:space="preserve">
     <value>Скорее всего в OneNote открыта не страница Библии.</value>
   </data>
-  <data name="ConfiguratorNotebookNotDefined" xml:space="preserve">
-    <value>Не указана записная книжка</value>
+  <data name="VerseLinksDelimiter" xml:space="preserve">
+    <value>; </value>
   </data>
-  <data name="ConfiguratorQuestionDeleteAllNotesPages" xml:space="preserve">
-    <value>Удалить все сводные страницы заметок и ссылки на них?</value>
-  </data>
-  <data name="ConfiguratorQuestionDeleteAllNotesPagesManually" xml:space="preserve">
-    <value>Для страниц 'Сводные заметок' используется отдельная записная книжка. Рекомендуется вручную удалить записную книжку 'Сводные заметки' и создать её заново из шаблона. Продолжить?</value>
+  <data name="VerseLinkTemplate" xml:space="preserve">
+    <value>ссылка {0}</value>
   </data>
   <data name="Warning" xml:space="preserve">
     <value>Внимание!</value>
-  </data>
-  <data name="_LANGUAGE_NAME" xml:space="preserve">
-    <value>Русский</value>
   </data>
 </root>

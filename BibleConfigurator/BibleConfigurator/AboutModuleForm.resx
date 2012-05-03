@@ -147,13 +147,13 @@
     <value>True</value>
   </data>
   <data name="lblTitle.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 12pt</value>
+    <value>Microsoft Sans Serif, 12pt, style=Bold</value>
   </data>
   <data name="lblTitle.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 9</value>
   </data>
   <data name="lblTitle.Size" type="System.Drawing.Size, System.Drawing">
-    <value>51, 20</value>
+    <value>57, 20</value>
   </data>
   <data name="lblTitle.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -173,38 +173,41 @@
   <data name="&gt;&gt;lblTitle.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="panel1.AutoScroll" type="System.Boolean, mscorlib">
+  <data name="pnBooks.AutoScroll" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="panel1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>16, 67</value>
+  <data name="pnBooks.Location" type="System.Drawing.Point, System.Drawing">
+    <value>16, 87</value>
   </data>
-  <data name="panel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>660, 385</value>
+  <data name="pnBooks.Size" type="System.Drawing.Size, System.Drawing">
+    <value>660, 365</value>
   </data>
-  <data name="panel1.TabIndex" type="System.Int32, mscorlib">
+  <data name="pnBooks.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
-  <data name="&gt;&gt;panel1.Name" xml:space="preserve">
-    <value>panel1</value>
+  <data name="&gt;&gt;pnBooks.Name" xml:space="preserve">
+    <value>pnBooks</value>
   </data>
-  <data name="&gt;&gt;panel1.Type" xml:space="preserve">
+  <data name="&gt;&gt;pnBooks.Type" xml:space="preserve">
     <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;panel1.Parent" xml:space="preserve">
+  <data name="&gt;&gt;pnBooks.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;panel1.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;pnBooks.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
   <data name="label1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <data name="label1.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 8.25pt, style=Bold</value>
+  </data>
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 29</value>
+    <value>13, 37</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>51, 13</value>
+    <value>60, 13</value>
   </data>
   <data name="label1.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -228,7 +231,7 @@
     <value>True</value>
   </data>
   <data name="lblLocation.Location" type="System.Drawing.Point, System.Drawing">
-    <value>70, 29</value>
+    <value>79, 37</value>
   </data>
   <data name="lblLocation.Size" type="System.Drawing.Size, System.Drawing">
     <value>35, 13</value>
@@ -258,16 +261,16 @@
     <value>Microsoft Sans Serif, 10pt</value>
   </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>207, 47</value>
+    <value>181, 65</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>276, 17</value>
+    <value>316, 17</value>
   </data>
   <data name="label2.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
-    <value>Bible books with supported abbreviations list</value>
+    <value>The Bible books with supported abbreviations list</value>
   </data>
   <data name="&gt;&gt;label2.Name" xml:space="preserve">
     <value>label2</value>

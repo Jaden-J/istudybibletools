@@ -51,7 +51,7 @@ namespace BibleCommon.Common
             s = s.ToLowerInvariant();
 
             return BibleStructure.BibleBooks.FirstOrDefault(
-                book => book.Shortenings.Contains(s));
+                book => book.Abbreviations.Contains(s));
         }
     }
 
@@ -103,7 +103,7 @@ namespace BibleCommon.Common
         [XmlAttribute]
         public string SectionName { get; set; }
 
-        [XmlElement(typeof(string), ElementName = "Shortening")]
-        public List<string> Shortenings { get; set; }
+        [XmlElement(typeof(string), ElementName = "Abbreviation")]
+        public List<string> Abbreviations { get; set; }
     }
 }

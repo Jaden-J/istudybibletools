@@ -75,7 +75,7 @@
     </Compile>
     <Compile Include="ModuleConverter\BibleQuotaConverter.cs" />
     <Compile Include="ModuleConverter\ConverterBase.cs" />
-    <Compile Include="ModuleConverter\ModuleGenerator.cs" />
+    <Compile Include="ModuleConverter\DefaultRusModuleGenerator.cs" />
     <Compile Include="NotebookChecker.cs" />
     <Compile Include="NotebookParametersForm.cs">
       <SubType>Form</SubType>

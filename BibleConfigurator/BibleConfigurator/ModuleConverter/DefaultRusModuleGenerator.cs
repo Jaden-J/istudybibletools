@@ -8,7 +8,7 @@ using System.IO;
 
 namespace BibleConfigurator.ModuleConverter
 {
-    public static class ModuleGenerator
+    public static class DefaultRusModuleGenerator
     {
         public static void GenerateModuleInfo()
         {
