@@ -372,6 +372,9 @@
   <data name="_LANGUAGE_NAME" xml:space="preserve">
     <value>English</value>
   </data>
+  <data name="Books" xml:space="preserve">
+    <value>книг</value>
+  </data>
   <data name="ChangeModuleWarning" xml:space="preserve">
     <value>Данный модуль содержит другой текст Библии и другие варианты сокращений названий книг. Для корректной работы программы необходимо будет пересоздать записную книжку Библии, комментариев Библии и сводных земеток. Продолжить?</value>
   </data>
@@ -392,6 +395,9 @@
   </data>
   <data name="Error_SectionGroupNotDefined" xml:space="preserve">
     <value>Не указана группа разделов типа '{0}' в шаблоне записной книжки типа '{1}'.</value>
+  </data>
+  <data name="ModuleInformation" xml:space="preserve">
+    <value>Информация о модуле</value>
   </data>
   <data name="ModuleUploadError" xml:space="preserve">
     <value>При загрузке модуля '{0}' произошла ошибка: {1}"</value>

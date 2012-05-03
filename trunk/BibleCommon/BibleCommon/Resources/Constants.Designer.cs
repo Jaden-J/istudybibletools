@@ -124,6 +124,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to книг.
+        /// </summary>
+        public static string Books {
+            get {
+                return ResourceManager.GetString("Books", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Данный модуль содержит другой текст Библии и другие варианты сокращений названий книг. Для корректной работы программы необходимо будет пересоздать записную книжку Библии, комментариев Библии и сводных земеток. Продолжить?.
         /// </summary>
         public static string ChangeModuleWarning {
@@ -453,6 +462,15 @@ namespace BibleCommon.Resources {
         public static string FinishWithErrors {
             get {
                 return ResourceManager.GetString("FinishWithErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Информация о модуле.
+        /// </summary>
+        public static string ModuleInformation {
+            get {
+                return ResourceManager.GetString("ModuleInformation", resourceCulture);
             }
         }
         

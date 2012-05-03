@@ -16,7 +16,7 @@ namespace BibleConfigurator
         [STAThread]
         static void Main(params string[] args)
         {
-            //ModuleGenerator.GenerateModuleInfo();
+            //DefaultRusModuleGenerator.GenerateModuleInfo();
 
 
             //var converter = new BibleQuotaConverter("Test", @"C:\BibleQuote\RCCV", @"c:\manifest.xml", Encoding.Unicode,
