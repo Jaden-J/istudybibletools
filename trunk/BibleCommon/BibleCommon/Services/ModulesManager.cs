@@ -90,26 +90,26 @@ namespace BibleCommon.Services
             foreach (NotebookType notebookType in Enum.GetValues(typeof(NotebookType)))
             {
                 if (!module.Notebooks.Exists(n => n.Type == notebookType))
-                    throw new Exception(string.Format("Не указан шаблон записной книжки типа '{0}'.", notebookType));  //todo: локализовать
+                    throw new Exception(string.Format(Resources.Constants.Error_NotebookTemplateNotDefined, notebookType)); 
             }
 
             foreach (SectionGroupType sectionGroupType in Enum.GetValues(typeof(SectionGroupType)))
             {
                 if (!module.GetNotebook(NotebookType.Single).SectionGroups.Exists(sg => sg.Type == sectionGroupType))
-                    throw new Exception(string.Format("Не указана группа разделов типа '{0}' в шаблоне записной книжки типа '{1}'.", sectionGroupType, NotebookType.Single));  //todo: локализовать
+                    throw new Exception(string.Format(Resources.Constants.Error_SectionGroupNotDefined, sectionGroupType, NotebookType.Single));  
             }
 
             foreach (var notebook in module.Notebooks)
             {
                 if (!File.Exists(Path.Combine(moduleDirectory, notebook.Name)))
-                    throw new Exception(string.Format("Не найден шаблон записной книжки '{0}' типа '{1}'.", notebook.Name, notebook.Type));  //todo: локализовать
+                    throw new Exception(string.Format(Resources.Constants.Error_NotebookTemplateNotFound, notebook.Name, notebook.Type));  
             }            
         }
 
         public static void UploadModule(string originalFilePath, string destFilePath, string moduleName)
         {
             if (Path.GetExtension(originalFilePath).ToLower() != Constants.IsbtFileExtension)
-                throw new InvalidModuleException(string.Format("Выберите файл с расширением '{0}'", Constants.IsbtFileExtension));   //todo: локализовать
+                throw new InvalidModuleException(string.Format(Resources.Constants.SelectFileWithExtension, Constants.IsbtFileExtension)); 
 
             File.Copy(originalFilePath, destFilePath, true);
 

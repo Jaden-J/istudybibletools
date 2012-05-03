@@ -169,7 +169,7 @@
     <value>Укажите расположение записной книжки</value>
   </data>
   <data name="ConfiguratorWrongNotebookSelected" xml:space="preserve">
-    <value>Selected Notebook is incorrect</value>
+    <value>Указана неподходящая записная книжка '{0}' для типа '{1}'.</value>
   </data>
   <data name="ConfiguratorWrongParameterValue" xml:space="preserve">
     <value>Неверное значение параметра</value>
@@ -371,5 +371,38 @@
   </data>
   <data name="_LANGUAGE_NAME" xml:space="preserve">
     <value>English</value>
+  </data>
+  <data name="ChangeModuleWarning" xml:space="preserve">
+    <value>Данный модуль содержит другой текст Библии и другие варианты сокращений названий книг. Для корректной работы программы необходимо будет пересоздать записную книжку Библии, комментариев Библии и сводных земеток. Продолжить?</value>
+  </data>
+  <data name="DefineNotebookDirectory" xml:space="preserve">
+    <value>Указать директорию для записной книжки</value>
+  </data>
+  <data name="DeleteThisModule" xml:space="preserve">
+    <value>Удалить данный модуль</value>
+  </data>
+  <data name="DeleteThisModuleQuestion" xml:space="preserve">
+    <value>Удалить данный модуль?</value>
+  </data>
+  <data name="Error_NotebookTemplateNotDefined" xml:space="preserve">
+    <value>Не указан шаблон записной книжки типа '{0}'.</value>
+  </data>
+  <data name="Error_NotebookTemplateNotFound" xml:space="preserve">
+    <value>Не найден шаблон записной книжки '{0}' типа '{1}'.</value>
+  </data>
+  <data name="Error_SectionGroupNotDefined" xml:space="preserve">
+    <value>Не указана группа разделов типа '{0}' в шаблоне записной книжки типа '{1}'.</value>
+  </data>
+  <data name="ModuleUploadError" xml:space="preserve">
+    <value>При загрузке модуля '{0}' произошла ошибка: {1}"</value>
+  </data>
+  <data name="ModuleWithSameNameAlreadyExists" xml:space="preserve">
+    <value>Модуль с таким именем уже существует. Существующий модуль будет полностью заменён загружаемым. Продолжить?</value>
+  </data>
+  <data name="SelectFileWithExtension" xml:space="preserve">
+    <value>Выберите файл с расширением '{0}'.</value>
+  </data>
+  <data name="UseThisModule" xml:space="preserve">
+    <value>Использовать данный модуль</value>
   </data>
 </root>
