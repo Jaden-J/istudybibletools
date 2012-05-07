@@ -70,6 +70,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sasha &amp; Natasha.
+        /// </summary>
+        public static string Author {
+            get {
+                return ResourceManager.GetString("Author", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Backup created successfully..
         /// </summary>
         public static string BackupManagerFinishMessage {
@@ -813,6 +822,15 @@ namespace BibleCommon.Resources {
         public static string SelectFileWithExtension {
             get {
                 return ResourceManager.GetString("SelectFileWithExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to http://IStudyBibleTools.com.
+        /// </summary>
+        public static string SiteUrl {
+            get {
+                return ResourceManager.GetString("SiteUrl", resourceCulture);
             }
         }
         
