@@ -41,10 +41,11 @@ namespace BibleConfigurator
             Application.SetCompatibleTextRenderingDefault(false);
 
             Form form;
-            if (args.Length > 0
-                    && args[0] == Consts.ShowModuleInfo
+            if (args.Length > 0 && args[0] == Consts.ShowModuleInfo
                     && SettingsManager.Instance.IsConfigured(new Microsoft.Office.Interop.OneNote.Application()))
                 form = new AboutModuleForm(SettingsManager.Instance.ModuleName, true);
+            else if (args.Length > 0 && args[0] == Consts.ShowAboutProgram)
+                form = new AboutProgramForm();
             else
                 form = new MainForm(args);
 

@@ -8,5 +8,6 @@ namespace BibleConfigurator
     public static class Consts
     {
         public const string ShowModuleInfo = "-showModuleInfo";
+        public const string ShowAboutProgram = "-showAboutProgram";
     }
 }

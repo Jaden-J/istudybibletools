@@ -261,13 +261,13 @@
     <value>12, 127</value>
   </data>
   <data name="lblInfo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>362, 26</value>
+    <value>373, 26</value>
   </data>
   <data name="lblInfo.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
   </data>
   <data name="lblInfo.Text" xml:space="preserve">
-    <value>A new version of program is available on the site http://IStudyBibleTools.ru.
+    <value>A new version of program is available on the site http://IStudyBibleTools.com.
 Click to go to the download page.</value>
   </data>
   <data name="&gt;&gt;lblInfo.Name" xml:space="preserve">
@@ -381,9 +381,9 @@ Click to go to the download page.</value>
   <data name="&gt;&gt;llblDetails.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing">
+  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
-  </data>
+  </metadata>
   <data name="tsmiSeelctNotebooks.Size" type="System.Drawing.Size, System.Drawing">
     <value>164, 22</value>
   </data>
@@ -404,6 +404,9 @@ Click to go to the download page.</value>
   </data>
   <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
     <value>15</value>
+  </data>
+  <data name="menuStrip1.Text" xml:space="preserve">
+    <value>File</value>
   </data>
   <data name="&gt;&gt;menuStrip1.Name" xml:space="preserve">
     <value>menuStrip1</value>
@@ -468,9 +471,9 @@ Click to go to the download page.</value>
   <data name="&gt;&gt;llblShowErrors.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="$this.Localizable" type="System.Boolean, mscorlib">
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
-  </data>
+  </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 13</value>
   </data>
@@ -501,8 +504,5 @@ Click to go to the download page.</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="menuStrip1.Text" xml:space="preserve">
-    <value>File</value>
   </data>
 </root>

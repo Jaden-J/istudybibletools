@@ -411,4 +411,10 @@
   <data name="ProcessAbortedByUser" xml:space="preserve">
     <value>Process aborted by user</value>
   </data>
+  <data name="Author" xml:space="preserve">
+    <value>Sasha &amp; Natasha</value>
+  </data>
+  <data name="SiteUrl" xml:space="preserve">
+    <value>http://IStudyBibleTools.com</value>
+  </data>
 </root>
