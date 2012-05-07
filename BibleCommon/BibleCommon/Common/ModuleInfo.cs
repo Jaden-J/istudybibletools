@@ -31,6 +31,9 @@ namespace BibleCommon.Common
         [XmlAttribute]
         public string Version { get; set; }
 
+        [XmlIgnore]
+        public string ShortName { get; set; }
+
         [XmlAttribute]
         public string Name { get; set; }
 

@@ -44,7 +44,7 @@ namespace BibleConfigurator
             if (args.Length > 0
                     && args[0] == Consts.ShowModuleInfo
                     && SettingsManager.Instance.IsConfigured(new Microsoft.Office.Interop.OneNote.Application()))
-                form = new AboutModuleForm(SettingsManager.Instance.CurrentModule.Name);
+                form = new AboutModuleForm(SettingsManager.Instance.ModuleName, true);
             else
                 form = new MainForm(args);
 

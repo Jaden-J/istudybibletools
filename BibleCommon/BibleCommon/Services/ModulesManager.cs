@@ -28,8 +28,6 @@ namespace BibleCommon.Services
             return Path.Combine(GetModulesDirectory(), SettingsManager.Instance.ModuleName);
         }
 
-
-
         public static ModuleInfo GetModuleInfo(string moduleDirectoryName)
         {
             string moduleDirectory = Path.Combine(GetModulesDirectory(), moduleDirectoryName);
@@ -39,7 +37,9 @@ namespace BibleCommon.Services
 
             using (var fs = new FileStream(manifestFilePath, FileMode.Open))
             {
-                return ((ModuleInfo)_serializer.Deserialize(fs));
+                var module = ((ModuleInfo)_serializer.Deserialize(fs));
+                module.ShortName = moduleDirectoryName;
+                return module;
             }
         }       
 

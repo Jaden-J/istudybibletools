@@ -11,6 +11,7 @@
         <group id="General" label="General">
           <button id="ConfigureButton" label="Параметры" size="large" screentip="Нажмите, чтобы изменить параметры" onAction="ButtonClick" image="ConfigureButton.png"/>
           <button id="HelpButton" label="Справка" size="large" screentip="Нажмите, чтобы открыть файл справки" onAction="ButtonClick" image="HelpButton.png"/>
+          <button id="ModuleInfoButton" label="Информация о модуле" size="normal" screentip="Нажмите, чтобы просмотреть информацию о текущем модуле" onAction="ButtonClick" image="HelpButton.png"/>
         </group>
 			</tab>
 		</tabs>
