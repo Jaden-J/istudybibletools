@@ -4,7 +4,7 @@
 		<tabs>
 			<tab id="tabCustom" label="IStudyBibleTools">
 				<group id="Tools" label="Tools">
-					<button id="VersePointerButton" label="Open Verse" size="large" screentip="Нажмите, чтобы перейти к нужному месту Писания" onAction="ButtonClick" image="VersePointerButton.png"/>
+					<button id="VersePointerButton" label="Открыть стих" size="large" screentip="Нажмите, чтобы перейти к нужному месту Писания" onAction="ButtonClick" image="VersePointerButton.png"/>
           <button id="VerseLinkerButton" label="Написать комментарий" size="large" screentip="Нажмите, чтобы оставить комментарий" onAction="ButtonClick" image="VerseLinkerButton.png"/>
           <button id="NoteLinkerButton" label="Анализ заметок" size="large" screentip="Нажмите, чтобы запустить анализ заметок" onAction="ButtonClick" image="NoteLinkerButton.png"/>          
 				</group>
