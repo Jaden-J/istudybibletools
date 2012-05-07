@@ -87,16 +87,19 @@ namespace BibleCommon.Services
 
             string moduleDirectory = Path.Combine(GetModulesDirectory(), moduleDirectoryName);
 
-            foreach (NotebookType notebookType in Enum.GetValues(typeof(NotebookType)))
+            foreach (NotebookType notebookType in Enum.GetValues(typeof(NotebookType)).Cast<NotebookType>().Where(t => t != NotebookType.Single))
             {
                 if (!module.Notebooks.Exists(n => n.Type == notebookType))
                     throw new Exception(string.Format(Resources.Constants.Error_NotebookTemplateNotDefined, notebookType)); 
             }
 
-            foreach (SectionGroupType sectionGroupType in Enum.GetValues(typeof(SectionGroupType)))
+            if (module.UseSingleNotebook())
             {
-                if (!module.GetNotebook(NotebookType.Single).SectionGroups.Exists(sg => sg.Type == sectionGroupType))
-                    throw new Exception(string.Format(Resources.Constants.Error_SectionGroupNotDefined, sectionGroupType, NotebookType.Single));  
+                foreach (SectionGroupType sectionGroupType in Enum.GetValues(typeof(SectionGroupType)))
+                {
+                    if (!module.GetNotebook(NotebookType.Single).SectionGroups.Exists(sg => sg.Type == sectionGroupType))
+                        throw new Exception(string.Format(Resources.Constants.Error_SectionGroupNotDefined, sectionGroupType, NotebookType.Single));
+                }
             }
 
             foreach (var notebook in module.Notebooks)

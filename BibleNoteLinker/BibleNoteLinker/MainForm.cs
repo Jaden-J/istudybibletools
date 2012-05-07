@@ -56,7 +56,7 @@ namespace BibleNoteLinker
                 DateTime dt = DateTime.Now;
                 Logger.LogMessage("{0}: {1}", BibleCommon.Resources.Constants.StartTime, dt.ToLongTimeString());
                 StartAnalyze();
-                Logger.LogMessage("{0}: {1}", BibleCommon.Resources.Constants.TimeSpend, DateTime.Now.Subtract(dt));
+                Logger.LogMessage("{0}: {1}", BibleCommon.Resources.Constants.TimeSpent, DateTime.Now.Subtract(dt));
 
             }
             catch (ProcessAbortedByUserException)

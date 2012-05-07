@@ -118,297 +118,297 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BackupManagerFinishMessage" xml:space="preserve">
-    <value>Создание резервной копии данных успешно завершено.</value>
+    <value>Backup created successfully.</value>
   </data>
   <data name="BackupManagerNotebookCompleted" xml:space="preserve">
-    <value>Резервная копия записной книжки '{0}' успешно создана.</value>
+    <value>Backup of notebook '{0}' created successfully.</value>
   </data>
   <data name="BackupManagerToZipArchive" xml:space="preserve">
-    <value>Упаковывание файлов в .zip архив.</value>
+    <value>Packaging to .zip archive.</value>
   </data>
   <data name="BackupStartInfo" xml:space="preserve">
-    <value>Старт создания резервной копии данных</value>
+    <value>Backup starts</value>
   </data>
   <data name="BibleVersePointerCanNotFindPlace" xml:space="preserve">
-    <value>Не удалось определить место</value>
+    <value>The passage can not be found</value>
   </data>
   <data name="BibleVersePointerCanNotParseString" xml:space="preserve">
-    <value>Не удалось распознать строку</value>
+    <value>String cannot be parsed</value>
   </data>
   <data name="Close" xml:space="preserve">
-    <value>Закрыть</value>
+    <value>Close</value>
   </data>
   <data name="ConfiguratorCanNotRequestDataFromOneNote" xml:space="preserve">
-    <value>Не удалось запросить данные о записных книжках из OneNote. Повторите операцию.</value>
+    <value>OneNote notebooks request fails. Please retry.</value>
   </data>
   <data name="ConfiguratorErrorWhileNotebookOpenning" xml:space="preserve">
-    <value>Ошибка при открытии записной книжки</value>
+    <value>Notebook open error</value>
   </data>
   <data name="ConfiguratorNotebookCreation" xml:space="preserve">
-    <value>Создание записной книжки</value>
+    <value>Creating notebook</value>
   </data>
   <data name="ConfiguratorNotebookNotDefined" xml:space="preserve">
-    <value>Не указана записная книжка</value>
+    <value>Notebook not defined</value>
   </data>
   <data name="ConfiguratorNotebookTemplateNotFound" xml:space="preserve">
-    <value>Не найден шаблон записной книжки по адресу</value>
+    <value>Notebook template not found at</value>
   </data>
   <data name="ConfiguratorQuestionDeleteAllNotesPages" xml:space="preserve">
-    <value>Удалить все сводные страницы заметок и ссылки на них?</value>
+    <value>Delete all summary notes and references to them?</value>
   </data>
   <data name="ConfiguratorQuestionDeleteAllNotesPagesManually" xml:space="preserve">
-    <value>Для страниц 'Сводные заметок' используется отдельная записная книжка. Рекомендуется вручную удалить записную книжку 'Сводные заметки' и создать её заново из шаблона. Продолжить?</value>
+    <value>'Summary notes' pages use a separate notebook. It is recommended to manually remove the notebook 'Summary notes' and recreate it from template. Continue?</value>
   </data>
   <data name="ConfiguratorSectionGroupNotFound" xml:space="preserve">
-    <value>Не найдена группа разделов</value>
+    <value>Section group not found</value>
   </data>
   <data name="ConfiguratorSelectAnotherFolder" xml:space="preserve">
-    <value>Не удаётся создать записную книжку. Выберите другую папку.</value>
+    <value>Unable to create the notebook. Select a different folder.</value>
   </data>
   <data name="ConfiguratorSetNotebookFolder" xml:space="preserve">
-    <value>Укажите расположение записной книжки</value>
+    <value>Specify notebook location</value>
   </data>
   <data name="ConfiguratorWrongNotebookSelected" xml:space="preserve">
-    <value>Указана неподходящая записная книжка '{0}' для типа '{1}'.</value>
+    <value>Wrong notebook specified '{0}' for type '{1}'.</value>
   </data>
   <data name="ConfiguratorWrongParameterValue" xml:space="preserve">
-    <value>Неверное значение параметра</value>
+    <value>Wrong parameter value</value>
   </data>
   <data name="DefaultPageNameDefaultBookOverview" xml:space="preserve">
-    <value>Общий обзор</value>
+    <value>Overview</value>
   </data>
   <data name="DefaultPageNameDefaultComments" xml:space="preserve">
-    <value>Комментарии</value>
+    <value>Comments</value>
   </data>
   <data name="DefaultPageName_Notes" xml:space="preserve">
-    <value>Заметки</value>
+    <value>Notes</value>
   </data>
   <data name="DefaultPageName_RubbishNotes" xml:space="preserve">
-    <value>Подробные заметки</value>
+    <value>Detailed notes</value>
   </data>
   <data name="DeleteNotesPagesManagerFinishMessage" xml:space="preserve">
-    <value>Удаление страниц 'Сводные заметок' успешно завершено.</value>
+    <value>'Summary notes' deleting completed successfully.</value>
   </data>
   <data name="DeleteNotesPagesManagerRemovePage" xml:space="preserve">
-    <value>Удаление страницы</value>
+    <value>Page deleting</value>
   </data>
   <data name="DeleteNotesPagesManagerStartMessage" xml:space="preserve">
-    <value>Старт удаления страниц 'Сводные заметок'.</value>
+    <value>'Summary notes' deleting start.</value>
   </data>
   <data name="Error" xml:space="preserve">
-    <value>Ошибка</value>
+    <value>Error</value>
   </data>
   <data name="ErrorUpper" xml:space="preserve">
-    <value>ОШИБКА</value>
+    <value>ERROR</value>
   </data>
   <data name="Error_CanNotFindHierarchy" xml:space="preserve">
-    <value>Не удаётся найти иерархию типа '{0}' для элемента '{1}': {2}</value>
+    <value>Can not find a hierarchy of type '{0}' for element '{1}' {2}</value>
   </data>
   <data name="Error_OpenedNotebookNotFound" xml:space="preserve">
-    <value>Не найдено открытой записной книжки</value>
+    <value>Opened notebook not found</value>
   </data>
   <data name="Error_OpenedNotePageNotFound" xml:space="preserve">
-    <value>Не найдено открытой страницы заметок</value>
+    <value>Opened notes page not found</value>
   </data>
   <data name="Error_SystemIsNotConfigures" xml:space="preserve">
-    <value>Программа не сконфигурирована. Откройте 'Параметры программы' и укажите все необходимые настройки.</value>
+    <value>The program is not configured. Open the 'Program parameters' and specify the necessary settings.</value>
   </data>
   <data name="Error_UpdateError_InksOnPages" xml:space="preserve">
-    <value>Не удалось обновить страницу. Возможно на странице присутствуют нарисованные кистью элементы, которые на текущий момент не поддерживаются программой. \nУдалите такие элементы и повторите операцию.</value>
+    <value>Unable to update the page. Perhaps on the page there are painted with a brush elements, which are currently not supported. \nDelete  this elements and try again.</value>
   </data>
   <data name="Error_UpdatePage" xml:space="preserve">
-    <value>Ошибка обновления страницы</value>
+    <value>Update page error</value>
   </data>
   <data name="FinishSuccessfully" xml:space="preserve">
-    <value>Успешно завершено.</value>
+    <value>Successfully completed.</value>
   </data>
   <data name="FinishWithErrors" xml:space="preserve">
-    <value>Завершено с ошибками.</value>
+    <value>Completed with errors.</value>
   </data>
   <data name="NotebookIteratorCanNotFindSectionGroup" xml:space="preserve">
-    <value>Не удаётся найти группу секций</value>
+    <value>Section group can not be found</value>
   </data>
   <data name="NoteLilnkerHierarchyUpdating" xml:space="preserve">
-    <value>Обновление иерархии в OneNote</value>
+    <value>OneNote hierarchy updating</value>
   </data>
   <data name="NoteLinkerErrorWhilePageSorting" xml:space="preserve">
-    <value>Ошибка во время сортировки страницы</value>
+    <value>Sort pages error</value>
   </data>
   <data name="NoteLinkerFormCaptionOnClosing" xml:space="preserve">
-    <value>Закрыть программу?</value>
+    <value>Close the program?</value>
   </data>
   <data name="NoteLinkerHideDetails" xml:space="preserve">
-    <value>Скрыть детали</value>
+    <value>Hide details</value>
   </data>
   <data name="NoteLinkerInitialization" xml:space="preserve">
-    <value>Инициализация...</value>
+    <value>Initializing...</value>
   </data>
   <data name="NoteLinkerLinksToNotesPagesUpdating" xml:space="preserve">
-    <value>Обновление ссылок на страницы 'Сводные заметок'</value>
+    <value>Updating references to 'Summary notes'</value>
   </data>
   <data name="NoteLinkerManyFound" xml:space="preserve">
-    <value>Найдено</value>
+    <value>Found</value>
   </data>
   <data name="NoteLinkerManyPages" xml:space="preserve">
-    <value>страницы</value>
+    <value>pages</value>
   </data>
   <data name="NoteLinkerNoElementSelected" xml:space="preserve">
-    <value>Не выбран ни один элемент</value>
+    <value>No elements selected</value>
   </data>
   <data name="NoteLinkerNotesPagesUpdating" xml:space="preserve">
-    <value>Обновление страниц 'Сводные заметок' в OneNote</value>
+    <value>'Summary notes' pages updating</value>
   </data>
   <data name="NoteLinkerOfManyPages" xml:space="preserve">
-    <value>страниц</value>
+    <value>pages</value>
   </data>
   <data name="NoteLinkerOneFound" xml:space="preserve">
-    <value>Найдена</value>
+    <value>Found</value>
   </data>
   <data name="NoteLinkerOnePage" xml:space="preserve">
-    <value>страница</value>
+    <value>page</value>
   </data>
   <data name="NoteLinkerPagesUpdating" xml:space="preserve">
-    <value>Обновление страниц в OneNote</value>
+    <value>OneNote pages updating</value>
   </data>
   <data name="NoteLinkerProcessNotebook" xml:space="preserve">
-    <value>Обработка записной книжки</value>
+    <value>Processing notebook</value>
   </data>
   <data name="NoteLinkerQuestionOnClosing" xml:space="preserve">
-    <value>Вы действительно хотите прекратить работу программы? В некоторых случаях это может привести к неправильной сортировке страниц 'Сводные заметок', что решается только удалением всех страниц 'Сводные земеток'.</value>
+    <value>In some cases this can lead to incorrect sorting of pages 'Summary notes', which is solved only by removing all the pages of 'Summary notes. Contniue terminating the program?</value>
   </data>
   <data name="NoteLinkerShowDetails" xml:space="preserve">
-    <value>Показать детали</value>
+    <value>Show details</value>
   </data>
   <data name="NoteLinkerStage" xml:space="preserve">
-    <value>Этап</value>
+    <value>Stage</value>
   </data>
   <data name="NoteLinkManagerChapterProcessing" xml:space="preserve">
-    <value>Заключительная обработка глав</value>
+    <value>Final chapter processing</value>
   </data>
   <data name="NoteLinkManagerProcessingPageErrors" xml:space="preserve">
-    <value>Ошибки при обработке страницы.</value>
+    <value>Error while processing of the page.</value>
   </data>
   <data name="NoteLinkManagerProcessNotesPage" xml:space="preserve">
-    <value>Обрабатываем страницу 'Сводная заметок'</value>
+    <value>Processing the page 'summary notes'</value>
   </data>
   <data name="NoteLinkManagerVerseCellNotFound" xml:space="preserve">
-    <value>Не найдена ячейка для стиха</value>
-  </data>
-  <data name="ProcessAbortedByUser" xml:space="preserve">
-    <value>Операция прервана пользователем.</value>
+    <value>Verse cell not found</value>
   </data>
   <data name="ProcessChapter" xml:space="preserve">
-    <value>Обработка главы</value>
+    <value>Processing chapter</value>
   </data>
   <data name="ProcessCurrentPage" xml:space="preserve">
-    <value>Обработка текущей страницы</value>
+    <value>Current page processing</value>
   </data>
   <data name="ProcessNotebook" xml:space="preserve">
-    <value>Обработка записной книжки</value>
+    <value>Notebook processing</value>
   </data>
   <data name="ProcessPage" xml:space="preserve">
-    <value>Обработка страницы</value>
+    <value>Processing the page</value>
   </data>
   <data name="ProcessSection" xml:space="preserve">
-    <value>Обработка секции</value>
+    <value>Processing the section</value>
   </data>
   <data name="ProcessSectionGroup" xml:space="preserve">
-    <value>Обработка группы секций</value>
+    <value>Processing the section group</value>
   </data>
   <data name="ProcessVerse" xml:space="preserve">
-    <value>Обработка стиха</value>
+    <value>Processing the verse</value>
   </data>
   <data name="RelinkBibleCommentsManagerFinishMessage" xml:space="preserve">
-    <value>Обновление ссылок на комментарии успешно завершено.</value>
+    <value>References to Notes on the Bible have been updated.</value>
   </data>
   <data name="RelinkBibleCommentsManagerStartMessage" xml:space="preserve">
-    <value>Старт обновления ссылок на комментарии.</value>
+    <value>Start updating references to the Notes on the Bible.</value>
   </data>
   <data name="ResizeBibleTableManagerFinishMessage" xml:space="preserve">
-    <value>Обновление ширины страниц Библии успешно завершено.</value>
+    <value>Bible pages width have been successfully changed.</value>
   </data>
   <data name="ResizeBibleTableManagerStartMessage" xml:space="preserve">
-    <value>Старт обновления ширины страниц Библии.</value>
+    <value>Start changing the Bible pages width.</value>
   </data>
   <data name="StartTime" xml:space="preserve">
-    <value>Время старта</value>
+    <value>Start time</value>
   </data>
-  <data name="TimeSpend" xml:space="preserve">
-    <value>Времени затрачено</value>
+  <data name="TimeSpent" xml:space="preserve">
+    <value>Time spent</value>
   </data>
   <data name="Verse" xml:space="preserve">
-    <value>стих</value>
+    <value>verse</value>
   </data>
   <data name="VerseLinkerOneNoteNotStarted" xml:space="preserve">
-    <value>Программа OneNote не запущена</value>
+    <value>OneNote not started</value>
   </data>
   <data name="VerseLinkerUnderlineTextNotExtracted" xml:space="preserve">
-    <value>Не удалось выделить подчёркнутый текст</value>
+    <value>Underlined text cannot be extracted</value>
   </data>
   <data name="VerseLinkerUnderlineTextNotFound" xml:space="preserve">
-    <value>Подчёркнутый текст не найден</value>
+    <value>Underline text not found</value>
   </data>
   <data name="VerseLinkManagerCommentPageNotFound" xml:space="preserve">
-    <value>Не найдена страница для комментариев.</value>
+    <value>Comments page not found</value>
   </data>
   <data name="VerseLinkManagerCommentSectionGroupNotFound" xml:space="preserve">
-    <value>Не найдена группа секций для комментариев.</value>
+    <value>Comments section group not found</value>
   </data>
   <data name="VerseLinkManagerCommentSectionNotFound" xml:space="preserve">
-    <value>Не найдена секция для комментариев.</value>
+    <value>Comments section not found</value>
   </data>
   <data name="VerseLinkManagerOpenNotBiblePage" xml:space="preserve">
-    <value>Скорее всего в OneNote открыта не страница Библии.</value>
+    <value>It most likely that not a Bible page is opened in OneNote.</value>
   </data>
   <data name="VerseLinksDelimiter" xml:space="preserve">
     <value>; </value>
   </data>
   <data name="VerseLinkTemplate" xml:space="preserve">
-    <value>ссылка {0}</value>
+    <value>link {0}</value>
   </data>
   <data name="Warning" xml:space="preserve">
-    <value>Внимание!</value>
+    <value>Warning!</value>
   </data>
   <data name="_LANGUAGE_NAME" xml:space="preserve">
     <value>English</value>
   </data>
   <data name="Books" xml:space="preserve">
-    <value>книг</value>
+    <value>books</value>
   </data>
   <data name="ChangeModuleWarning" xml:space="preserve">
-    <value>Данный модуль содержит другой текст Библии и другие варианты сокращений названий книг. Для корректной работы программы необходимо будет пересоздать записную книжку Библии, комментариев Библии и сводных земеток. Продолжить?</value>
+    <value>This module contains another text of the Bible and other versions of abbreviations of books. For correct program work    the follow notebooks must be re-created: Bible, Notes on the Bible, Summary Notes. Continue?</value>
   </data>
   <data name="DefineNotebookDirectory" xml:space="preserve">
-    <value>Указать директорию для записной книжки</value>
+    <value>Specify notebook folder</value>
   </data>
   <data name="DeleteThisModule" xml:space="preserve">
-    <value>Удалить данный модуль</value>
+    <value>Remove this module</value>
   </data>
   <data name="DeleteThisModuleQuestion" xml:space="preserve">
-    <value>Удалить данный модуль?</value>
+    <value>Remove this module?</value>
   </data>
   <data name="Error_NotebookTemplateNotDefined" xml:space="preserve">
-    <value>Не указан шаблон записной книжки типа '{0}'.</value>
+    <value>Notebook template not specified for type '{0}'.</value>
   </data>
   <data name="Error_NotebookTemplateNotFound" xml:space="preserve">
-    <value>Не найден шаблон записной книжки '{0}' типа '{1}'.</value>
+    <value>Notebook template not found: '{0}' of type '{1}'.</value>
   </data>
   <data name="Error_SectionGroupNotDefined" xml:space="preserve">
-    <value>Не указана группа разделов типа '{0}' в шаблоне записной книжки типа '{1}'.</value>
+    <value>Section group of type '{0}' not specified in notebook template of type '{1}'.</value>
   </data>
   <data name="ModuleInformation" xml:space="preserve">
-    <value>Информация о модуле</value>
+    <value>Information about the module</value>
   </data>
   <data name="ModuleUploadError" xml:space="preserve">
-    <value>При загрузке модуля '{0}' произошла ошибка: {1}"</value>
+    <value>Error on module '{0}' loading: {1}</value>
   </data>
   <data name="ModuleWithSameNameAlreadyExists" xml:space="preserve">
-    <value>Модуль с таким именем уже существует. Существующий модуль будет полностью заменён загружаемым. Продолжить?</value>
+    <value>The module with the same name already exists. The current module will be replaced. Continue?</value>
   </data>
   <data name="SelectFileWithExtension" xml:space="preserve">
-    <value>Выберите файл с расширением '{0}'.</value>
+    <value>Select file with the extension '{0}'.</value>
   </data>
   <data name="UseThisModule" xml:space="preserve">
-    <value>Использовать данный модуль</value>
+    <value>Use this module</value>
+  </data>
+  <data name="ProcessAbortedByUser" xml:space="preserve">
+    <value>Process aborted by user</value>
   </data>
 </root>

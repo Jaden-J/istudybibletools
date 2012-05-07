@@ -96,7 +96,7 @@ namespace BibleConfigurator
             {
                 Logger.Initialize();
 
-                if (rbSingleNotebook.Checked)
+                if (rbSingleNotebook.Checked && module.UseSingleNotebook())
                 {
                     SaveSingleNotebookParameters(module);
                 }
@@ -485,7 +485,7 @@ namespace BibleConfigurator
                 lblWarning.Visible = true;
 
             Dictionary<string, string> notebooks = GetNotebooks();
-            string singleNotebookId = SearchForNotebook(module, notebooks.Keys, NotebookType.Single);
+            string singleNotebookId = module.UseSingleNotebook() ? SearchForNotebook(module, notebooks.Keys, NotebookType.Single) : string.Empty;
             string bibleNotebookId = SearchForNotebook(module, notebooks.Keys, NotebookType.Bible);
             string bibleCommentsNotebookId = SearchForNotebook(module, notebooks.Keys, NotebookType.BibleComments);
             string bibleStudyNotebookId = SearchForNotebook(module, notebooks.Keys, NotebookType.BibleStudy);
@@ -505,9 +505,13 @@ namespace BibleConfigurator
             cbBibleNotesPagesNotebook.DataSource = notebooks.Values.ToList();
             cbBibleStudyNotebook.DataSource = notebooks.Values.ToList();
 
-            SetNotebookParameters(rbSingleNotebook.Checked, !string.IsNullOrEmpty(singleNotebookId) ? notebooks[singleNotebookId] : 
-                Path.GetFileNameWithoutExtension(module.GetNotebook(NotebookType.Single).Name), 
-                notebooks, SettingsManager.Instance.NotebookId_Bible, cbSingleNotebook, chkCreateSingleNotebookFromTemplate);
+
+            if (module.UseSingleNotebook())
+            {
+                SetNotebookParameters(rbSingleNotebook.Checked, !string.IsNullOrEmpty(singleNotebookId) ? notebooks[singleNotebookId] :
+                    Path.GetFileNameWithoutExtension(module.GetNotebook(NotebookType.Single).Name),
+                    notebooks, SettingsManager.Instance.NotebookId_Bible, cbSingleNotebook, chkCreateSingleNotebookFromTemplate);
+            }
 
             SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotebookId) ? notebooks[bibleNotebookId] :
                 Path.GetFileNameWithoutExtension(module.GetNotebook(NotebookType.Bible).Name), 
@@ -542,6 +546,9 @@ namespace BibleConfigurator
             chkUseRubbishPage_CheckedChanged(this, new EventArgs());
 
             InitLanguagesMenu();
+
+            if (!rbSingleNotebook.Checked)
+                rbSingleNotebook.Enabled = false;
         }
 
         private void InitLanguagesMenu()
@@ -643,6 +650,7 @@ namespace BibleConfigurator
         private void rbMultiNotebook_CheckedChanged(object sender, EventArgs e)
         {
             cbSingleNotebook.Enabled = rbSingleNotebook.Checked;
+            lblSelectSingleNotebook.Enabled = rbSingleNotebook.Checked;
             btnSingleNotebookParameters.Enabled = rbSingleNotebook.Checked;
             chkCreateSingleNotebookFromTemplate.Enabled = rbSingleNotebook.Checked;
             btnSingleNotebookParameters.Enabled = rbSingleNotebook.Checked;
