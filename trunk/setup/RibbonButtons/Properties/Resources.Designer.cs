@@ -60,6 +60,20 @@ namespace RibbonButtons.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap AboutModule {
+            get {
+                object obj = ResourceManager.GetObject("AboutModule", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap AboutProgram {
+            get {
+                object obj = ResourceManager.GetObject("AboutProgram", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap ConfigureButton {
             get {
                 object obj = ResourceManager.GetObject("ConfigureButton", resourceCulture);

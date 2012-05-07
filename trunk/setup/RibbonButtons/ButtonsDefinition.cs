@@ -124,6 +124,12 @@ namespace RibbonButtons
                 case "HelpButton.png":
                     Properties.Resources.HelpButton.Save(mem, ImageFormat.Png);
                     break;
+                case "AboutModule.png":
+                    Properties.Resources.AboutModule.Save(mem, ImageFormat.Png);
+                    break;
+                case "AboutProgram.png":
+                    Properties.Resources.AboutProgram.Save(mem, ImageFormat.Png);
+                    break;
             }
 
             return new CCOMStreamWrapper(mem);
