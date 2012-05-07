@@ -1086,7 +1086,7 @@ namespace BibleConfigurator
             var btn = (Button)sender;
             var moduleName = (string)btn.Tag;
 
-            AboutModuleForm f = new AboutModuleForm(moduleName);
+            AboutModuleForm f = new AboutModuleForm(moduleName, false);
             f.ShowDialog();                
         }
 

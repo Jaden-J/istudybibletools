@@ -16,13 +16,14 @@ namespace BibleConfigurator
     {
         public string ModuleName { get; set; }
 
-        public AboutModuleForm(string moduleName)
+        public AboutModuleForm(string moduleName, bool topMost)
         {
             this.SetFormUICulture();
 
             InitializeComponent();
 
             this.ModuleName = moduleName;
+            this.TopMost = topMost;
         }
 
         private void btnOK_Click(object sender, EventArgs e)

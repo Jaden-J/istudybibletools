@@ -64,6 +64,7 @@ namespace RibbonButtons
         public void ButtonClick(IRibbonControl control)
 		{
             string path = null;
+            string args = string.Empty;                
 
             switch (control.Id)
             {
@@ -82,11 +83,15 @@ namespace RibbonButtons
                 case "HelpButton":
                     path = Path.Combine(Utils.GetCurrentDirectory(), "Instruction (v 1.5.5).docx");
                     break;
+                case "ModuleInfoButton":
+                    path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleConfigurator\\BibleConfigurator.exe");
+                    args = "-showModuleInfo";
+                    break;
             }
              
 
             if (!string.IsNullOrEmpty(path))
-                Process.Start(path);
+                Process.Start(path, args);
 		}
 
 		/// <summary>
