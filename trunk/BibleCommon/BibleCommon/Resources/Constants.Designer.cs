@@ -70,7 +70,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Создание резервной копии данных успешно завершено..
+        ///   Looks up a localized string similar to Backup created successfully..
         /// </summary>
         public static string BackupManagerFinishMessage {
             get {
@@ -79,7 +79,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Резервная копия записной книжки &apos;{0}&apos; успешно создана..
+        ///   Looks up a localized string similar to Backup of notebook &apos;{0}&apos; created successfully..
         /// </summary>
         public static string BackupManagerNotebookCompleted {
             get {
@@ -88,7 +88,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Упаковывание файлов в .zip архив..
+        ///   Looks up a localized string similar to Packaging to .zip archive..
         /// </summary>
         public static string BackupManagerToZipArchive {
             get {
@@ -97,7 +97,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Старт создания резервной копии данных.
+        ///   Looks up a localized string similar to Backup starts.
         /// </summary>
         public static string BackupStartInfo {
             get {
@@ -106,7 +106,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не удалось определить место.
+        ///   Looks up a localized string similar to The passage can not be found.
         /// </summary>
         public static string BibleVersePointerCanNotFindPlace {
             get {
@@ -115,7 +115,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не удалось распознать строку.
+        ///   Looks up a localized string similar to String cannot be parsed.
         /// </summary>
         public static string BibleVersePointerCanNotParseString {
             get {
@@ -124,7 +124,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to книг.
+        ///   Looks up a localized string similar to books.
         /// </summary>
         public static string Books {
             get {
@@ -133,7 +133,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Данный модуль содержит другой текст Библии и другие варианты сокращений названий книг. Для корректной работы программы необходимо будет пересоздать записную книжку Библии, комментариев Библии и сводных земеток. Продолжить?.
+        ///   Looks up a localized string similar to This module contains another text of the Bible and other versions of abbreviations of books. For correct program work    the follow notebooks must be re-created: Bible, Notes on the Bible, Summary Notes. Continue?.
         /// </summary>
         public static string ChangeModuleWarning {
             get {
@@ -142,7 +142,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Закрыть.
+        ///   Looks up a localized string similar to Close.
         /// </summary>
         public static string Close {
             get {
@@ -151,7 +151,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не удалось запросить данные о записных книжках из OneNote. Повторите операцию..
+        ///   Looks up a localized string similar to OneNote notebooks request fails. Please retry..
         /// </summary>
         public static string ConfiguratorCanNotRequestDataFromOneNote {
             get {
@@ -160,7 +160,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ошибка при открытии записной книжки.
+        ///   Looks up a localized string similar to Notebook open error.
         /// </summary>
         public static string ConfiguratorErrorWhileNotebookOpenning {
             get {
@@ -169,7 +169,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Создание записной книжки.
+        ///   Looks up a localized string similar to Creating notebook.
         /// </summary>
         public static string ConfiguratorNotebookCreation {
             get {
@@ -178,7 +178,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не указана записная книжка.
+        ///   Looks up a localized string similar to Notebook not defined.
         /// </summary>
         public static string ConfiguratorNotebookNotDefined {
             get {
@@ -187,7 +187,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не найден шаблон записной книжки по адресу.
+        ///   Looks up a localized string similar to Notebook template not found at.
         /// </summary>
         public static string ConfiguratorNotebookTemplateNotFound {
             get {
@@ -196,7 +196,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Удалить все сводные страницы заметок и ссылки на них?.
+        ///   Looks up a localized string similar to Delete all summary notes and references to them?.
         /// </summary>
         public static string ConfiguratorQuestionDeleteAllNotesPages {
             get {
@@ -205,7 +205,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Для страниц &apos;Сводные заметок&apos; используется отдельная записная книжка. Рекомендуется вручную удалить записную книжку &apos;Сводные заметки&apos; и создать её заново из шаблона. Продолжить?.
+        ///   Looks up a localized string similar to &apos;Summary notes&apos; pages use a separate notebook. It is recommended to manually remove the notebook &apos;Summary notes&apos; and recreate it from template. Continue?.
         /// </summary>
         public static string ConfiguratorQuestionDeleteAllNotesPagesManually {
             get {
@@ -214,7 +214,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не найдена группа разделов.
+        ///   Looks up a localized string similar to Section group not found.
         /// </summary>
         public static string ConfiguratorSectionGroupNotFound {
             get {
@@ -223,7 +223,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не удаётся создать записную книжку. Выберите другую папку..
+        ///   Looks up a localized string similar to Unable to create the notebook. Select a different folder..
         /// </summary>
         public static string ConfiguratorSelectAnotherFolder {
             get {
@@ -232,7 +232,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Укажите расположение записной книжки.
+        ///   Looks up a localized string similar to Specify notebook location.
         /// </summary>
         public static string ConfiguratorSetNotebookFolder {
             get {
@@ -241,7 +241,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Указана неподходящая записная книжка &apos;{0}&apos; для типа &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Wrong notebook specified &apos;{0}&apos; for type &apos;{1}&apos;..
         /// </summary>
         public static string ConfiguratorWrongNotebookSelected {
             get {
@@ -250,7 +250,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Неверное значение параметра.
+        ///   Looks up a localized string similar to Wrong parameter value.
         /// </summary>
         public static string ConfiguratorWrongParameterValue {
             get {
@@ -259,7 +259,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Заметки.
+        ///   Looks up a localized string similar to Notes.
         /// </summary>
         public static string DefaultPageName_Notes {
             get {
@@ -268,7 +268,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Подробные заметки.
+        ///   Looks up a localized string similar to Detailed notes.
         /// </summary>
         public static string DefaultPageName_RubbishNotes {
             get {
@@ -277,7 +277,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Общий обзор.
+        ///   Looks up a localized string similar to Overview.
         /// </summary>
         public static string DefaultPageNameDefaultBookOverview {
             get {
@@ -286,7 +286,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Комментарии.
+        ///   Looks up a localized string similar to Comments.
         /// </summary>
         public static string DefaultPageNameDefaultComments {
             get {
@@ -295,7 +295,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Указать директорию для записной книжки.
+        ///   Looks up a localized string similar to Specify notebook folder.
         /// </summary>
         public static string DefineNotebookDirectory {
             get {
@@ -304,7 +304,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Удаление страниц &apos;Сводные заметок&apos; успешно завершено..
+        ///   Looks up a localized string similar to &apos;Summary notes&apos; deleting completed successfully..
         /// </summary>
         public static string DeleteNotesPagesManagerFinishMessage {
             get {
@@ -313,7 +313,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Удаление страницы.
+        ///   Looks up a localized string similar to Page deleting.
         /// </summary>
         public static string DeleteNotesPagesManagerRemovePage {
             get {
@@ -322,7 +322,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Старт удаления страниц &apos;Сводные заметок&apos;..
+        ///   Looks up a localized string similar to &apos;Summary notes&apos; deleting start..
         /// </summary>
         public static string DeleteNotesPagesManagerStartMessage {
             get {
@@ -331,7 +331,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Удалить данный модуль.
+        ///   Looks up a localized string similar to Remove this module.
         /// </summary>
         public static string DeleteThisModule {
             get {
@@ -340,7 +340,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Удалить данный модуль?.
+        ///   Looks up a localized string similar to Remove this module?.
         /// </summary>
         public static string DeleteThisModuleQuestion {
             get {
@@ -349,7 +349,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ошибка.
+        ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string Error {
             get {
@@ -358,7 +358,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не удаётся найти иерархию типа &apos;{0}&apos; для элемента &apos;{1}&apos;: {2}.
+        ///   Looks up a localized string similar to Can not find a hierarchy of type &apos;{0}&apos; for element &apos;{1}&apos; {2}.
         /// </summary>
         public static string Error_CanNotFindHierarchy {
             get {
@@ -367,7 +367,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не указан шаблон записной книжки типа &apos;{0}&apos;..
+        ///   Looks up a localized string similar to Notebook template not specified for type &apos;{0}&apos;..
         /// </summary>
         public static string Error_NotebookTemplateNotDefined {
             get {
@@ -376,7 +376,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не найден шаблон записной книжки &apos;{0}&apos; типа &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Notebook template not found: &apos;{0}&apos; of type &apos;{1}&apos;..
         /// </summary>
         public static string Error_NotebookTemplateNotFound {
             get {
@@ -385,7 +385,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не найдено открытой записной книжки.
+        ///   Looks up a localized string similar to Opened notebook not found.
         /// </summary>
         public static string Error_OpenedNotebookNotFound {
             get {
@@ -394,7 +394,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не найдено открытой страницы заметок.
+        ///   Looks up a localized string similar to Opened notes page not found.
         /// </summary>
         public static string Error_OpenedNotePageNotFound {
             get {
@@ -403,7 +403,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не указана группа разделов типа &apos;{0}&apos; в шаблоне записной книжки типа &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Section group of type &apos;{0}&apos; not specified in notebook template of type &apos;{1}&apos;..
         /// </summary>
         public static string Error_SectionGroupNotDefined {
             get {
@@ -412,7 +412,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Программа не сконфигурирована. Откройте &apos;Параметры программы&apos; и укажите все необходимые настройки..
+        ///   Looks up a localized string similar to The program is not configured. Open the &apos;Program parameters&apos; and specify the necessary settings..
         /// </summary>
         public static string Error_SystemIsNotConfigures {
             get {
@@ -421,7 +421,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не удалось обновить страницу. Возможно на странице присутствуют нарисованные кистью элементы, которые на текущий момент не поддерживаются программой. \nУдалите такие элементы и повторите операцию..
+        ///   Looks up a localized string similar to Unable to update the page. Perhaps on the page there are painted with a brush elements, which are currently not supported. \nDelete  this elements and try again..
         /// </summary>
         public static string Error_UpdateError_InksOnPages {
             get {
@@ -430,7 +430,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ошибка обновления страницы.
+        ///   Looks up a localized string similar to Update page error.
         /// </summary>
         public static string Error_UpdatePage {
             get {
@@ -439,7 +439,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ОШИБКА.
+        ///   Looks up a localized string similar to ERROR.
         /// </summary>
         public static string ErrorUpper {
             get {
@@ -448,7 +448,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Успешно завершено..
+        ///   Looks up a localized string similar to Successfully completed..
         /// </summary>
         public static string FinishSuccessfully {
             get {
@@ -457,7 +457,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Завершено с ошибками..
+        ///   Looks up a localized string similar to Completed with errors..
         /// </summary>
         public static string FinishWithErrors {
             get {
@@ -466,7 +466,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Информация о модуле.
+        ///   Looks up a localized string similar to Information about the module.
         /// </summary>
         public static string ModuleInformation {
             get {
@@ -475,7 +475,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to При загрузке модуля &apos;{0}&apos; произошла ошибка: {1}&quot;.
+        ///   Looks up a localized string similar to Error on module &apos;{0}&apos; loading: {1}.
         /// </summary>
         public static string ModuleUploadError {
             get {
@@ -484,7 +484,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Модуль с таким именем уже существует. Существующий модуль будет полностью заменён загружаемым. Продолжить?.
+        ///   Looks up a localized string similar to The module with the same name already exists. The current module will be replaced. Continue?.
         /// </summary>
         public static string ModuleWithSameNameAlreadyExists {
             get {
@@ -493,7 +493,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не удаётся найти группу секций.
+        ///   Looks up a localized string similar to Section group can not be found.
         /// </summary>
         public static string NotebookIteratorCanNotFindSectionGroup {
             get {
@@ -502,7 +502,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Обновление иерархии в OneNote.
+        ///   Looks up a localized string similar to OneNote hierarchy updating.
         /// </summary>
         public static string NoteLilnkerHierarchyUpdating {
             get {
@@ -511,7 +511,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ошибка во время сортировки страницы.
+        ///   Looks up a localized string similar to Sort pages error.
         /// </summary>
         public static string NoteLinkerErrorWhilePageSorting {
             get {
@@ -520,7 +520,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Закрыть программу?.
+        ///   Looks up a localized string similar to Close the program?.
         /// </summary>
         public static string NoteLinkerFormCaptionOnClosing {
             get {
@@ -529,7 +529,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Скрыть детали.
+        ///   Looks up a localized string similar to Hide details.
         /// </summary>
         public static string NoteLinkerHideDetails {
             get {
@@ -538,7 +538,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Инициализация....
+        ///   Looks up a localized string similar to Initializing....
         /// </summary>
         public static string NoteLinkerInitialization {
             get {
@@ -547,7 +547,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Обновление ссылок на страницы &apos;Сводные заметок&apos;.
+        ///   Looks up a localized string similar to Updating references to &apos;Summary notes&apos;.
         /// </summary>
         public static string NoteLinkerLinksToNotesPagesUpdating {
             get {
@@ -556,7 +556,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Найдено.
+        ///   Looks up a localized string similar to Found.
         /// </summary>
         public static string NoteLinkerManyFound {
             get {
@@ -565,7 +565,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to страницы.
+        ///   Looks up a localized string similar to pages.
         /// </summary>
         public static string NoteLinkerManyPages {
             get {
@@ -574,7 +574,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не выбран ни один элемент.
+        ///   Looks up a localized string similar to No elements selected.
         /// </summary>
         public static string NoteLinkerNoElementSelected {
             get {
@@ -583,7 +583,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Обновление страниц &apos;Сводные заметок&apos; в OneNote.
+        ///   Looks up a localized string similar to &apos;Summary notes&apos; pages updating.
         /// </summary>
         public static string NoteLinkerNotesPagesUpdating {
             get {
@@ -592,7 +592,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to страниц.
+        ///   Looks up a localized string similar to pages.
         /// </summary>
         public static string NoteLinkerOfManyPages {
             get {
@@ -601,7 +601,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Найдена.
+        ///   Looks up a localized string similar to Found.
         /// </summary>
         public static string NoteLinkerOneFound {
             get {
@@ -610,7 +610,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to страница.
+        ///   Looks up a localized string similar to page.
         /// </summary>
         public static string NoteLinkerOnePage {
             get {
@@ -619,7 +619,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Обновление страниц в OneNote.
+        ///   Looks up a localized string similar to OneNote pages updating.
         /// </summary>
         public static string NoteLinkerPagesUpdating {
             get {
@@ -628,7 +628,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Обработка записной книжки.
+        ///   Looks up a localized string similar to Processing notebook.
         /// </summary>
         public static string NoteLinkerProcessNotebook {
             get {
@@ -637,7 +637,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Вы действительно хотите прекратить работу программы? В некоторых случаях это может привести к неправильной сортировке страниц &apos;Сводные заметок&apos;, что решается только удалением всех страниц &apos;Сводные земеток&apos;..
+        ///   Looks up a localized string similar to In some cases this can lead to incorrect sorting of pages &apos;Summary notes&apos;, which is solved only by removing all the pages of &apos;Summary notes. Contniue terminating the program?.
         /// </summary>
         public static string NoteLinkerQuestionOnClosing {
             get {
@@ -646,7 +646,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Показать детали.
+        ///   Looks up a localized string similar to Show details.
         /// </summary>
         public static string NoteLinkerShowDetails {
             get {
@@ -655,7 +655,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Этап.
+        ///   Looks up a localized string similar to Stage.
         /// </summary>
         public static string NoteLinkerStage {
             get {
@@ -664,7 +664,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Заключительная обработка глав.
+        ///   Looks up a localized string similar to Final chapter processing.
         /// </summary>
         public static string NoteLinkManagerChapterProcessing {
             get {
@@ -673,7 +673,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ошибки при обработке страницы..
+        ///   Looks up a localized string similar to Error while processing of the page..
         /// </summary>
         public static string NoteLinkManagerProcessingPageErrors {
             get {
@@ -682,7 +682,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Обрабатываем страницу &apos;Сводная заметок&apos;.
+        ///   Looks up a localized string similar to Processing the page &apos;summary notes&apos;.
         /// </summary>
         public static string NoteLinkManagerProcessNotesPage {
             get {
@@ -691,7 +691,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не найдена ячейка для стиха.
+        ///   Looks up a localized string similar to Verse cell not found.
         /// </summary>
         public static string NoteLinkManagerVerseCellNotFound {
             get {
@@ -700,7 +700,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Операция прервана пользователем..
+        ///   Looks up a localized string similar to Process aborted by user.
         /// </summary>
         public static string ProcessAbortedByUser {
             get {
@@ -709,7 +709,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Обработка главы.
+        ///   Looks up a localized string similar to Processing chapter.
         /// </summary>
         public static string ProcessChapter {
             get {
@@ -718,7 +718,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Обработка текущей страницы.
+        ///   Looks up a localized string similar to Current page processing.
         /// </summary>
         public static string ProcessCurrentPage {
             get {
@@ -727,7 +727,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Обработка записной книжки.
+        ///   Looks up a localized string similar to Notebook processing.
         /// </summary>
         public static string ProcessNotebook {
             get {
@@ -736,7 +736,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Обработка страницы.
+        ///   Looks up a localized string similar to Processing the page.
         /// </summary>
         public static string ProcessPage {
             get {
@@ -745,7 +745,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Обработка секции.
+        ///   Looks up a localized string similar to Processing the section.
         /// </summary>
         public static string ProcessSection {
             get {
@@ -754,7 +754,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Обработка группы секций.
+        ///   Looks up a localized string similar to Processing the section group.
         /// </summary>
         public static string ProcessSectionGroup {
             get {
@@ -763,7 +763,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Обработка стиха.
+        ///   Looks up a localized string similar to Processing the verse.
         /// </summary>
         public static string ProcessVerse {
             get {
@@ -772,7 +772,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Обновление ссылок на комментарии успешно завершено..
+        ///   Looks up a localized string similar to References to Notes on the Bible have been updated..
         /// </summary>
         public static string RelinkBibleCommentsManagerFinishMessage {
             get {
@@ -781,7 +781,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Старт обновления ссылок на комментарии..
+        ///   Looks up a localized string similar to Start updating references to the Notes on the Bible..
         /// </summary>
         public static string RelinkBibleCommentsManagerStartMessage {
             get {
@@ -790,7 +790,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Обновление ширины страниц Библии успешно завершено..
+        ///   Looks up a localized string similar to Bible pages width have been successfully changed..
         /// </summary>
         public static string ResizeBibleTableManagerFinishMessage {
             get {
@@ -799,7 +799,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Старт обновления ширины страниц Библии..
+        ///   Looks up a localized string similar to Start changing the Bible pages width..
         /// </summary>
         public static string ResizeBibleTableManagerStartMessage {
             get {
@@ -808,7 +808,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Выберите файл с расширением &apos;{0}&apos;..
+        ///   Looks up a localized string similar to Select file with the extension &apos;{0}&apos;..
         /// </summary>
         public static string SelectFileWithExtension {
             get {
@@ -817,7 +817,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Время старта.
+        ///   Looks up a localized string similar to Start time.
         /// </summary>
         public static string StartTime {
             get {
@@ -826,16 +826,16 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Времени затрачено.
+        ///   Looks up a localized string similar to Time spent.
         /// </summary>
-        public static string TimeSpend {
+        public static string TimeSpent {
             get {
-                return ResourceManager.GetString("TimeSpend", resourceCulture);
+                return ResourceManager.GetString("TimeSpent", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Использовать данный модуль.
+        ///   Looks up a localized string similar to Use this module.
         /// </summary>
         public static string UseThisModule {
             get {
@@ -844,7 +844,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to стих.
+        ///   Looks up a localized string similar to verse.
         /// </summary>
         public static string Verse {
             get {
@@ -853,7 +853,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Программа OneNote не запущена.
+        ///   Looks up a localized string similar to OneNote not started.
         /// </summary>
         public static string VerseLinkerOneNoteNotStarted {
             get {
@@ -862,7 +862,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не удалось выделить подчёркнутый текст.
+        ///   Looks up a localized string similar to Underlined text cannot be extracted.
         /// </summary>
         public static string VerseLinkerUnderlineTextNotExtracted {
             get {
@@ -871,7 +871,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Подчёркнутый текст не найден.
+        ///   Looks up a localized string similar to Underline text not found.
         /// </summary>
         public static string VerseLinkerUnderlineTextNotFound {
             get {
@@ -880,7 +880,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не найдена страница для комментариев..
+        ///   Looks up a localized string similar to Comments page not found.
         /// </summary>
         public static string VerseLinkManagerCommentPageNotFound {
             get {
@@ -889,7 +889,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не найдена группа секций для комментариев..
+        ///   Looks up a localized string similar to Comments section group not found.
         /// </summary>
         public static string VerseLinkManagerCommentSectionGroupNotFound {
             get {
@@ -898,7 +898,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не найдена секция для комментариев..
+        ///   Looks up a localized string similar to Comments section not found.
         /// </summary>
         public static string VerseLinkManagerCommentSectionNotFound {
             get {
@@ -907,7 +907,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Скорее всего в OneNote открыта не страница Библии..
+        ///   Looks up a localized string similar to It most likely that not a Bible page is opened in OneNote..
         /// </summary>
         public static string VerseLinkManagerOpenNotBiblePage {
             get {
@@ -925,7 +925,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ссылка {0}.
+        ///   Looks up a localized string similar to link {0}.
         /// </summary>
         public static string VerseLinkTemplate {
             get {
@@ -934,7 +934,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Внимание!.
+        ///   Looks up a localized string similar to Warning!.
         /// </summary>
         public static string Warning {
             get {

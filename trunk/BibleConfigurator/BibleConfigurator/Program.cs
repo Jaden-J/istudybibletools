@@ -5,6 +5,8 @@ using System.Windows.Forms;
 using BibleCommon.Common;
 using BibleConfigurator.ModuleConverter;
 using System.Text;
+using BibleCommon.Services;
+
 
 namespace BibleConfigurator
 {
@@ -30,14 +32,23 @@ namespace BibleConfigurator
             //        } },
             //        new NotebookInfo() { Type = NotebookType.Bible, Name = "Bible.onepkg" },
             //        new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Bible Study.onepkg" },
-            //        new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Bible Comments.onepkg" },
-            //        new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Notes Pages.onepkg" }
+            //        new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Notes on the Bible.onepkg" },
+            //        new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Summary Notes.onepkg" }
             //    });
             //converter.Convert();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm(args));
+
+            Form form;
+            if (args.Length > 0
+                    && args[0] == Consts.ShowModuleInfo
+                    && SettingsManager.Instance.IsConfigured(new Microsoft.Office.Interop.OneNote.Application()))
+                form = new AboutModuleForm(SettingsManager.Instance.CurrentModule.Name);
+            else
+                form = new MainForm(args);
+
+            Application.Run(form);
         }
 
       

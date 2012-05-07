@@ -50,7 +50,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.chkCreateBibleNotebookFromTemplate = new System.Windows.Forms.CheckBox();
             this.cbBibleNotebook = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblSelectSingleNotebook = new System.Windows.Forms.Label();
             this.chkCreateSingleNotebookFromTemplate = new System.Windows.Forms.CheckBox();
             this.cbSingleNotebook = new System.Windows.Forms.ComboBox();
             this.rbMultiNotebook = new System.Windows.Forms.RadioButton();
@@ -156,7 +156,7 @@
             this.tabPage1.Controls.Add(this.label2);
             this.tabPage1.Controls.Add(this.chkCreateBibleNotebookFromTemplate);
             this.tabPage1.Controls.Add(this.cbBibleNotebook);
-            this.tabPage1.Controls.Add(this.label1);
+            this.tabPage1.Controls.Add(this.lblSelectSingleNotebook);
             this.tabPage1.Controls.Add(this.chkCreateSingleNotebookFromTemplate);
             this.tabPage1.Controls.Add(this.cbSingleNotebook);
             this.tabPage1.Controls.Add(this.rbMultiNotebook);
@@ -283,10 +283,10 @@
             resources.ApplyResources(this.cbBibleNotebook, "cbBibleNotebook");
             this.cbBibleNotebook.Name = "cbBibleNotebook";
             // 
-            // label1
+            // lblSelectSingleNotebook
             // 
-            resources.ApplyResources(this.label1, "label1");
-            this.label1.Name = "label1";
+            resources.ApplyResources(this.lblSelectSingleNotebook, "lblSelectSingleNotebook");
+            this.lblSelectSingleNotebook.Name = "lblSelectSingleNotebook";
             // 
             // chkCreateSingleNotebookFromTemplate
             // 
@@ -626,7 +626,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox chkCreateBibleNotebookFromTemplate;
         private System.Windows.Forms.ComboBox cbBibleNotebook;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblSelectSingleNotebook;
         private System.Windows.Forms.CheckBox chkCreateSingleNotebookFromTemplate;
         private System.Windows.Forms.ComboBox cbSingleNotebook;
         private System.Windows.Forms.RadioButton rbMultiNotebook;

@@ -142,7 +142,7 @@
     <value>книг</value>
   </data>
   <data name="ChangeModuleWarning" xml:space="preserve">
-    <value>Данный модуль содержит другой текст Библии и другие варианты сокращений названий книг. Для корректной работы программы необходимо будет пересоздать записную книжку Библии, комментариев Библии и сводных земеток. Продолжить?</value>
+    <value>Данный модуль содержит другой текст Библии и другие варианты сокращений названий книг. Для корректной работы программы необходимо будет пересоздать записную книжку Библии, комментариев Библии и сводных заметок. Продолжить?</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>Закрыть</value>
@@ -196,7 +196,7 @@
     <value>Подробные заметки</value>
   </data>
   <data name="DefineNotebookDirectory" xml:space="preserve">
-    <value>Указать директорию для записной книжки</value>
+    <value>Указать папку для записной книжки</value>
   </data>
   <data name="DeleteNotesPagesManagerFinishMessage" xml:space="preserve">
     <value>Удаление страниц 'Сводные заметок' успешно завершено.</value>
@@ -256,7 +256,7 @@
     <value>Информация о модуле</value>
   </data>
   <data name="ModuleUploadError" xml:space="preserve">
-    <value>При загрузке модуля '{0}' произошла ошибка: {1}"</value>
+    <value>При загрузке модуля '{0}' произошла ошибка: {1}</value>
   </data>
   <data name="ModuleWithSameNameAlreadyExists" xml:space="preserve">
     <value>Модуль с таким именем уже существует. Существующий модуль будет полностью заменён загружаемым. Продолжить?</value>
@@ -310,7 +310,7 @@
     <value>Обработка записной книжки</value>
   </data>
   <data name="NoteLinkerQuestionOnClosing" xml:space="preserve">
-    <value>Вы действительно хотите прекратить работу программы? В некоторых случаях это может привести к неправильной сортировке страниц 'Сводные заметок', что решается только удалением всех страниц 'Сводные земеток'.</value>
+    <value>Вы действительно хотите прекратить работу программы? В некоторых случаях это может привести к неправильной сортировке страниц 'Сводные заметок', что решается только удалением всех страниц 'Сводные заметок'.</value>
   </data>
   <data name="NoteLinkerShowDetails" xml:space="preserve">
     <value>Показать детали</value>
@@ -372,7 +372,7 @@
   <data name="StartTime" xml:space="preserve">
     <value>Время старта</value>
   </data>
-  <data name="TimeSpend" xml:space="preserve">
+  <data name="TimeSpent" xml:space="preserve">
     <value>Времени затрачено</value>
   </data>
   <data name="UseThisModule" xml:space="preserve">

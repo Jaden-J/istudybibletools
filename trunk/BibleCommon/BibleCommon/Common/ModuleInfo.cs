@@ -40,6 +40,11 @@ namespace BibleCommon.Common
         [XmlElement]
         public BibleStructureInfo BibleStructure { get; set; }
 
+        public bool UseSingleNotebook()
+        {
+            return Notebooks.Exists(n => n.Type == NotebookType.Single);
+        }
+
         public NotebookInfo GetNotebook(NotebookType notebookType)
         {
             return Notebooks.First(n => n.Type == notebookType);
