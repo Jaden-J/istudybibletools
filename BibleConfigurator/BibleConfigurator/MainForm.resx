@@ -1500,6 +1500,60 @@
   <data name="&gt;&gt;tabPage3.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
+  <data name="hlModules.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="hlModules.Location" type="System.Drawing.Point, System.Drawing">
+    <value>498, 7</value>
+  </data>
+  <data name="hlModules.Size" type="System.Drawing.Size, System.Drawing">
+    <value>140, 13</value>
+  </data>
+  <data name="hlModules.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="hlModules.Text" xml:space="preserve">
+    <value>http://IStudyBibleTools.com</value>
+  </data>
+  <data name="&gt;&gt;hlModules.Name" xml:space="preserve">
+    <value>hlModules</value>
+  </data>
+  <data name="&gt;&gt;hlModules.Type" xml:space="preserve">
+    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;hlModules.Parent" xml:space="preserve">
+    <value>tabPage4</value>
+  </data>
+  <data name="&gt;&gt;hlModules.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="lblModulesLink.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblModulesLink.Location" type="System.Drawing.Point, System.Drawing">
+    <value>326, 7</value>
+  </data>
+  <data name="lblModulesLink.Size" type="System.Drawing.Size, System.Drawing">
+    <value>176, 13</value>
+  </data>
+  <data name="lblModulesLink.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="lblModulesLink.Text" xml:space="preserve">
+    <value>You can download more modules at</value>
+  </data>
+  <data name="&gt;&gt;lblModulesLink.Name" xml:space="preserve">
+    <value>lblModulesLink</value>
+  </data>
+  <data name="&gt;&gt;lblModulesLink.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblModulesLink.Parent" xml:space="preserve">
+    <value>tabPage4</value>
+  </data>
+  <data name="&gt;&gt;lblModulesLink.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
   <data name="pnModules.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 24</value>
   </data>
@@ -1519,7 +1573,7 @@
     <value>tabPage4</value>
   </data>
   <data name="&gt;&gt;pnModules.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>2</value>
   </data>
   <data name="lblMustSelectModule.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1546,7 +1600,7 @@
     <value>tabPage4</value>
   </data>
   <data name="&gt;&gt;lblMustSelectModule.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>3</value>
   </data>
   <data name="lblMustUploadModule.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1573,7 +1627,7 @@
     <value>tabPage4</value>
   </data>
   <data name="&gt;&gt;lblMustUploadModule.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>4</value>
   </data>
   <data name="btnUploadModule.Location" type="System.Drawing.Point, System.Drawing">
     <value>274, 131</value>
@@ -1597,7 +1651,7 @@
     <value>tabPage4</value>
   </data>
   <data name="&gt;&gt;btnUploadModule.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>5</value>
   </data>
   <data name="tabPage4.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
