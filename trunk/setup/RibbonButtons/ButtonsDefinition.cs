@@ -13,6 +13,7 @@ using System.IO;
 using System.Drawing.Imaging;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading;
 
 namespace RibbonButtons
 {
@@ -54,7 +55,10 @@ namespace RibbonButtons
 		/// </summary>
 		public string GetCustomUI(string RibbonID)
 		{
-			return Properties.Resources.ribbon;
+            if (Thread.CurrentThread.CurrentCulture.LCID == 1049)
+                return Properties.Resources.ribbon_ru;
+            else
+			    return Properties.Resources.ribbon;
 		}
 
 		/// <summary>

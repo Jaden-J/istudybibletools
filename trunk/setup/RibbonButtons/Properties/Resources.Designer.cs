@@ -102,12 +102,28 @@ namespace RibbonButtons.Properties {
         ///		&lt;tabs&gt;
         ///			&lt;tab id=&quot;tabCustom&quot; label=&quot;IStudyBibleTools&quot;&gt;
         ///				&lt;group id=&quot;Tools&quot; label=&quot;Tools&quot;&gt;
-        ///					&lt;button id=&quot;VersePointerButton&quot; label=&quot;Открыть стих&quot; size=&quot;large&quot; screentip=&quot;Нажмите, чтобы перейти к нужному месту Писания&quot; onAction=&quot;ButtonClick&quot; image=&quot;VersePointerButton.png&quot;/&gt;
-        ///          &lt;button id=&quot;VerseLinkerButton&quot; label=&quot;Написать комментарий&quot; size=&quot;large [rest of string was truncated]&quot;;.
+        ///					&lt;button id=&quot;VersePointerButton&quot; label=&quot;Open a Verse&quot; size=&quot;large&quot; screentip=&quot;Click to quickly go to any verse of the Bible&quot; onAction=&quot;ButtonClick&quot; image=&quot;VersePointerButton.png&quot;/&gt;
+        ///          &lt;button id=&quot;VerseLinkerButton&quot; label=&quot;Write a Comment&quot; size=&quot;large&quot; scre [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ribbon {
             get {
                 return ResourceManager.GetString("ribbon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///&lt;customUI xmlns=&quot;http://schemas.microsoft.com/office/2006/01/customui&quot; loadImage=&quot;GetImage&quot;&gt;
+        ///	&lt;ribbon&gt;
+        ///		&lt;tabs&gt;
+        ///			&lt;tab id=&quot;tabCustom&quot; label=&quot;IStudyBibleTools&quot;&gt;
+        ///				&lt;group id=&quot;Tools&quot; label=&quot;Tools&quot;&gt;
+        ///					&lt;button id=&quot;VersePointerButton&quot; label=&quot;Открыть стих&quot; size=&quot;large&quot; screentip=&quot;Нажмите, чтобы перейти к нужному месту Писания&quot; onAction=&quot;ButtonClick&quot; image=&quot;VersePointerButton.png&quot;/&gt;
+        ///          &lt;button id=&quot;VerseLinkerButton&quot; label=&quot;Написать комментарий&quot; size=&quot;large [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ribbon_ru {
+            get {
+                return ResourceManager.GetString("ribbon_ru", resourceCulture);
             }
         }
         
