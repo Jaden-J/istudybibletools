@@ -55,9 +55,9 @@ namespace RibbonButtons
 		/// </summary>
 		public string GetCustomUI(string RibbonID)
 		{
-            if (Thread.CurrentThread.CurrentCulture.LCID == 1049)
-                return Properties.Resources.ribbon_ru;
-            else
+            //if (Thread.CurrentThread.CurrentCulture.LCID == 1049)
+            //    return Properties.Resources.ribbon_ru;
+            //else
 			    return Properties.Resources.ribbon;
 		}
 

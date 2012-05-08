@@ -55,8 +55,8 @@ namespace BibleConfigurator
                 string moduleFilePath = args[0];
                 if (File.Exists(moduleFilePath))
                 {
-                    form = new MainForm(args);
-                    ((MainForm)form).AddNewModule(moduleFilePath, false);
+                    form = new MainForm(args);                    
+                    ((MainForm)form).AddModuleAtLoad = moduleFilePath;
                 }
             }
             
