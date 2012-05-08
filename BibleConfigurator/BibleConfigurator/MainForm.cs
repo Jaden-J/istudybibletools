@@ -1015,7 +1015,7 @@ namespace BibleConfigurator
         {
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                AddNewModule(openFileDialog.FileName);
+                AddNewModule(openFileDialog.FileName, true);
             }            
         }
 
@@ -1025,7 +1025,7 @@ namespace BibleConfigurator
             LoadModulesInfo();
         }
 
-        public void AddNewModule(string filePath)
+        public void AddNewModule(string filePath, bool changeUIAfter)
         {
             string moduleName = Path.GetFileNameWithoutExtension(filePath);
             string destFilePath = Path.Combine(ModulesManager.GetModulesPackagesDirectory(), Path.GetFileName(filePath));
@@ -1043,16 +1043,22 @@ namespace BibleConfigurator
             {
                 try
                 {
-                    bool currentModuleIsCorrect = CurrentModuleIsCorrect();  // а то может быть, что мы загрузили модуль, и он стал корретным, но UI не обновилось
+                    bool currentModuleIsCorrect = false;
+                    
+                    if (changeUIAfter)
+                        currentModuleIsCorrect = CurrentModuleIsCorrect();  // а то может быть, что мы загрузили модуль, и он стал корретным, но UI не обновилось
 
                     ModulesManager.UploadModule(filePath, destFilePath, moduleName);
 
-                    if (!currentModuleIsCorrect)
+                    if (changeUIAfter)
                     {
-                        SetModuleToUse(moduleName);
+                        if (!currentModuleIsCorrect)
+                        {
+                            SetModuleToUse(moduleName);
+                        }
+                        else
+                            ReLoadModulesInfo();
                     }
-                    else
-                        ReLoadModulesInfo();
                 }
                 catch (InvalidModuleException ex)
                 {
