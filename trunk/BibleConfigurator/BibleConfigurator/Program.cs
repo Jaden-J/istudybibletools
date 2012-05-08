@@ -50,6 +50,15 @@ namespace BibleConfigurator
                 form = new AboutProgramForm();
             else if (args.Contains(Consts.ShowManual))
                 OpenManual();
+            else if (args.Length == 1)
+            {
+                string moduleFilePath = args[0];
+                if (File.Exists(moduleFilePath))
+                {
+                    form = new MainForm(args);
+                    ((MainForm)form).AddNewModule(moduleFilePath, false);
+                }
+            }
             
             if (form == null)
                 form = new MainForm(args);
