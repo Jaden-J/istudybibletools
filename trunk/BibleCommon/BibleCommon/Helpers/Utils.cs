@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.IO;
+using BibleCommon.Consts;
+
 
 namespace BibleCommon.Helpers
 {
@@ -30,6 +32,25 @@ namespace BibleCommon.Helpers
                 result = StringUtils.GetStringFirstNumber(textElementValue);
 
             return result;
+        }
+
+        public static string GetTempFolderPath()
+        {
+            string s = Path.Combine(GetProgramDirectory(), Constants.TempDirectory);
+            if (!Directory.Exists(s))
+                Directory.CreateDirectory(s);
+
+            return s;
+        }
+
+        public static string GetProgramDirectory()
+        {
+            string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Consts.Constants.ToolsName);
+
+            if (!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
+
+            return directoryPath;
         }
     }
 }

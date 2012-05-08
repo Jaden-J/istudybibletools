@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BibleCommon.Resources;
 
 namespace BibleCommon.Common
 {
@@ -16,7 +17,7 @@ namespace BibleCommon.Common
     public class InvalidModuleException : Exception
     {
         public InvalidModuleException(string message)
-            : base("Invalid module file: " + message)
+            : base(Constants.Error_InvalidModule + " " + message)
         {
         }     
     }

@@ -268,6 +268,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Current Module is undefined..
+        /// </summary>
+        public static string CurrentModuleIsUndefined {
+            get {
+                return ResourceManager.GetString("CurrentModuleIsUndefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Notes.
         /// </summary>
         public static string DefaultPageName_Notes {
@@ -358,6 +367,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to http://IStudyBibleTools.com/download.htm?fromProgram=true.
+        /// </summary>
+        public static string DownloadPageUrl {
+            get {
+                return ResourceManager.GetString("DownloadPageUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string Error {
@@ -372,6 +390,15 @@ namespace BibleCommon.Resources {
         public static string Error_CanNotFindHierarchy {
             get {
                 return ResourceManager.GetString("Error_CanNotFindHierarchy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid module:.
+        /// </summary>
+        public static string Error_InvalidModule {
+            get {
+                return ResourceManager.GetString("Error_InvalidModule", resourceCulture);
             }
         }
         
@@ -457,6 +484,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File &apos;{0}&apos; not found..
+        /// </summary>
+        public static string FileNotFound {
+            get {
+                return ResourceManager.GetString("FileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Successfully completed..
         /// </summary>
         public static string FinishSuccessfully {
@@ -498,6 +534,15 @@ namespace BibleCommon.Resources {
         public static string ModuleWithSameNameAlreadyExists {
             get {
                 return ResourceManager.GetString("ModuleWithSameNameAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to http://IStudyBibleTools.com/ServerVariables.xml.
+        /// </summary>
+        public static string NewVersionOnServerFileUrl {
+            get {
+                return ResourceManager.GetString("NewVersionOnServerFileUrl", resourceCulture);
             }
         }
         
@@ -817,6 +862,33 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Section group &apos;{0}&apos; not found..
+        /// </summary>
+        public static string SectionGroupNotFound {
+            get {
+                return ResourceManager.GetString("SectionGroupNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Section group of type &apos;{0}&apos; not found..
+        /// </summary>
+        public static string SectionGroupOfTypeNotFound {
+            get {
+                return ResourceManager.GetString("SectionGroupOfTypeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specified Notebook is of type &apos;{0}&apos;..
+        /// </summary>
+        public static string SelectedNotebookForType {
+            get {
+                return ResourceManager.GetString("SelectedNotebookForType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select file with the extension &apos;{0}&apos;..
         /// </summary>
         public static string SelectFileWithExtension {
@@ -957,6 +1029,24 @@ namespace BibleCommon.Resources {
         public static string WebSiteUrl {
             get {
                 return ResourceManager.GetString("WebSiteUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wrong quantity of section groups. Expected {0}, found {1}..
+        /// </summary>
+        public static string WrongSectionGroupsCount {
+            get {
+                return ResourceManager.GetString("WrongSectionGroupsCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wrong quantity of sections in section group &apos;{0}&apos;. Expected {1}, found {2}..
+        /// </summary>
+        public static string WrongSectionsCountInSectionGroup {
+            get {
+                return ResourceManager.GetString("WrongSectionsCountInSectionGroup", resourceCulture);
             }
         }
     }

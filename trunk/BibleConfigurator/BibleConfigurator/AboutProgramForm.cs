@@ -52,7 +52,7 @@ namespace BibleConfigurator
 
         private void lblNewVersion_Click(object sender, EventArgs e)
         {
-            Process.Start(BibleCommon.Consts.Constants.DownloadPageUrl);
+            Process.Start(BibleCommon.Resources.Constants.DownloadPageUrl);
         }
     }
 }

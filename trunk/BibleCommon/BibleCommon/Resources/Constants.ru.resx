@@ -414,4 +414,34 @@
   <data name="WebSiteUrl" xml:space="preserve">
     <value>http://IStudyBibleTools.ru</value>
   </data>
+  <data name="SectionGroupNotFound" xml:space="preserve">
+    <value>Не найдена группа разделов '{0}'.</value>
+  </data>
+  <data name="SectionGroupOfTypeNotFound" xml:space="preserve">
+    <value>Не найдена группа разделов типа '{0}'.</value>
+  </data>
+  <data name="SelectedNotebookForType" xml:space="preserve">
+    <value>Выбрана записная книжка типа '{0}'.</value>
+  </data>
+  <data name="WrongSectionGroupsCount" xml:space="preserve">
+    <value>Неверное количество групп разделов. Ожидалось {0}, обнаружено {1}.</value>
+  </data>
+  <data name="WrongSectionsCountInSectionGroup" xml:space="preserve">
+    <value>Неверное количество разделов в группе разделов '{0}'. Ожидалось {1}, обнаружено {2}.</value>
+  </data>
+  <data name="CurrentModuleIsUndefined" xml:space="preserve">
+    <value>Текущий модуль не определён.</value>
+  </data>
+  <data name="DownloadPageUrl" xml:space="preserve">
+    <value>http://IStudyBibleTools.ru/download.htm?fromProgram=true</value>
+  </data>
+  <data name="Error_InvalidModule" xml:space="preserve">
+    <value>Неверный модуль:</value>
+  </data>
+  <data name="FileNotFound" xml:space="preserve">
+    <value>Файл '{0}' не найден.</value>
+  </data>
+  <data name="NewVersionOnServerFileUrl" xml:space="preserve">
+    <value>http://IStudyBibleTools.ru/ServerVariables.xml</value>
+  </data>
 </root>

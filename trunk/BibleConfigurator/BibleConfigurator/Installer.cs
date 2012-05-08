@@ -50,7 +50,7 @@ namespace BibleConfigurator
             startInfo.WorkingDirectory = currentDirectory;
             startInfo.FileName = Path.Combine(currentDirectory, "BibleConfigurator.exe");
             startInfo.Verb = "runas";
-            startInfo.Arguments = "-RunAfterSetup";
+            startInfo.Arguments = Consts.RunAfterSetup;
 
             Process p = Process.Start(startInfo);
         }

@@ -16,6 +16,14 @@ namespace BibleConfigurator
 
     public class InvalidNotebookException: Exception
     {
+        public InvalidNotebookException(string message, params object[] args)
+            : base(string.Format(message, args))
+        {
+        }
+
+        public InvalidNotebookException()
+        {
+        }
     }
 
     public class SaveParametersException : Exception

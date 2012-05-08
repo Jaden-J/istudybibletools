@@ -169,7 +169,7 @@ namespace BibleNoteLinker
 
         private void lblInfo_Click(object sender, EventArgs e)
         {
-            Process.Start(BibleCommon.Consts.Constants.DownloadPageUrl);
+            Process.Start(BibleCommon.Resources.Constants.DownloadPageUrl);
         }
 
         private bool _detailsWereShown = false;
