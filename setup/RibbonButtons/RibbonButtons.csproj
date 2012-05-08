@@ -62,6 +62,7 @@
     <None Include="Resources\VersePointerButton.png" />
     <None Include="Resources\VerseLinkerButton.png" />
     <None Include="Resources\NoteLinkerButton.png" />
+    <Content Include="Resources\isbt.ico" />
     <Content Include="ribbon.ru.xml">
       <SubType>Designer</SubType>
     </Content>

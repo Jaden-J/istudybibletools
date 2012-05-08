@@ -113,6 +113,11 @@ namespace BibleCommon.Services
             }
         }
 
+        public bool CurrentModuleIsCorrect()
+        {
+            return !string.IsNullOrEmpty(ModuleName) && ModulesManager.ModuleIsCorrect(ModuleName);
+        }
+
         public bool IsConfigured(Application oneNoteApp)
         {
             bool result = !string.IsNullOrEmpty(this.NotebookId_Bible)

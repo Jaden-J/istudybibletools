@@ -55,6 +55,8 @@ namespace BibleConfigurator
 
         private NotebookParametersForm _notebookParametersForm = null;
         private bool _runAfterSetup = false;
+        
+        public string AddModuleAtLoad { get; set; }
 
         public MainForm(params string[] args)
         {
@@ -462,7 +464,13 @@ namespace BibleConfigurator
                 {
                     bool? needSaveSettings = null;
 
-                    if (_runAfterSetup)
+                    if (!string.IsNullOrEmpty(AddModuleAtLoad))
+                    {
+                        AddNewModule(AddModuleAtLoad, true); // это не нравится. Он щас дважды вызывает LoadParameters. Если же передать false, то он в некоторых ситуациях не пишет "Надо сохранить изменения"
+                        tbcMain.SelectedTab = tbcMain.TabPages[tabPage4.Name];
+                        _wasLoadedModulesInfo = false;                        
+                    }
+                    else if (_runAfterSetup)
                     {
                         if (SettingsManager.Instance.IsConfigured(_oneNoteApp))
                         {
@@ -486,8 +494,8 @@ namespace BibleConfigurator
                     PrepareFolderBrowser();
                     SetNotebooksDefaultPaths();
 
-                    if (!CurrentModuleIsCorrect())
-                        tbcMain.SelectedTab = tbcMain.TabPages[tabPage4.Name];
+                    if (!SettingsManager.Instance.CurrentModuleIsCorrect())
+                        tbcMain.SelectedTab = tbcMain.TabPages[tabPage4.Name];                    
                     else
                     {
                         var module = ModulesManager.GetCurrentModuleInfo();
@@ -555,7 +563,7 @@ namespace BibleConfigurator
         private void MainForm_Load(object sender, EventArgs e)
         {
             _loadForm = new LoadForm();
-            _loadForm.Show();           
+            _loadForm.Show();            
         }
 
         private void LoadParameters(ModuleInfo module, bool? needToSaveSettings)
@@ -998,16 +1006,11 @@ namespace BibleConfigurator
                 BackupManager manager = new BackupManager(_oneNoteApp, this);
                 manager.Backup(saveFileDialog.FileName);
             }
-        }
-
-        private static bool CurrentModuleIsCorrect()
-        {
-            return !string.IsNullOrEmpty(SettingsManager.Instance.ModuleName) && ModulesManager.ModuleIsCorrect(SettingsManager.Instance.ModuleName);
-        }
+        }        
 
         private void tabPage1_Enter(object sender, EventArgs e)
         {
-            if (!CurrentModuleIsCorrect())            
+            if (!SettingsManager.Instance.CurrentModuleIsCorrect())            
                 tbcMain.SelectedTab = tbcMain.TabPages[tabPage4.Name];
         }
 
@@ -1025,7 +1028,7 @@ namespace BibleConfigurator
             LoadModulesInfo();
         }
 
-        public void AddNewModule(string filePath, bool changeUIAfter)
+        public void AddNewModule(string filePath, bool needToLoadParameters)
         {
             string moduleName = Path.GetFileNameWithoutExtension(filePath);
             string destFilePath = Path.Combine(ModulesManager.GetModulesPackagesDirectory(), Path.GetFileName(filePath));
@@ -1034,7 +1037,8 @@ namespace BibleConfigurator
 
             if (File.Exists(destFilePath))
             {
-                if (MessageBox.Show(BibleCommon.Resources.Constants.ModuleWithSameNameAlreadyExists, BibleCommon.Resources.Constants.Warning,
+                if (MessageBox.Show(_loadForm != null ? (Form)_loadForm : (Form)this, // это не нравится. Он иногда всё равно messageBox показывает за формой загрузки
+                    BibleCommon.Resources.Constants.ModuleWithSameNameAlreadyExists, BibleCommon.Resources.Constants.Warning,
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.No)
                     canContinue = false;
             }
@@ -1043,22 +1047,16 @@ namespace BibleConfigurator
             {
                 try
                 {
-                    bool currentModuleIsCorrect = false;
-                    
-                    if (changeUIAfter)
-                        currentModuleIsCorrect = CurrentModuleIsCorrect();  // а то может быть, что мы загрузили модуль, и он стал корретным, но UI не обновилось
+                    bool currentModuleIsCorrect = SettingsManager.Instance.CurrentModuleIsCorrect();  // а то может быть, что мы загрузили модуль, и он стал корретным, но UI не обновилось
 
                     ModulesManager.UploadModule(filePath, destFilePath, moduleName);
 
-                    if (changeUIAfter)
+                    if (!currentModuleIsCorrect)
                     {
-                        if (!currentModuleIsCorrect)
-                        {
-                            SetModuleToUse(moduleName);
-                        }
-                        else
-                            ReLoadModulesInfo();
+                        SetModuleToUse(moduleName, needToLoadParameters);
                     }
+                    else
+                        ReLoadModulesInfo();
                 }
                 catch (InvalidModuleException ex)
                 {
@@ -1113,7 +1111,7 @@ namespace BibleConfigurator
                 btnUploadModule.Left = 415 + pnModules.Left;
 
                 lblMustUploadModule.Visible = false;
-                lblMustSelectModule.Visible = !CurrentModuleIsCorrect();
+                lblMustSelectModule.Visible = !SettingsManager.Instance.CurrentModuleIsCorrect();
             }
             else
             {
@@ -1192,7 +1190,8 @@ namespace BibleConfigurator
 
             bool canContinue = true;
 
-            if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible) && OneNoteUtils.NotebookExists(_oneNoteApp, SettingsManager.Instance.NotebookId_Bible))
+            if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible) && OneNoteUtils.NotebookExists(_oneNoteApp, SettingsManager.Instance.NotebookId_Bible)
+                && SettingsManager.Instance.CurrentModuleIsCorrect())
             {
                 if (MessageBox.Show(BibleCommon.Resources.Constants.ChangeModuleWarning, BibleCommon.Resources.Constants.Warning,       
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)       
@@ -1200,23 +1199,26 @@ namespace BibleConfigurator
             }
             
             if (canContinue)
-                SetModuleToUse(moduleName);            
+                SetModuleToUse(moduleName, true);            
         }
 
-        private void SetModuleToUse(string moduleName)
+        private void SetModuleToUse(string moduleName, bool needToLoadParameters)
         {
             SettingsManager.Instance.ModuleName = moduleName;
 
             ReLoadModulesInfo();
 
-            _loadForm.Show();
-            try
+            if (needToLoadParameters)
             {
-                LoadParameters(ModulesManager.GetCurrentModuleInfo(), true);
-            }
-            finally
-            {
-                _loadForm.Hide();
+                _loadForm.Show();
+                try
+                {
+                    LoadParameters(ModulesManager.GetCurrentModuleInfo(), true);
+                }
+                finally
+                {
+                    _loadForm.Hide();
+                }
             }
         }
 
