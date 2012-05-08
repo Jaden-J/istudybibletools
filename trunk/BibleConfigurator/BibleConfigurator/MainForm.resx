@@ -1723,13 +1723,13 @@
     <value>531, 0</value>
   </data>
   <data name="lblWarning.Size" type="System.Drawing.Size, System.Drawing">
-    <value>126, 13</value>
+    <value>115, 13</value>
   </data>
   <data name="lblWarning.TabIndex" type="System.Int32, mscorlib">
     <value>19</value>
   </data>
   <data name="lblWarning.Text" xml:space="preserve">
-    <value>Need to save parameters</value>
+    <value>Need to save changes</value>
   </data>
   <data name="lblWarning.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
