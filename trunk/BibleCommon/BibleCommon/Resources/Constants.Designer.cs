@@ -826,15 +826,6 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://IStudyBibleTools.com.
-        /// </summary>
-        public static string SiteUrl {
-            get {
-                return ResourceManager.GetString("SiteUrl", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Start time.
         /// </summary>
         public static string StartTime {
@@ -957,6 +948,15 @@ namespace BibleCommon.Resources {
         public static string Warning {
             get {
                 return ResourceManager.GetString("Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to http://IStudyBibleTools.com.
+        /// </summary>
+        public static string WebSiteUrl {
+            get {
+                return ResourceManager.GetString("WebSiteUrl", resourceCulture);
             }
         }
     }

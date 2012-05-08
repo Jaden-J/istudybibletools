@@ -1145,8 +1145,11 @@ namespace BibleConfigurator
             }
 
             return false;
+        }
+
+        private void hlModules_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(BibleCommon.Resources.Constants.WebSiteUrl + "/modules.htm");
         }        
-       
-      
     }
 }

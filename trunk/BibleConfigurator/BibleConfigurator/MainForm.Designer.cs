@@ -85,6 +85,8 @@
             this.btnDeleteNotesPages = new System.Windows.Forms.Button();
             this.btnRelinkComments = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.hlModules = new System.Windows.Forms.LinkLabel();
+            this.lblModulesLink = new System.Windows.Forms.Label();
             this.pnModules = new System.Windows.Forms.Panel();
             this.lblMustSelectModule = new System.Windows.Forms.Label();
             this.lblMustUploadModule = new System.Windows.Forms.Label();
@@ -517,6 +519,8 @@
             // tabPage4
             // 
             this.tabPage4.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage4.Controls.Add(this.hlModules);
+            this.tabPage4.Controls.Add(this.lblModulesLink);
             this.tabPage4.Controls.Add(this.pnModules);
             this.tabPage4.Controls.Add(this.lblMustSelectModule);
             this.tabPage4.Controls.Add(this.lblMustUploadModule);
@@ -524,6 +528,18 @@
             resources.ApplyResources(this.tabPage4, "tabPage4");
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Enter += new System.EventHandler(this.tabPage4_Enter);
+            // 
+            // hlModules
+            // 
+            resources.ApplyResources(this.hlModules, "hlModules");
+            this.hlModules.Name = "hlModules";
+            this.hlModules.TabStop = true;
+            this.hlModules.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.hlModules_LinkClicked);
+            // 
+            // lblModulesLink
+            // 
+            resources.ApplyResources(this.lblModulesLink, "lblModulesLink");
+            this.lblModulesLink.Name = "lblModulesLink";
             // 
             // pnModules
             // 
@@ -680,6 +696,8 @@
         private System.Windows.Forms.Label lblMustSelectModule;
         private System.Windows.Forms.Panel pnModules;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.LinkLabel hlModules;
+        private System.Windows.Forms.Label lblModulesLink;
 
     }
 }

@@ -25,7 +25,7 @@ namespace BibleConfigurator
 
         private void AboutProgramForm_Load(object sender, EventArgs e)
         {
-            hlSite.Text = Constants.SiteUrl;            
+            hlSite.Text = Constants.WebSiteUrl;            
             lblAuthor.Text = Constants.Author;
 
             new Thread(CheckForNewerVersion).Start();
@@ -42,7 +42,7 @@ namespace BibleConfigurator
 
         private void hlSite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(Constants.SiteUrl);
+            Process.Start(Constants.WebSiteUrl);
         }
 
         private void btnClose_Click(object sender, EventArgs e)

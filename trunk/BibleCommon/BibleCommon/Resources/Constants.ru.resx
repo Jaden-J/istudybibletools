@@ -411,7 +411,7 @@
   <data name="Warning" xml:space="preserve">
     <value>Внимание!</value>
   </data>
-  <data name="SiteUrl" xml:space="preserve">
+  <data name="WebSiteUrl" xml:space="preserve">
     <value>http://IStudyBibleTools.ru</value>
   </data>
 </root>
