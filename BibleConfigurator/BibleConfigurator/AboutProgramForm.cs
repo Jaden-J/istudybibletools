@@ -18,6 +18,8 @@ namespace BibleConfigurator
     {
         public AboutProgramForm()
         {
+            this.SetFormUICulture();
+
             InitializeComponent();
         }
 
