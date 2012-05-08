@@ -4,15 +4,15 @@
 		<tabs>
 			<tab id="tabCustom" label="IStudyBibleTools">
 				<group id="Tools" label="Tools">
-					<button id="VersePointerButton" label="Open Verse" size="large" screentip="Нажмите, чтобы перейти к нужному месту Писания" onAction="ButtonClick" image="VersePointerButton.png"/>
-          <button id="VerseLinkerButton" label="Написать комментарий" size="large" screentip="Нажмите, чтобы оставить комментарий" onAction="ButtonClick" image="VerseLinkerButton.png"/>
-          <button id="NoteLinkerButton" label="Анализ заметок" size="large" screentip="Нажмите, чтобы запустить анализ заметок" onAction="ButtonClick" image="NoteLinkerButton.png"/>          
+					<button id="VersePointerButton" label="Open a Verse" size="large" screentip="Click to quickly go to any verse of the Bible" onAction="ButtonClick" image="VersePointerButton.png"/>
+          <button id="VerseLinkerButton" label="Write a Comment" size="large" screentip="Click to add a comment on any passage from the Bible or specific words in these passages" onAction="ButtonClick" image="VerseLinkerButton.png"/>
+          <button id="NoteLinkerButton" label="Notes Analysis" size="large" screentip="Click to launch analysis of the notes" onAction="ButtonClick" image="NoteLinkerButton.png"/>          
 				</group>
         <group id="General" label="General">
-          <button id="ConfigureButton" label="Параметры" size="large" screentip="Нажмите, чтобы изменить параметры" onAction="ButtonClick" image="ConfigureButton.png"/>
-          <button id="HelpButton" label="Справка" size="normal" screentip="Нажмите, чтобы открыть файл справки" onAction="ButtonClick" image="HelpButton.png"/>
-          <button id="ModuleInfoButton" label="Информация о модуле" size="normal" screentip="Нажмите, чтобы просмотреть информацию о текущем модуле" onAction="ButtonClick" image="AboutModule.png"/>
-          <button id="AboutProgramButton" label="О программе" size="normal" screentip="Нажмите, чтобы просмотреть информацию о программе" onAction="ButtonClick" image="AboutProgram.png"/>
+          <button id="ConfigureButton" label="Parameters" size="large" screentip="Click to change settings" onAction="ButtonClick" image="ConfigureButton.png"/>
+          <button id="HelpButton" label="Manual" size="normal" screentip="Click to read manual" onAction="ButtonClick" image="HelpButton.png"/>
+          <button id="ModuleInfoButton" label="About Module" size="normal" screentip="Click to show information about current module" onAction="ButtonClick" image="AboutModule.png"/>
+          <button id="AboutProgramButton" label="About Program" size="normal" screentip="Click to show information about program" onAction="ButtonClick" image="AboutProgram.png"/>
         </group>
 			</tab>
 		</tabs>
