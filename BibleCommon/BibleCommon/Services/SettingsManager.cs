@@ -163,21 +163,11 @@ namespace BibleCommon.Services
                     && this.NotebookId_Bible == this.NotebookId_BibleStudy
                     && this.NotebookId_Bible == this.NotebookId_BibleNotesPages;
             }
-        }
-
-        public static string GetProgramDirectory()
-        {
-            string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Consts.Constants.ToolsName);
-
-            if (!Directory.Exists(directoryPath))
-                Directory.CreateDirectory(directoryPath);
-
-            return directoryPath;
-        }
+        }        
 
         protected SettingsManager()
         {
-            _filePath = Path.Combine(GetProgramDirectory(), Consts.Constants.ConfigFileName);
+            _filePath = Path.Combine(Utils.GetProgramDirectory(), Consts.Constants.ConfigFileName);
 
             if (!File.Exists(_filePath))            
                 LoadDefaultSettings();                

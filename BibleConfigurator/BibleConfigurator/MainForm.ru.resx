@@ -118,18 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="lblWarning.Location" type="System.Drawing.Point, System.Drawing">
-    <value>474, 0</value>
-  </data>
-  <data name="lblWarning.Size" type="System.Drawing.Size, System.Drawing">
-    <value>184, 13</value>
-  </data>
-  <data name="lblWarning.Text" xml:space="preserve">
-    <value>Необходимо сохранить изменения</value>
-  </data>
-  <data name="tabPage1.Text" xml:space="preserve">
-    <value>Параметры OneNote</value>
-  </data>
   <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
     <value>318, 13</value>
   </data>
@@ -199,17 +187,14 @@
   <data name="rbSingleNotebook.Text" xml:space="preserve">
     <value>Одна записная книжка</value>
   </data>
-  <data name="tabPage2.Text" xml:space="preserve">
-    <value>Параметры программы</value>
+  <data name="tabPage1.Text" xml:space="preserve">
+    <value>Параметры OneNote</value>
   </data>
   <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
     <value>99, 13</value>
   </data>
   <data name="label9.Text" xml:space="preserve">
     <value>Язык интерфейса</value>
-  </data>
-  <data name="groupBox2.Text" xml:space="preserve">
-    <value>Страница "Сводная заметок"</value>
   </data>
   <data name="chkUseDifferentPages.Size" type="System.Drawing.Size, System.Drawing">
     <value>227, 17</value>
@@ -241,8 +226,8 @@
   <data name="lblNotesPageWidth.Text" xml:space="preserve">
     <value>Ширина страницы "Сводная заметок"</value>
   </data>
-  <data name="groupBox1.Text" xml:space="preserve">
-    <value>Страница "Подробная сводная заметок"</value>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>Страница "Сводная заметок"</value>
   </data>
   <data name="chkUseRubbishPage.Size" type="System.Drawing.Size, System.Drawing">
     <value>249, 17</value>
@@ -274,6 +259,9 @@
   <data name="lblRubbishNotesPageWidth.Text" xml:space="preserve">
     <value>Ширина страницы "Подробная сводная заметок"</value>
   </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>Страница "Подробная сводная заметок"</value>
+  </data>
   <data name="chkDefaultPageNameParameters.Size" type="System.Drawing.Size, System.Drawing">
     <value>223, 17</value>
   </data>
@@ -292,8 +280,8 @@
   <data name="label5.Text" xml:space="preserve">
     <value>Название страницы комментариев к главе по умолчанию</value>
   </data>
-  <data name="tabPage3.Text" xml:space="preserve">
-    <value>Дополнительные утилиты</value>
+  <data name="tabPage2.Text" xml:space="preserve">
+    <value>Параметры программы</value>
   </data>
   <data name="btnBackup.Text" xml:space="preserve">
     <value>Создать резервную копию данных</value>
@@ -307,8 +295,8 @@
   <data name="btnRelinkComments.Text" xml:space="preserve">
     <value>Обновить ссылки на комментарии</value>
   </data>
-  <data name="tabPage4.Text" xml:space="preserve">
-    <value>Модули</value>
+  <data name="tabPage3.Text" xml:space="preserve">
+    <value>Дополнительные утилиты</value>
   </data>
   <data name="hlModules.Location" type="System.Drawing.Point, System.Drawing">
     <value>509, 7</value>
@@ -334,6 +322,9 @@
   <data name="lblMustSelectModule.Text" xml:space="preserve">
     <value>Необходимо выбрать используемый модуль</value>
   </data>
+  <data name="lblMustUploadModule.Location" type="System.Drawing.Point, System.Drawing">
+    <value>213, 105</value>
+  </data>
   <data name="lblMustUploadModule.Size" type="System.Drawing.Size, System.Drawing">
     <value>229, 13</value>
   </data>
@@ -342,6 +333,18 @@
   </data>
   <data name="btnUploadModule.Text" xml:space="preserve">
     <value>Добавить модуль</value>
+  </data>
+  <data name="tabPage4.Text" xml:space="preserve">
+    <value>Модули</value>
+  </data>
+  <data name="lblWarning.Location" type="System.Drawing.Point, System.Drawing">
+    <value>474, 0</value>
+  </data>
+  <data name="lblWarning.Size" type="System.Drawing.Size, System.Drawing">
+    <value>184, 13</value>
+  </data>
+  <data name="lblWarning.Text" xml:space="preserve">
+    <value>Необходимо сохранить изменения</value>
   </data>
   <data name="openFileDialog.Filter" xml:space="preserve">
     <value>IStudyBibleTools Модуль|*.isbt</value>

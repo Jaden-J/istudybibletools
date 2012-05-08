@@ -417,4 +417,34 @@
   <data name="WebSiteUrl" xml:space="preserve">
     <value>http://IStudyBibleTools.com</value>
   </data>
+  <data name="SectionGroupNotFound" xml:space="preserve">
+    <value>Section group '{0}' not found.</value>
+  </data>
+  <data name="SectionGroupOfTypeNotFound" xml:space="preserve">
+    <value>Section group of type '{0}' not found.</value>
+  </data>
+  <data name="SelectedNotebookForType" xml:space="preserve">
+    <value>Specified Notebook is of type '{0}'.</value>
+  </data>
+  <data name="WrongSectionGroupsCount" xml:space="preserve">
+    <value>Wrong quantity of section groups. Expected {0}, found {1}.</value>
+  </data>
+  <data name="WrongSectionsCountInSectionGroup" xml:space="preserve">
+    <value>Wrong quantity of sections in section group '{0}'. Expected {1}, found {2}.</value>
+  </data>
+  <data name="CurrentModuleIsUndefined" xml:space="preserve">
+    <value>Current Module is undefined.</value>
+  </data>
+  <data name="DownloadPageUrl" xml:space="preserve">
+    <value>http://IStudyBibleTools.com/download.htm?fromProgram=true</value>
+  </data>
+  <data name="Error_InvalidModule" xml:space="preserve">
+    <value>Invalid module:</value>
+  </data>
+  <data name="FileNotFound" xml:space="preserve">
+    <value>File '{0}' not found.</value>
+  </data>
+  <data name="NewVersionOnServerFileUrl" xml:space="preserve">
+    <value>http://IStudyBibleTools.com/ServerVariables.xml</value>
+  </data>
 </root>

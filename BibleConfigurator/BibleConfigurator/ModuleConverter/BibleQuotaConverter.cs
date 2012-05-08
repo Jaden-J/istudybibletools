@@ -138,6 +138,9 @@ namespace BibleConfigurator.ModuleConverter
                     }
                 }
             }
+
+            if (currentChapterDoc != null)
+                oneNoteApp.UpdatePageContent(currentChapterDoc.ToString());
         }
 
         protected override void GenerateManifest(ExternalModuleInfo externalModuleInfo)
@@ -146,7 +149,13 @@ namespace BibleConfigurator.ModuleConverter
 
             ModuleInfo module = new ModuleInfo() { Name = extModuleInfo.Name, Version = "1.0", Notebooks = NotebooksInfo };
             module.BibleStructure = new BibleStructureInfo() 
-                { Alphabet = extModuleInfo.Alphabet, NewTestamentName = NewTestamentName, OldTestamentName = OldTestamentName, BibleBooks = new List<BibleBookInfo>() };
+            {
+                Alphabet = extModuleInfo.Alphabet, 
+                NewTestamentName = NewTestamentName, 
+                OldTestamentName = OldTestamentName, 
+                OldTestamentBooksCount = OldTestamentBooksCount,
+                NewTestamentBooksCount = NewTestamentBooksCount,
+                BibleBooks = new List<BibleBookInfo>() };
 
             foreach (var bibleBookInfo in extModuleInfo.BibleBooksInfo)
             {

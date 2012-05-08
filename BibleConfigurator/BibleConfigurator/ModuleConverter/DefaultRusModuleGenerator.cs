@@ -10,20 +10,14 @@ namespace BibleConfigurator.ModuleConverter
 {
     public static class DefaultRusModuleGenerator
     {
-        public static void GenerateModuleInfo()
+        public static void GenerateModuleInfo(string manifestFilePath, bool addSingleNotebook)
         {
             ModuleInfo module = new ModuleInfo()
             {
                 Version = "1.0",
                 Name = "Синодальный перевод (Русский язык)",
                 Notebooks = new List<NotebookInfo>() 
-                {
-                    new NotebookInfo() { Type = NotebookType.Single, Name = "Holy Bible.onepkg", SectionGroups = new List<BibleCommon.Common.SectionGroupInfo>()
-                    {
-                        new BibleCommon.Common.SectionGroupInfo() { Type = SectionGroupType.Bible, Name="Библия" },
-                        new BibleCommon.Common.SectionGroupInfo() { Type = SectionGroupType.BibleStudy, Name="Изучение Библии" },
-                        new BibleCommon.Common.SectionGroupInfo() { Type = SectionGroupType.BibleComments, Name="Комментарии к Библии" }                        
-                    } },
+                {                    
                     new NotebookInfo() { Type = NotebookType.Bible, Name = "Библия.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Изучение Библии.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Комментарии к Библии.onepkg" },
@@ -33,6 +27,8 @@ namespace BibleConfigurator.ModuleConverter
                 {
                     OldTestamentName = "Ветхий Завет",
                     NewTestamentName = "Новый Завет",
+                    OldTestamentBooksCount = 39,
+                    NewTestamentBooksCount = 27,
                     Alphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя",
                     BibleBooks = new List<BibleBookInfo>()
                     {
@@ -106,10 +102,22 @@ namespace BibleConfigurator.ModuleConverter
                 }
             };
 
-            XmlSerializer ser = new XmlSerializer(typeof(ModuleInfo));
-            using (var fs = new FileStream("c:\\manifest.xml", FileMode.Create))
-            {
+            if (addSingleNotebook)
+                module.Notebooks.Add(new NotebookInfo()
+                {
+                    Type = NotebookType.Single,
+                    Name = "Holy Bible.onepkg",
+                    SectionGroups = new List<BibleCommon.Common.SectionGroupInfo>()
+                    {
+                        new BibleCommon.Common.SectionGroupInfo() { Type = SectionGroupType.Bible, Name="Библия" },
+                        new BibleCommon.Common.SectionGroupInfo() { Type = SectionGroupType.BibleStudy, Name="Изучение Библии" },
+                        new BibleCommon.Common.SectionGroupInfo() { Type = SectionGroupType.BibleComments, Name="Комментарии к Библии" }                        
+                    }
+                });
 
+            XmlSerializer ser = new XmlSerializer(typeof(ModuleInfo));
+            using (var fs = new FileStream(manifestFilePath, FileMode.Create))
+            {
                 ser.Serialize(fs, module);
                 fs.Flush();
             }

@@ -93,7 +93,13 @@ namespace BibleCommon.Common
         public string OldTestamentName { get; set; }
 
         [XmlAttribute]
-        public string NewTestamentName { get; set; }        
+        public int OldTestamentBooksCount { get; set; }
+
+        [XmlAttribute]
+        public string NewTestamentName { get; set; }
+
+        [XmlAttribute]
+        public int NewTestamentBooksCount { get; set; }        
 
         [XmlAttribute]
         public string Alphabet { get; set; }  // символы, встречающиеся в названии книг Библии            

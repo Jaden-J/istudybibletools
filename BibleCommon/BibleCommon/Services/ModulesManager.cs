@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 using BibleCommon.Common;
 using System.IO;
 using BibleCommon.Consts;
+using BibleCommon.Helpers;
 
 namespace BibleCommon.Services
 {
@@ -20,7 +21,10 @@ namespace BibleCommon.Services
 
         public static ModuleInfo GetCurrentModuleInfo()
         {
-            return GetModuleInfo(SettingsManager.Instance.ModuleName);
+            if (!string.IsNullOrEmpty(SettingsManager.Instance.ModuleName))
+                return GetModuleInfo(SettingsManager.Instance.ModuleName);
+
+            throw new InvalidModuleException(BibleCommon.Resources.Constants.CurrentModuleIsUndefined);
         }
 
         public static string GetCurrentModuleDirectiory()
@@ -33,7 +37,7 @@ namespace BibleCommon.Services
             string moduleDirectory = Path.Combine(GetModulesDirectory(), moduleDirectoryName);
             string manifestFilePath = Path.Combine(moduleDirectory, Consts.Constants.ManifestFileName);
             if (!File.Exists(manifestFilePath))
-                throw new InvalidModuleException(string.Format("File '{0}' was not found.", manifestFilePath));
+                throw new InvalidModuleException(string.Format(BibleCommon.Resources.Constants.FileNotFound, manifestFilePath));
 
             using (var fs = new FileStream(manifestFilePath, FileMode.Open))
             {
@@ -45,7 +49,7 @@ namespace BibleCommon.Services
 
         public static string GetModulesDirectory()
         {
-            string directoryPath = SettingsManager.GetProgramDirectory();
+            string directoryPath = Utils.GetProgramDirectory();
 
             string modulesDirectory = Path.Combine(directoryPath, Constants.ModulesDirectoryName);
 
@@ -57,7 +61,7 @@ namespace BibleCommon.Services
 
         public static string GetModulesPackagesDirectory()
         {
-            string directoryPath = SettingsManager.GetProgramDirectory();
+            string directoryPath = Utils.GetProgramDirectory();
 
             string modulesDirectory = Path.Combine(directoryPath, Constants.ModulesPackagesDirectoryName);
 

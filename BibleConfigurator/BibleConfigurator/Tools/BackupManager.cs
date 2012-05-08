@@ -57,7 +57,7 @@ namespace BibleConfigurator.Tools
                 BibleCommon.Services.Logger.LogMessage(initMessage);
                 System.Windows.Forms.Application.DoEvents();
 
-                _tempFolderPath = GetTempFolderPath();
+                _tempFolderPath = Path.Combine(Utils.GetTempFolderPath(), "BackUp");
 
                 _targetFilePath = filePath;
 
@@ -196,15 +196,6 @@ namespace BibleConfigurator.Tools
             {
                 File.Delete(file);
             }
-        }
-
-        private static string GetTempFolderPath()
-        {
-            string s = Path.Combine(SettingsManager.GetProgramDirectory(), Constants.TempDirectory);
-            if (!Directory.Exists(s))
-                Directory.CreateDirectory(s);
-
-            return s;
-        }
+        }      
     }    
 }
