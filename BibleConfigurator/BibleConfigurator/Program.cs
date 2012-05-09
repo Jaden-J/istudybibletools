@@ -22,7 +22,7 @@ namespace BibleConfigurator
         {
             //ConvertEnglishModule();
 
-            ConvertRomanModule();
+            //ConvertRomanModule();
 
             //DefaultRusModuleGenerator.GenerateModuleInfo();
             
