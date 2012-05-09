@@ -55,7 +55,10 @@ namespace BibleConfigurator
             else if (args.Contains(Consts.ShowAboutProgram))
                 form = new AboutProgramForm();
             else if (args.Contains(Consts.ShowManual))
-                OpenManual();
+            {
+                if (OpenManual())
+                    return;
+            }
             else if (args.Length == 1)
             {
                 string moduleFilePath = args[0];
@@ -74,15 +77,18 @@ namespace BibleConfigurator
             Application.Run(form);
         }
 
-        private static void OpenManual()
+        private static bool OpenManual()
         {
-            string path = Path.GetDirectoryName(Path.GetDirectoryName(Utils.GetCurrentDirectory()));
+            var path = Path.GetDirectoryName(Path.GetDirectoryName(Utils.GetCurrentDirectory()));
 
-            path = Path.Combine(path, "Instruction_" + LanguageManager.UserLanguage.LCID + ".htm");
+            var files = Directory.GetFiles(path, string.Format("Instruction*{0}*", LanguageManager.UserLanguage.LCID));
+            if (files.Length == 1)
+            {
+                Process.Start(files[0]);
+                return true;
+            }
 
-            Process.Start(path);
+            return false;
         }
-
-      
     }
 }
