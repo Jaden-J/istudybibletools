@@ -154,10 +154,10 @@
     <value>Notebook template not found at</value>
   </data>
   <data name="ConfiguratorQuestionDeleteAllNotesPages" xml:space="preserve">
-    <value>Delete all summary notes and references to them?</value>
+    <value>Delete all summary of notes and references to them?</value>
   </data>
   <data name="ConfiguratorQuestionDeleteAllNotesPagesManually" xml:space="preserve">
-    <value>'Summary notes' pages use a separate notebook. It is recommended to manually remove the notebook 'Summary notes' and recreate it from template. Continue?</value>
+    <value>'Summary of Notes' pages use a separate notebook. It is recommended to manually remove the notebook 'Summary of Notes' and recreate it from template. Continue?</value>
   </data>
   <data name="ConfiguratorSectionGroupNotFound" xml:space="preserve">
     <value>Section group not found</value>
@@ -187,13 +187,13 @@
     <value>Detailed notes</value>
   </data>
   <data name="DeleteNotesPagesManagerFinishMessage" xml:space="preserve">
-    <value>'Summary notes' deleting completed successfully.</value>
+    <value>'Summary of Notes' pages deleting completed successfully.</value>
   </data>
   <data name="DeleteNotesPagesManagerRemovePage" xml:space="preserve">
     <value>Page deleting</value>
   </data>
   <data name="DeleteNotesPagesManagerStartMessage" xml:space="preserve">
-    <value>'Summary notes' deleting start.</value>
+    <value>'Summary of Notes' pages deleting start.</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Error</value>
@@ -244,7 +244,7 @@
     <value>Initializing...</value>
   </data>
   <data name="NoteLinkerLinksToNotesPagesUpdating" xml:space="preserve">
-    <value>Updating references to 'Summary notes'</value>
+    <value>Updating references to 'Summary of Notes' pages</value>
   </data>
   <data name="NoteLinkerManyFound" xml:space="preserve">
     <value>Found</value>
@@ -256,7 +256,7 @@
     <value>No elements selected</value>
   </data>
   <data name="NoteLinkerNotesPagesUpdating" xml:space="preserve">
-    <value>'Summary notes' pages updating</value>
+    <value>'Summary of Notes' pages updating</value>
   </data>
   <data name="NoteLinkerOfManyPages" xml:space="preserve">
     <value>pages</value>
@@ -274,7 +274,7 @@
     <value>Processing notebook</value>
   </data>
   <data name="NoteLinkerQuestionOnClosing" xml:space="preserve">
-    <value>In some cases this can lead to incorrect sorting of pages 'Summary notes', which is solved only by removing all the pages of 'Summary notes. Contniue terminating the program?</value>
+    <value>In some cases this can lead to incorrect sorting of 'Summary of Notes' pages, which is solved only by removing all the 'Summary of Notes' pages. Contniue terminating the program?</value>
   </data>
   <data name="NoteLinkerShowDetails" xml:space="preserve">
     <value>Show details</value>
@@ -289,7 +289,7 @@
     <value>Error while processing of the page.</value>
   </data>
   <data name="NoteLinkManagerProcessNotesPage" xml:space="preserve">
-    <value>Processing the page 'summary notes'</value>
+    <value>Processing the 'Summary of Notes' page</value>
   </data>
   <data name="NoteLinkManagerVerseCellNotFound" xml:space="preserve">
     <value>Verse cell not found</value>
@@ -316,10 +316,10 @@
     <value>Processing the verse</value>
   </data>
   <data name="RelinkBibleCommentsManagerFinishMessage" xml:space="preserve">
-    <value>References to Notes on the Bible have been updated.</value>
+    <value>References to Comments to the Bible have been updated.</value>
   </data>
   <data name="RelinkBibleCommentsManagerStartMessage" xml:space="preserve">
-    <value>Start updating references to the Notes on the Bible.</value>
+    <value>Start updating references to the Comments to the Bible.</value>
   </data>
   <data name="ResizeBibleTableManagerFinishMessage" xml:space="preserve">
     <value>Bible pages width have been successfully changed.</value>
@@ -373,7 +373,7 @@
     <value>books</value>
   </data>
   <data name="ChangeModuleWarning" xml:space="preserve">
-    <value>This module contains another text of the Bible and other versions of abbreviations of books. For correct program work    the follow notebooks must be re-created: Bible, Notes on the Bible, Summary Notes. Continue?</value>
+    <value>This module contains another text of the Bible and other versions of abbreviations of books. For correct program work    the follow notebooks must be re-created: Bible, Comments to the Bible, Summary of Notes. Continue?</value>
   </data>
   <data name="DefineNotebookDirectory" xml:space="preserve">
     <value>Specify notebook folder</value>

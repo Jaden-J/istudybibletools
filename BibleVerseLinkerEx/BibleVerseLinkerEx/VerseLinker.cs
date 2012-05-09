@@ -46,12 +46,11 @@ namespace BibleVerseLinkerEx
         /// Возвращает элемент текущей страницы, в котором есть строка, соответствующая PointerFilters
         /// </summary>
         /// <returns></returns>
-        private XElement FindPointerElement(string pageId, out XDocument document)
+        private XElement FindPointerElement(string pageId, out XDocument document, out XmlNamespaceManager xnm)
         {
             string pageContentXml;
             OneNoteApp.GetPageContent(pageId, out pageContentXml);
-
-            XmlNamespaceManager xnm;
+            
             document = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
             XElement pointerElement = null;
 
@@ -110,7 +109,8 @@ namespace BibleVerseLinkerEx
                 string currentNotebookId = OneNoteApp.Windows.CurrentWindow.CurrentNotebookId;
 
                 XDocument currentPageDocument;
-                XElement pointerElement = FindPointerElement(currentPageId, out currentPageDocument);
+                XmlNamespaceManager xnm;
+                XElement pointerElement = FindPointerElement(currentPageId, out currentPageDocument, out xnm);
                 string currentPageName = (string)currentPageDocument.Root.Attribute("name");
 
                 if (!SearchForUnderlineText || pointerElement != null)
@@ -158,7 +158,7 @@ namespace BibleVerseLinkerEx
 
                             if (SearchForUnderlineText)
                             {
-                                OneNoteUtils.UpdatePageContentSafe(_oneNoteApp, currentPageDocument);
+                                OneNoteUtils.UpdatePageContentSafe(_oneNoteApp, currentPageDocument, xnm);
                             }
                             
                             OneNoteApp.NavigateTo(verseLinkPageId, objectId);                            
@@ -275,7 +275,7 @@ namespace BibleVerseLinkerEx
             else
                 pageDocument.Root.Add(newCommentElement);
 
-            OneNoteUtils.UpdatePageContentSafe(OneNoteApp, pageDocument);
+            OneNoteUtils.UpdatePageContentSafe(OneNoteApp, pageDocument, xnm);
 
             XElement addedObject = GetLastPageObject(pageId, GetOutlinePosition(pageDocument, newCommentElement, xnm));
 

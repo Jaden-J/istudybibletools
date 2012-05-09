@@ -399,7 +399,7 @@ namespace BibleCommon.Services
                     if (page.AddLatestAnalyzeTimeMetaAttribute)
                         OneNoteUtils.UpdatePageMetaData(oneNoteApp, page.Content.Root, Constants.Key_LatestAnalyzeTime, DateTime.UtcNow.AddSeconds(10).ToString(), page.Xnm);
 
-                    OneNoteUtils.UpdatePageContentSafe(oneNoteApp, page.Content);
+                    OneNoteUtils.UpdatePageContentSafe(oneNoteApp, page.Content, page.Xnm);
                 }
                 catch (Exception ex)
                 {

@@ -56,7 +56,8 @@ namespace BibleConfigurator
         private NotebookParametersForm _notebookParametersForm = null;
         private bool _runAfterSetup = false;
         
-        public string AddModuleAtLoad { get; set; }
+        public bool ShowModulesTabAtStartUp { get; set; }
+        public bool NeedToSaveChangesAfterLoadingModuleAtStartUp { get; set; }
 
         public MainForm(params string[] args)
         {
@@ -148,6 +149,7 @@ namespace BibleConfigurator
                     LoadParameters(module, null);
 
                 lblWarning.Visible = lblWarningVisibilityBefore;
+                tbcMain.SelectedTab = tbcMain.TabPages[tabPage1.Name];
             }
             finally
             {
@@ -464,11 +466,13 @@ namespace BibleConfigurator
                 {
                     bool? needSaveSettings = null;
 
-                    if (!string.IsNullOrEmpty(AddModuleAtLoad))
-                    {
-                        AddNewModule(AddModuleAtLoad, true); // это не нравится. Он щас дважды вызывает LoadParameters. Если же передать false, то он в некоторых ситуациях не пишет "Надо сохранить изменения"
+                    if (ShowModulesTabAtStartUp)
+                    {                        
                         tbcMain.SelectedTab = tbcMain.TabPages[tabPage4.Name];
                         _wasLoadedModulesInfo = false;                        
+
+                        if (NeedToSaveChangesAfterLoadingModuleAtStartUp)
+                            needSaveSettings = true;
                     }
                     else if (_runAfterSetup)
                     {
@@ -1018,7 +1022,9 @@ namespace BibleConfigurator
         {
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                AddNewModule(openFileDialog.FileName, true);
+                bool needToReload = AddNewModule(openFileDialog.FileName);
+                if (needToReload)
+                    ReLoadParameters(true);
             }            
         }
 
@@ -1028,7 +1034,14 @@ namespace BibleConfigurator
             LoadModulesInfo();
         }
 
-        public void AddNewModule(string filePath, bool needToLoadParameters)
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="needToLoadParameters"></param>
+        /// <returns>true если новый модуль стал основным</returns>
+        public bool AddNewModule(string filePath)
         {
             string moduleName = Path.GetFileNameWithoutExtension(filePath);
             string destFilePath = Path.Combine(ModulesManager.GetModulesPackagesDirectory(), Path.GetFileName(filePath));
@@ -1037,8 +1050,7 @@ namespace BibleConfigurator
 
             if (File.Exists(destFilePath))
             {
-                if (MessageBox.Show(_loadForm != null ? (Form)_loadForm : (Form)this, // это не нравится. Он иногда всё равно messageBox показывает за формой загрузки
-                    BibleCommon.Resources.Constants.ModuleWithSameNameAlreadyExists, BibleCommon.Resources.Constants.Warning,
+                if (MessageBox.Show(BibleCommon.Resources.Constants.ModuleWithSameNameAlreadyExists, BibleCommon.Resources.Constants.Warning,
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.No)
                     canContinue = false;
             }
@@ -1051,12 +1063,17 @@ namespace BibleConfigurator
 
                     ModulesManager.UploadModule(filePath, destFilePath, moduleName);
 
+                    bool needToReload = false;
+
                     if (!currentModuleIsCorrect)
                     {
-                        SetModuleToUse(moduleName, needToLoadParameters);
+                        SettingsManager.Instance.ModuleName = moduleName;
+                        needToReload = true;
                     }
-                    else
-                        ReLoadModulesInfo();
+                    
+                    ReLoadModulesInfo();
+
+                    return needToReload;                    
                 }
                 catch (InvalidModuleException ex)
                 {
@@ -1064,7 +1081,9 @@ namespace BibleConfigurator
                     Thread.Sleep(500);
                     ModulesManager.DeleteModule(moduleName);
                 }
-            }                
+            }
+
+            return false;
         }
         
 
@@ -1197,28 +1216,25 @@ namespace BibleConfigurator
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)       
                     canContinue = false;
             }
-            
+
             if (canContinue)
-                SetModuleToUse(moduleName, true);            
-        }
-
-        private void SetModuleToUse(string moduleName, bool needToLoadParameters)
-        {
-            SettingsManager.Instance.ModuleName = moduleName;
-
-            ReLoadModulesInfo();
-
-            if (needToLoadParameters)
             {
-                _loadForm.Show();
-                try
-                {
-                    LoadParameters(ModulesManager.GetCurrentModuleInfo(), true);
-                }
-                finally
-                {
-                    _loadForm.Hide();
-                }
+                SettingsManager.Instance.ModuleName = moduleName;
+                ReLoadModulesInfo();
+                ReLoadParameters(true);
+            }
+        }        
+
+        private void ReLoadParameters(bool needToSaveSettings)
+        {
+            _loadForm.Show();
+            try
+            {
+                LoadParameters(ModulesManager.GetCurrentModuleInfo(), needToSaveSettings);
+            }
+            finally
+            {
+                _loadForm.Hide();
             }
         }
 
