@@ -14,7 +14,7 @@ namespace BibleCommon.Services
         {
             get
             {
-                int lcid = _defaultLCID;
+                int lcid = DefaultLCID;
 
                 if (SettingsManager.Instance.Language != 0)
                     lcid = SettingsManager.Instance.Language;
@@ -26,7 +26,7 @@ namespace BibleCommon.Services
         }
 
 
-        private static int _defaultLCID = 1033;
+        public static readonly int DefaultLCID = 1033;
 
         private static int[] _localesLCID =
             {

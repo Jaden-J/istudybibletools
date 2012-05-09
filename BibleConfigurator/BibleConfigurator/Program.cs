@@ -90,6 +90,9 @@ namespace BibleConfigurator
             var path = Path.GetDirectoryName(Path.GetDirectoryName(Utils.GetCurrentDirectory()));
 
             var files = Directory.GetFiles(path, string.Format("Instruction*{0}*", LanguageManager.UserLanguage.LCID));
+            if (files.Length == 0)
+                files = Directory.GetFiles(path, string.Format("Instruction*{0}*", LanguageManager.DefaultLCID));
+
             if (files.Length == 1)
             {
                 Process.Start(files[0]);
