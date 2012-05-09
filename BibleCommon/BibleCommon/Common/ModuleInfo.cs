@@ -56,8 +56,21 @@ namespace BibleCommon.Common
         // возвращает книгу Библии с учётом всех сокращений
         public BibleBookInfo GetBibleBook(string s)
         {
-            s = s.ToLowerInvariant().Replace(" ", string.Empty);
+            s = s.ToLowerInvariant();
 
+            var result = GetBibleBookByExactMatch(s);
+
+            if (result == null)
+            {
+                s = s.Replace(" ", string.Empty); // чтоб находил "1 John", когда в списке сокращений только "1John"
+                result = GetBibleBookByExactMatch(s);
+            }
+
+            return result;
+        }
+
+        private BibleBookInfo GetBibleBookByExactMatch(string s)
+        {
             return BibleStructure.BibleBooks.FirstOrDefault(
                 book => book.Abbreviations.Contains(s));
         }
