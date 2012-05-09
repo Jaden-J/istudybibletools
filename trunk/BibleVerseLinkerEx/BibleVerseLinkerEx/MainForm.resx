@@ -149,6 +149,9 @@
   <data name="btnOk.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
+  <data name="btnOk.Text" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="&gt;&gt;btnOk.Name" xml:space="preserve">
     <value>btnOk</value>
   </data>
@@ -168,13 +171,13 @@
     <value>13, 38</value>
   </data>
   <data name="cbSearchForUnderlineText.Size" type="System.Drawing.Size, System.Drawing">
-    <value>141, 17</value>
+    <value>165, 17</value>
   </data>
   <data name="cbSearchForUnderlineText.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
   <data name="cbSearchForUnderlineText.Text" xml:space="preserve">
-    <value>Search for underline text</value>
+    <value>Search for the underlined text</value>
   </data>
   <data name="&gt;&gt;cbSearchForUnderlineText.Name" xml:space="preserve">
     <value>cbSearchForUnderlineText</value>
@@ -188,9 +191,9 @@
   <data name="&gt;&gt;cbSearchForUnderlineText.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="$this.Localizable" type="System.Boolean, mscorlib">
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
-  </data>
+  </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 13</value>
   </data>
@@ -209,8 +212,5 @@
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="btnOk.Text" xml:space="preserve">
-    <value>OK</value>
   </data>
 </root>
