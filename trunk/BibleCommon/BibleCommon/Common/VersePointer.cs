@@ -43,8 +43,8 @@ namespace BibleCommon.Common
         public string ChapterName
         {
             get
-            {
-                return string.Format("{0} {1}", Book.Name, Chapter);
+            {                
+                return string.Format("{0} {1}", Book != null ? Book.Name : string.Empty, Chapter);
             }
         }
 

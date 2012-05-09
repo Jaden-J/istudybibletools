@@ -207,7 +207,7 @@ namespace BibleCommon.Services
             //            bibleSectionName, biblePageName));
 
             string pageDisplayName = string.Format("{0}.{1}", descriptionPageName, 
-                                                               vp != null ? string.Format(" [{0}]", vp.ChapterName) : string.Empty);
+                                                               (vp != null && vp.IsValid) ? string.Format(" [{0}]", vp.ChapterName) : string.Empty);
 
             XElement page = sectionDocument.Content.Root.XPathSelectElement(string.Format("one:Page[@name='{0}']", pageDisplayName), sectionDocument.Xnm);
 
