@@ -56,7 +56,7 @@ namespace BibleCommon.Common
         // возвращает книгу Библии с учётом всех сокращений
         public BibleBookInfo GetBibleBook(string s)
         {
-            s = s.ToLowerInvariant();
+            s = s.ToLowerInvariant().Replace(" ", string.Empty);
 
             return BibleStructure.BibleBooks.FirstOrDefault(
                 book => book.Abbreviations.Contains(s));
