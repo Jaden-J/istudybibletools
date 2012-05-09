@@ -156,7 +156,7 @@
     <value>17</value>
   </data>
   <data name="label7.Text" xml:space="preserve">
-    <value>"Summary Notes" page name</value>
+    <value>'Summary of Notes' pages name</value>
   </data>
   <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
     <value>8</value>
@@ -183,7 +183,7 @@
     <value>Analyze excluded verses and chapters</value>
   </data>
   <data name="label8.Text" xml:space="preserve">
-    <value>Select Summary Notes notebook</value>
+    <value>Select 'Summary of Notes' notebook</value>
   </data>
   <data name="tbProgramParameters.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
@@ -388,7 +388,7 @@
     <value>tabPage4</value>
   </data>
   <data name="label3.Text" xml:space="preserve">
-    <value>Select Notes on the Bible notebook</value>
+    <value>Select notebook of Comments to the Bible</value>
   </data>
   <data name="groupBox2.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 8.25pt, style=Bold</value>
@@ -1159,7 +1159,7 @@
     <value>26, 23</value>
   </data>
   <data name="lblNotesPageWidth.Text" xml:space="preserve">
-    <value>"Summary Notes" page width</value>
+    <value>'Summary of Notes' pages width</value>
   </data>
   <data name="btnUploadModule.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -1216,7 +1216,7 @@
     <value>True</value>
   </data>
   <data name="lblRubbishNotesPageWidth.Text" xml:space="preserve">
-    <value>"Detailed Summary Notes" page width</value>
+    <value>'Detailed Summary of Notes' pages width</value>
   </data>
   <data name="&gt;&gt;tbNotesPageWidth.Name" xml:space="preserve">
     <value>tbNotesPageWidth</value>
@@ -1351,7 +1351,7 @@
     <value>pnModules</value>
   </data>
   <data name="groupBox1.Text" xml:space="preserve">
-    <value>"Detailed Summary Notes" page</value>
+    <value>'Detailed Summary of Notes' pages</value>
   </data>
   <data name="tbpUtils.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -1390,7 +1390,7 @@
     <value>19</value>
   </data>
   <data name="groupBox2.Text" xml:space="preserve">
-    <value>"Summary Notes" page</value>
+    <value>'Summary of Notes' pages</value>
   </data>
   <data name="splitContainer1.Size" type="System.Drawing.Size, System.Drawing">
     <value>664, 434</value>
@@ -1399,7 +1399,7 @@
     <value>3, 3, 3, 3</value>
   </data>
   <data name="btnDeleteNotesPages.Text" xml:space="preserve">
-    <value>Delete all "Summary Notes" pages</value>
+    <value>Delete all 'Summary of Notes' pages</value>
   </data>
   <data name="&gt;&gt;chkCreateSingleNotebookFromTemplate.Name" xml:space="preserve">
     <value>chkCreateSingleNotebookFromTemplate</value>
@@ -1804,7 +1804,7 @@
     <value>hlModules</value>
   </data>
   <data name="label10.Text" xml:space="preserve">
-    <value>"Detailed Summary Notes" page name</value>
+    <value>'Detailed Summary of Notes' pages name</value>
   </data>
   <data name="&gt;&gt;rbSingleNotebook.Name" xml:space="preserve">
     <value>rbSingleNotebook</value>
@@ -1885,7 +1885,7 @@
     <value>True</value>
   </data>
   <data name="chkUseRubbishPage.Text" xml:space="preserve">
-    <value>Use "Detailed Summary Notes" pages</value>
+    <value>Use 'Detailed Summary of Notes' pages</value>
   </data>
   <data name="chkExpandMultiVersesLinking.Size" type="System.Drawing.Size, System.Drawing">
     <value>160, 17</value>

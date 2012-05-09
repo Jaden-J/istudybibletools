@@ -151,7 +151,7 @@ namespace BibleConfigurator.Tools
             }            
 
             if (wasModified)
-                OneNoteUtils.UpdatePageContentSafe(_oneNoteApp, notePageDocument);
+                OneNoteUtils.UpdatePageContentSafe(_oneNoteApp, notePageDocument, xnm);
         }
 
         private void DeleteNotesPage(string notesPageId)

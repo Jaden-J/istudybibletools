@@ -142,7 +142,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This module contains another text of the Bible and other versions of abbreviations of books. For correct program work    the follow notebooks must be re-created: Bible, Notes on the Bible, Summary Notes. Continue?.
+        ///   Looks up a localized string similar to This module contains another text of the Bible and other versions of abbreviations of books. For correct program work    the follow notebooks must be re-created: Bible, Comments to the Bible, Summary of Notes. Continue?.
         /// </summary>
         public static string ChangeModuleWarning {
             get {
@@ -205,7 +205,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete all summary notes and references to them?.
+        ///   Looks up a localized string similar to Delete all summary of notes and references to them?.
         /// </summary>
         public static string ConfiguratorQuestionDeleteAllNotesPages {
             get {
@@ -214,7 +214,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;Summary notes&apos; pages use a separate notebook. It is recommended to manually remove the notebook &apos;Summary notes&apos; and recreate it from template. Continue?.
+        ///   Looks up a localized string similar to &apos;Summary of Notes&apos; pages use a separate notebook. It is recommended to manually remove the notebook &apos;Summary of Notes&apos; and recreate it from template. Continue?.
         /// </summary>
         public static string ConfiguratorQuestionDeleteAllNotesPagesManually {
             get {
@@ -322,7 +322,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;Summary notes&apos; deleting completed successfully..
+        ///   Looks up a localized string similar to &apos;Summary of Notes&apos; pages deleting completed successfully..
         /// </summary>
         public static string DeleteNotesPagesManagerFinishMessage {
             get {
@@ -340,7 +340,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;Summary notes&apos; deleting start..
+        ///   Looks up a localized string similar to &apos;Summary of Notes&apos; pages deleting start..
         /// </summary>
         public static string DeleteNotesPagesManagerStartMessage {
             get {
@@ -601,7 +601,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Updating references to &apos;Summary notes&apos;.
+        ///   Looks up a localized string similar to Updating references to &apos;Summary of Notes&apos; pages.
         /// </summary>
         public static string NoteLinkerLinksToNotesPagesUpdating {
             get {
@@ -637,7 +637,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;Summary notes&apos; pages updating.
+        ///   Looks up a localized string similar to &apos;Summary of Notes&apos; pages updating.
         /// </summary>
         public static string NoteLinkerNotesPagesUpdating {
             get {
@@ -691,7 +691,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In some cases this can lead to incorrect sorting of pages &apos;Summary notes&apos;, which is solved only by removing all the pages of &apos;Summary notes. Contniue terminating the program?.
+        ///   Looks up a localized string similar to In some cases this can lead to incorrect sorting of &apos;Summary of Notes&apos; pages, which is solved only by removing all the &apos;Summary of Notes&apos; pages. Contniue terminating the program?.
         /// </summary>
         public static string NoteLinkerQuestionOnClosing {
             get {
@@ -736,7 +736,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Processing the page &apos;summary notes&apos;.
+        ///   Looks up a localized string similar to Processing the &apos;Summary of Notes&apos; page.
         /// </summary>
         public static string NoteLinkManagerProcessNotesPage {
             get {
@@ -826,7 +826,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to References to Notes on the Bible have been updated..
+        ///   Looks up a localized string similar to References to Comments to the Bible have been updated..
         /// </summary>
         public static string RelinkBibleCommentsManagerFinishMessage {
             get {
@@ -835,7 +835,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start updating references to the Notes on the Bible..
+        ///   Looks up a localized string similar to Start updating references to the Comments to the Bible..
         /// </summary>
         public static string RelinkBibleCommentsManagerStartMessage {
             get {
