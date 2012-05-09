@@ -100,10 +100,10 @@ namespace BibleConfigurator.ModuleConverter
             return testamentSectionGroup.Attribute("ID").Value;              
         }
 
-        protected virtual string AddBookSection(string sectionGroupId, string bookName)
+        protected virtual string AddBookSection(string sectionGroupId, string sectionName, string bookName)
         {
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
-            XElement section = new XElement(nms + "Section", new XAttribute("name", bookName));
+            XElement section = new XElement(nms + "Section", new XAttribute("name", sectionName));
 
             XmlNamespaceManager xnm;
             var sectionGroup = OneNoteUtils.GetHierarchyElement(oneNoteApp, sectionGroupId, HierarchyScope.hsSections, out xnm);
@@ -111,23 +111,28 @@ namespace BibleConfigurator.ModuleConverter
             oneNoteApp.UpdateHierarchy(sectionGroup.ToString());
 
             sectionGroup = OneNoteUtils.GetHierarchyElement(oneNoteApp, sectionGroupId, HierarchyScope.hsSections, out xnm);
-            section = sectionGroup.Root.XPathSelectElement(string.Format("one:Section[@name='{0}']", bookName), xnm);
-            return section.Attribute("ID").Value;
+            section = sectionGroup.Root.XPathSelectElement(string.Format("one:Section[@name='{0}']", sectionName), xnm);
+            string sectionId = section.Attribute("ID").Value;
+
+            AddChapterPage(sectionId, bookName, 1, out xnm);
+
+            return sectionId;
         }
 
-        protected virtual XDocument AddChapterPage(string bookSectionId, string chapterName, out XmlNamespaceManager xnm)
+        protected virtual XDocument AddChapterPage(string bookSectionId, string pageTitle, int pageLevel, out XmlNamespaceManager xnm)
         {
             string pageId;
             oneNoteApp.CreateNewPage(bookSectionId, out pageId, NewPageStyle.npsBlankPageWithTitle);
 
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
             XDocument pageDocument = new XDocument(new XElement(nms + "Page",
-                            new XAttribute("ID", pageId),                            
+                            new XAttribute("ID", pageId),
+                            new XAttribute("pageLevel", pageLevel),
                             new XElement(nms + "Title",
                                 new XElement(nms + "OE",
                                     new XElement(nms + "T",
                                         new XCData(
-                                            chapterName
+                                            pageTitle
                                             ))))));
 
             oneNoteApp.UpdatePageContent(pageDocument.ToString());

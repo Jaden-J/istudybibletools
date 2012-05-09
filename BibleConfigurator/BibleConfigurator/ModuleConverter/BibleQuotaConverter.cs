@@ -42,7 +42,8 @@ namespace BibleConfigurator.ModuleConverter
 
         protected string ModuleFolder { get; set; }
         protected Encoding FileEncoding { get; set; }
-        
+
+        public Func<BibleQuotaBibleBookInfo, string, string> ConvertChapterNameFunc { get; set; }        
         
 
         public BibleQuotaConverter(string emptyNotebookName, string moduleFolder, string manifestFilePathToSave, Encoding fileEncoding,
@@ -111,7 +112,7 @@ namespace BibleConfigurator.ModuleConverter
                 else if (i == OldTestamentBooksCount)
                     currentSectionGroupId = AddTestamentSectionGroup(NewTestamentName);
 
-                var bookSectionId = AddBookSection(currentSectionGroupId, bibleBookInfo.SectionName);
+                var bookSectionId = AddBookSection(currentSectionGroupId, bibleBookInfo.SectionName, bibleBookInfo.Name);
 
                 string bookFile = Path.Combine(ModuleFolder, bibleBookInfo.FileName);
 
@@ -124,8 +125,11 @@ namespace BibleConfigurator.ModuleConverter
                         if (currentChapterDoc != null)
                             oneNoteApp.UpdatePageContent(currentChapterDoc.ToString());
 
+                        if (ConvertChapterNameFunc != null)
+                            lineText = ConvertChapterNameFunc(bibleBookInfo, lineText);
+
                         XmlNamespaceManager xnm;
-                        currentChapterDoc = AddChapterPage(bookSectionId, lineText, out xnm);
+                        currentChapterDoc = AddChapterPage(bookSectionId, lineText, 2, out xnm);
 
                         currentTableElement = AddTableToChapterPage(currentChapterDoc, xnm);
                     }

@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="&gt;&gt;cbSingleNotebook.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;btnBibleStudyNotebookSetPath.Name" xml:space="preserve">
+    <value>btnBibleStudyNotebookSetPath</value>
   </data>
   <data name="&gt;&gt;tbpProgramParameters.Name" xml:space="preserve">
     <value>tbpProgramParameters</value>
@@ -151,10 +151,6 @@
   <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="splitContainer1.TabIndex" type="System.Int32, mscorlib">
-    <value>17</value>
-  </data>
   <data name="label7.Text" xml:space="preserve">
     <value>'Summary of Notes' pages name</value>
   </data>
@@ -176,8 +172,9 @@
   <data name="&gt;&gt;lblNotesPageWidth.Name" xml:space="preserve">
     <value>lblNotesPageWidth</value>
   </data>
-  <data name="&gt;&gt;label5.Parent" xml:space="preserve">
-    <value>tabPage2</value>
+  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="splitContainer1.TabIndex" type="System.Int32, mscorlib">
+    <value>17</value>
   </data>
   <data name="chkRubbishExcludedVersesLinking.Text" xml:space="preserve">
     <value>Analyze excluded verses and chapters</value>
@@ -196,12 +193,6 @@
   </data>
   <data name="tbcMain.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
-  </data>
-  <data name="chkCreateSingleNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
-    <value>123, 17</value>
-  </data>
-  <data name="&gt;&gt;tbcMain.Parent" xml:space="preserve">
-    <value>splitContainer1.Panel1</value>
   </data>
   <data name="&gt;&gt;cbLanguage.ZOrder" xml:space="preserve">
     <value>1</value>
@@ -224,14 +215,17 @@
   <data name="chkCreateBibleNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
     <value>123, 17</value>
   </data>
-  <data name="chkCreateBibleCommentsNotebookFromTemplate.TabIndex" type="System.Int32, mscorlib">
-    <value>26</value>
+  <data name="label9.Text" xml:space="preserve">
+    <value>Language</value>
   </data>
   <data name="tabPage3.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
   <data name="&gt;&gt;btnBibleStudyNotebookSetPath.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="tbNotesPageWidth.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
   </data>
   <data name="&gt;&gt;tbpModules.Parent" xml:space="preserve">
     <value>tbcMain</value>
@@ -315,9 +309,6 @@
   <data name="&gt;&gt;btnDeleteNotesPages.Name" xml:space="preserve">
     <value>btnDeleteNotesPages</value>
   </data>
-  <data name="lblMustUploadModule.Text" xml:space="preserve">
-    <value>Need to add module</value>
-  </data>
   <data name="&gt;&gt;tabPage4.Parent" xml:space="preserve">
     <value>tbcMain</value>
   </data>
@@ -363,14 +354,17 @@
   <data name="cbBibleNotesPagesNotebook.Size" type="System.Drawing.Size, System.Drawing">
     <value>248, 21</value>
   </data>
-  <data name="tabPage1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>656, 352</value>
+  <data name="&gt;&gt;label5.Parent" xml:space="preserve">
+    <value>tabPage2</value>
   </data>
   <data name="chkExpandMultiVersesLinking.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
   <data name="lblModulesLink.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="&gt;&gt;label8.Parent" xml:space="preserve">
+    <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;cbSingleNotebook.Parent" xml:space="preserve">
     <value>tabPage1</value>
@@ -398,6 +392,9 @@
   </data>
   <data name="&gt;&gt;tbBookOverviewName.ZOrder" xml:space="preserve">
     <value>5</value>
+  </data>
+  <data name="&gt;&gt;tbpOneNoteParameters.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
     <value>tabPage2</value>
@@ -443,9 +440,6 @@
   </data>
   <data name="&gt;&gt;chkCreateBibleNotebookFromTemplate.ZOrder" xml:space="preserve">
     <value>16</value>
-  </data>
-  <data name="&gt;&gt;tbOneNoteParameters.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="btnDeleteNotesPages.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -522,9 +516,6 @@
   <data name="tbRubbishNotesPageName.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
-  <data name="&gt;&gt;tbpProgramParameters.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
     <value>15</value>
   </data>
@@ -536,9 +527,6 @@
   </data>
   <data name="btnBibleNotesPagesNotebookSetPath.Location" type="System.Drawing.Point, System.Drawing">
     <value>445, 315</value>
-  </data>
-  <data name="cbBibleNotebook.TabIndex" type="System.Int32, mscorlib">
-    <value>22</value>
   </data>
   <data name="&gt;&gt;tbpOneNoteParameters.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -558,8 +546,8 @@
   <data name="tb.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>
-  <data name="&gt;&gt;chkUseRubbishPage.Parent" xml:space="preserve">
-    <value>groupBox1</value>
+  <data name="&gt;&gt;tbpProgramParameters.Parent" xml:space="preserve">
+    <value>tbcMain</value>
   </data>
   <data name="&gt;&gt;chkExpandMultiVersesLinking.Parent" xml:space="preserve">
     <value>groupBox2</value>
@@ -569,6 +557,9 @@
   </data>
   <data name="btnResizeBibleTables.Text" xml:space="preserve">
     <value>Change Bible pages width</value>
+  </data>
+  <data name="chkCreateBibleCommentsNotebookFromTemplate.TabIndex" type="System.Int32, mscorlib">
+    <value>26</value>
   </data>
   <data name="&gt;&gt;tbPageDescriptionName.Name" xml:space="preserve">
     <value>tbPageDescriptionName</value>
@@ -582,14 +573,17 @@
   <data name="&gt;&gt;folderBrowserDialog.Type" xml:space="preserve">
     <value>System.Windows.Forms.FolderBrowserDialog, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;pnModules.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
   <data name="&gt;&gt;label9.Parent" xml:space="preserve">
     <value>tabPage2</value>
   </data>
-  <data name="tabPage1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
+  <data name="hlModules.Size" type="System.Drawing.Size, System.Drawing">
+    <value>140, 13</value>
   </data>
   <data name="btnBibleStudyNotebookSetPath.Size" type="System.Drawing.Size, System.Drawing">
     <value>26, 23</value>
@@ -648,11 +642,17 @@
   <data name="&gt;&gt;tbPageDescriptionName.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
+  <data name="chkExpandMultiVersesLinking.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
   <data name="&gt;&gt;pbMain.Type" xml:space="preserve">
     <value>System.Windows.Forms.ProgressBar, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="btnOK.Location" type="System.Drawing.Point, System.Drawing">
-    <value>566, 17</value>
+  <data name="&gt;&gt;chkUseRubbishPage.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="lblModulesLink.Text" xml:space="preserve">
+    <value>You can download more modules at</value>
   </data>
   <data name="&gt;&gt;chkUseRubbishPage.Name" xml:space="preserve">
     <value>chkUseRubbishPage</value>
@@ -699,14 +699,14 @@
   <data name="&gt;&gt;rbMultiNotebook.Name" xml:space="preserve">
     <value>rbMultiNotebook</value>
   </data>
-  <data name="&gt;&gt;label5.Name" xml:space="preserve">
-    <value>label5</value>
-  </data>
   <data name="&gt;&gt;chkCreateBibleNotebookFromTemplate.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;chkUseDifferentPages.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <data name="&gt;&gt;btnSingleNotebookSetPath.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;chkUseDifferentPages.Name" xml:space="preserve">
     <value>chkUseDifferentPages</value>
@@ -732,9 +732,6 @@
   <data name="&gt;&gt;lblSelectSingleNotebook.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="chkCreateSingleNotebookFromTemplate.Text" xml:space="preserve">
-    <value>Create from template</value>
-  </data>
   <data name="chkCreateBibleCommentsNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
     <value>123, 17</value>
   </data>
@@ -744,17 +741,11 @@
   <data name="pnModules.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 24</value>
   </data>
-  <data name="&gt;&gt;tbpProgramParameters.Parent" xml:space="preserve">
-    <value>tbcMain</value>
-  </data>
   <data name="&gt;&gt;btnBibleNotesPagesNotebookSetPath.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>206, 13</value>
-  </data>
-  <data name="&gt;&gt;tabPage2.Name" xml:space="preserve">
-    <value>tabPage2</value>
+  <data name="btnOK.Location" type="System.Drawing.Point, System.Drawing">
+    <value>566, 17</value>
   </data>
   <data name="lblWarning.Location" type="System.Drawing.Point, System.Drawing">
     <value>539, 0</value>
@@ -773,6 +764,9 @@
   </data>
   <data name="chkCreateBibleCommentsNotebookFromTemplate.Text" xml:space="preserve">
     <value>Create from template</value>
+  </data>
+  <data name="tabPage1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
   </data>
   <data name="btnSingleNotebookParameters.Text" xml:space="preserve">
     <value>Parameters</value>
@@ -834,9 +828,6 @@
   <data name="rbSingleNotebook.TabIndex" type="System.Int32, mscorlib">
     <value>17</value>
   </data>
-  <data name="&gt;&gt;btnBibleStudyNotebookSetPath.Name" xml:space="preserve">
-    <value>btnBibleStudyNotebookSetPath</value>
-  </data>
   <data name="label7.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
   </data>
@@ -869,6 +860,9 @@
   </data>
   <data name="&gt;&gt;tbRubbishNotesPageName.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblWarning.Parent" xml:space="preserve">
+    <value>splitContainer1.Panel2</value>
   </data>
   <data name="&gt;&gt;splitContainer1.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -926,9 +920,6 @@
   </data>
   <data name="&gt;&gt;cbBibleCommentsNotebook.ZOrder" xml:space="preserve">
     <value>14</value>
-  </data>
-  <data name="&gt;&gt;cbBibleStudyNotebook.Name" xml:space="preserve">
-    <value>cbBibleStudyNotebook</value>
   </data>
   <data name="&gt;&gt;rbSingleNotebook.Parent" xml:space="preserve">
     <value>tabPage1</value>
@@ -993,8 +984,8 @@
   <data name="&gt;&gt;label2.Name" xml:space="preserve">
     <value>label2</value>
   </data>
-  <data name="&gt;&gt;btnResizeBibleTables.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="tabPage2.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
   </data>
   <data name="chkCreateBibleNotesPagesNotebookFromTemplate.Location" type="System.Drawing.Point, System.Drawing">
     <value>311, 319</value>
@@ -1020,14 +1011,20 @@
   <data name="tbRubbishNotesPageName.TabIndex" type="System.Int32, mscorlib">
     <value>12</value>
   </data>
+  <data name="&gt;&gt;splitContainer1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SplitContainer, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="pbMain.TabIndex" type="System.Int32, mscorlib">
     <value>17</value>
   </data>
-  <data name="&gt;&gt;tbpOneNoteParameters.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="cbBibleNotebook.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
   </data>
   <data name="chkDefaultPageNameParameters.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="label5.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
   <data name="cbSingleNotebook.Size" type="System.Drawing.Size, System.Drawing">
     <value>248, 21</value>
@@ -1074,6 +1071,9 @@
   <data name="&gt;&gt;pnModules.Parent" xml:space="preserve">
     <value>tabPage4</value>
   </data>
+  <data name="hlModules.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="chkRubbishExcludedVersesLinking.TabIndex" type="System.Int32, mscorlib">
     <value>16</value>
   </data>
@@ -1107,8 +1107,8 @@
   <data name="rbSingleNotebook.Size" type="System.Drawing.Size, System.Drawing">
     <value>102, 17</value>
   </data>
-  <data name="chkCreateSingleNotebookFromTemplate.Location" type="System.Drawing.Point, System.Drawing">
-    <value>311, 54</value>
+  <data name="&gt;&gt;tbcMain.Parent" xml:space="preserve">
+    <value>splitContainer1.Panel1</value>
   </data>
   <data name="tbcMain.TabIndex" type="System.Int32, mscorlib">
     <value>16</value>
@@ -1133,9 +1133,6 @@
   </data>
   <data name="&gt;&gt;cbBibleCommentsNotebook.Name" xml:space="preserve">
     <value>cbBibleCommentsNotebook</value>
-  </data>
-  <data name="&gt;&gt;btnSingleNotebookParameters.Name" xml:space="preserve">
-    <value>btnSingleNotebookParameters</value>
   </data>
   <data name="&gt;&gt;tbRubbishNotesPageWidth.Parent" xml:space="preserve">
     <value>groupBox1</value>
@@ -1164,8 +1161,8 @@
   <data name="btnUploadModule.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;label2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="label8.TabIndex" type="System.Int32, mscorlib">
+    <value>38</value>
   </data>
   <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
     <value>16, 115</value>
@@ -1173,14 +1170,17 @@
   <data name="&gt;&gt;label8.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;chkUseRubbishPage.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;tbcMain.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;chkRubbishExcludedVersesLinking.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;lblMustUploadModule.Name" xml:space="preserve">
-    <value>lblMustUploadModule</value>
+  <data name="&gt;&gt;folderBrowserDialog.Name" xml:space="preserve">
+    <value>folderBrowserDialog</value>
   </data>
   <data name="chkExcludedVersesLinking.Size" type="System.Drawing.Size, System.Drawing">
     <value>208, 17</value>
@@ -1275,8 +1275,8 @@
   <data name="&gt;&gt;splitContainer1.Panel1.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="tbNotesPageWidth.TabIndex" type="System.Int32, mscorlib">
-    <value>7</value>
+  <data name="tabPage1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>656, 352</value>
   </data>
   <data name="&gt;&gt;btnSingleNotebookParameters.Parent" xml:space="preserve">
     <value>tabPage1</value>
@@ -1284,8 +1284,8 @@
   <data name="&gt;&gt;lblMustUploadModule.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;lblRubbishNotesPageWidth.ZOrder" xml:space="preserve">
-    <value>6</value>
+  <data name="chkCreateSingleNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
+    <value>123, 17</value>
   </data>
   <data name="&gt;&gt;chkUseDifferentPages.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1296,8 +1296,8 @@
   <data name="&gt;&gt;tabPage2.Parent" xml:space="preserve">
     <value>tbcMain</value>
   </data>
-  <data name="tbRubbishNotesPageWidth.Location" type="System.Drawing.Point, System.Drawing">
-    <value>17, 100</value>
+  <data name="&gt;&gt;btnSingleNotebookParameters.Name" xml:space="preserve">
+    <value>btnSingleNotebookParameters</value>
   </data>
   <data name="&gt;&gt;tbNotesPageWidth.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1344,8 +1344,8 @@
   <data name="tabPage1.Text" xml:space="preserve">
     <value>OneNote parameters</value>
   </data>
-  <data name="label5.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
+  <data name="&gt;&gt;btnDeleteNotesPages.Parent" xml:space="preserve">
+    <value>tabPage3</value>
   </data>
   <data name="&gt;&gt;pnModules.Name" xml:space="preserve">
     <value>pnModules</value>
@@ -1370,6 +1370,9 @@
   </data>
   <data name="lblWarning.TabIndex" type="System.Int32, mscorlib">
     <value>19</value>
+  </data>
+  <data name="&gt;&gt;cbSingleNotebook.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="tbRubbishNotesPageWidth.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 8.25pt</value>
@@ -1410,8 +1413,11 @@
   <data name="rbMultiNotebook.Location" type="System.Drawing.Point, System.Drawing">
     <value>16, 131</value>
   </data>
-  <data name="hlModules.Size" type="System.Drawing.Size, System.Drawing">
-    <value>140, 13</value>
+  <data name="&gt;&gt;tbOneNoteParameters.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="&gt;&gt;btnBibleCommentsNotebookSetPath.ZOrder" xml:space="preserve">
     <value>5</value>
@@ -1421,9 +1427,6 @@
   </data>
   <data name="btnRelinkComments.Size" type="System.Drawing.Size, System.Drawing">
     <value>230, 23</value>
-  </data>
-  <data name="&gt;&gt;lblSelectSingleNotebook.ZOrder" xml:space="preserve">
-    <value>18</value>
   </data>
   <data name="&gt;&gt;btnRelinkComments.ZOrder" xml:space="preserve">
     <value>3</value>
@@ -1449,8 +1452,8 @@
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
     <value>12</value>
   </data>
-  <data name="lblModulesLink.Text" xml:space="preserve">
-    <value>You can download more modules at</value>
+  <data name="&gt;&gt;tbpProgramParameters.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnRelinkComments.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1509,14 +1512,11 @@
   <data name="&gt;&gt;splitContainer1.Panel1.Type" xml:space="preserve">
     <value>System.Windows.Forms.SplitterPanel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;chkCreateBibleStudyNotebookFromTemplate.Parent" xml:space="preserve">
-    <value>tabPage1</value>
-  </data>
   <data name="chkExcludedVersesLinking.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="&gt;&gt;btnSingleNotebookSetPath.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;tabPage2.Name" xml:space="preserve">
+    <value>tabPage2</value>
   </data>
   <data name="chkCreateBibleNotebookFromTemplate.Text" xml:space="preserve">
     <value>Create from template</value>
@@ -1581,8 +1581,8 @@
   <data name="tbpModules.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>
-  <data name="&gt;&gt;lblWarning.Parent" xml:space="preserve">
-    <value>splitContainer1.Panel2</value>
+  <data name="&gt;&gt;lblSelectSingleNotebook.ZOrder" xml:space="preserve">
+    <value>18</value>
   </data>
   <data name="&gt;&gt;pnModules.Type" xml:space="preserve">
     <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1626,8 +1626,8 @@
   <data name="&gt;&gt;btnSingleNotebookSetPath.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
-  <data name="btnBackup.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+  <data name="label10.Text" xml:space="preserve">
+    <value>'Detailed Summary of Notes' pages name</value>
   </data>
   <data name="btnRelinkComments.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -1638,8 +1638,8 @@
   <data name="hlModules.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
   </data>
-  <data name="tbRubbishNotesPageName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>248, 20</value>
+  <data name="lblMustSelectModule.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
   </data>
   <data name="&gt;&gt;label6.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1650,14 +1650,17 @@
   <data name="tbPageDescriptionName.Size" type="System.Drawing.Size, System.Drawing">
     <value>248, 20</value>
   </data>
+  <data name="&gt;&gt;chkCreateBibleStudyNotebookFromTemplate.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="chkUseDifferentPages.TabIndex" type="System.Int32, mscorlib">
     <value>11</value>
   </data>
   <data name="cbBibleNotesPagesNotebook.TabIndex" type="System.Int32, mscorlib">
     <value>36</value>
   </data>
-  <data name="label8.TabIndex" type="System.Int32, mscorlib">
-    <value>38</value>
+  <data name="tbRubbishNotesPageWidth.Location" type="System.Drawing.Point, System.Drawing">
+    <value>17, 100</value>
   </data>
   <data name="&gt;&gt;lblModulesLink.Name" xml:space="preserve">
     <value>lblModulesLink</value>
@@ -1695,8 +1698,8 @@
   <data name="chkCreateBibleNotebookFromTemplate.TabIndex" type="System.Int32, mscorlib">
     <value>23</value>
   </data>
-  <data name="&gt;&gt;chkCreateBibleStudyNotebookFromTemplate.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="tbRubbishNotesPageName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>248, 20</value>
   </data>
   <data name="&gt;&gt;chkExcludedVersesLinking.Parent" xml:space="preserve">
     <value>groupBox2</value>
@@ -1707,11 +1710,11 @@
   <data name="label10.Location" type="System.Drawing.Point, System.Drawing">
     <value>14, 39</value>
   </data>
-  <data name="chkExpandMultiVersesLinking.TabIndex" type="System.Int32, mscorlib">
-    <value>9</value>
+  <data name="cbBibleCommentsNotebook.Location" type="System.Drawing.Point, System.Drawing">
+    <value>57, 267</value>
   </data>
-  <data name="hlModules.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="lblMustUploadModule.Text" xml:space="preserve">
+    <value>Need to add module</value>
   </data>
   <data name="&gt;&gt;chkCreateBibleStudyNotebookFromTemplate.ZOrder" xml:space="preserve">
     <value>10</value>
@@ -1724,9 +1727,6 @@
   </data>
   <data name="&gt;&gt;tbRubbishNotesPageName.Parent" xml:space="preserve">
     <value>groupBox1</value>
-  </data>
-  <data name="chkExpandMultiVersesLinking.Location" type="System.Drawing.Point, System.Drawing">
-    <value>9, 126</value>
   </data>
   <data name="pnModules.Size" type="System.Drawing.Size, System.Drawing">
     <value>636, 74</value>
@@ -1743,8 +1743,8 @@
   <data name="&gt;&gt;tbNotesPageName.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="tabPage2.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
+  <data name="&gt;&gt;cbBibleStudyNotebook.Name" xml:space="preserve">
+    <value>cbBibleStudyNotebook</value>
   </data>
   <data name="&gt;&gt;btnBackup.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -1761,8 +1761,8 @@
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>664, 434</value>
   </data>
-  <data name="label9.Text" xml:space="preserve">
-    <value>Language</value>
+  <data name="&gt;&gt;label4.Name" xml:space="preserve">
+    <value>label4</value>
   </data>
   <data name="chkExcludedVersesLinking.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 8.25pt</value>
@@ -1803,14 +1803,14 @@
   <data name="&gt;&gt;hlModules.Name" xml:space="preserve">
     <value>hlModules</value>
   </data>
-  <data name="label10.Text" xml:space="preserve">
-    <value>'Detailed Summary of Notes' pages name</value>
+  <data name="&gt;&gt;label5.Name" xml:space="preserve">
+    <value>label5</value>
   </data>
   <data name="&gt;&gt;rbSingleNotebook.Name" xml:space="preserve">
     <value>rbSingleNotebook</value>
   </data>
-  <data name="&gt;&gt;btnDeleteNotesPages.Parent" xml:space="preserve">
-    <value>tabPage3</value>
+  <data name="&gt;&gt;btnResizeBibleTables.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="chkDefaultPageNameParameters.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
@@ -1824,8 +1824,8 @@
   <data name="&gt;&gt;chkCreateBibleNotebookFromTemplate.Parent" xml:space="preserve">
     <value>tabPage1</value>
   </data>
-  <data name="&gt;&gt;label8.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+  <data name="chkCreateSingleNotebookFromTemplate.Text" xml:space="preserve">
+    <value>Create from template</value>
   </data>
   <data name="chkCreateBibleStudyNotebookFromTemplate.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1839,8 +1839,8 @@
   <data name="&gt;&gt;label9.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;splitContainer1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.SplitContainer, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;splitContainer1.Name" xml:space="preserve">
+    <value>splitContainer1</value>
   </data>
   <data name="&gt;&gt;chkCreateBibleNotesPagesNotebookFromTemplate.Parent" xml:space="preserve">
     <value>tabPage1</value>
@@ -1863,8 +1863,8 @@
   <data name="&gt;&gt;lblRubbishNotesPageWidth.Name" xml:space="preserve">
     <value>lblRubbishNotesPageWidth</value>
   </data>
-  <data name="&gt;&gt;chkUseRubbishPage.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="btnBackup.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
   </data>
   <data name="btnUploadModule.Size" type="System.Drawing.Size, System.Drawing">
     <value>110, 23</value>
@@ -1914,8 +1914,8 @@
   <data name="&gt;&gt;btnBibleNotebookSetPath.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
-  <data name="lblMustSelectModule.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+  <data name="&gt;&gt;lblMustUploadModule.Name" xml:space="preserve">
+    <value>lblMustUploadModule</value>
   </data>
   <data name="chkUseRubbishPage.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1929,8 +1929,8 @@
   <data name="&gt;&gt;tabPage4.Name" xml:space="preserve">
     <value>tabPage4</value>
   </data>
-  <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="chkCreateSingleNotebookFromTemplate.Location" type="System.Drawing.Point, System.Drawing">
+    <value>311, 54</value>
   </data>
   <data name="label4.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1941,8 +1941,8 @@
   <data name="chkRubbishExpandMultiVersesLinking.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
-  <data name="&gt;&gt;splitContainer1.Name" xml:space="preserve">
-    <value>splitContainer1</value>
+  <data name="&gt;&gt;lblRubbishNotesPageWidth.ZOrder" xml:space="preserve">
+    <value>6</value>
   </data>
   <data name="&gt;&gt;tbProgramParameters.Name" xml:space="preserve">
     <value>tbProgramParameters</value>
@@ -1959,8 +1959,8 @@
   <data name="&gt;&gt;chkDefaultPageNameParameters.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;folderBrowserDialog.Name" xml:space="preserve">
-    <value>folderBrowserDialog</value>
+  <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>206, 13</value>
   </data>
   <data name="&gt;&gt;lblRubbishNotesPageWidth.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1983,8 +1983,8 @@
   <data name="&gt;&gt;label6.Name" xml:space="preserve">
     <value>label6</value>
   </data>
-  <data name="&gt;&gt;label4.Name" xml:space="preserve">
-    <value>label4</value>
+  <data name="chkExpandMultiVersesLinking.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 126</value>
   </data>
   <data name="tbNotesPageWidth.Location" type="System.Drawing.Point, System.Drawing">
     <value>9, 100</value>
@@ -2004,8 +2004,8 @@
   <data name="btnBackup.Size" type="System.Drawing.Size, System.Drawing">
     <value>230, 23</value>
   </data>
-  <data name="cbBibleCommentsNotebook.Location" type="System.Drawing.Point, System.Drawing">
-    <value>57, 267</value>
+  <data name="&gt;&gt;chkCreateBibleStudyNotebookFromTemplate.Parent" xml:space="preserve">
+    <value>tabPage1</value>
   </data>
   <data name="splitContainer1.SplitterDistance" type="System.Int32, mscorlib">
     <value>378</value>
