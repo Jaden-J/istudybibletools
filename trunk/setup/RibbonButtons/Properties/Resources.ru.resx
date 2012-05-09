@@ -127,9 +127,6 @@
   <data name="NoteLinkerButton" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\NoteLinkerButton.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ribbon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\ribbon.xml;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
   <data name="ConfigureButton" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ConfigureButton.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -141,5 +138,8 @@
   </data>
   <data name="AboutProgram" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AboutProgram.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ribbon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ribbon.ru.xml;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>
