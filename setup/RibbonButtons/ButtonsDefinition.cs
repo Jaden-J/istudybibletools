@@ -58,7 +58,7 @@ namespace RibbonButtons
             //if (Thread.CurrentThread.CurrentCulture.LCID == 1049)
             //    return Properties.Resources.ribbon_ru;
             //else
-			    return Properties.Resources.ribbon;
+			return Properties.Resources.ribbon;
 		}
 
 		/// <summary>
