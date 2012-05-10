@@ -59,6 +59,9 @@ namespace BibleConfigurator.Tools
 
                 _tempFolderPath = Path.Combine(Utils.GetTempFolderPath(), "BackUp");
 
+                if (!Directory.Exists(_tempFolderPath))
+                    Directory.CreateDirectory(_tempFolderPath);
+
                 _targetFilePath = filePath;
 
                 CleanTempFolder();
