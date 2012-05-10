@@ -54,10 +54,7 @@ namespace RibbonButtons
 		/// Called at the start of the running of the add-in. Loads the ribbon
 		/// </summary>
 		public string GetCustomUI(string RibbonID)
-		{
-            //if (Thread.CurrentThread.CurrentCulture.LCID == 1049)
-            //    return Properties.Resources.ribbon_ru;
-            //else
+		{   
 			return Properties.Resources.ribbon;
 		}
 

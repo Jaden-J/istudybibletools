@@ -54,16 +54,13 @@ namespace BibleConfigurator
 
 
         private NotebookParametersForm _notebookParametersForm = null;
-        private bool _runAfterSetup = false;
-        
+
+        public bool RunAfterSetup { get; set; }        
         public bool ShowModulesTabAtStartUp { get; set; }
         public bool NeedToSaveChangesAfterLoadingModuleAtStartUp { get; set; }
 
         public MainForm(params string[] args)
         {
-            if (args.Contains(Consts.RunAfterSetup))
-                _runAfterSetup = true;
-
             this.SetFormUICulture();
 
             InitializeComponent();
@@ -474,26 +471,13 @@ namespace BibleConfigurator
                         if (NeedToSaveChangesAfterLoadingModuleAtStartUp)
                             needSaveSettings = true;
                     }
-                    else if (_runAfterSetup)
+                    else if (RunAfterSetup)
                     {
                         if (SettingsManager.Instance.IsConfigured(_oneNoteApp))
                         {
                             this.Close();
                             return;
-                        }
-                        else
-                        {
-                            string oneNoteTemplatesFolder = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(Utils.GetCurrentDirectory())), "OneNoteTemplates");
-                            if ((!Directory.Exists(ModulesManager.GetModulesPackagesDirectory()) || Directory.GetFiles(ModulesManager.GetModulesPackagesDirectory()).Length == 0)
-                                && Directory.Exists(oneNoteTemplatesFolder)
-                                && !string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible))
-                            {
-                                SettingsManager.Instance.ModuleName = GenerateDefaultModule(oneNoteTemplatesFolder);
-                                tbcMain.SelectedTab = tbcMain.TabPages[tabPage1.Name];
-                                _wasLoadedModulesInfo = false;
-                                needSaveSettings = true;
-                            }
-                        }
+                        }                        
                     }
                     PrepareFolderBrowser();
                     SetNotebooksDefaultPaths();
@@ -516,53 +500,6 @@ namespace BibleConfigurator
                 }
             }
         }
-
-        private string GenerateDefaultModule(string oneNoteTemplatesFolder)
-        {
-            string defaultModuleName = "RST";
-            string moduleFileName = defaultModuleName + Constants.IsbtFileExtension;
-            string tempFolderPath = Path.Combine(Utils.GetTempFolderPath(), "ModuleGenerator");
-            if (!Directory.Exists(tempFolderPath))
-                Directory.CreateDirectory(tempFolderPath);
-            string destFilePath = Path.Combine(ModulesManager.GetModulesPackagesDirectory(), moduleFileName);
-
-            DefaultRusModuleGenerator.GenerateModuleInfo(Path.Combine(tempFolderPath, Constants.ManifestFileName), SettingsManager.Instance.IsSingleNotebook);
-
-            foreach(var filePath in Directory.GetFiles(oneNoteTemplatesFolder))
-            {
-                string fileName = Path.GetFileName(filePath);
-                if (!SettingsManager.Instance.IsSingleNotebook)
-                    if (fileName == "Holy Bible.onepkg")
-                        continue;
-
-                File.Copy(filePath, Path.Combine(tempFolderPath, fileName), true);
-            }
-
-            string isbtFilePath = Path.Combine(tempFolderPath, moduleFileName);
-
-            ZipLibHelper.PackfilesToZip(tempFolderPath, isbtFilePath);
-
-            ModulesManager.UploadModule(isbtFilePath, destFilePath, defaultModuleName);
-
-            Thread.Sleep(500);
-
-            try
-            {
-                Directory.Delete(tempFolderPath, true);
-            }
-            catch
-            { }
-
-            try
-            {
-                Directory.Delete(oneNoteTemplatesFolder, true);
-            }
-            catch
-            { }
-
-            return defaultModuleName;
-        }
-      
       
         private void MainForm_Load(object sender, EventArgs e)
         {
