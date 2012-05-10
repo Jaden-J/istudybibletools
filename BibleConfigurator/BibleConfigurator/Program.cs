@@ -9,6 +9,7 @@ using BibleCommon.Services;
 using BibleCommon.Helpers;
 using System.IO;
 using System.Diagnostics;
+using System.Xml.XPath;
 
 namespace BibleConfigurator
 {
@@ -20,6 +21,42 @@ namespace BibleConfigurator
         [STAThread]
         static void Main(params string[] args)
         {
+            //var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            //string xml;
+            //oneNoteApp.GetPageContent(oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xml);
+
+            //System.Xml.XmlNamespaceManager xnm = new System.Xml.XmlNamespaceManager(new System.Xml.NameTable());
+            //var xd = System.Xml.Linq.XDocument.Parse(xml);
+
+            //xnm.AddNamespace("one", "http://schemas.microsoft.com/office/onenote/2010/onenote");
+            //System.Xml.Linq.XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
+
+            //var inkNodes = doc.Root.XPathSelectElements("one:InkDrawing", xnm)
+            //                 .Union(doc.Root.XPathSelectElements("one:Outline[.//one:InkWord]", xnm))
+            //                 //.Union(doc.Root.XPathSelectElements("//one:OE[.//one:InkDrawing]", xnm))
+            //                 .ToArray();
+            //foreach (var inkNode in inkNodes)
+            //    inkNode.Remove();
+
+
+            ////var oeInkNodes = doc.Root.XPathSelectElements("//one:OE[.//one:InkDrawing]", xnm).ToArray();
+            ////foreach (var oeInkNode in oeInkNodes)
+            ////{
+            ////    //var objectId = oeInkNode.Attribute("objectID").Value;
+            ////    var inkNode = oeInkNode.XPathSelectElement(".//one:InkDrawing", xnm);
+            ////   // inkNode.SetAttributeValue("objectID", objectId);
+            ////    doc.Root.Add(inkNode);
+            ////}
+
+
+            ////inkNodes = doc.Root.XPathSelectElements("//one:OE[.//one:InkDrawing]", xnm).ToArray();
+            ////foreach (var inkNode in inkNodes)
+            ////    inkNode.Remove();
+
+            //oneNoteApp.UpdatePageContent(doc.ToString());
+
+
+
             //ConvertEnglishModule();
 
             //ConvertRomanModule();
