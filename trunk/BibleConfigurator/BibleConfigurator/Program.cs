@@ -78,7 +78,12 @@ namespace BibleConfigurator
                 if (OpenManual())
                     return;
             }
-            else if (args.Length == 1)
+            else if (args.Contains(Consts.RunAfterSetup))
+            {
+                form = new MainForm(args);
+                ((MainForm)form).RunAfterSetup = true;
+            }
+            else if (args.Length >= 1)
             {
                 string moduleFilePath = args[0];
                 if (File.Exists(moduleFilePath))
@@ -88,7 +93,7 @@ namespace BibleConfigurator
                     ((MainForm)form).ShowModulesTabAtStartUp = true;
                     ((MainForm)form).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
                 }
-            }
+            } 
             
             if (form == null)
                 form = new MainForm(args);
