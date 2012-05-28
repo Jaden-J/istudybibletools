@@ -64,8 +64,13 @@ namespace BibleCommon.Services
             if (form.Site == null || !form.Site.DesignMode)
             {
                 // устанавливаем культуру обязательно до InitializeComponent();
-                Thread.CurrentThread.CurrentUICulture = LanguageManager.UserLanguage;
+                SetThreadUICulture();
             }
+        }
+
+        public static void SetThreadUICulture()
+        {
+            Thread.CurrentThread.CurrentUICulture = LanguageManager.UserLanguage;
         }
     }
 }

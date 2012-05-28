@@ -130,7 +130,9 @@ namespace BibleCommon.Services
         {
             OneNoteProxy.HierarchyElement sectionDocument = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages);
 
-            XElement page = sectionDocument.Content.Root.XPathSelectElement(string.Format("one:Page[starts-with(@name,'{0} ')]", vp.Chapter), sectionDocument.Xnm);
+            XElement page = sectionDocument.Content.Root.XPathSelectElement(string.Format("one:Page[starts-with(@name,'{0} ') and @pageLevel=2]", vp.Chapter), sectionDocument.Xnm);  // "@pageLevel=2" - это условие нам надо, чтобы найти главу, например, "2 глава. 2 Петра", а не просто "2 Петра", 
+            if (page == null)
+                page = sectionDocument.Content.Root.XPathSelectElement(string.Format("one:Page[starts-with(@name,'{0} ')]", vp.Chapter), sectionDocument.Xnm);
 
             if (page == null)  // нужно для Псалтыря, потому что там главы называются, например "Псалом 5"
                 page = sectionDocument.Content.Root.XPathSelectElement(
