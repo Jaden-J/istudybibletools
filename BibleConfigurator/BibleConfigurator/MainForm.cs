@@ -521,6 +521,9 @@ namespace BibleConfigurator
             if (string.IsNullOrEmpty(bibleNotesPagesNotebookId))
                 bibleNotesPagesNotebookId = bibleCommentsNotebookId;
 
+            if (string.IsNullOrEmpty(bibleNotebookId) && string.IsNullOrEmpty(bibleCommentsNotebookId))  // а то иначе он всегда "Личную" при установке выбирает
+                bibleStudyNotebookId = null;
+
             rbSingleNotebook.Checked = SettingsManager.Instance.IsSingleNotebook 
                                     && !string.IsNullOrEmpty(singleNotebookId);
 
@@ -548,6 +551,7 @@ namespace BibleConfigurator
                     Path.GetFileNameWithoutExtension(module.GetNotebook(NotebookType.Single).Name),
                     notebooks, SettingsManager.Instance.NotebookId_Bible, cbSingleNotebook, chkCreateSingleNotebookFromTemplate);
             }
+            
 
             SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotebookId) ? notebooks[bibleNotebookId] :
                 Path.GetFileNameWithoutExtension(module.GetNotebook(NotebookType.Bible).Name), 

@@ -56,7 +56,8 @@ namespace BibleCommon.Services
             Version result = null;
 
             try
-            {                
+            {
+                LanguageManager.SetThreadUICulture();
                 XDocument xDoc = Load(BibleCommon.Resources.Constants.NewVersionOnServerFileUrl);
 
                 XElement latestVersion = xDoc.Root.XPathSelectElement("LatestVersion_IStudyBibleTools_RU");
