@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+using BibleCommon.Helpers;
 
 namespace BibleCommon.Common
 {
@@ -60,8 +61,9 @@ namespace BibleCommon.Common
 
             var result = GetBibleBookByExactMatch(s);
 
-            if (result == null)
+            if (result == null && s.Length > 0 && StringUtils.IsDigit(s[0]))
             {
+
                 s = s.Replace(" ", string.Empty); // чтоб находил "1 John", когда в списке сокращений только "1John"
                 result = GetBibleBookByExactMatch(s);
             }
