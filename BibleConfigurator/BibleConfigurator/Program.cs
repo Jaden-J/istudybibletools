@@ -10,6 +10,9 @@ using BibleCommon.Helpers;
 using System.IO;
 using System.Diagnostics;
 using System.Xml.XPath;
+using System.Threading;
+using System.Runtime.InteropServices;
+using System.Reflection;
 
 namespace BibleConfigurator
 {
@@ -62,43 +65,49 @@ namespace BibleConfigurator
             //ConvertRomanModule();
 
             //DefaultRusModuleGenerator.GenerateModuleInfo();
-            
+
+            string message = BibleCommon.Resources.Constants.BibleConfiguratorMoreThanSingleInstanceRun;
+            if (args.Length == 1 && File.Exists(args[0]))
+                message += " " + BibleCommon.Resources.Constants.LoadMofuleInExistingInstance;
 
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            FormExtensions.RunSingleInstance(message, () =>
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
 
-            Form form = null;
-            if (args.Contains(Consts.ShowModuleInfo) && SettingsManager.Instance.IsConfigured(new Microsoft.Office.Interop.OneNote.Application()))
-                form = new AboutModuleForm(SettingsManager.Instance.ModuleName, true);
-            else if (args.Contains(Consts.ShowAboutProgram))
-                form = new AboutProgramForm();
-            else if (args.Contains(Consts.ShowManual))
-            {
-                if (OpenManual())
-                    return;
-            }
-            else if (args.Contains(Consts.RunAfterSetup))
-            {
-                form = new MainForm(args);
-                ((MainForm)form).RunAfterSetup = true;
-            }
-            else if (args.Length >= 1)
-            {
-                string moduleFilePath = args[0];
-                if (File.Exists(moduleFilePath))
+                Form form = null;
+                if (args.Contains(Consts.ShowModuleInfo) && SettingsManager.Instance.IsConfigured(new Microsoft.Office.Interop.OneNote.Application()))
+                    form = new AboutModuleForm(SettingsManager.Instance.ModuleName, true);
+                else if (args.Contains(Consts.ShowAboutProgram))
+                    form = new AboutProgramForm();
+                else if (args.Contains(Consts.ShowManual))
+                {
+                    if (OpenManual())
+                        return;
+                }
+                else if (args.Contains(Consts.RunAfterSetup))
                 {
                     form = new MainForm(args);
-                    bool needToReload = ((MainForm)form).AddNewModule(moduleFilePath);
-                    ((MainForm)form).ShowModulesTabAtStartUp = true;
-                    ((MainForm)form).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
+                    ((MainForm)form).RunAfterSetup = true;
                 }
-            } 
-            
-            if (form == null)
-                form = new MainForm(args);
+                else if (args.Length == 1)
+                {
+                    string moduleFilePath = args[0];
+                    if (File.Exists(moduleFilePath))
+                    {
+                        form = new MainForm(args);
+                        bool needToReload = ((MainForm)form).AddNewModule(moduleFilePath);
+                        ((MainForm)form).ShowModulesTabAtStartUp = true;
+                        ((MainForm)form).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
+                    }
+                }
 
-            Application.Run(form);
+                if (form == null)
+                    form = new MainForm(args);
+
+                Application.Run(form);
+            });
         }
 
 
