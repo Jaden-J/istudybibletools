@@ -31,7 +31,7 @@ namespace BibleCommon.Services
         {
             string result = string.Empty;
 
-            string exceptionResolveWay = string.Format("\n{0}", BibleCommon.Resources.Constants.VerseLinkManagerOpenNotBiblePage);
+            string exceptionResolveWay = isSummaryNotesPage ? string.Empty : string.Format("\n{0}", BibleCommon.Resources.Constants.VerseLinkManagerOpenNotBiblePage);
             string sectionGroupId = FindDescriptionSectionGroupForBiblePage(oneNoteApp, bibleSectionId, createIfNeeded, isSummaryNotesPage, false);
             if (!string.IsNullOrEmpty(sectionGroupId))
             {
