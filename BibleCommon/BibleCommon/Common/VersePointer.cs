@@ -202,6 +202,8 @@ namespace BibleCommon.Common
                 bookName = bookName.Replace("  ", " ");
             }
 
+            //return bookName.Trim().Trim('.');  // и удалить вышестоящий цикл
+
             return bookName.Trim();
         }
 
