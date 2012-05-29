@@ -60,6 +60,7 @@ namespace BibleCommon.Services
 
 
         internal const char ChapterVerseDelimiter = ':';
+        //internal static readonly char[] SymbolsAfterBibleVerse = new string[] { };
         internal const string DoNotAnalyzeAllPageSymbol = "{}";       
           
 
@@ -473,7 +474,8 @@ namespace BibleCommon.Services
             if (((prevChar == '>' || prevChar == ' ' || prevChar == '.' || StringUtils.IsCharAlphabetical(prevChar))                             // нашли полную ссылку
                     && (nextChar == '<' || nextChar == ChapterVerseDelimiter 
                             || nextChar == default(char) || nextChar == ' '
-                            || nextChar == ')' || nextChar == ']' || nextChar == ',' || nextChar == '.') || nextChar == '-')  // нашли ссылку только на главу
+                            || nextChar == ')' || nextChar == ']' || nextChar == ',' || nextChar == '.' 
+                            || nextChar == '?' || nextChar == '!') || nextChar == '-')  // нашли ссылку только на главу
                 ||
                 ((prevChar == ChapterVerseDelimiter || prevChar == '>' || prevChar == ',')                                                // нашли только стих
                     && !StringUtils.IsCharAlphabetical(nextChar)))
@@ -665,7 +667,7 @@ namespace BibleCommon.Services
                     }
                 }
             }
-            else if (string.IsNullOrEmpty(nextChar.Trim()) || nextChar == ")" || nextChar == "]" || nextChar == "," || nextChar == ".")  // как будто нашли только ссылку на главу
+            else if (string.IsNullOrEmpty(nextChar.Trim()) || nextChar == ")" || nextChar == "]" || nextChar == "," || nextChar == "." || nextChar == "?" || nextChar == "!")  // как будто нашли только ссылку на главу
             {
                 for (int maxMissCount = 2; maxMissCount >= 0; maxMissCount--)
                 {

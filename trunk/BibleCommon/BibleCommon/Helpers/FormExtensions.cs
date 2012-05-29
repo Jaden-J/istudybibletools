@@ -9,6 +9,7 @@ using System.Security;
 using System.Diagnostics;
 using System.Security.Principal;
 using System.Reflection;
+using System.Threading;
 
 namespace BibleCommon.Helpers
 {
@@ -72,6 +73,22 @@ namespace BibleCommon.Helpers
             else
             {
                 control.GetType().InvokeMember(propertyName, BindingFlags.SetProperty, null, control, new object[] { propertyValue });
+            }
+        }
+
+        public static void RunSingleInstance(string messageIfSecondInstance, Action singleAction)
+        {
+            string appGuid = ((GuidAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute), false).GetValue(0)).Value.ToString();
+
+            using (Mutex mutex = new Mutex(false, "Global\\" + appGuid))
+            {
+                if (!mutex.WaitOne(0, false))
+                {
+                    MessageBox.Show(messageIfSecondInstance);
+                    return;
+                }
+
+                singleAction();
             }
         }
     }
