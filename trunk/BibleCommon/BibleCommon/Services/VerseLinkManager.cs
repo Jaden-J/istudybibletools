@@ -84,12 +84,12 @@ namespace BibleCommon.Services
                                 ? string.Format("one:SectionGroup[@ID='{0}']/", rootSectionGroupId)
                                 : string.Empty,
                             sectionGroupName), 
-                        commentsDocument.Xnm);                                        // Изучение Библии/Новый Завет
+                        commentsDocument.Xnm);                                        // Комментарии к Библии/Новый Завет
 
                 if (targetParentSectionGroup != null)
                 {
                     XElement targetSectionGroup = targetParentSectionGroup.XPathSelectElement(
-                        string.Format("one:SectionGroup[@name='{0}']", sectionName), commentsDocument.Xnm);             // Изучение Библии/Новый Завет/01. От Матфея
+                        string.Format("one:SectionGroup[@name='{0}']", sectionName), commentsDocument.Xnm);             // Комментарии к Библии/Новый Завет/01. От Матфея
 
                     if (targetSectionGroup == null)
                     {

@@ -200,13 +200,34 @@ namespace BibleCommon.Helpers
             string currentSectionGroupId = oneNoteApp.Windows.CurrentWindow.CurrentSectionGroupId;
             string currentNotebookId = oneNoteApp.Windows.CurrentWindow.CurrentNotebookId;
 
-
             return new NotebookIterator.PageInfo()
             {
                 SectionGroupId = currentSectionGroupId,
                 SectionId = currentSectionId,
                 Id = currentPageId
             };
+        }
+
+        public static XElement AddRootSectionGroupToNotebook(Application oneNoteApp, string notebookId, string sectionGroupName)
+        {
+            XmlNamespaceManager xnm;
+            var notebook = OneNoteUtils.GetHierarchyElement(oneNoteApp, notebookId, HierarchyScope.hsChildren, out xnm);
+
+            AddSectionGroup(oneNoteApp, notebook.Root, sectionGroupName);
+
+            notebook = OneNoteUtils.GetHierarchyElement(oneNoteApp, notebookId, HierarchyScope.hsChildren, out xnm);
+            var newSectionGroup = notebook.Root.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", sectionGroupName), xnm);
+            return newSectionGroup;
+        }
+
+        public static void AddSectionGroup(Application oneNoteApp, XElement parentElement, string sectionGroupName)
+        {
+            XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
+            XElement newSectionGroup = new XElement(nms + "SectionGroup",
+                                    new XAttribute("name", sectionGroupName));
+
+            parentElement.Add(newSectionGroup);
+            oneNoteApp.UpdateHierarchy(parentElement.ToString());           
         }
     }
 }

@@ -42,6 +42,12 @@ namespace BibleNoteLinker
                 return;
             }
 
+            if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
+            {
+                MessageBox.Show(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
+                return;
+            }
+
             _wasStartAnalyze = true;
 
             BibleNoteLinker.Properties.Settings.Default.AllPages = rbAnalyzeAllPages.Checked;
@@ -105,7 +111,7 @@ namespace BibleNoteLinker
             this.TopMost = false;
 
             llblShowErrors.Visible = false;
-            LogHighLevelMessage(BibleCommon.Resources.Constants.NoteLinkerInitialization, null, null);
+            LogHighLevelMessage(BibleCommon.Resources.Constants.NoteLinkerInitialization, null, null);            
         }
 
 

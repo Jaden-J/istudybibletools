@@ -84,20 +84,9 @@ namespace BibleConfigurator.ModuleConverter
             oneNoteApp.UpdateHierarchy(notebook.ToString());
         }
 
-        protected virtual string AddTestamentSectionGroup(string testmanetName)
+        protected virtual string AddTestamentSectionGroup(string testamentName)
         {
-            XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
-            XElement testamentSectionGroup = new XElement(nms + "SectionGroup",
-                                    new XAttribute("name", testmanetName));
-
-            XmlNamespaceManager xnm;
-            var notebook = OneNoteUtils.GetHierarchyElement(oneNoteApp, NotebookId, HierarchyScope.hsChildren, out xnm);
-            notebook.Root.Add(testamentSectionGroup);
-            oneNoteApp.UpdateHierarchy(notebook.ToString());
-
-            notebook = OneNoteUtils.GetHierarchyElement(oneNoteApp, NotebookId, HierarchyScope.hsChildren, out xnm);
-            testamentSectionGroup = notebook.Root.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", testmanetName), xnm);
-            return testamentSectionGroup.Attribute("ID").Value;              
+            return OneNoteUtils.AddRootSectionGroupToNotebook(oneNoteApp, NotebookId, testamentName).Attribute("ID").Value;            
         }
 
         protected virtual string AddBookSection(string sectionGroupId, string sectionName, string bookName)
