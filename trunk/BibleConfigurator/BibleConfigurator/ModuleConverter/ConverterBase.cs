@@ -38,10 +38,23 @@ namespace BibleConfigurator.ModuleConverter
         protected string NewTestamentName { get; set; }        
         protected int OldTestamentBooksCount { get; set; }
         protected int NewTestamentBooksCount { get; set; }
+        protected string Locale { get; set; }
         protected List<NotebookInfo> NotebooksInfo { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emptyNotebookName"></param>
+        /// <param name="manifestFilePathToSave"></param>
+        /// <param name="oldTestamentName"></param>
+        /// <param name="newTestamentName"></param>
+        /// <param name="oldTestamentBooksCount"></param>
+        /// <param name="newTestamentBooksCount"></param>
+        /// <param name="locale">can be not specified</param>
+        /// <param name="notebooksInfo"></param>
         public ConverterBase(string emptyNotebookName, string manifestFilePathToSave,
-            string oldTestamentName, string newTestamentName, int oldTestamentBooksCount, int newTestamentBooksCount, List<NotebookInfo> notebooksInfo)
+            string oldTestamentName, string newTestamentName, int oldTestamentBooksCount, int newTestamentBooksCount, 
+            string locale, List<NotebookInfo> notebooksInfo)
         {
             oneNoteApp = new Application();
             this.EmptyNotebookName = emptyNotebookName;
@@ -51,6 +64,7 @@ namespace BibleConfigurator.ModuleConverter
             this.NewTestamentName = newTestamentName;
             this.OldTestamentBooksCount = oldTestamentBooksCount;
             this.NewTestamentBooksCount = newTestamentBooksCount;
+            this.Locale = locale;
             this.NotebooksInfo = notebooksInfo;           
         }
 
@@ -108,13 +122,18 @@ namespace BibleConfigurator.ModuleConverter
             return sectionId;
         }
 
+        protected virtual void UpdateChapterPage(XDocument chapterPageDoc)
+        {            
+            oneNoteApp.UpdatePageContent(chapterPageDoc.ToString());                                 
+        }
+
         protected virtual XDocument AddChapterPage(string bookSectionId, string pageTitle, int pageLevel, out XmlNamespaceManager xnm)
         {
             string pageId;
             oneNoteApp.CreateNewPage(bookSectionId, out pageId, NewPageStyle.npsBlankPageWithTitle);
 
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
-            XDocument pageDocument = new XDocument(new XElement(nms + "Page",
+            XDocument pageDocument = new XDocument(new XElement(nms + "Page",                             
                             new XAttribute("ID", pageId),
                             new XAttribute("pageLevel", pageLevel),
                             new XElement(nms + "Title",
@@ -123,6 +142,9 @@ namespace BibleConfigurator.ModuleConverter
                                         new XCData(
                                             pageTitle
                                             ))))));
+
+            if (!string.IsNullOrEmpty(Locale))
+                pageDocument.Root.Add(new XAttribute("lang", Locale));
 
             oneNoteApp.UpdatePageContent(pageDocument.ToString());
             
@@ -150,21 +172,27 @@ namespace BibleConfigurator.ModuleConverter
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
-            XElement newRow = new XElement(nms + "Row",
-                                  new XElement(nms + "Cell",
+            var cell1 = new XElement(nms + "Cell", 
                                       new XElement(nms + "OEChildren",
                                           new XElement(nms + "OE",
                                               new XElement(nms + "T",
                                                   new XCData(
                                                       verseText
-                                                              ))))),
-                                  new XElement(nms + "Cell",
+                                                              )))));
+            if (!string.IsNullOrEmpty(Locale))
+                cell1.Add(new XAttribute("lang", Locale));
+
+            var cell2 = new XElement(nms + "Cell", 
                                       new XElement(nms + "OEChildren",
                                           new XElement(nms + "OE",
                                               new XElement(nms + "T",
                                                   new XCData(
                                                       string.Empty
-                                                              ))))));
+                                                              )))));
+            if (!string.IsNullOrEmpty(Locale))
+                cell2.Add(new XAttribute("lang", Locale));
+
+            XElement newRow = new XElement(nms + "Row", cell1, cell2);
 
             tableElement.Add(newRow);                 
         }

@@ -46,9 +46,24 @@ namespace BibleConfigurator.ModuleConverter
         public Func<BibleQuotaBibleBookInfo, string, string> ConvertChapterNameFunc { get; set; }        
         
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emptyNotebookName"></param>
+        /// <param name="moduleFolder"></param>
+        /// <param name="manifestFilePathToSave"></param>
+        /// <param name="fileEncoding"></param>
+        /// <param name="oldTestamentName"></param>
+        /// <param name="newTestamentName"></param>
+        /// <param name="oldTestamentBooksCount"></param>
+        /// <param name="newTestamentBooksCount"></param>
+        /// <param name="locale">can be not specified</param>
+        /// <param name="notebooksInfo"></param>
         public BibleQuotaConverter(string emptyNotebookName, string moduleFolder, string manifestFilePathToSave, Encoding fileEncoding,
-            string oldTestamentName, string newTestamentName, int oldTestamentBooksCount, int newTestamentBooksCount, List<NotebookInfo> notebooksInfo)
-            : base(emptyNotebookName, manifestFilePathToSave, oldTestamentName, newTestamentName, oldTestamentBooksCount, newTestamentBooksCount, notebooksInfo)
+            string oldTestamentName, string newTestamentName, int oldTestamentBooksCount, int newTestamentBooksCount, 
+            string locale, List<NotebookInfo> notebooksInfo)
+            : base(emptyNotebookName, manifestFilePathToSave, oldTestamentName, newTestamentName, oldTestamentBooksCount, newTestamentBooksCount, 
+                        locale, notebooksInfo)
         {
             this.ModuleFolder = moduleFolder;
             this.FileEncoding = fileEncoding;            
@@ -123,7 +138,7 @@ namespace BibleConfigurator.ModuleConverter
                     if (line.StartsWith(moduleInfo.ChapterSign))
                     {
                         if (currentChapterDoc != null)
-                            oneNoteApp.UpdatePageContent(currentChapterDoc.ToString());
+                            UpdateChapterPage(currentChapterDoc);
 
                         if (ConvertChapterNameFunc != null)
                             lineText = ConvertChapterNameFunc(bibleBookInfo, lineText);
@@ -144,8 +159,12 @@ namespace BibleConfigurator.ModuleConverter
             }
 
             if (currentChapterDoc != null)
-                oneNoteApp.UpdatePageContent(currentChapterDoc.ToString());
+            {
+                UpdateChapterPage(currentChapterDoc);
+            }
         }
+
+        
 
         protected override void GenerateManifest(ExternalModuleInfo externalModuleInfo)
         {
