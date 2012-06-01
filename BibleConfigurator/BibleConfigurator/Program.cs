@@ -13,6 +13,8 @@ using System.Xml.XPath;
 using System.Threading;
 using System.Runtime.InteropServices;
 using System.Reflection;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace BibleConfigurator
 {
@@ -26,6 +28,10 @@ namespace BibleConfigurator
         {
             try
             {
+                //SearchForEnText();
+
+                //ChangeCurrentPageLocale("ro");
+
                 //TryToUpdateInkNodes();
 
                 //ConvertEnglishModule();
@@ -83,6 +89,44 @@ namespace BibleConfigurator
 
                 Application.Run(form);
             });
+        }
+
+        private static void SearchForEnText()
+        {
+            var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            string notebookId = OneNoteUtils.GetNotebookIdByName(oneNoteApp, "Biblia", false);
+
+            var pages = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, false);
+            foreach (var page in pages.Content.Root.XPathSelectElements("//one:Page", pages.Xnm))
+            {
+                string pageId = page.Attribute("ID").Value;
+                XmlNamespaceManager xnm;
+                var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, pageId, out xnm);
+                if (pageDoc.ToString().IndexOf("en-US") != -1)
+                {
+                    string pageName = page.Attribute("name").Value;
+                }
+            }
+        }
+
+        private static void ChangeCurrentPageLocale(string locale)
+        {
+            // it does not work (((((
+            var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+
+            XmlNamespaceManager xnm;
+            var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xnm);
+
+            foreach (var oe in pageDoc.Root.XPathSelectElements("//one:Cell", xnm))
+            {
+                if (oe.Attribute("lang") == null)
+                    oe.Add(new XAttribute("lang", locale));
+            }
+
+            string pageXml = pageDoc.ToString();
+            pageXml = pageXml.Replace("en-US", locale);
+
+            oneNoteApp.UpdatePageContent(pageXml);
         }
 
         private static void GenerateSummaryOfNotesNotebook()
@@ -148,8 +192,8 @@ namespace BibleConfigurator
 
         private static void ConvertRomanModule()
         {
-            var converter = new BibleQuotaConverter("Test", @"G:\Dropbox\RCCV", @"c:\manifest.xml", Encoding.Unicode,
-                "1. Vechiul Testament", "2. Noul Testament", 39, 27, new List<NotebookInfo>()             
+            var converter = new BibleQuotaConverter("Bible", @"C:\Temp\RCCV", @"c:\manifest.xml", Encoding.Unicode,
+                "1. Vechiul Testament", "2. Noul Testament", 39, 27, "ro", new List<NotebookInfo>()             
                 {   
                     new NotebookInfo() { Type = NotebookType.Bible, Name = "Bible.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Bible Study.onepkg" },
@@ -171,7 +215,7 @@ namespace BibleConfigurator
         private static void ConvertEnglishModule()
         {
             var converter = new BibleQuotaConverter("Test", @"G:\Dropbox\Изучение Библии\программы\Цитата из Библии\King_James_Version", @"c:\manifest.xml", Encoding.ASCII,
-                "1. Old Testament", "2. New Testament", 39, 27, new List<NotebookInfo>() 
+                "1. Old Testament", "2. New Testament", 39, 27, null, new List<NotebookInfo>() 
                 {  
                     new NotebookInfo() { Type = NotebookType.Bible, Name = "Bible.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Bible Study.onepkg" },
