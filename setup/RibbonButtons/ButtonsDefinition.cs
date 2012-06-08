@@ -14,6 +14,8 @@ using System.Drawing.Imaging;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace RibbonButtons
 {
@@ -37,6 +39,8 @@ namespace RibbonButtons
 			onApp = null;
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
+
+            MakeAllBibleReadOnly();
 		}
 		public void OnBeginShutdown(ref System.Array custom)
 		{
@@ -45,6 +49,22 @@ namespace RibbonButtons
 		}
 		public void OnStartupComplete(ref Array custom) { }
 		public void OnAddInsUpdate(ref Array custom) { }
+
+        public void MakeAllBibleReadOnly()
+        {
+            try
+            {
+                //todo: get the bible folder path from config file!
+                foreach (var filePath in Directory.GetFiles(@"C:\Users\ademko\Documents\OneNote Notebooks\Библия", "*", SearchOption.AllDirectories))
+                {
+                    File.SetAttributes(filePath, FileAttributes.ReadOnly);
+                }
+            }
+            catch (Exception ex)
+            {
+                //todo: log it
+            }
+        }
 
 		#endregion
 
@@ -69,7 +89,9 @@ namespace RibbonButtons
 
             switch (control.Id)
             {
-                case "VersePointerButton":                                            
+                case "VersePointerButton":
+                    //UnLockCurrentSection();
+                    //return;
                     path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleVersePointer\\BibleVersePointer.exe");
                     break;
                 case "VerseLinkerButton":
@@ -100,6 +122,49 @@ namespace RibbonButtons
             if (!string.IsNullOrEmpty(path))
                 Process.Start(path, args);
 		}
+
+        private void SyncCurrentPage()
+        {
+            onApp.SyncHierarchy(onApp.Windows.CurrentWindow.CurrentPageId);
+        }
+
+        private void UnLockCurrentSection()
+        {
+            //app.SyncHierarchy(app.Windows.CurrentWindow.CurrentSectionId);            
+
+            string xml;
+            onApp.GetHierarchy(onApp.Windows.CurrentWindow.CurrentSectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsSelf, out xml);
+            XmlNamespaceManager xnm;
+            var xDoc = GetXDocument(xml, out xnm);
+            string path = xDoc.Root.Attribute("path").Value;
+            FileAttributes attribs = File.GetAttributes(path);
+
+
+            if (attribs != FileAttributes.ReadOnly)
+            {
+                new Thread(SyncCurrentPage).Start();
+                Thread.Sleep(1000);
+                File.SetAttributes(path, FileAttributes.ReadOnly);
+            }
+            else
+            {
+                File.SetAttributes(path, FileAttributes.Normal);
+                new Thread(SyncCurrentPage).Start();
+            }
+
+            //app.SyncHierarchy(app.Windows.CurrentWindow.CurrentPageId);
+            //app.SyncHierarchy(app.Windows.CurrentWindow.CurrentSectionId);
+
+            //            MessageBox.Show("All done! 8");
+        }
+
+        public static XDocument GetXDocument(string xml, out XmlNamespaceManager xnm)
+        {
+            XDocument xd = XDocument.Parse(xml);
+            xnm = new XmlNamespaceManager(new NameTable());
+            xnm.AddNamespace("one", "http://schemas.microsoft.com/office/onenote/2010/onenote");
+            return xd;
+        }
 
 		/// <summary>
 		/// Called from the loadImage="" parameter in ribbon.xml. Converts the images into IStreams
