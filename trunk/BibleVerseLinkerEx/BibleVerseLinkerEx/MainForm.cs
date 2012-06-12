@@ -46,18 +46,20 @@ namespace BibleVerseLinkerEx
             {
                 try
                 {
-                    VerseLinker vlManager = new VerseLinker();
-                    vlManager.SearchForUnderlineText = cbSearchForUnderlineText.Checked;
-                    if (!string.IsNullOrEmpty(tbPageName.Text))
-                        vlManager.DescriptionPageName = tbPageName.Text;
+                    using (VerseLinker vlManager = new VerseLinker())
+                    {
+                        vlManager.SearchForUnderlineText = cbSearchForUnderlineText.Checked;
+                        if (!string.IsNullOrEmpty(tbPageName.Text))
+                            vlManager.DescriptionPageName = tbPageName.Text;
 
-                    vlManager.Do();
+                        vlManager.Do();
 
-                    if (!Logger.WasLogged)
-                    {                        
-                        SetForegroundWindow(new IntPtr((long)vlManager.OneNoteApp.Windows.CurrentWindow.WindowHandle));
-                        this.Visible = false;
-                        vlManager.SortCommentsPages();
+                        if (!Logger.WasLogged)
+                        {
+                            SetForegroundWindow(new IntPtr((long)vlManager.OneNoteApp.Windows.CurrentWindow.WindowHandle));
+                            this.Visible = false;
+                            vlManager.SortCommentsPages();
+                        }
                     }
                 }
                 catch (Exception ex)

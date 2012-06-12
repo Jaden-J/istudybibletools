@@ -5,11 +5,14 @@ using System.Text;
 
 namespace BibleConfigurator
 {
-    public static class Consts
+    internal static class Consts
     {
-        public const string RunAfterSetup = "-runAfterSetup";
-        public const string ShowModuleInfo = "-showModuleInfo";
-        public const string ShowAboutProgram = "-showAboutProgram";
-        public const string ShowManual = "-showManual";
+        internal const string RunAfterSetup = "-runAfterSetup";
+        internal const string ShowModuleInfo = "-showModuleInfo";
+        internal const string ShowAboutProgram = "-showAboutProgram";
+        internal const string ShowManual = "-showManual";
+        internal const string LockAllBible = "-lockAllBible";
+        internal const string UnlockAllBible = "-unlockAllBible";
+        internal const string UnlockBibleSection = "-unlockBibleSection";        
     }
 }

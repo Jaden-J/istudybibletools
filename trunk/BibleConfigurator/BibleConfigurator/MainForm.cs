@@ -869,12 +869,16 @@ namespace BibleConfigurator
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            BibleCommon.Services.Logger.Done();        
+            BibleCommon.Services.Logger.Done();
+            _oneNoteApp = null;
         }
 
         private void btnRelinkComments_Click(object sender, EventArgs e)
         {
-            new RelinkAllBibleCommentsManager(_oneNoteApp, this).RelinkAllBibleComments();
+            using (var manager = new RelinkAllBibleCommentsManager(_oneNoteApp, this))
+            {
+                manager.RelinkAllBibleComments();
+            }
         }
 
         public void PrepareForExternalProcessing(int pbMaxValue, int pbStep, string infoText)
@@ -927,7 +931,12 @@ namespace BibleConfigurator
                 if (SettingsManager.Instance.NotebookId_BibleComments == SettingsManager.Instance.NotebookId_BibleNotesPages
                     || MessageBox.Show(BibleCommon.Resources.Constants.ConfiguratorQuestionDeleteAllNotesPagesManually, BibleCommon.Resources.Constants.Warning,
                         MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
-                    new DeleteNotesPagesManager(_oneNoteApp, this).DeleteNotesPages();
+                {
+                    using (var manager = new DeleteNotesPagesManager(_oneNoteApp, this))
+                    {
+                        manager.DeleteNotesPages();
+                    }
+                }
             }
         }
 
@@ -936,8 +945,10 @@ namespace BibleConfigurator
             SetWidthForm form = new SetWidthForm();
             if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                ResizeBibleManager manager = new ResizeBibleManager(_oneNoteApp, this);
-                manager.ResizeBiblePages(form.BiblePagesWidth);
+                using (ResizeBibleManager manager = new ResizeBibleManager(_oneNoteApp, this))
+                {
+                    manager.ResizeBiblePages(form.BiblePagesWidth);
+                }
             }
         }
 
@@ -948,8 +959,10 @@ namespace BibleConfigurator
             
             if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                BackupManager manager = new BackupManager(_oneNoteApp, this);
-                manager.Backup(saveFileDialog.FileName);
+                using (BackupManager manager = new BackupManager(_oneNoteApp, this))
+                {
+                    manager.Backup(saveFileDialog.FileName);
+                }
             }
         }        
 

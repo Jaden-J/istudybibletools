@@ -43,16 +43,16 @@
             // 
             // cbBibleSection
             // 
-            resources.ApplyResources(this.cbBibleSection, "cbBibleSection");
             this.cbBibleSection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbBibleSection.FormattingEnabled = true;
+            resources.ApplyResources(this.cbBibleSection, "cbBibleSection");
             this.cbBibleSection.Name = "cbBibleSection";
             // 
             // cbBibleCommentsSection
             // 
-            resources.ApplyResources(this.cbBibleCommentsSection, "cbBibleCommentsSection");
             this.cbBibleCommentsSection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbBibleCommentsSection.FormattingEnabled = true;
+            resources.ApplyResources(this.cbBibleCommentsSection, "cbBibleCommentsSection");
             this.cbBibleCommentsSection.Name = "cbBibleCommentsSection";
             // 
             // label1
@@ -72,9 +72,9 @@
             // 
             // cbBibleStudySection
             // 
-            resources.ApplyResources(this.cbBibleStudySection, "cbBibleStudySection");
             this.cbBibleStudySection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbBibleStudySection.FormattingEnabled = true;
+            resources.ApplyResources(this.cbBibleStudySection, "cbBibleStudySection");
             this.cbBibleStudySection.Name = "cbBibleStudySection";
             // 
             // btnBibleSectionRename
@@ -100,8 +100,8 @@
             // 
             // btnOK
             // 
-            resources.ApplyResources(this.btnOK, "btnOK");
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.btnOK, "btnOK");
             this.btnOK.Name = "btnOK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -125,6 +125,7 @@
             this.KeyPreview = true;
             this.Name = "NotebookParametersForm";
             this.ShowInTaskbar = false;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NotebookParametersForm_FormClosed);
             this.Load += new System.EventHandler(this.NotebookParametersForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NotebookParametersForm_KeyDown);
             this.ResumeLayout(false);

@@ -14,7 +14,7 @@ using BibleCommon.Consts;
 
 namespace BibleCommon.Services
 {    
-    public class NoteLinkManager
+    public class NoteLinkManager: IDisposable
     {
         #region Helper classes
 
@@ -177,7 +177,9 @@ namespace BibleCommon.Services
                     Logger.LogMessage(string.Empty, false, true, false);
                 }
 
-                notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
+                if (linkDepth >= AnalyzeDepth.Full)                
+                    notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
+
                 notePageDocument.WasModified = true;
             }
             catch (ProcessAbortedByUserException)
@@ -1511,5 +1513,10 @@ namespace BibleCommon.Services
 
         #endregion
 
+
+        public void Dispose()
+        {
+            _oneNoteApp = null;
+        }
     }
 }

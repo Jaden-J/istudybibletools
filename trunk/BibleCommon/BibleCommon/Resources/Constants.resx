@@ -447,7 +447,7 @@
   <data name="NewVersionOnServerFileUrl" xml:space="preserve">
     <value>http://IStudyBibleTools.com/ServerVariables.xml</value>
   </data>
-  <data name="BibleConfiguratorMoreThanSingleInstanceRun" xml:space="preserve">
+  <data name="MoreThanSingleInstanceRun" xml:space="preserve">
     <value>Another instance of this program is running.</value>
   </data>
   <data name="LoadMofuleInExistingInstance" xml:space="preserve">

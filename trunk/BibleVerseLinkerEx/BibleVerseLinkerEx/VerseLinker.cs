@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 
 namespace BibleVerseLinkerEx
 {
-    public class VerseLinker
+    public class VerseLinker: IDisposable
     {
         private static readonly string[] PointerStrings = new string[] { "text-decoration:underline", "text-decoration: underline", "text-decoration:\nunderline" };        
 
@@ -389,6 +389,11 @@ namespace BibleVerseLinkerEx
             }
 
             return result;
+        }
+
+        public void Dispose()
+        {
+            _oneNoteApp = null;
         }
     }
 }

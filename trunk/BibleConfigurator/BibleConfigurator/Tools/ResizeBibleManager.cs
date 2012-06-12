@@ -13,7 +13,7 @@ using BibleCommon.Common;
 
 namespace BibleConfigurator.Tools
 {
-    public class ResizeBibleManager
+    public class ResizeBibleManager: IDisposable
     {
         private Application _oneNoteApp;
         private MainForm _form;
@@ -105,6 +105,12 @@ namespace BibleConfigurator.Tools
         private static void SetWidthAttribute(XElement column, int width)
         {
             column.Attribute("width").Value = width.ToString();
+        }
+
+        public void Dispose()
+        {
+            _oneNoteApp = null;
+            _form = null;
         }
     }
 }

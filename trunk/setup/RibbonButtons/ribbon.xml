@@ -6,8 +6,13 @@
 				<group id="Tools" label="Tools">
 					<button id="VersePointerButton" label="Open a Verse" size="large" screentip="Click to quickly go to any verse of the Bible" onAction="ButtonClick" image="VersePointerButton.png"/>
           <button id="VerseLinkerButton" label="Write a Comment" size="large" screentip="Click to add a comment on any passage from the Bible or specific words in these passages" onAction="ButtonClick" image="VerseLinkerButton.png"/>
-          <button id="NoteLinkerButton" label="Notes Analysis" size="large" screentip="Click to launch analysis of the notes" onAction="ButtonClick" image="NoteLinkerButton.png"/>          
-				</group>
+          <button id="NoteLinkerButton" label="Notes Analysis" size="large" screentip="Click to launch analysis of the notes" onAction="ButtonClick" image="NoteLinkerButton.png"/>
+          <button id="QuickNoteLinkerButton" label="Quick Current Page Analysis" size="large" screentip="Click to launch quick analysis of the current page" onAction="ButtonClick" image="QuickAnalyze.png"/>
+        </group>
+        <group id="Unlock" label="Unlock Bible">
+          <button id="UnlockCurrentSection" label="Unlock Current Book" size="large" screentip="Click to unlock current Bible book" onAction="ButtonClick" image="UnlockFile.png"/>
+          <button id="UnlockAllBible" label="Unlock All Bible" size="large" screentip="Click to unlock all Bible" onAction="ButtonClick" image="UnlockFolder.png"/>
+        </group>
         <group id="General" label="General">
           <button id="ConfigureButton" label="Parameters" size="large" screentip="Click to change settings" onAction="ButtonClick" image="ConfigureButton.png"/>
           <button id="HelpButton" label="Manual" size="normal" screentip="Click to read manual" onAction="ButtonClick" image="HelpButton.png"/>

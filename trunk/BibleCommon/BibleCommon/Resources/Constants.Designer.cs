@@ -115,15 +115,6 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Another instance of this program is running..
-        /// </summary>
-        public static string BibleConfiguratorMoreThanSingleInstanceRun {
-            get {
-                return ResourceManager.GetString("BibleConfiguratorMoreThanSingleInstanceRun", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The passage can not be found.
         /// </summary>
         public static string BibleVersePointerCanNotFindPlace {
@@ -552,6 +543,15 @@ namespace BibleCommon.Resources {
         public static string ModuleWithSameNameAlreadyExists {
             get {
                 return ResourceManager.GetString("ModuleWithSameNameAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Another instance of this program is running..
+        /// </summary>
+        public static string MoreThanSingleInstanceRun {
+            get {
+                return ResourceManager.GetString("MoreThanSingleInstanceRun", resourceCulture);
             }
         }
         

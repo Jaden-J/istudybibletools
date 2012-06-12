@@ -14,17 +14,19 @@ namespace BibleConfigurator.Tools
         public static void Iterate(Application oneNoteApp, string notebookId, string sectionGroupId, Action<BibleCommon.Services.NotebookIterator.PageInfo> pageAction)
         {
             if (pageAction == null)
-                throw new ArgumentNullException("pageAction");            
+                throw new ArgumentNullException("pageAction");
 
-            NotebookIterator iterator = new NotebookIterator(oneNoteApp);
+            using (NotebookIterator iterator = new NotebookIterator(oneNoteApp))
+            {
 
-            BibleCommon.Services.NotebookIterator.NotebookInfo notebook = iterator.GetNotebookPages(notebookId, sectionGroupId, null);
+                BibleCommon.Services.NotebookIterator.NotebookInfo notebook = iterator.GetNotebookPages(notebookId, sectionGroupId, null);
 
-            BibleCommon.Services.Logger.LogMessage("{0}: '{1}'", BibleCommon.Resources.Constants.ProcessNotebook, notebook.Title);
+                BibleCommon.Services.Logger.LogMessage("{0}: '{1}'", BibleCommon.Resources.Constants.ProcessNotebook, notebook.Title);
 
-            BibleCommon.Services.Logger.MoveLevel(1);
-            IterateContainer(notebook.RootSectionGroup, true, pageAction);
-            BibleCommon.Services.Logger.MoveLevel(-1);
+                BibleCommon.Services.Logger.MoveLevel(1);
+                IterateContainer(notebook.RootSectionGroup, true, pageAction);
+                BibleCommon.Services.Logger.MoveLevel(-1);
+            }
         }
 
         private static void IterateContainer(BibleCommon.Services.NotebookIterator.SectionGroupInfo sectionGroup, bool isRoot, 

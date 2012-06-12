@@ -444,7 +444,7 @@
   <data name="NewVersionOnServerFileUrl" xml:space="preserve">
     <value>http://IStudyBibleTools.ru/ServerVariables.xml</value>
   </data>
-  <data name="BibleConfiguratorMoreThanSingleInstanceRun" xml:space="preserve">
+  <data name="MoreThanSingleInstanceRun" xml:space="preserve">
     <value>Приложение уже запущено.</value>
   </data>
   <data name="LoadMofuleInExistingInstance" xml:space="preserve">

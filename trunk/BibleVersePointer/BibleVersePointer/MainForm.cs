@@ -23,7 +23,6 @@ namespace BibleVersePointer
 {
     public partial class MainForm : Form
     {   
-
         private Microsoft.Office.Interop.OneNote.Application _onenoteApp = null;
         public Microsoft.Office.Interop.OneNote.Application OneNoteApp
         {
@@ -39,7 +38,7 @@ namespace BibleVersePointer
 
             InitializeComponent();
 
-            _onenoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            _onenoteApp = new Microsoft.Office.Interop.OneNote.Application();            
         }
 
         [DllImport("user32.dll")]
@@ -138,6 +137,11 @@ namespace BibleVersePointer
                 this.SetFocus();
                 _wasShown = true;
             }
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _onenoteApp = null;
         }         
     }
 }

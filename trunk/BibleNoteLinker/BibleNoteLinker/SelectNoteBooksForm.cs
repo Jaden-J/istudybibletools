@@ -124,5 +124,10 @@ namespace BibleNoteLinker
 
             return result;
         }
+
+        private void SelectNoteBooksForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _oneNoteApp = null;
+        }
     }
 }

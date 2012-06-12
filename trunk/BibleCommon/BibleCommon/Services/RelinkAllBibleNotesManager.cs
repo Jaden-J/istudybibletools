@@ -12,7 +12,7 @@ using BibleCommon.Common;
 
 namespace BibleCommon.Services
 {
-    public class RelinkAllBibleNotesManager
+    public class RelinkAllBibleNotesManager: IDisposable
     {
         private Application _oneNoteApp;        
 
@@ -86,6 +86,11 @@ namespace BibleCommon.Services
         private static bool CantainsLinkToNotesPage(XElement textElement)
         {
             return textElement.Value.IndexOf(string.Format(">{0}<", SettingsManager.Instance.PageName_Notes)) != -1;
+        }
+
+        public void Dispose()
+        {
+            _oneNoteApp = null;
         }
     }
 }

@@ -13,7 +13,7 @@ using BibleCommon.Common;
 
 namespace BibleConfigurator.Tools
 {
-    public class RelinkAllBibleCommentsManager
+    public class RelinkAllBibleCommentsManager: IDisposable
     {
         private Application _oneNoteApp;
         private MainForm _form;
@@ -237,6 +237,12 @@ namespace BibleConfigurator.Tools
             }
 
             return result;
+        }
+
+        public void Dispose()
+        {
+            _oneNoteApp = null;
+            _form = null;
         }
     }
 }

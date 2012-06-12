@@ -63,6 +63,7 @@
             this.Name = "SelectNoteBooksForm";
             this.ShowInTaskbar = false;
             this.TopMost = true;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SelectNoteBooksForm_FormClosed);
             this.Load += new System.EventHandler(this.SelectNoteBooks_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
