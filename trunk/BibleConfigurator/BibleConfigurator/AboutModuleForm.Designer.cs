@@ -86,6 +86,7 @@
             this.MinimizeBox = false;
             this.Name = "AboutModuleForm";
             this.Load += new System.EventHandler(this.AboutModule_Load);
+            this.Shown += new System.EventHandler(this.AboutModuleForm_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

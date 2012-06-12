@@ -116,7 +116,8 @@ namespace RibbonButtons
 		{
             string path = null;
             string args = string.Empty;
-            string programClassName = string.Empty; 
+            string programClassName = string.Empty;
+            bool loadInSameProcess = true;
 
             switch (control.Id)
             {
@@ -140,6 +141,7 @@ namespace RibbonButtons
                 case "ConfigureButton":
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
                     programClassName = BibleConfiguratorProgramClassName;
+                    loadInSameProcess = false;
                     break;
                 case "HelpButton":
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
@@ -168,7 +170,7 @@ namespace RibbonButtons
                     break;             
             }
 
-            RunProgram(path, programClassName, args);
+            RunProgram(path, programClassName, args, loadInSameProcess);
 		}
 
         private void RunProgram(string programPath, string programClassName, string args, bool loadInSameProcess = true)

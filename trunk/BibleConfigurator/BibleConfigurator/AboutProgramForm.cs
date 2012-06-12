@@ -58,5 +58,15 @@ namespace BibleConfigurator
         {
             Process.Start(BibleCommon.Resources.Constants.DownloadPageUrl);
         }
+
+        private bool _wasShown = false;
+        private void AboutProgramForm_Shown(object sender, EventArgs e)
+        {
+            if (!_wasShown)
+            {
+                this.SetFocus();
+                _wasShown = true;
+            }
+        }
     }
 }
