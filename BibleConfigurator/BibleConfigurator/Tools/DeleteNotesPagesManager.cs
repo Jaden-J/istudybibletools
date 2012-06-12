@@ -13,7 +13,7 @@ using BibleCommon.Common;
 
 namespace BibleConfigurator.Tools
 {
-    public class DeleteNotesPagesManager
+    public class DeleteNotesPagesManager: IDisposable
     {
         private Application _oneNoteApp;
         private MainForm _form;
@@ -192,6 +192,12 @@ namespace BibleConfigurator.Tools
         private static bool CantainsLinkToNotesPage(XElement textElement)
         {
             return textElement.Value.IndexOf(string.Format(">{0}<", SettingsManager.Instance.PageName_Notes)) != -1;
+        }
+
+        public void Dispose()
+        {
+            _oneNoteApp = null;
+            _form = null;
         }
     }
 }

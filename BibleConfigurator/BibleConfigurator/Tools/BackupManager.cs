@@ -13,7 +13,7 @@ using System.Reflection;
 
 namespace BibleConfigurator.Tools
 {    
-    public class BackupManager
+    public class BackupManager: IDisposable
     {
         public const string OneNotePackageExtension = ".onepkg";
         private Application _oneNoteApp;
@@ -170,9 +170,9 @@ namespace BibleConfigurator.Tools
             return new List<string>() 
             {
                 SettingsManager.Instance.NotebookId_Bible,
-                SettingsManager.Instance.NotebookId_BibleComments,
-                SettingsManager.Instance.NotebookId_BibleNotesPages,
-                SettingsManager.Instance.NotebookId_BibleStudy
+                SettingsManager.Instance.NotebookId_BibleStudy,
+                SettingsManager.Instance.NotebookId_BibleComments //,
+                //SettingsManager.Instance.NotebookId_BibleNotesPages                
             }.Distinct();
         }
 
@@ -199,6 +199,12 @@ namespace BibleConfigurator.Tools
             {
                 File.Delete(file);
             }
-        }      
+        }
+
+        public void Dispose()
+        {
+            _oneNoteApp = null;
+            _form = null;
+        }
     }    
 }

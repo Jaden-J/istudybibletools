@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyLoader.cs" />
     <Compile Include="CCOMStreamWrapper.cs" />
     <Compile Include="ButtonsDefinition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,6 +69,9 @@
     <None Include="Resources\VerseLinkerButton.png" />
     <None Include="Resources\NoteLinkerButton.png" />
     <Content Include="Resources\isbt.ico" />
+    <Content Include="Resources\QuickAnalyze.png" />
+    <Content Include="Resources\UnlockFile.png" />
+    <Content Include="Resources\UnlockFolder.png" />
     <Content Include="ribbon.ru.xml">
       <SubType>Designer</SubType>
     </Content>

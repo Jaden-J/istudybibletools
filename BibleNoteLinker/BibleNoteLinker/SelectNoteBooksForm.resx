@@ -128,6 +128,9 @@
   <data name="btnOk.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
+  <data name="btnOk.Text" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="&gt;&gt;btnOk.Name" xml:space="preserve">
     <value>btnOk</value>
   </data>
@@ -168,10 +171,13 @@
     <value>12, 126</value>
   </data>
   <data name="lblError.Size" type="System.Drawing.Size, System.Drawing">
-    <value>0, 13</value>
+    <value>29, 13</value>
   </data>
   <data name="lblError.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
+  </data>
+  <data name="lblError.Text" xml:space="preserve">
+    <value>Error</value>
   </data>
   <data name="lblError.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -188,9 +194,9 @@
   <data name="&gt;&gt;lblError.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="$this.Localizable" type="System.Boolean, mscorlib">
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
-  </data>
+  </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 13</value>
   </data>
@@ -209,11 +215,5 @@
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="btnOk.Text" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="lblError.Text" xml:space="preserve">
-    <value>Error</value>
   </data>
 </root>

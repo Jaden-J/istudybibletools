@@ -27,7 +27,7 @@ namespace BibleNoteLinker
                 _pagesForAnalyzeCount = notebooks.Sum(notebook => notebook.PagesCount);
 
                 pbMain.Maximum = _pagesForAnalyzeCount > 1 ? _pagesForAnalyzeCount : ApproximatePageVersesCount;
-                
+
                 pbMain.PerformStep();
                 Logger.LogMessage(Helper.GetRightFoundPagesString(_pagesForAnalyzeCount));
 
@@ -37,19 +37,17 @@ namespace BibleNoteLinker
             else
             {
                 var currentPage = OneNoteUtils.GetCurrentPageInfo(_oneNoteApp);
-                if (currentPage != null)
-                {
-                    _pagesForAnalyzeCount = 1;
-                    string message = BibleCommon.Resources.Constants.ProcessCurrentPage;
 
-                    pbMain.Maximum = ApproximatePageVersesCount;                    
+                _pagesForAnalyzeCount = 1;
+                string message = BibleCommon.Resources.Constants.ProcessCurrentPage;
 
-                    LogHighLevelMessage(message, 1, StagesCount);
-                    Logger.LogMessage(message);                    
-                    Logger.MoveLevel(1);
-                    ProcessPage(currentPage);
-                    Logger.MoveLevel(-1);
-                }
+                pbMain.Maximum = ApproximatePageVersesCount;
+
+                LogHighLevelMessage(message, 1, StagesCount);
+                Logger.LogMessage(message);
+                Logger.MoveLevel(1);
+                ProcessPage(currentPage);
+                Logger.MoveLevel(-1);
             }
 
             if (_pagesForAnalyzeCount > 0)
@@ -133,12 +131,14 @@ namespace BibleNoteLinker
             pbMain.Maximum = OneNoteProxy.Instance.ProcessedBiblePages.Values.Count;
             pbMain.Value = 0;
             pbMain.PerformStep();
-            var relinkNotesManager = new RelinkAllBibleNotesManager(_oneNoteApp);
-            foreach (OneNoteProxy.BiblePageId processedBiblePageId in OneNoteProxy.Instance.ProcessedBiblePages.Values)
+            using (var relinkNotesManager = new RelinkAllBibleNotesManager(_oneNoteApp))
             {
-                relinkNotesManager.RelinkBiblePageNotes(processedBiblePageId.SectionId, processedBiblePageId.PageId,
-                    processedBiblePageId.PageName, processedBiblePageId.ChapterPointer);
-                PerformProcessStep();
+                foreach (OneNoteProxy.BiblePageId processedBiblePageId in OneNoteProxy.Instance.ProcessedBiblePages.Values)
+                {
+                    relinkNotesManager.RelinkBiblePageNotes(processedBiblePageId.SectionId, processedBiblePageId.PageId,
+                        processedBiblePageId.PageName, processedBiblePageId.ChapterPointer);
+                    PerformProcessStep();
+                }
             }
         }
 
@@ -219,11 +219,14 @@ namespace BibleNoteLinker
 
         private void ProcessPage(NotebookIterator.PageInfo page)
         {
-            NoteLinkManager noteLinkManager = new NoteLinkManager(_oneNoteApp);
-            noteLinkManager.OnNextVerseProcess += new EventHandler<NoteLinkManager.ProcessVerseEventArgs>(noteLinkManager_OnNextVerseProcess);
-            noteLinkManager.LinkPageVerses(page.SectionGroupId, page.SectionId, page.Id, NoteLinkManager.AnalyzeDepth.Full, chkForce.Checked);
+            using (NoteLinkManager noteLinkManager = new NoteLinkManager(_oneNoteApp))
+            {
+                noteLinkManager.OnNextVerseProcess += new EventHandler<NoteLinkManager.ProcessVerseEventArgs>(noteLinkManager_OnNextVerseProcess);
+                noteLinkManager.LinkPageVerses(page.SectionGroupId, page.SectionId, page.Id, NoteLinkManager.AnalyzeDepth.Full, chkForce.Checked);
+            }
+
             pbMain.PerformStep();
-            System.Windows.Forms.Application.DoEvents();
+            System.Windows.Forms.Application.DoEvents();            
 
             if (_processAbortedByUser)
                 throw new ProcessAbortedByUserException();

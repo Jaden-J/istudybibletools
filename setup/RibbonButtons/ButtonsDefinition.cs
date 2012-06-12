@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using Extensibility;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.OneNote;
@@ -21,10 +20,25 @@ namespace RibbonButtons
 {
     [GuidAttribute("61139959-A5E4-4261-977A-6262429033E1"), ProgId("RibbonButtons.ButtonsDefinition")]
 	public class ButtonsDefinition : IDTExtensibility2, IRibbonExtensibility
-	{
-		#region IDTExtensibility2 Members
+    {
+        #region consts
 
-		ApplicationClass onApp = new ApplicationClass();
+        private const string BibleConfiguratorPath = "tools\\BibleConfigurator\\BibleConfigurator.exe";
+        private const string BibleCommonPath = "tools\\BibleConfigurator\\BibleCommon.dll";
+        private const string BibleNoteLinkerPath = "tools\\BibleNoteLinker\\BibleNoteLinker.exe";
+        private const string BibleVerseLinkerPath = "tools\\BibleVerseLinker\\BibleVerseLinkerEx.exe";
+        private const string BibleVersePointerPath = "tools\\BibleVersePointer\\BibleVersePointer.exe";
+
+        private const string BibleConfiguratorProgramClassName = "BibleConfigurator.Program";
+        private const string BibleNoteLinkerProgramClassName = "BibleNoteLinker.Program";
+        private const string BibleVerseLinkerProgramClassName = "BibleVerseLinkerEx.Program";
+        private const string BibleVersePointerProgramClassName = "BibleVersePointer.Program";
+
+        #endregion
+
+        #region IDTExtensibility2 Members
+
+        ApplicationClass onApp = new ApplicationClass();
 
 		public void OnConnection(object Application, ext_ConnectMode ConnectMode, object AddInInst, ref Array custom)
 		{
@@ -32,15 +46,47 @@ namespace RibbonButtons
 				For debugging, it is useful to have a MessageBox.Show() here, so that execution is paused while you have a chance to get VS to 'Attach to Process' 
 			*/
 			onApp = (ApplicationClass)Application;
+
+            try
+            {
+                AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);                
+                RunProgram(Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath), BibleConfiguratorProgramClassName, "-lockAllBible", false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
 		}
+
+        Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            if (args.Name == string.Format("BibleCommon, Version={0}, Culture=neutral, PublicKeyToken=null", BibleCommonVersion))
+                return AssemblyLoader.LoadAssembly(Path.Combine(Utils.GetCurrentDirectory(), BibleCommonPath));                
+
+            return null;
+        }
+
+        private Version _bibleCommonVersion;
+        private Version BibleCommonVersion
+        {
+            get
+            {
+                if (_bibleCommonVersion == null)
+                {
+                    var assembly = AssemblyLoader.LoadAssembly(Path.Combine(Utils.GetCurrentDirectory(), BibleCommonPath));
+                    _bibleCommonVersion = assembly.GetName().Version;
+                }
+
+                return _bibleCommonVersion;
+            }
+        }
+
 		public void OnDisconnection(Extensibility.ext_DisconnectMode disconnectMode, ref System.Array custom)
 		{
 			//Clean up. Application is closing
 			onApp = null;
 			GC.Collect();
-			GC.WaitForPendingFinalizers();
-
-            MakeAllBibleReadOnly();
+			GC.WaitForPendingFinalizers();            
 		}
 		public void OnBeginShutdown(ref System.Array custom)
 		{
@@ -48,23 +94,7 @@ namespace RibbonButtons
 				onApp = null;
 		}
 		public void OnStartupComplete(ref Array custom) { }
-		public void OnAddInsUpdate(ref Array custom) { }
-
-        public void MakeAllBibleReadOnly()
-        {
-            try
-            {
-                //todo: get the bible folder path from config file!
-                foreach (var filePath in Directory.GetFiles(@"C:\Users\ademko\Documents\OneNote Notebooks\Библия", "*", SearchOption.AllDirectories))
-                {
-                    File.SetAttributes(filePath, FileAttributes.ReadOnly);
-                }
-            }
-            catch (Exception ex)
-            {
-                //todo: log it
-            }
-        }
+		public void OnAddInsUpdate(ref Array custom) { }        
 
 		#endregion
 
@@ -85,85 +115,87 @@ namespace RibbonButtons
         public void ButtonClick(IRibbonControl control)
 		{
             string path = null;
-            string args = string.Empty;                
+            string args = string.Empty;
+            string programClassName = string.Empty; 
 
             switch (control.Id)
             {
                 case "VersePointerButton":
-                    //UnLockCurrentSection();
-                    //return;
-                    path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleVersePointer\\BibleVersePointer.exe");
+                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleVersePointerPath);
+                    programClassName = BibleVersePointerProgramClassName;
                     break;
                 case "VerseLinkerButton":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleVerseLinker\\BibleVerseLinkerEx.exe");
+                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleVerseLinkerPath);
+                    programClassName = BibleVerseLinkerProgramClassName;
                     break;
                 case "NoteLinkerButton":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleNoteLinker\\BibleNoteLinker.exe");
+                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleNoteLinkerPath);
+                    programClassName = BibleNoteLinkerProgramClassName;
+                    break;                
+                case "QuickNoteLinkerButton":
+                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleNoteLinkerPath);
+                    args = "-quickAnalyze";
+                    programClassName = BibleNoteLinkerProgramClassName;
                     break;
                 case "ConfigureButton":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleConfigurator\\BibleConfigurator.exe");
+                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
+                    programClassName = BibleConfiguratorProgramClassName;
                     break;
                 case "HelpButton":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleConfigurator\\BibleConfigurator.exe");
+                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
                     args = "-showManual";
+                    programClassName = BibleConfiguratorProgramClassName;
                     break;
                 case "ModuleInfoButton":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleConfigurator\\BibleConfigurator.exe");
+                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
                     args = "-showModuleInfo";
+                    programClassName = BibleConfiguratorProgramClassName;
                     break;
                 case "AboutProgramButton":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), "tools\\BibleConfigurator\\BibleConfigurator.exe");
+                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
                     args = "-showAboutProgram";
+                    programClassName = BibleConfiguratorProgramClassName;
                     break;
-                    
+                case "UnlockCurrentSection":
+                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
+                    args = "-unlockBibleSection";
+                    programClassName = BibleConfiguratorProgramClassName;
+                    break;
+                case "UnlockAllBible":
+                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
+                    args = "-unlockAllBible";
+                    programClassName = BibleConfiguratorProgramClassName;
+                    break;             
             }
-             
 
-            if (!string.IsNullOrEmpty(path))
-                Process.Start(path, args);
+            RunProgram(path, programClassName, args);
 		}
 
-        private void SyncCurrentPage()
+        private void RunProgram(string programPath, string programClassName, string args, bool loadInSameProcess = true)
         {
-            onApp.SyncHierarchy(onApp.Windows.CurrentWindow.CurrentPageId);
-        }
-
-        private void UnLockCurrentSection()
-        {
-            //app.SyncHierarchy(app.Windows.CurrentWindow.CurrentSectionId);            
-
-            string xml;
-            onApp.GetHierarchy(onApp.Windows.CurrentWindow.CurrentSectionId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsSelf, out xml);
-            XmlNamespaceManager xnm;
-            var xDoc = GetXDocument(xml, out xnm);
-            string path = xDoc.Root.Attribute("path").Value;
-            FileAttributes attribs = File.GetAttributes(path);
-
-
-            if (attribs != FileAttributes.ReadOnly)
+            if (loadInSameProcess)
             {
-                new Thread(SyncCurrentPage).Start();
-                Thread.Sleep(1000);
-                File.SetAttributes(path, FileAttributes.ReadOnly);
+                try
+                {
+                    AssemblyLoader.InvokeMethod(new AssemblyLoader.MethodIdentifier()
+                    {
+                        AssemblyPath = programPath,
+                        ClassName = programClassName,
+                        MethodName = "RunFromAnotherApp"
+                    }, args);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    if (ex.InnerException != null)
+                        MessageBox.Show(ex.InnerException.Message);
+                }
             }
             else
             {
-                File.SetAttributes(path, FileAttributes.Normal);
-                new Thread(SyncCurrentPage).Start();
+                if (!string.IsNullOrEmpty(programPath))
+                    Process.Start(programPath, args);
             }
-
-            //app.SyncHierarchy(app.Windows.CurrentWindow.CurrentPageId);
-            //app.SyncHierarchy(app.Windows.CurrentWindow.CurrentSectionId);
-
-            //            MessageBox.Show("All done! 8");
-        }
-
-        public static XDocument GetXDocument(string xml, out XmlNamespaceManager xnm)
-        {
-            XDocument xd = XDocument.Parse(xml);
-            xnm = new XmlNamespaceManager(new NameTable());
-            xnm.AddNamespace("one", "http://schemas.microsoft.com/office/onenote/2010/onenote");
-            return xd;
         }
 
 		/// <summary>
@@ -196,6 +228,15 @@ namespace RibbonButtons
                     break;
                 case "AboutProgram.png":
                     Properties.Resources.AboutProgram.Save(mem, ImageFormat.Png);
+                    break;
+                case "QuickAnalyze.png":
+                    Properties.Resources.QuickAnalyze.Save(mem, ImageFormat.Png);
+                    break;
+                case "UnlockFile.png":
+                    Properties.Resources.UnlockFile.Save(mem, ImageFormat.Png);
+                    break;
+                case "UnlockFolder.png":
+                    Properties.Resources.UnlockFolder.Save(mem, ImageFormat.Png);
                     break;
             }
 

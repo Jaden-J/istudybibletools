@@ -10,7 +10,7 @@ using System.Xml.XPath;
 
 namespace BibleCommon.Services
 {
-    public class NotebookIterator
+    public class NotebookIterator: IDisposable
     {
         public class HierarchyElementInfo
         {
@@ -149,5 +149,10 @@ namespace BibleCommon.Services
             hierarchyElement.Id = (string)xElement.Attribute("ID");
         }
 
+
+        public void Dispose()
+        {
+            _oneNoteApp = null;
+        }
     }
 }

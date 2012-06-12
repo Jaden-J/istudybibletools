@@ -95,6 +95,13 @@ namespace RibbonButtons.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap QuickAnalyze {
+            get {
+                object obj = ResourceManager.GetObject("QuickAnalyze", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
         ///&lt;customUI xmlns=&quot;http://schemas.microsoft.com/office/2006/01/customui&quot; loadImage=&quot;GetImage&quot;&gt;
@@ -108,6 +115,20 @@ namespace RibbonButtons.Properties {
         internal static string ribbon {
             get {
                 return ResourceManager.GetString("ribbon", resourceCulture);
+            }
+        }
+        
+        internal static System.Drawing.Bitmap UnlockFile {
+            get {
+                object obj = ResourceManager.GetObject("UnlockFile", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap UnlockFolder {
+            get {
+                object obj = ResourceManager.GetObject("UnlockFolder", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

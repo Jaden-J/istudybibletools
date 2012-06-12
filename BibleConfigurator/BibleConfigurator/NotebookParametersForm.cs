@@ -170,6 +170,11 @@ namespace BibleConfigurator
             return result;
         }
 
+        private void NotebookParametersForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _oneNoteApp = null;
+        }
+
        
     }
 }
