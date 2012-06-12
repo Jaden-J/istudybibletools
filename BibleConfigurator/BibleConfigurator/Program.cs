@@ -109,17 +109,22 @@ namespace BibleConfigurator
                 }
                 else if (args.Length == 1)
                 {
-                    string moduleFilePath = args[0];
-                    if (File.Exists(moduleFilePath))
+                    result = new MainForm(args);
+
+                    if (!string.IsNullOrEmpty(args[0]))
                     {
-                        result = new MainForm(args);
-                        bool needToReload = ((MainForm)result).AddNewModule(moduleFilePath);
-                        ((MainForm)result).ShowModulesTabAtStartUp = true;
-                        ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
+                        string moduleFilePath = args[0];
+                        if (File.Exists(moduleFilePath))
+                        {
+
+                            bool needToReload = ((MainForm)result).AddNewModule(moduleFilePath);
+                            ((MainForm)result).ShowModulesTabAtStartUp = true;
+                            ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
+                        }
                     }
                 }
                 else
-                {
+                {   
                     result = new MainForm(args);
                 }
             }

@@ -21,6 +21,8 @@ namespace BibleNoteLinker
         {            
             pbMain.Value = 0;
 
+            OneNoteLocker.UnlockAllBible(_oneNoteApp);
+
             if (!rbAnalyzeCurrentPage.Checked)
             {
                 List<NotebookIterator.NotebookInfo> notebooks = GetNotebooksInfo();

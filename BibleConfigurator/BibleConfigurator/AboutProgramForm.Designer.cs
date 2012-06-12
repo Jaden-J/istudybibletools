@@ -95,6 +95,7 @@
             this.Name = "AboutProgramForm";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.AboutProgramForm_Load);
+            this.Shown += new System.EventHandler(this.AboutProgramForm_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

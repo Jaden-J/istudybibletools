@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using BibleCommon.Services;
 using BibleCommon.Common;
 using System.IO;
+using BibleCommon.Helpers;
 
 namespace BibleConfigurator
 {
@@ -64,6 +65,16 @@ namespace BibleConfigurator
         private int GetLabelWidth(Label lbl)
         {
             return (int)lbl.CreateGraphics().MeasureString(lbl.Text, lbl.Font).Width + 20;
+        }
+
+        private bool _wasShown = false;
+        private void AboutModuleForm_Shown(object sender, EventArgs e)
+        {   
+            if (!_wasShown)
+            {
+                this.SetFocus();
+                _wasShown = true;
+            }
         }
     }
 }
