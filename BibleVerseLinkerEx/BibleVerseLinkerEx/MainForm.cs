@@ -46,6 +46,7 @@ namespace BibleVerseLinkerEx
             {
                 try
                 {
+                    BibleCommon.Services.OneNoteLocker.UnlockCurrentSection(oneNoteApp);
                     using (VerseLinker vlManager = new VerseLinker())
                     {
                         if (!string.IsNullOrEmpty(tbPageName.Text))
