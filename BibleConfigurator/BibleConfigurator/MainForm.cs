@@ -225,7 +225,7 @@ namespace BibleConfigurator
             else
             {
                 if (!string.IsNullOrEmpty(tbBookOverviewName.Text))
-                    SettingsManager.Instance.PageName_DefaultBookOverview = tbBookOverviewName.Text;
+                    SettingsManager.Instance.SectionName_DefaultBookOverview = tbBookOverviewName.Text;
 
                 if (!string.IsNullOrEmpty(tbNotesPageName.Text))
                     SettingsManager.Instance.PageName_Notes = tbNotesPageName.Text;
@@ -569,7 +569,7 @@ namespace BibleConfigurator
                 Path.GetFileNameWithoutExtension(module.GetNotebook(NotebookType.BibleNotesPages).Name), 
                 notebooks, SettingsManager.Instance.NotebookId_BibleNotesPages, cbBibleNotesPagesNotebook, chkCreateBibleNotesPagesNotebookFromTemplate);            
 
-            tbBookOverviewName.Text = SettingsManager.Instance.PageName_DefaultBookOverview;
+            tbBookOverviewName.Text = SettingsManager.Instance.SectionName_DefaultBookOverview;
             tbNotesPageName.Text = SettingsManager.Instance.PageName_Notes;
             tbPageDescriptionName.Text = SettingsManager.Instance.PageName_DefaultComments;
             tbNotesPageWidth.Text = SettingsManager.Instance.PageWidth_Notes.ToString();

@@ -128,7 +128,7 @@ namespace BibleCommon.Services
             string sectionGroupName = (string)sectionGroupDocument.Content.Root.Attribute("name");
 
             if (sectionGroupName.IndexOf(biblePageName) != -1)
-                biblePageName = SettingsManager.Instance.PageName_DefaultBookOverview;
+                biblePageName = SettingsManager.Instance.SectionName_DefaultBookOverview;
 
             XElement targetSection = sectionGroupDocument.Content.Root.XPathSelectElement(
                 string.Format("one:Section[@name='{0}']", biblePageName), sectionGroupDocument.Xnm);
@@ -154,7 +154,7 @@ namespace BibleCommon.Services
             XElement targetSection = new XElement(nms + "Section",
                                     new XAttribute("name", pageName));
 
-            if (pageName == SettingsManager.Instance.PageName_DefaultBookOverview || sectionGroupDocument.Root.Nodes().Count() == 0)
+            if (pageName == SettingsManager.Instance.SectionName_DefaultBookOverview || sectionGroupDocument.Root.Nodes().Count() == 0)
                 sectionGroupDocument.Root.AddFirst(targetSection);
             else
             {

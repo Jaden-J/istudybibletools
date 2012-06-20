@@ -17,14 +17,7 @@ namespace BibleVerseLinkerEx
 {
     public class VerseLinker: IDisposable
     {
-        private static readonly string[] PointerStrings = new string[] { "text-decoration:underline", "text-decoration: underline", "text-decoration:\nunderline" };        
-
         public string DescriptionPageName { get; set; }
-
-        /// <summary>
-        /// если false, то не ищем подчёркнутый текст и просто создаём страницу комментариев, которая потом проиндексируется BibleNoteLinker-ом!
-        /// </summary>
-        public bool SearchForUnderlineText { get; set; }
 
         private Application _oneNoteApp = null;
         public Application OneNoteApp
@@ -38,47 +31,35 @@ namespace BibleVerseLinkerEx
         public VerseLinker()
         {
             _oneNoteApp = new Application();
-            DescriptionPageName = SettingsManager.Instance.PageName_DefaultComments;
-            SearchForUnderlineText = true;
+            DescriptionPageName = SettingsManager.Instance.PageName_DefaultComments;         
         }
 
         /// <summary>
-        /// Возвращает элемент текущей страницы, в котором есть строка, соответствующая PointerFilters
+        /// Возвращает выделенный текст
         /// </summary>
         /// <returns></returns>
-        private XElement FindPointerElement(string pageId, out XDocument document, out XmlNamespaceManager xnm)
+        private XElement FindSelectedText(string pageId, out XDocument document,
+            out int? verseNumber, out string currentObjectId, out XmlNamespaceManager xnm)
         {
+            verseNumber = null;
+            currentObjectId = null;
+
             string pageContentXml;
-            OneNoteApp.GetPageContent(pageId, out pageContentXml);
-            
+            OneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piSelection);
+
             document = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
-            XElement pointerElement = null;
+            XElement pointerElement = document.Root.XPathSelectElement("//one:T[@selected='all']", xnm);
 
-            if (SearchForUnderlineText)
+            if (pointerElement != null)
             {
-                string[] searchPatterns = new string[] { 
-                "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell/one:OEChildren/one:OE/one:T[contains(.,'{0}')]",
-                "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[contains(.,'{0}')]" };
+                OneNoteUtils.NormalizaTextElement(pointerElement);
+                verseNumber = Utils.GetVerseNumber(pointerElement.Parent.Value);
+                currentObjectId = (string)pointerElement.Parent.Attribute("objectID");
 
-                foreach (string f in PointerStrings)
-                {
-                    foreach (string pattern in searchPatterns)
-                    {
-                        pointerElement = document.XPathSelectElement(string.Format(pattern, f), xnm);
-
-                        if (pointerElement != null)
-                        {
-                            OneNoteUtils.NormalizaTextElement(pointerElement);
-                            break;
-                        }
-                    }
-
-                    if (pointerElement != null)
-                        break;
-                }
+                return pointerElement;
             }
 
-            return pointerElement;
+            return null;
         }
 
         private XElement GetLastPageObject(string pageId, int? position)
@@ -98,7 +79,7 @@ namespace BibleVerseLinkerEx
                 result = document.Root.XPathSelectElement("one:Title", xnm); 
 
             return result;
-        }        
+        }
 
         public void Do()
         {
@@ -110,65 +91,44 @@ namespace BibleVerseLinkerEx
 
                 XDocument currentPageDocument;
                 XmlNamespaceManager xnm;
-                XElement pointerElement = FindPointerElement(currentPageId, out currentPageDocument, out xnm);
+                int? verseNumber;
+                string currentObjectId;
+                XElement selectedElement = FindSelectedText(currentPageId, out currentPageDocument, out verseNumber, out currentObjectId, out xnm);
+                bool selectedTextFound = selectedElement != null && !string.IsNullOrEmpty(selectedElement.Value);
+
                 string currentPageName = (string)currentPageDocument.Root.Attribute("name");
 
-                if (!SearchForUnderlineText || pointerElement != null)
+
+                string verseLinkPageId = null;
+                try
                 {
-                    string pointerValueString = null;
-                    string pointerString = null;
-                    string currentObjectId = null;
-                    int? verseNumber = null;
-
-                    if (pointerElement != null)
-                    {
-                        int firstLetterIndex;
-                        pointerString = CutPointerString(pointerElement.Value, out pointerValueString, out firstLetterIndex);
-                        verseNumber = Utils.GetVerseNumber(pointerElement.Value);
-                        currentObjectId = (string)pointerElement.Parent.Attribute("objectID");
-                    }
-
-                    if (!SearchForUnderlineText || !string.IsNullOrEmpty(pointerString))
-                    {
-                        string verseLinkPageId = null;
-                        try
-                        {
-                            verseLinkPageId = BibleCommon.Services.VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(OneNoteApp, currentSectionId,
-                                currentPageId, currentPageName, DescriptionPageName, false);                            
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.LogError(ex.Message);
-                        }
-
-                        if (!string.IsNullOrEmpty(verseLinkPageId))
-                        {
-                            string newObjectContent = string.Empty;
-                            if (!string.IsNullOrEmpty(pointerString))
-                                newObjectContent = GetNewObjectContent(currentPageId, currentObjectId, pointerValueString, verseNumber);
-
-                            string objectId = UpdateDescriptionPage(verseLinkPageId, newObjectContent, verseNumber);
-
-                            if (!string.IsNullOrEmpty(pointerString))
-                            {
-                                string href = OneNoteUtils.GenerateHref(OneNoteApp, pointerString, verseLinkPageId, objectId);
-
-                                pointerElement.Value = pointerElement.Value.Replace(pointerString, href);
-                            }
-
-                            if (SearchForUnderlineText)
-                            {
-                                OneNoteUtils.UpdatePageContentSafe(_oneNoteApp, currentPageDocument, xnm);
-                            }
-                            
-                            OneNoteApp.NavigateTo(verseLinkPageId, objectId);                            
-                        }
-                    }
-                    else
-                        Logger.LogError(BibleCommon.Resources.Constants.VerseLinkerUnderlineTextNotExtracted);
+                    verseLinkPageId = BibleCommon.Services.VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(OneNoteApp, currentSectionId,
+                        currentPageId, currentPageName, DescriptionPageName, false);
                 }
-                else
-                    Logger.LogError(BibleCommon.Resources.Constants.VerseLinkerUnderlineTextNotFound);
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex.Message);
+                }
+
+                if (!string.IsNullOrEmpty(verseLinkPageId))
+                {
+                    string newObjectContent = string.Empty;
+                    if (selectedTextFound)
+                        newObjectContent = GetNewObjectContent(currentPageId, currentObjectId, selectedElement.Value, verseNumber);
+
+                    string objectId = UpdateDescriptionPage(verseLinkPageId, newObjectContent, verseNumber);
+
+                    if (selectedTextFound)
+                    {
+                        string href = OneNoteUtils.GenerateHref(OneNoteApp, selectedElement.Value, verseLinkPageId, objectId);
+
+                        selectedElement.Value = selectedElement.Value.Replace(selectedElement.Value, href);
+                    
+                        OneNoteUtils.UpdatePageContentSafe(_oneNoteApp, currentPageDocument, xnm);
+                    }
+
+                    OneNoteApp.NavigateTo(verseLinkPageId, objectId);
+                }
             }
             else
                 Logger.LogError(BibleCommon.Resources.Constants.VerseLinkerOneNoteNotStarted);
@@ -339,57 +299,7 @@ namespace BibleVerseLinkerEx
             }
 
             return null;
-        }
-
-        /// <summary>
-        /// Возвращает html строку - подчёркнутый текст
-        /// </summary>
-        /// <param name="sourceString">сожержимое всего pointerElement</param>
-        /// <param name="pointerValueString">сам текст (не html)</param>
-        /// <returns></returns>
-        private static string CutPointerString(string sourceString, out string pointerValueString, out int firstLetterIndex)
-        {
-            firstLetterIndex = -1;
-            pointerValueString = string.Empty;
-            string result = string.Empty;
-
-            int index = StringUtils.IndexOfAny(sourceString, PointerStrings);            
-
-            if (index != -1)
-            {
-                string leftPart = sourceString.Substring(0, index);
-
-                firstLetterIndex = leftPart.LastIndexOf("<");
-                int lastLetterIndex = sourceString.IndexOf(">", index);
-                if (lastLetterIndex != -1)
-                {
-                    int i = sourceString.IndexOf("<", lastLetterIndex + 1);
-                    if (i != -1)
-                        pointerValueString = sourceString.Substring(lastLetterIndex + 1, i - lastLetterIndex - 1);
-
-                    lastLetterIndex = sourceString.IndexOf(">", lastLetterIndex + 1);
-                }
-
-                if (firstLetterIndex != -1 && lastLetterIndex != -1)
-                {
-                    result = sourceString.Substring(firstLetterIndex, lastLetterIndex - firstLetterIndex + 1);
-
-                    string otherString = sourceString.Substring(lastLetterIndex + 1);
-
-                    string otherPointerValue;
-                    int otherFirstLetterIndex;
-                    string otherPointerString = CutPointerString(otherString, out otherPointerValue, out otherFirstLetterIndex);
-
-                    if (!string.IsNullOrEmpty(otherPointerString) && otherFirstLetterIndex == 0)   // то есть следующая подчёркнутая строка идёт сразу за этой
-                    {   
-                        result += otherPointerString;
-                        pointerValueString += otherPointerValue;
-                    }
-                }
-            }
-
-            return result;
-        }
+        }        
 
         public void Dispose()
         {

@@ -48,9 +48,13 @@ namespace BibleVerseLinkerEx
                 {
                     using (VerseLinker vlManager = new VerseLinker())
                     {
-                        vlManager.SearchForUnderlineText = cbSearchForUnderlineText.Checked;
                         if (!string.IsNullOrEmpty(tbPageName.Text))
                             vlManager.DescriptionPageName = tbPageName.Text;
+                        else
+                        {   
+                            tbPageName.Text = SettingsManager.Instance.PageName_DefaultComments;
+                            Application.DoEvents();
+                        }
 
                         vlManager.Do();
 
@@ -73,17 +77,16 @@ namespace BibleVerseLinkerEx
             if (!Logger.WasLogged)
             {
                 this.Visible = false;
-                Properties.Settings.Default.LastPageName = tbPageName.Text;
-                Properties.Settings.Default.LastSearchForUnderlineText = cbSearchForUnderlineText.Checked;
+                Properties.Settings.Default.LastPageName = tbPageName.Text;                
                 Properties.Settings.Default.Save();
                 this.Close();
             }
         }
+       
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            tbPageName.Text = Properties.Settings.Default.LastPageName;
-            cbSearchForUnderlineText.Checked = Properties.Settings.Default.LastSearchForUnderlineText;           
+            tbPageName.Text = Properties.Settings.Default.LastPageName;            
         }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
