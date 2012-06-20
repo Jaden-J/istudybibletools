@@ -47,7 +47,7 @@ namespace BibleCommon.Services
         public string SectionGroupId_BibleComments { get; set; }        
         public string SectionGroupId_BibleNotesPages { get; set; }
         public string PageName_DefaultComments { get; set; }
-        public string PageName_DefaultBookOverview { get; set; }
+        public string SectionName_DefaultBookOverview { get; set; }
         public string PageName_Notes { get; set; }
 
         public string ModuleName { get; set; }
@@ -124,7 +124,7 @@ namespace BibleCommon.Services
                 && !string.IsNullOrEmpty(this.NotebookId_BibleComments)
                 && !string.IsNullOrEmpty(this.NotebookId_BibleNotesPages)
                 && !string.IsNullOrEmpty(this.NotebookId_BibleStudy)
-                && !string.IsNullOrEmpty(this.PageName_DefaultBookOverview)
+                && !string.IsNullOrEmpty(this.SectionName_DefaultBookOverview)
                 && !string.IsNullOrEmpty(this.PageName_DefaultComments)
                 && !string.IsNullOrEmpty(this.PageName_Notes)
                 && !string.IsNullOrEmpty(this.ModuleName)
@@ -194,7 +194,8 @@ namespace BibleCommon.Services
                 this.SectionGroupId_BibleStudy = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupIdBibleStudy).Value;
                 this.SectionGroupId_BibleComments = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupIdBibleComments).Value;
                 this.SectionGroupId_BibleNotesPages = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupIdBibleNotesPages).Value;
-                this.PageName_DefaultBookOverview = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameDefaultBookOverview).Value;
+                this.SectionName_DefaultBookOverview = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionNameDefaultBookOverview,
+                    Resources.Constants.DefaultPageNameDefaultBookOverview);
                 this.PageName_DefaultComments = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameDefaultComments).Value;
                 this.PageName_Notes = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameNotes).Value;                
                 
@@ -255,7 +256,7 @@ namespace BibleCommon.Services
 
         public void LoadDefaultSettings()
         {
-            this.PageName_DefaultBookOverview = Resources.Constants.DefaultPageNameDefaultBookOverview;
+            this.SectionName_DefaultBookOverview = Resources.Constants.DefaultPageNameDefaultBookOverview;
             this.PageName_DefaultComments = Resources.Constants.DefaultPageNameDefaultComments;
             this.PageName_Notes = Resources.Constants.DefaultPageName_Notes;
             this.PageWidth_Notes = Consts.Constants.DefaultPageWidth_Notes;
@@ -287,7 +288,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBibleComments, this.SectionGroupId_BibleComments),
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBibleNotesPages, this.SectionGroupId_BibleNotesPages),
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBibleStudy, this.SectionGroupId_BibleStudy),
-                                  new XElement(Consts.Constants.ParameterName_PageNameDefaultBookOverview, this.PageName_DefaultBookOverview),
+                                  new XElement(Consts.Constants.ParameterName_SectionNameDefaultBookOverview, this.SectionName_DefaultBookOverview),
                                   new XElement(Consts.Constants.ParameterName_PageNameDefaultComments, this.PageName_DefaultComments),
                                   new XElement(Consts.Constants.ParameterName_PageNameNotes, this.PageName_Notes),                                  
                                   new XElement(Consts.Constants.ParameterName_NewVersionOnServer, this.NewVersionOnServer),
