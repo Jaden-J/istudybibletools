@@ -365,6 +365,8 @@
             // chkUseDifferentPages
             // 
             resources.ApplyResources(this.chkUseDifferentPages, "chkUseDifferentPages");
+            this.chkUseDifferentPages.Checked = true;
+            this.chkUseDifferentPages.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkUseDifferentPages.Name = "chkUseDifferentPages";
             this.chkUseDifferentPages.UseVisualStyleBackColor = true;
             // 
@@ -392,6 +394,8 @@
             // chkExpandMultiVersesLinking
             // 
             resources.ApplyResources(this.chkExpandMultiVersesLinking, "chkExpandMultiVersesLinking");
+            this.chkExpandMultiVersesLinking.Checked = true;
+            this.chkExpandMultiVersesLinking.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkExpandMultiVersesLinking.Name = "chkExpandMultiVersesLinking";
             this.chkExpandMultiVersesLinking.UseVisualStyleBackColor = true;
             // 
