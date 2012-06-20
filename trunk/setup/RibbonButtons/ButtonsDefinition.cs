@@ -128,6 +128,7 @@ namespace RibbonButtons
                 case "VerseLinkerButton":
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleVerseLinkerPath);
                     programClassName = BibleVerseLinkerProgramClassName;
+                    loadInSameProcess = false;
                     break;
                 case "NoteLinkerButton":
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleNoteLinkerPath);
