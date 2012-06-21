@@ -92,8 +92,10 @@ namespace BibleConfigurator
                 }
                 else if (args.Contains(Consts.RunOnOneNoteStarts))
                 {
-                    result = new MainForm(args);
-                    ((MainForm)result).RunOnOneNoteStarts = true;
+                    if (SettingsManager.Instance.IsConfigured(OneNoteApp))                    
+                        OneNoteLocker.LockAllBible(OneNoteApp);                    
+                    else
+                        result = new MainForm(args);                    
                 }
                 else if (args.Contains(Consts.LockAllBible))
                 {

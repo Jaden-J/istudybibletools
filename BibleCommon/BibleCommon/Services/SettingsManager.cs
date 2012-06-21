@@ -260,9 +260,9 @@ namespace BibleCommon.Services
             this.PageName_DefaultComments = Resources.Constants.DefaultPageNameDefaultComments;
             this.PageName_Notes = Resources.Constants.DefaultPageName_Notes;
             this.PageWidth_Notes = Consts.Constants.DefaultPageWidth_Notes;
-            this.ExpandMultiVersesLinking = false;            
+            this.ExpandMultiVersesLinking = true;            
             this.ExcludedVersesLinking = false;
-            this.UseDifferentPagesForEachVerse = false;
+            this.UseDifferentPagesForEachVerse = true;
 
             this.RubbishPage_Use = false;
             this.PageName_RubbishNotes = Resources.Constants.DefaultPageName_RubbishNotes;
