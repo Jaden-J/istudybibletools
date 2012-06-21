@@ -49,8 +49,8 @@ namespace RibbonButtons
 
             try
             {
-                AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);                
-                RunProgram(Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath), BibleConfiguratorProgramClassName, "-lockAllBible", false);
+                AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+                RunProgram(Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath), BibleConfiguratorProgramClassName, "-runOnOneNoteStarts", false);
             }
             catch (Exception ex)
             {
