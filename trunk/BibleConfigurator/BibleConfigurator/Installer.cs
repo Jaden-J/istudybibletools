@@ -55,29 +55,15 @@ namespace BibleConfigurator
 
         // Event handler for 'Committing' event.
         private void MyInstaller_Committing(object sender, InstallEventArgs e)
-        {
-            //Console.WriteLine("");
+        {            
             //Console.WriteLine("Committing Event occurred.");
-            //Console.WriteLine("");
+            
         }
 
         // Event handler for 'Committed' event.
         private void MyInstaller_Committed(object sender, InstallEventArgs e)
         {
          
-            //Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            //Process.Start(Path.Combine(Utils.GetCurrentDirectory(), "BibleConfigurator.exe"), "-RunAfterSetup");
-
-
-            //string currentDirectory = Utils.GetCurrentDirectory();
-            //ProcessStartInfo startInfo = new ProcessStartInfo();
-            //startInfo.UseShellExecute = true;
-            //startInfo.WorkingDirectory = currentDirectory;
-            //startInfo.FileName = Path.Combine(currentDirectory, "BibleConfigurator.exe");
-            //startInfo.Verb = "runas";
-            //startInfo.Arguments = Consts.RunAfterSetup;
-
-            //Process p = Process.Start(startInfo);
         }
 
         // Override the 'Install' method.
