@@ -119,16 +119,16 @@ namespace BibleConfigurator
                     SettingsManager.Instance.SectionGroupId_BibleNotesPages = string.Empty;
 
                     SaveMultiNotebookParameters(module, NotebookType.Bible,
-                        chkCreateBibleNotebookFromTemplate, cbBibleNotebook);
+                        chkCreateBibleNotebookFromTemplate, cbBibleNotebook, BibleNotebookFromTemplatePath);
 
                     SaveMultiNotebookParameters(module, NotebookType.BibleStudy,
-                        chkCreateBibleStudyNotebookFromTemplate, cbBibleStudyNotebook);
+                        chkCreateBibleStudyNotebookFromTemplate, cbBibleStudyNotebook, BibleStudyNotebookFromTemplatePath);
 
                     SaveMultiNotebookParameters(module, NotebookType.BibleComments,
-                        chkCreateBibleCommentsNotebookFromTemplate, cbBibleCommentsNotebook);
+                        chkCreateBibleCommentsNotebookFromTemplate, cbBibleCommentsNotebook, BibleCommentsNotebookFromTemplatePath);
 
                     SaveMultiNotebookParameters(module, NotebookType.BibleNotesPages,
-                        chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook);
+                        chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, BibleNotesPagesNotebookFromTemplatePath);
                 }
 
                 if (!Logger.WasErrorLogged)
@@ -155,12 +155,13 @@ namespace BibleConfigurator
             }
         }
 
-        private void SaveMultiNotebookParameters(ModuleInfo module, NotebookType notebookType, CheckBox createFromTemplateControl, ComboBox selectedNotebookNameControl)
+        private void SaveMultiNotebookParameters(ModuleInfo module, NotebookType notebookType,
+            CheckBox createFromTemplateControl, ComboBox selectedNotebookNameControl, string notebookFromTemplatePath)
         {
             if (createFromTemplateControl.Checked)
             {
                 string notebookTemplateFileName = module.GetNotebook(notebookType).Name;
-                string notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, BibleNotebookFromTemplatePath);
+                string notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, notebookFromTemplatePath);
                 if (!string.IsNullOrEmpty(notebookName))
                 {
                     WaitAndLoadParameters(notebookType, notebookName);                         // выйдем из метода только когда OneNote отработает
@@ -835,7 +836,6 @@ namespace BibleConfigurator
 
         private void btnBibleNotesPagesNotebookSetPath_Click(object sender, EventArgs e)
         {
-
             if (chkCreateBibleNotesPagesNotebookFromTemplate.Checked)
             {
                 if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
