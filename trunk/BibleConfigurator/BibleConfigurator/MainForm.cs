@@ -55,7 +55,7 @@ namespace BibleConfigurator
 
         private NotebookParametersForm _notebookParametersForm = null;
 
-        public bool RunAfterSetup { get; set; }        
+        public bool RunOnOneNoteStarts { get; set; }        
         public bool ShowModulesTabAtStartUp { get; set; }
         public bool NeedToSaveChangesAfterLoadingModuleAtStartUp { get; set; }
 
@@ -471,10 +471,11 @@ namespace BibleConfigurator
                         if (NeedToSaveChangesAfterLoadingModuleAtStartUp)
                             needSaveSettings = true;
                     }
-                    else if (RunAfterSetup)
+                    else if (RunOnOneNoteStarts)
                     {
                         if (SettingsManager.Instance.IsConfigured(_oneNoteApp))
                         {
+                            OneNoteLocker.LockAllBible(_oneNoteApp);
                             this.Close();
                             return;
                         }                        

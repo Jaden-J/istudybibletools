@@ -49,6 +49,7 @@ namespace BibleConfigurator
             }
             catch
             {
+                //todo: log it
             }
         }
 
@@ -68,15 +69,15 @@ namespace BibleConfigurator
             //Process.Start(Path.Combine(Utils.GetCurrentDirectory(), "BibleConfigurator.exe"), "-RunAfterSetup");
 
 
-            string currentDirectory = Utils.GetCurrentDirectory();
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.UseShellExecute = true;
-            startInfo.WorkingDirectory = currentDirectory;
-            startInfo.FileName = Path.Combine(currentDirectory, "BibleConfigurator.exe");
-            startInfo.Verb = "runas";
-            startInfo.Arguments = Consts.RunAfterSetup;
+            //string currentDirectory = Utils.GetCurrentDirectory();
+            //ProcessStartInfo startInfo = new ProcessStartInfo();
+            //startInfo.UseShellExecute = true;
+            //startInfo.WorkingDirectory = currentDirectory;
+            //startInfo.FileName = Path.Combine(currentDirectory, "BibleConfigurator.exe");
+            //startInfo.Verb = "runas";
+            //startInfo.Arguments = Consts.RunAfterSetup;
 
-            Process p = Process.Start(startInfo);
+            //Process p = Process.Start(startInfo);
         }
 
         // Override the 'Install' method.

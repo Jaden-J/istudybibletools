@@ -90,10 +90,10 @@ namespace BibleConfigurator
                 {
                     OpenManual();
                 }
-                else if (args.Contains(Consts.RunAfterSetup))
+                else if (args.Contains(Consts.RunOnOneNoteStarts))
                 {
                     result = new MainForm(args);
-                    ((MainForm)result).RunAfterSetup = true;
+                    ((MainForm)result).RunOnOneNoteStarts = true;
                 }
                 else if (args.Contains(Consts.LockAllBible))
                 {
