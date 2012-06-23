@@ -40,11 +40,13 @@ namespace BibleConfigurator
             {
                 string oneNoteTemplatesFolder = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(Utils.GetCurrentDirectory())), "OneNoteTemplates");
                 if ((!Directory.Exists(ModulesManager.GetModulesPackagesDirectory()) || Directory.GetFiles(ModulesManager.GetModulesPackagesDirectory()).Length == 0)
-                    && Directory.Exists(oneNoteTemplatesFolder)
-                    && !string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible))
+                    && Directory.Exists(oneNoteTemplatesFolder))
                 {
-                    SettingsManager.Instance.ModuleName = GenerateDefaultModule(oneNoteTemplatesFolder);
-                    SettingsManager.Instance.Save();
+                    if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible))
+                    {
+                        SettingsManager.Instance.ModuleName = GenerateDefaultModule(oneNoteTemplatesFolder);
+                        SettingsManager.Instance.Save();
+                    }
                 }
             }
             catch

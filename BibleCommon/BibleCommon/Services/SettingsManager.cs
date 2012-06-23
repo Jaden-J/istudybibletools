@@ -10,6 +10,8 @@ using Microsoft.Office.Interop.OneNote;
 using System.Reflection;
 using System.Threading;
 using BibleCommon.Common;
+using System.Resources;
+using System.Globalization;
 
 namespace BibleCommon.Services
 {
@@ -79,7 +81,9 @@ namespace BibleCommon.Services
         public string PageName_RubbishNotes { get; set; }
         public int PageWidth_RubbishNotes { get; set; }
         public bool RubbishPage_ExpandMultiVersesLinking { get; set; }
-        public bool RubbishPage_ExcludedVersesLinking { get; set; }        
+        public bool RubbishPage_ExcludedVersesLinking { get; set; }
+
+        public bool? UseDefaultSettings { get; set; }
 
         private Version _currentVersion = null;
         public Version CurrentVersion
@@ -158,7 +162,7 @@ namespace BibleCommon.Services
             }
 
             return result;
-        }
+        }        
 
         public bool IsSingleNotebook
         {
@@ -185,43 +189,71 @@ namespace BibleCommon.Services
             XDocument xdoc = XDocument.Load(_filePath);
 
             try
-            {
-                this.NotebookId_Bible = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NotebookIdBible).Value;
-                this.NotebookId_BibleComments = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NotebookIdBibleComments).Value;
-                this.NotebookId_BibleNotesPages = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NotebookIdBibleNotesPages).Value;
-                this.NotebookId_BibleStudy = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_NotebookIdBibleStudy).Value;
-                this.SectionGroupId_Bible = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupIdBible).Value;                
-                this.SectionGroupId_BibleStudy = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupIdBibleStudy).Value;
-                this.SectionGroupId_BibleComments = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupIdBibleComments).Value;
-                this.SectionGroupId_BibleNotesPages = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_SectionGroupIdBibleNotesPages).Value;
-                this.SectionName_DefaultBookOverview = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionNameDefaultBookOverview,
-                    Resources.Constants.DefaultPageNameDefaultBookOverview);
-                this.PageName_DefaultComments = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameDefaultComments).Value;
-                this.PageName_Notes = xdoc.Root.XPathSelectElement(Consts.Constants.ParameterName_PageNameNotes).Value;                
-                
-                this.NewVersionOnServer = GetParameterValue<Version>(xdoc, Consts.Constants.ParameterName_NewVersionOnServer, null, value => new Version(value));
-                this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, null, value => DateTime.Parse(value));
+            {   
+                LoadGeneralSettings(xdoc);
+                LoadAdditionalSettings(xdoc);
 
+                this.UseDefaultSettings = GetParameterValue<bool?>(xdoc, Consts.Constants.ParameterName_UseDefaultSettings, null, s => bool.Parse(s));
 
-                this.PageWidth_Notes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthNotes, 500);
-                this.ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_ExpandMultiVersesLinking);
-                this.ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_ExcludedVersesLinking);
-                this.UseDifferentPagesForEachVerse = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseDifferentPagesForEachVerse);
-                this.RubbishPage_Use = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageUse);
-                this.PageName_RubbishNotes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameRubbishNotes, Resources.Constants.DefaultPageName_RubbishNotes);
-                this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
-                this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, true);
-                this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);
+                bool programSettingsWasLoaded = false;
+                if (!UseDefaultSettings.HasValue)
+                {
+                    LoadProgramSettings(xdoc);
+                    programSettingsWasLoaded = true;
 
-                this.Language = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_Language, 0);
+                    this.UseDefaultSettings = DetermineIfCurrentSettingsAreDefualt();                    
+                }
 
-                this.ModuleName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ModuleName, string.Empty);
+                if (UseDefaultSettings.Value)
+                    LoadDefaultSettings();                
+                else if (!programSettingsWasLoaded)
+                    LoadProgramSettings(xdoc);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
                 LoadDefaultSettings();
             }
+        }        
+
+        private void LoadAdditionalSettings(XDocument xdoc)
+        {
+            this.NewVersionOnServer = GetParameterValue<Version>(xdoc, Consts.Constants.ParameterName_NewVersionOnServer, null, value => new Version(value));
+            this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, null, value => DateTime.Parse(value));            
+            this.Language = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_Language, Thread.CurrentThread.CurrentUICulture.LCID);
+            this.ModuleName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ModuleName, string.Empty);                
+        }
+
+
+        /// <summary>
+        /// Эти настройки сбрасываются, если UseDefaultSettings == true
+        /// </summary>
+        private void LoadProgramSettings(XDocument xdoc)
+        {
+            this.SectionName_DefaultBookOverview = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionNameDefaultBookOverview, Resources.Constants.DefaultPageNameDefaultBookOverview);
+            this.PageName_DefaultComments = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameDefaultComments);
+            this.PageName_Notes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameNotes);
+            this.PageWidth_Notes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthNotes, 500);
+            this.ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_ExpandMultiVersesLinking);
+            this.ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_ExcludedVersesLinking);
+            this.UseDifferentPagesForEachVerse = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseDifferentPagesForEachVerse);
+            this.RubbishPage_Use = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageUse);
+            this.PageName_RubbishNotes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameRubbishNotes, Resources.Constants.DefaultPageName_RubbishNotes);
+            this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
+            this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, true);
+            this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);
+        }
+
+        private void LoadGeneralSettings(XDocument xdoc)
+        {
+            this.NotebookId_Bible = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdBible);
+            this.NotebookId_BibleComments = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdBibleComments);
+            this.NotebookId_BibleNotesPages = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdBibleNotesPages);
+            this.NotebookId_BibleStudy = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdBibleStudy);
+            this.SectionGroupId_Bible = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionGroupIdBible);
+            this.SectionGroupId_BibleStudy = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionGroupIdBibleStudy);
+            this.SectionGroupId_BibleComments = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionGroupIdBibleComments);
+            this.SectionGroupId_BibleNotesPages = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionGroupIdBibleNotesPages);
         }
 
         private T GetParameterValue<T>(XDocument xdoc, string parameterName, object defaultValue = null, Func<string, T> convertFunc = null)
@@ -256,20 +288,52 @@ namespace BibleCommon.Services
 
         public void LoadDefaultSettings()
         {
-            this.SectionName_DefaultBookOverview = Resources.Constants.DefaultPageNameDefaultBookOverview;
-            this.PageName_DefaultComments = Resources.Constants.DefaultPageNameDefaultComments;
-            this.PageName_Notes = Resources.Constants.DefaultPageName_Notes;
+            this.UseDefaultSettings = true;      
+            
             this.PageWidth_Notes = Consts.Constants.DefaultPageWidth_Notes;
-            this.ExpandMultiVersesLinking = true;            
-            this.ExcludedVersesLinking = false;
-            this.UseDifferentPagesForEachVerse = true;
-
-            this.RubbishPage_Use = false;
-            this.PageName_RubbishNotes = Resources.Constants.DefaultPageName_RubbishNotes;
+            this.ExpandMultiVersesLinking = Consts.Constants.DefaultExpandMultiVersesLinking;            
+            this.ExcludedVersesLinking = Consts.Constants.DefaultExcludedVersesLinking;
+            this.UseDifferentPagesForEachVerse = Consts.Constants.DefaultUseDifferentPagesForEachVerse;
+            this.RubbishPage_Use = Consts.Constants.DefaultRubbishPage_Use;            
             this.PageWidth_RubbishNotes = Consts.Constants.DefaultPageWidth_RubbishNotes;
-            this.RubbishPage_ExpandMultiVersesLinking = true;
-            this.RubbishPage_ExcludedVersesLinking = true;
-            this.Language = Thread.CurrentThread.CurrentUICulture.LCID;
+            this.RubbishPage_ExpandMultiVersesLinking = Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking;
+            this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;            
+
+            LoadDefaultLocalazibleSettings();
+        }
+
+        public void LoadDefaultLocalazibleSettings()
+        {
+            if (this.Language == 0)
+                this.Language = Thread.CurrentThread.CurrentUICulture.LCID;
+
+            CultureInfo resourceCulture = new CultureInfo(this.Language);  // потому что локаль текущего потока ещё не установлена
+
+            this.SectionName_DefaultBookOverview = Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageNameDefaultBookOverview, resourceCulture);
+            this.PageName_DefaultComments = Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageNameDefaultComments, resourceCulture);
+            this.PageName_Notes = Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageName_Notes, resourceCulture);
+            this.PageName_RubbishNotes = Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageName_RubbishNotes, resourceCulture);
+        }
+
+        private bool DetermineIfCurrentSettingsAreDefualt()
+        {
+            if (this.Language == 0)
+                this.Language = Thread.CurrentThread.CurrentUICulture.LCID;
+
+            CultureInfo resourceCulture = new CultureInfo(this.Language); // на всякий пожарный
+
+            return this.SectionName_DefaultBookOverview == Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageNameDefaultBookOverview, resourceCulture)
+                && this.PageName_DefaultComments == Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageNameDefaultComments, resourceCulture)
+                && this.PageName_Notes == Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageName_Notes, resourceCulture)
+                && this.PageName_RubbishNotes == Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageName_RubbishNotes, resourceCulture)
+                && this.PageWidth_Notes == Consts.Constants.DefaultPageWidth_Notes
+                && this.ExpandMultiVersesLinking == Consts.Constants.DefaultExpandMultiVersesLinking
+                && this.ExcludedVersesLinking == Consts.Constants.DefaultExcludedVersesLinking
+                && this.UseDifferentPagesForEachVerse == Consts.Constants.DefaultUseDifferentPagesForEachVerse
+                && this.RubbishPage_Use == Consts.Constants.DefaultRubbishPage_Use                
+                && this.PageWidth_RubbishNotes == Consts.Constants.DefaultPageWidth_RubbishNotes
+                && this.RubbishPage_ExpandMultiVersesLinking == Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking
+                && this.RubbishPage_ExcludedVersesLinking == Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
         }
 
         public void Save()
@@ -304,7 +368,8 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, this.RubbishPage_ExpandMultiVersesLinking),
                                   new XElement(Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, this.RubbishPage_ExcludedVersesLinking),
                                   new XElement(Consts.Constants.ParameterName_Language, this.Language),
-                                  new XElement(Consts.Constants.ParameterName_ModuleName, this.ModuleName)
+                                  new XElement(Consts.Constants.ParameterName_ModuleName, this.ModuleName),
+                                  new XElement(Consts.Constants.ParameterName_UseDefaultSettings, this.UseDefaultSettings.Value)
                                   );
 
                     xDoc.Save(sw);
