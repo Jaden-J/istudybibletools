@@ -224,13 +224,24 @@ namespace BibleCommon.Services
             this.ModuleName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ModuleName, string.Empty);                
         }
 
+        private CultureInfo GetCurrentResourceCulture()
+        {
+            if (this.Language == 0)
+                this.Language = Thread.CurrentThread.CurrentUICulture.LCID;
+
+            return new CultureInfo(this.Language);       // потому что локаль текущего потока может быть ещё не установлена
+        }
+
 
         /// <summary>
         /// Эти настройки сбрасываются, если UseDefaultSettings == true
         /// </summary>
         private void LoadProgramSettings(XDocument xdoc)
         {
-            this.SectionName_DefaultBookOverview = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionNameDefaultBookOverview, Resources.Constants.DefaultPageNameDefaultBookOverview);
+            CultureInfo resourceCulture = GetCurrentResourceCulture();
+
+            this.SectionName_DefaultBookOverview = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionNameDefaultBookOverview,
+                                                        Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageNameDefaultBookOverview, resourceCulture));
             this.PageName_DefaultComments = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameDefaultComments);
             this.PageName_Notes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameNotes);
             this.PageWidth_Notes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthNotes, 500);
@@ -238,7 +249,8 @@ namespace BibleCommon.Services
             this.ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_ExcludedVersesLinking);
             this.UseDifferentPagesForEachVerse = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseDifferentPagesForEachVerse);
             this.RubbishPage_Use = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageUse);
-            this.PageName_RubbishNotes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameRubbishNotes, Resources.Constants.DefaultPageName_RubbishNotes);
+            this.PageName_RubbishNotes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameRubbishNotes, 
+                                                        Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageName_RubbishNotes, resourceCulture));
             this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
             this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, true);
             this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);
@@ -304,10 +316,7 @@ namespace BibleCommon.Services
 
         public void LoadDefaultLocalazibleSettings()
         {
-            if (this.Language == 0)
-                this.Language = Thread.CurrentThread.CurrentUICulture.LCID;
-
-            CultureInfo resourceCulture = new CultureInfo(this.Language);  // потому что локаль текущего потока ещё не установлена
+            CultureInfo resourceCulture = GetCurrentResourceCulture(); 
 
             this.SectionName_DefaultBookOverview = Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageNameDefaultBookOverview, resourceCulture);
             this.PageName_DefaultComments = Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageNameDefaultComments, resourceCulture);
@@ -317,10 +326,7 @@ namespace BibleCommon.Services
 
         private bool DetermineIfCurrentSettingsAreDefualt()
         {
-            if (this.Language == 0)
-                this.Language = Thread.CurrentThread.CurrentUICulture.LCID;
-
-            CultureInfo resourceCulture = new CultureInfo(this.Language); // на всякий пожарный
+            CultureInfo resourceCulture = GetCurrentResourceCulture(); 
 
             return this.SectionName_DefaultBookOverview == Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageNameDefaultBookOverview, resourceCulture)
                 && this.PageName_DefaultComments == Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageNameDefaultComments, resourceCulture)

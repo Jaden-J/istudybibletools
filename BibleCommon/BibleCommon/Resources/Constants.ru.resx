@@ -450,4 +450,7 @@
   <data name="LoadMofuleInExistingInstance" xml:space="preserve">
     <value>Для загрузки данного модуля воспользуйтесь вкладкой "Модули" запущенного приложения.</value>
   </data>
+  <data name="SkyDriveBibleIsNotSupportedForLock" xml:space="preserve">
+    <value>Блокировка Библии, хранящейся в SkyDrive, на данный момент не поддерживается. Воспользуйтесь другим способом хранения файлов в интернете.</value>
+  </data>
 </root>

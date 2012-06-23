@@ -43,7 +43,7 @@ namespace BibleCommon.Services
 
                 string folderPath = GetElementPath(oneNoteApp, hierarchyId);
 
-                foreach (var filePath in Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories))
+                foreach (var filePath in Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories))  // will throw NotSupportedException if Bible is stored in SkyDrive
                 {
                     if (toLock)
                         LockSection(filePath);
@@ -64,12 +64,12 @@ namespace BibleCommon.Services
 
         private static void LockSection(string sectionFilePath)
         {
-            File.SetAttributes(sectionFilePath, FileAttributes.ReadOnly);
-        }
+            File.SetAttributes(sectionFilePath, FileAttributes.ReadOnly);  // will throw NotSupportedException if Bible is stored in SkyDrive
+        } 
 
         private static void UnlockSection(string sectionFilePath)
         {
-            File.SetAttributes(sectionFilePath, FileAttributes.Normal);            
+            File.SetAttributes(sectionFilePath, FileAttributes.Normal);    // will throw NotSupportedException if Bible is stored in SkyDrive         
         }
     }
 }

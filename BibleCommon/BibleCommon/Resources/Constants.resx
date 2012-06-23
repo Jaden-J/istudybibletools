@@ -453,4 +453,7 @@
   <data name="LoadMofuleInExistingInstance" xml:space="preserve">
     <value>To upload the module, use the tab "Modules" of the running application.</value>
   </data>
+  <data name="SkyDriveBibleIsNotSupportedForLock" xml:space="preserve">
+    <value>Locking the Bible stored in SkyDrive is not currently supported. Use another kind of internet storage.</value>
+  </data>
 </root>
