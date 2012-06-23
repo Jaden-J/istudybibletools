@@ -52,7 +52,6 @@ namespace BibleConfigurator
 
             try
             {
-
                 string message = BibleCommon.Resources.Constants.MoreThanSingleInstanceRun;
                 if (args.Length == 1 && File.Exists(args[0]))
                     message += " " + BibleCommon.Resources.Constants.LoadMofuleInExistingInstance;
@@ -92,22 +91,52 @@ namespace BibleConfigurator
                 }
                 else if (args.Contains(Consts.RunOnOneNoteStarts))
                 {
-                    if (SettingsManager.Instance.IsConfigured(OneNoteApp))                    
-                        OneNoteLocker.LockAllBible(OneNoteApp);                    
+                    if (SettingsManager.Instance.IsConfigured(OneNoteApp))
+                    {
+                        try
+                        {
+                            OneNoteLocker.LockAllBible(OneNoteApp);
+                        }
+                        catch (NotSupportedException)
+                        {
+                            //todo: log it
+                        }
+                    }
                     else
                         result = new MainForm(args);                    
                 }
                 else if (args.Contains(Consts.LockAllBible))
                 {
-                    OneNoteLocker.LockAllBible(OneNoteApp);
+                    try
+                    {
+                        OneNoteLocker.LockAllBible(OneNoteApp);
+                    }
+                    catch (NotSupportedException)
+                    {
+                        MessageBox.Show(BibleCommon.Resources.Constants.SkyDriveBibleIsNotSupportedForLock);
+                    }
                 }
                 else if (args.Contains(Consts.UnlockAllBible))
                 {
-                    OneNoteLocker.UnlockAllBible(OneNoteApp);
+                    try
+                    {
+                        OneNoteLocker.UnlockAllBible(OneNoteApp);
+                    }
+                    catch (NotSupportedException)
+                    {
+                        MessageBox.Show(BibleCommon.Resources.Constants.SkyDriveBibleIsNotSupportedForLock);
+                    }
                 }
                 else if (args.Contains(Consts.UnlockBibleSection))
                 {
-                    OneNoteLocker.UnlockCurrentSection(OneNoteApp);
+                    try
+                    {
+                        OneNoteLocker.UnlockCurrentSection(OneNoteApp);
+                    }
+                    catch (NotSupportedException)
+                    {
+                        MessageBox.Show(BibleCommon.Resources.Constants.SkyDriveBibleIsNotSupportedForLock);
+                    }
                 }
                 else if (args.Length == 1)
                 {

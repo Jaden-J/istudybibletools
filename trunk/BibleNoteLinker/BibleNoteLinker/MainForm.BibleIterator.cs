@@ -21,7 +21,14 @@ namespace BibleNoteLinker
         {            
             pbMain.Value = 0;
 
-            OneNoteLocker.UnlockAllBible(_oneNoteApp);
+            try
+            {
+                OneNoteLocker.UnlockAllBible(_oneNoteApp);
+            }
+            catch (NotSupportedException)
+            {
+                //todo: log it
+            }
 
             if (!rbAnalyzeCurrentPage.Checked)
             {

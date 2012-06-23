@@ -46,7 +46,15 @@ namespace BibleVerseLinkerEx
             {
                 try
                 {
-                    BibleCommon.Services.OneNoteLocker.UnlockCurrentSection(oneNoteApp);
+                    try
+                    {
+                        BibleCommon.Services.OneNoteLocker.UnlockCurrentSection(oneNoteApp);
+                    }
+                    catch (NotSupportedException)
+                    {
+                        //todo: log it
+                    }
+
                     using (VerseLinker vlManager = new VerseLinker())
                     {
                         if (!string.IsNullOrEmpty(tbPageName.Text))
