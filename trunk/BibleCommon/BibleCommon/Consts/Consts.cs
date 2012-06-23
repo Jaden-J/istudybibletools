@@ -19,7 +19,20 @@ namespace BibleCommon.Consts
 
         
         public static readonly int DefaultPageWidth_Notes = 500;
-        public static readonly int DefaultPageWidth_RubbishNotes = 500;
+        public static readonly int DefaultPageWidth_RubbishNotes = 500;        
+        public static readonly bool DefaultExpandMultiVersesLinking = true;
+        public static readonly bool DefaultExcludedVersesLinking = false;
+        public static readonly bool DefaultUseDifferentPagesForEachVerse = true;
+        public static readonly bool DefaultRubbishPage_Use = false;
+        public static readonly bool DefaultRubbishPage_ExpandMultiVersesLinking = true;
+        public static readonly bool DefaultRubbishPage_ExcludedVersesLinking = true;
+
+        public static readonly string ResourceName_DefaultPageNameDefaultBookOverview = "DefaultPageNameDefaultBookOverview";
+        public static readonly string ResourceName_DefaultPageNameDefaultComments = "DefaultPageNameDefaultComments";
+        public static readonly string ResourceName_DefaultPageName_Notes = "DefaultPageName_Notes";
+        public static readonly string ResourceName_DefaultPageName_RubbishNotes = "DefaultPageName_RubbishNotes";
+        
+
 
         public static readonly string ParameterName_NotebookIdBible = "NotebookId_Bible";
         public static readonly string ParameterName_NotebookIdBibleComments = "NotebookId_BibleComments";
@@ -47,6 +60,8 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_PageWidthRubbishNotes = "RubbishPage_NotesPageWidth";
         public static readonly string ParameterName_RubbishPageExpandMultiVersesLinking = "RubbishPage_ExpandMultiVersesLinking";
         public static readonly string ParameterName_RubbishPageExcludedVersesLinking = "RubbishPage_ExcludedVersesLinking";
+
+        public static readonly string ParameterName_UseDefaultSettings = "UseDefaultSettings";        
 
         public static readonly string ParameterName_Language = "Language";        
         

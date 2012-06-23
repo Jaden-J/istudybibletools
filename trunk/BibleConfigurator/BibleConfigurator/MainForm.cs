@@ -21,6 +21,7 @@ using BibleCommon.Consts;
 using System.Runtime.InteropServices;
 using BibleCommon.Common;
 using BibleConfigurator.ModuleConverter;
+using System.Globalization;
 
 namespace BibleConfigurator
 {
@@ -214,53 +215,125 @@ namespace BibleConfigurator
 
             }
         }
-
-
+        
         private void SetProgramParameters()
         {
+            bool localeWasChanged = false;
+            if (SettingsManager.Instance.Language != (int)((ComboBoxItem)cbLanguage.SelectedItem).Key)
+            {
+                localeWasChanged = true;
+                SettingsManager.Instance.Language = (int)((ComboBoxItem)cbLanguage.SelectedItem).Key;                
+            }
+
             if (chkDefaultPageNameParameters.Checked)
             {
-                SettingsManager.Instance.LoadDefaultSettings();                
+                SettingsManager.Instance.UseDefaultSettings = true;                
             }
             else
             {
-                if (!string.IsNullOrEmpty(tbBookOverviewName.Text))
-                    SettingsManager.Instance.SectionName_DefaultBookOverview = tbBookOverviewName.Text;
+                if (WasModified())
+                    SettingsManager.Instance.UseDefaultSettings = false;
 
-                if (!string.IsNullOrEmpty(tbNotesPageName.Text))
-                    SettingsManager.Instance.PageName_Notes = tbNotesPageName.Text;
+                SaveIntegerSettings();
+                SaveBooleanSettings();                
+                SaveLocalazibleSettings(localeWasChanged);
+            }  
+        }
 
-                if (!string.IsNullOrEmpty(tbPageDescriptionName.Text))
-                    SettingsManager.Instance.PageName_DefaultComments = tbPageDescriptionName.Text;
+        private void SaveBooleanSettings()
+        {
+            SettingsManager.Instance.ExpandMultiVersesLinking = chkExpandMultiVersesLinking.Checked;
+            SettingsManager.Instance.ExcludedVersesLinking = chkExcludedVersesLinking.Checked;
+            SettingsManager.Instance.UseDifferentPagesForEachVerse = chkUseDifferentPages.Checked;
+            SettingsManager.Instance.RubbishPage_Use = chkUseRubbishPage.Checked;
+            SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking = chkRubbishExpandMultiVersesLinking.Checked;
+            SettingsManager.Instance.RubbishPage_ExcludedVersesLinking = chkRubbishExcludedVersesLinking.Checked;
+        }
 
-                if (!string.IsNullOrEmpty(tbNotesPageWidth.Text))
-                {
-                    int notesPageWidth;
-                    if (!int.TryParse(tbNotesPageWidth.Text, out notesPageWidth) || notesPageWidth < 200 || notesPageWidth > 1000)
-                        throw new SaveParametersException(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ConfiguratorWrongParameterValue, lblNotesPageWidth.Text), false);
+        private void SaveIntegerSettings()
+        {
+            if (!string.IsNullOrEmpty(tbNotesPageWidth.Text))
+            {
+                int notesPageWidth;
+                if (!int.TryParse(tbNotesPageWidth.Text, out notesPageWidth) || notesPageWidth < 200 || notesPageWidth > 1000)
+                    throw new SaveParametersException(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ConfiguratorWrongParameterValue, lblNotesPageWidth.Text), false);
 
-                    SettingsManager.Instance.PageWidth_Notes = notesPageWidth;
-                }
-
-                if (!string.IsNullOrEmpty(tbRubbishNotesPageWidth.Text))
-                {
-                    int rubbishNotesPageWidth;
-                    if (!int.TryParse(tbRubbishNotesPageWidth.Text, out rubbishNotesPageWidth) || rubbishNotesPageWidth < 200 || rubbishNotesPageWidth > 1000)
-                        throw new SaveParametersException(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ConfiguratorWrongParameterValue, lblRubbishNotesPageWidth.Text), false);
-                    SettingsManager.Instance.PageWidth_RubbishNotes = rubbishNotesPageWidth;
-                }
-
-                SettingsManager.Instance.ExpandMultiVersesLinking = chkExpandMultiVersesLinking.Checked;
-                SettingsManager.Instance.ExcludedVersesLinking = chkExcludedVersesLinking.Checked;
-                SettingsManager.Instance.UseDifferentPagesForEachVerse = chkUseDifferentPages.Checked;
-
-                SettingsManager.Instance.RubbishPage_Use = chkUseRubbishPage.Checked;
-                SettingsManager.Instance.PageName_RubbishNotes = tbRubbishNotesPageName.Text;
-                SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking = chkRubbishExpandMultiVersesLinking.Checked;
-                SettingsManager.Instance.RubbishPage_ExcludedVersesLinking = chkRubbishExcludedVersesLinking.Checked;
-
-                SettingsManager.Instance.Language = (int)((ComboBoxItem)cbLanguage.SelectedItem).Key;
+                SettingsManager.Instance.PageWidth_Notes = notesPageWidth;
             }
+
+            if (!string.IsNullOrEmpty(tbRubbishNotesPageWidth.Text))
+            {
+                int rubbishNotesPageWidth;
+                if (!int.TryParse(tbRubbishNotesPageWidth.Text, out rubbishNotesPageWidth) || rubbishNotesPageWidth < 200 || rubbishNotesPageWidth > 1000)
+                    throw new SaveParametersException(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ConfiguratorWrongParameterValue, lblRubbishNotesPageWidth.Text), false);
+                SettingsManager.Instance.PageWidth_RubbishNotes = rubbishNotesPageWidth;
+            }
+        }
+
+        private void SaveLocalazibleSettings(bool localeWasChanged)
+        {
+            CultureInfo resourceCulture = new CultureInfo(SettingsManager.Instance.Language);
+
+            if (!string.IsNullOrEmpty(tbBookOverviewName.Text))
+            {
+                if (SettingsManager.Instance.SectionName_DefaultBookOverview == tbBookOverviewName.Text
+                    && SettingsManager.Instance.SectionName_DefaultBookOverview == BibleCommon.Resources.Constants.DefaultPageNameDefaultBookOverview
+                    && localeWasChanged)
+                    SettingsManager.Instance.SectionName_DefaultBookOverview = BibleCommon.Resources.Constants.ResourceManager
+                        .GetString(BibleCommon.Consts.Constants.ResourceName_DefaultPageNameDefaultBookOverview, resourceCulture);
+                else
+                    SettingsManager.Instance.SectionName_DefaultBookOverview = tbBookOverviewName.Text;
+            }            
+
+            if (!string.IsNullOrEmpty(tbCommentsPageName.Text))
+            {
+                if (SettingsManager.Instance.PageName_DefaultComments == tbCommentsPageName.Text
+                    && SettingsManager.Instance.PageName_DefaultComments == BibleCommon.Resources.Constants.DefaultPageNameDefaultComments
+                    && localeWasChanged)
+                    SettingsManager.Instance.PageName_DefaultComments = BibleCommon.Resources.Constants.ResourceManager
+                        .GetString(BibleCommon.Consts.Constants.ResourceName_DefaultPageNameDefaultComments, resourceCulture);
+                else
+                    SettingsManager.Instance.PageName_DefaultComments = tbCommentsPageName.Text;
+            }
+
+            if (!string.IsNullOrEmpty(tbNotesPageName.Text))
+            {
+                if (SettingsManager.Instance.PageName_Notes == tbNotesPageName.Text
+                    && SettingsManager.Instance.PageName_Notes == BibleCommon.Resources.Constants.DefaultPageName_Notes
+                    && localeWasChanged)
+                    SettingsManager.Instance.PageName_Notes = BibleCommon.Resources.Constants.ResourceManager
+                        .GetString(BibleCommon.Consts.Constants.ResourceName_DefaultPageName_Notes, resourceCulture);
+                else
+                    SettingsManager.Instance.PageName_Notes = tbNotesPageName.Text;
+            }
+
+            if (!string.IsNullOrEmpty(tbRubbishNotesPageName.Text))
+            {
+                if (SettingsManager.Instance.PageName_RubbishNotes == tbRubbishNotesPageName.Text
+                    && SettingsManager.Instance.PageName_RubbishNotes == BibleCommon.Resources.Constants.DefaultPageName_RubbishNotes
+                    && localeWasChanged)
+                    SettingsManager.Instance.PageName_RubbishNotes = BibleCommon.Resources.Constants.ResourceManager
+                        .GetString(BibleCommon.Consts.Constants.ResourceName_DefaultPageName_RubbishNotes, resourceCulture);                   
+                else
+                    SettingsManager.Instance.PageName_RubbishNotes = tbRubbishNotesPageName.Text;
+            }
+        }
+
+        private bool WasModified()
+        {
+            return SettingsManager.Instance.SectionName_DefaultBookOverview != tbBookOverviewName.Text
+                || SettingsManager.Instance.PageName_Notes != tbNotesPageName.Text
+                || SettingsManager.Instance.PageName_DefaultComments != tbCommentsPageName.Text
+                || SettingsManager.Instance.ExpandMultiVersesLinking != chkExpandMultiVersesLinking.Checked
+                || SettingsManager.Instance.ExcludedVersesLinking != chkExcludedVersesLinking.Checked
+                || SettingsManager.Instance.UseDifferentPagesForEachVerse != chkUseDifferentPages.Checked
+                || SettingsManager.Instance.RubbishPage_Use != chkUseRubbishPage.Checked
+                || SettingsManager.Instance.PageName_RubbishNotes != tbRubbishNotesPageName.Text
+                || SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking != chkRubbishExpandMultiVersesLinking.Checked
+                || SettingsManager.Instance.RubbishPage_ExcludedVersesLinking != chkRubbishExcludedVersesLinking.Checked
+                || SettingsManager.Instance.PageWidth_Notes.ToString() != tbNotesPageWidth.Text
+                || SettingsManager.Instance.PageWidth_RubbishNotes.ToString() != tbRubbishNotesPageWidth.Text;
+
         }
 
         private void WaitAndLoadParameters(NotebookType notebookType, string notebookName)
@@ -564,7 +637,7 @@ namespace BibleConfigurator
 
             tbBookOverviewName.Text = SettingsManager.Instance.SectionName_DefaultBookOverview;
             tbNotesPageName.Text = SettingsManager.Instance.PageName_Notes;
-            tbPageDescriptionName.Text = SettingsManager.Instance.PageName_DefaultComments;
+            tbCommentsPageName.Text = SettingsManager.Instance.PageName_DefaultComments;
             tbNotesPageWidth.Text = SettingsManager.Instance.PageWidth_Notes.ToString();
             chkExpandMultiVersesLinking.Checked = SettingsManager.Instance.ExpandMultiVersesLinking;
             chkExcludedVersesLinking.Checked = SettingsManager.Instance.ExcludedVersesLinking;
@@ -838,7 +911,7 @@ namespace BibleConfigurator
 
         private void chkDefaultPageNameParameters_CheckedChanged(object sender, EventArgs e)
         {
-            tbPageDescriptionName.Enabled = !chkDefaultPageNameParameters.Checked;
+            tbCommentsPageName.Enabled = !chkDefaultPageNameParameters.Checked;
             tbNotesPageName.Enabled = !chkDefaultPageNameParameters.Checked;
             tbBookOverviewName.Enabled = !chkDefaultPageNameParameters.Checked;
             tbNotesPageWidth.Enabled = !chkDefaultPageNameParameters.Checked;

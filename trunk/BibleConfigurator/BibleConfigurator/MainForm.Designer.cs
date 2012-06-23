@@ -77,7 +77,7 @@
             this.chkDefaultPageNameParameters = new System.Windows.Forms.CheckBox();
             this.tbBookOverviewName = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.tbPageDescriptionName = new System.Windows.Forms.TextBox();
+            this.tbCommentsPageName = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.btnBackup = new System.Windows.Forms.Button();
@@ -332,7 +332,7 @@
             this.tabPage2.Controls.Add(this.chkDefaultPageNameParameters);
             this.tabPage2.Controls.Add(this.tbBookOverviewName);
             this.tabPage2.Controls.Add(this.label6);
-            this.tabPage2.Controls.Add(this.tbPageDescriptionName);
+            this.tabPage2.Controls.Add(this.tbCommentsPageName);
             this.tabPage2.Controls.Add(this.label5);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Enter += new System.EventHandler(this.tabPage1_Enter);
@@ -473,10 +473,10 @@
             resources.ApplyResources(this.label6, "label6");
             this.label6.Name = "label6";
             // 
-            // tbPageDescriptionName
+            // tbCommentsPageName
             // 
-            resources.ApplyResources(this.tbPageDescriptionName, "tbPageDescriptionName");
-            this.tbPageDescriptionName.Name = "tbPageDescriptionName";
+            resources.ApplyResources(this.tbCommentsPageName, "tbCommentsPageName");
+            this.tbCommentsPageName.Name = "tbCommentsPageName";
             // 
             // label5
             // 
@@ -668,7 +668,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox tbBookOverviewName;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox tbPageDescriptionName;
+        private System.Windows.Forms.TextBox tbCommentsPageName;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Button btnDeleteNotesPages;
