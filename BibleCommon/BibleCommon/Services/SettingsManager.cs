@@ -224,24 +224,36 @@ namespace BibleCommon.Services
             this.ModuleName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ModuleName, string.Empty);                
         }
 
-        private CultureInfo GetCurrentResourceCulture()
+        private CultureInfo _currentCultureInfo = null;
+        public CultureInfo CurrentResourceCulture
         {
-            if (this.Language == 0)
-                this.Language = Thread.CurrentThread.CurrentUICulture.LCID;
+            get
+            {
+                if (_currentCultureInfo == null)
+                {
 
-            return new CultureInfo(this.Language);       // потому что локаль текущего потока может быть ещё не установлена
+                    if (this.Language == 0)
+                        this.Language = Thread.CurrentThread.CurrentUICulture.LCID;
+
+                    _currentCultureInfo = new CultureInfo(this.Language);       // потому что локаль текущего потока может быть ещё не установлена
+                }
+
+                return _currentCultureInfo;
+            }
         }
 
+        public string GetResourceString(string resourceName)
+        {
+            return Resources.Constants.ResourceManager.GetString(resourceName, CurrentResourceCulture);
+        }
 
         /// <summary>
         /// Эти настройки сбрасываются, если UseDefaultSettings == true
         /// </summary>
         private void LoadProgramSettings(XDocument xdoc)
         {
-            CultureInfo resourceCulture = GetCurrentResourceCulture();
-
             this.SectionName_DefaultBookOverview = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionNameDefaultBookOverview,
-                                                        Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageNameDefaultBookOverview, resourceCulture));
+                                                        GetResourceString(Consts.Constants.ResourceName_DefaultPageNameDefaultBookOverview));
             this.PageName_DefaultComments = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameDefaultComments);
             this.PageName_Notes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameNotes);
             this.PageWidth_Notes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthNotes, 500);
@@ -249,8 +261,8 @@ namespace BibleCommon.Services
             this.ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_ExcludedVersesLinking);
             this.UseDifferentPagesForEachVerse = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseDifferentPagesForEachVerse);
             this.RubbishPage_Use = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageUse);
-            this.PageName_RubbishNotes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameRubbishNotes, 
-                                                        Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageName_RubbishNotes, resourceCulture));
+            this.PageName_RubbishNotes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameRubbishNotes,
+                                                        GetResourceString(Consts.Constants.ResourceName_DefaultPageName_RubbishNotes));
             this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
             this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, true);
             this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);
@@ -316,22 +328,18 @@ namespace BibleCommon.Services
 
         public void LoadDefaultLocalazibleSettings()
         {
-            CultureInfo resourceCulture = GetCurrentResourceCulture(); 
-
-            this.SectionName_DefaultBookOverview = Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageNameDefaultBookOverview, resourceCulture);
-            this.PageName_DefaultComments = Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageNameDefaultComments, resourceCulture);
-            this.PageName_Notes = Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageName_Notes, resourceCulture);
-            this.PageName_RubbishNotes = Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageName_RubbishNotes, resourceCulture);
+            this.SectionName_DefaultBookOverview = GetResourceString(Consts.Constants.ResourceName_DefaultPageNameDefaultBookOverview);
+            this.PageName_DefaultComments = GetResourceString(Consts.Constants.ResourceName_DefaultPageNameDefaultComments);
+            this.PageName_Notes = GetResourceString(Consts.Constants.ResourceName_DefaultPageName_Notes);
+            this.PageName_RubbishNotes = GetResourceString(Consts.Constants.ResourceName_DefaultPageName_RubbishNotes);
         }
 
         private bool DetermineIfCurrentSettingsAreDefualt()
         {
-            CultureInfo resourceCulture = GetCurrentResourceCulture(); 
-
-            return this.SectionName_DefaultBookOverview == Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageNameDefaultBookOverview, resourceCulture)
-                && this.PageName_DefaultComments == Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageNameDefaultComments, resourceCulture)
-                && this.PageName_Notes == Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageName_Notes, resourceCulture)
-                && this.PageName_RubbishNotes == Resources.Constants.ResourceManager.GetString(Consts.Constants.ResourceName_DefaultPageName_RubbishNotes, resourceCulture)
+            return this.SectionName_DefaultBookOverview == GetResourceString(Consts.Constants.ResourceName_DefaultPageNameDefaultBookOverview)
+                && this.PageName_DefaultComments == GetResourceString(Consts.Constants.ResourceName_DefaultPageNameDefaultComments)
+                && this.PageName_Notes == GetResourceString(Consts.Constants.ResourceName_DefaultPageName_Notes)
+                && this.PageName_RubbishNotes == GetResourceString(Consts.Constants.ResourceName_DefaultPageName_RubbishNotes)
                 && this.PageWidth_Notes == Consts.Constants.DefaultPageWidth_Notes
                 && this.ExpandMultiVersesLinking == Consts.Constants.DefaultExpandMultiVersesLinking
                 && this.ExcludedVersesLinking == Consts.Constants.DefaultExcludedVersesLinking
