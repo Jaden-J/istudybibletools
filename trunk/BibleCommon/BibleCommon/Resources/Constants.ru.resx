@@ -453,4 +453,10 @@
   <data name="SkyDriveBibleIsNotSupportedForLock" xml:space="preserve">
     <value>Блокировка Библии, хранящейся в SkyDrive, на данный момент не поддерживается. Воспользуйтесь другим способом хранения файлов в интернете.</value>
   </data>
+  <data name="BibleVersePointerDescription" xml:space="preserve">
+    <value>Укажите место Писания</value>
+  </data>
+  <data name="BibleVersePointerTitle" xml:space="preserve">
+    <value>Открыть стих</value>
+  </data>
 </root>

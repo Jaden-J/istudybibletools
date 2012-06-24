@@ -456,4 +456,10 @@
   <data name="SkyDriveBibleIsNotSupportedForLock" xml:space="preserve">
     <value>Locking the Bible stored in SkyDrive is not currently supported. Use another kind of internet storage.</value>
   </data>
+  <data name="BibleVersePointerDescription" xml:space="preserve">
+    <value>Specify the Bible verse</value>
+  </data>
+  <data name="BibleVersePointerTitle" xml:space="preserve">
+    <value>Open a verse</value>
+  </data>
 </root>

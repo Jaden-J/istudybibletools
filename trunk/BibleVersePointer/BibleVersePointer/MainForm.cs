@@ -38,7 +38,14 @@ namespace BibleVersePointer
 
             InitializeComponent();
 
-            _onenoteApp = new Microsoft.Office.Interop.OneNote.Application();            
+            _onenoteApp = new Microsoft.Office.Interop.OneNote.Application();
+
+            BibleCommon.Resources.Constants.Culture = SettingsManager.Instance.CurrentResourceCulture;
+            MessageBox.Show(BibleCommon.Resources.Constants.Culture.Name);
+            this.Text = BibleCommon.Resources.Constants.BibleVersePointerTitle;
+            MessageBox.Show(BibleCommon.Resources.Constants.BibleVersePointerTitle);
+            MessageBox.Show(SettingsManager.Instance.GetResourceString("BibleVersePointerTitle"));
+            lblDescription.Text = BibleCommon.Resources.Constants.BibleVersePointerDescription;
         }
 
         [DllImport("user32.dll")]
@@ -101,7 +108,8 @@ namespace BibleVersePointer
 
             if (!Logger.WasLogged)
             {
-                SetForegroundWindow(new IntPtr((long)OneNoteApp.Windows.CurrentWindow.WindowHandle));
+                if (OneNoteApp.Windows.CurrentWindow != null)                
+                    SetForegroundWindow(new IntPtr((long)OneNoteApp.Windows.CurrentWindow.WindowHandle));
                 this.Close();
             }
         }
@@ -126,7 +134,7 @@ namespace BibleVersePointer
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            tbVerse.Text = (string)Properties.Settings.Default.LastVerse;               
+            tbVerse.Text = (string)Properties.Settings.Default.LastVerse;                           
         }
 
         private bool _wasShown = false;

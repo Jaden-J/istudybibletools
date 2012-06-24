@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibleVersePointer", "BibleV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibleNoteLinker", "BibleNoteLinker\BibleNoteLinker\BibleNoteLinker.csproj", "{8CF73E04-14AA-4510-B3E0-44934DDC5726}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RibbonButtons", "setup\RibbonButtons\RibbonButtons.csproj", "{72CEED21-AD36-4E0C-886C-8DA80EA5D785}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,16 @@ Global
 		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Release|Mixed Platforms.Build.0 = Release|x86
 		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Release|x86.ActiveCfg = Release|x86
 		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Release|x86.Build.0 = Release|x86
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

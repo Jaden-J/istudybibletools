@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using System.IO;
 
 namespace RibbonButtons
 {
@@ -44,11 +45,22 @@ namespace RibbonButtons
                         Assembly assembly = Assembly.LoadFile(assemblyPath);
 
                         Assemblies.Add(assemblyPath, assembly);
+
+                        LoadSatelliteAssemblies(assemblyPath);
                     }
                 }
             }
 
             return Assemblies[assemblyPath];
+        }
+
+        private static void LoadSatelliteAssemblies(string assemblyPath)
+        {
+            foreach (var sap in Directory.GetFiles(Directory.GetParent(assemblyPath).ToString(),
+                                            string.Format("{0}.resources.dll", Path.GetFileNameWithoutExtension(assemblyPath)), SearchOption.AllDirectories))
+            {
+                LoadAssembly(sap);
+            }
         }
 
         public static void InvokeMethod(MethodIdentifier methodId, string args)

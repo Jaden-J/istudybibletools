@@ -133,6 +133,24 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Specify the Bible verse.
+        /// </summary>
+        public static string BibleVersePointerDescription {
+            get {
+                return ResourceManager.GetString("BibleVersePointerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open a verse.
+        /// </summary>
+        public static string BibleVersePointerTitle {
+            get {
+                return ResourceManager.GetString("BibleVersePointerTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to books.
         /// </summary>
         public static string Books {
