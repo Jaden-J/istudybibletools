@@ -117,221 +117,72 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="rbAnalyzeCurrentPage.Text" xml:space="preserve">
-    <value>Анализировать текущую страницу</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="rbAnalyzeAllPages.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="lblInfo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 127</value>
-  </data>
-  <data name="llblDetails.Text" xml:space="preserve">
-    <value>Показать детали</value>
-  </data>
-  <data name="btnOk.Location" type="System.Drawing.Point, System.Drawing">
-    <value>425, 130</value>
-  </data>
-  <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
-    <value>15</value>
-  </data>
-  <data name="lblInfo.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 8.25pt, style=Underline</value>
-  </data>
-  <data name="lbLog.Size" type="System.Drawing.Size, System.Drawing">
-    <value>488, 199</value>
-  </data>
-  <data name="lbLog.HorizontalScrollbar" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="llblShowErrors.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="rbAnalyzeChangedPages.Size" type="System.Drawing.Size, System.Drawing">
-    <value>260, 17</value>
-  </data>
-  <data name="lblProgress.Location" type="System.Drawing.Point, System.Drawing">
-    <value>9, 161</value>
-  </data>
-  <data name="rbAnalyzeCurrentPage.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 13</value>
-  </data>
-  <data name="pbMain.Size" type="System.Drawing.Size, System.Drawing">
-    <value>488, 23</value>
-  </data>
-  <data name="pbMain.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 177</value>
-  </data>
-  <data name="btnOk.Text" xml:space="preserve">
-    <value>OK</value>
+  <data name="chkForce.Size" type="System.Drawing.Size, System.Drawing">
+    <value>189, 17</value>
   </data>
   <data name="chkForce.Text" xml:space="preserve">
     <value>Повторный анализ всех ссылок</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
-    <value>CenterScreen</value>
+  <data name="rbAnalyzeCurrentPage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>199, 17</value>
   </data>
-  <data name="lblProgress.Size" type="System.Drawing.Size, System.Drawing">
-    <value>96, 13</value>
+  <data name="rbAnalyzeCurrentPage.Text" xml:space="preserve">
+    <value>Анализировать текущую страницу</value>
   </data>
-  <data name="btnOk.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
+  <data name="rbAnalyzeAllPages.Size" type="System.Drawing.Size, System.Drawing">
+    <value>176, 17</value>
+  </data>
+  <data name="rbAnalyzeAllPages.Text" xml:space="preserve">
+    <value>Анализировать все страницы</value>
+  </data>
+  <data name="rbAnalyzeChangedPages.Size" type="System.Drawing.Size, System.Drawing">
+    <value>260, 17</value>
+  </data>
+  <data name="rbAnalyzeChangedPages.Text" xml:space="preserve">
+    <value>Анализировать только измененные страницы</value>
+  </data>
+  <data name="lblInfo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>368, 26</value>
   </data>
   <data name="lblInfo.Text" xml:space="preserve">
     <value>Доступна новая версия программы на сайте http://IStudyBibleTools.ru. 
 Кликните, чтобы перейти на страницу загрузки.</value>
   </data>
-  <data name="rbAnalyzeAllPages.Size" type="System.Drawing.Size, System.Drawing">
-    <value>176, 17</value>
-  </data>
-  <data name="lblInfo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>368, 26</value>
-  </data>
-  <data name="rbAnalyzeCurrentPage.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>48, 20</value>
-  </data>
-  <data name="llblShowErrors.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
-  </data>
-  <data name="llblDetails.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="lbLog.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 228</value>
-  </data>
-  <data name="chkForce.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="lblProgress.TabIndex" type="System.Int32, mscorlib">
-    <value>12</value>
-  </data>
-  <data name="llblShowErrors.Location" type="System.Drawing.Point, System.Drawing">
-    <value>403, 203</value>
-  </data>
-  <data name="rbAnalyzeChangedPages.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="llblShowErrors.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="rbAnalyzeAllPages.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="toolStripMenuItem1.Text" xml:space="preserve">
-    <value>Меню</value>
-  </data>
-  <data name="pbBaseElements.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 27</value>
-  </data>
-  <data name="tsmiSeelctNotebooks.Size" type="System.Drawing.Size, System.Drawing">
-    <value>210, 22</value>
-  </data>
-  <data name="rbAnalyzeAllPages.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 49</value>
-  </data>
-  <data name="chkForce.Location" type="System.Drawing.Point, System.Drawing">
-    <value>45, 81</value>
-  </data>
-  <data name="llblShowErrors.Text" xml:space="preserve">
-    <value>Показать ошибки</value>
-  </data>
-  <data name="rbAnalyzeAllPages.Text" xml:space="preserve">
-    <value>Анализировать все страницы</value>
-  </data>
-  <data name="llblDetails.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
-  <data name="llblDetails.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 13</value>
-  </data>
-  <data name="pbMain.TabIndex" type="System.Int32, mscorlib">
-    <value>9</value>
-  </data>
-  <data name="lblProgress.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="rbAnalyzeChangedPages.Text" xml:space="preserve">
-    <value>Анализировать только измененные страницы</value>
-  </data>
-  <data name="llblDetails.Location" type="System.Drawing.Point, System.Drawing">
-    <value>9, 203</value>
-  </data>
-  <data name="lbLog.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
-  </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Анализ заметок</value>
-  </data>
-  <data name="rbAnalyzeChangedPages.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="pbBaseElements.Size" type="System.Drawing.Size, System.Drawing">
-    <value>490, 100</value>
-  </data>
-  <data name="menuStrip1.Text" xml:space="preserve">
-    <value>Файл</value>
-  </data>
-  <data name="rbAnalyzeCurrentPage.Size" type="System.Drawing.Size, System.Drawing">
-    <value>199, 17</value>
-  </data>
-  <data name="menuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>514, 24</value>
-  </data>
-  <data name="tsmiSeelctNotebooks.Text" xml:space="preserve">
-    <value>Выбрать записные книжки</value>
-  </data>
-  <data name="lblInfo.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="lblProgress.Size" type="System.Drawing.Size, System.Drawing">
+    <value>96, 13</value>
   </data>
   <data name="lblProgress.Text" xml:space="preserve">
     <value>Инициализация...</value>
   </data>
-  <data name="lblInfo.TabIndex" type="System.Int32, mscorlib">
-    <value>7</value>
+  <data name="llblDetails.Size" type="System.Drawing.Size, System.Drawing">
+    <value>94, 13</value>
   </data>
-  <data name="chkForce.Size" type="System.Drawing.Size, System.Drawing">
-    <value>189, 17</value>
+  <data name="llblDetails.Text" xml:space="preserve">
+    <value>Показать детали</value>
   </data>
-  <data name="rbAnalyzeCurrentPage.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+  <data name="menuStrip1.Text" xml:space="preserve">
+    <value>Файл</value>
   </data>
-  <data name="menuStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
+  <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>48, 20</value>
   </data>
-  <data name="chkForce.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+  <data name="toolStripMenuItem1.Text" xml:space="preserve">
+    <value>Меню</value>
+  </data>
+  <data name="tsmiSeelctNotebooks.Size" type="System.Drawing.Size, System.Drawing">
+    <value>210, 22</value>
+  </data>
+  <data name="tsmiSeelctNotebooks.Text" xml:space="preserve">
+    <value>Выбрать записные книжки</value>
   </data>
   <data name="llblShowErrors.Size" type="System.Drawing.Size, System.Drawing">
     <value>97, 13</value>
   </data>
-  <data name="btnOk.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
+  <data name="llblShowErrors.Text" xml:space="preserve">
+    <value>Показать ошибки</value>
   </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>514, 440</value>
-  </data>
-  <data name="rbAnalyzeChangedPages.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 26</value>
-  </data>
-  <data name="pbBaseElements.TabIndex" type="System.Int32, mscorlib">
-    <value>16</value>
-  </data>
-  <data name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing">
-    <value>17, 17</value>
-  </data>
-  <data name="$this.Language" type="System.Globalization.CultureInfo, mscorlib">
-    <value>en</value>
-  </data>
-  <data name="$this.Localizable" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Анализ заметок</value>
   </data>
 </root>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.IO;
+using System.Diagnostics;
 
 namespace RibbonButtons
 {
@@ -42,11 +43,9 @@ namespace RibbonButtons
                 {
                     if (!Assemblies.ContainsKey(assemblyPath))
                     {
-                        Assembly assembly = Assembly.LoadFile(assemblyPath);
+                        LoadAssemblyInternal(assemblyPath);                        
 
-                        Assemblies.Add(assemblyPath, assembly);
-
-                        LoadSatelliteAssemblies(assemblyPath);
+                        //LoadSatelliteAssemblies(assemblyPath);
                     }
                 }
             }
@@ -54,14 +53,22 @@ namespace RibbonButtons
             return Assemblies[assemblyPath];
         }
 
-        private static void LoadSatelliteAssemblies(string assemblyPath)
+        private static void LoadAssemblyInternal(string assemblyPath)
         {
-            foreach (var sap in Directory.GetFiles(Directory.GetParent(assemblyPath).ToString(),
-                                            string.Format("{0}.resources.dll", Path.GetFileNameWithoutExtension(assemblyPath)), SearchOption.AllDirectories))
-            {
-                LoadAssembly(sap);
-            }
+            Assembly assembly = Assembly.LoadFile(assemblyPath);
+
+            Assemblies.Add(assemblyPath, assembly);
         }
+
+        //private static void LoadSatelliteAssemblies(string assemblyPath)
+        //{
+
+        //    foreach (var sap in Directory.GetFiles(Directory.GetParent(assemblyPath).ToString(),
+        //                                    string.Format("{0}.resources.dll", Path.GetFileNameWithoutExtension(assemblyPath)), SearchOption.AllDirectories))
+        //    {
+        //        LoadAssemblyInternal(sap);
+        //    }
+        //}
 
         public static void InvokeMethod(MethodIdentifier methodId, string args)
         {

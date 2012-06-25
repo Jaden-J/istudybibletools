@@ -29,7 +29,7 @@ namespace BibleNoteLinker
 
         private int _originalFormHeight;
         const int FirstFormHeight = 192;
-        const int SecondFormHeight = 250;
+        const int SecondFormHeight = 255;
         private bool _processAbortedByUser;
         private bool _wasStartAnalyze = false;
         private bool _wasAnalyzed = false;

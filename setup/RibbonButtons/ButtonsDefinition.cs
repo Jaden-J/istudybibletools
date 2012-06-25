@@ -117,38 +117,38 @@ namespace RibbonButtons
             string path = null;
             string args = string.Empty;
             string programClassName = string.Empty;
-            bool loadInSameProcess = true;
+            bool loadInSameProcess = false;
 
             switch (control.Id)
             {
                 case "VersePointerButton":
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleVersePointerPath);
                     programClassName = BibleVersePointerProgramClassName;
+                    loadInSameProcess = true;
                     break;
                 case "VerseLinkerButton":
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleVerseLinkerPath);
-                    programClassName = BibleVerseLinkerProgramClassName;
-                    loadInSameProcess = false;
+                    programClassName = BibleVerseLinkerProgramClassName;                    
                     break;
                 case "NoteLinkerButton":
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleNoteLinkerPath);
-                    programClassName = BibleNoteLinkerProgramClassName;
-                    loadInSameProcess = false;
+                    programClassName = BibleNoteLinkerProgramClassName;                    
                     break;                
                 case "QuickNoteLinkerButton":
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleNoteLinkerPath);
                     args = "-quickAnalyze";
                     programClassName = BibleNoteLinkerProgramClassName;
+                    loadInSameProcess = true;
                     break;
                 case "ConfigureButton":
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
-                    programClassName = BibleConfiguratorProgramClassName;
-                    loadInSameProcess = false;
+                    programClassName = BibleConfiguratorProgramClassName;                    
                     break;
                 case "HelpButton":
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
                     args = "-showManual";
                     programClassName = BibleConfiguratorProgramClassName;
+                    loadInSameProcess = true;
                     break;
                 case "ModuleInfoButton":
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
@@ -164,11 +164,13 @@ namespace RibbonButtons
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
                     args = "-unlockBibleSection";
                     programClassName = BibleConfiguratorProgramClassName;
+                    loadInSameProcess = true;
                     break;
                 case "UnlockAllBible":
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
                     args = "-unlockAllBible";
                     programClassName = BibleConfiguratorProgramClassName;
+                    loadInSameProcess = true;
                     break;             
             }
 
