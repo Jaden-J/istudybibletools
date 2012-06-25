@@ -180,14 +180,19 @@ namespace BibleCommon.Services
             }
         }        
 
+        public void ReLoadSettings()
+        {
+            if (!File.Exists(_filePath))
+                LoadDefaultSettings();
+            else
+                LoadSettingsFromFile();        
+        }
+
         protected SettingsManager()
         {
             _filePath = Path.Combine(Utils.GetProgramDirectory(), Consts.Constants.ConfigFileName);
 
-            if (!File.Exists(_filePath))            
-                LoadDefaultSettings();                
-            else
-                LoadSettingsFromFile();        
+            ReLoadSettings();
         }
 
         private void LoadSettingsFromFile()
