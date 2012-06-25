@@ -341,9 +341,9 @@ namespace BibleCommon.Services
                 && this.PageName_Notes == GetResourceString(Consts.Constants.ResourceName_DefaultPageName_Notes)
                 && this.PageName_RubbishNotes == GetResourceString(Consts.Constants.ResourceName_DefaultPageName_RubbishNotes)
                 && this.PageWidth_Notes == Consts.Constants.DefaultPageWidth_Notes
-                && this.ExpandMultiVersesLinking == Consts.Constants.DefaultExpandMultiVersesLinking
+                && this.ExpandMultiVersesLinking == false
                 && this.ExcludedVersesLinking == Consts.Constants.DefaultExcludedVersesLinking
-                && this.UseDifferentPagesForEachVerse == Consts.Constants.DefaultUseDifferentPagesForEachVerse
+                && this.UseDifferentPagesForEachVerse == false
                 && this.RubbishPage_Use == Consts.Constants.DefaultRubbishPage_Use                
                 && this.PageWidth_RubbishNotes == Consts.Constants.DefaultPageWidth_RubbishNotes
                 && this.RubbishPage_ExpandMultiVersesLinking == Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking

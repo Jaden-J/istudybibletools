@@ -81,7 +81,7 @@
             this.Controls.Add(this.pnBooks);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.btnOK);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AboutModuleForm";
