@@ -41,9 +41,8 @@ namespace BibleVersePointer
             _onenoteApp = new Microsoft.Office.Interop.OneNote.Application();
 
 
-
+            //todo: переделать на ресурсы. сейчас есть проблема с загрузкой сателлитных сборок, когда загружаем порграмму в пул OneNote
             this.Text = SettingsManager.Instance.Language == 1049 ? "Открыть стих" : "Open a verse";
-
             lblDescription.Text = SettingsManager.Instance.Language == 1049 ? "Укажите место Писания" : "Specify the Bible verse";
         }
 
@@ -62,7 +61,13 @@ namespace BibleVersePointer
 
             if (!SettingsManager.Instance.IsConfigured(OneNoteApp))
             {
-                Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
+                SettingsManager.Instance.ReLoadSettings();  // так как программа кэшируется в пуле OneNote, то проверим - может уже сконфигурили всё.
+
+                if (!SettingsManager.Instance.IsConfigured(OneNoteApp))
+                {
+                    Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
+                }
+                
             }
             else
             {
