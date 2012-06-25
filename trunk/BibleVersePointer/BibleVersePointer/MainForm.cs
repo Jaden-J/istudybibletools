@@ -40,12 +40,11 @@ namespace BibleVersePointer
 
             _onenoteApp = new Microsoft.Office.Interop.OneNote.Application();
 
-            BibleCommon.Resources.Constants.Culture = SettingsManager.Instance.CurrentResourceCulture;
-            MessageBox.Show(BibleCommon.Resources.Constants.Culture.Name);
-            this.Text = BibleCommon.Resources.Constants.BibleVersePointerTitle;
-            MessageBox.Show(BibleCommon.Resources.Constants.BibleVersePointerTitle);
-            MessageBox.Show(SettingsManager.Instance.GetResourceString("BibleVersePointerTitle"));
-            lblDescription.Text = BibleCommon.Resources.Constants.BibleVersePointerDescription;
+
+
+            this.Text = SettingsManager.Instance.Language == 1049 ? "Открыть стих" : "Open a verse";
+
+            lblDescription.Text = SettingsManager.Instance.Language == 1049 ? "Укажите место Писания" : "Specify the Bible verse";
         }
 
         [DllImport("user32.dll")]

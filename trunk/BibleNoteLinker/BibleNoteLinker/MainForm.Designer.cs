@@ -99,8 +99,8 @@
             // 
             // lbLog
             // 
-            this.lbLog.FormattingEnabled = true;
             resources.ApplyResources(this.lbLog, "lbLog");
+            this.lbLog.FormattingEnabled = true;
             this.lbLog.Name = "lbLog";
             // 
             // lblProgress
@@ -117,31 +117,31 @@
             // 
             // menuStrip1
             // 
+            resources.ApplyResources(this.menuStrip1, "menuStrip1");
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem1});
-            resources.ApplyResources(this.menuStrip1, "menuStrip1");
             this.menuStrip1.Name = "menuStrip1";
             // 
             // toolStripMenuItem1
             // 
+            resources.ApplyResources(this.toolStripMenuItem1, "toolStripMenuItem1");
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiSeelctNotebooks});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            resources.ApplyResources(this.toolStripMenuItem1, "toolStripMenuItem1");
             // 
             // tsmiSeelctNotebooks
             // 
-            this.tsmiSeelctNotebooks.Name = "tsmiSeelctNotebooks";
             resources.ApplyResources(this.tsmiSeelctNotebooks, "tsmiSeelctNotebooks");
+            this.tsmiSeelctNotebooks.Name = "tsmiSeelctNotebooks";
             this.tsmiSeelctNotebooks.Click += new System.EventHandler(this.tsmiSeelctNotebooks_Click);
             // 
             // pbBaseElements
             // 
+            resources.ApplyResources(this.pbBaseElements, "pbBaseElements");
             this.pbBaseElements.Controls.Add(this.rbAnalyzeCurrentPage);
             this.pbBaseElements.Controls.Add(this.chkForce);
             this.pbBaseElements.Controls.Add(this.rbAnalyzeAllPages);
             this.pbBaseElements.Controls.Add(this.rbAnalyzeChangedPages);
-            resources.ApplyResources(this.pbBaseElements, "pbBaseElements");
             this.pbBaseElements.Name = "pbBaseElements";
             // 
             // llblShowErrors
