@@ -17,8 +17,11 @@ namespace BibleCommon.Services
 {
     public class SettingsManager
     {
+        #region Properties
+
         private static object _locker = new object();
         private string _filePath;
+        private bool _useDefaultSettingsNodeExists = true;
 
         private static volatile SettingsManager _instance = null;
         public static SettingsManager Instance
@@ -117,6 +120,8 @@ namespace BibleCommon.Services
             }
         }
 
+        #endregion
+
         public bool CurrentModuleIsCorrect()
         {
             return !string.IsNullOrEmpty(ModuleName) && ModulesManager.ModuleIsCorrect(ModuleName);
@@ -132,7 +137,8 @@ namespace BibleCommon.Services
                 && !string.IsNullOrEmpty(this.PageName_DefaultComments)
                 && !string.IsNullOrEmpty(this.PageName_Notes)
                 && !string.IsNullOrEmpty(this.ModuleName)
-                && ModulesManager.ModuleIsCorrect(this.ModuleName);
+                && ModulesManager.ModuleIsCorrect(this.ModuleName)
+                && _useDefaultSettingsNodeExists;
 
             if (result)
             {
@@ -200,6 +206,7 @@ namespace BibleCommon.Services
                 {
                     LoadProgramSettings(xdoc);
                     programSettingsWasLoaded = true;
+                    _useDefaultSettingsNodeExists = false;
 
                     this.UseDefaultSettings = DetermineIfCurrentSettingsAreDefualt();                    
                 }
