@@ -689,6 +689,7 @@ namespace BibleConfigurator
         private static void SetNotebookParameters(bool loadNameFromSettings, string defaultName, Dictionary<string, string> notebooks, 
             string notebookIdFromSettings, ComboBox cb, CheckBox chk)
         {
+            chk.Checked = false;
             string notebookName = (loadNameFromSettings && !string.IsNullOrEmpty(notebookIdFromSettings)) ? TryToGetNotebookName(notebooks, notebookIdFromSettings) : string.Empty;
             if (!string.IsNullOrEmpty(notebookName) && cb.Items.Contains(notebookName))
                 cb.SelectedItem = notebookName;
