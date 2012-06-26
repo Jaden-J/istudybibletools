@@ -13,7 +13,8 @@ using System.Reflection;
 
 namespace BibleConfigurator.Tools
 {    
-    public class BackupManager: IDisposable
+    // он не IDisposable, потому что рабоатет асинхронно. И сам по окончанию диспозит себя. 
+    public class BackupManager
     {
         public const string OneNotePackageExtension = ".onepkg";
         private Application _oneNoteApp;
@@ -110,6 +111,9 @@ namespace BibleConfigurator.Tools
                 _form.ExternalProcessingDone(finalMessage);
                 BibleCommon.Services.Logger.LogMessage(finalMessage);
             }
+
+            _oneNoteApp = null;
+            _form = null;
         }
 
         private void InitializeFileWatcher()
@@ -199,12 +203,6 @@ namespace BibleConfigurator.Tools
             {
                 File.Delete(file);
             }
-        }
-
-        public void Dispose()
-        {
-            _oneNoteApp = null;
-            _form = null;
-        }
+        }       
     }    
 }
