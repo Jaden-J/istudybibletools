@@ -52,6 +52,8 @@ namespace BibleConfigurator
 
             try
             {
+                LanguageManager.SetThreadUICulture();
+
                 string message = BibleCommon.Resources.Constants.MoreThanSingleInstanceRun;
                 if (args.Length == 1 && File.Exists(args[0]))
                     message += " " + BibleCommon.Resources.Constants.LoadMofuleInExistingInstance;
