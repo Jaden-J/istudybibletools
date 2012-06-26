@@ -96,8 +96,20 @@ namespace BibleVerseLinkerEx
                 XElement selectedElement = FindSelectedText(currentPageId, out currentPageDocument, out verseNumber, out currentObjectId, out xnm);
                 bool selectedTextFound = selectedElement != null && !string.IsNullOrEmpty(selectedElement.Value);
 
-                string currentPageName = (string)currentPageDocument.Root.Attribute("name");
+                if (selectedTextFound)
+                {
+                    try
+                    {
+                        BibleCommon.Services.OneNoteLocker.UnlockCurrentSection(OneNoteApp);
+                    }
+                    catch (NotSupportedException)
+                    {
+                        //todo: log it
+                    }
+                }
 
+
+                string currentPageName = (string)currentPageDocument.Root.Attribute("name");
 
                 string verseLinkPageId = null;
                 try

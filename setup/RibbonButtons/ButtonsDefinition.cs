@@ -148,7 +148,7 @@ namespace RibbonButtons
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
                     args = "-showManual";
                     programClassName = BibleConfiguratorProgramClassName;
-                    loadInSameProcess = true;
+                    //loadInSameProcess = true;
                     break;
                 case "ModuleInfoButton":
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
@@ -164,13 +164,13 @@ namespace RibbonButtons
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
                     args = "-unlockBibleSection";
                     programClassName = BibleConfiguratorProgramClassName;
-                    loadInSameProcess = true;
+                    //loadInSameProcess = true;
                     break;
                 case "UnlockAllBible":
                     path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
                     args = "-unlockAllBible";
                     programClassName = BibleConfiguratorProgramClassName;
-                    loadInSameProcess = true;
+                    //loadInSameProcess = true;
                     break;             
             }
 
