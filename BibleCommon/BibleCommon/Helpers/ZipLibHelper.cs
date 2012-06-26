@@ -14,6 +14,7 @@ namespace BibleCommon.Services
             if (!Directory.Exists(directoryPath))
                 Directory.CreateDirectory(directoryPath);
 
+            ZipConstants.DefaultCodePage = 866;
 
             using (MemoryStream ms = new MemoryStream(fileData))
             {
@@ -49,7 +50,7 @@ namespace BibleCommon.Services
 
         public static void PackfilesToZip(string tempFolderPath, string targetFilePath)
         {
-
+            ZipConstants.DefaultCodePage = 866;
             // Depending on the directory this could be very large and would require more attention
             // in a commercial package.
             string[] filenames = Directory.GetFiles(tempFolderPath);
