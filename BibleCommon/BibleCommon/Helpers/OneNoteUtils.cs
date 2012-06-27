@@ -161,8 +161,8 @@ namespace BibleCommon.Helpers
             {
                 XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
-                var pageSettings = pageContent.XPathSelectElement("one:PageSettings", xnm);
-
+                var pageSettings = pageContent.XPathSelectElement("one:MediaPlaylist", xnm) ?? pageContent.XPathSelectElement("one:PageSettings", xnm);
+                
                 var meta = new XElement(nms + "Meta",
                                             new XAttribute("name", key),
                                             new XAttribute("content", value));
