@@ -36,6 +36,15 @@ namespace BibleConfigurator.Tools
             {
                 BibleCommon.Services.Logger.Init("RelinkAllBibleCommentsManager");
 
+                try
+                {
+                    OneNoteLocker.UnlockAllBible(_oneNoteApp);
+                }
+                catch (NotSupportedException)
+                {
+                    //todo: log it
+                }
+
                 _form.PrepareForExternalProcessing(1255, 1, BibleCommon.Resources.Constants.RelinkBibleCommentsManagerStartMessage);
 
                 //для тестирования
