@@ -8,6 +8,7 @@ using BibleCommon.Helpers;
 using System.Xml;
 using BibleCommon.Common;
 using BibleCommon.Consts;
+using System.Runtime.InteropServices;
 
 namespace BibleCommon.Services
 {
@@ -362,8 +363,18 @@ namespace BibleCommon.Services
             {
                 //lock (_locker)
                 {
-                    string xml;
-                    oneNoteApp.GetPageContent(pageId, out xml);
+                    string xml = string.Empty;
+                    try
+                    {                        
+                        oneNoteApp.GetPageContent(pageId, out xml);
+                    }
+                    catch (COMException ex)
+                    {
+                        if (ex.Message.EndsWith("0x80042014"))
+                            throw new Exception("Page does not exists.");
+                        else
+                            throw;
+                    }
 
                     XmlNamespaceManager xnm;
                     XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
