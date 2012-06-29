@@ -1041,7 +1041,8 @@ namespace BibleConfigurator
         {
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                bool needToReload = AddNewModule(openFileDialog.FileName);
+                bool moduleWasAdded;
+                bool needToReload = AddNewModule(openFileDialog.FileName, out moduleWasAdded);
                 if (needToReload)
                     ReLoadParameters(true);
             }            
@@ -1060,8 +1061,9 @@ namespace BibleConfigurator
         /// <param name="filePath"></param>
         /// <param name="needToLoadParameters"></param>
         /// <returns>true если новый модуль стал основным</returns>
-        public bool AddNewModule(string filePath)
+        public bool AddNewModule(string filePath, out bool moduleWasAdded)
         {
+            moduleWasAdded = true;
             string moduleName = Path.GetFileNameWithoutExtension(filePath);
             string destFilePath = Path.Combine(ModulesManager.GetModulesPackagesDirectory(), Path.GetFileName(filePath));
 
@@ -1071,7 +1073,10 @@ namespace BibleConfigurator
             {
                 if (MessageBox.Show(BibleCommon.Resources.Constants.ModuleWithSameNameAlreadyExists, BibleCommon.Resources.Constants.Warning,
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.No)
+                {
                     canContinue = false;
+                    moduleWasAdded = false;
+                }
             }
 
             if (canContinue)
@@ -1099,6 +1104,7 @@ namespace BibleConfigurator
                     MessageBox.Show(ex.Message);
                     Thread.Sleep(500);
                     ModulesManager.DeleteModule(moduleName);
+                    moduleWasAdded = false;
                 }
             }
 
