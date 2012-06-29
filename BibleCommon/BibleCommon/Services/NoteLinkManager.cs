@@ -143,38 +143,7 @@ namespace BibleCommon.Services
 
                 if (foundChapters.Count > 0)  // то есть имеются главы, которые указаны в тексте именно как главы, без стихов, и на которые надо делать тоже ссылки
                 {
-                    Logger.LogMessage(BibleCommon.Resources.Constants.NoteLinkManagerChapterProcessing, true, false);
-
-                    foreach (FoundChapterInfo chapterInfo in foundChapters)
-                    {
-                        if (linkDepth >= AnalyzeDepth.Full)
-                        {
-                            Logger.LogMessage(".", false, false, false);
-
-                            if (!SettingsManager.Instance.ExcludedVersesLinking)   // иначе мы её обработали сразу же, когда встретили
-                            {
-                                LinkVerseToNotesPage(_oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, true,
-                                    chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
-                                    noteSectionGroupName, noteSectionName, notePageName, pageId, pageTitleId, chapterInfo.TextElementObjectId, true,
-                                    SettingsManager.Instance.PageName_Notes, null, SettingsManager.Instance.PageWidth_Notes, 1,
-                                    chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter ? true : force);
-                            }
-
-                            if (SettingsManager.Instance.RubbishPage_Use)
-                            {
-                                if (!SettingsManager.Instance.RubbishPage_ExcludedVersesLinking)   // иначе мы её обработали сразу же, когда встретили
-                                {
-                                    LinkVerseToNotesPage(_oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, true,
-                                        chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
-                                        noteSectionGroupName, noteSectionName, notePageName, pageId, pageTitleId, chapterInfo.TextElementObjectId, false,
-                                        SettingsManager.Instance.PageName_RubbishNotes, null, SettingsManager.Instance.PageWidth_RubbishNotes, 1,
-                                        chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter ? true : force);
-                                }
-                            }
-                        }
-                    }
-
-                    Logger.LogMessage(string.Empty, false, true, false);
+                    ProcessChapters(foundChapters, noteSectionGroupName, noteSectionName, notePageName, pageId, pageTitleId, linkDepth, force);                                       
                 }
 
                 if (linkDepth >= AnalyzeDepth.Full)                
@@ -189,6 +158,44 @@ namespace BibleCommon.Services
             {
                 Logger.LogError(BibleCommon.Resources.Constants.NoteLinkManagerProcessingPageErrors, ex);
             }
+        }
+
+        private void ProcessChapters(List<FoundChapterInfo> foundChapters, 
+            string noteSectionGroupName, string noteSectionName, string notePageName, string pageId, string pageTitleId, 
+            AnalyzeDepth linkDepth, bool force)
+        {
+            Logger.LogMessage(BibleCommon.Resources.Constants.NoteLinkManagerChapterProcessing, true, false);
+
+            if (linkDepth >= AnalyzeDepth.Full && !IsExcludedCurrentNotePage)
+            {
+                foreach (FoundChapterInfo chapterInfo in foundChapters)
+                {
+                    Logger.LogMessage(".", false, false, false);
+
+                    if (!SettingsManager.Instance.ExcludedVersesLinking)   // иначе мы её обработали сразу же, когда встретили
+                    {
+                        LinkVerseToNotesPage(_oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, true,
+                            chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
+                            noteSectionGroupName, noteSectionName, notePageName, pageId, pageTitleId, chapterInfo.TextElementObjectId, true,
+                            SettingsManager.Instance.PageName_Notes, null, SettingsManager.Instance.PageWidth_Notes, 1,
+                            chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter ? true : force);
+                    }
+
+                    if (SettingsManager.Instance.RubbishPage_Use)
+                    {
+                        if (!SettingsManager.Instance.RubbishPage_ExcludedVersesLinking)   // иначе мы её обработали сразу же, когда встретили
+                        {
+                            LinkVerseToNotesPage(_oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, true,
+                                chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
+                                noteSectionGroupName, noteSectionName, notePageName, pageId, pageTitleId, chapterInfo.TextElementObjectId, false,
+                                SettingsManager.Instance.PageName_RubbishNotes, null, SettingsManager.Instance.PageWidth_RubbishNotes, 1,
+                                chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter ? true : force);
+                        }
+                    }
+                }
+            }
+
+            Logger.LogMessage(string.Empty, false, true, false);
         }
 
         private List<VersePointerSearchResult> ProcessPageTitle(Application oneNoteApp, XDocument notePageDocument,

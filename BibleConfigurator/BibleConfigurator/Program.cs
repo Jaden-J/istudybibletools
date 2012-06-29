@@ -149,10 +149,15 @@ namespace BibleConfigurator
                         string moduleFilePath = args[0];
                         if (File.Exists(moduleFilePath))
                         {
-
-                            bool needToReload = ((MainForm)result).AddNewModule(moduleFilePath);
-                            ((MainForm)result).ShowModulesTabAtStartUp = true;
-                            ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
+                            bool moduleWasAdded;
+                            bool needToReload = ((MainForm)result).AddNewModule(moduleFilePath, out moduleWasAdded);
+                            if (moduleWasAdded)
+                            {
+                                ((MainForm)result).ShowModulesTabAtStartUp = true;
+                                ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
+                            }
+                            else
+                                result = null;
                         }
                     }
                 }
