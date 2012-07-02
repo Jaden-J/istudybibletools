@@ -187,24 +187,26 @@ namespace BibleCommon.Common
 
         private static string TrimBookName(string bookName)
         {
-            for (int index = bookName.Length - 1; index >= 0; index--)
-            {
-                char c = bookName[index];
+            return bookName.Trim().Trim('.').Replace("  ", " ");  
 
-                if (StringUtils.IsCharAlphabetical(c) || StringUtils.IsDigit(c))
-                    break;
-                else if (c == ' ' || c == '.')
-                    bookName = bookName.Remove(bookName.Length - 1);
-            }
+            //for (int index = bookName.Length - 1; index >= 0; index--)
+            //{
+            //    char c = bookName[index];
 
-            if (bookName.IndexOf("  ") != -1)  // двойной пробел
-            {
-                bookName = bookName.Replace("  ", " ");
-            }
+            //    if (StringUtils.IsCharAlphabetical(c) || StringUtils.IsDigit(c))
+            //        break;
+            //    else if (c == ' ' || c == '.')
+            //        bookName = bookName.Remove(bookName.Length - 1);
+            //}
 
-            //return bookName.Trim().Trim('.');  // и удалить вышестоящий цикл
+            //if (bookName.IndexOf("  ") != -1)  // двойной пробел
+            //{
+            //    bookName = bookName.Replace("  ", " ");
+            //}
 
-            return bookName.Trim();
+            ////return bookName.Trim().Trim('.');  // и удалить вышестоящий цикл
+
+            //return bookName.Trim();
         }
 
         public bool IsValid

@@ -83,6 +83,7 @@
     <Compile Include="..\..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Services\VerseRecognitionManager.cs" />
     <Compile Include="Services\VersionOnServerManager.cs" />
     <Compile Include="Helpers\ZipLibHelper.cs" />
   </ItemGroup>
