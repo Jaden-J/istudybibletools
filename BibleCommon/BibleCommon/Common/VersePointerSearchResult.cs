@@ -14,7 +14,8 @@ namespace BibleCommon.Common
         public static bool IsChapterAndVerse(SearchResultType resultType)
         {
             return resultType == SearchResultType.ChapterAndVerse
-                    || resultType == SearchResultType.ChapterAndVerseAtStartString;
+                    || resultType == SearchResultType.ChapterAndVerseAtStartString
+                    || resultType == SearchResultType.ChapterAndVerseWithoutBookName;
         }
 
         public static bool IsVerse(SearchResultType resultType)
@@ -27,7 +28,8 @@ namespace BibleCommon.Common
         {
             return resultType == SearchResultType.ChapterOnly
                     || resultType == SearchResultType.ChapterOnlyAtStartString
-                    || resultType == SearchResultType.ExcludableChapter;
+                    || resultType == SearchResultType.ExcludableChapter
+                    || resultType == SearchResultType.ChapterWithoutBookName;
         }
 
         public enum SearchResultType
@@ -39,7 +41,9 @@ namespace BibleCommon.Common
             SingleVerseOnly = 4,
             FollowingVerseOnly = 5,   // стих, который следует за запятой
             ChapterAndVerse = 6,
-            ChapterAndVerseAtStartString = 7   // полная ссылка с начала строки
+            ChapterAndVerseAtStartString = 7,   // полная ссылка с начала строки
+            ChapterAndVerseWithoutBookName = 8,   // например 4:5, а книга берётся из предыдущего результата
+            ChapterWithoutBookName = 9,             // например ",4", а книга берётся из предыдущего результата
         }
 
         public VersePointer VersePointer { get; set; }
@@ -67,6 +71,11 @@ namespace BibleCommon.Common
 
                 return _depthLevel.Value;
             }
+        }
+
+        public VersePointerSearchResult()
+        {
+            this.ResultType = VersePointerSearchResult.SearchResultType.Nothing;
         }
     }
 }
