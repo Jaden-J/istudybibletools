@@ -18,6 +18,12 @@ namespace BibleCommon.Common
                     || resultType == SearchResultType.ChapterAndVerseWithoutBookName;
         }
 
+        public static bool IsWithoutBookName(SearchResultType resultType)
+        {
+            return resultType == SearchResultType.ChapterWithoutBookName
+                || resultType == SearchResultType.ChapterAndVerseWithoutBookName;
+        }
+
         public static bool IsVerse(SearchResultType resultType)
         {
             return resultType == SearchResultType.SingleVerseOnly

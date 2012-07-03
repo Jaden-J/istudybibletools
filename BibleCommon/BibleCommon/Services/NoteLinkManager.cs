@@ -375,7 +375,7 @@ namespace BibleCommon.Services
 
                                 if (!isLink || (isLink && force) || (isTitle && isInBrackets))
                                 {
-                                    if (VersePointerSearchResult.IsVerse(searchResult.ResultType))
+                                    if (VersePointerSearchResult.IsVerse(searchResult.ResultType) || VersePointerSearchResult.IsWithoutBookName(searchResult.ResultType))
                                         textToChange = searchResult.VerseString;
                                     else if (VersePointerSearchResult.IsChapter(searchResult.ResultType))
                                         textToChange = searchResult.ChapterName;
