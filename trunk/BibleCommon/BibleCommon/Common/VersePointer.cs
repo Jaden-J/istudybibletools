@@ -90,12 +90,22 @@ namespace BibleCommon.Common
 
                         s = s.Substring(0, i);
                     }
-
-                    if (TopVerse <= Verse)
+                    else
                     {
-                        _isMultiVerse = false;
-                        _topVerse = null;
+                        Chapter = Verse;
+                        Verse = 0;
+                        _topChapter = _topVerse;
+                        _topVerse = 0;
                     }
+
+                    if (TopVerse <= Verse)                                            
+                        _topVerse = null;
+
+                    if (TopChapter <= Chapter)
+                        _topChapter = null;
+
+                    if (TopVerse <= TopVerse && TopChapter <= Chapter)
+                        _isMultiVerse = false;
                 }
 
                 OriginalBookName = TrimBookName(s);
@@ -138,6 +148,16 @@ namespace BibleCommon.Common
             get
             {
                 return _topVerse;
+            }
+        }
+
+
+        private int? _topChapter = null;
+        public int? TopChapter
+        {
+            get
+            {
+                return _topChapter;
             }
         }
 
