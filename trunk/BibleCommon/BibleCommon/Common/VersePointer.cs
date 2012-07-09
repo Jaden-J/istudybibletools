@@ -95,17 +95,16 @@ namespace BibleCommon.Common
                         Chapter = Verse;
                         Verse = 0;
                         _topChapter = _topVerse;
-                        _topVerse = 0;
+                        _topVerse = null;
                     }
 
-                    if (TopVerse <= Verse)                                            
+                    if ((_topChapter == null && TopVerse.GetValueOrDefault(0) <= Verse.GetValueOrDefault(0))
+                        || (_topChapter != null && TopChapter.GetValueOrDefault(0) <= Chapter.GetValueOrDefault(0)))
+                    {
                         _topVerse = null;
-
-                    if (TopChapter <= Chapter)
                         _topChapter = null;
-
-                    if (TopVerse <= TopVerse && TopChapter <= Chapter)
                         _isMultiVerse = false;
+                    }                    
                 }
 
                 OriginalBookName = TrimBookName(s);
@@ -182,10 +181,26 @@ namespace BibleCommon.Common
             if (indexOfDash != -1 && indexOfDash > 3) // чтоб отсечь такие варианты, как "2-Тим 2:3"
             {
                 int tempTopVerse;
-                if (int.TryParse(s.Substring(indexOfDash + 1), out tempTopVerse))
+                string topStructure = s.Substring(indexOfDash + 1);
+                if (int.TryParse(topStructure, out tempTopVerse))
                 {
                     _topVerse = tempTopVerse;
                     _isMultiVerse = true;
+                }
+                else
+                {
+                    int indexOfDelimiter = topStructure.IndexOf(":");
+                    if (indexOfDelimiter != -1)  // значит скорее всего имеем дело с Ин 1:5-2:4
+                    {
+                        int tempTopChapter;
+                        if (int.TryParse(topStructure.Substring(0, indexOfDelimiter), out tempTopChapter)
+                            && int.TryParse(topStructure.Substring(indexOfDelimiter + 1), out tempTopVerse))
+                        {
+                            _topChapter = tempTopChapter;
+                            _topVerse = tempTopVerse;
+                            _isMultiVerse = true;
+                        }
+                    }
                 }
 
                 s = s.Substring(0, indexOfDash);
