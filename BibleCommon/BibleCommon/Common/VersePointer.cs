@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using BibleCommon.Consts;
 using BibleCommon.Helpers;
 using BibleCommon.Services;
+using Microsoft.Office.Interop.OneNote;
 
 namespace BibleCommon.Common
 {
@@ -25,6 +26,11 @@ namespace BibleCommon.Common
                 return this.OriginalVerseName;
 
             return base.ToString();
+        }
+
+        public static VersePointer GetChapterVersePointer(string bookName, int chapter)
+        {
+            return GetChapterVersePointer(string.Format("{0} {1}", bookName, chapter));
         }
 
         public static VersePointer GetChapterVersePointer(string chapterName)
@@ -268,16 +274,54 @@ namespace BibleCommon.Common
         /// возвращает список всех вложенных стихов (за исключением первого) если Multiverse. 
         /// </summary>
         /// <returns></returns>
-        public List<VersePointer> GetAllIncludedVersesExceptFirst()
+        public List<VersePointer> GetAllIncludedVersesExceptFirst(Application oneNoteApp, string bibleNotebookId)
         {
             List<VersePointer> result = new List<VersePointer>();
-            if (IsValid && IsMultiVerse && !IsChapter)
+            if (IsValid && IsMultiVerse)
             {
-                for (int i = Verse.GetValueOrDefault(0) + 1; i <= TopVerse; i++)
+                if (TopChapter != null && TopVerse != null)
                 {
-                    VersePointer vp = new VersePointer(this.OriginalBookName, this.Chapter.Value, i);
-                    vp.ParentVersePointer = this;
-                    result.Add(vp);                   
+                    for (int chapterIndex = Chapter.Value; chapterIndex <= TopChapter; chapterIndex++)
+                    {
+                        int topVerse, startVerseIndex;
+                        if (chapterIndex == TopChapter)
+                            topVerse = TopVerse.Value;
+                        else
+                            topVerse = HierarchySearchManager.GetChapterVersesCount(
+                                            oneNoteApp, bibleNotebookId, 
+                                            VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex))
+                                            .GetValueOrDefault(0);
+
+                        if (chapterIndex == Chapter)
+                            startVerseIndex = Verse.Value + 1;
+                        else
+                            startVerseIndex = 1;
+
+                        for (int verseIndex = startVerseIndex; verseIndex <= topVerse; verseIndex++)
+                        {
+                            VersePointer vp = new VersePointer(this.OriginalBookName, chapterIndex, verseIndex);
+                            vp.ParentVersePointer = this;
+                            result.Add(vp);
+                        }
+                    }
+                }
+                else if (TopChapter != null && IsChapter)
+                {
+                    for (int chapterIndex = Chapter.Value + 1; chapterIndex <= TopChapter; chapterIndex++)
+                    {
+                        VersePointer vp = VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex);
+                        vp.ParentVersePointer = this;
+                        result.Add(vp);
+                    }
+                }
+                else
+                {
+                    for (int verseIndex = Verse.GetValueOrDefault(0) + 1; verseIndex <= TopVerse; verseIndex++)
+                    {
+                        VersePointer vp = new VersePointer(this.OriginalBookName, this.Chapter.Value, verseIndex);
+                        vp.ParentVersePointer = this;
+                        result.Add(vp);
+                    }
                 }
             }
 

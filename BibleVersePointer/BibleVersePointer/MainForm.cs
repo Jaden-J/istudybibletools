@@ -78,10 +78,7 @@ namespace BibleVersePointer
 
                     try
                     {
-                        VersePointer vp = new VersePointer(tbVerse.Text);
-
-                        if (!vp.IsValid)
-                            vp = VersePointer.GetChapterVersePointer(tbVerse.Text);
+                        VersePointer vp = new VersePointer(tbVerse.Text);                        
 
                         if (!vp.IsValid)
                             vp = new VersePointer(tbVerse.Text + " 1:0");  // может только название книги

@@ -375,7 +375,7 @@ namespace BibleCommon.Services
 
                                 if (!isLink || (isLink && force) || (isTitle && isInBrackets))
                                 {
-                                    if (VersePointerSearchResult.IsVerse(searchResult.ResultType) || VersePointerSearchResult.IsWithoutBookName(searchResult.ResultType))
+                                    if (!string.IsNullOrEmpty(searchResult.VerseString))                                        
                                         textToChange = searchResult.VerseString;
                                     else if (VersePointerSearchResult.IsChapter(searchResult.ResultType))
                                         textToChange = searchResult.ChapterName;
@@ -402,7 +402,7 @@ namespace BibleCommon.Services
                                         if (chapterInfo != null)
                                             foundChapters.Remove(chapterInfo);
                                     }
-                                    else if (VersePointerSearchResult.IsChapter(searchResult.ResultType))
+                                    else if (VersePointerSearchResult.IsChapter(searchResult.ResultType) && !searchResult.VersePointer.IsMultiVerse)
                                     {
                                         if (hierarchySearchResult.ResultType == HierarchySearchManager.HierarchySearchResultType.Successfully
                                             && hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.Page)
@@ -480,6 +480,7 @@ namespace BibleCommon.Services
             bool isLink, bool isInBrackets, bool isExcluded, bool force, out int newEndVerseIndex, out HierarchySearchManager.HierarchySearchResult hierarchySearchResult)
         {
             hierarchySearchResult = new HierarchySearchManager.HierarchySearchResult() { ResultType = HierarchySearchManager.HierarchySearchResultType.NotFound };
+            HierarchySearchManager.HierarchySearchResult localHierarchySearchResult = new HierarchySearchManager.HierarchySearchResult() { ResultType = HierarchySearchManager.HierarchySearchResultType.NotFound };
 
             int startVerseNameIndex = searchResult.VersePointerStartIndex;
             int endVerseNameIndex = searchResult.VersePointerEndIndex;
@@ -499,7 +500,9 @@ namespace BibleCommon.Services
             List<VersePointer> verses = new List<VersePointer>() { searchResult.VersePointer };
 
             if (SettingsManager.Instance.ExpandMultiVersesLinking && searchResult.VersePointer.IsMultiVerse)
-                verses.AddRange(searchResult.VersePointer.GetAllIncludedVersesExceptFirst());
+                verses.AddRange(searchResult.VersePointer.GetAllIncludedVersesExceptFirst(oneNoteApp, SettingsManager.Instance.NotebookId_Bible));
+
+            bool forceAnalyzeChapter = searchResult.VersePointer.IsMultiVerse && searchResult.VersePointer.IsChapter;
 
             bool first = true;
             foreach (VersePointer vp in verses)
@@ -509,7 +512,8 @@ namespace BibleCommon.Services
                         !SettingsManager.Instance.UseDifferentPagesForEachVerse, SettingsManager.Instance.ExcludedVersesLinking,
                         SettingsManager.Instance.PageName_Notes, null, SettingsManager.Instance.PageWidth_Notes, 1,
                         globalChapterSearchResult, pageChaptersSearchResult,
-                        isInBrackets, isExcluded, force, out hierarchySearchResult, hsr =>
+                        isInBrackets, isExcluded, force, forceAnalyzeChapter, 
+                        out localHierarchySearchResult, hsr =>
                         {
                             if (first)
                             {
@@ -524,8 +528,9 @@ namespace BibleCommon.Services
                     {
                         if (linkDepth >= AnalyzeDepth.GetVersesLinks)
                         {
+                            hierarchySearchResult = localHierarchySearchResult;
                             string link = OneNoteUtils.GenerateHref(oneNoteApp, textToChange,
-                                hierarchySearchResult.HierarchyObjectInfo.PageId, hierarchySearchResult.HierarchyObjectInfo.ContentObjectId);
+                                localHierarchySearchResult.HierarchyObjectInfo.PageId, localHierarchySearchResult.HierarchyObjectInfo.ContentObjectId);
 
                             link = string.Format("<span style='font-weight:normal'>{0}</span>", link);
 
@@ -540,7 +545,7 @@ namespace BibleCommon.Services
                     }
                 }
 
-                if (SettingsManager.Instance.UseDifferentPagesForEachVerse)  // для каждого стиха своя страница
+                if (SettingsManager.Instance.UseDifferentPagesForEachVerse && !vp.IsChapter)  // для каждого стиха своя страница
                 {
                     string notesPageName = GetDefaultNotesPageName(vp.Verse);
                     TryLinkVerseToNotesPage(oneNoteApp, vp, searchResult.ResultType,
@@ -548,7 +553,7 @@ namespace BibleCommon.Services
                         true, SettingsManager.Instance.ExcludedVersesLinking,
                         notesPageName, SettingsManager.Instance.PageName_Notes, SettingsManager.Instance.PageWidth_Notes, 2,
                         globalChapterSearchResult, pageChaptersSearchResult,
-                        isInBrackets, isExcluded, force, out hierarchySearchResult, null);
+                        isInBrackets, isExcluded, force, forceAnalyzeChapter, out localHierarchySearchResult, null);
                 }
 
                 first = false;
@@ -563,7 +568,7 @@ namespace BibleCommon.Services
                 List<VersePointer> rubbishVerses = new List<VersePointer>() { searchResult.VersePointer };
 
                 if (SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking && searchResult.VersePointer.IsMultiVerse)
-                    rubbishVerses.AddRange(searchResult.VersePointer.GetAllIncludedVersesExceptFirst());
+                    rubbishVerses.AddRange(searchResult.VersePointer.GetAllIncludedVersesExceptFirst(oneNoteApp, SettingsManager.Instance.NotebookId_Bible));
 
                 foreach (VersePointer vp in rubbishVerses)
                 {
@@ -572,7 +577,7 @@ namespace BibleCommon.Services
                         false, SettingsManager.Instance.RubbishPage_ExcludedVersesLinking, 
                         SettingsManager.Instance.PageName_RubbishNotes, null, SettingsManager.Instance.PageWidth_RubbishNotes, 1,
                         globalChapterSearchResult, pageChaptersSearchResult,
-                        isInBrackets, isExcluded, force, out hierarchySearchResult, null);
+                        isInBrackets, isExcluded, force, forceAnalyzeChapter, out localHierarchySearchResult, null);
                 }
             }
 
@@ -620,7 +625,7 @@ namespace BibleCommon.Services
             bool createLinkToNotesPage, bool excludedVersesLinking, 
             string notesPageName, string notesParentPageName, int notesPageWidth, int notesPageLevel,
             VersePointerSearchResult globalChapterSearchResult, List<VersePointerSearchResult> pageChaptersSearchResult,
-            bool isInBrackets, bool isExcluded, bool force, out HierarchySearchManager.HierarchySearchResult hierarchySearchResult,
+            bool isInBrackets, bool isExcluded, bool force, bool forceAnalyzeChapter, out HierarchySearchManager.HierarchySearchResult hierarchySearchResult,
             Action<HierarchySearchManager.HierarchySearchResult> onHierarchyElementFound)
         {
 
@@ -638,7 +643,7 @@ namespace BibleCommon.Services
 
                         bool isChapter = VersePointerSearchResult.IsChapter(resultType);
 
-                        if ((!isChapter || excludedVersesLinking) && linkDepth >= AnalyzeDepth.Full)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем. Но если у нас стоит excludedVersesLinking, то сразу обрабатываем
+                        if ((!isChapter || excludedVersesLinking || forceAnalyzeChapter) && linkDepth >= AnalyzeDepth.Full)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем. Но если у нас стоит excludedVersesLinking, то сразу обрабатываем
                         {
                             bool canContinue = true;
 
@@ -1055,7 +1060,14 @@ namespace BibleCommon.Services
         private static string GetMultiVerseString(VersePointer vp)
         {
             if (vp.IsMultiVerse)
-                return string.Format(" <b>(:{0}-{1})</b>", vp.Verse, vp.TopVerse);
+            {
+                if (vp.TopChapter != null && vp.TopVerse != null)
+                    return string.Format(" <b>({0}:{1}-{2}:{3})</b>", vp.Chapter, vp.Verse, vp.TopChapter, vp.TopVerse);
+                else if (vp.TopChapter != null && vp.IsChapter)
+                    return string.Format(" <b>({0}-{1})</b>", vp.Chapter, vp.TopChapter);
+                else
+                    return string.Format(" <b>(:{0}-{1})</b>", vp.Verse, vp.TopVerse);
+            }
             else
                 return string.Empty;
         }
