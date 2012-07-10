@@ -154,6 +154,24 @@ namespace BibleCommon.Services
                 document.Xnm);
 
             return targetSection;
-        }      
+        }
+
+        public static int? GetChapterVersesCount(Application oneNoteApp, string bibleNotebookId, VersePointer versePointer)
+        {
+            int? result = null;
+
+            var chapterPageResult = GetHierarchyObject(oneNoteApp, bibleNotebookId, versePointer);
+            if (chapterPageResult.ResultType != HierarchySearchResultType.NotFound)
+            {
+                var pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, chapterPageResult.HierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);
+                var table = pageContent.Content.Root.XPathSelectElement("//one:Table", pageContent.Xnm);
+                if (table != null)
+                {
+                    return table.XPathSelectElements("one:Row", pageContent.Xnm).Count();
+                }
+            }
+
+            return result;
+        }
     }
 }
