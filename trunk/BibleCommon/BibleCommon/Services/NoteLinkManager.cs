@@ -518,13 +518,10 @@ namespace BibleCommon.Services
                         isInBrackets, isExcluded, force, !needToQueueIfChapter, 
                         out localHierarchySearchResult, hsr =>
                         {
-                            if (first)
-                            {
-                                if (hsr.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder)
-                                    Logger.LogMessage("{0}: {1}", BibleCommon.Resources.Constants.ProcessVerse, searchResult.VersePointer.OriginalVerseName);
-                                else
-                                    Logger.LogMessage("{0}: {1}", BibleCommon.Resources.Constants.ProcessChapter, textToChange);
-                            }
+                            if (first)                            
+                                Logger.LogMessage("{0}: {1}", 
+                                    searchResult.VersePointer.IsChapter ? BibleCommon.Resources.Constants.ProcessChapter : BibleCommon.Resources.Constants.ProcessVerse, 
+                                    searchResult.VersePointer.OriginalVerseName);                                                            
                         }))
                 {
                     if (first)
