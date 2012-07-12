@@ -251,7 +251,7 @@ namespace BibleConfigurator
 
         private static void ConvertEnglishModule()
         {
-            var converter = new BibleQuotaConverter("Test", @"G:\Dropbox\Изучение Библии\программы\Цитата из Библии\King_James_Version", @"c:\manifest.xml", Encoding.ASCII,
+            var converter = new BibleQuotaConverter("Douay-Rheims", @"C:\temp\Bible_English_Douay-Rheims\Bible_English_Douay-Rheims", @"G:\Google Диск\IStudyBibleTools\Модули\Douay-Rheims\manifest.xml", Encoding.ASCII,
                 "1. Old Testament", "2. New Testament", 39, 27, null, new List<NotebookInfo>() 
                 {  
                     new NotebookInfo() { Type = NotebookType.Bible, Name = "Bible.onepkg" },
