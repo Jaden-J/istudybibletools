@@ -202,13 +202,21 @@ namespace BibleCommon.Helpers
             return null;
         }
 
+        public static int? GetStringLastNumber(string s)
+        {
+            int index;
+            return GetStringLastNumber(s, out index);
+        }
+
         /// <summary>
         /// возвращает номер, находящийся в конце строки: например вернёт 12 для строки "глава 12"
         /// </summary>
         /// <param name="pointerElement"></param>
         /// <returns></returns>
-        public static int? GetStringLastNumber(string s)
+        public static int? GetStringLastNumber(string s, out int index)
         {
+            index = -1;
+
             int i = s.LastIndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
             if (i != -1)
             {
@@ -223,6 +231,7 @@ namespace BibleCommon.Helpers
                     if (i - 2 >= 0)
                         d3 = GetDigit(s, i - 2);
 
+                index = i;
                 return int.Parse(d3 + d2 + d1);
             }
 

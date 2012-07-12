@@ -86,9 +86,10 @@ namespace BibleCommon.Common
 
                     s = s.Substring(0, i);
 
-                    int? chapter = StringUtils.GetStringLastNumber(s);
+                    int chapterIndex;
+                    int? chapter = StringUtils.GetStringLastNumber(s, out chapterIndex);
 
-                    if (chapter.HasValue)
+                    if (chapter.HasValue && chapterIndex > 1)  // чтобы уберечь от строк типа "1Кор" - то есть считаем, что глава идёт хотя бы с третьего символа
                     {
                         Chapter = chapter.Value;
 
