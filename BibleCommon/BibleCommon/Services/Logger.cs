@@ -49,8 +49,6 @@ namespace BibleCommon.Services
         public static void SetOutputListBox(ListBox lb)
         {
             _lb = lb;
-            //_lb.DrawMode = DrawMode.OwnerDrawVariable;
-            _lb.DrawItem += new DrawItemEventHandler(_lb_DrawItem);
         }
 
         public static void Done()
@@ -132,28 +130,7 @@ namespace BibleCommon.Services
             if (isError)
                 if (Errors != null)
                     Errors.Add(message);
-        }
-
-        static void _lb_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            if (_lb != null)
-                if (e.Index > -1)
-                {
-                    string text = (string)_lb.Items[e.Index];
-
-                    if (text.Length > 200)
-                    {
-                        _lb.HorizontalExtent = Convert.ToInt32(text.Length * 5.75);
-                    }
-
-                    
-                    e.Graphics.DrawString(text, e.Font, text.StartsWith(_errorText) ? Brushes.Red : Brushes.Black, e.Bounds);
-
-                    e.DrawFocusRectangle();
-
-                    
-                }
-        }
+        }     
 
         public static void LogMessage(string message, params object[] args)
         {
