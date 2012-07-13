@@ -40,10 +40,12 @@ namespace BibleCommon.Services
         {
             public bool FoundVerse { get; private set; }
             public bool CancelProcess { get; set; }
+            public VersePointer VersePointer { get; set; }
             
-            public ProcessVerseEventArgs(bool foundVerse)
+            public ProcessVerseEventArgs(bool foundVerse, VersePointer vp)
             {
                 FoundVerse = foundVerse;
+                VersePointer = vp;
             }            
         }
 
@@ -279,11 +281,11 @@ namespace BibleCommon.Services
             return wasModified;
         }
 
-        private void FireProcessVerseEvent(bool foundVerse)
+        private void FireProcessVerseEvent(bool foundVerse, VersePointer vp)
         {
             if (OnNextVerseProcess != null)
             {
-                var args = new ProcessVerseEventArgs(foundVerse);
+                var args = new ProcessVerseEventArgs(foundVerse, vp);
                 OnNextVerseProcess(this, args);
                 if (args.CancelProcess)
                     throw new ProcessAbortedByUserException();
@@ -317,7 +319,7 @@ namespace BibleCommon.Services
             AnalyzeDepth linkDepth, bool force, bool isTitle, bool isSummaryNotesPage, Action<VersePointerSearchResult> onVersePointerFound)
         {
 
-            FireProcessVerseEvent(false);
+            FireProcessVerseEvent(false, null);
 
             bool wasModified = false;
             string localChapterName = string.Empty;    // имя главы в пределах данного стиха. например, действительно только для девятки в "Откр 5:7,9"
@@ -356,7 +358,7 @@ namespace BibleCommon.Services
 
                             if (searchResult.ResultType != VersePointerSearchResult.SearchResultType.Nothing)
                             {
-                                FireProcessVerseEvent(true);
+                                FireProcessVerseEvent(true, searchResult.VersePointer);
 
                                 if (onVersePointerFound != null)
                                     onVersePointerFound(searchResult);                                
