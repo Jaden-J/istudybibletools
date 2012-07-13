@@ -18,8 +18,10 @@ namespace BibleCommon.Helpers
     public enum StringSearchIgnorance
     {
         None,               // не игнорировать пробелы и точки
-        IgnoreFirstSpaceAndDot,
-        IgnoreAllSpacesAndDots
+        IgnoreFirstSpaces,
+        IgnoreFirstSpacesAndDots,
+        IgnoreAllSpacesAndDots        
+
     }
 
     public class SearchMissInfo
@@ -425,8 +427,12 @@ namespace BibleCommon.Helpers
                                 case StringSearchIgnorance.IgnoreAllSpacesAndDots:
                                     isMiss = false;
                                     break;
-                                case StringSearchIgnorance.IgnoreFirstSpaceAndDot:
+                                case StringSearchIgnorance.IgnoreFirstSpacesAndDots:
                                     if (!foundValidChars)  // значит пробел или точка до текста
+                                        isMiss = false;
+                                    break;
+                                case StringSearchIgnorance.IgnoreFirstSpaces:
+                                    if (c == ' ' && !foundValidChars)
                                         isMiss = false;
                                     break;
                             }
@@ -580,8 +586,12 @@ namespace BibleCommon.Helpers
                                 case StringSearchIgnorance.IgnoreAllSpacesAndDots:
                                     isMiss = false;
                                     break;
-                                case StringSearchIgnorance.IgnoreFirstSpaceAndDot:
+                                case StringSearchIgnorance.IgnoreFirstSpacesAndDots:
                                     if (!foundValidChars)  // значит пробел или точка до текста
+                                        isMiss = false;
+                                    break;
+                                case StringSearchIgnorance.IgnoreFirstSpaces:
+                                    if (c == ' ' && !foundValidChars)
                                         isMiss = false;
                                     break;
                             }
