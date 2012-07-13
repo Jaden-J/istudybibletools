@@ -87,38 +87,40 @@ namespace BibleCommon.Services
             int nextHtmlBreakIndex;
             int prevTextBreakIndex;
             int prevHtmlBreakIndex;
-
-            string prevChar = GetPrevStringDesirableNotSpace(textElement.Value, numberStartIndex, null, isLink, out prevTextBreakIndex, out prevHtmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar);
-            string nextChar = StringUtils.GetNextString(textElement.Value, numberEndIndex, null, out nextTextBreakIndex, out nextHtmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar);
+            
+            string prevChar = GetPrevStringDesirableNotSpace(textElement.Value, numberStartIndex, new string[] { ",", ";" }, 
+                null, isLink, out prevTextBreakIndex, out prevHtmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar);
+            string nextChar = StringUtils.GetNextString(textElement.Value, numberEndIndex, 
+                null, out nextTextBreakIndex, out nextHtmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar);
 
             if (IsFullVerse(prevChar, nextChar))
             {
                 result = TryToGetFullVerse(textElement, numberStartIndex, number, nextTextBreakIndex, nextHtmlBreakIndex, prevTextBreakIndex, prevHtmlBreakIndex, 
-                                                prevChar, nextChar, globalChapterResult, localChapterName, prevResult, isInBrackets, isTitle);
+                                                prevChar, nextChar, globalChapterResult, localChapterName, prevResult, isLink, isInBrackets, isTitle);
             }
 
             if (result.ResultType == VersePointerSearchResult.SearchResultType.Nothing && IsSingleVerse(prevChar, nextChar))
             {
-                result = TryToGetSingleVerse(textElement, numberStartIndex, number, nextTextBreakIndex, nextHtmlBreakIndex, prevTextBreakIndex, prevHtmlBreakIndex, 
-                                                prevChar, nextChar, globalChapterResult, localChapterName, prevResult, isInBrackets, isTitle);
+                result = TryToGetSingleVerse(textElement, numberStartIndex, number, nextTextBreakIndex, nextHtmlBreakIndex, prevTextBreakIndex, prevHtmlBreakIndex,
+                                                prevChar, nextChar, globalChapterResult, localChapterName, prevResult, isLink, isInBrackets, isTitle);
             }
             
             if (result.ResultType == VersePointerSearchResult.SearchResultType.Nothing && IsChapter(prevChar, nextChar))
             {
-                result = TryToGetChapter(textElement, numberStartIndex, number, nextTextBreakIndex, nextHtmlBreakIndex, prevTextBreakIndex, prevHtmlBreakIndex, 
-                                                prevChar, nextChar, globalChapterResult, localChapterName, prevResult, isInBrackets, isTitle);
+                result = TryToGetChapter(textElement, numberStartIndex, number, nextTextBreakIndex, nextHtmlBreakIndex, prevTextBreakIndex, prevHtmlBreakIndex,
+                                                prevChar, nextChar, globalChapterResult, localChapterName, prevResult, isLink, isInBrackets, isTitle);
             }
 
             if (result.ResultType == VersePointerSearchResult.SearchResultType.Nothing && IsChapterOrVerseWithoutBookName(prevChar, nextChar))
             {
                 result = TryGetChapterOrVerseWithoutBookName(textElement, numberStartIndex, number, nextTextBreakIndex, nextHtmlBreakIndex, prevTextBreakIndex, prevHtmlBreakIndex,
-                                                prevChar, nextChar, globalChapterResult, localChapterName, prevResult, isInBrackets, isTitle);
+                                                prevChar, nextChar, globalChapterResult, localChapterName, prevResult, isLink, isInBrackets, isTitle);
             }
 
             return result;
         }
 
-        private static string GetPrevStringDesirableNotSpace(string s, int index, SearchMissInfo missInfo, bool isLink, out int textBreakIndex, out int htmlBreakIndex,
+        private static string GetPrevStringDesirableNotSpace(string s, int index, string[] searchStrings, SearchMissInfo missInfo, bool isLink, out int textBreakIndex, out int htmlBreakIndex,
             StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
         {            
             string result = StringUtils.GetPrevString(s, index, missInfo, out textBreakIndex, out htmlBreakIndex, ignoreSpaces, searchMode);
@@ -127,9 +129,31 @@ namespace BibleCommon.Services
                 int tempTextBreakIndex;
                 int tempHtmlBreakIndex;
                 string tempResult = StringUtils.GetPrevString(s, htmlBreakIndex, missInfo, out tempTextBreakIndex, out tempHtmlBreakIndex, ignoreSpaces, searchMode);
-                if (tempResult == "," || tempResult == ";")
+                if (!string.IsNullOrEmpty(tempResult) && searchStrings.Contains(tempResult))
                 {
                     result = tempResult;                    
+                    htmlBreakIndex = tempHtmlBreakIndex;
+
+                    if (!isLink)  // на самом деле это не так критично (вроде бы). Но если isLink, то он не должен менять textBreakIndex, потому что обычно пробел идёт за ссылкой. В таком случае метод CorrectTextToChangeBoundary не корректно отрабатывает. А учесть пробел необходимо, чтобы удалить его в строке "Ин 1:2, 3". Но когда у нас isLink, то по идее таких пробелов и быть больше не должно
+                        textBreakIndex = tempTextBreakIndex;
+                }
+            }
+
+            return result;
+        }
+
+        private static string GetNextStringDesirableNotSpace(string s, int index, string[] searchStrings, SearchMissInfo missInfo, bool isLink, out int textBreakIndex, out int htmlBreakIndex,
+           StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
+        {
+            string result = StringUtils.GetNextString(s, index, missInfo, out textBreakIndex, out htmlBreakIndex, ignoreSpaces, searchMode);
+            if (result == " ")
+            {
+                int tempTextBreakIndex;
+                int tempHtmlBreakIndex;
+                string tempResult = StringUtils.GetNextString(s, htmlBreakIndex, missInfo, out tempTextBreakIndex, out tempHtmlBreakIndex, ignoreSpaces, searchMode);
+                if (!string.IsNullOrEmpty(tempResult) && searchStrings.Contains(tempResult))
+                {
+                    result = tempResult;
                     htmlBreakIndex = tempHtmlBreakIndex;
 
                     if (!isLink)  // на самом деле это не так критично (вроде бы). Но если isLink, то он не должен менять textBreakIndex, потому что обычно пробел идёт за ссылкой. В таком случае метод CorrectTextToChangeBoundary не корректно отрабатывает. А учесть пробел необходимо, чтобы удалить его в строке "Ин 1:2, 3". Но когда у нас isLink, то по идее таких пробелов и быть больше не должно
@@ -143,7 +167,7 @@ namespace BibleCommon.Services
         private static VersePointerSearchResult TryGetChapterOrVerseWithoutBookName(XElement textElement, int numberStartIndex, int number, 
             int nextTextBreakIndex, int nextHtmlBreakIndex, int prevTextBreakIndex, int prevHtmlBreakIndex, string prevChar, string nextChar, 
             VersePointerSearchResult globalChapterResult, string localChapterName, 
-            VersePointerSearchResult prevResult, bool isInBrackets, bool isTitle)
+            VersePointerSearchResult prevResult, bool isLink, bool isInBrackets, bool isTitle)
         {
             VersePointerSearchResult result = new VersePointerSearchResult();            
 
@@ -176,7 +200,7 @@ namespace BibleCommon.Services
 
                     if (nextChar == ChapterVerseDelimiter.ToString())
                     {
-                        verseString = ExtractFullVerseString(textElement, ref nextHtmlBreakIndex, out endIndex);
+                        verseString = ExtractFullVerseString(textElement, isLink, ref nextHtmlBreakIndex, out endIndex);
 
                         if (!string.IsNullOrEmpty(verseString))
                         {
@@ -187,7 +211,7 @@ namespace BibleCommon.Services
                     else
                     {
                         endIndex = nextTextBreakIndex;
-                        verseString = GetFullVerseString(textElement.Value, number.ToString(), ref endIndex, ref nextHtmlBreakIndex);                        
+                        verseString = GetFullVerseString(textElement.Value, number.ToString(), isLink, ref endIndex, ref nextHtmlBreakIndex);                        
 
                         resultType = VersePointerSearchResult.SearchResultType.ChapterWithoutBookName;
                         verseName = GetVerseName(prevResult.VersePointer.OriginalBookName, verseString);                       
@@ -222,7 +246,7 @@ namespace BibleCommon.Services
         private static VersePointerSearchResult TryToGetChapter(XElement textElement, int numberStartIndex, int number,
             int nextTextBreakIndex, int nextHtmlBreakIndex, int prevTextBreakIndex, int prevHtmlBreakIndex, string prevChar, string nextChar, 
             VersePointerSearchResult globalChapterResult, string localChapterName,
-            VersePointerSearchResult prevResult, bool isInBrackets, bool isTitle)
+            VersePointerSearchResult prevResult, bool isLink, bool isInBrackets, bool isTitle)
         {
             VersePointerSearchResult result = new VersePointerSearchResult();
 
@@ -232,7 +256,7 @@ namespace BibleCommon.Services
             {
                 string bookName = StringUtils.GetPrevString(textElement.Value,
                     numberStartIndex, new SearchMissInfo(maxMissCount, SearchMissInfo.MissMode.CancelOnMissFound), out startIndex, out prevHtmlBreakIndex,
-                    maxMissCount > 0 ? StringSearchIgnorance.IgnoreAllSpacesAndDots : StringSearchIgnorance.IgnoreFirstSpaceAndDot,
+                    maxMissCount > 0 ? StringSearchIgnorance.IgnoreAllSpacesAndDots : StringSearchIgnorance.IgnoreFirstSpacesAndDots,
                     StringSearchMode.SearchText);
 
                 if (!string.IsNullOrEmpty(bookName) && !string.IsNullOrEmpty(bookName.Trim()))
@@ -249,7 +273,7 @@ namespace BibleCommon.Services
                     if (!(StringUtils.IsCharAlphabetical(prevPrevChar) || StringUtils.IsDigit(prevPrevChar)))
                     {
                         endIndex = nextTextBreakIndex;
-                        string chapterString = GetFullVerseString(textElement.Value, number.ToString(), ref endIndex, ref nextHtmlBreakIndex);
+                        string chapterString = GetFullVerseString(textElement.Value, number.ToString(), isLink, ref endIndex, ref nextHtmlBreakIndex);
                         string verseName = GetVerseName(bookName, chapterString);
 
                         VersePointer vp = new VersePointer(verseName);
@@ -284,7 +308,7 @@ namespace BibleCommon.Services
         private static VersePointerSearchResult TryToGetSingleVerse(XElement textElement, int numberStartIndex, int number,
             int nextTextBreakIndex, int nextHtmlBreakIndex, int prevTextBreakIndex, int prevHtmlBreakIndex, string prevChar, string nextChar,
             VersePointerSearchResult globalChapterResult, string localChapterName,
-            VersePointerSearchResult prevResult, bool isInBrackets, bool isTitle)
+            VersePointerSearchResult prevResult, bool isLink, bool isInBrackets, bool isTitle)
         {
             VersePointerSearchResult result = new VersePointerSearchResult();
 
@@ -356,7 +380,7 @@ namespace BibleCommon.Services
                     {
                         string verseString = number.ToString();
                         endIndex = nextTextBreakIndex;
-                        verseString = GetFullVerseString(textElement.Value, verseString, ref endIndex, ref nextHtmlBreakIndex);
+                        verseString = GetFullVerseString(textElement.Value, verseString, isLink, ref endIndex, ref nextHtmlBreakIndex);
 
                         string verseName = string.Format("{0}{1}{2}", chapterName, ChapterVerseDelimiter, verseString);
 
@@ -384,13 +408,13 @@ namespace BibleCommon.Services
         private static VersePointerSearchResult TryToGetFullVerse(XElement textElement, int numberStartIndex, int number,
             int nextTextBreakIndex, int nextHtmlBreakIndex, int prevTextBreakIndex, int prevHtmlBreakIndex, string prevChar, string nextChar,
             VersePointerSearchResult globalChapterResult, string localChapterName,
-            VersePointerSearchResult prevResult, bool isInBrackets, bool isTitle)
+            VersePointerSearchResult prevResult, bool isLink, bool isInBrackets, bool isTitle)
         {
             VersePointerSearchResult result = new VersePointerSearchResult();
 
             int startIndex, endIndex;
 
-            string verseString = ExtractFullVerseString(textElement, ref nextHtmlBreakIndex, out endIndex);
+            string verseString = ExtractFullVerseString(textElement, isLink, ref nextHtmlBreakIndex, out endIndex);
 
             if (!string.IsNullOrEmpty(verseString))
             {
@@ -398,7 +422,7 @@ namespace BibleCommon.Services
                 {
                     string bookName = StringUtils.GetPrevString(textElement.Value,
                         numberStartIndex, new SearchMissInfo(maxMissCount, SearchMissInfo.MissMode.CancelOnMissFound), out startIndex, out prevHtmlBreakIndex,
-                        maxMissCount > 0 ? StringSearchIgnorance.IgnoreAllSpacesAndDots : StringSearchIgnorance.IgnoreFirstSpaceAndDot,
+                        maxMissCount > 0 ? StringSearchIgnorance.IgnoreAllSpacesAndDots : StringSearchIgnorance.IgnoreFirstSpacesAndDots,
                         StringSearchMode.SearchText);
 
                     if (!string.IsNullOrEmpty(bookName) && !string.IsNullOrEmpty(bookName.Trim()))
@@ -487,7 +511,7 @@ namespace BibleCommon.Services
         /// <param name="nextHtmlBreakIndex"></param>
         /// <param name="endIndex"></param>
         /// <returns></returns>
-        private static string ExtractFullVerseString(XElement textElement, ref int nextHtmlBreakIndex, out int endIndex)
+        private static string ExtractFullVerseString(XElement textElement, bool isLink, ref int nextHtmlBreakIndex, out int endIndex)
         {
             string verseString = StringUtils.GetNextString(textElement.Value, nextHtmlBreakIndex, null, out endIndex, out nextHtmlBreakIndex);
             int verseNumber;
@@ -495,7 +519,7 @@ namespace BibleCommon.Services
             {
                 if (verseNumber <= 176 && verseNumber > 0)
                 {
-                    verseString = GetFullVerseString(textElement.Value, verseString, ref endIndex, ref nextHtmlBreakIndex);
+                    verseString = GetFullVerseString(textElement.Value, verseString, isLink, ref endIndex, ref nextHtmlBreakIndex);
                     return verseString;
                 }
             }
@@ -511,16 +535,18 @@ namespace BibleCommon.Services
         /// <param name="endIndex"></param>
         /// <param name="nextHtmlBreakIndex"></param>
         /// <returns></returns>
-        private static string GetFullVerseString(string textElementValue, string verseString, ref int endIndex, ref int nextHtmlBreakIndex)
+        private static string GetFullVerseString(string textElementValue, string verseString, bool isLink, ref int endIndex, ref int nextHtmlBreakIndex)
         {
-            if (StringUtils.GetChar(textElementValue, nextHtmlBreakIndex) == '-')
+            int tempEndIndex, tempNextHtmlBreakIndex, temp;
+
+            if (GetNextStringDesirableNotSpace(textElementValue, nextHtmlBreakIndex - 1, new string[] { "-" },
+                null, isLink, out tempEndIndex, out tempNextHtmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar) == "-")   
             {
-                int tempEndIndex, tempNextHtmlBreakIndex, temp;
-                string nextChar = StringUtils.GetNextString(textElementValue, nextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex);
+                string nextChar = StringUtils.GetNextString(textElementValue, tempNextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex, StringSearchIgnorance.IgnoreFirstSpaces);                
 
                 if (int.TryParse(nextChar, out temp))
                 {
-                    verseString = string.Format("{0}-{1}", verseString, nextChar);
+                    verseString = string.Format("{0}-{1}", verseString, nextChar.Trim());
                     endIndex = tempEndIndex;
                     nextHtmlBreakIndex = tempNextHtmlBreakIndex;
 

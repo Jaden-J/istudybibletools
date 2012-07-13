@@ -96,6 +96,7 @@ namespace BibleNoteLinker
                     pbMain.Value = 0;
                     pbMain.PerformStep();
                     Logger.LogMessage(string.Format(" ({0})", Helper.GetRightPagesString(pagesCount)), false, true, false);
+                    LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
                 },
                 pageContent => 
                 {
@@ -137,6 +138,7 @@ namespace BibleNoteLinker
                     pbMain.Value = 0;
                     pbMain.PerformStep();
                     Logger.LogMessage(string.Format(" ({0})", Helper.GetRightPagesString(pagesCount)), false, true, false);
+                    LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
                 },
                 pageContent => 
                 {
@@ -152,7 +154,7 @@ namespace BibleNoteLinker
             int allPagesCount = OneNoteProxy.Instance.ProcessedBiblePages.Values.Count;            
             Logger.LogMessage(string.Format("{0} ({1})",
                 message, Helper.GetRightPagesString(allPagesCount)));            
-            pbMain.Maximum = OneNoteProxy.Instance.ProcessedBiblePages.Values.Count;
+            pbMain.Maximum = allPagesCount;
             pbMain.Value = 0;
             pbMain.PerformStep();
 
@@ -161,11 +163,12 @@ namespace BibleNoteLinker
             {
                 foreach (OneNoteProxy.BiblePageId processedBiblePageId in OneNoteProxy.Instance.ProcessedBiblePages.Values)
                 {
+                    LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
+
                     relinkNotesManager.RelinkBiblePageNotes(processedBiblePageId.SectionId, processedBiblePageId.PageId,
                         processedBiblePageId.PageName, processedBiblePageId.ChapterPointer);
 
-                    PerformProcessStep();
-                    LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
+                    PerformProcessStep();                                        
                 }
             }
         }
@@ -186,6 +189,7 @@ namespace BibleNoteLinker
                     pbMain.Value = 0;
                     pbMain.PerformStep();
                     Logger.LogMessage(string.Format(" ({0})", Helper.GetRightPagesString(pagesCount)), false, true, false);
+                    LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
                 },
                 pageContent =>
                 {
