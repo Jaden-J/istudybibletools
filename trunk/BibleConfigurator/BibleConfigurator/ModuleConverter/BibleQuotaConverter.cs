@@ -30,7 +30,7 @@ namespace BibleConfigurator.ModuleConverter
     public class BibleQuotaBibleBookInfo 
     {
         public string Name { get; set; }
-        public List<string> Abbreviations { get; set; }
+        public List<Abbreviation> Abbreviations { get; set; }
         public int ChaptersCount { get; set; }
         public string FileName { get; set; }
         public string SectionName { get; set; }
@@ -100,7 +100,8 @@ namespace BibleConfigurator.ModuleConverter
                     else if (key == "FullName")
                         result.BibleBooksInfo[result.BibleBooksInfo.Count - 1].Name = value;
                     else if (key == "ShortName")
-                        result.BibleBooksInfo[result.BibleBooksInfo.Count - 1].Abbreviations = value.ToLowerInvariant().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                        result.BibleBooksInfo[result.BibleBooksInfo.Count - 1].Abbreviations = value.ToLowerInvariant().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                                                                                                        .Select(s => new Abbreviation(value)).ToList();
                     else if (key == "ChapterQty")
                         result.BibleBooksInfo[result.BibleBooksInfo.Count - 1].ChaptersCount = int.Parse(value);
                 }

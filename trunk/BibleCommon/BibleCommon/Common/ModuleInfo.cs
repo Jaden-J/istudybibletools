@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 using BibleCommon.Helpers;
+using System.ComponentModel;
 
 namespace BibleCommon.Common
 {
@@ -53,28 +54,39 @@ namespace BibleCommon.Common
         {
             return Notebooks.First(n => n.Type == notebookType);
         }
-
-        // возвращает книгу Библии с учётом всех сокращений
-        public BibleBookInfo GetBibleBook(string s)
+        
+        /// <summary>
+        /// возвращает книгу Библии с учётом всех сокращений 
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="endsWithDot">Методу передаётся уже стримленная строка. Потому отдельно передаётся: заканчивалось ли название книги на точку. Если имя книги было полное (а не сокращённое) и оно окончивалось на точку, то не считаем это верной записью</param>
+        /// <returns></returns>
+        public BibleBookInfo GetBibleBook(string s, bool endsWithDot)
         {
             s = s.ToLowerInvariant();
 
-            var result = GetBibleBookByExactMatch(s);
+            var result = GetBibleBookByExactMatch(s, endsWithDot);
 
             if (result == null && s.Length > 0 && StringUtils.IsDigit(s[0]))
             {
 
                 s = s.Replace(" ", string.Empty); // чтоб находил "1 John", когда в списке сокращений только "1John"
-                result = GetBibleBookByExactMatch(s);
+                result = GetBibleBookByExactMatch(s, endsWithDot);
             }
+
+            if (result != null && endsWithDot)
+                if (result.Name.ToLowerInvariant() == s)
+                    result = null;
 
             return result;
         }
 
-        private BibleBookInfo GetBibleBookByExactMatch(string s)
+        private BibleBookInfo GetBibleBookByExactMatch(string s, bool endsWithDot)
         {
             return BibleStructure.BibleBooks.FirstOrDefault(
-                book => book.Abbreviations.Contains(s));
+                book => book.Abbreviations.Any(abbr => 
+                           abbr.Value == s
+                        && (!endsWithDot || !abbr.IsFullBookName)));
         }
     }
 
@@ -132,7 +144,32 @@ namespace BibleCommon.Common
         [XmlAttribute]
         public string SectionName { get; set; }
 
-        [XmlElement(typeof(string), ElementName = "Abbreviation")]
-        public List<string> Abbreviations { get; set; }
+        [XmlElement(typeof(Abbreviation), ElementName = "Abbreviation")]
+        public List<Abbreviation> Abbreviations { get; set; }
+    }
+
+    [Serializable]
+    public class Abbreviation
+    {
+        [XmlAttribute]
+        [DefaultValueAttribute(false)]
+        public bool IsFullBookName { get; set; }
+
+        [XmlText]
+        public string Value { get; set; }
+
+        public Abbreviation()
+        {
+        }
+
+        public Abbreviation(string value)
+        {
+            this.Value = value;
+        }
+
+        public static implicit operator Abbreviation(string value)
+        {
+            return new Abbreviation(value);
+        }       
     }
 }

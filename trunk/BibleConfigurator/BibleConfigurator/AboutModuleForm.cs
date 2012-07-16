@@ -54,7 +54,7 @@ namespace BibleConfigurator
                 var lblAbbr = new Label();
                 lblAbbr.Top = top;
                 lblAbbr.Left = lblBook.Width + 5;
-                lblAbbr.Text = string.Join("  ", book.Abbreviations.ToArray());
+                lblAbbr.Text = string.Join("  ", book.Abbreviations.Select(abbr => abbr.Value).ToArray());
                 lblAbbr.Width = GetLabelWidth(lblAbbr);
                 pnBooks.Controls.Add(lblAbbr);  
 
