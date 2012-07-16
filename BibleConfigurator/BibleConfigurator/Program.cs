@@ -41,7 +41,7 @@ namespace BibleConfigurator
 
                 //GenerateSummaryOfNotesNotebook();
 
-                //DefaultRusModuleGenerator.GenerateModuleInfo();
+                //DefaultRusModuleGenerator.GenerateModuleInfo("g:\\manifest.xml", true);
             }
             catch (Exception ex)
             {

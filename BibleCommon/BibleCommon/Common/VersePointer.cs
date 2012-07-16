@@ -114,8 +114,9 @@ namespace BibleCommon.Common
                     }                    
                 }
 
-                OriginalBookName = TrimBookName(s);
-                Book = GetBibleBook(OriginalBookName);
+                bool endsWithDot;
+                OriginalBookName = TrimBookName(s, out endsWithDot);
+                Book = GetBibleBook(OriginalBookName, endsWithDot);
             }
         }
 
@@ -227,28 +228,12 @@ namespace BibleCommon.Common
             return s;
         }
 
-        private static string TrimBookName(string bookName)
+        private static string TrimBookName(string bookName, out bool endsWithDot)
         {
-            return bookName.Trim().Trim('.').Replace("  ", " ");  
+            string result = bookName.Trim();
+            endsWithDot = result.EndsWith(".");
 
-            //for (int index = bookName.Length - 1; index >= 0; index--)
-            //{
-            //    char c = bookName[index];
-
-            //    if (StringUtils.IsCharAlphabetical(c) || StringUtils.IsDigit(c))
-            //        break;
-            //    else if (c == ' ' || c == '.')
-            //        bookName = bookName.Remove(bookName.Length - 1);
-            //}
-
-            //if (bookName.IndexOf("  ") != -1)  // двойной пробел
-            //{
-            //    bookName = bookName.Replace("  ", " ");
-            //}
-
-            ////return bookName.Trim().Trim('.');  // и удалить вышестоящий цикл
-
-            //return bookName.Trim();
+            return result.Trim('.').Replace("  ", " ");              
         }
 
         public bool IsValid
@@ -261,9 +246,9 @@ namespace BibleCommon.Common
             }
         }
 
-        private static BibleBookInfo GetBibleBook(string s)
+        private static BibleBookInfo GetBibleBook(string s, bool endsWithDot)
         {
-            return SettingsManager.Instance.CurrentModule.GetBibleBook(s);
+            return SettingsManager.Instance.CurrentModule.GetBibleBook(s, endsWithDot);
         }
 
         public VersePointer GetChapterPointer()
