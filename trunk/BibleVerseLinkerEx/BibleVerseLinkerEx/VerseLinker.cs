@@ -54,7 +54,7 @@ namespace BibleVerseLinkerEx
             {
                 OneNoteUtils.NormalizaTextElement(pointerElement);
                 verseNumber = Utils.GetVerseNumber(pointerElement.Parent.Value);
-                currentObjectId = (string)pointerElement.Parent.Attribute("objectID");
+                currentObjectId = (string)pointerElement.Parent.Attribute("objectID");                
 
                 return pointerElement;
             }
@@ -94,7 +94,9 @@ namespace BibleVerseLinkerEx
                 int? verseNumber;
                 string currentObjectId;
                 XElement selectedElement = FindSelectedText(currentPageId, out currentPageDocument, out verseNumber, out currentObjectId, out xnm);
-                bool selectedTextFound = selectedElement != null && !string.IsNullOrEmpty(selectedElement.Value);
+                string selectedHtml = selectedElement != null ? selectedElement.Value.Trim(new char[] { ' ', '.', ';', ',', ':' }) : string.Empty;                
+                string selectedText = StringUtils.GetText(selectedHtml, SettingsManager.Instance.CurrentModule.BibleStructure.Alphabet);
+                bool selectedTextFound = !string.IsNullOrEmpty(selectedText);
 
                 if (selectedTextFound)
                 {
@@ -126,15 +128,18 @@ namespace BibleVerseLinkerEx
                 {
                     string newObjectContent = string.Empty;
                     if (selectedTextFound)
-                        newObjectContent = GetNewObjectContent(currentPageId, currentObjectId, selectedElement.Value, verseNumber);
+                        newObjectContent = GetNewObjectContent(currentPageId, currentObjectId, selectedText, verseNumber);
 
                     string objectId = UpdateDescriptionPage(verseLinkPageId, newObjectContent, verseNumber);
 
                     if (selectedTextFound)
                     {
-                        string href = OneNoteUtils.GenerateHref(OneNoteApp, selectedElement.Value, verseLinkPageId, objectId);
+                        string href = OneNoteUtils.GenerateHref(OneNoteApp, selectedHtml, verseLinkPageId, objectId);
 
-                        selectedElement.Value = selectedElement.Value.Replace(selectedElement.Value, href);
+
+                        string selectedValue = selectedElement.Value;
+                        selectedElement.Value = string.Empty;
+                        selectedElement.Add(new XCData(selectedValue.Replace(selectedHtml, href)));
                     
                         OneNoteUtils.UpdatePageContentSafe(_oneNoteApp, currentPageDocument, xnm);
                     }
