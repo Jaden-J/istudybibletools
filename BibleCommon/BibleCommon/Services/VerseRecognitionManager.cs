@@ -543,7 +543,7 @@ namespace BibleCommon.Services
         {
             int tempEndIndex, tempNextHtmlBreakIndex, temp;
             bool spaceWasFound;
-            
+
             string firstNextChar = GetNextStringDesirableNotSpace(textElementValue, nextHtmlBreakIndex - 1, new string[] { "-" },
                 null, isLink, out tempEndIndex, out tempNextHtmlBreakIndex, out spaceWasFound, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar);
 
