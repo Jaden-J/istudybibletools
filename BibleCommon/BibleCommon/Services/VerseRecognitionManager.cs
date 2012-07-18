@@ -544,10 +544,12 @@ namespace BibleCommon.Services
             int tempEndIndex, tempNextHtmlBreakIndex, temp;
             bool spaceWasFound;
 
-            string firstNextChar = GetNextStringDesirableNotSpace(textElementValue, nextHtmlBreakIndex - 1, new string[] { "-" },
+            string anotherKindOfDash = char.ConvertFromUtf32(8209);
+
+            string firstNextChar = GetNextStringDesirableNotSpace(textElementValue, nextHtmlBreakIndex - 1, new string[] { "-", anotherKindOfDash },
                 null, isLink, out tempEndIndex, out tempNextHtmlBreakIndex, out spaceWasFound, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar);
 
-            if (firstNextChar == "-")   
+            if (firstNextChar == "-" || firstNextChar == anotherKindOfDash)   
             {
                 string nextChar = StringUtils.GetNextString(textElementValue, tempNextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex, StringSearchIgnorance.IgnoreFirstSpaces);
 
