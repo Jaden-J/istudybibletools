@@ -93,7 +93,7 @@ namespace BibleConfigurator.Tools
 
             foreach (XElement textElement in pageDocument.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
             {
-                OneNoteUtils.NormalizaTextElement(textElement);
+                OneNoteUtils.NormalizeTextElement(textElement);
 
                 int linkIndex = textElement.Value.IndexOf("<a ");
 
@@ -145,7 +145,7 @@ namespace BibleConfigurator.Tools
             foreach (XElement el in pageDoc.Content.Root.XPathSelectElements(string.Format("one:Outline/one:OEChildren/one:OE{0}/one:T", 
                 !string.IsNullOrEmpty(textElementId) ? string.Format("[@objectID='{0}']", textElementId) : string.Empty), pageDoc.Xnm))
             {
-                OneNoteUtils.NormalizaTextElement(el);
+                OneNoteUtils.NormalizeTextElement(el);
 
                 bool needToSearchVerse = true;
                 if (el.Value.Length > startIndex + 1)

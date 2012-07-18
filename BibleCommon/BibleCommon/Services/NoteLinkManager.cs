@@ -326,7 +326,7 @@ namespace BibleCommon.Services
 
             if (textElement != null && !string.IsNullOrEmpty(textElement.Value))
             {
-                OneNoteUtils.NormalizaTextElement(textElement);
+                OneNoteUtils.NormalizeTextElement(textElement);
                 string textElementValue = textElement.Value;
                 int numberIndex = textElement.Value
                         .IndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
@@ -590,8 +590,9 @@ namespace BibleCommon.Services
 
         private bool NeedToForceAnalyzeChapter(VersePointerSearchResult searchResult)
         {
-            return searchResult.ResultType != VersePointerSearchResult.SearchResultType.ChapterOnlyAtStartString
-                && searchResult.ResultType != VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString;
+            return searchResult.VersePointer.IsMultiVerse
+                    || (searchResult.ResultType != VersePointerSearchResult.SearchResultType.ChapterOnlyAtStartString
+                        && searchResult.ResultType != VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString);
         }
 
         internal static string GetDefaultNotesPageName(int? verseNumber)
@@ -984,7 +985,7 @@ namespace BibleCommon.Services
             }
 
             if (suchNoteLink != null)
-                OneNoteUtils.NormalizaTextElement(suchNoteLink);         
+                OneNoteUtils.NormalizeTextElement(suchNoteLink);         
 
             if (suchNoteLink == null)  // если нет ссылки на такую же заметку
             {

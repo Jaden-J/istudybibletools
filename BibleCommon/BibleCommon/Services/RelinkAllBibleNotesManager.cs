@@ -37,12 +37,12 @@ namespace BibleCommon.Services
             {
                 if (!string.IsNullOrEmpty(textElement.Value))
                 {
-                    OneNoteUtils.NormalizaTextElement(textElement);
+                    OneNoteUtils.NormalizeTextElement(textElement);
 
                     if (CantainsLinkToNotesPage(textElement))
                     {
                         XElement bibleVerseElement = textElement.Parent.Parent.Parent.Parent.XPathSelectElement("one:Cell[1]/one:OEChildren/one:OE/one:T", biblePageDocument.Xnm);
-                        OneNoteUtils.NormalizaTextElement(bibleVerseElement);
+                        OneNoteUtils.NormalizeTextElement(bibleVerseElement);
                         int? verseNumber = Utils.GetVerseNumber(bibleVerseElement.Value);
 
                         if (verseNumber.GetValueOrDefault(0) > 0)

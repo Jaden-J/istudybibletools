@@ -52,7 +52,7 @@ namespace BibleVerseLinkerEx
 
             if (pointerElement != null)
             {
-                OneNoteUtils.NormalizaTextElement(pointerElement);
+                OneNoteUtils.NormalizeTextElement(pointerElement);
                 verseNumber = Utils.GetVerseNumber(pointerElement.Parent.Value);
                 currentObjectId = (string)pointerElement.Parent.Attribute("objectID");                
 
