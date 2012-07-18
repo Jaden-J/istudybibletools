@@ -142,12 +142,15 @@ namespace BibleCommon.Services
             return result;
         }
 
-        private static string GetNextStringDesirableNotSpace(string s, int index, string[] searchStrings, SearchMissInfo missInfo, bool isLink, out int textBreakIndex, out int htmlBreakIndex,
-           StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
+        private static string GetNextStringDesirableNotSpace(string s, int index, string[] searchStrings, SearchMissInfo missInfo, bool isLink, 
+                        out int textBreakIndex, out int htmlBreakIndex, out bool spaceWasFound,
+                        StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
         {
+            spaceWasFound = false;
             string result = StringUtils.GetNextString(s, index, missInfo, out textBreakIndex, out htmlBreakIndex, ignoreSpaces, searchMode);
             if (result == " ")
             {
+                spaceWasFound = true;
                 int tempTextBreakIndex;
                 int tempHtmlBreakIndex;
                 string tempResult = StringUtils.GetNextString(s, htmlBreakIndex, missInfo, out tempTextBreakIndex, out tempHtmlBreakIndex, ignoreSpaces, searchMode);
@@ -539,11 +542,14 @@ namespace BibleCommon.Services
         private static string GetFullVerseString(string textElementValue, string verseString, bool isLink, ref int endIndex, ref int nextHtmlBreakIndex)
         {
             int tempEndIndex, tempNextHtmlBreakIndex, temp;
+            bool spaceWasFound;
+            
+            string firstNextChar = GetNextStringDesirableNotSpace(textElementValue, nextHtmlBreakIndex - 1, new string[] { "-" },
+                null, isLink, out tempEndIndex, out tempNextHtmlBreakIndex, out spaceWasFound, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar);
 
-            if (GetNextStringDesirableNotSpace(textElementValue, nextHtmlBreakIndex - 1, new string[] { "-" },
-                null, isLink, out tempEndIndex, out tempNextHtmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar) == "-")   
+            if (firstNextChar == "-")   
             {
-                string nextChar = StringUtils.GetNextString(textElementValue, tempNextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex, StringSearchIgnorance.IgnoreFirstSpaces);                
+                string nextChar = StringUtils.GetNextString(textElementValue, tempNextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex, StringSearchIgnorance.IgnoreFirstSpaces);
 
                 if (int.TryParse(nextChar, out temp))
                 {
@@ -562,7 +568,12 @@ namespace BibleCommon.Services
                             nextHtmlBreakIndex = tempNextHtmlBreakIndex;
                         }
                     }
-                }              
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(nextChar) && !spaceWasFound && !nextChar.StartsWith(" ")) // чтобы отсечь варианты типа 1 Кор 2:3; 2-е Кор 3:4
+                        verseString = string.Empty;
+                }
             }
 
             return verseString;

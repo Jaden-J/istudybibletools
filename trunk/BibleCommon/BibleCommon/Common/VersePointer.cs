@@ -105,8 +105,12 @@ namespace BibleCommon.Common
                         _topVerse = null;
                     }
 
-                    if ((_topChapter == null && TopVerse.GetValueOrDefault(0) <= Verse.GetValueOrDefault(0))
-                        || (_topChapter != null && TopChapter.GetValueOrDefault(0) <= Chapter.GetValueOrDefault(0)))
+                    if (
+                        ((TopChapter == null || TopChapter.GetValueOrDefault(0) == Chapter.GetValueOrDefault(0))
+                                        && TopVerse.GetValueOrDefault(0) <= Verse.GetValueOrDefault(0))
+                        || 
+                        (TopChapter != null 
+                                        && TopChapter.GetValueOrDefault(0) < Chapter.GetValueOrDefault(0)))
                     {
                         _topVerse = null;
                         _topChapter = null;

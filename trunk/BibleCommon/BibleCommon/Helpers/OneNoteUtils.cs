@@ -119,13 +119,13 @@ namespace BibleCommon.Helpers
             return string.Format("<a href=\"{0}\">{1}</a>", link, title);
         }
 
-        public static void NormalizaTextElement(XElement textElement)  // must be one:T element
+        public static void NormalizeTextElement(XElement textElement)  // must be one:T element
         {
             if (textElement != null)
             {
                 if (!string.IsNullOrEmpty(textElement.Value))
                 {
-                    textElement.Value = textElement.Value.Replace("\n", " ");
+                    textElement.Value = textElement.Value.Replace("\n", " ").Replace("&nbsp;", " ");
                 }
             }
         }
