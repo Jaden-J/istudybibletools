@@ -250,7 +250,10 @@ namespace BibleCommon.Services
         {
             VersePointerSearchResult result = new VersePointerSearchResult();
 
-            int startIndex, endIndex;            
+            int startIndex, endIndex;
+
+            endIndex = nextTextBreakIndex;            
+            string chapterString = GetFullVerseString(textElement.Value, number.ToString(), isLink, ref endIndex, ref nextHtmlBreakIndex);
 
             for (int maxMissCount = 2; maxMissCount >= 0; maxMissCount--)
             {
@@ -271,9 +274,7 @@ namespace BibleCommon.Services
 
                     char prevPrevChar = StringUtils.GetChar(textElement.Value, prevHtmlBreakIndex);
                     if (!(StringUtils.IsCharAlphabetical(prevPrevChar) || StringUtils.IsDigit(prevPrevChar)))
-                    {
-                        endIndex = nextTextBreakIndex;
-                        string chapterString = GetFullVerseString(textElement.Value, number.ToString(), isLink, ref endIndex, ref nextHtmlBreakIndex);
+                    {                        
                         string verseName = GetVerseName(bookName, chapterString);
 
                         VersePointer vp = new VersePointer(verseName);
@@ -473,7 +474,7 @@ namespace BibleCommon.Services
 
         private static bool IsChapter(string prevChar, string nextChar)
         {
-            string[] endChars = { ")", "]", ",", ".", "?", "!", ";", "-" };
+            string[] endChars = { ")", "]", ",", ".", "?", "!", ";", "-", "&" };
             return string.IsNullOrEmpty(nextChar.Trim()) || endChars.Contains(nextChar);                
         }
 
