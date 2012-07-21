@@ -38,17 +38,18 @@ namespace RibbonButtons
 
         #region IDTExtensibility2 Members
 
-        ApplicationClass onApp = new ApplicationClass();
+        ApplicationClass onApp;
 
 		public void OnConnection(object Application, ext_ConnectMode ConnectMode, object AddInInst, ref Array custom)
 		{
 			/*
 				For debugging, it is useful to have a MessageBox.Show() here, so that execution is paused while you have a chance to get VS to 'Attach to Process' 
-			*/
-			onApp = (ApplicationClass)Application;
+			*/		
 
             try
             {
+                onApp = (ApplicationClass)Application;
+
                 AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 RunProgram(Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath), BibleConfiguratorProgramClassName, "-runOnOneNoteStarts", false);
             }
@@ -60,8 +61,15 @@ namespace RibbonButtons
 
         Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
-            if (args.Name == string.Format("BibleCommon, Version={0}, Culture=neutral, PublicKeyToken=null", BibleCommonVersion))
-                return AssemblyLoader.LoadAssembly(Path.Combine(Utils.GetCurrentDirectory(), BibleCommonPath));                
+            try
+            {
+                if (args.Name == string.Format("BibleCommon, Version={0}, Culture=neutral, PublicKeyToken=null", BibleCommonVersion))
+                    return AssemblyLoader.LoadAssembly(Path.Combine(Utils.GetCurrentDirectory(), BibleCommonPath));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
 
             return null;
         }
@@ -71,10 +79,17 @@ namespace RibbonButtons
         {
             get
             {
-                if (_bibleCommonVersion == null)
+                try
                 {
-                    var assembly = AssemblyLoader.LoadAssembly(Path.Combine(Utils.GetCurrentDirectory(), BibleCommonPath));
-                    _bibleCommonVersion = assembly.GetName().Version;
+                    if (_bibleCommonVersion == null)
+                    {
+                        var assembly = AssemblyLoader.LoadAssembly(Path.Combine(Utils.GetCurrentDirectory(), BibleCommonPath));
+                        _bibleCommonVersion = assembly.GetName().Version;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
 
                 return _bibleCommonVersion;
@@ -105,7 +120,15 @@ namespace RibbonButtons
 		/// </summary>
 		public string GetCustomUI(string RibbonID)
 		{   
-			return Properties.Resources.ribbon;
+            try
+            {
+			    return Properties.Resources.ribbon;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
 		}
 
 		/// <summary>
@@ -114,67 +137,74 @@ namespace RibbonButtons
 		/// <param name="control">The control that was just clicked. control.Id will give you its ID</param>
         public void ButtonClick(IRibbonControl control)
 		{
-            string path = null;
-            string args = string.Empty;
-            string programClassName = string.Empty;
-            bool loadInSameProcess = false;
-
-            switch (control.Id)
+            try
             {
-                case "VersePointerButton":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleVersePointerPath);
-                    programClassName = BibleVersePointerProgramClassName;
-                    loadInSameProcess = true;
-                    break;
-                case "VerseLinkerButton":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleVerseLinkerPath);
-                    programClassName = BibleVerseLinkerProgramClassName;                    
-                    break;
-                case "NoteLinkerButton":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleNoteLinkerPath);
-                    programClassName = BibleNoteLinkerProgramClassName;                    
-                    break;                
-                case "QuickNoteLinkerButton":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleNoteLinkerPath);
-                    args = "-quickAnalyze";
-                    programClassName = BibleNoteLinkerProgramClassName;
-                    loadInSameProcess = true;
-                    break;
-                case "ConfigureButton":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
-                    programClassName = BibleConfiguratorProgramClassName;                    
-                    break;
-                case "HelpButton":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
-                    args = "-showManual";
-                    programClassName = BibleConfiguratorProgramClassName;
-                    //loadInSameProcess = true;
-                    break;
-                case "ModuleInfoButton":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
-                    args = "-showModuleInfo";
-                    programClassName = BibleConfiguratorProgramClassName;
-                    break;
-                case "AboutProgramButton":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
-                    args = "-showAboutProgram";
-                    programClassName = BibleConfiguratorProgramClassName;
-                    break;
-                case "UnlockCurrentSection":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
-                    args = "-unlockBibleSection";
-                    programClassName = BibleConfiguratorProgramClassName;
-                    //loadInSameProcess = true;
-                    break;
-                case "UnlockAllBible":
-                    path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
-                    args = "-unlockAllBible";
-                    programClassName = BibleConfiguratorProgramClassName;
-                    //loadInSameProcess = true;
-                    break;             
-            }
+                string path = null;
+                string args = string.Empty;
+                string programClassName = string.Empty;
+                bool loadInSameProcess = false;
 
-            RunProgram(path, programClassName, args, loadInSameProcess);
+                switch (control.Id)
+                {
+                    case "VersePointerButton":
+                        path = Path.Combine(Utils.GetCurrentDirectory(), BibleVersePointerPath);
+                        programClassName = BibleVersePointerProgramClassName;
+                        loadInSameProcess = true;
+                        break;
+                    case "VerseLinkerButton":
+                        path = Path.Combine(Utils.GetCurrentDirectory(), BibleVerseLinkerPath);
+                        programClassName = BibleVerseLinkerProgramClassName;
+                        break;
+                    case "NoteLinkerButton":
+                        path = Path.Combine(Utils.GetCurrentDirectory(), BibleNoteLinkerPath);
+                        programClassName = BibleNoteLinkerProgramClassName;
+                        break;
+                    case "QuickNoteLinkerButton":
+                        path = Path.Combine(Utils.GetCurrentDirectory(), BibleNoteLinkerPath);
+                        args = "-quickAnalyze";
+                        programClassName = BibleNoteLinkerProgramClassName;
+                        loadInSameProcess = true;
+                        break;
+                    case "ConfigureButton":
+                        path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
+                        programClassName = BibleConfiguratorProgramClassName;
+                        break;
+                    case "HelpButton":
+                        path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
+                        args = "-showManual";
+                        programClassName = BibleConfiguratorProgramClassName;
+                        //loadInSameProcess = true;
+                        break;
+                    case "ModuleInfoButton":
+                        path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
+                        args = "-showModuleInfo";
+                        programClassName = BibleConfiguratorProgramClassName;
+                        break;
+                    case "AboutProgramButton":
+                        path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
+                        args = "-showAboutProgram";
+                        programClassName = BibleConfiguratorProgramClassName;
+                        break;
+                    case "UnlockCurrentSection":
+                        path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
+                        args = "-unlockBibleSection";
+                        programClassName = BibleConfiguratorProgramClassName;
+                        //loadInSameProcess = true;
+                        break;
+                    case "UnlockAllBible":
+                        path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
+                        args = "-unlockAllBible";
+                        programClassName = BibleConfiguratorProgramClassName;
+                        //loadInSameProcess = true;
+                        break;
+                }
+
+                RunProgram(path, programClassName, args, loadInSameProcess);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
 		}
 
         private void RunProgram(string programPath, string programClassName, string args, bool loadInSameProcess = true)
@@ -210,44 +240,51 @@ namespace RibbonButtons
 		/// <param name="imageName">The image="" parameter in ribbon.xml, i.e. the image name</param>
         public IStream GetImage(string imageName)
         {
-            MemoryStream mem = new MemoryStream();
-
-            switch (imageName)
+            try
             {
-                case "VersePointerButton.png":
-                    Properties.Resources.VersePointerButton.Save(mem, ImageFormat.Png);
-                    break;
-                case "VerseLinkerButton.png":
-                    Properties.Resources.VerseLinkerButton.Save(mem, ImageFormat.Png);
-                    break;
-                case "NoteLinkerButton.png":
-                    Properties.Resources.NoteLinkerButton.Save(mem, ImageFormat.Png);
-                    break;
-                case "ConfigureButton.png":
-                    Properties.Resources.ConfigureButton.Save(mem, ImageFormat.Png);
-                    break;
-                case "HelpButton.png":
-                    Properties.Resources.HelpButton.Save(mem, ImageFormat.Png);
-                    break;
-                case "AboutModule.png":
-                    Properties.Resources.AboutModule.Save(mem, ImageFormat.Png);
-                    break;
-                case "AboutProgram.png":
-                    Properties.Resources.AboutProgram.Save(mem, ImageFormat.Png);
-                    break;
-                case "QuickAnalyze.png":
-                    Properties.Resources.QuickAnalyze.Save(mem, ImageFormat.Png);
-                    break;
-                case "UnlockFile.png":
-                    Properties.Resources.UnlockFile.Save(mem, ImageFormat.Png);
-                    break;
-                case "UnlockFolder.png":
-                    Properties.Resources.UnlockFolder.Save(mem, ImageFormat.Png);
-                    break;
+                MemoryStream mem = new MemoryStream();
+
+                switch (imageName)
+                {
+                    case "VersePointerButton.png":
+                        Properties.Resources.VersePointerButton.Save(mem, ImageFormat.Png);
+                        break;
+                    case "VerseLinkerButton.png":
+                        Properties.Resources.VerseLinkerButton.Save(mem, ImageFormat.Png);
+                        break;
+                    case "NoteLinkerButton.png":
+                        Properties.Resources.NoteLinkerButton.Save(mem, ImageFormat.Png);
+                        break;
+                    case "ConfigureButton.png":
+                        Properties.Resources.ConfigureButton.Save(mem, ImageFormat.Png);
+                        break;
+                    case "HelpButton.png":
+                        Properties.Resources.HelpButton.Save(mem, ImageFormat.Png);
+                        break;
+                    case "AboutModule.png":
+                        Properties.Resources.AboutModule.Save(mem, ImageFormat.Png);
+                        break;
+                    case "AboutProgram.png":
+                        Properties.Resources.AboutProgram.Save(mem, ImageFormat.Png);
+                        break;
+                    case "QuickAnalyze.png":
+                        Properties.Resources.QuickAnalyze.Save(mem, ImageFormat.Png);
+                        break;
+                    case "UnlockFile.png":
+                        Properties.Resources.UnlockFile.Save(mem, ImageFormat.Png);
+                        break;
+                    case "UnlockFolder.png":
+                        Properties.Resources.UnlockFolder.Save(mem, ImageFormat.Png);
+                        break;
+                }
+
+                return new CCOMStreamWrapper(mem);
             }
-
-            return new CCOMStreamWrapper(mem);
-
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
         }
 
 		#endregion
