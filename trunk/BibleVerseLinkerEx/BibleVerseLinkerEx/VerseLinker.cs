@@ -45,7 +45,7 @@ namespace BibleVerseLinkerEx
             currentObjectId = null;
 
             string pageContentXml;
-            OneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piSelection);
+            OneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piSelection, Constants.CurrentOneNoteSchema);
 
             document = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
             XElement pointerElement = document.Root.XPathSelectElement("//one:T[@selected='all']", xnm);
@@ -65,7 +65,7 @@ namespace BibleVerseLinkerEx
         private XElement GetLastPageObject(string pageId, int? position)
         {
             string pageContentXml;
-            OneNoteApp.GetPageContent(pageId, out pageContentXml);
+            OneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
 
             XmlNamespaceManager xnm;
             XDocument document = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
@@ -193,7 +193,7 @@ namespace BibleVerseLinkerEx
             string pageContentXml;
             XDocument pageDocument;
             XmlNamespaceManager xnm;
-            OneNoteApp.GetPageContent(pageId, out pageContentXml);
+            OneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
             pageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
 

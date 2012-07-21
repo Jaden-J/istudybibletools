@@ -82,7 +82,7 @@ namespace BibleConfigurator.Tools
             string pageContentXml;
             XDocument notePageDocument;
             XmlNamespaceManager xnm;
-            _oneNoteApp.GetPageContent(pageId, out pageContentXml);
+            _oneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
             notePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
 
             XElement columns = notePageDocument.Root.XPathSelectElement("//one:Table/one:Columns", xnm);

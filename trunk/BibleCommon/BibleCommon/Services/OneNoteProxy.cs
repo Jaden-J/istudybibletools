@@ -365,8 +365,8 @@ namespace BibleCommon.Services
                 {
                     string xml = string.Empty;
                     try
-                    {                        
-                        oneNoteApp.GetPageContent(pageId, out xml);
+                    {
+                        oneNoteApp.GetPageContent(pageId, out xml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
                     }
                     catch (COMException ex)
                     {

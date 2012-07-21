@@ -127,7 +127,7 @@ namespace BibleConfigurator.Tools
             string pageContentXml;
             XDocument notePageDocument;
             XmlNamespaceManager xnm;
-            _oneNoteApp.GetPageContent(biblePageId, out pageContentXml);
+            _oneNoteApp.GetPageContent(biblePageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
             notePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
 
             foreach (XElement noteTextElement in notePageDocument.Root.XPathSelectElements("//one:Table/one:Row/one:Cell[2]/one:OEChildren/one:OE/one:T", xnm))
