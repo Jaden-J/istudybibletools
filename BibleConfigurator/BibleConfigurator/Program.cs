@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
+using BibleCommon.Consts;
 
 namespace BibleConfigurator
 {
@@ -323,7 +324,7 @@ namespace BibleConfigurator
             System.Xml.XmlNamespaceManager xnm = new System.Xml.XmlNamespaceManager(new System.Xml.NameTable());
             var xd = System.Xml.Linq.XDocument.Parse(xml);
 
-            xnm.AddNamespace("one", "http://schemas.microsoft.com/office/onenote/2010/onenote");
+            xnm.AddNamespace("one", Constants.OneNoteXmlNs);
             System.Xml.Linq.XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
 
             var inkNodes = doc.Root.XPathSelectElements("one:InkDrawing", xnm)

@@ -328,7 +328,7 @@ namespace BibleCommon.Services
                     string xml;
                     try
                     {
-                        oneNoteApp.GetHierarchy(hierarchyId, scope, out xml);
+                        oneNoteApp.GetHierarchy(hierarchyId, scope, out xml, Constants.CurrentOneNoteSchema);
                     }
                     catch (Exception ex)
                     {
