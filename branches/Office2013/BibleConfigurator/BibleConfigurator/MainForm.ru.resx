@@ -1,0 +1,364 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
+    <value>318, 13</value>
+  </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value>Выберите записную книжку для страниц "Сводные заметок"</value>
+  </data>
+  <data name="chkCreateBibleNotesPagesNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
+    <value>130, 17</value>
+  </data>
+  <data name="chkCreateBibleNotesPagesNotebookFromTemplate.Text" xml:space="preserve">
+    <value>Создать из шаблона</value>
+  </data>
+  <data name="btnSingleNotebookParameters.Text" xml:space="preserve">
+    <value>Настроить</value>
+  </data>
+  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>259, 13</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>Выберите записную книжку для изучения Библии</value>
+  </data>
+  <data name="chkCreateBibleStudyNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
+    <value>130, 17</value>
+  </data>
+  <data name="chkCreateBibleStudyNotebookFromTemplate.Text" xml:space="preserve">
+    <value>Создать из шаблона</value>
+  </data>
+  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>297, 13</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>Выберите записную книжку для комментариев к Библии</value>
+  </data>
+  <data name="chkCreateBibleCommentsNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
+    <value>130, 17</value>
+  </data>
+  <data name="chkCreateBibleCommentsNotebookFromTemplate.Text" xml:space="preserve">
+    <value>Создать из шаблона</value>
+  </data>
+  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>210, 13</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Выберите записную книжку для Библии</value>
+  </data>
+  <data name="chkCreateBibleNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
+    <value>130, 17</value>
+  </data>
+  <data name="chkCreateBibleNotebookFromTemplate.Text" xml:space="preserve">
+    <value>Создать из шаблона</value>
+  </data>
+  <data name="lblSelectSingleNotebook.Size" type="System.Drawing.Size, System.Drawing">
+    <value>149, 13</value>
+  </data>
+  <data name="lblSelectSingleNotebook.Text" xml:space="preserve">
+    <value>Выберите записную книжку</value>
+  </data>
+  <data name="chkCreateSingleNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
+    <value>130, 17</value>
+  </data>
+  <data name="chkCreateSingleNotebookFromTemplate.Text" xml:space="preserve">
+    <value>Создать из шаблона</value>
+  </data>
+  <data name="rbMultiNotebook.Size" type="System.Drawing.Size, System.Drawing">
+    <value>176, 17</value>
+  </data>
+  <data name="rbMultiNotebook.Text" xml:space="preserve">
+    <value>Отдельные записные книжки</value>
+  </data>
+  <data name="rbSingleNotebook.Size" type="System.Drawing.Size, System.Drawing">
+    <value>143, 17</value>
+  </data>
+  <data name="rbSingleNotebook.Text" xml:space="preserve">
+    <value>Одна записная книжка</value>
+  </data>
+  <data name="tabPage1.Text" xml:space="preserve">
+    <value>Параметры OneNote</value>
+  </data>
+  <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
+    <value>99, 13</value>
+  </data>
+  <data name="label9.Text" xml:space="preserve">
+    <value>Язык интерфейса</value>
+  </data>
+  <data name="chkUseDifferentPages.Size" type="System.Drawing.Size, System.Drawing">
+    <value>227, 17</value>
+  </data>
+  <data name="chkUseDifferentPages.Text" xml:space="preserve">
+    <value>Отдельные страницы для кажого стиха</value>
+  </data>
+  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
+    <value>211, 13</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value>Название страницы "Сводная заметок"</value>
+  </data>
+  <data name="chkExcludedVersesLinking.Size" type="System.Drawing.Size, System.Drawing">
+    <value>252, 17</value>
+  </data>
+  <data name="chkExcludedVersesLinking.Text" xml:space="preserve">
+    <value>Анализировать исключаемые главы и стихи</value>
+  </data>
+  <data name="chkExpandMultiVersesLinking.Size" type="System.Drawing.Size, System.Drawing">
+    <value>238, 17</value>
+  </data>
+  <data name="chkExpandMultiVersesLinking.Text" xml:space="preserve">
+    <value>Анализировать каждый стих в диапазоне</value>
+  </data>
+  <data name="lblNotesPageWidth.Size" type="System.Drawing.Size, System.Drawing">
+    <value>200, 13</value>
+  </data>
+  <data name="lblNotesPageWidth.Text" xml:space="preserve">
+    <value>Ширина страницы "Сводная заметок"</value>
+  </data>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>Страница "Сводная заметок"</value>
+  </data>
+  <data name="chkUseRubbishPage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>249, 17</value>
+  </data>
+  <data name="chkUseRubbishPage.Text" xml:space="preserve">
+    <value>Использовать подробную сводную заметок</value>
+  </data>
+  <data name="label10.Size" type="System.Drawing.Size, System.Drawing">
+    <value>269, 13</value>
+  </data>
+  <data name="label10.Text" xml:space="preserve">
+    <value>Название страницы "Подробная сводная заметок"</value>
+  </data>
+  <data name="chkRubbishExcludedVersesLinking.Size" type="System.Drawing.Size, System.Drawing">
+    <value>252, 17</value>
+  </data>
+  <data name="chkRubbishExcludedVersesLinking.Text" xml:space="preserve">
+    <value>Анализировать исключаемые главы и стихи</value>
+  </data>
+  <data name="chkRubbishExpandMultiVersesLinking.Size" type="System.Drawing.Size, System.Drawing">
+    <value>238, 17</value>
+  </data>
+  <data name="chkRubbishExpandMultiVersesLinking.Text" xml:space="preserve">
+    <value>Анализировать каждый стих в диапазоне</value>
+  </data>
+  <data name="lblRubbishNotesPageWidth.Size" type="System.Drawing.Size, System.Drawing">
+    <value>258, 13</value>
+  </data>
+  <data name="lblRubbishNotesPageWidth.Text" xml:space="preserve">
+    <value>Ширина страницы "Подробная сводная заметок"</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>Страница "Подробная сводная заметок"</value>
+  </data>
+  <data name="chkDefaultPageNameParameters.Size" type="System.Drawing.Size, System.Drawing">
+    <value>223, 17</value>
+  </data>
+  <data name="chkDefaultPageNameParameters.Text" xml:space="preserve">
+    <value>Использовать значения по умолчанию</value>
+  </data>
+  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>335, 13</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>Название раздела комментариев к книге Библии по умолчанию</value>
+  </data>
+  <data name="tbCommentsPageName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>248, 20</value>
+  </data>
+  <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>310, 13</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Название страницы комментариев к Библии по умолчанию</value>
+  </data>
+  <data name="tabPage2.Text" xml:space="preserve">
+    <value>Параметры программы</value>
+  </data>
+  <data name="btnBackup.Text" xml:space="preserve">
+    <value>Создать резервную копию данных</value>
+  </data>
+  <data name="btnResizeBibleTables.Text" xml:space="preserve">
+    <value>Изменить ширину страниц Библии</value>
+  </data>
+  <data name="btnDeleteNotesPages.Text" xml:space="preserve">
+    <value>Удалить страницы "Сводные заметок"</value>
+  </data>
+  <data name="btnRelinkComments.Text" xml:space="preserve">
+    <value>Обновить ссылки на комментарии</value>
+  </data>
+  <data name="tabPage3.Text" xml:space="preserve">
+    <value>Дополнительные утилиты</value>
+  </data>
+  <data name="hlModules.Location" type="System.Drawing.Point, System.Drawing">
+    <value>509, 7</value>
+  </data>
+  <data name="hlModules.Size" type="System.Drawing.Size, System.Drawing">
+    <value>129, 13</value>
+  </data>
+  <data name="hlModules.Text" xml:space="preserve">
+    <value>http://IStudyBibleTools.ru</value>
+  </data>
+  <data name="lblModulesLink.Location" type="System.Drawing.Point, System.Drawing">
+    <value>290, 7</value>
+  </data>
+  <data name="lblModulesLink.Size" type="System.Drawing.Size, System.Drawing">
+    <value>223, 13</value>
+  </data>
+  <data name="lblModulesLink.Text" xml:space="preserve">
+    <value>Скачать дополнительные модули на сайте</value>
+  </data>
+  <data name="lblMustSelectModule.Size" type="System.Drawing.Size, System.Drawing">
+    <value>234, 13</value>
+  </data>
+  <data name="lblMustSelectModule.Text" xml:space="preserve">
+    <value>Необходимо выбрать используемый модуль</value>
+  </data>
+  <data name="lblMustUploadModule.Location" type="System.Drawing.Point, System.Drawing">
+    <value>213, 105</value>
+  </data>
+  <data name="lblMustUploadModule.Size" type="System.Drawing.Size, System.Drawing">
+    <value>229, 13</value>
+  </data>
+  <data name="lblMustUploadModule.Text" xml:space="preserve">
+    <value>Необходимо добавить хотя бы один модуль</value>
+  </data>
+  <data name="btnUploadModule.Text" xml:space="preserve">
+    <value>Добавить модуль</value>
+  </data>
+  <data name="tabPage4.Text" xml:space="preserve">
+    <value>Модули</value>
+  </data>
+  <data name="lblWarning.Location" type="System.Drawing.Point, System.Drawing">
+    <value>474, 0</value>
+  </data>
+  <data name="lblWarning.Size" type="System.Drawing.Size, System.Drawing">
+    <value>184, 13</value>
+  </data>
+  <data name="lblWarning.Text" xml:space="preserve">
+    <value>Необходимо сохранить изменения</value>
+  </data>
+  <data name="openFileDialog.Filter" xml:space="preserve">
+    <value>IStudyBibleTools Модуль|*.isbt</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Параметры OneNote IStudyBibleTools</value>
+  </data>
+</root>
