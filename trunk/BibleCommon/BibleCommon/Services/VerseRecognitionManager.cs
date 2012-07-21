@@ -472,7 +472,7 @@ namespace BibleCommon.Services
 
         private static bool IsChapter(string prevChar, string nextChar)
         {
-            string[] endChars = { ")", "]", ",", ".", "?", "!", ";", "-", "&" };
+            string[] endChars = { ")", "]", "}", ",", ".", "?", "!", ";", "-", "&" };
             return string.IsNullOrEmpty(nextChar.Trim()) || endChars.Contains(nextChar);                
         }
 

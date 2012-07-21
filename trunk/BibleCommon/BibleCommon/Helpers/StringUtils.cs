@@ -125,18 +125,22 @@ namespace BibleCommon.Helpers
         public static bool IsSurroundedBy(string s, string leftSymbol, string rightSymbol, int startPosition = 0)
         {
             bool isSurroundedOnRight = false;
-            bool isSurroundedOnLeft = false;
+            bool isSurroundedOnLeft = false;            
+            string rightString = GetText(s.Substring(startPosition + 1));
 
-            int startIndex = s.IndexOf(leftSymbol, startPosition);
-            int endIndex = s.IndexOf(rightSymbol, startPosition);
+
+            int startIndex = rightString.IndexOf(leftSymbol);
+            int endIndex = rightString.IndexOf(rightSymbol);
             if (!((startIndex == -1 && endIndex == -1) || (startIndex != -1 && endIndex == -1)
                 || (startIndex != -1 && startIndex < endIndex)))                  // в любом случае здесь endIndex != -1, иначе бы он на предыдущем условии вышел                    
                 isSurroundedOnRight = true;
 
             if (isSurroundedOnRight)
             {
-                startIndex = s.LastIndexOf(rightSymbol, startPosition);
-                endIndex = s.LastIndexOf(leftSymbol, startPosition);
+                string leftString = GetText(s.Substring(0, startPosition));
+
+                startIndex = leftString.LastIndexOf(rightSymbol);
+                endIndex = leftString.LastIndexOf(leftSymbol);
                 if (!((startIndex == -1 && endIndex == -1) || (startIndex != -1 && endIndex == -1)
                     || (startIndex != -1 && startIndex > endIndex)))                  // в любом случае здесь endIndex != -1, иначе бы он на предыдущем условии вышел                    
                     isSurroundedOnLeft = true;
