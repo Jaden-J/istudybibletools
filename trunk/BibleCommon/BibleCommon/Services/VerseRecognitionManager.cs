@@ -319,12 +319,11 @@ namespace BibleCommon.Services
             int temp, temp2, endIndex;
             string prevPrevChar = StringUtils.GetPrevString(textElement.Value, prevHtmlBreakIndex, null, out temp, out temp2, StringSearchIgnorance.None, StringSearchMode.SearchFirstChar);
             string globalChapterName = globalChapterResult != null ? globalChapterResult.ChapterName : string.Empty;
+            string chapterName = !string.IsNullOrEmpty(globalChapterName) ? globalChapterName : localChapterName;
 
-            if (!string.IsNullOrEmpty(globalChapterName) || !string.IsNullOrEmpty(localChapterName))
+            if (!string.IsNullOrEmpty(chapterName))
             {
                 bool canContinue = true;
-
-                string chapterName = globalChapterName;
 
                 VersePointerSearchResult.SearchResultType resultType = VersePointerSearchResult.SearchResultType.SingleVerseOnly;
 
@@ -369,12 +368,8 @@ namespace BibleCommon.Services
 
                     if (canContinue)
                     {
-                        if (globalChapterResult == null)
+                        if (globalChapterResult != null && globalChapterResult.DepthLevel > OneNoteUtils.GetDepthLevel(textElement))  // то есть глава находится глубже (правее), чем найденный стих. должно быть либо на одном уровне, либо левее.
                             canContinue = false;
-                        else
-                            if (globalChapterResult.DepthLevel > OneNoteUtils.GetDepthLevel(textElement))  // то есть глава находится глубже (правее), чем найденный стих. должно быть либо на одном уровне, либо левее.
-                                canContinue = false;
-
                     }
                 }
 
