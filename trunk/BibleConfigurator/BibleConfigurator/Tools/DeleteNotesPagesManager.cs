@@ -165,7 +165,7 @@ namespace BibleConfigurator.Tools
 
                 string sectionPagesXml;
                 XmlNamespaceManager xnm;
-                _oneNoteApp.GetHierarchy(sectionId, HierarchyScope.hsPages, out sectionPagesXml);
+                _oneNoteApp.GetHierarchy(sectionId, HierarchyScope.hsPages, out sectionPagesXml, Constants.CurrentOneNoteSchema);
                 XDocument sectionPages = OneNoteUtils.GetXDocument(sectionPagesXml, out xnm);
                 if (sectionPages.Root.XPathSelectElements("one:Page", xnm).Count() == 0)
                     _oneNoteApp.DeleteHierarchy(sectionId);  // удаляем раздел, если нет больше в нём страниц

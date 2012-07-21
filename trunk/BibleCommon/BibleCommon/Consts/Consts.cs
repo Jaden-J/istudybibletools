@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections.Specialized;
+using Microsoft.Office.Interop.OneNote;
 
 namespace BibleCommon.Consts
 {
     public static class Constants
     {
         public static readonly string OneNoteXmlNs = "http://schemas.microsoft.com/office/onenote/2010/onenote";
+        public static readonly XMLSchema CurrentOneNoteSchema = XMLSchema.xs2010;
         public static readonly string ToolsName = "IStudyBibleTools";
         public static readonly string ConfigFileName = "settings.config";
         public static readonly string ModulesDirectoryName = "Modules";

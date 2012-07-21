@@ -62,7 +62,7 @@ namespace BibleCommon.Helpers
         public static XDocument GetHierarchyElement(Application oneNoteApp, string hierarchyId, HierarchyScope scope, out XmlNamespaceManager xnm)
         {
             string xml;
-            oneNoteApp.GetHierarchy(hierarchyId, scope, out xml);
+            oneNoteApp.GetHierarchy(hierarchyId, scope, out xml, Constants.CurrentOneNoteSchema);
             return GetXDocument(xml, out xnm);            
         }
 
