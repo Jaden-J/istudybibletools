@@ -328,8 +328,7 @@ namespace BibleCommon.Services
             {
                 OneNoteUtils.NormalizeTextElement(textElement);
                 string textElementValue = textElement.Value;
-                int numberIndex = textElement.Value
-                        .IndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
+                int numberIndex = GetNextIndexOfDigit(textElement.Value, null);                        
                 
                 while (numberIndex > -1)
                 {
@@ -442,15 +441,30 @@ namespace BibleCommon.Services
                         Logger.LogError(ex);
                     }
 
-                    if (textElement.Value.Length >= numberIndex + 2)
-                         numberIndex = textElement.Value
-                              .IndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' }, numberIndex + 1);
-                    else
-                        numberIndex = -1;
+                    numberIndex = GetNextIndexOfDigit(textElement.Value, numberIndex);
                 }
             }
 
             return wasModified;
+        }
+
+        private static int GetNextIndexOfDigit(string s, int? index)
+        {
+            if (s.Length >= index.GetValueOrDefault(0) + 2)
+            {
+                index = s
+                    .IndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '<' }, index.HasValue ? index.Value + 1 : 0);
+
+                if (index != -1 && s[index.Value] == '<')
+                {
+                    index = s.IndexOf('>', index.Value + 1);
+                    return GetNextIndexOfDigit(s, index);
+                }
+            }
+            else
+                index = -1;
+
+            return index.Value;
         }
 
 
