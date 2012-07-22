@@ -130,7 +130,13 @@ namespace BibleCommon.Services
             if (isError)
                 if (Errors != null)
                     Errors.Add(message);
-        }     
+        }
+
+
+        public static void LogWarning(string message, params object[] args)
+        {
+            LogMessage("Warning: " + FormatString(message, args), true, true);
+        }
 
         public static void LogMessage(string message, params object[] args)
         {

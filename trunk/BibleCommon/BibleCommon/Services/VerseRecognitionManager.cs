@@ -214,10 +214,13 @@ namespace BibleCommon.Services
                     else
                     {
                         endIndex = nextTextBreakIndex;
-                        verseString = GetFullVerseString(textElement.Value, number.ToString(), isLink, ref endIndex, ref nextHtmlBreakIndex);                        
+                        verseString = GetFullVerseString(textElement.Value, number.ToString(), isLink, ref endIndex, ref nextHtmlBreakIndex);
 
-                        resultType = VersePointerSearchResult.SearchResultType.ChapterWithoutBookName;
-                        verseName = GetVerseName(prevResult.VersePointer.OriginalBookName, verseString);                       
+                        if (!string.IsNullOrEmpty(verseString))
+                        {
+                            resultType = VersePointerSearchResult.SearchResultType.ChapterWithoutBookName;
+                            verseName = GetVerseName(prevResult.VersePointer.OriginalBookName, verseString);
+                        }
                     }
 
                     if (!string.IsNullOrEmpty(verseName) && resultType != VersePointerSearchResult.SearchResultType.Nothing)
@@ -258,47 +261,51 @@ namespace BibleCommon.Services
             endIndex = nextTextBreakIndex;            
             string chapterString = GetFullVerseString(textElement.Value, number.ToString(), isLink, ref endIndex, ref nextHtmlBreakIndex);
 
-            for (int maxMissCount = 2; maxMissCount >= 0; maxMissCount--)
+            if (!string.IsNullOrEmpty(chapterString))
             {
-                string bookName = StringUtils.GetPrevString(textElement.Value,
-                    numberStartIndex, new SearchMissInfo(maxMissCount, SearchMissInfo.MissMode.CancelOnMissFound), out startIndex, out prevHtmlBreakIndex,
-                    maxMissCount > 0 ? StringSearchIgnorance.IgnoreAllSpacesAndDots : StringSearchIgnorance.IgnoreFirstSpacesAndDots,
-                    StringSearchMode.SearchText);
 
-                if (!string.IsNullOrEmpty(bookName) && !string.IsNullOrEmpty(bookName.Trim()))
+                for (int maxMissCount = 2; maxMissCount >= 0; maxMissCount--)
                 {
-                    if (isInBrackets)
+                    string bookName = StringUtils.GetPrevString(textElement.Value,
+                        numberStartIndex, new SearchMissInfo(maxMissCount, SearchMissInfo.MissMode.CancelOnMissFound), out startIndex, out prevHtmlBreakIndex,
+                        maxMissCount > 0 ? StringSearchIgnorance.IgnoreAllSpacesAndDots : StringSearchIgnorance.IgnoreFirstSpacesAndDots,
+                        StringSearchMode.SearchText);
+
+                    if (!string.IsNullOrEmpty(bookName) && !string.IsNullOrEmpty(bookName.Trim()))
                     {
-                        if (textElement.Value[startIndex + 1] == '[')  // временное решение проблемы: когда указана в заголовке только глава в квадратных скобках, то первая скобка удаляется 
-                            startIndex++;
-
-                        bookName = bookName.Trim('[', ']');
-                    }
-
-                    char prevPrevChar = StringUtils.GetChar(textElement.Value, prevHtmlBreakIndex);
-                    if (!(StringUtils.IsCharAlphabetical(prevPrevChar) || StringUtils.IsDigit(prevPrevChar)))
-                    {                        
-                        string verseName = GetVerseName(bookName, chapterString);
-
-                        VersePointer vp = new VersePointer(verseName);
-                        if (vp.IsValid)
+                        if (isInBrackets)
                         {
-                            result.ChapterName = GetVerseName(bookName, number);
-                            bool chapterOnlyAtStartString = prevHtmlBreakIndex == -1 && nextChar != "-";    //  не считаем это ссылкой, как ChapterOnlyAtStartString
-                            if (isInBrackets && isTitle)
-                                result.ResultType = VersePointerSearchResult.SearchResultType.ExcludableChapter;
-                            else
-                                result.ResultType = chapterOnlyAtStartString
-                                            ? VersePointerSearchResult.SearchResultType.ChapterOnlyAtStartString
-                                            : VersePointerSearchResult.SearchResultType.ChapterOnly;
-                            result.VersePointerEndIndex = endIndex;
-                            result.VersePointerStartIndex = startIndex + 1;
-                            result.VersePointerHtmlEndIndex = nextHtmlBreakIndex;
-                            result.VersePointerHtmlStartIndex = prevHtmlBreakIndex;
-                            result.VersePointer = vp;
-                            result.TextElement = textElement;
-                            result.VerseString = verseName;
-                            break;
+                            if (textElement.Value[startIndex + 1] == '[')  // временное решение проблемы: когда указана в заголовке только глава в квадратных скобках, то первая скобка удаляется 
+                                startIndex++;
+
+                            bookName = bookName.Trim('[', ']');
+                        }
+
+                        char prevPrevChar = StringUtils.GetChar(textElement.Value, prevHtmlBreakIndex);
+                        if (!(StringUtils.IsCharAlphabetical(prevPrevChar) || StringUtils.IsDigit(prevPrevChar)))
+                        {
+                            string verseName = GetVerseName(bookName, chapterString);
+
+                            VersePointer vp = new VersePointer(verseName);
+                            if (vp.IsValid)
+                            {
+                                result.ChapterName = GetVerseName(bookName, number);
+                                bool chapterOnlyAtStartString = prevHtmlBreakIndex == -1 && nextChar != "-";    //  не считаем это ссылкой, как ChapterOnlyAtStartString
+                                if (isInBrackets && isTitle)
+                                    result.ResultType = VersePointerSearchResult.SearchResultType.ExcludableChapter;
+                                else
+                                    result.ResultType = chapterOnlyAtStartString
+                                                ? VersePointerSearchResult.SearchResultType.ChapterOnlyAtStartString
+                                                : VersePointerSearchResult.SearchResultType.ChapterOnly;
+                                result.VersePointerEndIndex = endIndex;
+                                result.VersePointerStartIndex = startIndex + 1;
+                                result.VersePointerHtmlEndIndex = nextHtmlBreakIndex;
+                                result.VersePointerHtmlStartIndex = prevHtmlBreakIndex;
+                                result.VersePointer = vp;
+                                result.TextElement = textElement;
+                                result.VerseString = verseName;
+                                break;
+                            }
                         }
                     }
                 }
@@ -381,20 +388,23 @@ namespace BibleCommon.Services
                         endIndex = nextTextBreakIndex;
                         verseString = GetFullVerseString(textElement.Value, verseString, isLink, ref endIndex, ref nextHtmlBreakIndex);
 
-                        string verseName = string.Format("{0}{1}{2}", chapterName, ChapterVerseDelimiter, verseString);
-
-                        VersePointer vp = new VersePointer(verseName);
-                        if (vp.IsValid)
+                        if (!string.IsNullOrEmpty(verseString))
                         {
-                            result.VersePointer = vp;
-                            result.ResultType = resultType;
-                            result.VersePointerEndIndex = endIndex;
-                            result.VersePointerStartIndex = prevChar == ChapterVerseDelimiter.ToString() ? prevTextBreakIndex : prevTextBreakIndex + 1;
-                            result.VersePointerHtmlEndIndex = nextHtmlBreakIndex;
-                            result.VersePointerHtmlStartIndex = prevHtmlBreakIndex;
-                            result.VerseString = (prevChar == ChapterVerseDelimiter.ToString() ? prevChar : string.Empty) + verseString;
-                            result.ChapterName = chapterName;
-                            result.TextElement = textElement;
+                            string verseName = string.Format("{0}{1}{2}", chapterName, ChapterVerseDelimiter, verseString);
+
+                            VersePointer vp = new VersePointer(verseName);
+                            if (vp.IsValid)
+                            {
+                                result.VersePointer = vp;
+                                result.ResultType = resultType;
+                                result.VersePointerEndIndex = endIndex;
+                                result.VersePointerStartIndex = prevChar == ChapterVerseDelimiter.ToString() ? prevTextBreakIndex : prevTextBreakIndex + 1;
+                                result.VersePointerHtmlEndIndex = nextHtmlBreakIndex;
+                                result.VersePointerHtmlStartIndex = prevHtmlBreakIndex;
+                                result.VerseString = (prevChar == ChapterVerseDelimiter.ToString() ? prevChar : string.Empty) + verseString;
+                                result.ChapterName = chapterName;
+                                result.TextElement = textElement;
+                            }
                         }
                     }
                 }
