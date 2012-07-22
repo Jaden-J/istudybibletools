@@ -17,6 +17,7 @@ using System.Xml;
 using System.Xml.Linq;
 using BibleCommon.Consts;
 
+
 namespace BibleConfigurator
 {
     static class Program

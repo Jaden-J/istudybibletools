@@ -666,71 +666,78 @@ namespace BibleCommon.Services
 
                         bool isChapter = VersePointerSearchResult.IsChapter(resultType);
 
-                        if ((!isChapter || excludedVersesLinking || forceAnalyzeChapter) && linkDepth >= AnalyzeDepth.Full)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем. Но если у нас стоит excludedVersesLinking, то сразу обрабатываем
+                        if ((isChapter ^ vp.IsChapter))  // данные расходятся. что-то тут не чисто. запишем варнинг и ничего делать не будем
                         {
-                            bool canContinue = true;
-
-                            if (!excludedVersesLinking)  // иначе всё равно привязываем
-                            {
-                                if (isExcluded || IsExcludedCurrentNotePage)
-                                    canContinue = false;
-
-                                if (canContinue)
-                                {
-                                    if (VersePointerSearchResult.IsVerse(resultType))
-                                    {
-                                        if (globalChapterSearchResult != null)
-                                        {
-                                            if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString)
-                                            {
-                                                if (!isInBrackets)
-                                                {
-                                                    if (globalChapterSearchResult.VersePointer.IsMultiVerse)
-                                                        if (globalChapterSearchResult.VersePointer.IsInVerseRange(vp.Verse.GetValueOrDefault(0)))
-                                                            canContinue = false;    // если указан уже диапазон, а далее идут пояснения, то не отмечаем их заметками
-                                                }
-                                            }
-                                            //else
-                                            //{
-                                            //    if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter)
-                                            //    {
-                                            //        if (!isInBrackets)
-                                            //        {
-                                            //            canContinue = false;
-                                            //        }
-                                            //    }
-                                            //}
-                                        }
-                                    }
-                                }
-
-                                if (canContinue)
-                                {
-                                    if (pageChaptersSearchResult != null)
-                                    {
-                                        if (!isInBrackets)
-                                        {
-                                            if (pageChaptersSearchResult.Any(pcsr =>
-                                            {
-                                                return pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
-                                                        && pcsr.VersePointer.ChapterName == vp.ChapterName;
-                                            }))
-                                                canContinue = false;  // то есть среди исключаемых глав есть текущая
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (canContinue)
-                            {
-                                LinkVerseToNotesPage(oneNoteApp, vp, isChapter,
-                                    hierarchySearchResult.HierarchyObjectInfo,
-                                    noteSectionGroupName, noteSectionName, notePageName, notePageId, notePageTitleId,
-                                    notePageContentObjectId, createLinkToNotesPage, notesPageName, notesParentPageName, notesPageWidth, notesPageLevel, force);
-                            }
+                            Logger.LogWarning("Invalid verse result: '{0}' - '{1}'", vp.OriginalVerseName, resultType);
                         }
+                        else
+                        {
+                            if ((!isChapter || excludedVersesLinking || forceAnalyzeChapter) && linkDepth >= AnalyzeDepth.Full)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем. Но если у нас стоит excludedVersesLinking, то сразу обрабатываем
+                            {
+                                bool canContinue = true;
 
-                        return true;
+                                if (!excludedVersesLinking)  // иначе всё равно привязываем
+                                {
+                                    if (isExcluded || IsExcludedCurrentNotePage)
+                                        canContinue = false;
+
+                                    if (canContinue)
+                                    {
+                                        if (VersePointerSearchResult.IsVerse(resultType))
+                                        {
+                                            if (globalChapterSearchResult != null)
+                                            {
+                                                if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString)
+                                                {
+                                                    if (!isInBrackets)
+                                                    {
+                                                        if (globalChapterSearchResult.VersePointer.IsMultiVerse)
+                                                            if (globalChapterSearchResult.VersePointer.IsInVerseRange(vp.Verse.GetValueOrDefault(0)))
+                                                                canContinue = false;    // если указан уже диапазон, а далее идут пояснения, то не отмечаем их заметками
+                                                    }
+                                                }
+                                                //else
+                                                //{
+                                                //    if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter)
+                                                //    {
+                                                //        if (!isInBrackets)
+                                                //        {
+                                                //            canContinue = false;
+                                                //        }
+                                                //    }
+                                                //}
+                                            }
+                                        }
+                                    }
+
+                                    if (canContinue)
+                                    {
+                                        if (pageChaptersSearchResult != null)
+                                        {
+                                            if (!isInBrackets)
+                                            {
+                                                if (pageChaptersSearchResult.Any(pcsr =>
+                                                {
+                                                    return pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
+                                                            && pcsr.VersePointer.ChapterName == vp.ChapterName;
+                                                }))
+                                                    canContinue = false;  // то есть среди исключаемых глав есть текущая
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (canContinue)
+                                {
+                                    LinkVerseToNotesPage(oneNoteApp, vp, isChapter,
+                                        hierarchySearchResult.HierarchyObjectInfo,
+                                        noteSectionGroupName, noteSectionName, notePageName, notePageId, notePageTitleId,
+                                        notePageContentObjectId, createLinkToNotesPage, notesPageName, notesParentPageName, notesPageWidth, notesPageLevel, force);
+                                }
+                            }
+
+                            return true;
+                        }
                     }
                 }
             }
