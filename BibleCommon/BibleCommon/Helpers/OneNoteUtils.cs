@@ -146,7 +146,7 @@ namespace BibleCommon.Helpers
 
             try
             {
-                oneNoteApp.UpdatePageContent(pageContent.ToString());                
+                oneNoteApp.UpdatePageContent(pageContent.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);                
             }
             catch (COMException ex)
             {
@@ -247,7 +247,7 @@ namespace BibleCommon.Helpers
                                     new XAttribute("name", sectionGroupName));
 
             parentElement.Add(newSectionGroup);
-            oneNoteApp.UpdateHierarchy(parentElement.ToString());           
+            oneNoteApp.UpdateHierarchy(parentElement.ToString(), Constants.CurrentOneNoteSchema);           
         }
     }
 }
