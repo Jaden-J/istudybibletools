@@ -319,7 +319,7 @@ namespace BibleConfigurator
         {
             var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
             string xml;
-            oneNoteApp.GetPageContent(oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xml);
+            oneNoteApp.GetPageContent(oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xml, Microsoft.Office.Interop.OneNote.PageInfo.piBasic, Constants.CurrentOneNoteSchema);
 
             System.Xml.XmlNamespaceManager xnm = new System.Xml.XmlNamespaceManager(new System.Xml.NameTable());
             var xd = System.Xml.Linq.XDocument.Parse(xml);

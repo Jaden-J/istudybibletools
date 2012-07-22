@@ -86,8 +86,8 @@ namespace BibleConfigurator.Tools
             _form.PerformProgressStep(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage, pageName));
 
             string pageContent;
-            XmlNamespaceManager xnm;            
-            _oneNoteApp.GetPageContent(pageId, out pageContent);
+            XmlNamespaceManager xnm;
+            _oneNoteApp.GetPageContent(pageId, out pageContent, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
             XDocument pageDocument = OneNoteUtils.GetXDocument(pageContent, out xnm);            
             bool wasModified = false;
 
