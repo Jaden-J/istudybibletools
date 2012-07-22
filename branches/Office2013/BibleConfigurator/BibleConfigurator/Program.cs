@@ -308,7 +308,7 @@ namespace BibleConfigurator
             string pageXml = pageDoc.ToString();
             pageXml = pageXml.Replace("en-US", locale);
 
-            oneNoteApp.UpdatePageContent(pageXml);
+            oneNoteApp.UpdatePageContent(pageXml, DateTime.MinValue, Constants.CurrentOneNoteSchema);
         }
 
         private static void GenerateSummaryOfNotesNotebook()
@@ -350,7 +350,8 @@ namespace BibleConfigurator
             //foreach (var inkNode in inkNodes)
             //    inkNode.Remove();
 
-            oneNoteApp.UpdatePageContent(doc.ToString());
+            oneNoteApp.UpdatePageContent(doc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);           
+
         }
 
         #endregion

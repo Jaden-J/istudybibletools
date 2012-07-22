@@ -95,7 +95,7 @@ namespace BibleConfigurator.ModuleConverter
             notebook.Root.SetAttributeValue("name", notebookName);
             notebook.Root.SetAttributeValue("nickname", notebookName);
 
-            oneNoteApp.UpdateHierarchy(notebook.ToString());
+            oneNoteApp.UpdateHierarchy(notebook.ToString(), Constants.CurrentOneNoteSchema);
         }
 
         protected virtual string AddTestamentSectionGroup(string testamentName)
@@ -111,7 +111,7 @@ namespace BibleConfigurator.ModuleConverter
             XmlNamespaceManager xnm;
             var sectionGroup = OneNoteUtils.GetHierarchyElement(oneNoteApp, sectionGroupId, HierarchyScope.hsSections, out xnm);
             sectionGroup.Root.Add(section);
-            oneNoteApp.UpdateHierarchy(sectionGroup.ToString());
+            oneNoteApp.UpdateHierarchy(sectionGroup.ToString(), Constants.CurrentOneNoteSchema);
 
             sectionGroup = OneNoteUtils.GetHierarchyElement(oneNoteApp, sectionGroupId, HierarchyScope.hsSections, out xnm);
             section = sectionGroup.Root.XPathSelectElement(string.Format("one:Section[@name='{0}']", sectionName), xnm);
@@ -124,7 +124,7 @@ namespace BibleConfigurator.ModuleConverter
 
         protected virtual void UpdateChapterPage(XDocument chapterPageDoc)
         {            
-            oneNoteApp.UpdatePageContent(chapterPageDoc.ToString());                                 
+            oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);                                 
         }
 
         protected virtual XDocument AddChapterPage(string bookSectionId, string pageTitle, int pageLevel, out XmlNamespaceManager xnm)
@@ -146,7 +146,7 @@ namespace BibleConfigurator.ModuleConverter
             if (!string.IsNullOrEmpty(Locale))
                 pageDocument.Root.Add(new XAttribute("lang", Locale));
 
-            oneNoteApp.UpdatePageContent(pageDocument.ToString());
+            oneNoteApp.UpdatePageContent(pageDocument.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
             
             var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, pageId, out xnm);
             return pageDoc;

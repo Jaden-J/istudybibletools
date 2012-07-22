@@ -118,7 +118,7 @@ namespace BibleCommon.Services
 
             targetParentSectionGroup.Add(targetSectionGroup);
 
-            oneNoteApp.UpdateHierarchy(document.ToString());
+            oneNoteApp.UpdateHierarchy(document.ToString(), Constants.CurrentOneNoteSchema);
         }
 
         private static string FindDescriptionSectionForBiblePage(Application oneNoteApp,
@@ -177,7 +177,7 @@ namespace BibleCommon.Services
                     sectionGroupDocument.Root.Add(targetSection);
             }
 
-            oneNoteApp.UpdateHierarchy(sectionGroupDocument.ToString());
+            oneNoteApp.UpdateHierarchy(sectionGroupDocument.ToString(), Constants.CurrentOneNoteSchema);
         }
 
         /// <summary>
