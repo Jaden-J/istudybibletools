@@ -438,7 +438,7 @@ namespace BibleCommon.Services
 
             foreach (var hierarchy in toCommit)
             {
-                oneNoteApp.UpdateHierarchy(hierarchy.Content.ToString());
+                oneNoteApp.UpdateHierarchy(hierarchy.Content.ToString(), Constants.CurrentOneNoteSchema);
 
                 if (onHierarchyElementProcessed != null)
                     onHierarchyElementProcessed(hierarchy);

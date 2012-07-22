@@ -475,7 +475,7 @@ namespace BibleConfigurator
                     Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorSectionGroupNotFound, sectionGroupId));
             }
 
-            _oneNoteApp.UpdateHierarchy(notebook.Content.ToString());
+            _oneNoteApp.UpdateHierarchy(notebook.Content.ToString(), Constants.CurrentOneNoteSchema);
             OneNoteProxy.Instance.RefreshHierarchyCache(_oneNoteApp, notebookId, HierarchyScope.hsSections);     
         }
 
