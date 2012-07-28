@@ -47,27 +47,35 @@ namespace BibleCommon.Services
                 FoundVerse = foundVerse;
                 VersePointer = vp;
             }            
+        }      
+
+        internal class FoundChapterInfo  // в итоге здесь будут только те главы, которые представлены в текущей заметке без стихов
+        {
+            internal string TextElementObjectId { get; set; }
+            internal VersePointerSearchResult VersePointerSearchResult { get; set; }
+            internal HierarchySearchManager.HierarchySearchResult HierarchySearchResult { get; set; }
         }
 
-      
-
-        private class FoundChapterInfo  // в итоге здесь будут только те главы, которые представлены в текущей заметке без стихов
+        private class FoundVerseInfo
         {
-            public string TextElementObjectId { get; set; }
-            public VersePointerSearchResult VersePointerSearchResult { get; set; }
-            public HierarchySearchManager.HierarchySearchResult HierarchySearchResult { get; set; }
-        }    
+            internal int Index { get; set; }
+            internal VersePointerSearchResult SearchResult { get; set; }           
+            internal bool IsLink { get; set; }
+            internal bool IsInBrackets { get; set; }
+            internal bool IsExcluded { get; set; }
+            internal int CursorPosition { get; set; }
+            internal VersePointerSearchResult GlobalChapterSearchResult { get; set; }
+        }
 
-        #endregion
+        #endregion        
         
-        //internal static readonly char[] SymbolsAfterBibleVerse = new string[] { };
         internal const string DoNotAnalyzeAllPageSymbol = "{}";       
           
 
         public enum AnalyzeDepth
         {
             OnlyFindVerses = 1,            
-            GetVersesLinks = 2,
+            SetVersesLinks = 2,
             Full = 3
         }
 
@@ -112,8 +120,8 @@ namespace BibleCommon.Services
                 {
                     Logger.LogMessage(BibleCommon.Resources.Constants.NoteLinkManagerProcessNotesPage);
                     isSummaryNotesPage = true;
-                    if (linkDepth > AnalyzeDepth.GetVersesLinks)
-                        linkDepth = AnalyzeDepth.GetVersesLinks;  // на странице заметок только обновляем ссылки
+                    if (linkDepth > AnalyzeDepth.SetVersesLinks)
+                        linkDepth = AnalyzeDepth.SetVersesLinks;  // на странице заметок только обновляем ссылки
                     notePageDocument.PageType = OneNoteProxy.PageType.NotesPage;  // уточняем тип страницы
                 }
 
@@ -127,23 +135,31 @@ namespace BibleCommon.Services
                 string noteSectionGroupName = OneNoteUtils.GetHierarchyElementName(_oneNoteApp, sectionGroupId);
                 string noteSectionName = OneNoteUtils.GetHierarchyElementName(_oneNoteApp, sectionId);
                 List<FoundChapterInfo> foundChapters = new List<FoundChapterInfo>();
+                var pageIdInfo = new PageIdInfo()
+                {
+                    SectionGroupName = noteSectionGroupName,
+                    SectionName = noteSectionName,
+                    PageName = notePageName,
+                    PageId = pageId,
+                    PageTitleId = pageTitleId
+                };
+
                 List<VersePointerSearchResult> pageChaptersSearchResult = ProcessPageTitle(_oneNoteApp, notePageDocument.Content,
-                    noteSectionGroupName, noteSectionName, notePageName, pageId, pageTitleId, foundChapters, notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage,
+                    pageIdInfo, foundChapters, notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage,
                     out wasModified);  // получаем главы текущей страницы, указанные в заголовке (глобальные главы, если больше одной - то не используем их при определении принадлежности только ситхов (:3))                
 
                 List<XElement> processedTextElements = new List<XElement>();
 
                 foreach (XElement oeChildrenElement in notePageDocument.Content.Root.XPathSelectElements("one:Outline/one:OEChildren", notePageDocument.Xnm))
                 {
-                    if (ProcessTextElements(_oneNoteApp, oeChildrenElement, noteSectionGroupName, noteSectionName,
-                         notePageName, pageId, pageTitleId, foundChapters, processedTextElements, pageChaptersSearchResult,
+                    if (ProcessTextElements(_oneNoteApp, oeChildrenElement, pageIdInfo, foundChapters, processedTextElements, pageChaptersSearchResult,
                          notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage))
                         wasModified = true;
                 }
 
                 if (foundChapters.Count > 0)  // то есть имеются главы, которые указаны в тексте именно как главы, без стихов, и на которые надо делать тоже ссылки
                 {
-                    ProcessChapters(foundChapters, noteSectionGroupName, noteSectionName, notePageName, pageId, pageTitleId, linkDepth, force);                                       
+                    ProcessChapters(foundChapters, pageIdInfo, linkDepth, force);                                       
                 }
 
                 if (linkDepth >= AnalyzeDepth.Full)                
@@ -161,7 +177,7 @@ namespace BibleCommon.Services
         }
 
         private void ProcessChapters(List<FoundChapterInfo> foundChapters, 
-            string noteSectionGroupName, string noteSectionName, string notePageName, string pageId, string pageTitleId, 
+            PageIdInfo notePageId, 
             AnalyzeDepth linkDepth, bool force)
         {
             Logger.LogMessage(BibleCommon.Resources.Constants.NoteLinkManagerChapterProcessing, true, false);
@@ -176,7 +192,7 @@ namespace BibleCommon.Services
                     {
                         LinkVerseToNotesPage(_oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, true,
                             chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
-                            noteSectionGroupName, noteSectionName, notePageName, pageId, pageTitleId, chapterInfo.TextElementObjectId, true,
+                            notePageId, chapterInfo.TextElementObjectId, true,
                             SettingsManager.Instance.PageName_Notes, null, SettingsManager.Instance.PageWidth_Notes, 1,
                             chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter ? true : force);
                     }
@@ -187,7 +203,7 @@ namespace BibleCommon.Services
                         {
                             LinkVerseToNotesPage(_oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, true,
                                 chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
-                                noteSectionGroupName, noteSectionName, notePageName, pageId, pageTitleId, chapterInfo.TextElementObjectId, false,
+                                notePageId, chapterInfo.TextElementObjectId, false,
                                 SettingsManager.Instance.PageName_RubbishNotes, null, SettingsManager.Instance.PageWidth_RubbishNotes, 1,
                                 chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter ? true : force);
                         }
@@ -199,7 +215,7 @@ namespace BibleCommon.Services
         }
 
         private List<VersePointerSearchResult> ProcessPageTitle(Application oneNoteApp, XDocument notePageDocument,
-            string noteSectionGroupName, string noteSectionName, string notePageName, string pageId, string pageTitleId,
+            PageIdInfo notePageId,
             List<FoundChapterInfo> foundChapters, XmlNamespaceManager xnm,
             AnalyzeDepth linkDepth, bool force, bool isSummaryNotesPage, out bool wasModified)
         {
@@ -209,8 +225,7 @@ namespace BibleCommon.Services
             VersePointerSearchResult prevResult = null;
 
             if (ProcessTextElement(oneNoteApp, notePageDocument.Root.XPathSelectElement("one:Title/one:OE/one:T", xnm),
-                        noteSectionGroupName, noteSectionName, notePageName, pageId, pageTitleId,
-                        foundChapters, ref globalChapterSearchResult, ref prevResult, null, linkDepth, force, true, isSummaryNotesPage, searchResult =>
+                        notePageId, foundChapters, ref globalChapterSearchResult, ref prevResult, null, linkDepth, force, true, isSummaryNotesPage, searchResult =>
                         {
                             if (VersePointerSearchResult.IsChapter(searchResult.ResultType))
                                 pageChaptersSearchResult.Add(searchResult);
@@ -239,7 +254,7 @@ namespace BibleCommon.Services
         }
 
         private bool ProcessTextElements(Application oneNoteApp, XElement parent,
-            string noteSectionGroupName, string noteSectionName, string notePageName, string pageId, string pageTitleId,
+            PageIdInfo notePageId,
             List<FoundChapterInfo> foundChapters, List<XElement> processedTextElements,
             List<VersePointerSearchResult> pageChaptersSearchResult,
             XmlNamespaceManager xnm, AnalyzeDepth linkDepth, bool force, bool isSummaryNotesPage)
@@ -251,8 +266,7 @@ namespace BibleCommon.Services
 
             foreach (XElement cellElement in parent.XPathSelectElements(".//one:Table/one:Row/one:Cell", xnm))
             {
-                if (ProcessTextElements(oneNoteApp, cellElement, noteSectionGroupName, noteSectionName,
-                        notePageName, pageId, pageTitleId, foundChapters, processedTextElements, pageChaptersSearchResult,
+                if (ProcessTextElements(oneNoteApp, cellElement, notePageId, foundChapters, processedTextElements, pageChaptersSearchResult,
                         xnm, linkDepth, force, isSummaryNotesPage))
                     wasModified = true;
             }
@@ -269,8 +283,7 @@ namespace BibleCommon.Services
                     continue;
                 }
 
-                if (ProcessTextElement(oneNoteApp, textElement, noteSectionGroupName, noteSectionName,
-                                         notePageName, pageId, pageTitleId, foundChapters,
+                if (ProcessTextElement(oneNoteApp, textElement, notePageId, foundChapters,
                                          ref globalChapterSearchResult, ref prevResult, pageChaptersSearchResult, linkDepth, force, false, isSummaryNotesPage, null))
                     wasModified = true;
 
@@ -301,7 +314,7 @@ namespace BibleCommon.Services
         /// <param name="noteSectionGroupName"></param>
         /// <param name="noteSectionName"></param>
         /// <param name="notePageName"></param>
-        /// <param name="pageId"></param>
+        /// <param name="notePageId"></param>
         /// <param name="processedVerses"></param>
         /// <param name="foundChapters"></param>
         /// <param name="globalChapterSearchResult"></param>
@@ -312,141 +325,216 @@ namespace BibleCommon.Services
         /// <param name="isTitle">анализируем ли заголовок</param>
         /// <param name="onVersePointerFound"></param>
         /// <returns></returns>
-        private bool ProcessTextElement(Application oneNoteApp, XElement textElement, string noteSectionGroupName,
-            string noteSectionName, string notePageName, string pageId, string pageTitleId, List<FoundChapterInfo> foundChapters,
+        private bool ProcessTextElement(Application oneNoteApp, XElement textElement, PageIdInfo notePageId, List<FoundChapterInfo> foundChapters,
             ref VersePointerSearchResult globalChapterSearchResult, ref VersePointerSearchResult prevResult, 
             List<VersePointerSearchResult> pageChaptersSearchResult,
             AnalyzeDepth linkDepth, bool force, bool isTitle, bool isSummaryNotesPage, Action<VersePointerSearchResult> onVersePointerFound)
         {
-
             FireProcessVerseEvent(false, null);
 
-            bool wasModified = false;
-            string localChapterName = string.Empty;    // имя главы в пределах данного стиха. например, действительно только для девятки в "Откр 5:7,9"
+            bool result = false;            
 
             if (textElement != null && !string.IsNullOrEmpty(textElement.Value))
             {
-                OneNoteUtils.NormalizeTextElement(textElement);
-                string textElementValue = textElement.Value;
-                int numberIndex = GetNextIndexOfDigit(textElement.Value, null);                        
+                OneNoteUtils.NormalizeTextElement(textElement);                
+                var foundVerses = new List<FoundVerseInfo>();
+                var correctVerses = new List<FoundVerseInfo>();
+
+                var globalChapterSearchResultTemp = globalChapterSearchResult;
+                var prevResultTemp = prevResult;
                 
-                while (numberIndex > -1)
+                IterateTextElementLinks(textElement, globalChapterSearchResult, prevResult, isTitle, isSummaryNotesPage, verseInfo =>
                 {
-                    try
+                    foundVerses.Add(verseInfo);
+                    return verseInfo.SearchResult.VersePointerHtmlEndIndex;
+                });
+                
+                for (int i = 0; i < foundVerses.Count; i++)
+                {
+                    if (i < foundVerses.Count - 1)
                     {
-                        int number;
-                        int textBreakIndex;
-                        int htmlBreakIndex;
-                        bool isLink;
-                        bool isInBrackets;
-                        bool isExcluded;
-                        if (VerseRecognitionManager.CanProcessAtNumberPosition(textElement, numberIndex, 
-                            out number, out textBreakIndex, out htmlBreakIndex, out isLink, out isInBrackets, out isExcluded))
-                        {
-                            VersePointerSearchResult searchResult = VerseRecognitionManager.GetValidVersePointer(textElement,
-                                numberIndex, textBreakIndex - 1, number,
-                                globalChapterSearchResult,
-                                localChapterName, prevResult, isLink, isInBrackets, isTitle);
-
-                            if (searchResult.ResultType != VersePointerSearchResult.SearchResultType.Nothing && isSummaryNotesPage)
-                                if (searchResult.VersePointer != null && searchResult.VersePointer.IsMultiVerse)  // если находимся на странице сводной заметок и нашли мультивёрс ссылку (например :4-7) - то такие ссылки не обрабатываем
-                                {
-                                    searchResult.ResultType = VersePointerSearchResult.SearchResultType.Nothing;
-                                    numberIndex = searchResult.VersePointerHtmlEndIndex;
-                                }
-
-                            if (searchResult.ResultType != VersePointerSearchResult.SearchResultType.Nothing)
-                            {
-                                FireProcessVerseEvent(true, searchResult.VersePointer);
-
-                                if (onVersePointerFound != null)
-                                    onVersePointerFound(searchResult);                                
-
-                                string textToChange;
-                                HierarchySearchManager.HierarchySearchResult hierarchySearchResult;
-
-                                if (searchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterOnlyAtStartString
-                                    || searchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString)      
-                                {
-                                    globalChapterSearchResult = searchResult;
-                                }
-
-                                localChapterName = searchResult.ChapterName;   // всегда запоминаем
-
-
-                                if (!isLink || (isLink && force) || (isTitle && isInBrackets))
-                                {
-                                    if (!string.IsNullOrEmpty(searchResult.VerseString))                                        
-                                        textToChange = searchResult.VerseString;
-                                    else if (VersePointerSearchResult.IsChapter(searchResult.ResultType))
-                                        textToChange = searchResult.ChapterName;
-                                    else
-                                        textToChange = searchResult.VersePointer.OriginalVerseName;
-
-                                    string textElementObjectId = (string)textElement.Parent.Attribute("objectID");
-
-                                    bool needToQueueIfChapter;
-                                    textElementValue = ProcessVerse(oneNoteApp, searchResult,                                                                
-                                                                textToChange,
-                                                                textElementValue,
-                                                                noteSectionGroupName, noteSectionName,
-                                                                notePageName, pageId, pageTitleId, textElementObjectId,
-                                                                linkDepth, globalChapterSearchResult, pageChaptersSearchResult,
-                                                                isLink, isInBrackets, isExcluded, force, 
-                                                                out numberIndex, out hierarchySearchResult, out needToQueueIfChapter);
-
-                                    if (searchResult.ResultType == VersePointerSearchResult.SearchResultType.SingleVerseOnly)  // то есть нашли стих, а до этого значит была скорее всего просто глава!
-                                    {
-                                        FoundChapterInfo chapterInfo = foundChapters.FirstOrDefault(fch =>
-                                                fch.VersePointerSearchResult.ResultType != VersePointerSearchResult.SearchResultType.ExcludableChapter
-                                                 && fch.VersePointerSearchResult.VersePointer.ChapterName == searchResult.VersePointer.ChapterName);
-
-                                        if (chapterInfo != null)
-                                            foundChapters.Remove(chapterInfo);
-                                    }
-                                    else if (VersePointerSearchResult.IsChapter(searchResult.ResultType) && needToQueueIfChapter)
-                                    {
-                                        if (hierarchySearchResult.ResultType == HierarchySearchManager.HierarchySearchResultType.Successfully
-                                            && hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.Page)
-                                        {
-                                            if (!foundChapters.Exists(fch =>
-                                                    fch.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
-                                                     && fch.VersePointerSearchResult.VersePointer.ChapterName == searchResult.VersePointer.ChapterName))
-                                            {
-                                                foundChapters.Add(new FoundChapterInfo()
-                                                {
-                                                    TextElementObjectId = textElementObjectId,
-                                                    VersePointerSearchResult = searchResult,
-                                                    HierarchySearchResult = hierarchySearchResult
-                                                });
-                                            }
-                                        }
-                                    }
-
-                                    if (textElement.Value != textElementValue)
-                                    {
-                                        textElement.Value = textElementValue;
-                                        wasModified = true;
-                                    }
-                                }
-                                else
-                                    numberIndex = searchResult.VersePointerHtmlEndIndex;
-
-                                prevResult = searchResult;
-                            }
-                        }
+                        if (foundVerses[i].SearchResult.VersePointerHtmlEndIndex <= foundVerses[i + 1].SearchResult.VersePointerHtmlStartIndex)   // если не пересекаются стихи
+                            correctVerses.Add(foundVerses[i]);
                     }
-                    catch (Exception ex)
+                    else
+                        correctVerses.Add(foundVerses[i]);
+                }                               
+
+                IterateTextElementLinks(textElement, globalChapterSearchResult, prevResult, isTitle, isSummaryNotesPage, verseInfo =>
+                {
+                    int cursorPosition = verseInfo.CursorPosition;
+
+                    if (correctVerses.Any(cv => cv.Index == verseInfo.Index))
                     {
-                        Logger.LogError(ex);
-                    }
+                        var processVerseResult = ProcessFoundVerse(cursorPosition, verseInfo, textElement, notePageId, foundChapters, pageChaptersSearchResult, linkDepth, force, isTitle, onVersePointerFound);
+                        cursorPosition = processVerseResult.CursorPosition;
+                        if (processVerseResult.WasModified)
+                            result = processVerseResult.WasModified;
 
-                    numberIndex = GetNextIndexOfDigit(textElement.Value, numberIndex);
-                }
+                        globalChapterSearchResultTemp = verseInfo.GlobalChapterSearchResult;
+                        prevResultTemp = verseInfo.SearchResult;                        
+                    }
+                    else
+                        cursorPosition = verseInfo.SearchResult.VersePointerHtmlEndIndex; 
+
+                    return cursorPosition;
+                });
+
+                globalChapterSearchResult = globalChapterSearchResultTemp;
+                prevResult = prevResultTemp;
             }
 
-            return wasModified;
+            return result;
         }
+
+
+
+        private ProcessFoundVerseResult ProcessFoundVerse(int cursorPosition, FoundVerseInfo verseInfo, XElement textElement,
+            PageIdInfo notePageId, List<FoundChapterInfo> foundChapters, List<VersePointerSearchResult> pageChaptersSearchResult, 
+            AnalyzeDepth linkDepth, bool force, bool isTitle, Action<VersePointerSearchResult> onVersePointerFound)
+        {
+            bool wasModified = false;
+            string textElementValue = textElement.Value;
+
+            FireProcessVerseEvent(true, verseInfo.SearchResult.VersePointer);
+
+            if (onVersePointerFound != null)
+                onVersePointerFound(verseInfo.SearchResult);
+
+            string textToChange;
+            HierarchySearchManager.HierarchySearchResult hierarchySearchResult;            
+
+            if (!verseInfo.IsLink || (verseInfo.IsLink && force) || (isTitle && verseInfo.IsInBrackets))
+            {
+                if (!string.IsNullOrEmpty(verseInfo.SearchResult.VerseString))
+                    textToChange = verseInfo.SearchResult.VerseString;
+                else if (VersePointerSearchResult.IsChapter(verseInfo.SearchResult.ResultType))
+                    textToChange = verseInfo.SearchResult.ChapterName;
+                else
+                    textToChange = verseInfo.SearchResult.VersePointer.OriginalVerseName;
+
+                string textElementObjectId = (string)textElement.Parent.Attribute("objectID");
+
+                bool needToQueueIfChapter;
+                textElementValue = ProcessVerse(_oneNoteApp, verseInfo.SearchResult,
+                                            textToChange,
+                                            textElementValue,
+                                            notePageId, textElementObjectId,
+                                            linkDepth, verseInfo.GlobalChapterSearchResult, pageChaptersSearchResult,
+                                            verseInfo.IsLink, verseInfo.IsInBrackets, verseInfo.IsExcluded, force,
+                                            out cursorPosition, out hierarchySearchResult, out needToQueueIfChapter);
+
+                if (verseInfo.SearchResult.ResultType == VersePointerSearchResult.SearchResultType.SingleVerseOnly)  // то есть нашли стих, а до этого значит была скорее всего просто глава!
+                {
+                    FoundChapterInfo chapterInfo = foundChapters.FirstOrDefault(fch =>
+                            fch.VersePointerSearchResult.ResultType != VersePointerSearchResult.SearchResultType.ExcludableChapter
+                                && fch.VersePointerSearchResult.VersePointer.ChapterName == verseInfo.SearchResult.VersePointer.ChapterName);
+
+                    if (chapterInfo != null)
+                        foundChapters.Remove(chapterInfo);
+                }
+                else if (VersePointerSearchResult.IsChapter(verseInfo.SearchResult.ResultType) && needToQueueIfChapter)
+                {
+                    if (hierarchySearchResult.ResultType == HierarchySearchManager.HierarchySearchResultType.Successfully
+                        && hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.Page)
+                    {
+                        if (!foundChapters.Exists(fch =>
+                                fch.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
+                                    && fch.VersePointerSearchResult.VersePointer.ChapterName == verseInfo.SearchResult.VersePointer.ChapterName))
+                        {
+                            foundChapters.Add(new FoundChapterInfo()
+                            {
+                                TextElementObjectId = textElementObjectId,
+                                VersePointerSearchResult = verseInfo.SearchResult,
+                                HierarchySearchResult = hierarchySearchResult
+                            });
+                        }
+                    }
+                }
+
+                if (textElement.Value != textElementValue)
+                {
+                    textElement.Value = textElementValue;
+                    wasModified = true;
+                }
+            }
+            else
+                cursorPosition = verseInfo.SearchResult.VersePointerHtmlEndIndex;
+
+            return new ProcessFoundVerseResult()
+                       {
+                           CursorPosition = cursorPosition,
+                           WasModified = wasModified
+                       };
+        }
+
+        private void IterateTextElementLinks(XElement textElement, VersePointerSearchResult globalChapterSearchResult, VersePointerSearchResult prevResult, 
+            bool isTitle, bool isSummaryNotesPage, Func<FoundVerseInfo, int> verseAction)
+        {
+
+            string localChapterName = string.Empty;    // имя главы в пределах данного абзаца. например, действительно только для девятки в "Откр 5:7,9"
+            int cursorPosition = GetNextIndexOfDigit(textElement.Value, null);
+
+            int verseIndex = 0;
+            while (cursorPosition > -1)
+            {
+                try
+                {
+                    int number;
+                    int textBreakIndex;
+                    int htmlBreakIndex;
+                    bool isLink;
+                    bool isInBrackets;
+                    bool isExcluded;
+                    if (VerseRecognitionManager.CanProcessAtNumberPosition(textElement, cursorPosition,
+                        out number, out textBreakIndex, out htmlBreakIndex, out isLink, out isInBrackets, out isExcluded))
+                    {
+                        VersePointerSearchResult searchResult = VerseRecognitionManager.GetValidVersePointer(textElement,
+                            cursorPosition, textBreakIndex - 1, number,
+                            globalChapterSearchResult,
+                            localChapterName, prevResult, isLink, isInBrackets, isTitle);
+
+                        if (searchResult.ResultType != VersePointerSearchResult.SearchResultType.Nothing && isSummaryNotesPage)
+                            if (searchResult.VersePointer != null && searchResult.VersePointer.IsMultiVerse)  // если находимся на странице сводной заметок и нашли мультивёрс ссылку (например :4-7) - то такие ссылки не обрабатываем
+                            {
+                                searchResult.ResultType = VersePointerSearchResult.SearchResultType.Nothing;
+                                cursorPosition = searchResult.VersePointerHtmlEndIndex;
+                            }
+
+                        if (searchResult.ResultType != VersePointerSearchResult.SearchResultType.Nothing)
+                        {
+                            if (searchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterOnlyAtStartString
+                                || searchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString)
+                            {
+                                globalChapterSearchResult = searchResult;
+                            }
+
+                            cursorPosition = verseAction(new FoundVerseInfo()
+                                                             {
+                                                                 Index = verseIndex++,
+                                                                 SearchResult = searchResult,
+                                                                 IsLink = isLink,
+                                                                 IsInBrackets = isInBrackets,
+                                                                 IsExcluded = isExcluded,
+                                                                 CursorPosition = cursorPosition,
+                                                                 GlobalChapterSearchResult = globalChapterSearchResult
+                                                             });
+
+
+                            localChapterName = searchResult.ChapterName;   // всегда запоминаем
+                            prevResult = searchResult;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex);
+                }
+
+                cursorPosition = GetNextIndexOfDigit(textElement.Value, cursorPosition);
+            }
+        }
+        
 
         private static int GetNextIndexOfDigit(string s, int? index)
         {
@@ -491,8 +579,7 @@ namespace BibleCommon.Services
         /// <param name="hierarchySearchResult"></param>
         /// <returns></returns>
         private string ProcessVerse(Application oneNoteApp, VersePointerSearchResult searchResult,
-            string textToChange, string textElementValue, string noteSectionGroupName, string noteSectionName, 
-            string notePageName, string notePageId, string notePageTitleId, string notePageContentObjectId,
+            string textToChange, string textElementValue, PageIdInfo notePageId, string notePageContentObjectId,
             AnalyzeDepth linkDepth, VersePointerSearchResult globalChapterSearchResult, List<VersePointerSearchResult> pageChaptersSearchResult,
             bool isLink, bool isInBrackets, bool isExcluded, bool force, 
             out int newEndVerseIndex, out HierarchySearchManager.HierarchySearchResult hierarchySearchResult, out bool needToQueueIfChapter)
@@ -527,7 +614,7 @@ namespace BibleCommon.Services
             foreach (VersePointer vp in verses)
             {
                 if (TryLinkVerseToNotesPage(oneNoteApp, vp, searchResult.ResultType,
-                        noteSectionGroupName, noteSectionName, notePageName, notePageId, notePageTitleId, notePageContentObjectId, linkDepth,
+                        notePageId, notePageContentObjectId, linkDepth,
                         !SettingsManager.Instance.UseDifferentPagesForEachVerse || (vp.IsChapter && !needToQueueIfChapter), SettingsManager.Instance.ExcludedVersesLinking,
                         SettingsManager.Instance.PageName_Notes, null, SettingsManager.Instance.PageWidth_Notes, 1,
                         globalChapterSearchResult, pageChaptersSearchResult,
@@ -542,7 +629,7 @@ namespace BibleCommon.Services
                 {
                     if (first)
                     {
-                        if (linkDepth >= AnalyzeDepth.GetVersesLinks)
+                        if (linkDepth >= AnalyzeDepth.SetVersesLinks)
                         {
                             hierarchySearchResult = localHierarchySearchResult;
                             string link = OneNoteUtils.GenerateHref(oneNoteApp, textToChange,
@@ -565,7 +652,7 @@ namespace BibleCommon.Services
                 {
                     string notesPageName = GetDefaultNotesPageName(vp.Verse);
                     TryLinkVerseToNotesPage(oneNoteApp, vp, searchResult.ResultType,
-                        noteSectionGroupName, noteSectionName, notePageName, notePageId, notePageTitleId, notePageContentObjectId, linkDepth,
+                        notePageId, notePageContentObjectId, linkDepth,
                         true, SettingsManager.Instance.ExcludedVersesLinking,
                         notesPageName, SettingsManager.Instance.PageName_Notes, SettingsManager.Instance.PageWidth_Notes, 2,
                         globalChapterSearchResult, pageChaptersSearchResult,
@@ -589,7 +676,7 @@ namespace BibleCommon.Services
                 foreach (VersePointer vp in rubbishVerses)
                 {
                     TryLinkVerseToNotesPage(oneNoteApp, vp, searchResult.ResultType, 
-                        noteSectionGroupName, noteSectionName, notePageName, notePageId, notePageTitleId, notePageContentObjectId, linkDepth,
+                        notePageId, notePageContentObjectId, linkDepth,
                         false, SettingsManager.Instance.RubbishPage_ExcludedVersesLinking, 
                         SettingsManager.Instance.PageName_RubbishNotes, null, SettingsManager.Instance.PageWidth_RubbishNotes, 1,
                         globalChapterSearchResult, pageChaptersSearchResult,
@@ -643,8 +730,7 @@ namespace BibleCommon.Services
         /// <returns></returns>
         private bool TryLinkVerseToNotesPage(Application oneNoteApp, VersePointer vp,
             VersePointerSearchResult.SearchResultType resultType, 
-            string noteSectionGroupName, string noteSectionName, string notePageName, string notePageId,
-            string notePageTitleId, string notePageContentObjectId, AnalyzeDepth linkDepth,
+            PageIdInfo notePageId, string notePageContentObjectId, AnalyzeDepth linkDepth,
             bool createLinkToNotesPage, bool excludedVersesLinking, 
             string notesPageName, string notesParentPageName, int notesPageWidth, int notesPageLevel,
             VersePointerSearchResult globalChapterSearchResult, List<VersePointerSearchResult> pageChaptersSearchResult,
@@ -659,7 +745,7 @@ namespace BibleCommon.Services
                 if (hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder
                     || hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.Page)
                 {
-                    if (hierarchySearchResult.HierarchyObjectInfo.PageId != notePageId)
+                    if (hierarchySearchResult.HierarchyObjectInfo.PageId != notePageId.PageId)
                     {
                         if (onHierarchyElementFound != null)
                             onHierarchyElementFound(hierarchySearchResult);
@@ -731,7 +817,7 @@ namespace BibleCommon.Services
                                 {
                                     LinkVerseToNotesPage(oneNoteApp, vp, isChapter,
                                         hierarchySearchResult.HierarchyObjectInfo,
-                                        noteSectionGroupName, noteSectionName, notePageName, notePageId, notePageTitleId,
+                                        notePageId,
                                         notePageContentObjectId, createLinkToNotesPage, notesPageName, notesParentPageName, notesPageWidth, notesPageLevel, force);
                                 }
                             }
@@ -810,7 +896,7 @@ namespace BibleCommon.Services
         /// <param name="force"></param>
         private void LinkVerseToNotesPage(Application oneNoteApp, VersePointer vp, bool isChapter,
             HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
-            string noteSectionGroupName, string noteSectionName, string notePageName, string notePageId, string notePageTitleId, string notePageContentObjectId, bool createLinkToNotesPage,
+            PageIdInfo notePageId, string notePageContentObjectId, bool createLinkToNotesPage,
             string notesPageName, string notesParentPageName, int notesPageWidth, int notesPageLevel, bool force)
         {            
             OneNoteProxy.PageContent versePageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, verseHierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);       
@@ -830,8 +916,8 @@ namespace BibleCommon.Services
 
             if (!string.IsNullOrEmpty(notesPageId))
             {
-                string targetContentObjectId = UpdateNotesPage(oneNoteApp, vp, isChapter, verseHierarchyObjectInfo,
-                        noteSectionGroupName, noteSectionName, notesPageId, notePageName, notePageId, notePageTitleId, notePageContentObjectId, 
+                string targetContentObjectId = NotesPageManager.UpdateNotesPage(oneNoteApp, this, vp, isChapter, verseHierarchyObjectInfo,
+                        notePageId, notesPageId, notePageContentObjectId, 
                         notesPageName, notesPageWidth, force);
 
                 if (createLinkToNotesPage)
@@ -861,7 +947,7 @@ namespace BibleCommon.Services
                     }                    
                 }
 
-                var key = new NotePageProcessedVerseId() { NotePageId = notePageId, NotesPageName = notesPageName };
+                var key = new NotePageProcessedVerseId() { NotePageId = notePageId.PageId, NotesPageName = notesPageName };
                 AddNotePageProcessedVerse(key, vp);                
             }
         }
@@ -946,301 +1032,9 @@ namespace BibleCommon.Services
             return result;
         }        
 
-        private string UpdateNotesPage(Application oneNoteApp, VersePointer vp, bool isChapter,
-            HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
-            string noteSectionGroupName, string noteSectionName,
-            string notesPageId, string notePageName, string notePageId, string notePageTitleId, string notePageContentObjectId,
-            string notesPageName, int notesPageWidth, bool force)
-        {
-            string targetContentObjectId = string.Empty;            
-            XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
-            OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
+       
 
-            XElement rowElement = GetNotesRowAndCreateIfNotExists(oneNoteApp, vp, isChapter, notesPageWidth, verseHierarchyObjectInfo,
-                notesPageDocument.Content, notesPageDocument.Xnm, nms);            
-
-            if (rowElement != null)
-            {
-                AddLinkToNotePage(oneNoteApp, vp, rowElement, noteSectionGroupName, noteSectionName,
-                    notePageName, notePageId, notePageTitleId, notePageContentObjectId, notesPageDocument, notesPageDocument.Xnm, nms, notesPageName, force);
-
-                targetContentObjectId = GetNotesRowObjectId(oneNoteApp, notesPageId, vp.Verse, isChapter);               
-            }            
-
-            return targetContentObjectId;
-        }
-
-        private void AddLinkToNotePage(Application oneNoteApp, VersePointer vp, XElement rowElement, 
-            string noteSectionGroupName, string noteSectionName,
-            string notePageName, string notePageId, string notePageTitleId, string notePageContentObjectId,
-            OneNoteProxy.PageContent notesPageDocument, XmlNamespaceManager xnm, XNamespace nms, string notesPageName, bool force)
-        {
-            string noteTitle = (noteSectionGroupName != noteSectionName && !string.IsNullOrEmpty(noteSectionGroupName))
-                ? string.Format("{0} / {1} / {2}", noteSectionGroupName, noteSectionName, notePageName)
-                : string.Format("{0} / {1}", noteSectionName, notePageName);
-            
-            XElement suchNoteLink = null;            
-            XElement notesCellElement = rowElement.XPathSelectElement("one:Cell[2]/one:OEChildren", xnm);
-
-            string link = OneNoteUtils.GenerateHref(oneNoteApp, noteTitle, notePageId, notePageContentObjectId);
-            int pageIdStringIndex = link.IndexOf("page-id={");
-            if (pageIdStringIndex != -1)
-            {
-                string pageId = link.Substring(pageIdStringIndex, link.IndexOf('}', pageIdStringIndex) - pageIdStringIndex + 1);                
-                suchNoteLink = rowElement.XPathSelectElement(string.Format(
-                   "one:Cell[2]/one:OEChildren/one:OE/one:T[contains(.,'{0}')]", pageId), xnm);                
-            }
-
-            if (suchNoteLink != null)
-            {
-                var key = new NotePageProcessedVerseId() { NotePageId = notePageId, NotesPageName = notesPageName };
-                if (force && !ContainsNotePageProcessedVerse(key, vp))  // если в первый раз и force                
-                {  // удаляем старые ссылки на текущую странцу, так как мы начали новый анализ с параметром "force" и мы только в первый раз зашли сюда
-                    var verseLinks = suchNoteLink.Parent.NextNode;
-                    if (verseLinks != null && verseLinks.XPathSelectElement("one:List", xnm) == null)
-                        verseLinks.Remove();
-
-                    suchNoteLink.Parent.Remove();
-                    suchNoteLink = null;
-                }
-            }
-
-            if (suchNoteLink != null)
-                OneNoteUtils.NormalizeTextElement(suchNoteLink);         
-
-            if (suchNoteLink == null)  // если нет ссылки на такую же заметку
-            {
-                XNode prevLink = null;
-                foreach (XElement existingLink in rowElement.XPathSelectElements("one:Cell[2]/one:OEChildren/one:OE/one:T", xnm))
-                {
-                    if (existingLink.Parent.XPathSelectElement("one:List", xnm) != null)  // если мы смотрим ссылку с номером, а не строку типа "ссылка1; ссылка2"
-                    {
-                        string existingNoteTitle = StringUtils.GetText(existingLink.Value);
-
-                        if (noteTitle.CompareTo(existingNoteTitle) < 0)
-                            break;
-                        prevLink = existingLink.Parent;
-                    }
-                }
-
-                XElement linkElement = new XElement(nms + "OE",
-                                            new XElement(nms + "List",
-                                                        new XElement(nms + "Number", new XAttribute("numberSequence", 0), new XAttribute("numberFormat", "##."))),
-                                            new XElement(nms + "T",
-                                                new XCData(
-                                                    link + GetMultiVerseString(vp.ParentVersePointer ?? vp))));
-
-                if (prevLink == null)
-                {
-                    notesCellElement.AddFirst(linkElement);
-                }
-                else
-                {
-                    if (prevLink.NextNode != null && prevLink.NextNode.XPathSelectElement("one:List", xnm) == null)  // если следующая строка типа "ссылка1; ссылка2"                    
-                        prevLink = prevLink.NextNode;
-                    
-                    prevLink.AddAfterSelf(linkElement);
-                }
-            }
-            else
-            {
-                string pageLink = OneNoteUtils.GenerateHref(oneNoteApp, noteTitle, notePageId, notePageTitleId);                
-
-                var verseLinksOE = suchNoteLink.Parent.NextNode;
-                if (verseLinksOE != null && verseLinksOE.XPathSelectElement("one:List", xnm) == null)  // значит следующая строка без номера, то есть значит идут ссылки
-                {
-                    XElement existingVerseLinksElement = verseLinksOE.XPathSelectElement("one:T", xnm);
-
-
-                    int currentVerseIndex = existingVerseLinksElement.Value.Split(new string[] { "</a>" }, StringSplitOptions.None).Length;
-
-                    existingVerseLinksElement.Value += Resources.Constants.VerseLinksDelimiter + OneNoteUtils.GenerateHref(oneNoteApp,
-                                string.Format(Resources.Constants.VerseLinkTemplate, currentVerseIndex), notePageId, notePageContentObjectId)
-                                + GetMultiVerseString(vp.ParentVersePointer ?? vp);
-
-                }
-                else  // значит мы нашли второе упоминание данной ссылки в заметке
-                {
-                    string firstVerseLink = StringUtils.GetAttributeValue(suchNoteLink.Value, "href");
-                    firstVerseLink = string.Format("<a href='{0}'>{1}</a>", firstVerseLink, string.Format(Resources.Constants.VerseLinkTemplate, 1));
-                    XElement verseLinksElement = new XElement(nms + "OE",
-                                                    new XElement(nms + "T",
-                                                        new XCData(StringUtils.MultiplyString("&nbsp;", 8) +
-                                                            string.Join(Resources.Constants.VerseLinksDelimiter, new string[] { 
-                                                                firstVerseLink + GetExistingMultiVerseString(suchNoteLink), 
-                                                                OneNoteUtils.GenerateHref(oneNoteApp, 
-                                                                    string.Format(Resources.Constants.VerseLinkTemplate, 2), notePageId, notePageContentObjectId)
-                                                                    + GetMultiVerseString(vp.ParentVersePointer ?? vp) })
-                                                            )));
-
-                    suchNoteLink.Parent.AddAfterSelf(verseLinksElement);                   
-                }
-
-                suchNoteLink.Value = pageLink;
-
-                if (suchNoteLink.Parent.XPathSelectElement("one:List", xnm) == null)  // почему то нет номера у строки
-                    suchNoteLink.Parent.AddFirst(new XElement(nms + "List",
-                                                    new XElement(nms + "Number", new XAttribute("numberSequence", 0), new XAttribute("numberFormat", "##."))));                    
-            
-            }
-
-            notesPageDocument.WasModified = true;            
-        }      
-
-        private static string GetMultiVerseString(VersePointer vp)
-        {
-            if (vp.IsMultiVerse)
-            {
-                if (vp.TopChapter != null && vp.TopVerse != null)
-                    return string.Format(" <b>({0}:{1}-{2}:{3})</b>", vp.Chapter, vp.Verse, vp.TopChapter, vp.TopVerse);
-                else if (vp.TopChapter != null && vp.IsChapter)
-                    return string.Format(" <b>({0}-{1})</b>", vp.Chapter, vp.TopChapter);
-                else
-                    return string.Format(" <b>(:{0}-{1})</b>", vp.Verse, vp.TopVerse);
-            }
-            else
-                return string.Empty;
-        }
-
-        private string GetExistingMultiVerseString(XElement suchNoteLink)
-        {
-            string multiVerseString = string.Empty;
-
-            string topVerseSearchPattern = "(:";
-            string topVerseEndSearchPattern = ")";                
-           
-            int topVerseIndex = -1;
-            string suchNoteLinkText = string.Empty;
-
-            if (suchNoteLink != null)
-                suchNoteLinkText = StringUtils.GetText(suchNoteLink.Value);
-
-            if (!string.IsNullOrEmpty(suchNoteLinkText))
-                topVerseIndex = suchNoteLinkText.IndexOf(topVerseSearchPattern);
-
-            if (topVerseIndex != -1)
-            {
-                int topVerseEndIndex = suchNoteLinkText.IndexOf(topVerseEndSearchPattern, topVerseIndex + 1);
-                if (topVerseEndIndex != -1)
-                {
-                    multiVerseString = suchNoteLinkText.Substring(topVerseIndex, topVerseEndIndex - topVerseIndex + 1);                    
-                }
-            }             
-
-            if (!string.IsNullOrEmpty(multiVerseString))
-                return string.Format(" <b>{0}</b>", multiVerseString);
-
-            return multiVerseString;
-        }        
-
-        internal static string GetNotesRowObjectId(Application oneNoteApp, string notesPageId, int? verseNumber, bool isChapter)
-        {
-            string result = string.Empty;
-            OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
-            XElement tableElement = notesPageDocument.Content.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", notesPageDocument.Xnm);
-            XElement targetElement = GetNotesRow(tableElement, verseNumber, isChapter, notesPageDocument.Xnm);
-
-            if (targetElement != null)
-                result = (string)targetElement.XPathSelectElement("one:Cell/one:OEChildren/one:OE", notesPageDocument.Xnm).Attribute("objectID");
-
-            return result;
-        }
-
-        private XElement GetNotesRowAndCreateIfNotExists(Application oneNoteApp, VersePointer vp, bool isChapter, int mainColumnWidth, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo, 
-            XDocument notesPageDocument, XmlNamespaceManager xnm, XNamespace nms)
-        {
-            XElement rootElement = notesPageDocument.XPathSelectElement("//one:Outline/one:OEChildren/one:OE", xnm);
-            if (rootElement == null)
-            {
-                notesPageDocument.Root.Add(new XElement(nms + "Outline",
-                                              new XElement(nms + "OEChildren",
-                                                new XElement(nms + "OE",
-                                                    new XElement(nms + "Table", new XAttribute("bordersVisible", true),
-                                                        new XElement(nms + "Columns",
-                                                            new XElement(nms + "Column", new XAttribute("index", 0), new XAttribute("width", 37), new XAttribute("isLocked", true)),
-                                                            new XElement(nms + "Column", new XAttribute("index", 1), new XAttribute("width", mainColumnWidth), new XAttribute("isLocked", true))
-                                                                ))))));
-                rootElement = notesPageDocument.XPathSelectElement("//one:Outline/one:OEChildren/one:OE", xnm);
-            }
-
-            XElement tableElement = rootElement.XPathSelectElement("one:Table", xnm);
-
-            if (tableElement == null)
-            {
-                rootElement.Add(new XElement(nms + "Table", new XAttribute("bordersVisible", true)));
-
-                tableElement = rootElement.XPathSelectElement("one:Table", xnm);
-            }
-
-            XElement rowElement = GetNotesRow(tableElement, vp.Verse, isChapter, xnm);                
-
-            if (rowElement == null)
-            {
-                AddNewNotesRow(oneNoteApp, vp, isChapter, verseHierarchyObjectInfo, tableElement, xnm, nms);
-
-                rowElement = GetNotesRow(tableElement, vp.Verse, isChapter, xnm);                
-            }
-
-            return rowElement;
-        }
-
-        private static XElement GetNotesRow(XElement tableElement, int? verseNumber, bool isChapter, XmlNamespaceManager xnm)
-        {
-
-            XElement result = !isChapter ? 
-                                tableElement
-                                   .XPathSelectElement(string.Format("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>:{0}<')]", verseNumber.GetValueOrDefault(0)), xnm)
-                              : tableElement                              
-                                   .XPathSelectElement("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[normalize-space(.)='']", xnm)
-                                ;
-
-            if (result != null)
-                result = result.Parent.Parent.Parent.Parent;            
-
-            return result;
-        }
-
-        private void AddNewNotesRow(Application oneNoteApp, VersePointer vp, bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
-            XElement tableElement, XmlNamespaceManager xnm, XNamespace nms)
-        {
-            XElement newRow = new XElement(nms + "Row",
-                                    new XElement(nms + "Cell",
-                                        new XElement(nms + "OEChildren",
-                                            new XElement(nms + "OE",                                                
-                                                new XElement(nms + "T",
-                                                    new XCData(
-                                                        !isChapter ?
-                                                            OneNoteUtils.GenerateHref(oneNoteApp, string.Format(":{0}", vp.Verse.GetValueOrDefault(0)),
-                                                                verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.ContentObjectId)
-                                                            :
-                                                            string.Empty
-                                                                ))))),
-                                    new XElement(nms + "Cell",
-                                        new XElement(nms + "OEChildren")));
-
-            XElement prevRow = null;
-
-            if (!isChapter)  // иначе добавляем первым
-            {
-                foreach (var row in tableElement.XPathSelectElements("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
-                {
-                    XText verseData = (XText)row.Nodes().First();
-                    int? verseNumber = StringUtils.GetStringLastNumber(verseData.Value);
-                    if (verseNumber.GetValueOrDefault(0) > vp.Verse)
-                        break;
-
-                    prevRow = row.Parent.Parent.Parent.Parent;
-                }
-            }
-
-            if (prevRow == null)            
-                prevRow = tableElement.XPathSelectElement("one:Columns", xnm);
-            
-            if (prevRow == null)
-                tableElement.AddFirst(newRow);            
-            else
-                prevRow.AddAfterSelf(newRow);
-        }
+       
 
         #region helper methods
 
@@ -1266,7 +1060,7 @@ namespace BibleCommon.Services
 
             return _notePageProcessedVerses[verseId].Contains(vp);
         }
-
+      
         #endregion
 
 

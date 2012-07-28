@@ -68,7 +68,7 @@ namespace BibleCommon.Services
         {
             string notesPageName = NoteLinkManager.GetDefaultNotesPageName(verseNumber);
             string notesPageId = OneNoteProxy.Instance.GetNotesPageId(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName);
-            string notesRowObjectId = NoteLinkManager.GetNotesRowObjectId(_oneNoteApp, notesPageId, verseNumber, VersePointer.IsVerseChapter(verseNumber));
+            string notesRowObjectId = NotesPageManager.GetNotesRowObjectId(_oneNoteApp, notesPageId, verseNumber, VersePointer.IsVerseChapter(verseNumber));
 
             if (!string.IsNullOrEmpty(notesRowObjectId))
             {
