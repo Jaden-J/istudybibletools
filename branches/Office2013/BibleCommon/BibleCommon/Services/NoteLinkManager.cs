@@ -400,24 +400,17 @@ namespace BibleCommon.Services
 
             if (onVersePointerFound != null)
                 onVersePointerFound(verseInfo.SearchResult);
-
-            string textToChange;
+            
             HierarchySearchManager.HierarchySearchResult hierarchySearchResult;            
 
             if (!verseInfo.IsLink || (verseInfo.IsLink && force) || (isTitle && verseInfo.IsInBrackets))
             {
-                if (!string.IsNullOrEmpty(verseInfo.SearchResult.VerseString))
-                    textToChange = verseInfo.SearchResult.VerseString;
-                else if (VersePointerSearchResult.IsChapter(verseInfo.SearchResult.ResultType))
-                    textToChange = verseInfo.SearchResult.ChapterName;
-                else
-                    textToChange = verseInfo.SearchResult.VersePointer.OriginalVerseName;
+                
 
                 string textElementObjectId = (string)textElement.Parent.Attribute("objectID");
 
                 bool needToQueueIfChapter;
-                textElementValue = ProcessVerse(_oneNoteApp, verseInfo.SearchResult,
-                                            textToChange,
+                textElementValue = ProcessVerse(_oneNoteApp, verseInfo.SearchResult,                                            
                                             textElementValue,
                                             notePageId, textElementObjectId,
                                             linkDepth, verseInfo.GlobalChapterSearchResult, pageChaptersSearchResult,
@@ -579,7 +572,7 @@ namespace BibleCommon.Services
         /// <param name="hierarchySearchResult"></param>
         /// <returns></returns>
         private string ProcessVerse(Application oneNoteApp, VersePointerSearchResult searchResult,
-            string textToChange, string textElementValue, PageIdInfo notePageId, string notePageContentObjectId,
+            string textElementValue, PageIdInfo notePageId, string notePageContentObjectId,
             AnalyzeDepth linkDepth, VersePointerSearchResult globalChapterSearchResult, List<VersePointerSearchResult> pageChaptersSearchResult,
             bool isLink, bool isInBrackets, bool isExcluded, bool force, 
             out int newEndVerseIndex, out HierarchySearchManager.HierarchySearchResult hierarchySearchResult, out bool needToQueueIfChapter)
@@ -631,18 +624,38 @@ namespace BibleCommon.Services
                     {
                         if (linkDepth >= AnalyzeDepth.SetVersesLinks)
                         {
+                            string textToChange;
+                            if (!string.IsNullOrEmpty(searchResult.VerseString))
+                                textToChange = searchResult.VerseString;
+                            else if (VersePointerSearchResult.IsChapter(searchResult.ResultType))
+                                textToChange = searchResult.ChapterName;
+                            else
+                                textToChange = searchResult.VersePointer.OriginalVerseName;
+
                             hierarchySearchResult = localHierarchySearchResult;
                             string link = OneNoteUtils.GenerateHref(oneNoteApp, textToChange,
                                 localHierarchySearchResult.HierarchyObjectInfo.PageId, localHierarchySearchResult.HierarchyObjectInfo.ContentObjectId);
 
                             link = string.Format("<span style='font-weight:normal'>{0}</span>", link);
 
-                            textElementValue = string.Concat(
-                                textElementValue.Substring(0, startVerseNameIndex),
-                                link,
-                                textElementValue.Substring(endVerseNameIndex));
+                            var htmlTextBefore = textElementValue.Substring(0, startVerseNameIndex);
+                            var htmlTextAfter = textElementValue.Substring(endVerseNameIndex);                            
+                            var needToAddSpace = false;
+                            if (searchResult.VerseStringStartsWithSpace.GetValueOrDefault(false))
+                            {
+                                var textBefore = StringUtils.GetText(htmlTextBefore);
+                                if (!textBefore.EndsWith(" "))
+                                    needToAddSpace = true;
+                            }
 
-                            newEndVerseIndex = startVerseNameIndex + link.Length;
+
+                            textElementValue = string.Concat(
+                                htmlTextBefore,
+                                needToAddSpace ? " " : string.Empty,
+                                link,
+                                htmlTextAfter);
+
+                            newEndVerseIndex = startVerseNameIndex + link.Length + (needToAddSpace ? 1 : 0);
                             searchResult.VersePointerHtmlEndIndex = newEndVerseIndex;
                         }
                     }
