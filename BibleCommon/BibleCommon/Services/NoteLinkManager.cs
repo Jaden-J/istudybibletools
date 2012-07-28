@@ -655,7 +655,7 @@ namespace BibleCommon.Services
                                 link,
                                 htmlTextAfter);
 
-                            newEndVerseIndex = startVerseNameIndex + link.Length;
+                            newEndVerseIndex = startVerseNameIndex + link.Length + (needToAddSpace ? 1 : 0);
                             searchResult.VersePointerHtmlEndIndex = newEndVerseIndex;
                         }
                     }
