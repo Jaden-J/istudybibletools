@@ -46,9 +46,9 @@ namespace BibleCommon.Services
                 {
                     if (number > 0 && number <= 176)
                     {
-                        isLink = StringUtils.IsSurroundedBy(textElement.Value, "<a", "</a", numberIndex);
-                        isInBrackets = StringUtils.IsSurroundedBy(textElement.Value, "[", "]", numberIndex);
-                        isExcluded = StringUtils.IsSurroundedBy(textElement.Value, "{", "}", numberIndex);
+                        isLink = StringUtils.IsSurroundedBy(textElement.Value, "<a", "</a", numberIndex, true);
+                        isInBrackets = StringUtils.IsSurroundedBy(textElement.Value, "[", "]", numberIndex, false);
+                        isExcluded = StringUtils.IsSurroundedBy(textElement.Value, "{", "}", numberIndex, false);
 
                         return true;
                     }

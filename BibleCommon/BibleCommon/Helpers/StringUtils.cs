@@ -122,25 +122,25 @@ namespace BibleCommon.Helpers
             return result;
         }
 
-        public static bool IsSurroundedBy(string s, string leftSymbol, string rightSymbol, int startPosition = 0)
+        public static bool IsSurroundedBy(string s, string leftSymbol, string rightSymbol, int startPosition, bool searchInHtml)
         {
             bool isSurroundedOnRight = false;
-            bool isSurroundedOnLeft = false;            
-            string rightString = GetText(s.Substring(startPosition + 1));
+            bool isSurroundedOnLeft = false;                        
+            string rightString = searchInHtml ? string.Empty : GetText(s.Substring(startPosition + 1));
 
 
-            int startIndex = rightString.IndexOf(leftSymbol);
-            int endIndex = rightString.IndexOf(rightSymbol);
+            int startIndex = searchInHtml ? s.IndexOf(leftSymbol, startPosition) : rightString.IndexOf(leftSymbol);
+            int endIndex = searchInHtml ? s.IndexOf(rightSymbol, startPosition) : rightString.IndexOf(rightSymbol);
             if (!((startIndex == -1 && endIndex == -1) || (startIndex != -1 && endIndex == -1)
                 || (startIndex != -1 && startIndex < endIndex)))                  // в любом случае здесь endIndex != -1, иначе бы он на предыдущем условии вышел                    
                 isSurroundedOnRight = true;
 
             if (isSurroundedOnRight)
             {
-                string leftString = GetText(s.Substring(0, startPosition));
+                string leftString = searchInHtml ? string.Empty : GetText(s.Substring(0, startPosition));
 
-                startIndex = leftString.LastIndexOf(rightSymbol);
-                endIndex = leftString.LastIndexOf(leftSymbol);
+                startIndex = searchInHtml ? s.LastIndexOf(rightSymbol, startPosition) : leftString.LastIndexOf(rightSymbol);
+                endIndex = searchInHtml ? s.LastIndexOf(leftSymbol, startPosition) : leftString.LastIndexOf(leftSymbol);
                 if (!((startIndex == -1 && endIndex == -1) || (startIndex != -1 && endIndex == -1)
                     || (startIndex != -1 && startIndex > endIndex)))                  // в любом случае здесь endIndex != -1, иначе бы он на предыдущем условии вышел                    
                     isSurroundedOnLeft = true;

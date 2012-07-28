@@ -48,9 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\ArgsClasses.cs" />
     <Compile Include="Common\CustomExceptions.cs" />
     <Compile Include="Common\ModuleInfo.cs" />
     <Compile Include="Common\ProcessAbortedByUserException.cs" />
+    <Compile Include="Common\ResultClasses.cs" />
     <Compile Include="Common\VersePointerSearchResult.cs" />
     <Compile Include="Consts\Consts.cs" />
     <Compile Include="Helpers\FormExtensions.cs" />
@@ -71,6 +73,7 @@
     <Compile Include="Services\ModulesManager.cs" />
     <Compile Include="Services\NotebookIterator.cs" />
     <Compile Include="Services\NoteLinkManager.cs" />
+    <Compile Include="Services\NotesPageManager.cs" />
     <Compile Include="Services\OneNoteLocker.cs" />
     <Compile Include="Services\OneNoteProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
