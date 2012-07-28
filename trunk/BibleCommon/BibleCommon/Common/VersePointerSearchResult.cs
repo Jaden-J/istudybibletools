@@ -59,6 +59,7 @@ namespace BibleCommon.Common
         public int VersePointerHtmlEndIndex { get; set; }
         public string ChapterName { get; set; }
         public string VerseString { get; set; }
+        public bool? VerseStringStartsWithSpace { get; set; }   // если указан VerseString - нужно ли добавлять в начало пробел
         public SearchResultType ResultType { get; set; }
         public XElement TextElement { get; set; }   // где нашли        
 

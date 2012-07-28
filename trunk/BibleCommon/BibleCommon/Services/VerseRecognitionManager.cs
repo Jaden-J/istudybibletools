@@ -237,8 +237,9 @@ namespace BibleCommon.Services
                             result.VersePointerHtmlStartIndex = prevHtmlBreakIndex;
                             result.ChapterName = GetVerseName(prevResult.VersePointer.OriginalBookName, number);
                             result.VerseString = (resultType == VersePointerSearchResult.SearchResultType.ChapterWithoutBookName
-                                                    ? string.Format(" {0}", verseString)
-                                                    : string.Format(" {0}{1}{2}", number, ChapterVerseDelimiter, verseString));
+                                                    ? verseString
+                                                    : string.Format("{0}{1}{2}", number, ChapterVerseDelimiter, verseString));
+                            result.VerseStringStartsWithSpace = true;
                             result.TextElement = textElement;
                         }
                     }
