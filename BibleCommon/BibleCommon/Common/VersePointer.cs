@@ -10,6 +10,33 @@ using Microsoft.Office.Interop.OneNote;
 
 namespace BibleCommon.Common
 {
+    public class SimpleVersePointer
+    {
+        public int BookIndex { get; set; }
+        public int Chapter { get; set; }
+        public int Verse { get; set; }
+
+        public SimpleVersePointer(int bookIndex, int chapter, int verse)
+        {
+            this.BookIndex = bookIndex;
+            this.Chapter = chapter;
+            this.Verse = verse;
+        }
+
+        public override bool Equals(object obj)
+        {
+            SimpleVersePointer other = (SimpleVersePointer)obj;
+            return this.BookIndex == other.BookIndex
+                && this.Chapter == other.Chapter
+                && this.Verse == other.Verse;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.BookIndex.GetHashCode() ^ this.Chapter.GetHashCode() ^ this.Verse.GetHashCode();
+        }
+    }
+
     public class VersePointer
     {      
         public BibleBookInfo Book { get; set; }
@@ -264,10 +291,10 @@ namespace BibleCommon.Common
         /// возвращает список всех вложенных стихов (за исключением первого) если Multiverse. 
         /// </summary>
         /// <returns></returns>
-        public List<VersePointer> GetAllIncludedVersesExceptFirst(Application oneNoteApp, string bibleNotebookId)
+        public List<VersePointer> GetAllIncludedVersesExceptFirst(Application oneNoteApp, string bibleNotebookId, bool force = false)
         {
             List<VersePointer> result = new List<VersePointer>();
-            if (IsValid && IsMultiVerse)
+            if ((IsValid || force) && IsMultiVerse)
             {
                 if (TopChapter != null && TopVerse != null)
                 {

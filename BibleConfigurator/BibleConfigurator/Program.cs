@@ -37,6 +37,8 @@ namespace BibleConfigurator
 
                 //TryToUpdateInkNodes();
 
+                //ConvertRussianModule();
+
                 //ConvertEnglishModule();
 
                 //ConvertRomanModule();
@@ -44,6 +46,8 @@ namespace BibleConfigurator
                 //GenerateSummaryOfNotesNotebook();
 
                 //DefaultRusModuleGenerator.GenerateModuleInfo("g:\\manifest.xml", true);
+
+                GenerateParallelBible();
             }
             catch (Exception ex)
             {
@@ -77,7 +81,7 @@ namespace BibleConfigurator
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
+        }             
 
         private static Form PrepareForRunning(params string[] args)
         {
@@ -227,7 +231,37 @@ namespace BibleConfigurator
 
 
 
-        #region converter utils
+        #region test utils
+
+
+        private static void GenerateParallelBible()
+        {
+            OneNoteLocker.UnlockAllBible(OneNoteApp);
+            BibleParallelTranslationManager.AddParallelTranslation(OneNoteApp, "rst");
+        }
+
+        private static void ConvertRussianModule()
+        {
+            var converter = new BibleQuotaConverter("RST", @"C:\temp\RST77", @"c:\temp\RST", Encoding.Default,
+                "1. Ветхий Завет", "2. Новый Завет", 39, 27, null, new List<NotebookInfo>() 
+                {  
+                    new NotebookInfo() { Type = NotebookType.Bible, Name = "Библия.onepkg" },
+                    new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Изучение Библии.onepkg" },
+                    new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Комментарии к Библии.onepkg" },
+                    new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Сводные заметок.onepkg" }
+                },
+                PredefinedBookIndexes.RST, PredefinedBookDifferences.RST);
+
+            converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
+            {
+                int? chapterIndex = StringUtils.GetStringLastNumber(chapterNameInput);
+                if (!chapterIndex.HasValue)
+                    throw new Exception("Can not extract chapter index from string: " + chapterNameInput);
+                return string.Format("{0} глава. {1}", chapterIndex, bookInfo.Name);
+            };
+
+            converter.Convert();
+        }  
 
         private static void ConvertRomanModule()
         {
@@ -238,7 +272,8 @@ namespace BibleConfigurator
                     new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Bible Study.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Comments to the Bible.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Summary of Notes.onepkg" }
-                });
+                }, 
+                PredefinedBookIndexes.KJV, PredefinedBookDifferences.KJV);
 
             converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
             {
@@ -253,14 +288,15 @@ namespace BibleConfigurator
 
         private static void ConvertEnglishModule()
         {
-            var converter = new BibleQuotaConverter("Douay-Rheims", @"C:\temp\Bible_English_Douay-Rheims\Bible_English_Douay-Rheims", @"G:\Google Диск\IStudyBibleTools\Модули\Douay-Rheims\manifest.xml", Encoding.ASCII,
+            var converter = new BibleQuotaConverter("KJV", @"G:\Dropbox\Изучение Библии\программы\Цитата из Библии\King_James_Version", @"c:\temp\KJV", Encoding.ASCII,
                 "1. Old Testament", "2. New Testament", 39, 27, null, new List<NotebookInfo>() 
                 {  
                     new NotebookInfo() { Type = NotebookType.Bible, Name = "Bible.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Bible Study.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Comments to the Bible.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Summary of Notes.onepkg" }
-                });
+                }, 
+                PredefinedBookIndexes.KJV, PredefinedBookDifferences.KJV);
 
             converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
             {
@@ -312,15 +348,14 @@ namespace BibleConfigurator
         }
 
         private static void GenerateSummaryOfNotesNotebook()
-        {
-            NotebookGenerator.GenerateSummaryOfNotesNotebook("Biblia", "Rezumatul de note");
+        {   
+            NotebookGenerator.GenerateSummaryOfNotesNotebook(OneNoteApp, "Biblia", "Rezumatul de note");
         }
 
         private static void TryToUpdateInkNodes()
         {
-            var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
             string xml;
-            oneNoteApp.GetPageContent(oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xml, Microsoft.Office.Interop.OneNote.PageInfo.piBasic, Constants.CurrentOneNoteSchema);
+            OneNoteApp.GetPageContent(OneNoteApp.Windows.CurrentWindow.CurrentPageId, out xml, Microsoft.Office.Interop.OneNote.PageInfo.piBasic, Constants.CurrentOneNoteSchema);
 
             System.Xml.XmlNamespaceManager xnm = new System.Xml.XmlNamespaceManager(new System.Xml.NameTable());
             var xd = System.Xml.Linq.XDocument.Parse(xml);
@@ -350,7 +385,7 @@ namespace BibleConfigurator
             //foreach (var inkNode in inkNodes)
             //    inkNode.Remove();
 
-            oneNoteApp.UpdatePageContent(doc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);           
+            OneNoteApp.UpdatePageContent(doc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);           
 
         }
 

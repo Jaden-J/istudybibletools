@@ -16,12 +16,14 @@ namespace BibleCommon.Consts
         public static readonly string ModulesDirectoryName = "Modules";
         public static readonly string ModulesPackagesDirectoryName = "ModulesPackages";
         public static readonly string ManifestFileName = "manifest.xml";
+        public static readonly string BibleInfoFileName = "bible.xml";
         public static readonly string IsbtFileExtension = ".isbt";        
         public const string TempDirectory = "Temp";
 
         
         public static readonly int DefaultPageWidth_Notes = 500;
-        public static readonly int DefaultPageWidth_RubbishNotes = 500;        
+        public static readonly int DefaultPageWidth_RubbishNotes = 500;
+        public static readonly int DefaultPageWidth_Bible = 500;
         public static readonly bool DefaultExpandMultiVersesLinking = true;
         public static readonly bool DefaultExcludedVersesLinking = false;
         public static readonly bool DefaultUseDifferentPagesForEachVerse = true;
@@ -52,8 +54,10 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_NewVersionOnServerLatestCheckTime = "NewVersionOnServerLatestCheckTime";
 
         public static readonly string ParameterName_ModuleName = "ModuleName";
+        public static readonly string ParameterName_ParallelModules = "ParallelModules";
 
         public static readonly string ParameterName_PageWidthNotes = "Width_NotesPage";
+        public static readonly string ParameterName_PageWidthBible = "Width_BiblePage";
         public static readonly string ParameterName_ExpandMultiVersesLinking = "ExpandMultiVersesLinking";
         public static readonly string ParameterName_ExcludedVersesLinking = "ExcludedVersesLinking";
         public static readonly string ParameterName_UseDifferentPagesForEachVerse = "UseDifferentPagesForEachVerse";
@@ -74,3 +78,4 @@ namespace BibleCommon.Consts
         public static readonly string Key_LatestAnalyzeTime = "LatestAnalyzeTime";
     }
 }
+

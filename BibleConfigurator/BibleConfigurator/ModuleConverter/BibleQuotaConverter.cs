@@ -59,11 +59,11 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="newTestamentBooksCount"></param>
         /// <param name="locale">can be not specified</param>
         /// <param name="notebooksInfo"></param>
-        public BibleQuotaConverter(string emptyNotebookName, string moduleFolder, string manifestFilePathToSave, Encoding fileEncoding,
-            string oldTestamentName, string newTestamentName, int oldTestamentBooksCount, int newTestamentBooksCount, 
-            string locale, List<NotebookInfo> notebooksInfo)
-            : base(emptyNotebookName, manifestFilePathToSave, oldTestamentName, newTestamentName, oldTestamentBooksCount, newTestamentBooksCount, 
-                        locale, notebooksInfo)
+        public BibleQuotaConverter(string emptyNotebookName, string moduleFolder, string manifestFilesFolderPath, Encoding fileEncoding,
+            string oldTestamentName, string newTestamentName, int oldTestamentBooksCount, int newTestamentBooksCount,
+            string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, BibleTranslationDifferences translationDifferences)
+            : base(emptyNotebookName, manifestFilesFolderPath, oldTestamentName, newTestamentName, oldTestamentBooksCount, newTestamentBooksCount, 
+                        locale, notebooksInfo, bookIndexes, translationDifferences)
         {
             this.ModuleFolder = moduleFolder;
             this.FileEncoding = fileEncoding;            
@@ -134,7 +134,7 @@ namespace BibleConfigurator.ModuleConverter
 
                 foreach (string line in File.ReadAllLines(bookFile, FileEncoding))
                 {
-                    string lineText = StringUtils.GetText(line, moduleInfo.Alphabet).Trim();
+                    string lineText = ShellText(line, moduleInfo); 
 
                     if (line.StartsWith(moduleInfo.ChapterSign))
                     {
@@ -165,6 +165,14 @@ namespace BibleConfigurator.ModuleConverter
             }
         }
 
+        private string ShellText(string line, BibleQuotaModuleInfo moduleInfo)
+        {
+            var result = line.Replace("<<", "&lt;&lt;").Replace(">>", "&gt;&gt;");   // чтобы учитывать строки типа "<p>1 <<To the chief Musician on Neginoth, A Psalm of David.>> Hear me when I call, O God of my righteousness: thou hast enlarged me when I was in distress; have mercy upon me, and hear my prayer."
+
+            result = StringUtils.GetText(result, moduleInfo.Alphabet).Trim();
+
+            return result;
+        }
         
 
         protected override void GenerateManifest(ExternalModuleInfo externalModuleInfo)
@@ -181,17 +189,21 @@ namespace BibleConfigurator.ModuleConverter
                 NewTestamentBooksCount = NewTestamentBooksCount,
                 BibleBooks = new List<BibleBookInfo>() };
 
+            int index = 0;
             foreach (var bibleBookInfo in extModuleInfo.BibleBooksInfo)
             {
-                module.BibleStructure.BibleBooks.Add(new BibleBookInfo() { Name = bibleBookInfo.Name, SectionName = bibleBookInfo.SectionName, Abbreviations = bibleBookInfo.Abbreviations }); 
+                module.BibleStructure.BibleBooks.Add(
+                    new BibleBookInfo() 
+                    { 
+                        Index= BookIndexes[index++],
+                        Name = bibleBookInfo.Name, 
+                        SectionName = bibleBookInfo.SectionName, 
+                        Abbreviations = bibleBookInfo.Abbreviations 
+                    }); 
             }
 
-            XmlSerializer ser = new XmlSerializer(typeof(ModuleInfo));
-            using (var fs = new FileStream(ManifestFilePath, FileMode.Create))
-            {
-                ser.Serialize(fs, module);
-                fs.Flush();
-            }
+
+            SaveToXmlFile(module, Constants.ManifestFileName);            
         }
     }
 }

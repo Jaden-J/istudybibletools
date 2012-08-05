@@ -53,7 +53,10 @@ namespace BibleCommon.Services
             HierarchySearchResult result = new HierarchySearchResult();
             result.ResultType = HierarchySearchResultType.NotFound;
 
-            XElement targetSection = FindSection(oneNoteApp, bibleNotebookId, vp);
+            if (!vp.IsValid)
+                throw new ArgumentException("versePointer is not valid");
+
+            XElement targetSection = FindBibleBookSection(oneNoteApp, bibleNotebookId, vp.Book.SectionName);
             if (targetSection != null)
             {
                 result.HierarchyObjectInfo.SectionId = (string)targetSection.Attribute("ID");
@@ -141,7 +144,7 @@ namespace BibleCommon.Services
             return page;
         }
 
-        private static XElement FindSection(Application oneNoteApp, string notebookId, VersePointer vp)
+        public static XElement FindBibleBookSection(Application oneNoteApp, string notebookId, string bookSectionName)
         {
             OneNoteProxy.HierarchyElement document = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, HierarchyScope.hsSections);
 
@@ -150,7 +153,7 @@ namespace BibleCommon.Services
                     !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_Bible)
                         ? string.Format("one:SectionGroup[@ID='{0}']/", SettingsManager.Instance.SectionGroupId_Bible) 
                         : string.Empty,
-                        vp.Book != null ? vp.Book.SectionName : string.Empty, OneNoteUtils.NotInRecycleXPathCondition),
+                        bookSectionName, OneNoteUtils.NotInRecycleXPathCondition),
                 document.Xnm);
 
             return targetSection;
