@@ -12,11 +12,13 @@ namespace BibleCommon.Services
 {
     public static class ModulesManager
     {
-        private static XmlSerializer _serializer;
+        private static Dictionary<Type, XmlSerializer> _serializers;        
 
         static ModulesManager()
         {
-            _serializer = new XmlSerializer(typeof(ModuleInfo));
+            _serializers = new Dictionary<Type, XmlSerializer>();
+            _serializers.Add(typeof(ModuleInfo), new XmlSerializer(typeof(ModuleInfo)));
+            _serializers.Add(typeof(ModuleBibleInfo), new XmlSerializer(typeof(ModuleBibleInfo)));
         }
 
         public static ModuleInfo GetCurrentModuleInfo()
@@ -33,19 +35,34 @@ namespace BibleCommon.Services
         }
 
         public static ModuleInfo GetModuleInfo(string moduleDirectoryName)
+        {   
+            var module = GetModuleFile<ModuleInfo>(moduleDirectoryName, Consts.Constants.ManifestFileName);
+            module.ShortName = moduleDirectoryName;
+            return module;
+        }
+
+        public static ModuleBibleInfo GetModuleBibleInfo(string moduleDirectoryName)
+        {
+            return GetModuleFile<ModuleBibleInfo>(moduleDirectoryName, Consts.Constants.BibleInfoFileName);
+        }
+
+        private static T GetModuleFile<T>(string moduleDirectoryName, string fileRelativePath)
         {
             string moduleDirectory = Path.Combine(GetModulesDirectory(), moduleDirectoryName);
-            string manifestFilePath = Path.Combine(moduleDirectory, Consts.Constants.ManifestFileName);
-            if (!File.Exists(manifestFilePath))
-                throw new InvalidModuleException(string.Format(BibleCommon.Resources.Constants.FileNotFound, manifestFilePath));
+            string filePath = Path.Combine(moduleDirectory, fileRelativePath);
+            if (!File.Exists(filePath))
+                throw new InvalidModuleException(string.Format(BibleCommon.Resources.Constants.FileNotFound, filePath));
 
-            using (var fs = new FileStream(manifestFilePath, FileMode.Open))
+            return Dessirialize<T>(filePath);
+        }
+
+        private static T Dessirialize<T>(string xmlFilePath)
+        {
+            using (var fs = new FileStream(xmlFilePath, FileMode.Open))
             {
-                var module = ((ModuleInfo)_serializer.Deserialize(fs));
-                module.ShortName = moduleDirectoryName;
-                return module;
+                return ((T)_serializers[typeof(T)].Deserialize(fs));
             }
-        }       
+        }
 
         public static string GetModulesDirectory()
         {
@@ -88,8 +105,13 @@ namespace BibleCommon.Services
         public static void CheckModule(string moduleDirectoryName)
         {
             ModuleInfo module = GetModuleInfo(moduleDirectoryName);
+            
+            CheckModule(module);
+        }
 
-            string moduleDirectory = Path.Combine(GetModulesDirectory(), moduleDirectoryName);
+        public static void CheckModule(ModuleInfo module)
+        {
+            string moduleDirectory = Path.Combine(GetModulesDirectory(), module.ShortName);
 
             foreach (NotebookType notebookType in Enum.GetValues(typeof(NotebookType)).Cast<NotebookType>().Where(t => t != NotebookType.Single))
             {

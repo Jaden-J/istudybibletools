@@ -94,8 +94,8 @@ namespace BibleVerseLinkerEx
                 int? verseNumber;
                 string currentObjectId;
                 XElement selectedElement = FindSelectedText(currentPageId, out currentPageDocument, out verseNumber, out currentObjectId, out xnm);
-                string selectedHtml = selectedElement != null ? selectedElement.Value.Trim(new char[] { ' ', '.', ';', ',', ':' }) : string.Empty;                
-                string selectedText = StringUtils.GetText(selectedHtml, SettingsManager.Instance.CurrentModule.BibleStructure.Alphabet);
+                string selectedHtml = selectedElement != null ? ShellText(selectedElement.Value) : string.Empty;                
+                string selectedText = ShellText(StringUtils.GetText(selectedHtml, SettingsManager.Instance.CurrentModule.BibleStructure.Alphabet));
                 bool selectedTextFound = !string.IsNullOrEmpty(selectedText);
 
                 if (selectedTextFound)
@@ -136,7 +136,6 @@ namespace BibleVerseLinkerEx
                     {
                         string href = OneNoteUtils.GenerateHref(OneNoteApp, selectedHtml, verseLinkPageId, objectId);
 
-
                         string selectedValue = selectedElement.Value;
                         selectedElement.Value = string.Empty;
                         selectedElement.Add(new XCData(selectedValue.Replace(selectedHtml, href)));
@@ -149,6 +148,14 @@ namespace BibleVerseLinkerEx
             }
             else
                 Logger.LogError(BibleCommon.Resources.Constants.VerseLinkerOneNoteNotStarted);
+        }
+
+        private string ShellText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+
+            return text.Trim(new char[] { ' ', '.', ';', ',', ':' });
         }
 
         public void SortCommentsPages()
@@ -172,7 +179,7 @@ namespace BibleVerseLinkerEx
                 string linkToCurrentObject;
                 OneNoteApp.GetHyperlinkToObject(currentPageId, currentObjectId, out linkToCurrentObject);
                 newContent = string.Format("<a href=\"{0}\">:{1}</a>&nbsp;&nbsp;<b>{2}</b>", linkToCurrentObject, verseNumber,
-                    verseNumber.ToString() != pointerValueString.Trim() ? pointerValueString : string.Empty);
+                    verseNumber.ToString() != pointerValueString ? pointerValueString : string.Empty);
             }
             else
                 newContent = string.Format("<b>{0}</b>", pointerValueString);

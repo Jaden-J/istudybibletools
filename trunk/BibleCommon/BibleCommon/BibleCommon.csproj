@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ArgsClasses.cs" />
+    <Compile Include="Common\BibleTranslationDifferencesEx.cs" />
     <Compile Include="Common\CustomExceptions.cs" />
     <Compile Include="Common\ModuleInfo.cs" />
     <Compile Include="Common\ProcessAbortedByUserException.cs" />
@@ -68,9 +69,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Services\BibleParallelTranslationConnectorManager.cs" />
+    <Compile Include="Services\BibleParallelTranslationManager.cs" />
     <Compile Include="Services\LanguageManager.cs" />
     <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\ModulesManager.cs" />
+    <Compile Include="Services\NotebookGenerator.cs" />
     <Compile Include="Services\NotebookIterator.cs" />
     <Compile Include="Services\NoteLinkManager.cs" />
     <Compile Include="Services\NotesPageManager.cs" />

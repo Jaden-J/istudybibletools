@@ -54,15 +54,13 @@ namespace BibleCommon.Services
         public string PageName_DefaultComments { get; set; }
         public string SectionName_DefaultBookOverview { get; set; }
         public string PageName_Notes { get; set; }
-
         public string ModuleName { get; set; }
-
         public Version NewVersionOnServer { get; set; }
         public DateTime? NewVersionOnServerLatestCheckTime { get; set; }
-
         public int PageWidth_Notes { get; set; }
-
         public int Language { get; set; }
+        public int PageWidth_Bible { get; set; }
+        public List<string> ParallelModules { get; set; }
 
         /// <summary>
         /// Необходимо ли линковать каждый стих, входящий в MultiVerse
@@ -70,10 +68,9 @@ namespace BibleCommon.Services
         public bool ExpandMultiVersesLinking { get; set; }
 
         /// <summary>
-        /// необходимо ли линковать даже стихи, входящие в главу, помечанную в заголовке с []
+        /// необходимо ли линковать даже стихи, входящие в главу, помеченную в заголовке с []
         /// </summary>
         public bool ExcludedVersesLinking { get; set; }
-
 
         public bool UseDifferentPagesForEachVerse { get; set; }
 
@@ -269,6 +266,7 @@ namespace BibleCommon.Services
             this.PageName_DefaultComments = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameDefaultComments);
             this.PageName_Notes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameNotes);
             this.PageWidth_Notes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthNotes, 500);
+            this.PageWidth_Bible = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthBible, 500);
             this.ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_ExpandMultiVersesLinking);
             this.ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_ExcludedVersesLinking);
             this.UseDifferentPagesForEachVerse = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseDifferentPagesForEachVerse);
@@ -278,6 +276,7 @@ namespace BibleCommon.Services
             this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
             this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, true);
             this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);
+            this.ParallelModules = GetParameterValue<List<string>>(xdoc, Consts.Constants.ParameterName_ParallelModules);
         }
 
         private void LoadGeneralSettings(XDocument xdoc)
@@ -327,13 +326,15 @@ namespace BibleCommon.Services
             this.UseDefaultSettings = true;      
             
             this.PageWidth_Notes = Consts.Constants.DefaultPageWidth_Notes;
+            this.PageWidth_Bible = Consts.Constants.DefaultPageWidth_Bible;
             this.ExpandMultiVersesLinking = Consts.Constants.DefaultExpandMultiVersesLinking;            
             this.ExcludedVersesLinking = Consts.Constants.DefaultExcludedVersesLinking;
             this.UseDifferentPagesForEachVerse = Consts.Constants.DefaultUseDifferentPagesForEachVerse;
             this.RubbishPage_Use = Consts.Constants.DefaultRubbishPage_Use;            
             this.PageWidth_RubbishNotes = Consts.Constants.DefaultPageWidth_RubbishNotes;
             this.RubbishPage_ExpandMultiVersesLinking = Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking;
-            this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;            
+            this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
+            this.ParallelModules = new List<string>();
 
             LoadDefaultLocalazibleSettings();
         }
@@ -395,7 +396,9 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, this.RubbishPage_ExcludedVersesLinking),
                                   new XElement(Consts.Constants.ParameterName_Language, this.Language),
                                   new XElement(Consts.Constants.ParameterName_ModuleName, this.ModuleName),
-                                  new XElement(Consts.Constants.ParameterName_UseDefaultSettings, this.UseDefaultSettings.Value)
+                                  new XElement(Consts.Constants.ParameterName_UseDefaultSettings, this.UseDefaultSettings.Value),
+                                  new XElement(Consts.Constants.ParameterName_PageWidthBible, this.PageWidth_Bible),
+                                  new XElement(Consts.Constants.ParameterName_ParallelModules, this.ParallelModules)
                                   );
 
                     xDoc.Save(sw);

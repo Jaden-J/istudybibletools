@@ -139,6 +139,9 @@ namespace BibleCommon.Common
     public class BibleBookInfo
     {
         [XmlAttribute]
+        public int Index { get; set; }
+
+        [XmlAttribute]
         public string Name { get; set; }
 
         [XmlAttribute]
@@ -171,5 +174,127 @@ namespace BibleCommon.Common
         {
             return new Abbreviation(value);
         }       
+    }
+
+    [Serializable]
+    [XmlRoot(ElementName = "IStudyBibleTools_Bible")]
+    public class ModuleBibleInfo
+    {
+        [XmlElement]
+        public BibleTranslationDifferences TranslationDifferences { get; set; }
+
+        [XmlElement]
+        public BibleContent Content { get; set; }
+
+        public ModuleBibleInfo()
+        {
+            this.Content = new BibleContent();
+        }
+    }
+
+    [Serializable]
+    public class BibleTranslationDifferences
+    {
+        [XmlElement(typeof(BibleBookDifferences), ElementName = "BookDifferences")]
+        public List<BibleBookDifferences> BookDifferences { get; set; }
+
+        public BibleTranslationDifferences()
+        {
+            this.BookDifferences = new List<BibleBookDifferences>();
+        }
+    }
+
+    [Serializable]
+    public class BibleBookDifferences
+    {
+        [XmlAttribute]
+        public int BookIndex { get; set; }
+
+        [XmlElement(typeof(BibleBookDifference), ElementName = "Difference")]
+        public List<BibleBookDifference> Differences { get; set; }
+
+        public BibleBookDifferences()
+        {
+            this.Differences = new List<BibleBookDifference>();
+        }
+
+        public BibleBookDifferences(int bookIndex, params BibleBookDifference[] bibleBookDifferences)
+            : this()
+        {
+            this.BookIndex = bookIndex;
+            this.Differences.AddRange(bibleBookDifferences);
+        }
+    }
+
+    [Serializable]
+    public class BibleBookDifference
+    {
+        [XmlAttribute]
+        public string BaseVerses { get; set; }
+
+        [XmlAttribute]
+        public string Verses { get; set; }
+
+        public BibleBookDifference()
+        {
+        }
+
+        public BibleBookDifference(string originalVerses, string verses)
+        {
+            this.BaseVerses = originalVerses;
+            this.Verses = verses;
+        }
+    }
+
+    [Serializable]
+    public class BibleContent
+    {
+        [XmlElement(typeof(BibleBookContent), ElementName = "Book")]
+        public List<BibleBookContent> Books { get; set; }
+
+        public BibleContent()
+        {
+            this.Books = new List<BibleBookContent>();
+        }
+    }
+
+    [Serializable]
+    public class BibleBookContent
+    {
+        [XmlAttribute]
+        public int Index { get; set; }
+
+        [XmlElement(typeof(BibleChapterContent), ElementName="Chapter")]
+        public List<BibleChapterContent> Chapters { get; set; }
+
+        public BibleBookContent()
+        {
+            this.Chapters = new List<BibleChapterContent>();
+        }
+    }
+
+    [Serializable]
+    public class BibleChapterContent
+    {
+        [XmlAttribute]
+        public int Index { get; set; }
+
+        [XmlElement(typeof(BibleVerseContent), ElementName = "Verse")]
+        public List<BibleVerseContent> Verses { get; set; }
+
+        public BibleChapterContent()
+        {
+            this.Verses = new List<BibleVerseContent>();
+        }
+    }
+
+    [Serializable]
+    public class BibleVerseContent
+    {
+        [XmlAttribute]
+        public int Index { get; set; }
+
+        [XmlText]
+        public string Value { get; set; }
     }
 }
