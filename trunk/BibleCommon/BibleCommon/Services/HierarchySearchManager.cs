@@ -133,13 +133,18 @@ namespace BibleCommon.Services
         {
             OneNoteProxy.HierarchyElement sectionDocument = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages);
 
-            XElement page = sectionDocument.Content.Root.XPathSelectElement(string.Format("one:Page[starts-with(@name,'{0} ') and @pageLevel=2]", vp.Chapter), sectionDocument.Xnm);  // "@pageLevel=2" - это условие нам надо, чтобы найти главу, например, "2 глава. 2 Петра", а не просто "2 Петра", 
+            return FindChapterPage(oneNoteApp, sectionDocument.Content.Root, vp.Chapter.Value, sectionDocument.Xnm);
+        }
+
+        internal static XElement FindChapterPage(Application oneNoteApp, XElement sectionPagesEl, int chapter, XmlNamespaceManager xnm)
+        {
+            XElement page = sectionPagesEl.XPathSelectElement(string.Format("one:Page[starts-with(@name,'{0} ') and @pageLevel=2]", chapter), xnm);  // "@pageLevel=2" - это условие нам надо, чтобы найти главу, например, "2 глава. 2 Петра", а не просто "2 Петра", 
             if (page == null)
-                page = sectionDocument.Content.Root.XPathSelectElement(string.Format("one:Page[starts-with(@name,'{0} ')]", vp.Chapter), sectionDocument.Xnm);
+                page = sectionPagesEl.XPathSelectElement(string.Format("one:Page[starts-with(@name,'{0} ')]", chapter), xnm);
 
             if (page == null)  // нужно для Псалтыря, потому что там главы называются, например "Псалом 5"
-                page = sectionDocument.Content.Root.XPathSelectElement(
-                    string.Format("one:Page[' {0}'=substring(@name,string-length(@name)-{1})]", vp.Chapter, vp.Chapter.ToString().Length), sectionDocument.Xnm);
+                page = sectionPagesEl.XPathSelectElement(
+                    string.Format("one:Page[' {0}'=substring(@name,string-length(@name)-{1})]", chapter, chapter.ToString().Length), xnm);
 
             return page;
         }

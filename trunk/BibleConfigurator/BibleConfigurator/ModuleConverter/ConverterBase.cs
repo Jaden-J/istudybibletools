@@ -40,7 +40,7 @@ namespace BibleConfigurator.ModuleConverter
         protected string Locale { get; set; }
         protected List<NotebookInfo> NotebooksInfo { get; set; }
         protected ModuleBibleInfo BibleInfo { get; set; }
-        protected List<int> BookIndexes { get; set; }  // массив индексов книг. Для KJV - упорядоченный массив цифр от 1 до 66.         
+        protected List<int> BookIndexes { get; set; }  // массив индексов книг. Для KJV - упорядоченный массив цифр от 1 до 66.                 
 
         /// <summary>
         /// 
@@ -69,6 +69,7 @@ namespace BibleConfigurator.ModuleConverter
             this.NotebooksInfo = notebooksInfo;
             this.BibleInfo = new ModuleBibleInfo();
             this.BibleInfo.TranslationDifferences = translationDifferences;
+            this.BibleInfo.Content.Locale = locale;
             this.BookIndexes = bookIndexes;            
 
             if (!Directory.Exists(manifestFilesFolderPath))

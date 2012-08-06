@@ -233,24 +233,27 @@ namespace BibleCommon.Common
         public string BaseVerses { get; set; }
 
         [XmlAttribute]
-        public string Verses { get; set; }
+        public string ParallelVerses { get; set; }
 
         public BibleBookDifference()
         {
         }
 
-        public BibleBookDifference(string originalVerses, string verses)
+        public BibleBookDifference(string baseVerses, string parallelVerses)
         {
-            this.BaseVerses = originalVerses;
-            this.Verses = verses;
+            this.BaseVerses = baseVerses;
+            this.ParallelVerses = parallelVerses;
         }
     }
 
     [Serializable]
     public class BibleContent
     {
+        [XmlAttribute]
+        public string Locale { get; set; }
+
         [XmlElement(typeof(BibleBookContent), ElementName = "Book")]
-        public List<BibleBookContent> Books { get; set; }
+        public List<BibleBookContent> Books { get; set; }        
 
         public BibleContent()
         {
@@ -265,7 +268,7 @@ namespace BibleCommon.Common
         public int Index { get; set; }
 
         [XmlElement(typeof(BibleChapterContent), ElementName="Chapter")]
-        public List<BibleChapterContent> Chapters { get; set; }
+        public List<BibleChapterContent> Chapters { get; set; }        
 
         public BibleBookContent()
         {

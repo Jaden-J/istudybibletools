@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Common\ArgsClasses.cs" />
     <Compile Include="Common\BibleTranslationDifferencesEx.cs" />
+    <Compile Include="Common\BibleTranslationDifferencesFormula.cs" />
     <Compile Include="Common\CustomExceptions.cs" />
     <Compile Include="Common\ModuleInfo.cs" />
     <Compile Include="Common\ProcessAbortedByUserException.cs" />

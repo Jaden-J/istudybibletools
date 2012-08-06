@@ -243,7 +243,7 @@ namespace BibleConfigurator
         private static void ConvertRussianModule()
         {
             var converter = new BibleQuotaConverter("RST", @"C:\temp\RST77", @"c:\temp\RST", Encoding.Default,
-                "1. Ветхий Завет", "2. Новый Завет", 39, 27, null, new List<NotebookInfo>() 
+                "1. Ветхий Завет", "2. Новый Завет", 39, 27, "ru", new List<NotebookInfo>() 
                 {  
                     new NotebookInfo() { Type = NotebookType.Bible, Name = "Библия.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Изучение Библии.onepkg" },
@@ -289,7 +289,7 @@ namespace BibleConfigurator
         private static void ConvertEnglishModule()
         {
             var converter = new BibleQuotaConverter("KJV", @"G:\Dropbox\Изучение Библии\программы\Цитата из Библии\King_James_Version", @"c:\temp\KJV", Encoding.ASCII,
-                "1. Old Testament", "2. New Testament", 39, 27, null, new List<NotebookInfo>() 
+                "1. Old Testament", "2. New Testament", 39, 27, "en", new List<NotebookInfo>() 
                 {  
                     new NotebookInfo() { Type = NotebookType.Bible, Name = "Bible.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Bible Study.onepkg" },
