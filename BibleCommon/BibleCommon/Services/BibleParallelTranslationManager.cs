@@ -101,22 +101,32 @@ namespace BibleCommon.Services
 
                 var tableEl = NotebookGenerator.AddTableToBibleChapterPage(chapterPageDoc, SettingsManager.Instance.PageWidth_Bible, xnm);
 
+                int lastProcessedVerse = 0;
+
                 foreach (var baseVerse in baseChapter.Verses)
                 {
                     var baseVersePointer = new SimpleVersePointer(baseBibleBook.Index, baseChapter.Index, baseVerse.Index);
                     
-                    string verseText = GetParalleleVerseText(baseVersePointer, parallelBibleBook, bookVersePointersComparisonTable);
+                    string verseText = GetParalleleVerseText(baseVersePointer, parallelBibleBook, bookVersePointersComparisonTable, lastProcessedVerse);
 
                     NotebookGenerator.AddVerseRowToBibleTable(tableEl, verseText, locale);
+
+                    lastProcessedVerse++;
                 }
+
+                и здесь надо проверять, что lastProcessedVerse должен быть = parallelChapter.Verses.Count, иначе надо допроходить оставшиеся стихи;
+                вообще это надо проверять при переходе на новый parallelChapter - чтобы убедиться, чтоы все стихи педыдущей главы параллельного перевода обработали;
 
                 oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
             }            
         }
 
-        private static string GetParalleleVerseText(SimpleVersePointer baseVersePointer, BibleBookContent parallelBibleBook, 
-            SimpleVersePointersComparisonTable bookVersePointersComparisonTable)
+        private static string GetParalleleVerseText(SimpleVersePointer baseVersePointer, BibleBookContent parallelBibleBook,
+            SimpleVersePointersComparisonTable bookVersePointersComparisonTable, int lastProcessedVerse)
         {
+            здесь надо учитывать lastProcessedVerse;
+
+
             SimpleVersePointer versePointer = bookVersePointersComparisonTable.ContainsKey(baseVersePointer) 
                                                     ? bookVersePointersComparisonTable[baseVersePointer]
                                                     : baseVersePointer;
