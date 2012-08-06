@@ -7,6 +7,7 @@ using BibleCommon.Common;
 using Microsoft.Office.Interop.OneNote;
 using BibleCommon.Helpers;
 using System.Xml;
+using BibleCommon.Consts;
 
 namespace BibleCommon.Services
 {
@@ -41,13 +42,20 @@ namespace BibleCommon.Services
 
             var translationIndex = SettingsManager.Instance.ParallelModules.Count;
             var baseBibleInfo = ModulesManager.GetModuleBibleInfo(SettingsManager.Instance.ModuleName);
-            var parallelBibleInfo = ModulesManager.GetModuleBibleInfo(moduleShortName);            
+            var parallelBibleInfo = ModulesManager.GetModuleBibleInfo(moduleShortName);
 
-            GenerateParallelBibleTables(oneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.CurrentModule, baseBibleInfo, parallelModuleInfo, parallelBibleInfo);            
+            var bibleVersePointersComparisonTable = BibleParallelTranslationConnectorManager.ConnectBibleTranslations(
+                                                            baseBibleInfo.TranslationDifferences,
+                                                            parallelBibleInfo.TranslationDifferences);                        
+
+            GenerateParallelBibleTables(oneNoteApp, SettingsManager.Instance.NotebookId_Bible,
+                SettingsManager.Instance.CurrentModule, baseBibleInfo, parallelModuleInfo, parallelBibleInfo, bibleVersePointersComparisonTable);            
         }
 
-        private static void GenerateParallelBibleTables(Application oneNoteApp, string bibleNotebookId, ModuleInfo baseModuleInfo, ModuleBibleInfo baseBibleInfo, 
-            ModuleInfo parallelModuleInfo, ModuleBibleInfo parallelBibleInfo)
+        private static void GenerateParallelBibleTables(Application oneNoteApp, string bibleNotebookId, 
+            ModuleInfo baseModuleInfo, ModuleBibleInfo baseBibleInfo, 
+            ModuleInfo parallelModuleInfo, ModuleBibleInfo parallelBibleInfo,
+            Dictionary<int, SimpleVersePointersComparisonTable> bibleVersePointersComparisonTable)
         {
             foreach (var baseBibleBook in baseBibleInfo.Content.Books)
             {
@@ -62,46 +70,63 @@ namespace BibleCommon.Services
                     if (sectionEl == null)
                         throw new Exception(string.Format("Section with name {0} is not found", baseBookInfo.SectionName));
 
-                    var test = new BibleTranslationDifferencesEx(parallelBibleInfo.TranslationDifferences);
+                    SimpleVersePointersComparisonTable bookVersePointersComparisonTable = bibleVersePointersComparisonTable.ContainsKey(baseBibleBook.Index)
+                        ? bibleVersePointersComparisonTable[baseBibleBook.Index] : new SimpleVersePointersComparisonTable();        
 
-                    var baseTranslationDifferences = baseBibleInfo.TranslationDifferences.BookDifferences.FirstOrDefault(b => b.BookIndex == baseBibleBook.Index);
-                    var parallelTranslationDifferences = parallelBibleInfo.TranslationDifferences.BookDifferences.FirstOrDefault(b => b.BookIndex == baseBibleBook.Index);
-
-                    ProcessBibleBook(oneNoteApp, sectionEl, baseBookInfo, baseBibleBook, baseTranslationDifferences, parallelBibleBook, parallelTranslationDifferences);                    
+                    ProcessBibleBook(oneNoteApp, sectionEl, baseBookInfo, baseBibleBook, baseBookInfo, 
+                        parallelBibleBook, bookVersePointersComparisonTable, parallelBibleInfo.Content.Locale);                    
                 }
             }
         }
 
-        private static void ProcessBibleBook(Application oneNoteApp, XElement sectionEl, BibleBookInfo baseBibleInfo, BibleBookContent baseBibleBook, BibleBookDifferences baseTranslationDifferences,
-            BibleBookContent parallelBibleBook, BibleBookDifferences parallelTranslationDifferences)
+        private static void ProcessBibleBook(Application oneNoteApp, XElement sectionEl, BibleBookInfo baseBibleInfo, 
+            BibleBookContent baseBibleBook, BibleBookInfo baseBookInfo, BibleBookContent parallelBibleBook,
+            SimpleVersePointersComparisonTable bookVersePointersComparisonTable, string locale)
         {
             XmlNamespaceManager xnm;
             string sectionId = (string)sectionEl.Attribute("ID");
             string sectionName = (string)sectionEl.Attribute("name");
 
-            var sectionPages = OneNoteUtils.GetHierarchyElement(oneNoteApp, sectionId, HierarchyScope.hsPages, out xnm);            
+            var sectionPagesEl = OneNoteUtils.GetHierarchyElement(oneNoteApp, sectionId, HierarchyScope.hsPages, out xnm);            
 
             foreach (var baseChapter in baseBibleBook.Chapters)
             {
-                
-            }
+                var chapterPageEl = HierarchySearchManager.FindChapterPage(oneNoteApp, sectionPagesEl.Root, baseChapter.Index, xnm);
 
-            foreach (var pageEl in sectionPages.Root.Elements())
-            {
-                string pageId = (string)pageEl.Attribute("ID");
-                string pageName = (string)pageEl.Attribute("name");
+                if (chapterPageEl == null)
+                    throw new Exception(string.Format("The page for chapter {0} of book {1} does not found", baseChapter.Index, baseBookInfo.Name));
 
-                int? chapter = GetChapter(pageName, baseBibleInfo.Name);                
+                string chapterPageId = (string)chapterPageEl.Attribute("ID");
+                var chapterPageDoc = OneNoteUtils.GetPageContent(oneNoteApp, chapterPageId, out xnm);
 
-                if (chapter.HasValue)
+                var tableEl = NotebookGenerator.AddTableToBibleChapterPage(chapterPageDoc, SettingsManager.Instance.PageWidth_Bible, xnm);
+
+                foreach (var baseVerse in baseChapter.Verses)
                 {
-                    var chapterDoc = OneNoteUtils.GetPageContent(oneNoteApp, pageId, out xnm);
-
-                    NotebookGenerator.AddTableToBibleChapterPage(chapterDoc, SettingsManager.Instance.PageWidth_Bible, xnm);
-
+                    var baseVersePointer = new SimpleVersePointer(baseBibleBook.Index, baseChapter.Index, baseVerse.Index);
                     
+                    string verseText = GetParalleleVerseText(baseVersePointer, parallelBibleBook, bookVersePointersComparisonTable);
+
+                    NotebookGenerator.AddVerseRowToBibleTable(tableEl, verseText, locale);
                 }
-            }
+
+                oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+            }            
+        }
+
+        private static string GetParalleleVerseText(SimpleVersePointer baseVersePointer, BibleBookContent parallelBibleBook, 
+            SimpleVersePointersComparisonTable bookVersePointersComparisonTable)
+        {
+            SimpleVersePointer versePointer = bookVersePointersComparisonTable.ContainsKey(baseVersePointer) 
+                                                    ? bookVersePointersComparisonTable[baseVersePointer]
+                                                    : baseVersePointer;
+
+            string result = parallelBibleBook.Chapters[versePointer.Chapter].Verses[versePointer.Verse].Value;
+
+            if (versePointer.Chapter != baseVersePointer.Chapter)
+                result = string.Format("{0}:{1}", versePointer.Chapter, result);
+
+            return result;
         }
 
         private static int? GetChapter(string pageName, string bookName)

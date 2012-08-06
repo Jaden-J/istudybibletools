@@ -276,7 +276,7 @@ namespace BibleCommon.Services
             this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
             this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, true);
             this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);
-            this.ParallelModules = GetParameterValue<List<string>>(xdoc, Consts.Constants.ParameterName_ParallelModules);
+            this.ParallelModules = GetParameterValue<List<string>>(xdoc, Consts.Constants.ParameterName_ParallelModules, new List<string>());
         }
 
         private void LoadGeneralSettings(XDocument xdoc)
