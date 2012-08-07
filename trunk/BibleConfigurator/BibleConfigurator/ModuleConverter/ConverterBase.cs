@@ -26,8 +26,7 @@ namespace BibleConfigurator.ModuleConverter
     public abstract class ConverterBase
     {
         protected abstract ExternalModuleInfo ReadExternalModuleInfo();
-        protected abstract void ProcessBibleBooks(ExternalModuleInfo externalModuleInfo);
-        protected abstract void GenerateManifest(ExternalModuleInfo externalModuleInfo);
+        protected abstract void ProcessBibleBooks(ExternalModuleInfo externalModuleInfo);        
 
         protected Application OneNoteApp { get; set; }
         protected string EmptyNotebookName { get; set; }
@@ -40,6 +39,7 @@ namespace BibleConfigurator.ModuleConverter
         protected string Locale { get; set; }
         protected List<NotebookInfo> NotebooksInfo { get; set; }
         protected ModuleBibleInfo BibleInfo { get; set; }
+        protected BibleTranslationDifferences TranslationDifferences { get; set; }
         protected List<int> BookIndexes { get; set; }  // массив индексов книг. Для KJV - упорядоченный массив цифр от 1 до 66.                 
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace BibleConfigurator.ModuleConverter
             this.Locale = locale;
             this.NotebooksInfo = notebooksInfo;
             this.BibleInfo = new ModuleBibleInfo();
-            this.BibleInfo.TranslationDifferences = translationDifferences;
+            this.TranslationDifferences = translationDifferences;
             this.BibleInfo.Content.Locale = locale;
             this.BookIndexes = bookIndexes;            
 
@@ -89,7 +89,7 @@ namespace BibleConfigurator.ModuleConverter
             GenerateBibleInfo();
         }
 
-        private void GenerateBibleInfo()
+        protected virtual void GenerateBibleInfo()
         {
             SaveToXmlFile(BibleInfo, Constants.BibleInfoFileName);
         }
@@ -192,7 +192,7 @@ namespace BibleConfigurator.ModuleConverter
             });
         }
 
-        protected void SaveToXmlFile(object data, string fileName)
+        protected virtual void SaveToXmlFile(object data, string fileName)
         {
             XmlSerializer ser = new XmlSerializer(data.GetType());
             using (var fs = new FileStream(Path.Combine(ManifestFilesFolderPath, fileName), FileMode.Create))
@@ -200,6 +200,37 @@ namespace BibleConfigurator.ModuleConverter
                 ser.Serialize(fs, data);
                 fs.Flush();
             }
+        }
+
+        protected virtual void GenerateManifest(ExternalModuleInfo externalModuleInfo)
+        {
+            var extModuleInfo = (BibleQuotaModuleInfo)externalModuleInfo;
+
+            ModuleInfo module = new ModuleInfo() { Name = extModuleInfo.Name, Version = "1.0", Notebooks = NotebooksInfo };
+            module.BibleStructure = new BibleStructureInfo()
+            {
+                Alphabet = extModuleInfo.Alphabet,
+                NewTestamentName = NewTestamentName,
+                OldTestamentName = OldTestamentName,
+                OldTestamentBooksCount = OldTestamentBooksCount,
+                NewTestamentBooksCount = NewTestamentBooksCount,                
+                TranslationDifferences = this.TranslationDifferences
+            };
+
+            int index = 0;
+            foreach (var bibleBookInfo in extModuleInfo.BibleBooksInfo)
+            {
+                module.BibleStructure.BibleBooks.BooksInfo.Add(
+                    new BibleBookInfo()
+                    {
+                        Index = BookIndexes[index++],
+                        Name = bibleBookInfo.Name,
+                        SectionName = bibleBookInfo.SectionName,
+                        Abbreviations = bibleBookInfo.Abbreviations
+                    });
+            }
+
+            SaveToXmlFile(module, Constants.ManifestFileName);
         }
     }
 }

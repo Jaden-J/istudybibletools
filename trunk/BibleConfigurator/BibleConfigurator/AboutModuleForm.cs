@@ -36,12 +36,12 @@ namespace BibleConfigurator
         {
             ModuleInfo module = ModulesManager.GetModuleInfo(ModuleName);
 
-            this.Text = lblTitle.Text = string.Format("{0} ({1} {2})", module.Name, module.BibleStructure.BibleBooks.Count, BibleCommon.Resources.Constants.Books);
+            this.Text = lblTitle.Text = string.Format("{0} ({1} {2})", module.Name, module.BibleStructure.BibleBooks.BooksInfo.Count, BibleCommon.Resources.Constants.Books);
             lblLocation.Text = Path.Combine(ModulesManager.GetModulesDirectory(), ModuleName);
 
             int top = 5;
 
-            foreach (var book in module.BibleStructure.BibleBooks)
+            foreach (var book in module.BibleStructure.BibleBooks.BooksInfo)
             {
                 var lblBook = new Label();
                 lblBook.Top = top;

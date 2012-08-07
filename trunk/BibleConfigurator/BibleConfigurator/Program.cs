@@ -243,7 +243,7 @@ namespace BibleConfigurator
         private static void ConvertRussianModule()
         {
             var converter = new BibleQuotaConverter("RST", @"C:\temp\RST77", @"c:\temp\RST", Encoding.Default,
-                "1. Ветхий Завет", "2. Новый Завет", 39, 27, "ru", new List<NotebookInfo>() 
+                "Ветхий Завет", "Новый Завет", 39, 27, "ru", new List<NotebookInfo>() 
                 {  
                     new NotebookInfo() { Type = NotebookType.Bible, Name = "Библия.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Изучение Библии.onepkg" },

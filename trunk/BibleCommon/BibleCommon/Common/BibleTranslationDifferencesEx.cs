@@ -38,6 +38,14 @@ namespace BibleCommon.Common
                 SimpleVersePointer parallelVerse = parallelVersesFormula.GetParallelVerse(verse);
                 BibleVersesDifferences[bookIndex].Add(verse, parallelVerse);
             }
-        }        
+        }
+
+        public SimpleVersePointersComparisonTable GetBibleVersesDifferences(int bookIndex)
+        {
+            if (this.BibleVersesDifferences.ContainsKey(bookIndex))
+                return this.BibleVersesDifferences[bookIndex];
+
+            return null;
+        }
     }
 }

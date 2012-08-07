@@ -100,8 +100,12 @@ namespace BibleConfigurator.ModuleConverter
                     else if (key == "FullName")
                         result.BibleBooksInfo[result.BibleBooksInfo.Count - 1].Name = value;
                     else if (key == "ShortName")
-                        result.BibleBooksInfo[result.BibleBooksInfo.Count - 1].Abbreviations = value.ToLowerInvariant().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                                                                                                        .Select(s => new Abbreviation(value)).ToList();
+                        result.BibleBooksInfo[result.BibleBooksInfo.Count - 1].Abbreviations 
+                            = value
+                                .ToLowerInvariant()
+                                .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                                .Select(s => s.Trim(new char[] { '.' })).Distinct()
+                                .Select(s => new Abbreviation(s)).ToList();
                     else if (key == "ChapterQty")
                         result.BibleBooksInfo[result.BibleBooksInfo.Count - 1].ChaptersCount = int.Parse(value);
                 }
@@ -172,38 +176,6 @@ namespace BibleConfigurator.ModuleConverter
             result = StringUtils.GetText(result, moduleInfo.Alphabet).Trim();
 
             return result;
-        }
-        
-
-        protected override void GenerateManifest(ExternalModuleInfo externalModuleInfo)
-        {
-            var extModuleInfo = (BibleQuotaModuleInfo)externalModuleInfo;
-
-            ModuleInfo module = new ModuleInfo() { Name = extModuleInfo.Name, Version = "1.0", Notebooks = NotebooksInfo };
-            module.BibleStructure = new BibleStructureInfo() 
-            {
-                Alphabet = extModuleInfo.Alphabet, 
-                NewTestamentName = NewTestamentName, 
-                OldTestamentName = OldTestamentName, 
-                OldTestamentBooksCount = OldTestamentBooksCount,
-                NewTestamentBooksCount = NewTestamentBooksCount,
-                BibleBooks = new List<BibleBookInfo>() };
-
-            int index = 0;
-            foreach (var bibleBookInfo in extModuleInfo.BibleBooksInfo)
-            {
-                module.BibleStructure.BibleBooks.Add(
-                    new BibleBookInfo() 
-                    { 
-                        Index= BookIndexes[index++],
-                        Name = bibleBookInfo.Name, 
-                        SectionName = bibleBookInfo.SectionName, 
-                        Abbreviations = bibleBookInfo.Abbreviations 
-                    }); 
-            }
-
-
-            SaveToXmlFile(module, Constants.ManifestFileName);            
         }
     }
 }
