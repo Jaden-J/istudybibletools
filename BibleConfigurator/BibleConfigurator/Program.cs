@@ -37,7 +37,7 @@ namespace BibleConfigurator
 
                 //TryToUpdateInkNodes();
 
-                //ConvertRussianModule();
+                ConvertRussianModule();
 
                 //ConvertEnglishModule();
 
@@ -47,7 +47,7 @@ namespace BibleConfigurator
 
                 //DefaultRusModuleGenerator.GenerateModuleInfo("g:\\manifest.xml", true);
 
-                GenerateParallelBible();
+                //GenerateParallelBible();
             }
             catch (Exception ex)
             {

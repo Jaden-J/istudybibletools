@@ -125,7 +125,7 @@ namespace BibleConfigurator.ModuleConverter
             AddNewBookContent();
 
             XmlNamespaceManager xnm;
-            AddChapterPage(sectionId, bookName, 1, out xnm);               
+            //AddChapterPage(sectionId, bookName, 1, out xnm);               
 
             return sectionId;
         }
