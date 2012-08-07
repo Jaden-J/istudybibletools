@@ -17,30 +17,62 @@ namespace BibleCommon.Services
             var parallelTranslationDifferencesEx = new BibleTranslationDifferencesEx(parallelBookTranslationDifferences);
 
 
+            ProcessForBaseBookVerses(baseTranslationDifferencesEx, parallelTranslationDifferencesEx, result);
+            ProcessForParallelBookVerses(baseTranslationDifferencesEx, parallelTranslationDifferencesEx, result);
+          
+            return result;
+        }
+
+       
+
+        private static void ProcessForBaseBookVerses(BibleTranslationDifferencesEx baseTranslationDifferencesEx, BibleTranslationDifferencesEx parallelTranslationDifferencesEx,
+            Dictionary<int, SimpleVersePointersComparisonTable> result)
+        {
             foreach (int bookIndex in baseTranslationDifferencesEx.BibleVersesDifferences.Keys)
             {
                 var bookVersePointersComparisonTables = new SimpleVersePointersComparisonTable();
                 result.Add(bookIndex, bookVersePointersComparisonTables);
 
-                if (parallelTranslationDifferencesEx.BibleVersesDifferences.ContainsKey(bookIndex))
+                var baseBookVerses = baseTranslationDifferencesEx.BibleVersesDifferences[bookIndex];
+                var parallelBookVerses = parallelTranslationDifferencesEx.GetBibleVersesDifferences(bookIndex);
+
+                foreach (var baseVerseKey in baseBookVerses.Keys)
                 {
-                    var baseBookVerses = baseTranslationDifferencesEx.BibleVersesDifferences[bookIndex];
-                    var parallelBookVerses = parallelTranslationDifferencesEx.BibleVersesDifferences[bookIndex];
-
-                    foreach (var parallelVerseKey in parallelBookVerses.Keys)
-                    {
-                        var parallelVerseValue = parallelBookVerses[parallelVerseKey];
-
-                        if (baseBookVerses.ContainsKey(parallelVerseKey))
-                            bookVersePointersComparisonTables.Add(baseBookVerses[parallelVerseKey], parallelVerseValue);
-                        else
-                            bookVersePointersComparisonTables.Add(parallelVerseKey, parallelVerseValue);
-                    }
+                    if (parallelBookVerses != null && parallelBookVerses.ContainsKey(baseVerseKey))
+                        bookVersePointersComparisonTables.Add(baseBookVerses[baseVerseKey], parallelBookVerses[baseVerseKey]);
+                    else
+                        bookVersePointersComparisonTables.Add(baseBookVerses[baseVerseKey], baseVerseKey);
                 }
             }
+        }
 
+        private static void ProcessForParallelBookVerses(BibleTranslationDifferencesEx baseTranslationDifferencesEx, BibleTranslationDifferencesEx parallelTranslationDifferencesEx,
+           Dictionary<int, SimpleVersePointersComparisonTable> result)
+        {
+            foreach (int bookIndex in parallelTranslationDifferencesEx.BibleVersesDifferences.Keys)
+            {
+                SimpleVersePointersComparisonTable bookVersePointersComparisonTables;
 
-            return result;
+                if (!result.ContainsKey(bookIndex))
+                {
+                    bookVersePointersComparisonTables = new SimpleVersePointersComparisonTable();
+                    result.Add(bookIndex, bookVersePointersComparisonTables);
+                }
+                else
+                    bookVersePointersComparisonTables = result[bookIndex];
+
+                var baseBookVerses = baseTranslationDifferencesEx.GetBibleVersesDifferences(bookIndex);
+                var parallelBookVerses = parallelTranslationDifferencesEx.BibleVersesDifferences[bookIndex];
+
+                foreach (var parallelVerseKey in parallelBookVerses.Keys)
+                {
+                    if (baseBookVerses != null && baseBookVerses.ContainsKey(parallelVerseKey))
+                        bookVersePointersComparisonTables.Add(baseBookVerses[parallelVerseKey], parallelBookVerses[parallelVerseKey]);
+                    else
+                        bookVersePointersComparisonTables.Add(parallelVerseKey, parallelBookVerses[parallelVerseKey]);
+
+                }
+            }
         }
     }
 }

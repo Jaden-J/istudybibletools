@@ -14,7 +14,7 @@ namespace BibleCommon.Common
     {
         public int BookIndex { get; set; }
         public int Chapter { get; set; }
-        public int Verse { get; set; }
+        public int Verse { get; set; }        
 
         public SimpleVersePointer(int bookIndex, int chapter, int verse)
         {
@@ -34,6 +34,17 @@ namespace BibleCommon.Common
         public override int GetHashCode()
         {
             return this.BookIndex.GetHashCode() ^ this.Chapter.GetHashCode() ^ this.Verse.GetHashCode();
+        }
+    }
+
+    public class SimpleVerse : SimpleVersePointer
+    {
+        public string VerseContent { get; set; }
+
+        public SimpleVerse(SimpleVersePointer versePointer, string verseContent)
+            : base(versePointer.BookIndex, versePointer.Chapter, versePointer.Verse)
+        {
+            this.VerseContent = verseContent;
         }
     }
 
