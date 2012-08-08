@@ -37,7 +37,7 @@ namespace BibleConfigurator
 
                 //TryToUpdateInkNodes();
 
-                ConvertRussianModule();
+                //ConvertRussianModule();
 
                 //ConvertEnglishModule();
 
@@ -47,7 +47,7 @@ namespace BibleConfigurator
 
                 //DefaultRusModuleGenerator.GenerateModuleInfo("g:\\manifest.xml", true);
 
-                //GenerateParallelBible();
+                GenerateParallelBible();
             }
             catch (Exception ex)
             {
@@ -288,7 +288,7 @@ namespace BibleConfigurator
 
         private static void ConvertEnglishModule()
         {
-            var converter = new BibleQuotaConverter("KJV", @"G:\Dropbox\Изучение Библии\программы\Цитата из Библии\King_James_Version", @"c:\temp\KJV", Encoding.ASCII,
+            var converter = new BibleQuotaConverter("KJV", @"C:\Temp\King_James_Version", @"c:\temp\KJV", Encoding.ASCII,
                 "1. Old Testament", "2. New Testament", 39, 27, "en", new List<NotebookInfo>() 
                 {  
                     new NotebookInfo() { Type = NotebookType.Bible, Name = "Bible.onepkg" },

@@ -44,6 +44,8 @@ namespace BibleCommon.Common
 
         [XmlElement]
         public BibleStructureInfo BibleStructure { get; set; }
+        
+        public BibleTranslationDifferences BibleTranslationDifferences { get; set; }
 
         public bool UseSingleNotebook()
         {
@@ -83,7 +85,7 @@ namespace BibleCommon.Common
 
         private BibleBookInfo GetBibleBookByExactMatch(string s, bool endsWithDot)
         {
-            return BibleStructure.BibleBooks.BooksInfo.FirstOrDefault(
+            return BibleStructure.BibleBooks.FirstOrDefault(
                 book => book.Abbreviations.Any(abbr => 
                            abbr.Value == s
                         && (!endsWithDot || !abbr.IsFullBookName)));
@@ -129,31 +131,11 @@ namespace BibleCommon.Common
         public int NewTestamentBooksCount { get; set; }        
 
         [XmlAttribute]
-        public string Alphabet { get; set; }  // символы, встречающиеся в названии книг Библии            
+        public string Alphabet { get; set; }  // символы, встречающиеся в названии книг Библии                    
 
-        [XmlElement]
-        public BibleTranslationDifferences TranslationDifferences { get; set; }
-
-        [XmlElement]
-        public BibleBooksInfo BibleBooks { get; set; }
-
-        public BibleStructureInfo()
-        {
-            this.BibleBooks = new BibleBooksInfo();
-        }        
-    }
-
-    [Serializable]
-    public class BibleBooksInfo
-    {
         [XmlElement(typeof(BibleBookInfo), ElementName = "BibleBook")]
-        public List<BibleBookInfo> BooksInfo { get; set; }
-
-        public BibleBooksInfo()
-        {
-            this.BooksInfo = new List<BibleBookInfo>();
-        }
-    }
+        public List<BibleBookInfo> BibleBooks { get; set; }                
+    }   
 
     [Serializable]
     public class BibleBookInfo
