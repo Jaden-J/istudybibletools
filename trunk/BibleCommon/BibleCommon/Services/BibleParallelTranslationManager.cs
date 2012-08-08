@@ -46,8 +46,8 @@ namespace BibleCommon.Services
             var parallelBibleInfo = ModulesManager.GetModuleBibleInfo(moduleShortName);
 
             var bibleVersePointersComparisonTable = BibleParallelTranslationConnectorManager.ConnectBibleTranslations(
-                                                            baseModuleInfo.BibleStructure.TranslationDifferences,
-                                                            parallelModuleInfo.BibleStructure.TranslationDifferences);                        
+                                                            baseModuleInfo.BibleTranslationDifferences,
+                                                            parallelModuleInfo.BibleTranslationDifferences);                        
 
             GenerateParallelBibleTables(oneNoteApp, SettingsManager.Instance.NotebookId_Bible,
                 baseModuleInfo, baseBibleInfo, parallelModuleInfo, parallelBibleInfo, bibleVersePointersComparisonTable);            
@@ -60,7 +60,7 @@ namespace BibleCommon.Services
         {
             foreach (var baseBibleBook in baseBibleInfo.Content.Books)
             {
-                var baseBookInfo = baseModuleInfo.BibleStructure.BibleBooks.BooksInfo.FirstOrDefault(b => b.Index == baseBibleBook.Index);
+                var baseBookInfo = baseModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBibleBook.Index);
                 if (baseBookInfo == null)
                     throw new InvalidModuleException(string.Format("Book with index {0} is not found in module manifest", baseBibleBook.Index));
 
@@ -88,7 +88,7 @@ namespace BibleCommon.Services
             string sectionId = (string)sectionEl.Attribute("ID");
             string sectionName = (string)sectionEl.Attribute("name");
 
-            var sectionPagesEl = OneNoteUtils.GetHierarchyElement(oneNoteApp, sectionId, HierarchyScope.hsPages, out xnm);            
+            var sectionPagesEl = OneNoteUtils.GetHierarchyElement(oneNoteApp, sectionId, HierarchyScope.hsPages, out xnm);                        
 
             foreach (var baseChapter in baseBibleBook.Chapters)
             {
@@ -100,7 +100,8 @@ namespace BibleCommon.Services
                 string chapterPageId = (string)chapterPageEl.Attribute("ID");
                 var chapterPageDoc = OneNoteUtils.GetPageContent(oneNoteApp, chapterPageId, out xnm);
 
-                var tableEl = NotebookGenerator.AddTableToBibleChapterPage(chapterPageDoc, SettingsManager.Instance.PageWidth_Bible, xnm);
+                var tableEl = NotebookGenerator.GetBibleTable(chapterPageDoc, xnm);
+                NotebookGenerator.ExtendBibleTableForParallelTranslation(tableEl, SettingsManager.Instance.PageWidth_Bible);
 
                 int lastProcessedVerse = 0;
                 int lastProcessedChapter = 0;
@@ -112,7 +113,7 @@ namespace BibleCommon.Services
                     var parallelVerse = GetParallelVerse(baseVersePointer, parallelBibleBook, bookVersePointersComparisonTable, 
                                                                                                 lastProcessedChapter, lastProcessedVerse);
 
-                    NotebookGenerator.AddVerseRowToBibleTable(tableEl, parallelVerse.VerseContent, locale);                    
+                    NotebookGenerator.AddParallelVerseRowToBibleTable(tableEl, parallelVerse.VerseContent, locale);                    
 
                     lastProcessedChapter = parallelVerse.Chapter;
                     lastProcessedVerse = parallelVerse.Verse;
@@ -120,7 +121,7 @@ namespace BibleCommon.Services
 
                 oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
             }            
-        }
+        }        
 
         private static SimpleVerse GetParallelVerse(SimpleVersePointer baseVersePointer, BibleBookContent parallelBibleBook,
             SimpleVersePointersComparisonTable bookVersePointersComparisonTable,  int lastProcessedChapter, int lastProcessedVerse)

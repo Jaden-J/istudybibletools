@@ -14,7 +14,8 @@ namespace BibleCommon.Common
     {
         public int BookIndex { get; set; }
         public int Chapter { get; set; }
-        public int Verse { get; set; }        
+        public int Verse { get; set; }
+        public bool IsPart { get; set; }
 
         public SimpleVersePointer(int bookIndex, int chapter, int verse)
         {

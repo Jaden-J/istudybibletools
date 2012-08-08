@@ -207,20 +207,20 @@ namespace BibleConfigurator.ModuleConverter
             var extModuleInfo = (BibleQuotaModuleInfo)externalModuleInfo;
 
             ModuleInfo module = new ModuleInfo() { Name = extModuleInfo.Name, Version = "1.0", Notebooks = NotebooksInfo };
+            module.BibleTranslationDifferences = this.TranslationDifferences;
             module.BibleStructure = new BibleStructureInfo()
             {
                 Alphabet = extModuleInfo.Alphabet,
                 NewTestamentName = NewTestamentName,
                 OldTestamentName = OldTestamentName,
                 OldTestamentBooksCount = OldTestamentBooksCount,
-                NewTestamentBooksCount = NewTestamentBooksCount,                
-                TranslationDifferences = this.TranslationDifferences
+                NewTestamentBooksCount = NewTestamentBooksCount                                
             };
 
             int index = 0;
             foreach (var bibleBookInfo in extModuleInfo.BibleBooksInfo)
             {
-                module.BibleStructure.BibleBooks.BooksInfo.Add(
+                module.BibleStructure.BibleBooks.Add(
                     new BibleBookInfo()
                     {
                         Index = BookIndexes[index++],

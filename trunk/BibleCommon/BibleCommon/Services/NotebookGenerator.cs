@@ -79,29 +79,37 @@ namespace BibleCommon.Services
                                                           new XElement(nms + "Column", new XAttribute("index", 1), new XAttribute("width", 37), new XAttribute("isLocked", true))
                                                               )))));
 
-            var outlines = chapterDoc.Root.XPathSelectElements("//one:Outline", xnm);
-            int bibleIndex = outlines.Count();
-            if (bibleIndex > 0)
-            {
-                var lastOutline = outlines.Last();
+            //var outlines = chapterDoc.Root.XPathSelectElements("//one:Outline", xnm);
+            //int bibleIndex = outlines.Count();
+            //if (bibleIndex > 0)
+            //{
+            //    var lastOutline = outlines.Last();
 
-                if (lastOutline != null)
-                {
-                    var prevX = lastOutline.XPathSelectElement("one:Position", xnm).Attribute("x");
-                    var prevWidth = lastOutline.XPathSelectElement("one:Size", xnm).Attribute("width");
+            //    if (lastOutline != null)
+            //    {
+            //        var prevPosition = lastOutline.XPathSelectElement("one:Position", xnm);
+            //        var prevX = prevPosition.Attribute("x");
+            //        var prevWidth = lastOutline.XPathSelectElement("one:Size", xnm).Attribute("width");
 
-                    var newX = (prevX != null ? float.Parse(prevX.Value, CultureInfo.InvariantCulture) : 0) + (prevWidth != null ? float.Parse(prevWidth.Value, CultureInfo.InvariantCulture) : 0);
+            //        var newX = (prevX != null ? float.Parse(prevX.Value, CultureInfo.InvariantCulture) : 0) + (prevWidth != null ? float.Parse(prevWidth.Value, CultureInfo.InvariantCulture) : 0) + 30;
 
-                    var positionEl = new XElement(nms + "Position",
-                                        new XAttribute("x", newX));
+            //        var positionEl = new XElement(nms + "Position",
+            //                            new XAttribute("x", newX),
+            //                            new XAttribute("y", prevPosition.Attribute("y").Value),
+            //                            new XAttribute("z", prevPosition.Attribute("z").Value));
 
-                    tableEl.AddFirst(positionEl);
-                }
-            }
+            //        tableEl.AddFirst(positionEl);
+            //    }
+            //}
 
             chapterDoc.Root.Add(tableEl);
 
-            return chapterDoc.Root.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", xnm);
+            return GetBibleTable(chapterDoc, xnm);
+        }
+
+        public static XElement GetBibleTable(XDocument chapterPageDoc, XmlNamespaceManager xnm)
+        {
+            return chapterPageDoc.Root.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", xnm);            
         }
 
         public static void AddVerseRowToBibleTable(XElement tableElement, string verseText, string locale)
@@ -133,7 +141,18 @@ namespace BibleCommon.Services
             tableElement.Add(newRow);
         }
 
+        public static void ExtendBibleTableForParallelTranslation(XElement tableElement, int bibleCellWidth)
+        {
+            var nms = XNamespace.Get(Constants.OneNoteXmlNs);         
 
+            var columnsEl = tableElement.Element("one:Columns");
+            columnsEl.Add(new XElement(nms + "Column", new XAttribute("index", columnsEl.Elements().Count()), new XAttribute("width", bibleCellWidth), new XAttribute("isLocked", true)));
+        }
+
+        public static void AddParallelVerseRowToBibleTable(XElement tableElement, string verseText, string locale)
+        {
+            return tableElement.XPathSelectElement();
+        }
 
         public static void GenerateSummaryOfNotesNotebook(Application oneNoteApp, string bibleNotebookName, string targetEmptyNotebookName)
         {
