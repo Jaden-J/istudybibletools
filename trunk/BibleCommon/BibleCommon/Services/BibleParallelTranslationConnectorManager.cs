@@ -68,17 +68,23 @@ namespace BibleCommon.Services
             {
                 var baseAlign = baseVerses.Align != BibleBookDifference.VerseAlign.None
                                         ? baseVerses.Align
-                                        : (versesKey.Verse == 1 ? BibleBookDifference.VerseAlign.Top : BibleBookDifference.VerseAlign.Bottom);
+                                        : (versesKey.Verse == 1 ? BibleBookDifference.VerseAlign.Bottom : BibleBookDifference.VerseAlign.Top);
                 var parallelAlign = parallelVerses.Align != BibleBookDifference.VerseAlign.None
                                         ? parallelVerses.Align
-                                        : (versesKey.Verse == 1 ? BibleBookDifference.VerseAlign.Top : BibleBookDifference.VerseAlign.Bottom);
+                                        : (versesKey.Verse == 1 ? BibleBookDifference.VerseAlign.Bottom : BibleBookDifference.VerseAlign.Top);
 
                 int baseValueVersesCount = baseVerses.ValueVerseCount ?? baseVerses.Count;
                 int parallelValuVersesCount = parallelVerses.ValueVerseCount ?? parallelVerses.Count;
 
+                if (baseValueVersesCount != parallelValuVersesCount)
+                    кидаем warning.
+
                 if (baseVerses.Count < parallelVerses.Count)
                 {
-                   if (baseAlign 
+                    if (baseAlign == BibleBookDifference.VerseAlign.Top)
+                    {
+                        for (int 
+                    }
                 }
                 else
                 {
