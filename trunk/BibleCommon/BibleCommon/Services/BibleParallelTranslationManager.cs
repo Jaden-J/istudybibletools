@@ -101,7 +101,7 @@ namespace BibleCommon.Services
                 var chapterPageDoc = OneNoteUtils.GetPageContent(oneNoteApp, chapterPageId, out xnm);
 
                 var tableEl = NotebookGenerator.GetBibleTable(chapterPageDoc, xnm);
-                NotebookGenerator.ExtendBibleTableForParallelTranslation(tableEl, SettingsManager.Instance.PageWidth_Bible);
+                int bibleIndex = NotebookGenerator.ExtendBibleTableForParallelTranslation(tableEl, SettingsManager.Instance.PageWidth_Bible, xnm);
 
                 int lastProcessedVerse = 0;
                 int lastProcessedChapter = 0;
@@ -113,7 +113,7 @@ namespace BibleCommon.Services
                     var parallelVerse = GetParallelVerse(baseVersePointer, parallelBibleBook, bookVersePointersComparisonTable, 
                                                                                                 lastProcessedChapter, lastProcessedVerse);
 
-                    NotebookGenerator.AddParallelVerseRowToBibleTable(tableEl, parallelVerse.VerseContent, locale);                    
+                    NotebookGenerator.AddParallelVerseRowToBibleTable(tableEl, parallelVerse.VerseContent, bibleIndex, locale, xnm);                    
 
                     lastProcessedChapter = parallelVerse.Chapter;
                     lastProcessedVerse = parallelVerse.Verse;

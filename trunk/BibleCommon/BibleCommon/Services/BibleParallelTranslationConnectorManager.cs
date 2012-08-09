@@ -39,9 +39,50 @@ namespace BibleCommon.Services
                 foreach (var baseVerseKey in baseBookVerses.Keys)
                 {
                     if (parallelBookVerses != null && parallelBookVerses.ContainsKey(baseVerseKey))
-                        bookVersePointersComparisonTables.Add(baseBookVerses[baseVerseKey], parallelBookVerses[baseVerseKey]);
+                    {
+                        var baseVerses = baseBookVerses[baseVerseKey];
+                        var parallelVerses = parallelBookVerses[baseVerseKey];
+
+                        JoinBaseAndParallelVerses(baseVerseKey, baseVerses, parallelVerses, bookVersePointersComparisonTables);
+                    }
                     else
-                        bookVersePointersComparisonTables.Add(baseBookVerses[baseVerseKey], baseVerseKey);
+                    {
+                        var parallelVerse = new SimpleVersePointer(baseVerseKey) { IsPart = true };                        
+                        foreach(var baseVersePointer in baseBookVerses[baseVerseKey])
+                        {
+                            bookVersePointersComparisonTables.Add(baseVersePointer, new ComparisonVersesInfo() { parallelVerse });
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void JoinBaseAndParallelVerses(SimpleVersePointer versesKey, ComparisonVersesInfo baseVerses, ComparisonVersesInfo parallelVerses,
+            SimpleVersePointersComparisonTable bookVersePointersComparisonTables)
+        {
+            if (baseVerses.Count == 1)
+            {
+                bookVersePointersComparisonTables.Add(baseVerses[0], parallelVerses);
+            }
+            else
+            {
+                var baseAlign = baseVerses.Align != BibleBookDifference.VerseAlign.None
+                                        ? baseVerses.Align
+                                        : (versesKey.Verse == 1 ? BibleBookDifference.VerseAlign.Top : BibleBookDifference.VerseAlign.Bottom);
+                var parallelAlign = parallelVerses.Align != BibleBookDifference.VerseAlign.None
+                                        ? parallelVerses.Align
+                                        : (versesKey.Verse == 1 ? BibleBookDifference.VerseAlign.Top : BibleBookDifference.VerseAlign.Bottom);
+
+                int baseValueVersesCount = baseVerses.ValueVerseCount ?? baseVerses.Count;
+                int parallelValuVersesCount = parallelVerses.ValueVerseCount ?? parallelVerses.Count;
+
+                if (baseVerses.Count < parallelVerses.Count)
+                {
+                   if (baseAlign 
+                }
+                else
+                {
+
                 }
             }
         }
@@ -60,17 +101,13 @@ namespace BibleCommon.Services
                 }
                 else
                     bookVersePointersComparisonTables = result[bookIndex];
-
-                var baseBookVerses = baseTranslationDifferencesEx.GetBibleVersesDifferences(bookIndex);
+                
                 var parallelBookVerses = parallelTranslationDifferencesEx.BibleVersesDifferences[bookIndex];
 
                 foreach (var parallelVerseKey in parallelBookVerses.Keys)
                 {
-                    if (baseBookVerses != null && baseBookVerses.ContainsKey(parallelVerseKey))
-                        bookVersePointersComparisonTables.Add(baseBookVerses[parallelVerseKey], parallelBookVerses[parallelVerseKey]);
-                    else
-                        bookVersePointersComparisonTables.Add(parallelVerseKey, parallelBookVerses[parallelVerseKey]);
-
+                    // вариант, когда и там, и там есть мы уже разобрали
+                    bookVersePointersComparisonTables.Add(parallelVerseKey, parallelBookVerses[parallelVerseKey]);                    
                 }
             }
         }
