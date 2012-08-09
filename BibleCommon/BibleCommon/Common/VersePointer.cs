@@ -17,6 +17,12 @@ namespace BibleCommon.Common
         public int Verse { get; set; }
         public bool IsPart { get; set; }
 
+        public SimpleVersePointer(SimpleVersePointer verse)
+            : this(verse.BookIndex, verse.Chapter, verse.Verse)
+        {
+
+        }
+
         public SimpleVersePointer(int bookIndex, int chapter, int verse)
         {
             this.BookIndex = bookIndex;

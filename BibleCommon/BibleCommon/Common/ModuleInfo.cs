@@ -47,6 +47,11 @@ namespace BibleCommon.Common
         
         public BibleTranslationDifferences BibleTranslationDifferences { get; set; }
 
+        public ModuleInfo()
+        {
+            this.BibleTranslationDifferences = new BibleTranslationDifferences();
+        }
+
         public bool UseSingleNotebook()
         {
             return Notebooks.Exists(n => n.Type == NotebookType.Single);
@@ -55,7 +60,7 @@ namespace BibleCommon.Common
         public NotebookInfo GetNotebook(NotebookType notebookType)
         {
             return Notebooks.First(n => n.Type == notebookType);
-        }
+        }        
         
         /// <summary>
         /// возвращает книгу Библии с учётом всех сокращений 
@@ -157,7 +162,7 @@ namespace BibleCommon.Common
     public class Abbreviation
     {
         [XmlAttribute]
-        [DefaultValueAttribute(false)]
+        [DefaultValue(false)]
         public bool IsFullBookName { get; set; }
 
         [XmlText]
@@ -228,14 +233,49 @@ namespace BibleCommon.Common
     [Serializable]
     public class BibleBookDifference
     {
+        /// <summary>
+        /// Выравнивание стихов, если, например, на два стиха приходится один параллельный
+        /// </summary>
+        public enum VerseAlign
+        {
+            None = 0,
+            Top = 1,
+            Bottom = 2
+        }
+
         [XmlAttribute]
         public string BaseVerses { get; set; }
 
         [XmlAttribute]
         public string ParallelVerses { get; set; }
 
+        /// <summary>
+        /// Выравнивание стихов - при несоответствии, 
+        /// </summary>
+        [XmlAttribute]
+        [DefaultValue(typeof(VerseAlign), VerseAlign.None.ToString())]
+        public VerseAlign Align { get; set; }
+
+        /// <summary>
+        /// Строгая обработка стихов - отслеживается строгое соответствие
+        /// </summary>
+        [XmlAttribute]
+        [DefaultValue(true)]  
+        public bool Strict { get; set; }
+
+        /// <summary>
+        /// Количество стихов, соответствующие частям из KJV. Например при "1:1 -> 1:1-3", 
+        /// и если 1:1 делится только на две части с помощью "|", то надр, чтобы ValueVerseCount=2 и, например, Align = Bottom. 
+        /// Тогда 2 и 3 стих будут соответствовать 1:1 из KJV, а 1 стих - "особенный", который есть только в данном переводе
+        /// По умолчанию ValueVerseCount=null, то есть все стихи соответствуют частям/стихам из KJV
+        /// Данный параметр полезен для апокрифов
+        /// </summary>
+        [XmlAttribute]
+        public int? ValueVerseCount { get; set; }  
+
         public BibleBookDifference()
         {
+            this.Strict = true;
         }
 
         public BibleBookDifference(string baseVerses, string parallelVerses)

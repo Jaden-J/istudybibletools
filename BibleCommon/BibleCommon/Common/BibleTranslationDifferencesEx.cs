@@ -5,8 +5,31 @@ using System.Text;
 
 namespace BibleCommon.Common
 {
-    public class SimpleVersePointersComparisonTable : Dictionary<SimpleVersePointer, SimpleVersePointer>
+    public class ComparisonVersesInfo: List<SimpleVersePointer>
     {
+        public bool Strict { get; set; }
+        public BibleBookDifference.VerseAlign Align { get; set; }
+        public int? ValueVerseCount { get; set; }
+
+        public ComparisonVersesInfo()
+        {
+        }
+
+        public ComparisonVersesInfo(List<SimpleVersePointer> verses)
+            : base(verses)
+        {
+        }
+    }
+
+    public class SimpleVersePointersComparisonTable : Dictionary<SimpleVersePointer, ComparisonVersesInfo>
+    {
+        public new void Add(SimpleVersePointer key, ComparisonVersesInfo value)
+        {
+            if (!this.ContainsKey(key))
+                base.Add(key, value);
+            else
+                base[key].AddRange(value);
+        }
     }
 
     public class BibleTranslationDifferencesEx
@@ -31,12 +54,17 @@ namespace BibleCommon.Common
         private void ProcessBookDifference(int bookIndex, BibleBookDifference bookDifference)
         {
             var baseVersesFormula = new BibleTranslationDifferencesBaseVersesFormula(bookIndex, bookDifference.BaseVerses);
-            var parallelVersesFormula = new BibleTranslationDifferencesParallelVersesFormula(bookDifference.ParallelVerses, baseVersesFormula);
+            var parallelVersesFormula = new BibleTranslationDifferencesParallelVersesFormula(bookDifference.ParallelVerses, baseVersesFormula, 
+                bookDifference.Align, bookDifference.Strict);            
 
             foreach (var verse in baseVersesFormula.GetAllVerses())
             {
-                SimpleVersePointer parallelVerse = parallelVersesFormula.GetParallelVerse(verse);
-                BibleVersesDifferences[bookIndex].Add(verse, parallelVerse);
+                var parallelVerses = parallelVersesFormula.GetParallelVerses(verse);
+                parallelVerses.Align = bookDifference.Align;
+                parallelVerses.Strict = bookDifference.Strict;
+                parallelVerses.ValueVerseCount = bookDifference.ValueVerseCount;
+
+                BibleVersesDifferences[bookIndex].Add(verse, parallelVerses);
             }
         }
 

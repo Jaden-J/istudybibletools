@@ -141,17 +141,38 @@ namespace BibleCommon.Services
             tableElement.Add(newRow);
         }
 
-        public static void ExtendBibleTableForParallelTranslation(XElement tableElement, int bibleCellWidth)
+        public static int ExtendBibleTableForParallelTranslation(XElement tableElement, int bibleCellWidth, XmlNamespaceManager xnm)
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);         
 
-            var columnsEl = tableElement.Element("one:Columns");
-            columnsEl.Add(new XElement(nms + "Column", new XAttribute("index", columnsEl.Elements().Count()), new XAttribute("width", bibleCellWidth), new XAttribute("isLocked", true)));
+            var columnsEl = tableElement.XPathSelectElement("one:Columns", xnm);
+
+            int columnsCount = columnsEl.Elements().Count();
+            columnsEl.Add(new XElement(nms + "Column", new XAttribute("index", columnsCount), new XAttribute("width", bibleCellWidth), new XAttribute("isLocked", true)));
+
+            return columnsCount;
         }
 
-        public static void AddParallelVerseRowToBibleTable(XElement tableElement, string verseText, string locale)
+        public static void AddParallelVerseRowToBibleTable(XElement tableElement, string verseText, int translationIndex, string locale, XmlNamespaceManager xnm)
         {
-            return tableElement.XPathSelectElement();
+            var nms = XNamespace.Get(Constants.OneNoteXmlNs);
+
+            var rows = tableElement.XPathSelectElements("one:Row", xnm);
+
+            foreach (var row in rows)
+            {
+                if (row.Elements().Count() == translationIndex)
+                {
+                    row.Add(new XElement(nms + "Cell",
+                                      new XElement(nms + "OEChildren",
+                                          new XElement(nms + "OE",
+                                              new XElement(nms + "T",
+                                                  new XCData(
+                                                      verseText
+                                                              ))))));
+                    break;
+                }
+            }         
         }
 
         public static void GenerateSummaryOfNotesNotebook(Application oneNoteApp, string bibleNotebookName, string targetEmptyNotebookName)
