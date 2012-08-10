@@ -352,7 +352,7 @@ namespace BibleCommon.Common
                 versesContent.Append(GetVerseContent(verse));
             }
 
-            return verses.ToString();
+            return versesContent.ToString();
         }
     }
 
