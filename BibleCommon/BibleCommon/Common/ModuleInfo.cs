@@ -253,7 +253,7 @@ namespace BibleCommon.Common
         /// Выравнивание стихов - при несоответствии, 
         /// </summary>
         [XmlAttribute]
-        [DefaultValue(typeof(VerseAlign), VerseAlign.None.ToString())]
+        [DefaultValue((int)VerseAlign.None)]
         public VerseAlign Align { get; set; }
 
         /// <summary>
@@ -271,7 +271,7 @@ namespace BibleCommon.Common
         /// Данный параметр полезен для апокрифов
         /// </summary>
         [XmlAttribute]
-        public int? ValueVerseCount { get; set; }  
+        public string ValueVerseCount { get; set; }  
 
         public BibleBookDifference()
         {
@@ -312,6 +312,47 @@ namespace BibleCommon.Common
         public BibleBookContent()
         {
             this.Chapters = new List<BibleChapterContent>();
+        }
+
+        public string GetVerseContent(SimpleVersePointer verse)
+        {
+            if (this.Chapters.Count < verse.Chapter)
+                throw new ArgumentException(string.Format("There is no chapter '{0}' in book '{1}'", verse.Chapter, verse.BookIndex));
+            
+            var chapter = this.Chapters[verse.Chapter - 1];
+
+            if (chapter.Verses.Count < verse.Verse)
+                throw new ArgumentException(string.Format("There is no verse '{0}' in chapter '{1}' of book '{2}', ", verse.Verse, verse.Chapter, verse.BookIndex));
+
+            string verseContent = chapter.Verses[verse.Verse - 1].Value;
+
+            string result = null;
+
+            if (verse.PartIndex.HasValue)
+            {
+                var versesParts = verseContent.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                if (versesParts.Length > verse.PartIndex.Value)
+                    result = versesParts[verse.PartIndex.Value];                
+            }
+            else
+                result = verseContent;
+
+            if (!string.IsNullOrEmpty(result))
+                result = result.Replace("|", string.Empty);
+
+            return result;
+        }
+
+        public string GetVersesContent(List<SimpleVersePointer> verses)
+        {
+            StringBuilder versesContent = new StringBuilder();
+
+            foreach (var verse in verses)
+            {
+                versesContent.Append(GetVerseContent(verse));
+            }
+
+            return verses.ToString();
         }
     }
 

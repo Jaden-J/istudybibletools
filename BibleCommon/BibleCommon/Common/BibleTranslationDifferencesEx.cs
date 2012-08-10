@@ -55,16 +55,19 @@ namespace BibleCommon.Common
         {
             var baseVersesFormula = new BibleTranslationDifferencesBaseVersesFormula(bookIndex, bookDifference.BaseVerses);
             var parallelVersesFormula = new BibleTranslationDifferencesParallelVersesFormula(bookDifference.ParallelVerses, baseVersesFormula, 
-                bookDifference.Align, bookDifference.Strict);            
+                bookDifference.Align, bookDifference.Strict);
 
+            SimpleVersePointer prevVerse = null;
             foreach (var verse in baseVersesFormula.GetAllVerses())
             {
-                var parallelVerses = parallelVersesFormula.GetParallelVerses(verse);
+                var parallelVerses = parallelVersesFormula.GetParallelVerses(verse, prevVerse);
                 parallelVerses.Align = bookDifference.Align;
                 parallelVerses.Strict = bookDifference.Strict;
-                parallelVerses.ValueVerseCount = bookDifference.ValueVerseCount;
+                parallelVerses.ValueVerseCount = !string.IsNullOrEmpty(bookDifference.ValueVerseCount) ? (int?)int.Parse(bookDifference.ValueVerseCount) : null;
 
                 BibleVersesDifferences[bookIndex].Add(verse, parallelVerses);
+
+                prevVerse = parallelVerses.Last();
             }
         }
 
