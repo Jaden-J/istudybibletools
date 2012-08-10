@@ -46,11 +46,14 @@ namespace BibleCommon.Services
                         JoinBaseAndParallelVerses(baseVerseKey, baseVerses, parallelVerses, bookVersePointersComparisonTables);
                     }
                     else
-                    {
-                        var parallelVerse = new SimpleVersePointer(baseVerseKey) { IsPart = true };                        
+                    {   
+                        int versePartIndex = 0;
                         foreach(var baseVersePointer in baseBookVerses[baseVerseKey])
                         {
-                            bookVersePointersComparisonTables.Add(baseVersePointer, new ComparisonVersesInfo() { parallelVerse });
+                            bookVersePointersComparisonTables.Add(baseVersePointer, new ComparisonVersesInfo() 
+                            { 
+                                new SimpleVersePointer(baseVerseKey) { PartIndex = versePartIndex++ }
+                            });
                         }
                     }
                 }
@@ -66,30 +69,32 @@ namespace BibleCommon.Services
             }
             else
             {
-                var baseAlign = baseVerses.Align != BibleBookDifference.VerseAlign.None
-                                        ? baseVerses.Align
-                                        : (versesKey.Verse == 1 ? BibleBookDifference.VerseAlign.Bottom : BibleBookDifference.VerseAlign.Top);
-                var parallelAlign = parallelVerses.Align != BibleBookDifference.VerseAlign.None
-                                        ? parallelVerses.Align
-                                        : (versesKey.Verse == 1 ? BibleBookDifference.VerseAlign.Bottom : BibleBookDifference.VerseAlign.Top);
+                throw new NotSupportedException("This case (when baseVerses.Count != 1) is not supported yet.");
 
-                int baseValueVersesCount = baseVerses.ValueVerseCount ?? baseVerses.Count;
-                int parallelValuVersesCount = parallelVerses.ValueVerseCount ?? parallelVerses.Count;
+                //var baseAlign = baseVerses.Align != BibleBookDifference.VerseAlign.None
+                //                        ? baseVerses.Align
+                //                        : (versesKey.Verse == 1 ? BibleBookDifference.VerseAlign.Bottom : BibleBookDifference.VerseAlign.Top);
+                //var parallelAlign = parallelVerses.Align != BibleBookDifference.VerseAlign.None
+                //                        ? parallelVerses.Align
+                //                        : (versesKey.Verse == 1 ? BibleBookDifference.VerseAlign.Bottom : BibleBookDifference.VerseAlign.Top);
 
-                if (baseValueVersesCount != parallelValuVersesCount)
-                    кидаем warning.
+                //int baseValueVersesCount = baseVerses.ValueVerseCount ?? baseVerses.Count;
+                //int parallelValuVersesCount = parallelVerses.ValueVerseCount ?? parallelVerses.Count;
 
-                if (baseVerses.Count < parallelVerses.Count)
-                {
-                    if (baseAlign == BibleBookDifference.VerseAlign.Top)
-                    {
-                        for (int 
-                    }
-                }
-                else
-                {
+                ////if (baseValueVersesCount != parallelValuVersesCount)
+                ////    кидаем warning.
 
-                }
+                //if (baseVerses.Count < parallelVerses.Count)
+                //{
+                //    if (baseAlign == BibleBookDifference.VerseAlign.Top)
+                //    {
+                //        //for (int 
+                //    }
+                //}
+                //else
+                //{
+
+                //}
             }
         }
 

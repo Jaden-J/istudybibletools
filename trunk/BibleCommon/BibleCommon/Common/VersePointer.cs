@@ -15,7 +15,7 @@ namespace BibleCommon.Common
         public int BookIndex { get; set; }
         public int Chapter { get; set; }
         public int Verse { get; set; }
-        public bool IsPart { get; set; }
+        public int? PartIndex { get; set; }        
 
         public SimpleVersePointer(SimpleVersePointer verse)
             : this(verse.BookIndex, verse.Chapter, verse.Verse)
@@ -41,6 +41,11 @@ namespace BibleCommon.Common
         public override int GetHashCode()
         {
             return this.BookIndex.GetHashCode() ^ this.Chapter.GetHashCode() ^ this.Verse.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} {1}:{2}", BookIndex, Chapter, Verse);
         }
     }
 

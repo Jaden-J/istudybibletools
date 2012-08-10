@@ -18,7 +18,7 @@ using System.Xml.Linq;
 
 namespace RibbonButtons
 {
-    [GuidAttribute("61139959-A5E4-4261-977A-6262429033E1"), ProgId("RibbonButtons.ButtonsDefinition")]
+    [GuidAttribute("61139959-A5E4-4261-977A-6262429033E1"), ProgId("IStudyBibleTools.ButtonsDefinition")]
 	public class ButtonsDefinition : IDTExtensibility2, IRibbonExtensibility
     {
         #region consts

@@ -20,9 +20,14 @@ namespace BibleConfigurator.ModuleConverter
                     _rst = new BibleTranslationDifferences();
                     _rst.BookDifferences.AddRange(new List<BibleBookDifferences>()
                     {
+                        new BibleBookDifferences(3, 
+                                    new BibleBookDifference("14:55-56", "14:55"),
+                                    new BibleBookDifference("14:57", "14:56")),
                         new BibleBookDifferences(4,
-                                    new BibleBookDifference("12:6", "13:1"),
-                                    new BibleBookDifference("13:1-33", "13:X+1")),
+                                    new BibleBookDifference("12:16", "13:1"),
+                                    new BibleBookDifference("13:1-33", "13:X+1"),
+                                    new BibleBookDifference("29:40", "30:1"),
+                                    new BibleBookDifference("30:1-16", "30:X+1")),
                         new BibleBookDifferences(6,
                                     new BibleBookDifference("6:1", "5:16"),
                                     new BibleBookDifference("6:2-27", "6:X-1")),
