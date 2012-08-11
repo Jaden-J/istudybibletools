@@ -156,9 +156,15 @@ namespace BibleConfigurator.ModuleConverter
                     else if (line.StartsWith(moduleInfo.VerseSign))
                     {
                         if (currentTableElement == null)
-                           throw new Exception("currentTableElement is null");
+                           throw new Exception("currentTableElement is null");                        
 
-                        AddVerseRowToTable(currentTableElement, lineText);       
+                        int? verseNumber;
+                        string verseText = GetVerseTextWithoutNumber(lineText, out verseNumber);
+
+                        if (!verseNumber.HasValue)
+                            throw new Exception(string.Format("Verse has no number: {0}", lineText));
+
+                        AddVerseRowToTable(currentTableElement, verseNumber.Value, verseText);       
                     }
                 }
             }
@@ -169,9 +175,23 @@ namespace BibleConfigurator.ModuleConverter
             }
         }
 
+        private string GetVerseTextWithoutNumber(string lineText, out int? verseNumber)
+        {
+            verseNumber = null;
+
+            if (StringUtils.IsDigit(lineText[0]))
+            {
+                verseNumber = StringUtils.GetStringFirstNumber(lineText);
+
+                lineText = lineText.Remove(0, verseNumber.Value.ToString().Length).Trim();
+            }
+
+            return lineText;
+        }
+
         private string ShellText(string line, BibleQuotaModuleInfo moduleInfo)
         {
-            var result = line.Replace("<<", "&lt;&lt;").Replace(">>", "&gt;&gt;");   // чтобы учитывать строки типа "<p>1 <<To the chief Musician on Neginoth, A Psalm of David.>> Hear me when I call, O God of my righteousness: thou hast enlarged me when I was in distress; have mercy upon me, and hear my prayer."
+            var result = line.Replace("<<", "&lt;").Replace(">>", "&gt;");   // чтобы учитывать строки типа "<p>1 <<To the chief Musician on Neginoth, A Psalm of David.>> Hear me when I call, O God of my righteousness: thou hast enlarged me when I was in distress; have mercy upon me, and hear my prayer."
 
             result = StringUtils.GetText(result, moduleInfo.Alphabet).Trim();
 

@@ -19,6 +19,16 @@ namespace BibleCommon.Services
         }
     }
 
+    public class BibleParallelTranslationConnectionResult
+    {
+        public List<GetParallelVerseException> Errors { get; set; }
+
+        public BibleParallelTranslationConnectionResult()
+        {
+            this.Errors = new List<GetParallelVerseException>();
+        }
+    }
+
     public static class BibleParallelTranslationManager
     {
         private const string supportedModuleMinVersion = "2.0";        
@@ -28,14 +38,14 @@ namespace BibleCommon.Services
         /// </summary>
         /// <param name="moduleShortName">Module Directory Name</param>
         /// <param name="translationIndex">0 - основная Библия</param>
-        public static void AddParallelTranslation(Application oneNoteApp, string moduleShortName)
+        public static BibleParallelTranslationConnectionResult AddParallelTranslation(Application oneNoteApp, string moduleShortName)
         {
             if (!SettingsManager.Instance.CurrentModuleIsCorrect())
                 throw new InvalidOperationException("Current module is not correct.");
 
             if (SettingsManager.Instance.CurrentModule.Version.CompareTo(supportedModuleMinVersion) < 0)
                 throw new NotSupportedException(string.Format("Version of current module is {0}.", SettingsManager.Instance.CurrentModule.Version));            
-            
+
             var baseModuleInfo = SettingsManager.Instance.CurrentModule;
             var parallelModuleInfo = ModulesManager.GetModuleInfo(moduleShortName);
             ModulesManager.CheckModule(parallelModuleInfo);  // если с модулем то-то не так, то выдаст ошибку
@@ -51,15 +61,17 @@ namespace BibleCommon.Services
                                                             baseModuleInfo.BibleTranslationDifferences,
                                                             parallelModuleInfo.BibleTranslationDifferences);                        
 
-            GenerateParallelBibleTables(oneNoteApp, SettingsManager.Instance.NotebookId_Bible,
+            return GenerateParallelBibleTables(oneNoteApp, SettingsManager.Instance.NotebookId_Bible,
                 baseModuleInfo, baseBibleInfo, parallelModuleInfo, parallelBibleInfo, bibleVersePointersComparisonTable);            
         }
 
-        private static void GenerateParallelBibleTables(Application oneNoteApp, string bibleNotebookId, 
+        private static BibleParallelTranslationConnectionResult GenerateParallelBibleTables(Application oneNoteApp, string bibleNotebookId, 
             ModuleInfo baseModuleInfo, ModuleBibleInfo baseBibleInfo, 
             ModuleInfo parallelModuleInfo, ModuleBibleInfo parallelBibleInfo,
             Dictionary<int, SimpleVersePointersComparisonTable> bibleVersePointersComparisonTable)
         {
+            var result = new BibleParallelTranslationConnectionResult();
+
             foreach (var baseBibleBook in baseBibleInfo.Content.Books)
             {
                 var baseBookInfo = baseModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBibleBook.Index);
@@ -76,21 +88,29 @@ namespace BibleCommon.Services
                     SimpleVersePointersComparisonTable bookVersePointersComparisonTable = bibleVersePointersComparisonTable.ContainsKey(baseBibleBook.Index)
                         ? bibleVersePointersComparisonTable[baseBibleBook.Index] : new SimpleVersePointersComparisonTable();        
 
-                    ProcessBibleBook(oneNoteApp, sectionEl, baseBookInfo, baseBibleBook, baseBookInfo, 
-                        parallelBibleBook, bookVersePointersComparisonTable, parallelBibleInfo.Content.Locale);                    
+                    result.Errors.AddRange(ProcessBibleBook(oneNoteApp, sectionEl, baseBookInfo, baseBibleBook, baseBookInfo, 
+                        parallelBibleBook, parallelModuleInfo.BibleTranslationDifferences.PartVersesAlphabet, 
+                        bookVersePointersComparisonTable, parallelBibleInfo.Content.Locale));                    
                 }
             }
+
+            return result;
         }
 
-        private static void ProcessBibleBook(Application oneNoteApp, XElement sectionEl, BibleBookInfo baseBibleInfo, 
-            BibleBookContent baseBibleBook, BibleBookInfo baseBookInfo, BibleBookContent parallelBibleBook,
+        private static List<GetParallelVerseException> ProcessBibleBook(Application oneNoteApp, XElement sectionEl, BibleBookInfo baseBibleInfo, 
+            BibleBookContent baseBibleBook, BibleBookInfo baseBookInfo, BibleBookContent parallelBibleBook, string partVersesAlphabet,
             SimpleVersePointersComparisonTable bookVersePointersComparisonTable, string locale)
         {
+            var result = new List<GetParallelVerseException>();
+
             XmlNamespaceManager xnm;
             string sectionId = (string)sectionEl.Attribute("ID");
             string sectionName = (string)sectionEl.Attribute("name");
 
-            var sectionPagesEl = OneNoteUtils.GetHierarchyElement(oneNoteApp, sectionId, HierarchyScope.hsPages, out xnm);                        
+            var sectionPagesEl = OneNoteUtils.GetHierarchyElement(oneNoteApp, sectionId, HierarchyScope.hsPages, out xnm);
+
+            int lastProcessedChapter = 0;
+            int lastProcessedVerse = 0;     
 
             foreach (var baseChapter in baseBibleBook.Chapters)
             {
@@ -104,85 +124,120 @@ namespace BibleCommon.Services
 
                 var tableEl = NotebookGenerator.GetBibleTable(chapterPageDoc, xnm);
                 int bibleIndex = NotebookGenerator.ExtendBibleTableForParallelTranslation(tableEl, SettingsManager.Instance.PageWidth_Bible, xnm);
-
-                int lastProcessedVerse = 0;
-                int lastProcessedChapter = 0;
-                int verseProcessCount = 0;
-
+                                           
                 foreach (var baseVerse in baseChapter.Verses)
                 {
                     var baseVersePointer = new SimpleVersePointer(baseBibleBook.Index, baseChapter.Index, baseVerse.Index);
 
-                    var parallelVerse = GetParallelVerse(baseVersePointer, parallelBibleBook, bookVersePointersComparisonTable,
-                                                                                                lastProcessedChapter, lastProcessedVerse);
+                    var parallelVerse = GetParallelVerse(baseVersePointer, parallelBibleBook, partVersesAlphabet, bookVersePointersComparisonTable,
+                                                                                                lastProcessedChapter, lastProcessedVerse, result);
 
                     NotebookGenerator.AddParallelVerseRowToBibleTable(tableEl, parallelVerse.VerseContent, bibleIndex, locale, xnm);
 
                     lastProcessedChapter = parallelVerse.Chapter;
-                    lastProcessedVerse = parallelVerse.Verse;
+                    lastProcessedVerse = parallelVerse.TopVerse ?? parallelVerse.Verse;
                 }             
 
                 oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
-            }            
+            }
+
+            return result;
         }        
 
-        private static SimpleVerse GetParallelVerse(SimpleVersePointer baseVersePointer, BibleBookContent parallelBibleBook,
-            SimpleVersePointersComparisonTable bookVersePointersComparisonTable, int lastProcessedChapter, int lastProcessedVerse)
+        private static SimpleVerse GetParallelVerse(SimpleVersePointer baseVersePointer, BibleBookContent parallelBibleBook, string partVersesAlphabet,
+            SimpleVersePointersComparisonTable bookVersePointersComparisonTable, int lastProcessedChapter, int lastProcessedVerse, List<GetParallelVerseException> errors)
         {
-            var parallelVersePointers = bookVersePointersComparisonTable.ContainsKey(baseVersePointer)
-                                                    ? bookVersePointersComparisonTable[baseVersePointer]
-                                                    : new ComparisonVersesInfo { baseVersePointer };
+            ComparisonVersesInfo parallelVersePointers = null;
+            SimpleVersePointer firstParallelVerse = null;
 
-            if (parallelVersePointers.Count == 0)
-                throw new GetParallelVerseException("parallelVersePointers.Count == 0", baseVersePointer);           
-
-            if (lastProcessedChapter > 0 && parallelVersePointers.First().Chapter > lastProcessedChapter)
+            try
             {
-                if (parallelBibleBook.Chapters[lastProcessedChapter - 1].Verses.Count > lastProcessedVerse)
+                parallelVersePointers = bookVersePointersComparisonTable.ContainsKey(baseVersePointer)
+                                                        ? bookVersePointersComparisonTable[baseVersePointer]
+                                                        : new ComparisonVersesInfo { baseVersePointer };
+
+                if (parallelVersePointers.Count == 0)
+                    throw new GetParallelVerseException("parallelVersePointers.Count == 0", baseVersePointer);
+
+                firstParallelVerse = parallelVersePointers.First();
+
+                if (lastProcessedChapter > 0 && firstParallelVerse.Chapter > lastProcessedChapter)
                 {
-                    throw new GetParallelVerseException("Miss verse", baseVersePointer);
-                    //parallelVersePointer = new SimpleVersePointer(baseVersePointer.BookIndex, lastProcessedChapter, lastProcessedVerse + 1);
+                    if (parallelBibleBook.Chapters[lastProcessedChapter - 1].Verses.Count > lastProcessedVerse)
+                    {
+                        throw new GetParallelVerseException("Miss verse (x01)", baseVersePointer);
+                        //parallelVersePointer = new SimpleVersePointer(baseVersePointer.BookIndex, lastProcessedChapter, lastProcessedVerse + 1);
+                    }
+                    else if (firstParallelVerse.Verse > 1)  // начали главу не с начала
+                    {
+                        throw new GetParallelVerseException("Miss verse (x02)", baseVersePointer);
+                    }
                 }
-            }
-            else if (lastProcessedVerse > 0 && parallelVersePointers.First().Verse > lastProcessedVerse + 1)
-            {
-                throw new GetParallelVerseException("Miss verse", baseVersePointer);
-                //parallelVersePointer = new SimpleVersePointer(baseVersePointer.BookIndex, lastProcessedChapter, lastProcessedChapter + 1);
-            }
+                else if (lastProcessedVerse > 0 && firstParallelVerse.Verse > lastProcessedVerse + 1)
+                {
+                    throw new GetParallelVerseException("Miss verse (x03)", baseVersePointer);
+                    //parallelVersePointer = new SimpleVersePointer(baseVersePointer.BookIndex, lastProcessedChapter, lastProcessedChapter + 1);
+                }
+                else if (lastProcessedChapter == firstParallelVerse.Chapter && lastProcessedVerse == firstParallelVerse.Verse && !firstParallelVerse.PartIndex.HasValue)
+                {
+                    throw new GetParallelVerseException("Double verse (x04)", baseVersePointer);
+                }
 
-            return GetParallelVerses(baseVersePointer, parallelVersePointers, parallelBibleBook);           
+                return GetParallelVerses(baseVersePointer, parallelVersePointers, parallelBibleBook, partVersesAlphabet);
+            }
+            catch (GetParallelVerseException ex)
+            {
+                errors.Add(ex);
+                return new SimpleVerse(firstParallelVerse != null ? firstParallelVerse : baseVersePointer, string.Empty);
+            }
         }
 
-        private static SimpleVerse GetParallelVerses(SimpleVersePointer baseVersePointer, 
-            ComparisonVersesInfo parallelVersePointers, BibleBookContent parallelBibleBook)
+        private static SimpleVerse GetParallelVerses(SimpleVersePointer baseVersePointer,
+            ComparisonVersesInfo parallelVersePointers, BibleBookContent parallelBibleBook, string partVersesAlphabet)
         {
             string verseContent = string.Empty;
 
             var firstParallelVerse = parallelVersePointers.First();
+            int? topVerse = null;
 
             if (parallelVersePointers[0].Chapter != baseVersePointer.Chapter)
-                    verseContent = string.Format("{0}:{1}", firstParallelVerse.Chapter, firstParallelVerse.Verse);
+                    verseContent = string.Format("{0}:{1} ", firstParallelVerse.Chapter, firstParallelVerse.Verse);
                 else
-                    verseContent = firstParallelVerse.Verse.ToString();
+                    verseContent = string.Format("{0}", firstParallelVerse.Verse);
 
             if (parallelVersePointers.Count > 1)
             {
                 verseContent += string.Format("-{0} {1}", parallelVersePointers.Last().Verse, 
                     parallelBibleBook.GetVersesContent(parallelVersePointers));
+                topVerse = parallelVersePointers.Last().Verse;
             }
             else
             {
-                verseContent += parallelBibleBook.GetVerseContent(firstParallelVerse);
-                if (string.IsNullOrEmpty(verseContent))  // значит нет такого стиха, либо такой по счёту части стиха
+                string text = parallelBibleBook.GetVerseContent(firstParallelVerse);
+
+                if (string.IsNullOrEmpty(text))  // значит нет такого стиха, либо такой по счёту части стиха
                 {
-                    if (!parallelVersePointers.Strict)
+                    if (parallelVersePointers.Strict)
+                    {
                         throw new GetParallelVerseException(string.Format("Can not found verseContent (versePart = {0})", firstParallelVerse.PartIndex), baseVersePointer);
+                    }
                     else
                         verseContent = string.Empty;
                 }
+                else
+                {
+                    if (firstParallelVerse.PartIndex.HasValue)
+                    {
+                        if (string.IsNullOrEmpty(partVersesAlphabet) || partVersesAlphabet.Length <= firstParallelVerse.PartIndex.Value)
+                            partVersesAlphabet = Consts.Constants.DefaultPartVersesAlphabet;
+
+                        verseContent += string.Format("({0})", partVersesAlphabet[firstParallelVerse.PartIndex.Value]);
+                    }
+                    verseContent += string.Format(" {0}", text);
+                }
             }
 
-            return new SimpleVerse(firstParallelVerse, verseContent);
+            return new SimpleVerse(firstParallelVerse, verseContent) { TopVerse = topVerse };            
         }
 
         private static int? GetChapter(string pageName, string bookName)

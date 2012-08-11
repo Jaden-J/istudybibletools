@@ -237,7 +237,9 @@ namespace BibleConfigurator
         private static void GenerateParallelBible()
         {
             OneNoteLocker.UnlockAllBible(OneNoteApp);
-            BibleParallelTranslationManager.AddParallelTranslation(OneNoteApp, "rst");
+            var result = BibleParallelTranslationManager.AddParallelTranslation(OneNoteApp, "rst");
+
+            int i = result.Errors.Count;
         }
 
         private static void ConvertRussianModule()

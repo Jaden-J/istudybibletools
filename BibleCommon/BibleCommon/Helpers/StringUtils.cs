@@ -186,6 +186,7 @@ namespace BibleCommon.Helpers
 
         /// <summary>
         /// возвращает номер, находящийся в начале строки: например вернёт 12 для строки "12 глава"
+        /// ограничение: поддерживает максимум трёхзначные числа
         /// </summary>
         /// <param name="pointerElement"></param>
         /// <returns></returns>

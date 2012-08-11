@@ -168,22 +168,21 @@ namespace BibleConfigurator.ModuleConverter
             return NotebookGenerator.AddTableToBibleChapterPage(chapterDoc, SettingsManager.Instance.PageWidth_Bible, xnm);
         }
 
-        protected virtual void AddVerseRowToTable(XElement tableElement, string verseText)
+        protected virtual void AddVerseRowToTable(XElement tableElement, int verseNumber, string verseText)
         {
-            NotebookGenerator.AddVerseRowToBibleTable(tableElement, verseText, Locale);            
+            NotebookGenerator.AddVerseRowToBibleTable(tableElement, string.Format("{0} {1}", verseNumber, verseText), Locale);            
 
-            AddNewVerseContent(verseText);            
+            AddNewVerseContent(verseNumber, verseText);            
         }
 
-        private void AddNewVerseContent(string verseText)
+        private void AddNewVerseContent(int verseNumber, string verseText)
         {
             var currentBook = BibleInfo.Content.Books.Last();
             var currentChapter = currentBook.Chapters.Last();
             int currentVerseIndex = currentChapter.Verses.Count + 1;
-
-            int? verseIndex = StringUtils.GetStringFirstNumber(verseText);
-            if (verseIndex.GetValueOrDefault(0) != currentVerseIndex)
-                throw new InvalidDataException(string.Format("verseIndex != currentVerseIndex: {0} != {1}", verseIndex, currentVerseIndex));
+            
+            if (verseNumber != currentVerseIndex)
+                throw new InvalidDataException(string.Format("verseIndex != currentVerseIndex: {0} != {1}", verseNumber, currentVerseIndex));
 
             currentChapter.Verses.Add(new BibleVerseContent()
             {

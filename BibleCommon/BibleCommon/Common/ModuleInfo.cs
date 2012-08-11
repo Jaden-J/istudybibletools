@@ -43,9 +43,10 @@ namespace BibleCommon.Common
         public List<NotebookInfo> Notebooks { get; set; }
 
         [XmlElement]
-        public BibleStructureInfo BibleStructure { get; set; }
-        
         public BibleTranslationDifferences BibleTranslationDifferences { get; set; }
+
+        [XmlElement]
+        public BibleStructureInfo BibleStructure { get; set; }               
 
         public ModuleInfo()
         {
@@ -139,7 +140,12 @@ namespace BibleCommon.Common
         public string Alphabet { get; set; }  // символы, встречающиеся в названии книг Библии                    
 
         [XmlElement(typeof(BibleBookInfo), ElementName = "BibleBook")]
-        public List<BibleBookInfo> BibleBooks { get; set; }                
+        public List<BibleBookInfo> BibleBooks { get; set; }
+
+        public BibleStructureInfo()
+        {
+            this.BibleBooks = new List<BibleBookInfo>();
+        }
     }   
 
     [Serializable]
@@ -199,6 +205,12 @@ namespace BibleCommon.Common
     [Serializable]
     public class BibleTranslationDifferences
     {
+        /// <summary>
+        /// Первые буквы алфавита для разбиения стихов на части
+        /// </summary>
+        [XmlAttribute]
+        public string PartVersesAlphabet { get; set; }
+
         [XmlElement(typeof(BibleBookDifferences), ElementName = "BookDifferences")]
         public List<BibleBookDifferences> BookDifferences { get; set; }
 
@@ -279,6 +291,7 @@ namespace BibleCommon.Common
         }
 
         public BibleBookDifference(string baseVerses, string parallelVerses)
+            : this()
         {
             this.BaseVerses = baseVerses;
             this.ParallelVerses = parallelVerses;
@@ -317,12 +330,12 @@ namespace BibleCommon.Common
         public string GetVerseContent(SimpleVersePointer verse)
         {
             if (this.Chapters.Count < verse.Chapter)
-                throw new ArgumentException(string.Format("There is no chapter '{0}' in book '{1}'", verse.Chapter, verse.BookIndex));
+                throw new ArgumentException(string.Format("There is no verse '{0}'", verse));
             
             var chapter = this.Chapters[verse.Chapter - 1];
 
             if (chapter.Verses.Count < verse.Verse)
-                throw new ArgumentException(string.Format("There is no verse '{0}' in chapter '{1}' of book '{2}', ", verse.Verse, verse.Chapter, verse.BookIndex));
+                throw new ArgumentException(string.Format("There is no verse '{0}'", verse));
 
             string verseContent = chapter.Verses[verse.Verse - 1].Value;
 

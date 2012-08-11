@@ -8,7 +8,7 @@ namespace BibleConfigurator.ModuleConverter
 {
     public static class PredefinedBookDifferences
     {
-        public static readonly BibleTranslationDifferences KJV = new BibleTranslationDifferences();
+        public static readonly BibleTranslationDifferences KJV = new BibleTranslationDifferences() { PartVersesAlphabet = "абвгд" };
 
         private static BibleTranslationDifferences _rst;
         public static BibleTranslationDifferences RST
@@ -41,13 +41,20 @@ namespace BibleConfigurator.ModuleConverter
                                     new BibleBookDifference("41:1-8", "40:20-27"),
                                     new BibleBookDifference("41:9-34", "41:X-8")),
                         new BibleBookDifferences(19,
-                                    new BibleBookDifference("3:1-8", "X:X+1"),
-                                    new BibleBookDifference("4:1-8", "X:X+1"),
-                                    new BibleBookDifference("5:1-12", "X:X+1"),
-                                    new BibleBookDifference("6:1-10", "X:X+1"),
-                                    new BibleBookDifference("7:1-17", "X:X+1"),
-                                    new BibleBookDifference("8:1-9", "X:X+1"),
-                                    new BibleBookDifference("9:1-10", "X:X+1"),
+                                    new BibleBookDifference("3:1", "3:1-2"),
+                                    new BibleBookDifference("3:2-8", "X:X+1"),
+                                    new BibleBookDifference("4:1", "4:1-2"),
+                                    new BibleBookDifference("4:2-8", "X:X+1"),
+                                    new BibleBookDifference("5:1", "5:1-2"),
+                                    new BibleBookDifference("5:2-12", "X:X+1"),
+                                    new BibleBookDifference("6:1", "6:1-2"),
+                                    new BibleBookDifference("6:2-10", "X:X+1"),
+                                    new BibleBookDifference("7:1", "7:1-2"),
+                                    new BibleBookDifference("7:2-17", "X:X+1"),
+                                    new BibleBookDifference("8:1", "8:1-2"),
+                                    new BibleBookDifference("8:2-9", "X:X+1"),
+                                    new BibleBookDifference("9:1", "9:1-2"),
+                                    new BibleBookDifference("9:2-20", "X:X+1"),
                                     new BibleBookDifference("10:1", "9:22"),
                                     new BibleBookDifference("10:2-18", "9:X+21"),
                                     new BibleBookDifference("11:1-7", "10:X"),
@@ -193,6 +200,9 @@ namespace BibleConfigurator.ModuleConverter
                                     new BibleBookDifference("146:1-10", "X-1:X"),
                                     new BibleBookDifference("147:1-11", "X-1:X"),
                                     new BibleBookDifference("147:12-20", "147:X-11")),
+                        new BibleBookDifferences(21,
+                                    new BibleBookDifference("5:1", "4:17"),
+                                    new BibleBookDifference("5:2-20", "5:X-1")),
                         new BibleBookDifferences(22,
                                     new BibleBookDifference("1:1-2", "1:1") { Strict = false, Align = BibleBookDifference.VerseAlign.Bottom },
                                     new BibleBookDifference("1:3-17", "1:X-1"),
@@ -210,10 +220,12 @@ namespace BibleConfigurator.ModuleConverter
                         new BibleBookDifferences(32,
                                     new BibleBookDifference("1:17", "2:1"),
                                     new BibleBookDifference("2:1-10", "2:X+1")),
+                        new BibleBookDifferences(44,
+                                    new BibleBookDifference("19:40-41", "19:40")),
                         new BibleBookDifferences(45,
                                     new BibleBookDifference("16:25-27", "14:24-26")),
                         new BibleBookDifferences(47,
-                                    new BibleBookDifference("11:32", "11:32-33"),
+                                    new BibleBookDifference("11:32-33", "11:32"),
                                     new BibleBookDifference("13:12-13", "13:12"),
                                     new BibleBookDifference("13:14", "13:13"))
                     });
