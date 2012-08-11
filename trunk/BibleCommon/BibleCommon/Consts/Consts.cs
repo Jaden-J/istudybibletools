@@ -18,7 +18,8 @@ namespace BibleCommon.Consts
         public static readonly string ManifestFileName = "manifest.xml";
         public static readonly string BibleInfoFileName = "bible.xml";
         public static readonly string IsbtFileExtension = ".isbt";        
-        public const string TempDirectory = "Temp";
+        public static readonly string TempDirectory = "Temp";
+        public static readonly string DefaultPartVersesAlphabet = "abcdefghijklmnopqrstuvwxyz";
 
         
         public static readonly int DefaultPageWidth_Notes = 500;

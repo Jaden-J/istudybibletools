@@ -15,7 +15,8 @@ namespace BibleCommon.Common
         public int BookIndex { get; set; }
         public int Chapter { get; set; }
         public int Verse { get; set; }
-        public int? PartIndex { get; set; }        
+        public int? PartIndex { get; set; }
+        public int? TopVerse { get; set; }
 
         public SimpleVersePointer(SimpleVersePointer verse)
             : this(verse.BookIndex, verse.Chapter, verse.Verse)
