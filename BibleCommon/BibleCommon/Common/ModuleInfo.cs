@@ -311,7 +311,7 @@ namespace BibleCommon.Common
         {
             this.Books = new List<BibleBookContent>();
         }
-    }
+    }    
 
     [Serializable]
     public class BibleBookContent
@@ -330,12 +330,12 @@ namespace BibleCommon.Common
         public string GetVerseContent(SimpleVersePointer verse)
         {
             if (this.Chapters.Count < verse.Chapter)
-                throw new ArgumentException(string.Format("There is no verse '{0}'", verse));
+                throw new VerseNotFoundException(verse);
             
             var chapter = this.Chapters[verse.Chapter - 1];
 
             if (chapter.Verses.Count < verse.Verse)
-                throw new ArgumentException(string.Format("There is no verse '{0}'", verse));
+                throw new VerseNotFoundException(verse);
 
             string verseContent = chapter.Verses[verse.Verse - 1].Value;
 
