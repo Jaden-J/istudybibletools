@@ -11,21 +11,13 @@ using BibleCommon.Consts;
 
 namespace BibleCommon.Services
 {
-    public class GetParallelVerseException : Exception
-    {
-        public GetParallelVerseException(string message, SimpleVersePointer baseVerse)
-            : base(string.Format("Can not find parallel verse for baseVerse '{0}': {1}", baseVerse.ToString(),  message))
-        {
-        }
-    }
-
     public class BibleParallelTranslationConnectionResult
     {
-        public List<GetParallelVerseException> Errors { get; set; }
+        public List<BaseVersePointerException> Errors { get; set; }
 
         public BibleParallelTranslationConnectionResult()
         {
-            this.Errors = new List<GetParallelVerseException>();
+            this.Errors = new List<BaseVersePointerException>();
         }
     }
 
@@ -97,11 +89,11 @@ namespace BibleCommon.Services
             return result;
         }
 
-        private static List<GetParallelVerseException> ProcessBibleBook(Application oneNoteApp, XElement sectionEl, BibleBookInfo baseBibleInfo, 
+        private static List<BaseVersePointerException> ProcessBibleBook(Application oneNoteApp, XElement sectionEl, BibleBookInfo baseBibleInfo, 
             BibleBookContent baseBibleBook, BibleBookInfo baseBookInfo, BibleBookContent parallelBibleBook, string partVersesAlphabet,
             SimpleVersePointersComparisonTable bookVersePointersComparisonTable, string locale)
         {
-            var result = new List<GetParallelVerseException>();
+            var result = new List<BaseVersePointerException>();
 
             XmlNamespaceManager xnm;
             string sectionId = (string)sectionEl.Attribute("ID");
@@ -145,7 +137,7 @@ namespace BibleCommon.Services
         }        
 
         private static SimpleVerse GetParallelVerse(SimpleVersePointer baseVersePointer, BibleBookContent parallelBibleBook, string partVersesAlphabet,
-            SimpleVersePointersComparisonTable bookVersePointersComparisonTable, int lastProcessedChapter, int lastProcessedVerse, List<GetParallelVerseException> errors)
+            SimpleVersePointersComparisonTable bookVersePointersComparisonTable, int lastProcessedChapter, int lastProcessedVerse, List<BaseVersePointerException> errors)
         {
             ComparisonVersesInfo parallelVersePointers = null;
             SimpleVersePointer firstParallelVerse = null;
@@ -185,7 +177,7 @@ namespace BibleCommon.Services
 
                 return GetParallelVerses(baseVersePointer, parallelVersePointers, parallelBibleBook, partVersesAlphabet);
             }
-            catch (GetParallelVerseException ex)
+            catch (BaseVersePointerException ex)
             {
                 errors.Add(ex);
                 return new SimpleVerse(firstParallelVerse != null ? firstParallelVerse : baseVersePointer, string.Empty);

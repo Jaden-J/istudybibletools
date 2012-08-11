@@ -21,4 +21,28 @@ namespace BibleCommon.Common
         {
         }     
     }
+
+    public abstract class BaseVersePointerException: Exception
+    {
+        public BaseVersePointerException(string message)
+            : base(message)
+        { 
+        }
+    }
+
+    public class VerseNotFoundException : BaseVersePointerException
+    {
+        public VerseNotFoundException(SimpleVersePointer verse)
+            : base(string.Format("There is no verse '{0}'", verse))
+        {
+        }
+    }
+
+    public class GetParallelVerseException : BaseVersePointerException
+    {
+        public GetParallelVerseException(string message, SimpleVersePointer baseVerse)
+            : base(string.Format("Can not find parallel verse for baseVerse '{0}': {1}", baseVerse.ToString(), message))
+        {
+        }
+    }
 }

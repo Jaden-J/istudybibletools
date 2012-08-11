@@ -46,13 +46,14 @@ namespace BibleCommon.Services
                         JoinBaseAndParallelVerses(baseVerseKey, baseVerses, parallelVerses, bookVersePointersComparisonTables);
                     }
                     else
-                    {   
-                        int versePartIndex = 0;
-                        foreach(var baseVersePointer in baseBookVerses[baseVerseKey])
-                        {
+                    {
+                        var baseVerses = baseBookVerses[baseVerseKey];
+                        int? versePartIndex = baseVerses.Count > 1 ? (int?)0 : null;
+                        foreach(var baseVersePointer in baseVerses)
+                        {   
                             bookVersePointersComparisonTables.Add(baseVersePointer, new ComparisonVersesInfo() 
                             { 
-                                new SimpleVersePointer(baseVerseKey) { PartIndex = versePartIndex++ }
+                                new SimpleVersePointer(baseVerseKey) { PartIndex = versePartIndex.HasValue ? versePartIndex++ : null }
                             });
                         }
                     }
