@@ -41,6 +41,7 @@ namespace BibleConfigurator.ModuleConverter
         protected ModuleBibleInfo BibleInfo { get; set; }
         protected BibleTranslationDifferences TranslationDifferences { get; set; }
         protected List<int> BookIndexes { get; set; }  // массив индексов книг. Для KJV - упорядоченный массив цифр от 1 до 66.                 
+        protected string Version { get; set; }
 
         /// <summary>
         /// 
@@ -55,7 +56,8 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="notebooksInfo"></param>
         public ConverterBase(string emptyNotebookName, string manifestFilesFolderPath,
             string oldTestamentName, string newTestamentName, int oldTestamentBooksCount, int newTestamentBooksCount,
-            string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, BibleTranslationDifferences translationDifferences)
+            string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, 
+            BibleTranslationDifferences translationDifferences, string version)
         {
             OneNoteApp = new Application();
             this.EmptyNotebookName = emptyNotebookName;
@@ -70,7 +72,8 @@ namespace BibleConfigurator.ModuleConverter
             this.BibleInfo = new ModuleBibleInfo();
             this.TranslationDifferences = translationDifferences;
             this.BibleInfo.Content.Locale = locale;
-            this.BookIndexes = bookIndexes;            
+            this.BookIndexes = bookIndexes;
+            this.Version = version;
 
             if (!Directory.Exists(manifestFilesFolderPath))
                 Directory.CreateDirectory(manifestFilesFolderPath);
@@ -125,7 +128,7 @@ namespace BibleConfigurator.ModuleConverter
             AddNewBookContent();
 
             XmlNamespaceManager xnm;
-            //AddChapterPage(sectionId, bookName, 1, out xnm);               
+            AddPage(sectionId, bookName, 1, out xnm);               
 
             return sectionId;
         }
@@ -144,9 +147,14 @@ namespace BibleConfigurator.ModuleConverter
             OneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);                                 
         }
 
+        protected virtual XDocument AddPage(string bookSectionId, string pageTitle, int pageLevel, out XmlNamespaceManager xnm)
+        {
+            return NotebookGenerator.AddChapterPageToBibleNotebook(OneNoteApp, bookSectionId, pageTitle, pageLevel, Locale, out xnm);    
+        }
+
         protected virtual XDocument AddChapterPage(string bookSectionId, string pageTitle, int pageLevel, out XmlNamespaceManager xnm)
         {
-            var pageDoc = NotebookGenerator.AddChapterPageToBibleNotebook(OneNoteApp, bookSectionId, pageTitle, pageLevel, Locale, out xnm);    
+            var pageDoc = AddPage(bookSectionId, pageTitle, pageLevel, out xnm);
 
             AddNewChapterContent();                                     
 
@@ -205,7 +213,7 @@ namespace BibleConfigurator.ModuleConverter
         {
             var extModuleInfo = (BibleQuotaModuleInfo)externalModuleInfo;
 
-            ModuleInfo module = new ModuleInfo() { Name = extModuleInfo.Name, Version = "1.0", Notebooks = NotebooksInfo };
+            ModuleInfo module = new ModuleInfo() { Name = extModuleInfo.Name, Version = this.Version, Notebooks = NotebooksInfo };
             module.BibleTranslationDifferences = this.TranslationDifferences;
             module.BibleStructure = new BibleStructureInfo()
             {

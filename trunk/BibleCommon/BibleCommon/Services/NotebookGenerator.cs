@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using BibleCommon.Consts;
 using System.Globalization;
+using BibleCommon.Common;
 
 namespace BibleCommon.Services
 {
@@ -116,23 +117,13 @@ namespace BibleCommon.Services
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
-            var cell1 = new XElement(nms + "Cell",
-                                      new XElement(nms + "OEChildren",
-                                          new XElement(nms + "OE",
-                                              new XElement(nms + "T",
-                                                  new XCData(
-                                                      verseText
-                                                              )))));
+            var cell1 = GetCell(verseText, nms);
+
             if (!string.IsNullOrEmpty(locale))
                 cell1.Add(new XAttribute("lang", locale));
 
-            var cell2 = new XElement(nms + "Cell",
-                                      new XElement(nms + "OEChildren",
-                                          new XElement(nms + "OE",
-                                              new XElement(nms + "T",
-                                                  new XCData(
-                                                      string.Empty
-                                                              )))));
+            var cell2 = GetCell(string.Empty, nms);
+
             if (!string.IsNullOrEmpty(locale))
                 cell2.Add(new XAttribute("lang", locale));
 
@@ -153,26 +144,59 @@ namespace BibleCommon.Services
             return columnsCount;
         }
 
-        public static void AddParallelVerseRowToBibleTable(XElement tableElement, string verseText, int translationIndex, string locale, XmlNamespaceManager xnm)
+        public static void AddParallelVerseRowToBibleTable(XElement tableElement, SimpleVerse verse, int translationIndex, string locale, XmlNamespaceManager xnm)
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
             var rows = tableElement.XPathSelectElements("one:Row", xnm);
 
-            foreach (var row in rows)
+            XElement verseRow = null;
+            
+            foreach (var row in rows.Skip(verse.Verse - 1))
             {
-                if (row.Elements().Count() == translationIndex)
+                int rowChildsCount = row.Elements().Count();
+                if (rowChildsCount <= translationIndex)
                 {
-                    row.Add(new XElement(nms + "Cell",
-                                      new XElement(nms + "OEChildren",
-                                          new XElement(nms + "OE",
-                                              new XElement(nms + "T",
-                                                  new XCData(
-                                                      verseText
-                                                              ))))));
+                    if (translationIndex > 0)
+                    {
+                        var firstCell = row.XPathSelectElement("one:Cell[1]/one:OEChildren/one:OE/one:T", xnm);
+                        if (firstCell != null)
+                        {
+                            int? index = StringUtils.GetStringFirstNumber(firstCell.Value);
+                            if (!index.HasValue || index.Value != verse.Verse)
+                                continue;
+                        }
+                    }
+
+                    verseRow = row;
                     break;
                 }
-            }         
+            }
+
+            if (verseRow == null)
+            {
+                verseRow = new XElement(nms + "Row");
+
+                for (int i = 0; i < translationIndex; i++)
+                {
+                    verseRow.Add(GetCell(string.Empty, nms));
+                }
+                
+                tableElement.Add(verseRow);
+            }
+
+            verseRow.Add(GetCell(verse.VerseContent, nms));
+        }
+
+        private static XElement GetCell(string cellText, XNamespace nms)
+        {
+            return new XElement(nms + "Cell",
+                            new XElement(nms + "OEChildren",
+                                new XElement(nms + "OE",
+                                    new XElement(nms + "T",
+                                        new XCData(
+                                            cellText
+                                                    )))));
         }
 
         public static void GenerateSummaryOfNotesNotebook(Application oneNoteApp, string bibleNotebookName, string targetEmptyNotebookName)

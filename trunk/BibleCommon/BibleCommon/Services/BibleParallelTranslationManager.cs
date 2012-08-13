@@ -124,7 +124,7 @@ namespace BibleCommon.Services
                     var parallelVerse = GetParallelVerse(baseVersePointer, parallelBibleBook, partVersesAlphabet, bookVersePointersComparisonTable,
                                                                                                 lastProcessedChapter, lastProcessedVerse, result);
 
-                    NotebookGenerator.AddParallelVerseRowToBibleTable(tableEl, parallelVerse.VerseContent, bibleIndex, locale, xnm);
+                    NotebookGenerator.AddParallelVerseRowToBibleTable(tableEl, parallelVerse, bibleIndex, locale, xnm);
 
                     lastProcessedChapter = parallelVerse.Chapter;
                     lastProcessedVerse = parallelVerse.TopVerse ?? parallelVerse.Verse;
