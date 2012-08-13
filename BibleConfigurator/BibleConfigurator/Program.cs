@@ -244,7 +244,7 @@ namespace BibleConfigurator
 
         private static void ConvertRussianModule()
         {
-            var converter = new BibleQuotaConverter("RST", @"C:\temp\RST77", @"c:\temp\RST", Encoding.Default,
+            var converter = new BibleQuotaConverter("RST2", @"C:\Users\ademko\Dropbox\temp\RST77", @"c:\temp\RST", Encoding.Default,
                 "Ветхий Завет", "Новый Завет", 39, 27, "ru", new List<NotebookInfo>() 
                 {  
                     new NotebookInfo() { Type = NotebookType.Bible, Name = "Библия.onepkg" },
@@ -252,7 +252,7 @@ namespace BibleConfigurator
                     new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Комментарии к Библии.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Сводные заметок.onepkg" }
                 },
-                PredefinedBookIndexes.RST, PredefinedBookDifferences.RST);
+                PredefinedBookIndexes.RST, PredefinedBookDifferences.RST, "2.0");
 
             converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
             {
@@ -275,7 +275,7 @@ namespace BibleConfigurator
                     new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Comments to the Bible.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Summary of Notes.onepkg" }
                 }, 
-                PredefinedBookIndexes.KJV, PredefinedBookDifferences.KJV);
+                PredefinedBookIndexes.KJV, PredefinedBookDifferences.KJV, "2.0");
 
             converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
             {
@@ -298,7 +298,7 @@ namespace BibleConfigurator
                     new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Comments to the Bible.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Summary of Notes.onepkg" }
                 }, 
-                PredefinedBookIndexes.KJV, PredefinedBookDifferences.KJV);
+                PredefinedBookIndexes.KJV, PredefinedBookDifferences.KJV, "2.0");
 
             converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
             {

@@ -362,7 +362,7 @@ namespace BibleCommon.Common
 
             foreach (var verse in verses)
             {
-                versesContent.Append(GetVerseContent(verse));
+                versesContent.AppendFormat("{0} ", GetVerseContent(verse));
             }
 
             return versesContent.ToString();
