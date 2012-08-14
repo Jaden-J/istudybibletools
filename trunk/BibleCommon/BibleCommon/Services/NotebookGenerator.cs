@@ -144,15 +144,16 @@ namespace BibleCommon.Services
             return columnsCount;
         }
 
-        public static void AddParallelVerseRowToBibleTable(XElement tableElement, SimpleVerse verse, int translationIndex, string locale, XmlNamespaceManager xnm)
+        public static void AddParallelVerseRowToBibleTable(XElement tableElement, SimpleVerse verse, int translationIndex, 
+            SimpleVersePointer baseVerse, string locale, XmlNamespaceManager xnm)
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
             var rows = tableElement.XPathSelectElements("one:Row", xnm);
 
             XElement verseRow = null;
-            
-            foreach (var row in rows.Skip(verse.Verse - 1))
+
+            foreach (var row in rows.Skip(baseVerse.Verse - 1))
             {
                 int rowChildsCount = row.Elements().Count();
                 if (rowChildsCount <= translationIndex)
@@ -163,7 +164,7 @@ namespace BibleCommon.Services
                         if (firstCell != null)
                         {
                             int? index = StringUtils.GetStringFirstNumber(firstCell.Value);
-                            if (!index.HasValue || index.Value != verse.Verse)
+                            if (!index.HasValue || index.Value != baseVerse.Verse)
                                 continue;
                         }
                     }

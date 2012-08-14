@@ -19,6 +19,18 @@ namespace BibleCommon.Common
             : base(verses)
         {
         }
+
+        public static ComparisonVersesInfo FromVersePointer(SimpleVersePointer versePointer, 
+            bool strict, BibleBookDifference.VerseAlign align, int? valueVerseCount)
+        {
+            var result = new ComparisonVersesInfo() { versePointer };
+
+            result.Strict = strict;
+            result.Align = align;
+            result.ValueVerseCount = valueVerseCount;
+
+            return result;
+        }
     }
 
     public class SimpleVersePointersComparisonTable : Dictionary<SimpleVersePointer, ComparisonVersesInfo>
