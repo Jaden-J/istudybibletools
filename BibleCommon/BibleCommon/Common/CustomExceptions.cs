@@ -24,24 +24,33 @@ namespace BibleCommon.Common
 
     public abstract class BaseVersePointerException: Exception
     {
-        public BaseVersePointerException(string message)
+        public enum Severity
+        {
+            Warning,
+            Error
+        }
+
+        public Severity Level { get; set; }
+
+        public BaseVersePointerException(string message, Severity level)
             : base(message)
-        { 
+        {
+            this.Level = level;
         }
     }
 
     public class VerseNotFoundException : BaseVersePointerException
     {
-        public VerseNotFoundException(SimpleVersePointer verse)
-            : base(string.Format("There is no verse '{0}'", verse))
+        public VerseNotFoundException(SimpleVersePointer verse, Severity level)
+            : base(string.Format("There is no verse '{0}'", verse), level)
         {
         }
     }
 
     public class GetParallelVerseException : BaseVersePointerException
     {
-        public GetParallelVerseException(string message, SimpleVersePointer baseVerse)
-            : base(string.Format("Can not find parallel verse for baseVerse '{0}': {1}", baseVerse.ToString(), message))
+        public GetParallelVerseException(string message, SimpleVersePointer baseVerse, Severity level)
+            : base(string.Format("Can not find parallel verse for baseVerse '{0}': {1}", baseVerse.ToString(), message), level)
         {
         }
     }

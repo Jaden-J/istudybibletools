@@ -124,7 +124,7 @@ namespace BibleCommon.Services
                     var parallelVerse = GetParallelVerse(baseVersePointer, parallelBibleBook, partVersesAlphabet, bookVersePointersComparisonTable,
                                                                                                 lastProcessedChapter, lastProcessedVerse, result);
 
-                    NotebookGenerator.AddParallelVerseRowToBibleTable(tableEl, parallelVerse, bibleIndex, locale, xnm);
+                    NotebookGenerator.AddParallelVerseRowToBibleTable(tableEl, parallelVerse, bibleIndex, baseVersePointer, locale, xnm);
 
                     lastProcessedChapter = parallelVerse.Chapter;
                     lastProcessedVerse = parallelVerse.TopVerse ?? parallelVerse.Verse;
@@ -137,7 +137,8 @@ namespace BibleCommon.Services
         }        
 
         private static SimpleVerse GetParallelVerse(SimpleVersePointer baseVersePointer, BibleBookContent parallelBibleBook, string partVersesAlphabet,
-            SimpleVersePointersComparisonTable bookVersePointersComparisonTable, int lastProcessedChapter, int lastProcessedVerse, List<BaseVersePointerException> errors)
+            SimpleVersePointersComparisonTable bookVersePointersComparisonTable, int lastProcessedChapter, int lastProcessedVerse, 
+            List<BaseVersePointerException> errors)
         {
             ComparisonVersesInfo parallelVersePointers = null;
             SimpleVersePointer firstParallelVerse = null;
@@ -146,34 +147,14 @@ namespace BibleCommon.Services
             {
                 parallelVersePointers = bookVersePointersComparisonTable.ContainsKey(baseVersePointer)
                                                         ? bookVersePointersComparisonTable[baseVersePointer]
-                                                        : new ComparisonVersesInfo { baseVersePointer };
+                                                        : new ComparisonVersesInfo { baseVersePointer };                
 
                 if (parallelVersePointers.Count == 0)
-                    throw new GetParallelVerseException("parallelVersePointers.Count == 0", baseVersePointer);
+                    throw new GetParallelVerseException("parallelVersePointers.Count == 0", baseVersePointer, BaseVersePointerException.Severity.Error);
 
                 firstParallelVerse = parallelVersePointers.First();
 
-                if (lastProcessedChapter > 0 && firstParallelVerse.Chapter > lastProcessedChapter)
-                {
-                    if (parallelBibleBook.Chapters[lastProcessedChapter - 1].Verses.Count > lastProcessedVerse)
-                    {
-                        throw new GetParallelVerseException("Miss verse (x01)", baseVersePointer);
-                        //parallelVersePointer = new SimpleVersePointer(baseVersePointer.BookIndex, lastProcessedChapter, lastProcessedVerse + 1);
-                    }
-                    else if (firstParallelVerse.Verse > 1)  // начали главу не с начала
-                    {
-                        throw new GetParallelVerseException("Miss verse (x02)", baseVersePointer);
-                    }
-                }
-                else if (lastProcessedVerse > 0 && firstParallelVerse.Verse > lastProcessedVerse + 1)
-                {
-                    throw new GetParallelVerseException("Miss verse (x03)", baseVersePointer);
-                    //parallelVersePointer = new SimpleVersePointer(baseVersePointer.BookIndex, lastProcessedChapter, lastProcessedChapter + 1);
-                }
-                else if (lastProcessedChapter == firstParallelVerse.Chapter && lastProcessedVerse == firstParallelVerse.Verse && !firstParallelVerse.PartIndex.HasValue)
-                {
-                    throw new GetParallelVerseException("Double verse (x04)", baseVersePointer);
-                }
+                CheckVerseForWarnings(baseVersePointer, parallelBibleBook, firstParallelVerse, lastProcessedChapter, lastProcessedVerse, errors);                
 
                 return GetParallelVerses(baseVersePointer, parallelVersePointers, parallelBibleBook, partVersesAlphabet);
             }
@@ -181,6 +162,39 @@ namespace BibleCommon.Services
             {
                 errors.Add(ex);
                 return new SimpleVerse(firstParallelVerse != null ? firstParallelVerse : baseVersePointer, string.Empty);
+            }
+        }
+
+        private static void CheckVerseForWarnings(SimpleVersePointer baseVersePointer, BibleBookContent parallelBibleBook,
+            SimpleVersePointer firstParallelVerse, int lastProcessedChapter, int lastProcessedVerse, List<BaseVersePointerException> errors)
+        {
+            try
+            {
+                if (lastProcessedChapter > 0 && firstParallelVerse.Chapter > lastProcessedChapter)
+                {
+                    if (parallelBibleBook.Chapters[lastProcessedChapter - 1].Verses.Count > lastProcessedVerse)
+                    {
+                        throw new GetParallelVerseException("Miss verse (x01)", baseVersePointer, BaseVersePointerException.Severity.Warning);
+                        //parallelVersePointer = new SimpleVersePointer(baseVersePointer.BookIndex, lastProcessedChapter, lastProcessedVerse + 1);
+                    }
+                    else if (firstParallelVerse.Verse > 1)  // начали главу не с начала
+                    {
+                        throw new GetParallelVerseException("Miss verse (x02)", baseVersePointer, BaseVersePointerException.Severity.Warning);
+                    }
+                }
+                else if (lastProcessedVerse > 0 && firstParallelVerse.Verse > lastProcessedVerse + 1)
+                {
+                    throw new GetParallelVerseException("Miss verse (x03)", baseVersePointer, BaseVersePointerException.Severity.Warning);
+                    //parallelVersePointer = new SimpleVersePointer(baseVersePointer.BookIndex, lastProcessedChapter, lastProcessedChapter + 1);
+                }
+                else if (lastProcessedChapter == firstParallelVerse.Chapter && lastProcessedVerse == firstParallelVerse.Verse && !firstParallelVerse.PartIndex.HasValue)
+                {
+                    throw new GetParallelVerseException("Double verse (x04)", baseVersePointer, BaseVersePointerException.Severity.Warning);
+                }
+            }
+            catch (BaseVersePointerException ex)
+            {
+                errors.Add(ex);
             }
         }
 
@@ -211,7 +225,8 @@ namespace BibleCommon.Services
                 {
                     if (parallelVersePointers.Strict)
                     {
-                        throw new GetParallelVerseException(string.Format("Can not found verseContent (versePart = {0})", firstParallelVerse.PartIndex), baseVersePointer);
+                        throw new GetParallelVerseException(
+                            string.Format("Can not found verseContent (versePart = {0})", firstParallelVerse.PartIndex), baseVersePointer, BaseVersePointerException.Severity.Warning);
                     }
                     else
                         verseContent = string.Empty;

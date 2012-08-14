@@ -277,10 +277,9 @@ namespace BibleCommon.Common
 
         /// <summary>
         /// Количество стихов, соответствующие частям из KJV. Например при "1:1 -> 1:1-3", 
-        /// и если 1:1 делится только на две части с помощью "|", то надр, чтобы ValueVerseCount=2 и, например, Align = Bottom. 
+        /// и если 1:1 делится только на две части с помощью "|", то надо, чтобы ValueVerseCount=2 и, например, Align = Bottom. 
         /// Тогда 2 и 3 стих будут соответствовать 1:1 из KJV, а 1 стих - "особенный", который есть только в данном переводе
-        /// По умолчанию ValueVerseCount=null, то есть все стихи соответствуют частям/стихам из KJV
-        /// Данный параметр полезен для апокрифов
+        /// По умолчанию ValueVerseCount=null, то есть все стихи соответствуют частям/стихам из KJV        
         /// </summary>
         [XmlAttribute]
         public string ValueVerseCount { get; set; }  
@@ -330,12 +329,12 @@ namespace BibleCommon.Common
         public string GetVerseContent(SimpleVersePointer verse)
         {
             if (this.Chapters.Count < verse.Chapter)
-                throw new VerseNotFoundException(verse);
+                throw new VerseNotFoundException(verse, BaseVersePointerException.Severity.Error);
             
             var chapter = this.Chapters[verse.Chapter - 1];
 
             if (chapter.Verses.Count < verse.Verse)
-                throw new VerseNotFoundException(verse);
+                throw new VerseNotFoundException(verse, BaseVersePointerException.Severity.Error);
 
             string verseContent = chapter.Verses[verse.Verse - 1].Value;
 

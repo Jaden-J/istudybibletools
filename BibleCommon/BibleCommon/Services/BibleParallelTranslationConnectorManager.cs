@@ -50,11 +50,12 @@ namespace BibleCommon.Services
                         var baseVerses = baseBookVerses[baseVerseKey];
                         int? versePartIndex = baseVerses.Count > 1 ? (int?)0 : null;
                         foreach(var baseVersePointer in baseVerses)
-                        {   
-                            bookVersePointersComparisonTables.Add(baseVersePointer, new ComparisonVersesInfo() 
-                            { 
-                                new SimpleVersePointer(baseVerseKey) { PartIndex = versePartIndex.HasValue ? versePartIndex++ : null }
-                            });
+                        {
+                            var parallelVerses = ComparisonVersesInfo.FromVersePointer(
+                                new SimpleVersePointer(baseVerseKey) { PartIndex = versePartIndex.HasValue ? versePartIndex++ : null },
+                                baseVerses.Strict, baseVerses.Align, baseVerses.ValueVerseCount);                            
+
+                            bookVersePointersComparisonTables.Add(baseVersePointer, parallelVerses); 
                         }
                     }
                 }
@@ -70,7 +71,7 @@ namespace BibleCommon.Services
             }
             else
             {
-                throw new NotSupportedException("This case (when baseVerses.Count != 1) is not supported yet.");
+                throw new NotSupportedException("This case (when baseVerses.Count != 1) is not supported yet.");                
 
                 //var baseAlign = baseVerses.Align != BibleBookDifference.VerseAlign.None
                 //                        ? baseVerses.Align
