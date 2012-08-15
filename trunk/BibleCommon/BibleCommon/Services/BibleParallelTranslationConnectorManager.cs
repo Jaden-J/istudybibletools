@@ -52,8 +52,12 @@ namespace BibleCommon.Services
                         foreach(var baseVersePointer in baseVerses)
                         {
                             var parallelVerses = ComparisonVersesInfo.FromVersePointer(
-                                new SimpleVersePointer(baseVerseKey) { PartIndex = versePartIndex.HasValue ? versePartIndex++ : null },
-                                baseVerses.Strict, baseVerses.Align, baseVerses.ValueVerseCount);                            
+                                new SimpleVersePointer(baseVerseKey) 
+                                { 
+                                    PartIndex = versePartIndex.HasValue ? versePartIndex++ : null,
+                                    IsEmpty = baseVersePointer.IsApocrypha
+                                },
+                                baseVerses.Strict);                            
 
                             bookVersePointersComparisonTables.Add(baseVersePointer, parallelVerses); 
                         }
@@ -71,6 +75,63 @@ namespace BibleCommon.Services
             }
             else
             {
+                var notApocryphaBaseVerses = baseVerses.Where(v => !v.IsApocrypha);
+                var notApocryphaParallelVerses = parallelVerses.Where(v => !v.IsApocrypha);
+
+                bool isPartVersePointer = notApocryphaParallelVerses.Count() < notApocryphaBaseVerses.Count();
+
+
+                int parallelVerseIndex = 0;
+                int partIndex = 0;
+                for (int baseVerseIndex = 0; baseVerseIndex < baseVerses.Count; baseVerseIndex++)
+                {
+                    var baseVerse = baseVerses[baseVerseIndex];
+                    ComparisonVersesInfo parallelVersesInfo = new ComparisonVersesInfo();
+                    //parallelVersesInfo.Strict = parallelVerses.Strict;
+
+                    if (baseVerse.IsApocrypha)
+                    { 
+                        int lastParallelVerseIndex = parallelVerseIndex;
+                        for (int i = parallelVerseIndex; i < parallelVerses.Count; i++)
+                        {
+                            lastParallelVerseIndex = i + 1;
+                            var parallelVerseToAdd = (SimpleVersePointer)parallelVerses[i].Clone();
+                            if (!parallelVerseToAdd.IsApocrypha)
+                            {
+                                ???
+                            }                            
+                        }
+                        parallelVerseIndex = lastParallelVerseIndex;
+                    }
+                    else
+                    {
+                        int lastParallelVerseIndex = parallelVerseIndex;
+                        for (int i = parallelVerseIndex; i < parallelVerses.Count; i++)
+                        {
+                            lastParallelVerseIndex = i + 1;
+                            var parallelVerseToAdd = (SimpleVersePointer)parallelVerses[i].Clone();
+
+                            if (!parallelVerseToAdd.IsApocrypha)
+                            {
+                                parallelVerseToAdd.PartIndex = isPartVersePointer ? (int?)partIndex++ : null;
+                                parallelVersesInfo.Add(parallelVerseToAdd);
+                                break;
+                            }
+                            else
+                            {
+                                parallelVersesInfo.Add(parallelVerseToAdd);
+                            }                            
+                        }
+                        parallelVerseIndex = lastParallelVerseIndex;
+                    }
+
+                    bookVersePointersComparisonTables.Add(baseVerse, parallelVersesInfo);
+                }
+
+                
+
+
+
                 throw new NotSupportedException("This case (when baseVerses.Count != 1) is not supported yet.");                
 
                 //var baseAlign = baseVerses.Align != BibleBookDifference.VerseAlign.None

@@ -248,25 +248,25 @@ namespace BibleCommon.Common
         /// <summary>
         /// Выравнивание стихов, если, например, на два стиха приходится один параллельный
         /// </summary>
-        public enum VerseAlign
+        public enum CorrespondenceVerseType
         {
-            None = 0,
-            Top = 1,
-            Bottom = 2
+            All = 0,
+            First = 1,
+            Last = 2
         }
 
         [XmlAttribute]
         public string BaseVerses { get; set; }
 
         [XmlAttribute]
-        public string ParallelVerses { get; set; }
+        public string ParallelVerses { get; set; }        
 
         /// <summary>
         /// Выравнивание стихов - при несоответствии, 
         /// </summary>
         [XmlAttribute]
-        [DefaultValue((int)VerseAlign.None)]
-        public VerseAlign Align { get; set; }
+        [DefaultValue((int)CorrespondenceVerseType.All)]
+        public CorrespondenceVerseType CorrespondenceType { get; set; }
 
         /// <summary>
         /// Строгая обработка стихов - отслеживается строгое соответствие
@@ -276,13 +276,10 @@ namespace BibleCommon.Common
         public bool Strict { get; set; }
 
         /// <summary>
-        /// Количество стихов, соответствующие частям из KJV. Например при "1:1 -> 1:1-3", 
-        /// и если 1:1 делится только на две части с помощью "|", то надо, чтобы ValueVerseCount=2 и, например, Align = Bottom. 
-        /// Тогда 2 и 3 стих будут соответствовать 1:1 из KJV, а 1 стих - "особенный", который есть только в данном переводе
-        /// По умолчанию ValueVerseCount=null, то есть все стихи соответствуют частям/стихам из KJV        
+        /// Количество стихов, соответствующих версии KJV. По умолчанию - все стихи соответствуют KJV (если Strict = true), либо только один стих (если Strict = false)
         /// </summary>
         [XmlAttribute]
-        public string ValueVerseCount { get; set; }  
+        public string ValueVersesCount { get; set; }  
 
         public BibleBookDifference()
         {
@@ -329,12 +326,12 @@ namespace BibleCommon.Common
         public string GetVerseContent(SimpleVersePointer verse)
         {
             if (this.Chapters.Count < verse.Chapter)
-                throw new VerseNotFoundException(verse, BaseVersePointerException.Severity.Error);
+                throw new VerseNotFoundException(verse, BaseVersePointerException.Severity.Warning);
             
             var chapter = this.Chapters[verse.Chapter - 1];
 
             if (chapter.Verses.Count < verse.Verse)
-                throw new VerseNotFoundException(verse, BaseVersePointerException.Severity.Error);
+                throw new VerseNotFoundException(verse, BaseVersePointerException.Severity.Warning);
 
             string verseContent = chapter.Verses[verse.Verse - 1].Value;
 

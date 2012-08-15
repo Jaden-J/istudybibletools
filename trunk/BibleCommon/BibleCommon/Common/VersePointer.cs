@@ -10,13 +10,16 @@ using Microsoft.Office.Interop.OneNote;
 
 namespace BibleCommon.Common
 {
-    public class SimpleVersePointer
+    public class SimpleVersePointer: ICloneable
     {
         public int BookIndex { get; set; }
         public int Chapter { get; set; }
         public int Verse { get; set; }
         public int? PartIndex { get; set; }
         public int? TopVerse { get; set; }
+        public bool IsEmpty { get; set; }
+        public bool IsApocrypha { get; set; }
+        //public SimpleVersePointer BaseVersePointer { get; set; }  // если IsApocrypha - стих, к которому привязан данный стих
 
         public SimpleVersePointer(SimpleVersePointer verse)
             : this(verse.BookIndex, verse.Chapter, verse.Verse)
@@ -46,7 +49,33 @@ namespace BibleCommon.Common
 
         public override string ToString()
         {
-            return string.Format("{0} {1}:{2}", BookIndex, Chapter, Verse);
+            var result = string.Format("{0} {1}:{2}", BookIndex, Chapter, Verse);
+
+            if (PartIndex.HasValue)
+                result += string.Format("({0})", PartIndex);
+
+            if (IsEmpty)
+                result += "(empty)";
+
+            return result;
+        }
+
+
+
+        public virtual object Clone()
+        {
+            var result = new SimpleVersePointer(this);
+            CopyProperties(result);
+
+            return result;
+        }
+
+        protected void CopyProperties(SimpleVersePointer verse)
+        {
+            verse.IsApocrypha = this.IsApocrypha;
+            verse.IsEmpty = this.IsEmpty;
+            verse.PartIndex = this.PartIndex;
+            verse.TopVerse = this.TopVerse;
         }
     }
 
@@ -58,6 +87,14 @@ namespace BibleCommon.Common
             : base(versePointer.BookIndex, versePointer.Chapter, versePointer.Verse)
         {
             this.VerseContent = verseContent;
+        }
+
+        public override object Clone()
+        {
+            var result = new SimpleVerse(this, this.VerseContent);
+            CopyProperties(result);
+
+            return result;            
         }
     }
 

@@ -12,19 +12,19 @@ namespace BibleCommon.Common
 
         public BibleTranslationDifferencesFormulaBase(string originalFormula)
         {
-            if (string.IsNullOrEmpty(originalFormula))
-                throw new ArgumentNullException("Formula is null");
-
             this.OriginalFormula = originalFormula;
 
-            int indexOfColon = originalFormula.IndexOf(":");
+            if (!string.IsNullOrEmpty(originalFormula))
+            {
+                int indexOfColon = originalFormula.IndexOf(":");
 
-            if (indexOfColon == -1)
-                throw new NotSupportedException(string.Format("Unknown formula: '{0}'", originalFormula));
+                if (indexOfColon == -1)
+                    throw new NotSupportedException(string.Format("Unknown formula: '{0}'", originalFormula));
 
-            if (indexOfColon != originalFormula.LastIndexOf(":"))
-                throw new NotSupportedException(
-                    string.Format("The verses formula with two colons (':') is not supported yet: '{0}'", originalFormula));
+                if (indexOfColon != originalFormula.LastIndexOf(":"))
+                    throw new NotSupportedException(
+                        string.Format("The verses formula with two colons (':') is not supported yet: '{0}'", originalFormula));
+            }
         }
     }
 
@@ -74,11 +74,17 @@ namespace BibleCommon.Common
         }
             
 
-        public BibleTranslationDifferencesBaseVersesFormula(int bookIndex, string baseVersesFormula)
+        public BibleTranslationDifferencesBaseVersesFormula(int bookIndex, string baseVersesFormula, bool strictProcessing)
             : base(baseVersesFormula)
         {
             this.BookIndex = bookIndex;
             Initialize(baseVersesFormula);
+
+            if (string.IsNullOrEmpty(this.OriginalFormula))
+                throw new NotSupportedException("Empty formula is not supported for base verses");
+
+            if (IsMultiVerse && !strictProcessing)
+                throw new NotSupportedException("Multi Verses not supported for not strict processing.");
         }     
 
         private List<SimpleVersePointer> _allVerses;
@@ -95,15 +101,7 @@ namespace BibleCommon.Common
             }
 
             return _allVerses;
-        }
-
-        ///// <summary>
-        ///// Сделать из MultiVerse обычный, взяв только первый стих
-        ///// </summary>
-        //public void TrimVerses()
-        //{
-        //    Initialize(string.Format("{0}:{1}", FirstChapter, FirstVerse));
-        //}
+        }       
 
         private void Initialize(string baseVersesFormula)
         {
@@ -236,14 +234,14 @@ namespace BibleCommon.Common
 
         public class ParallelVersesFormulaPart : ParallelFormulaPart
         {
-            protected BibleBookDifference.VerseAlign VerseAlign { get; set; }
+            protected BibleBookDifference.CorrespondenceVerseType CorrespondenceType { get; set; }
             protected bool StrictProcessing { get; set; }
 
             public ParallelVersesFormulaPart(string formulaPart,
-                BibleTranslationDifferencesParallelVersesFormula parallelVersesFormula, BibleBookDifference.VerseAlign verseAlign, bool strictProcessing)
+                BibleTranslationDifferencesParallelVersesFormula parallelVersesFormula, BibleBookDifference.CorrespondenceVerseType correspondenceType, bool strictProcessing)
                 : base(formulaPart, parallelVersesFormula)
             {
-                this.VerseAlign = verseAlign;
+                this.CorrespondenceType = correspondenceType;
                 this.StrictProcessing = strictProcessing;
             }
 
@@ -288,40 +286,93 @@ namespace BibleCommon.Common
         protected BibleTranslationDifferencesBaseVersesFormula BaseVersesFormula { get; set; }
         protected ParallelChapterFormulaPart ChapterFormulaPart { get; set; }
         protected ParallelVersesFormulaPart VersesFormulaPart { get; set; }
+        protected bool IsEmpty { get; set; }
+        protected BibleBookDifference.CorrespondenceVerseType CorrespondenceType { get; set; }
+        protected int? ValueVersesCount { get; set; }
+        protected bool StrictProcessing { get; set; }
 
         public BibleTranslationDifferencesParallelVersesFormula(string parallelVersesFormula,
-            BibleTranslationDifferencesBaseVersesFormula baseVersesFormula, BibleBookDifference.VerseAlign verseAlign, bool strictProcessing)
+            BibleTranslationDifferencesBaseVersesFormula baseVersesFormula, bool strictProcessing, 
+            BibleBookDifference.CorrespondenceVerseType correspondenceType, int? valueVersesCount)
             : base(parallelVersesFormula)
         {
             this.BaseVersesFormula = baseVersesFormula;
+            this.StrictProcessing = strictProcessing;
+            this.CorrespondenceType = correspondenceType;
+            this.ValueVersesCount = valueVersesCount;
 
-            int indexOfColon = parallelVersesFormula.IndexOf(":");
-            ChapterFormulaPart = new ParallelChapterFormulaPart(parallelVersesFormula.Substring(0, indexOfColon), this);
-            VersesFormulaPart = new ParallelVersesFormulaPart(parallelVersesFormula.Substring(indexOfColon + 1), this, verseAlign, strictProcessing);
+            if (!string.IsNullOrEmpty(parallelVersesFormula))
+            {
+                int indexOfColon = parallelVersesFormula.IndexOf(":");
+                ChapterFormulaPart = new ParallelChapterFormulaPart(parallelVersesFormula.Substring(0, indexOfColon), this);
+                VersesFormulaPart = new ParallelVersesFormulaPart(parallelVersesFormula.Substring(indexOfColon + 1), this, correspondenceType, strictProcessing);
+            }
+            else
+            {
+                this.IsEmpty = true;
+            }
         }
 
-        public ComparisonVersesInfo GetParallelVerses(SimpleVersePointer baseVerse, SimpleVersePointer prevVerse)
+        public List<SimpleVersePointer> GetParallelVerses(SimpleVersePointer baseVerse, SimpleVersePointer prevVerse)
         {
-            var result = new ComparisonVersesInfo();
+            var result = new List<SimpleVersePointer>();
 
-            if (ChapterFormulaPart != null && VersesFormulaPart != null)
+            if (IsEmpty)
             {
+                result.Add(new SimpleVersePointer(baseVerse) { IsEmpty = true });
+            }
+            else
+            {
+                var parallelVerses = VersesFormulaPart.CalculateParallelVerses(baseVerse.Verse);
+
+                if (!ValueVersesCount.HasValue && !StrictProcessing)
+                    ValueVersesCount = 1;
+
                 int versePartIndex = prevVerse != null ? prevVerse.PartIndex.GetValueOrDefault(0) + 1 : 0;
-                foreach (var parallelVerse in VersesFormulaPart.CalculateParallelVerses(baseVerse.Verse))                    
+                int verseIndex = 0;
+                foreach (var parallelVerse in parallelVerses)
                 {
                     var parallelVersePointer = new SimpleVersePointer(
-                        baseVerse.BookIndex, ChapterFormulaPart.CalculateParallelChapter(baseVerse.Chapter), parallelVerse);
+                            baseVerse.BookIndex, ChapterFormulaPart.CalculateParallelChapter(baseVerse.Chapter), parallelVerse);
 
-                    if (VersesFormulaPart.IsPartVersePointer.GetValueOrDefault(false))
-                    {                        
-                        parallelVersePointer.PartIndex = versePartIndex++;
+                    if (StrictProcessing)
+                    {
+                        if (VersesFormulaPart.IsPartVersePointer.GetValueOrDefault(false))
+                        {
+                            parallelVersePointer.PartIndex = versePartIndex++;
+                        }                        
+                    }
+                    else
+                    {
+                        if (!VerseIsValue(verseIndex, parallelVerses.Count))
+                        {
+                            parallelVersePointer.IsApocrypha = true;                            
+                        }
                     }
 
                     result.Add(parallelVersePointer);
+                    verseIndex++;
                 }
             }
 
             return result;
+        }
+
+        private bool VerseIsValue(int verseIndex, int versesCount)
+        {
+            if (this.CorrespondenceType == BibleBookDifference.CorrespondenceVerseType.First)
+            {
+                if (verseIndex < ValueVersesCount)
+                    return true;
+            }
+            else
+            {
+                if (verseIndex >= versesCount - ValueVersesCount)
+                    return true;
+            }
+
+
+            return false;
         }
     }
 }
