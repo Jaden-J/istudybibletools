@@ -7,9 +7,7 @@ namespace BibleCommon.Common
 {
     public class ComparisonVersesInfo: List<SimpleVersePointer>
     {
-        public bool Strict { get; set; }
-        public BibleBookDifference.VerseAlign Align { get; set; }
-        public int? ValueVerseCount { get; set; }
+        public bool Strict { get; set; }        
 
         public ComparisonVersesInfo()
         {
@@ -20,15 +18,13 @@ namespace BibleCommon.Common
         {
         }
 
-        public static ComparisonVersesInfo FromVersePointer(SimpleVersePointer versePointer, 
-            bool strict, BibleBookDifference.VerseAlign align, int? valueVerseCount)
+        public static ComparisonVersesInfo FromVersePointer(SimpleVersePointer versePointer,
+            bool strict)
         {
             var result = new ComparisonVersesInfo() { versePointer };
 
             result.Strict = strict;
-            result.Align = align;
-            result.ValueVerseCount = valueVerseCount;
-
+            
             return result;
         }
     }
@@ -65,23 +61,29 @@ namespace BibleCommon.Common
 
         private void ProcessBookDifference(int bookIndex, BibleBookDifference bookDifference)
         {
-            var baseVersesFormula = new BibleTranslationDifferencesBaseVersesFormula(bookIndex, bookDifference.BaseVerses);
-            var parallelVersesFormula = new BibleTranslationDifferencesParallelVersesFormula(bookDifference.ParallelVerses, baseVersesFormula, 
-                bookDifference.Align, bookDifference.Strict);
+            if (!bookDifference.Strict && bookDifference.CorrespondenceType == BibleBookDifference.CorrespondenceVerseType.All)
+                throw new ArgumentException("For not strict processing should be defined CorrespondenceType");
+            
+            if (bookDifference.Strict && !string.IsNullOrEmpty(bookDifference.ValueVersesCount))
+                throw new ArgumentException("For strict processing should not be defined ValueVersesCount");
+
+            int? valueVersesCount = string.IsNullOrEmpty(bookDifference.ValueVersesCount) ? (int?)null : int.Parse(bookDifference.ValueVersesCount);
+
+            var baseVersesFormula = new BibleTranslationDifferencesBaseVersesFormula(bookIndex, bookDifference.BaseVerses, bookDifference.Strict);
+            var parallelVersesFormula = new BibleTranslationDifferencesParallelVersesFormula(bookDifference.ParallelVerses, baseVersesFormula,
+                bookDifference.Strict, bookDifference.CorrespondenceType, valueVersesCount);
 
             SimpleVersePointer prevVerse = null;
             foreach (var verse in baseVersesFormula.GetAllVerses())
             {
-                var parallelVerses = parallelVersesFormula.GetParallelVerses(verse, prevVerse);
-                parallelVerses.Align = bookDifference.Align;
-                parallelVerses.Strict = bookDifference.Strict;
-                parallelVerses.ValueVerseCount = !string.IsNullOrEmpty(bookDifference.ValueVerseCount) ? (int?)int.Parse(bookDifference.ValueVerseCount) : null;
+                var parallelVerses = new ComparisonVersesInfo(parallelVersesFormula.GetParallelVerses(verse, prevVerse));                
+                parallelVerses.Strict = bookDifference.Strict;                
 
                 BibleVersesDifferences[bookIndex].Add(verse, parallelVerses);
 
                 prevVerse = parallelVerses.Last();
             }
-        }
+        }        
 
         public SimpleVersePointersComparisonTable GetBibleVersesDifferences(int bookIndex)
         {

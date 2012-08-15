@@ -206,41 +206,46 @@ namespace BibleCommon.Services
             var firstParallelVerse = parallelVersePointers.First();
             int? topVerse = null;
 
-            if (parallelVersePointers[0].Chapter != baseVersePointer.Chapter)
+            if (firstParallelVerse.IsEmpty)
+                verseContent = string.Empty;
+            else
+            {
+                if (parallelVersePointers[0].Chapter != baseVersePointer.Chapter)
                     verseContent = string.Format("{0}:{1} ", firstParallelVerse.Chapter, firstParallelVerse.Verse);
                 else
                     verseContent = string.Format("{0}", firstParallelVerse.Verse);
 
-            if (parallelVersePointers.Count > 1)
-            {
-                verseContent += string.Format("-{0} {1}", parallelVersePointers.Last().Verse, 
-                    parallelBibleBook.GetVersesContent(parallelVersePointers));
-                topVerse = parallelVersePointers.Last().Verse;
-            }
-            else
-            {
-                string text = parallelBibleBook.GetVerseContent(firstParallelVerse);
-
-                if (string.IsNullOrEmpty(text))  // значит нет такого стиха, либо такой по счёту части стиха
+                if (parallelVersePointers.Count > 1)
                 {
-                    if (parallelVersePointers.Strict)
-                    {
-                        throw new GetParallelVerseException(
-                            string.Format("Can not found verseContent (versePart = {0})", firstParallelVerse.PartIndex), baseVersePointer, BaseVersePointerException.Severity.Warning);
-                    }
-                    else
-                        verseContent = string.Empty;
+                    verseContent += string.Format("-{0} {1}", parallelVersePointers.Last().Verse,
+                        parallelBibleBook.GetVersesContent(parallelVersePointers));
+                    topVerse = parallelVersePointers.Last().Verse;
                 }
                 else
                 {
-                    if (firstParallelVerse.PartIndex.HasValue)
-                    {
-                        if (string.IsNullOrEmpty(partVersesAlphabet) || partVersesAlphabet.Length <= firstParallelVerse.PartIndex.Value)
-                            partVersesAlphabet = Consts.Constants.DefaultPartVersesAlphabet;
+                    string text = parallelBibleBook.GetVerseContent(firstParallelVerse);
 
-                        verseContent += string.Format("({0})", partVersesAlphabet[firstParallelVerse.PartIndex.Value]);
+                    if (string.IsNullOrEmpty(text))  // значит нет такого стиха, либо такой по счёту части стиха
+                    {
+                        if (parallelVersePointers.Strict)
+                        {
+                            throw new GetParallelVerseException(
+                                string.Format("Can not found verseContent (versePart = {0})", firstParallelVerse.PartIndex + 1), baseVersePointer, BaseVersePointerException.Severity.Warning);
+                        }
+                        else
+                            verseContent = string.Empty;
                     }
-                    verseContent += string.Format(" {0}", text);
+                    else
+                    {
+                        if (firstParallelVerse.PartIndex.HasValue)
+                        {
+                            if (string.IsNullOrEmpty(partVersesAlphabet) || partVersesAlphabet.Length <= firstParallelVerse.PartIndex.Value)
+                                partVersesAlphabet = Consts.Constants.DefaultPartVersesAlphabet;
+
+                            verseContent += string.Format("({0})", partVersesAlphabet[firstParallelVerse.PartIndex.Value]);
+                        }
+                        verseContent += string.Format(" {0}", text);
+                    }
                 }
             }
 
