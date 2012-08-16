@@ -217,9 +217,10 @@ namespace BibleCommon.Services
 
                 if (parallelVersePointers.Count > 1)
                 {
-                    verseContent += string.Format("-{0} {1}", parallelVersePointers.Last().Verse,
-                        parallelBibleBook.GetVersesContent(parallelVersePointers));
-                    topVerse = parallelVersePointers.Last().Verse;
+                    topVerse = parallelVersePointers.Last().Verse;                    
+
+                    verseContent += string.Format("-{0} {1}", topVerse,
+                        parallelBibleBook.GetVersesContent(parallelVersePointers));                    
                 }
                 else
                 {
