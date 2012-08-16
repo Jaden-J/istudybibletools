@@ -296,10 +296,13 @@ namespace BibleCommon.Common
             BibleBookDifference.CorrespondenceVerseType correspondenceType, int? valueVersesCount)
             : base(parallelVersesFormula)
         {
+            if (valueVersesCount.HasValue && valueVersesCount == 0)
+                throw new NotSupportedException("ValueVersesCount must be greater than 0.");
+
             this.BaseVersesFormula = baseVersesFormula;
             this.StrictProcessing = strictProcessing;
             this.CorrespondenceType = correspondenceType;
-            this.ValueVersesCount = valueVersesCount;
+            this.ValueVersesCount = valueVersesCount;            
 
             if (!string.IsNullOrEmpty(parallelVersesFormula))
             {
