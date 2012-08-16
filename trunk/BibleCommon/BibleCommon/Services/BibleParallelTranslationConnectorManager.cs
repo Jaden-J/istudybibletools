@@ -8,17 +8,20 @@ namespace BibleCommon.Services
 {
     public static class BibleParallelTranslationConnectorManager
     {
-        public static Dictionary<int, SimpleVersePointersComparisonTable> ConnectBibleTranslations(BibleTranslationDifferences baseBookTranslationDifferences,
+        public static Dictionary<int, SimpleVersePointersComparisonTable> ConnectBibleTranslations(string baseModuleShortName, string parallelModuleShortName,
+            BibleTranslationDifferences baseBookTranslationDifferences,
             BibleTranslationDifferences parallelBookTranslationDifferences)
         {
-            var result = new Dictionary<int, SimpleVersePointersComparisonTable>();            
+            var result = new Dictionary<int, SimpleVersePointersComparisonTable>();
 
-            var baseTranslationDifferencesEx = new BibleTranslationDifferencesEx(baseBookTranslationDifferences);
-            var parallelTranslationDifferencesEx = new BibleTranslationDifferencesEx(parallelBookTranslationDifferences);
+            if (baseModuleShortName.ToLower() != parallelModuleShortName.ToLower())
+            {
+                var baseTranslationDifferencesEx = new BibleTranslationDifferencesEx(baseBookTranslationDifferences);
+                var parallelTranslationDifferencesEx = new BibleTranslationDifferencesEx(parallelBookTranslationDifferences);
 
-
-            ProcessForBaseBookVerses(baseTranslationDifferencesEx, parallelTranslationDifferencesEx, result);
-            ProcessForParallelBookVerses(baseTranslationDifferencesEx, parallelTranslationDifferencesEx, result);          
+                ProcessForBaseBookVerses(baseTranslationDifferencesEx, parallelTranslationDifferencesEx, result);
+                ProcessForParallelBookVerses(baseTranslationDifferencesEx, parallelTranslationDifferencesEx, result);
+            }
 
             return result;
         }
