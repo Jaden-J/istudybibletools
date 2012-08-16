@@ -50,6 +50,7 @@ namespace BibleCommon.Services
             var parallelBibleInfo = ModulesManager.GetModuleBibleInfo(moduleShortName);
 
             var bibleVersePointersComparisonTable = BibleParallelTranslationConnectorManager.ConnectBibleTranslations(
+                                                            baseModuleInfo.ShortName, parallelModuleInfo.ShortName,
                                                             baseModuleInfo.BibleTranslationDifferences,
                                                             parallelModuleInfo.BibleTranslationDifferences);                        
 
