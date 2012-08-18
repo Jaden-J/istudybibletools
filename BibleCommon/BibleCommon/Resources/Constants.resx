@@ -462,4 +462,7 @@
   <data name="BibleVersePointerTitle" xml:space="preserve">
     <value>Open a verse</value>
   </data>
+  <data name="SupplementalBibleName" xml:space="preserve">
+    <value>Supplemental Bible</value>
+  </data>
 </root>

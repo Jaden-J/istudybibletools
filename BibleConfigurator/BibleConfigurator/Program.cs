@@ -47,7 +47,10 @@ namespace BibleConfigurator
 
                 //DefaultRusModuleGenerator.GenerateModuleInfo("g:\\manifest.xml", true);
 
-                GenerateParallelBible();
+                //GenerateParallelBible();   
+
+                SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, "rst");
+                         
             }
             catch (Exception ex)
             {
@@ -252,7 +255,7 @@ namespace BibleConfigurator
                     new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Комментарии к Библии.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Сводные заметок.onepkg" }
                 },
-                PredefinedBookIndexes.RST, PredefinedBookDifferences.RST, "2.0");
+                PredefinedBookIndexes.RST, PredefinedBookDifferences.RST, "{0} глава. {1}", "2.0");
 
             converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
             {
@@ -274,8 +277,8 @@ namespace BibleConfigurator
                     new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Bible Study.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Comments to the Bible.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Summary of Notes.onepkg" }
-                }, 
-                PredefinedBookIndexes.KJV, PredefinedBookDifferences.KJV, "2.0");
+                },
+                PredefinedBookIndexes.KJV, PredefinedBookDifferences.KJV, "{0} capitolul. {1}", "2.0");
 
             converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
             {
@@ -297,8 +300,8 @@ namespace BibleConfigurator
                     new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Bible Study.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Comments to the Bible.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Summary of Notes.onepkg" }
-                }, 
-                PredefinedBookIndexes.KJV, PredefinedBookDifferences.KJV, "2.0");
+                },
+                PredefinedBookIndexes.KJV, PredefinedBookDifferences.KJV, "{0} chapter. {1}", "2.0");
 
             converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
             {

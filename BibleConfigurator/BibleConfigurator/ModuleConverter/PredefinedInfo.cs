@@ -8,7 +8,7 @@ namespace BibleConfigurator.ModuleConverter
 {
     public static class PredefinedBookDifferences
     {
-        public static readonly BibleTranslationDifferences KJV = new BibleTranslationDifferences() { PartVersesAlphabet = "абвгд" };
+        public static readonly BibleTranslationDifferences KJV = new BibleTranslationDifferences();
 
         private static BibleTranslationDifferences _rst;
         public static BibleTranslationDifferences RST
@@ -18,6 +18,7 @@ namespace BibleConfigurator.ModuleConverter
                 if (_rst == null)
                 {
                     _rst = new BibleTranslationDifferences();
+                    _rst.PartVersesAlphabet = "абвгд";
                     _rst.BookDifferences.AddRange(new List<BibleBookDifferences>()
                     {
                         new BibleBookDifferences(3, 

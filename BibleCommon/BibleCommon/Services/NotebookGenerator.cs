@@ -58,15 +58,7 @@ namespace BibleCommon.Services
 
             return pageDoc;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="chapterDoc"></param>
-        /// <param name="bibleCellWidth"></param>
-        /// <param name="bibleIndex">для параллельных переводов - какая по счёту Библия</param>
-        /// <param name="xnm"></param>
-        /// <returns></returns>
+        
         public static XElement AddTableToBibleChapterPage(XDocument chapterDoc, int bibleCellWidth, XmlNamespaceManager xnm)
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);           
@@ -132,7 +124,7 @@ namespace BibleCommon.Services
             tableElement.Add(newRow);
         }
 
-        public static int ExtendBibleTableForParallelTranslation(XElement tableElement, int bibleCellWidth, XmlNamespaceManager xnm)
+        public static int ExtendBibleTableForParallelTranslation(XElement tableElement, int bibleCellWidth, string parallelTranslationModuleName, string locale, XmlNamespaceManager xnm)
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);         
 
@@ -141,7 +133,12 @@ namespace BibleCommon.Services
             int columnsCount = columnsEl.Elements().Count();
             columnsEl.Add(new XElement(nms + "Column", new XAttribute("index", columnsCount), new XAttribute("width", bibleCellWidth), new XAttribute("isLocked", true)));
 
-            return columnsCount;
+            var translationIndex = columnsCount;
+
+            AddParallelVerseCellToBibleRow(tableElement, tableElement.XPathSelectElement("one:Row", xnm), 
+                string.Format("<b>{0}</b>", parallelTranslationModuleName), translationIndex, locale);            
+
+            return translationIndex;
         }
 
         public static void AddParallelVerseRowToBibleTable(XElement tableElement, SimpleVerse verse, int translationIndex, 
@@ -174,8 +171,16 @@ namespace BibleCommon.Services
                 }
             }
 
+            AddParallelVerseCellToBibleRow(tableElement, verseRow, verse.VerseContent, translationIndex, locale);            
+        }
+
+        private static void AddParallelVerseCellToBibleRow(XElement tableElement, XElement verseRow, string verseContent, int translationIndex, string locale)
+        {
+            var nms = XNamespace.Get(Constants.OneNoteXmlNs);
+
             if (verseRow == null)
             {
+                throw new ArgumentException(string.Format("Can not find row for inserting verse cell with content '{0}'", verseContent));
                 verseRow = new XElement(nms + "Row");
 
                 for (int i = 0; i < translationIndex; i++)
@@ -186,7 +191,7 @@ namespace BibleCommon.Services
                 tableElement.Add(verseRow);
             }
 
-            verseRow.Add(GetCell(verse.VerseContent, nms));
+            verseRow.Add(GetCell(verseContent, nms));
         }
 
         private static XElement GetCell(string cellText, XNamespace nms)
@@ -211,14 +216,60 @@ namespace BibleCommon.Services
             foreach (var testamentSectionGroup in bibleNotebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm))
             {
                 string testamentSectionGroupName = testamentSectionGroup.Attribute("name").Value;
-                XElement testamentSectionGroupEl =  OneNoteUtils.AddRootSectionGroupToNotebook(oneNoteApp, targetNotebookId, testamentSectionGroupName);                
+                XElement testamentSectionGroupEl =  AddRootSectionGroupToNotebook(oneNoteApp, targetNotebookId, testamentSectionGroupName);                
 
                 foreach (var bibleBookSection in testamentSectionGroup.XPathSelectElements("one:Section", xnm))
                 {
                     string bibleBookSectionName = bibleBookSection.Attribute("name").Value;
-                    OneNoteUtils.AddSectionGroup(oneNoteApp, testamentSectionGroupEl, bibleBookSectionName);
+                    AddSectionGroup(oneNoteApp, testamentSectionGroupEl, bibleBookSectionName);
                 }
             }
+        }
+
+        public static string CreateNotebook(Application oneNoteApp, string notebookName)
+        {
+            XmlNamespaceManager xnm;
+            var nms = XNamespace.Get(Constants.OneNoteXmlNs);
+            string defaultNotebookFolderPath;
+
+            oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+            var newNotebookPath = defaultNotebookFolderPath + "\\" + notebookName;
+            var notebookEl = new XElement(nms + "Notebook", 
+                                new XAttribute("name", notebookName),                                
+                                new XAttribute("path", newNotebookPath));
+            var notebooksEl = OneNoteUtils.GetHierarchyElement(oneNoteApp, null, HierarchyScope.hsNotebooks, out xnm);
+            notebooksEl.Root.Elements().Last().AddBeforeSelf(notebookEl);
+            oneNoteApp.UpdateHierarchy(notebooksEl.ToString(), Constants.CurrentOneNoteSchema);
+
+            return OneNoteUtils.GetNotebookIdByName(oneNoteApp, notebookName, true);
+        }
+
+        public static string GetBibleBookSectionName(string bookName, int bookIndex, int oldTestamentBooksCount)
+        {
+            int bookPrefix = bookIndex + 1 > oldTestamentBooksCount ? bookIndex + 1 - oldTestamentBooksCount : bookIndex + 1;
+            return string.Format("{0:00}. {1}", bookPrefix, bookName);
+        }
+
+        public static XElement AddRootSectionGroupToNotebook(Application oneNoteApp, string notebookId, string sectionGroupName)
+        {
+            XmlNamespaceManager xnm;
+            var notebook = OneNoteUtils.GetHierarchyElement(oneNoteApp, notebookId, HierarchyScope.hsChildren, out xnm);
+
+            AddSectionGroup(oneNoteApp, notebook.Root, sectionGroupName);
+
+            notebook = OneNoteUtils.GetHierarchyElement(oneNoteApp, notebookId, HierarchyScope.hsChildren, out xnm);
+            var newSectionGroup = notebook.Root.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", sectionGroupName), xnm);
+            return newSectionGroup;
+        }
+
+        public static void AddSectionGroup(Application oneNoteApp, XElement parentElement, string sectionGroupName)
+        {
+            XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
+            XElement newSectionGroup = new XElement(nms + "SectionGroup",
+                                    new XAttribute("name", sectionGroupName));
+
+            parentElement.Add(newSectionGroup);
+            oneNoteApp.UpdateHierarchy(parentElement.ToString(), Constants.CurrentOneNoteSchema);
         }
     }
 }

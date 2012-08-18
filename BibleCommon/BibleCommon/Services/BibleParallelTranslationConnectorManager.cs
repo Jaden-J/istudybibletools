@@ -59,8 +59,7 @@ namespace BibleCommon.Services
                                 { 
                                     PartIndex = versePartIndex.HasValue ? versePartIndex++ : null,
                                     IsEmpty = baseVersePointer.IsApocrypha
-                                },
-                                baseVerses.Strict);                            
+                                });                            
 
                             bookVersePointersComparisonTables.Add(baseVersePointer, parallelVerses); 
                         }
@@ -81,7 +80,7 @@ namespace BibleCommon.Services
                     baseVerseToAdd.PartIndex = null;
                     parallelVerseToAdd.PartIndex = null;
                     if (!bookVersePointersComparisonTables.ContainsKey(baseVerseToAdd))
-                        bookVersePointersComparisonTables.Add(baseVerseToAdd, ComparisonVersesInfo.FromVersePointer(parallelVerseToAdd, true));
+                        bookVersePointersComparisonTables.Add(baseVerseToAdd, ComparisonVersesInfo.FromVersePointer(parallelVerseToAdd));
                 }
                 else                
                     bookVersePointersComparisonTables.Add(baseVerses[0], parallelVerses);
@@ -100,15 +99,14 @@ namespace BibleCommon.Services
                 for (int baseVerseIndex = 0; baseVerseIndex < baseVerses.Count; baseVerseIndex++)
                 {
                     var baseVerse = baseVerses[baseVerseIndex];
-                    var nextBaseVerse = baseVerseIndex < baseVerses.Count - 1 ? baseVerses[baseVerseIndex + 1] : null;
+                    var nextBaseVerse = baseVerseIndex < baseVerses.Count - 1 ? baseVerses[baseVerseIndex + 1] : null;                   
+                    
+                    var getAllVerses = nextBaseVerse == null ? GetAllVersesType.All
+                                                             : (nextBaseVerse.IsApocrypha != baseVerse.IsApocrypha
+                                                                        ? GetAllVersesType.AllOfTheSameType
+                                                                        : GetAllVersesType.One);          
 
-                    prevParallelVerses = GetParallelVersesList(baseVerse, parallelVerses, ref parallelVerseIndex, baseVerse.IsApocrypha,                             
-                        nextBaseVerse == null 
-                                ? GetAllVersesType.All 
-                                : (nextBaseVerse.IsApocrypha != baseVerse.IsApocrypha 
-                                            ? GetAllVersesType.AllOfTheSameType 
-                                            : GetAllVersesType.One), 
-                        isPartVersePointer, prevParallelVerses);
+                    prevParallelVerses = GetParallelVersesList(baseVerse, parallelVerses, ref parallelVerseIndex, getAllVerses, isPartVersePointer, prevParallelVerses);
 
                     ComparisonVersesInfo parallelVersesInfo = new ComparisonVersesInfo(prevParallelVerses);
                     //parallelVersesInfo.Strict = parallelVerses.Strict;
@@ -124,18 +122,21 @@ namespace BibleCommon.Services
             AllOfTheSameType,
             All
         }
-
+        
         private static List<SimpleVersePointer> GetParallelVersesList(SimpleVersePointer baseVerse, ComparisonVersesInfo parallelVerses, ref int startIndex,
-            bool isApocrypha, GetAllVersesType getAllVerses, bool isPartParallelVersePointer, List<SimpleVersePointer> prevParallelVerses)
+            GetAllVersesType getAllVerses, bool isPartParallelVersePointer, List<SimpleVersePointer> prevParallelVerses)
         {
             var result = new List<SimpleVersePointer>();
 
             var lastIndex = startIndex;
-            var partIndex = prevParallelVerses.Count > 0 ? prevParallelVerses.Last().PartIndex.GetValueOrDefault(0) + 1 : 0;
+            SimpleVersePointer lastPrevVerse = prevParallelVerses.Count > 0 ? prevParallelVerses.Last() : null;
+            var partIndex = lastPrevVerse != null ? lastPrevVerse.PartIndex.GetValueOrDefault(-1) + 1 : 0;
+
+            bool getAllFirstOtherTypeVerses = startIndex == 0 && parallelVerses.Count > 0 && !baseVerse.IsApocrypha && parallelVerses[0].IsApocrypha;            
 
             for (int i = startIndex; i < parallelVerses.Count; i++)
             {
-                if (parallelVerses[i].IsApocrypha == isApocrypha || getAllVerses == GetAllVersesType.All)
+                if (parallelVerses[i].IsApocrypha == baseVerse.IsApocrypha || getAllVerses == GetAllVersesType.All || getAllFirstOtherTypeVerses)
                 {
                     var parallelVerseToAdd = (SimpleVersePointer)parallelVerses[i].Clone();
 
@@ -148,11 +149,17 @@ namespace BibleCommon.Services
 
                     lastIndex = i + 1;
                 }
-                else if (getAllVerses != GetAllVersesType.All && result.Count > 0) // то есть IsApocrypha сменилась
-                    break;
+                else
+                {
+                    if (getAllVerses != GetAllVersesType.All && result.Count > 0) // то есть IsApocrypha сменилась
+                        break;
 
-                if (getAllVerses == GetAllVersesType.One)
-                    break;
+                    if (getAllVerses == GetAllVersesType.AllOfTheSameType && startIndex == 0)  // то есть сразу не то пошло
+                        break;
+                }
+
+                if (getAllVerses == GetAllVersesType.One && (!getAllFirstOtherTypeVerses || result.Any(v => v.IsApocrypha == baseVerse.IsApocrypha)))
+                    break;                
             }
             startIndex = lastIndex;
 
@@ -160,15 +167,18 @@ namespace BibleCommon.Services
             {
                 SimpleVersePointer parallelVerseToAdd = null;
 
-                if (!isApocrypha)
+                if (!baseVerse.IsApocrypha)
                 {
-                    if (prevParallelVerses.Count > 0)
+                    if (lastPrevVerse != null)
                     {
-                        parallelVerseToAdd = (SimpleVersePointer)prevParallelVerses.Last().Clone();
+                        if (!lastPrevVerse.PartIndex.HasValue)
+                            lastPrevVerse.PartIndex = partIndex++;
+
+                        parallelVerseToAdd = (SimpleVersePointer)lastPrevVerse.Clone();
                         parallelVerseToAdd.PartIndex = isPartParallelVersePointer ? (int?)partIndex++ : null;
                     }
                     else
-                        throw new NotSupportedException(string.Format("Can not find a parallel value verse for base verse '{0}'.", baseVerse));
+                        throw new NotSupportedException(string.Format("Can not find parallel value verse for base verse '{0}'.", baseVerse));
                 }
                 else
                 {
@@ -197,12 +207,12 @@ namespace BibleCommon.Services
                 else
                     bookVersePointersComparisonTables = result[bookIndex];
 
-                var baseBookVerses = baseTranslationDifferencesEx.BibleVersesDifferences[bookIndex];
+                var baseBookVerses = baseTranslationDifferencesEx.GetBibleVersesDifferences(bookIndex);
                 var parallelBookVerses = parallelTranslationDifferencesEx.BibleVersesDifferences[bookIndex];
 
                 foreach (var parallelVerseKey in parallelBookVerses.Keys)
                 {
-                    if (baseBookVerses == null && !baseBookVerses.ContainsKey(parallelVerseKey))   // вариант, когда и там, и там есть мы уже разобрали                    
+                    if (baseBookVerses == null || !baseBookVerses.ContainsKey(parallelVerseKey))   // вариант, когда и там, и там есть мы уже разобрали                    
                         bookVersePointersComparisonTables.Add(parallelVerseKey, parallelBookVerses[parallelVerseKey]);                    
                 }
             }

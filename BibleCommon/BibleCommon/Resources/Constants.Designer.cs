@@ -952,6 +952,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Supplemental Bible.
+        /// </summary>
+        public static string SupplementalBibleName {
+            get {
+                return ResourceManager.GetString("SupplementalBibleName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Time spent.
         /// </summary>
         public static string TimeSpent {

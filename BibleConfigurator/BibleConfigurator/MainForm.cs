@@ -719,13 +719,10 @@ namespace BibleConfigurator
 
         private void PrepareFolderBrowser()
         {
-            string myDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string[] directories = Directory.GetDirectories(myDocumentsPath, "*OneNote*", SearchOption.TopDirectoryOnly);
-            if (directories.Length > 0)
-                folderBrowserDialog.SelectedPath = directories[0];
-            else
-                folderBrowserDialog.SelectedPath = myDocumentsPath;            
-
+            string defaultNotebookFolderPath;
+            _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);            
+            
+            folderBrowserDialog.SelectedPath = defaultNotebookFolderPath;
             folderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetNotebookFolder;
             folderBrowserDialog.ShowNewFolderButton = true;
 

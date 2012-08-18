@@ -459,4 +459,7 @@
   <data name="BibleVersePointerTitle" xml:space="preserve">
     <value>Открыть стих</value>
   </data>
+  <data name="SupplementalBibleName" xml:space="preserve">
+    <value>Справочная Библия</value>
+  </data>
 </root>

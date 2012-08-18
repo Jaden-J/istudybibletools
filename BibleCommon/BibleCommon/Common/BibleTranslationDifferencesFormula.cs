@@ -74,7 +74,7 @@ namespace BibleCommon.Common
         }
             
 
-        public BibleTranslationDifferencesBaseVersesFormula(int bookIndex, string baseVersesFormula, bool strictProcessing)
+        public BibleTranslationDifferencesBaseVersesFormula(int bookIndex, string baseVersesFormula, BibleBookDifference.CorrespondenceVerseType correspondenceType)
             : base(baseVersesFormula)
         {
             this.BookIndex = bookIndex;
@@ -83,8 +83,8 @@ namespace BibleCommon.Common
             if (string.IsNullOrEmpty(this.OriginalFormula))
                 throw new NotSupportedException("Empty formula is not supported for base verses");
 
-            if (IsMultiVerse && !strictProcessing)
-                throw new NotSupportedException("Multi Verses not supported for not strict processing.");
+            if (IsMultiVerse && correspondenceType != BibleBookDifference.CorrespondenceVerseType.All)
+                throw new NotSupportedException("Multi Base Verses are not supported for not strict processing (when correspondenceType != 'All').");
         }     
 
         private List<SimpleVersePointer> _allVerses;
@@ -234,15 +234,13 @@ namespace BibleCommon.Common
 
         public class ParallelVersesFormulaPart : ParallelFormulaPart
         {
-            protected BibleBookDifference.CorrespondenceVerseType CorrespondenceType { get; set; }
-            protected bool StrictProcessing { get; set; }
+            protected BibleBookDifference.CorrespondenceVerseType CorrespondenceType { get; set; }            
 
             public ParallelVersesFormulaPart(string formulaPart,
-                BibleTranslationDifferencesParallelVersesFormula parallelVersesFormula, BibleBookDifference.CorrespondenceVerseType correspondenceType, bool strictProcessing)
+                BibleTranslationDifferencesParallelVersesFormula parallelVersesFormula, BibleBookDifference.CorrespondenceVerseType correspondenceType)
                 : base(formulaPart, parallelVersesFormula)
             {
-                this.CorrespondenceType = correspondenceType;
-                this.StrictProcessing = strictProcessing;
+                this.CorrespondenceType = correspondenceType;                
             }
 
             protected override void ParseMultiVerse()
@@ -288,19 +286,16 @@ namespace BibleCommon.Common
         protected ParallelVersesFormulaPart VersesFormulaPart { get; set; }
         protected bool IsEmpty { get; set; }
         protected BibleBookDifference.CorrespondenceVerseType CorrespondenceType { get; set; }
-        protected int? ValueVersesCount { get; set; }
-        protected bool StrictProcessing { get; set; }
+        protected int? ValueVersesCount { get; set; }        
 
         public BibleTranslationDifferencesParallelVersesFormula(string parallelVersesFormula,
-            BibleTranslationDifferencesBaseVersesFormula baseVersesFormula, bool strictProcessing, 
-            BibleBookDifference.CorrespondenceVerseType correspondenceType, int? valueVersesCount)
+            BibleTranslationDifferencesBaseVersesFormula baseVersesFormula, BibleBookDifference.CorrespondenceVerseType correspondenceType, int? valueVersesCount)
             : base(parallelVersesFormula)
         {
             if (valueVersesCount.HasValue && valueVersesCount == 0)
                 throw new NotSupportedException("ValueVersesCount must be greater than 0.");
 
-            this.BaseVersesFormula = baseVersesFormula;
-            this.StrictProcessing = strictProcessing;
+            this.BaseVersesFormula = baseVersesFormula;            
             this.CorrespondenceType = correspondenceType;
             this.ValueVersesCount = valueVersesCount;            
 
@@ -308,7 +303,7 @@ namespace BibleCommon.Common
             {
                 int indexOfColon = parallelVersesFormula.IndexOf(":");
                 ChapterFormulaPart = new ParallelChapterFormulaPart(parallelVersesFormula.Substring(0, indexOfColon), this);
-                VersesFormulaPart = new ParallelVersesFormulaPart(parallelVersesFormula.Substring(indexOfColon + 1), this, correspondenceType, strictProcessing);
+                VersesFormulaPart = new ParallelVersesFormulaPart(parallelVersesFormula.Substring(indexOfColon + 1), this, correspondenceType);
             }
             else
             {
@@ -328,30 +323,21 @@ namespace BibleCommon.Common
             {
                 var parallelVerses = VersesFormulaPart.CalculateParallelVerses(baseVerse.Verse);
 
-                if (!ValueVersesCount.HasValue && !StrictProcessing)
+                if (!ValueVersesCount.HasValue && CorrespondenceType != BibleBookDifference.CorrespondenceVerseType.All)
                     ValueVersesCount = 1;
 
-                int versePartIndex = prevVerse != null ? prevVerse.PartIndex.GetValueOrDefault(0) + 1 : 0;
+                int versePartIndex = prevVerse != null ? prevVerse.PartIndex.GetValueOrDefault(-1) + 1 : 0;
                 int verseIndex = 0;
                 foreach (var parallelVerse in parallelVerses)
                 {
                     var parallelVersePointer = new SimpleVersePointer(
                             baseVerse.BookIndex, ChapterFormulaPart.CalculateParallelChapter(baseVerse.Chapter), parallelVerse);
 
-                    if (StrictProcessing)
-                    {
-                        if (VersesFormulaPart.IsPartVersePointer.GetValueOrDefault(false))
-                        {
-                            parallelVersePointer.PartIndex = versePartIndex++;
-                        }                        
-                    }
-                    else
-                    {
-                        if (!VerseIsValue(verseIndex, parallelVerses.Count))
-                        {
-                            parallelVersePointer.IsApocrypha = true;                            
-                        }
-                    }
+                    if (VersesFormulaPart.IsPartVersePointer.GetValueOrDefault(false))                    
+                        parallelVersePointer.PartIndex = versePartIndex++;                    
+
+                    if (!VerseIsValue(verseIndex, parallelVerses.Count))                    
+                        parallelVersePointer.IsApocrypha = true;                    
 
                     result.Add(parallelVersePointer);
                     verseIndex++;
@@ -363,17 +349,16 @@ namespace BibleCommon.Common
 
         private bool VerseIsValue(int verseIndex, int versesCount)
         {
-            if (this.CorrespondenceType == BibleBookDifference.CorrespondenceVerseType.First)
-            {
-                if (verseIndex < ValueVersesCount)
-                    return true;
-            }
-            else
-            {
-                if (verseIndex >= versesCount - ValueVersesCount)
-                    return true;
-            }
 
+            switch (this.CorrespondenceType)
+            {
+                case BibleBookDifference.CorrespondenceVerseType.All:
+                    return true;
+                case BibleBookDifference.CorrespondenceVerseType.First:
+                    return verseIndex < ValueVersesCount;
+                case BibleBookDifference.CorrespondenceVerseType.Last:
+                    return verseIndex >= versesCount - ValueVersesCount;                        
+            }
 
             return false;
         }
