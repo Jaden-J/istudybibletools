@@ -46,7 +46,8 @@ namespace BibleCommon.Services
         public string NotebookId_Bible { get; set; }
         public string NotebookId_BibleComments { get; set; }
         public string NotebookId_BibleNotesPages { get; set; }        
-        public string NotebookId_BibleStudy { get; set; }        
+        public string NotebookId_BibleStudy { get; set; }
+        public string NotebookId_SupplementalBible { get; set; }
         public string SectionGroupId_Bible { get; set; }
         public string SectionGroupId_BibleStudy { get; set; }
         public string SectionGroupId_BibleComments { get; set; }        
@@ -60,7 +61,7 @@ namespace BibleCommon.Services
         public int PageWidth_Notes { get; set; }
         public int Language { get; set; }
         public int PageWidth_Bible { get; set; }
-        public List<string> ParallelModules { get; set; }
+        public List<string> SupplementalBibleModules { get; set; }
 
         /// <summary>
         /// Необходимо ли линковать каждый стих, входящий в MultiVerse
@@ -230,7 +231,7 @@ namespace BibleCommon.Services
             this.NewVersionOnServer = GetParameterValue<Version>(xdoc, Consts.Constants.ParameterName_NewVersionOnServer, null, value => new Version(value));
             this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, null, value => DateTime.Parse(value));            
             this.Language = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_Language, Thread.CurrentThread.CurrentUICulture.LCID);
-            this.ModuleName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ModuleName, string.Empty);                
+            this.ModuleName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ModuleName, string.Empty);            
         }
 
         private CultureInfo _currentCultureInfo = null;
@@ -276,7 +277,7 @@ namespace BibleCommon.Services
             this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
             this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, true);
             this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);
-            this.ParallelModules = GetParameterValue<List<string>>(xdoc, Consts.Constants.ParameterName_ParallelModules, new List<string>());
+            this.SupplementalBibleModules = GetParameterValue<List<string>>(xdoc, Consts.Constants.ParameterName_SupplementalBibleModules, new List<string>());
         }
 
         private void LoadGeneralSettings(XDocument xdoc)
@@ -284,11 +285,13 @@ namespace BibleCommon.Services
             this.NotebookId_Bible = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdBible);
             this.NotebookId_BibleComments = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdBibleComments);
             this.NotebookId_BibleNotesPages = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdBibleNotesPages);
-            this.NotebookId_BibleStudy = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdBibleStudy);
+            this.NotebookId_BibleStudy = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdBibleStudy);            
             this.SectionGroupId_Bible = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionGroupIdBible);
             this.SectionGroupId_BibleStudy = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionGroupIdBibleStudy);
             this.SectionGroupId_BibleComments = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionGroupIdBibleComments);
             this.SectionGroupId_BibleNotesPages = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionGroupIdBibleNotesPages);
+
+            this.NotebookId_SupplementalBible = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdSupplementalBible);            
         }
 
         private T GetParameterValue<T>(XDocument xdoc, string parameterName, object defaultValue = null, Func<string, T> convertFunc = null)
@@ -334,7 +337,7 @@ namespace BibleCommon.Services
             this.PageWidth_RubbishNotes = Consts.Constants.DefaultPageWidth_RubbishNotes;
             this.RubbishPage_ExpandMultiVersesLinking = Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking;
             this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
-            this.ParallelModules = new List<string>();
+            this.SupplementalBibleModules = new List<string>();
 
             LoadDefaultLocalazibleSettings();
         }
@@ -375,6 +378,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_NotebookIdBibleComments, this.NotebookId_BibleComments),
                                   new XElement(Consts.Constants.ParameterName_NotebookIdBibleNotesPages, this.NotebookId_BibleNotesPages),
                                   new XElement(Consts.Constants.ParameterName_NotebookIdBibleStudy, this.NotebookId_BibleStudy),                                  
+                                  new XElement(Consts.Constants.ParameterName_NotebookIdSupplementalBible, this.NotebookId_SupplementalBible),
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBible, this.SectionGroupId_Bible),                                                                    
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBibleComments, this.SectionGroupId_BibleComments),
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBibleNotesPages, this.SectionGroupId_BibleNotesPages),
@@ -398,7 +402,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_ModuleName, this.ModuleName),
                                   new XElement(Consts.Constants.ParameterName_UseDefaultSettings, this.UseDefaultSettings.Value),
                                   new XElement(Consts.Constants.ParameterName_PageWidthBible, this.PageWidth_Bible),
-                                  new XElement(Consts.Constants.ParameterName_ParallelModules, this.ParallelModules)
+                                  new XElement(Consts.Constants.ParameterName_SupplementalBibleModules, this.SupplementalBibleModules)
                                   );
 
                     xDoc.Save(sw);

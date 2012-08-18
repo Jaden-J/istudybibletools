@@ -139,6 +139,9 @@ namespace BibleCommon.Common
         [XmlAttribute]
         public string Alphabet { get; set; }  // символы, встречающиеся в названии книг Библии                    
 
+        [XmlAttribute]
+        public string ChapterSectionNameTemplate { get; set; }
+
         [XmlElement(typeof(BibleBookInfo), ElementName = "BibleBook")]
         public List<BibleBookInfo> BibleBooks { get; set; }
 
@@ -266,14 +269,7 @@ namespace BibleCommon.Common
         /// </summary>
         [XmlAttribute]
         [DefaultValue((int)CorrespondenceVerseType.All)]
-        public CorrespondenceVerseType CorrespondenceType { get; set; }
-
-        /// <summary>
-        /// Строгая обработка стихов - отслеживается строгое соответствие
-        /// </summary>
-        [XmlAttribute]
-        [DefaultValue(true)]  
-        public bool Strict { get; set; }
+        public CorrespondenceVerseType CorrespondenceType { get; set; }        
 
         /// <summary>
         /// Количество стихов, соответствующих версии KJV. По умолчанию - все стихи соответствуют KJV (если Strict = true), либо только один стих (если Strict = false)
@@ -282,8 +278,7 @@ namespace BibleCommon.Common
         public string ValueVersesCount { get; set; }  
 
         public BibleBookDifference()
-        {
-            this.Strict = true;
+        {            
         }
 
         public BibleBookDifference(string baseVerses, string parallelVerses)
@@ -354,14 +349,14 @@ namespace BibleCommon.Common
 
         public string GetVersesContent(List<SimpleVersePointer> verses)
         {
-            StringBuilder versesContent = new StringBuilder();
+            var contents = new List<string>();
 
             foreach (var verse in verses)
             {
-                versesContent.AppendFormat("{0} ", GetVerseContent(verse));
+                contents.Add(GetVerseContent(verse));                
             }
 
-            return versesContent.ToString();
+            return string.Join(" ", contents.ToArray());
         }
     }
 

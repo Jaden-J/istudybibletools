@@ -86,6 +86,7 @@
     <Compile Include="Helpers\OneNoteUtils.cs" />
     <Compile Include="Services\RelinkAllBibleNotesManager.cs" />
     <Compile Include="Services\SettingsManager.cs" />
+    <Compile Include="Services\SupplementalBibleManager.cs" />
     <Compile Include="Services\VerseLinkManager.cs" />
     <Compile Include="Common\VersePointer.cs" />
     <Compile Include="..\..\VersionInfo.cs">

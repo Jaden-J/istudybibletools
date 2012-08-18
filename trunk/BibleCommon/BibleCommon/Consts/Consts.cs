@@ -42,7 +42,8 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_NotebookIdBible = "NotebookId_Bible";
         public static readonly string ParameterName_NotebookIdBibleComments = "NotebookId_BibleComments";
         public static readonly string ParameterName_NotebookIdBibleNotesPages = "NotebookId_BibleNotesPages";
-        public static readonly string ParameterName_NotebookIdBibleStudy = "NotebookId_BibleStudy";        
+        public static readonly string ParameterName_NotebookIdBibleStudy = "NotebookId_BibleStudy";
+        public static readonly string ParameterName_NotebookIdSupplementalBible = "NotebookId_SupplementalBible";
         public static readonly string ParameterName_SectionGroupIdBible = "SectionGroupId_Bible";        
         public static readonly string ParameterName_SectionGroupIdBibleStudy = "SectionGroupId_BibleStudy";
         public static readonly string ParameterName_SectionGroupIdBibleComments = "SectionGroupId_BibleComments";
@@ -55,7 +56,7 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_NewVersionOnServerLatestCheckTime = "NewVersionOnServerLatestCheckTime";
 
         public static readonly string ParameterName_ModuleName = "ModuleName";
-        public static readonly string ParameterName_ParallelModules = "ParallelModules";
+        public static readonly string ParameterName_SupplementalBibleModules = "ParallelModules";
 
         public static readonly string ParameterName_PageWidthNotes = "Width_NotesPage";
         public static readonly string ParameterName_PageWidthBible = "Width_BiblePage";

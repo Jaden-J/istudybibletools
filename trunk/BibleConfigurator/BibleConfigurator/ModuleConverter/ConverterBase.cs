@@ -41,6 +41,7 @@ namespace BibleConfigurator.ModuleConverter
         protected ModuleBibleInfo BibleInfo { get; set; }
         protected BibleTranslationDifferences TranslationDifferences { get; set; }
         protected List<int> BookIndexes { get; set; }  // массив индексов книг. Для KJV - упорядоченный массив цифр от 1 до 66.                 
+        protected string ChapterSectionNameTemplate { get; set; }
         protected string Version { get; set; }
 
         /// <summary>
@@ -57,7 +58,7 @@ namespace BibleConfigurator.ModuleConverter
         public ConverterBase(string emptyNotebookName, string manifestFilesFolderPath,
             string oldTestamentName, string newTestamentName, int oldTestamentBooksCount, int newTestamentBooksCount,
             string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, 
-            BibleTranslationDifferences translationDifferences, string version)
+            BibleTranslationDifferences translationDifferences, string chapterSectionNameTemplate, string version)
         {
             OneNoteApp = new Application();
             this.EmptyNotebookName = emptyNotebookName;
@@ -73,6 +74,7 @@ namespace BibleConfigurator.ModuleConverter
             this.TranslationDifferences = translationDifferences;
             this.BibleInfo.Content.Locale = locale;
             this.BookIndexes = bookIndexes;
+            this.ChapterSectionNameTemplate = chapterSectionNameTemplate;
             this.Version = version;
 
             if (!Directory.Exists(manifestFilesFolderPath))
@@ -99,8 +101,7 @@ namespace BibleConfigurator.ModuleConverter
 
         protected virtual string GetBookSectionName(string bookName, int bookIndex)
         {
-            int bookPrefix = bookIndex + 1 > OldTestamentBooksCount ? bookIndex + 1 - OldTestamentBooksCount : bookIndex + 1;
-            return string.Format("{0:00}. {1}", bookPrefix, bookName);
+            return NotebookGenerator.GetBibleBookSectionName(bookName, bookIndex, OldTestamentBooksCount);            
         }
 
         protected virtual void UpdateNotebookProperties(ExternalModuleInfo externalModuleInfo)
@@ -118,7 +119,7 @@ namespace BibleConfigurator.ModuleConverter
 
         protected virtual string AddTestamentSectionGroup(string testamentName)
         {
-            return OneNoteUtils.AddRootSectionGroupToNotebook(OneNoteApp, NotebookId, testamentName).Attribute("ID").Value;            
+            return NotebookGenerator.AddRootSectionGroupToNotebook(OneNoteApp, NotebookId, testamentName).Attribute("ID").Value;            
         }
 
         protected virtual string AddBookSection(string sectionGroupId, string sectionName, string bookName)
@@ -221,7 +222,8 @@ namespace BibleConfigurator.ModuleConverter
                 NewTestamentName = NewTestamentName,
                 OldTestamentName = OldTestamentName,
                 OldTestamentBooksCount = OldTestamentBooksCount,
-                NewTestamentBooksCount = NewTestamentBooksCount                                
+                NewTestamentBooksCount = NewTestamentBooksCount,
+                ChapterSectionNameTemplate = ChapterSectionNameTemplate              
             };
 
             int index = 0;
