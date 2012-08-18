@@ -8,6 +8,7 @@ using Microsoft.Office.Interop.OneNote;
 using BibleCommon.Helpers;
 using System.Xml;
 using BibleCommon.Consts;
+using System.Xml.XPath;
 
 namespace BibleCommon.Services
 {
@@ -116,7 +117,9 @@ namespace BibleCommon.Services
                 var chapterPageDoc = OneNoteUtils.GetPageContent(oneNoteApp, chapterPageId, out xnm);
 
                 var tableEl = NotebookGenerator.GetBibleTable(chapterPageDoc, xnm);
-                int bibleIndex = NotebookGenerator.ExtendBibleTableForParallelTranslation(tableEl, SettingsManager.Instance.PageWidth_Bible, parallelTranslationModuleName, locale, xnm);
+                int bibleIndex = NotebookGenerator.AddColumnToTable(tableEl, SettingsManager.Instance.PageWidth_Bible, xnm);
+
+                NotebookGenerator.AddParallelBibleTitle(tableEl, parallelTranslationModuleName, bibleIndex, locale, xnm);
                                            
                 foreach (var baseVerse in baseChapter.Verses)
                 {

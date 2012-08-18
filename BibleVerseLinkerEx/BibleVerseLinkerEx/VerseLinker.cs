@@ -64,6 +64,8 @@ namespace BibleVerseLinkerEx
 
         private XElement GetLastPageObject(string pageId, int? position)
         {
+            _oneNoteApp.SyncHierarchy(pageId);
+
             string pageContentXml;
             OneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
 

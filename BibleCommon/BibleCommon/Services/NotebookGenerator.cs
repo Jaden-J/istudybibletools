@@ -15,6 +15,8 @@ namespace BibleCommon.Services
 {
     public static class NotebookGenerator
     {
+        public const int MinimalCellWidth = 37;
+
         public static string AddBookSectionToBibleNotebook(Application oneNoteApp, string sectionGroupId, string sectionName, string bookName)
         {
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
@@ -69,7 +71,7 @@ namespace BibleCommon.Services
                                                   new XElement(nms + "Table", new XAttribute("bordersVisible", false),
                                                       new XElement(nms + "Columns",
                                                           new XElement(nms + "Column", new XAttribute("index", 0), new XAttribute("width", bibleCellWidth), new XAttribute("isLocked", true)),
-                                                          new XElement(nms + "Column", new XAttribute("index", 1), new XAttribute("width", 37), new XAttribute("isLocked", true))
+                                                          new XElement(nms + "Column", new XAttribute("index", 1), new XAttribute("width", MinimalCellWidth), new XAttribute("isLocked", true))
                                                               )))));
 
             //var outlines = chapterDoc.Root.XPathSelectElements("//one:Outline", xnm);
@@ -124,21 +126,16 @@ namespace BibleCommon.Services
             tableElement.Add(newRow);
         }
 
-        public static int ExtendBibleTableForParallelTranslation(XElement tableElement, int bibleCellWidth, string parallelTranslationModuleName, string locale, XmlNamespaceManager xnm)
+        public static int AddColumnToTable(XElement tableElement, int cellWidth, XmlNamespaceManager xnm)
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);         
 
             var columnsEl = tableElement.XPathSelectElement("one:Columns", xnm);
 
             int columnsCount = columnsEl.Elements().Count();
-            columnsEl.Add(new XElement(nms + "Column", new XAttribute("index", columnsCount), new XAttribute("width", bibleCellWidth), new XAttribute("isLocked", true)));
+            columnsEl.Add(new XElement(nms + "Column", new XAttribute("index", columnsCount), new XAttribute("width", cellWidth), new XAttribute("isLocked", true)));
 
-            var translationIndex = columnsCount;
-
-            AddParallelVerseCellToBibleRow(tableElement, tableElement.XPathSelectElement("one:Row", xnm), 
-                string.Format("<b>{0}</b>", parallelTranslationModuleName), translationIndex, locale);            
-
-            return translationIndex;
+            return columnsCount;
         }
 
         public static void AddParallelVerseRowToBibleTable(XElement tableElement, SimpleVerse verse, int translationIndex, 
@@ -174,13 +171,17 @@ namespace BibleCommon.Services
             AddParallelVerseCellToBibleRow(tableElement, verseRow, verse.VerseContent, translationIndex, locale);            
         }
 
-        private static void AddParallelVerseCellToBibleRow(XElement tableElement, XElement verseRow, string verseContent, int translationIndex, string locale)
+        public static void AddParallelBibleTitle(XElement tableElement, string parallelTranslationModuleName, int bibleIndex, string locale, XmlNamespaceManager xnm)
+        {
+            AddParallelVerseCellToBibleRow(tableElement, tableElement.XPathSelectElement("one:Row", xnm), string.Format("<b>{0}</b>", parallelTranslationModuleName), bibleIndex, locale);            
+        }
+
+        public static void AddParallelVerseCellToBibleRow(XElement tableElement, XElement verseRow, string verseContent, int translationIndex, string locale)
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
             if (verseRow == null)
-            {
-                throw new ArgumentException(string.Format("Can not find row for inserting verse cell with content '{0}'", verseContent));
+            {   
                 verseRow = new XElement(nms + "Row");
 
                 for (int i = 0; i < translationIndex; i++)
@@ -194,7 +195,7 @@ namespace BibleCommon.Services
             verseRow.Add(GetCell(verseContent, nms));
         }
 
-        private static XElement GetCell(string cellText, XNamespace nms)
+        public static XElement GetCell(string cellText, XNamespace nms)
         {
             return new XElement(nms + "Cell",
                             new XElement(nms + "OEChildren",

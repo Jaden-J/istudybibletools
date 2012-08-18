@@ -63,7 +63,7 @@ namespace BibleCommon.Services
                 result.ResultType = HierarchySearchResultType.Successfully;
                 result.HierarchyStage = HierarchyStage.Section;                
 
-                XElement targetPage = HierarchySearchManager.FindPage(oneNoteApp, result.HierarchyObjectInfo.SectionId, vp);
+                XElement targetPage = HierarchySearchManager.FindPage(oneNoteApp, result.HierarchyObjectInfo.SectionId, vp.Chapter.Value);
 
                 if (targetPage != null)
                 {
@@ -88,15 +88,29 @@ namespace BibleCommon.Services
             return result;
         }
 
+        internal static XElement FindChapterPage(Application oneNoteApp, string bibleNotebookId, string sectionName, int chapterIndex)
+        {
+            XElement targetSection = FindBibleBookSection(oneNoteApp, bibleNotebookId, sectionName);
+            if (targetSection != null)
+            {
+                return HierarchySearchManager.FindPage(oneNoteApp, (string)targetSection.Attribute("ID"), chapterIndex);                
+            }
+
+            return null;
+        }
+
         private static XElement FindVerse(Application oneNoteApp, string pageId, VersePointer vp)
         {
-            OneNoteProxy.PageContent pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, pageId, OneNoteProxy.PageType.Bible);            
+            OneNoteProxy.PageContent pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, pageId, OneNoteProxy.PageType.Bible);
+            return FindVerse(oneNoteApp, pageContent.Content, vp.IsChapter, vp.Verse.Value, pageContent.Xnm);
+        }
 
+        internal static XElement FindVerse(Application oneNoteApp, XDocument pageContent, bool isChapter, int verse, XmlNamespaceManager xnm)
+        {
             XElement pointerElement = null;
 
-            if (!vp.IsChapter)
+            if (!isChapter)
             {
-
                 string[] searchPatterns = new string[] { 
                 "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell/one:OEChildren/one:OE/one:T[starts-with(.,'{0} ')]",
                 "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[starts-with(.,'{0} ')]",
@@ -112,7 +126,7 @@ namespace BibleCommon.Services
 
                 foreach (string pattern in searchPatterns)
                 {
-                    pointerElement = pageContent.Content.XPathSelectElement(string.Format(pattern, vp.Verse), pageContent.Xnm);
+                    pointerElement = pageContent.XPathSelectElement(string.Format(pattern, verse), xnm);
 
                     if (pointerElement != null)
                     {                        
@@ -122,18 +136,17 @@ namespace BibleCommon.Services
             }
             else               // тогда возвращаем хотя бы ссылку на заголовок
             {
-                pointerElement = pageContent.Content.Root.XPathSelectElement("one:Title/one:OE/one:T", pageContent.Xnm);
+                pointerElement = pageContent.Root.XPathSelectElement("one:Title/one:OE/one:T", xnm);
             }
 
             return pointerElement;
         }
 
-
-        private static XElement FindPage(Application oneNoteApp, string sectionId, VersePointer vp)
+        private static XElement FindPage(Application oneNoteApp, string sectionId, int chapter)
         {
             OneNoteProxy.HierarchyElement sectionDocument = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages);
 
-            return FindChapterPage(oneNoteApp, sectionDocument.Content.Root, vp.Chapter.Value, sectionDocument.Xnm);
+            return FindChapterPage(oneNoteApp, sectionDocument.Content.Root, chapter, sectionDocument.Xnm);
         }
 
         internal static XElement FindChapterPage(Application oneNoteApp, XElement sectionPagesEl, int chapter, XmlNamespaceManager xnm)
