@@ -49,7 +49,7 @@ namespace BibleConfigurator
 
                 //GenerateParallelBible();   
 
-                SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, "rst");
+                SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, "kjv");
                          
             }
             catch (Exception ex)

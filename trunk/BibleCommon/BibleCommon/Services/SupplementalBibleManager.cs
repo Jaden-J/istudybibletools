@@ -17,19 +17,19 @@ namespace BibleCommon.Services
     {
         public static void CreateSupplementalBible(Application oneNoteApp, string moduleShortName)
         {
-            if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_SupplementalBible))
-            {
+            if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_SupplementalBible))            
                 if (!OneNoteUtils.NotebookExists(oneNoteApp, SettingsManager.Instance.NotebookId_SupplementalBible))
                     SettingsManager.Instance.NotebookId_SupplementalBible = null;
-            }
+            
 
-            if (string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_SupplementalBible))
-            {
-                SettingsManager.Instance.NotebookId_SupplementalBible = NotebookGenerator.CreateNotebook(oneNoteApp, Resources.Constants.SupplementalBibleName);
-                SettingsManager.Instance.Save();
-            }
+            if (string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_SupplementalBible))            
+                SettingsManager.Instance.NotebookId_SupplementalBible = NotebookGenerator.CreateNotebook(oneNoteApp, Resources.Constants.SupplementalBibleName);                            
             else
-                throw new InvalidOperationException("Supplemental Bible already exists");            
+                throw new InvalidOperationException("Supplemental Bible already exists");
+
+            SettingsManager.Instance.SupplementalBibleModules.Clear();
+            SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
+            SettingsManager.Instance.Save();
             
             string currentSectionGroupId = null;
             var moduleInfo = ModulesManager.GetModuleInfo(moduleShortName);
@@ -51,7 +51,9 @@ namespace BibleCommon.Services
                 foreach (var chapter in bibleBook.Chapters)
                 {   
                     GenerateChapterPage(oneNoteApp, chapter, bookSectionId, moduleInfo, bibleBookInfo, bibleInfo);                    
-                }                
+                }
+
+                OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp, pageContent => pageContent.PageType == OneNoteProxy.PageType.Bible, null, null);
             }            
         }
 
@@ -78,11 +80,12 @@ namespace BibleCommon.Services
         private static void UpdateBibleChapterLinksToSupplementalBible(Application oneNoteApp, string chapterPageId, int chapterIndex, BibleBookInfo bibleBookInfo)
         {
             XmlNamespaceManager xnm;
-            var nms = XNamespace.Get(Constants.OneNoteXmlNs);
+            var nms = XNamespace.Get(Constants.OneNoteXmlNs);           
             
-            var mainBibleChapterDoc = PrepareMainBibleTable(oneNoteApp, bibleBookInfo.Name, bibleBookInfo.SectionName, chapterIndex, out xnm);
             var chapterPageDoc = OneNoteUtils.GetPageContent(oneNoteApp, chapterPageId, out xnm);
             var bibleTable = NotebookGenerator.GetBibleTable(chapterPageDoc, xnm);
+            SimpleVersePointer prevParallelVersePointer = null;
+
 
             foreach(var cell in bibleTable.XPathSelectElements("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm).Skip(1))
             {
@@ -92,38 +95,68 @@ namespace BibleCommon.Services
                     var cellId = (string)cell.Parent.Attribute("objectID").Value;
                     string link = OneNoteUtils.GenerateHref(oneNoteApp, "S", chapterPageId, cellId);
 
-                    var mainBibleVerseEl = HierarchySearchManager.FindVerse(oneNoteApp, mainBibleChapterDoc, false, verseIndex.Value, xnm);
-                    if (mainBibleVerseEl == null)
-                        throw new Exception(string.Format("Can not find Bible verse cell for '{0} {1}:{2}'", bibleBookInfo.Name, chapterIndex, verseIndex));
+                    var baseVersePointer = new SimpleVersePointer(bibleBookInfo.Index, chapterIndex, verseIndex.Value);
+                    var parallelVersePointer = BibleParallelTranslationConnectorManager.GetParallelVersePointer(baseVersePointer,
+                        SettingsManager.Instance.SupplementalBibleModules.First(), SettingsManager.Instance.ModuleName);
 
-                    var mainBibleVerseRowEl = mainBibleVerseEl.Parent.Parent.Parent.Parent;
-                    var sbCell = mainBibleVerseRowEl.XPathSelectElement("one:Cell[3]/one:OEChildren/one:OE/one:T", xnm);
+                    if (parallelVersePointer != prevParallelVersePointer)
+                    {
+                        prevParallelVersePointer = parallelVersePointer;
+                        if (!parallelVersePointer.IsEmpty)
+                        {
+                            var mainBibleChapterDoc = PrepareMainBibleTable(oneNoteApp, parallelVersePointer, out xnm);
 
-                    if (sbCell == null)
-                        mainBibleVerseRowEl.Add(NotebookGenerator.GetCell(link, nms));
+                            if (mainBibleChapterDoc != null)
+                            {
+                                var mainBibleVerseEl = HierarchySearchManager.FindVerse(oneNoteApp, mainBibleChapterDoc, false, parallelVersePointer.Verse, xnm);
+                                if (mainBibleVerseEl == null)
+                                    throw new Exception(string.Format("Can not find Bible verse cell for '{0} {1}:{2}'", bibleBookInfo.Name, chapterIndex, verseIndex));
+
+                                var mainBibleVerseRowEl = mainBibleVerseEl.Parent.Parent.Parent.Parent;
+                                var sbCell = mainBibleVerseRowEl.XPathSelectElement("one:Cell[3]/one:OEChildren/one:OE/one:T", xnm);
+
+                                if (sbCell == null)
+                                    mainBibleVerseRowEl.Add(NotebookGenerator.GetCell(link, string.Empty, nms));
+                                else
+                                    sbCell.Value = link;
+                            }
+                        }
+                    }
                     else
-                        sbCell.Value = link;
+                    {
+                        int i = 0;
+                    }
                 }
-            }
-
-            oneNoteApp.UpdatePageContent(mainBibleChapterDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+            }            
         }
 
-        private static XDocument PrepareMainBibleTable(Application oneNoteApp, string bibleBookName, string sectionName, int chapterIndex, out XmlNamespaceManager xnm)
+        private static XDocument PrepareMainBibleTable(Application oneNoteApp, SimpleVersePointer versePointer, out XmlNamespaceManager xnm)  // метод поддерживает кэширование
         {
-            var mainBibleChapterPageEl = HierarchySearchManager.FindChapterPage(oneNoteApp, SettingsManager.Instance.NotebookId_Bible, sectionName, chapterIndex);
-            if (mainBibleChapterPageEl == null)
-                throw new Exception(string.Format("The Bible page for chapter {0} of book {1} does not found", chapterIndex, bibleBookName));
-            string mainBibleChapterPageId = (string)mainBibleChapterPageEl.Attribute("ID");
+            xnm = null;
 
-            var mainBibleChapterPageDoc = OneNoteUtils.GetPageContent(oneNoteApp, mainBibleChapterPageId, out xnm);
-            var mainBibleTableElement = NotebookGenerator.GetBibleTable(mainBibleChapterPageDoc, xnm);
+            var mainBibleBookInfo = SettingsManager.Instance.CurrentModule.BibleStructure.BibleBooks.FirstOrDefault(book => book.Index == versePointer.BookIndex);            
+            if (mainBibleBookInfo != null)
+            {
 
-            var columnsCount = mainBibleTableElement.XPathSelectElements("one:Columns/one:Column", xnm).Count();
-            if (columnsCount == 2)
-                NotebookGenerator.AddColumnToTable(mainBibleTableElement, NotebookGenerator.MinimalCellWidth, xnm);
+                var mainBibleChapterPageEl = HierarchySearchManager.FindChapterPage(oneNoteApp, SettingsManager.Instance.NotebookId_Bible, mainBibleBookInfo.SectionName, versePointer.Chapter);
+                if (mainBibleChapterPageEl == null)
+                    throw new Exception(string.Format("The Bible page for chapter {0} of book {1} does not found", versePointer.Chapter, mainBibleBookInfo.Name));
+                string mainBibleChapterPageId = (string)mainBibleChapterPageEl.Attribute("ID");
 
-            return mainBibleChapterPageDoc;            
+                var mainBibleChapterPageDoc = OneNoteProxy.Instance.GetPageContent(oneNoteApp, mainBibleChapterPageId, OneNoteProxy.PageType.Bible);
+                var mainBibleTableElement = NotebookGenerator.GetBibleTable(mainBibleChapterPageDoc.Content, mainBibleChapterPageDoc.Xnm);
+
+                var columnsCount = mainBibleTableElement.XPathSelectElements("one:Columns/one:Column", mainBibleChapterPageDoc.Xnm).Count();
+                if (columnsCount == 2)
+                    NotebookGenerator.AddColumnToTable(mainBibleTableElement, NotebookGenerator.MinimalCellWidth, mainBibleChapterPageDoc.Xnm);
+
+                xnm = mainBibleChapterPageDoc.Xnm;
+                mainBibleChapterPageDoc.WasModified = true;
+
+                return mainBibleChapterPageDoc.Content;
+            }
+
+            return null;
         }
 
         private static string GetCurrentSectionGroupId(Application oneNoteApp, string currentSectionGroupId, Common.ModuleInfo moduleInfo, int i)

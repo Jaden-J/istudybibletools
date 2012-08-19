@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BibleCommon.Services;
 
 namespace BibleCommon.Common
 {
@@ -35,11 +36,11 @@ namespace BibleCommon.Common
 
     public class BibleTranslationDifferencesEx
     {
-        public Dictionary<int, SimpleVersePointersComparisonTable> BibleVersesDifferences { get; set; }
+        public ParallelBibleInfo BibleVersesDifferences { get; set; }
 
         public BibleTranslationDifferencesEx(BibleTranslationDifferences translationDifferences)
         {
-            BibleVersesDifferences = new Dictionary<int, SimpleVersePointersComparisonTable>();
+            BibleVersesDifferences = new ParallelBibleInfo();
 
             foreach (var bookDifferences in translationDifferences.BookDifferences)
             {

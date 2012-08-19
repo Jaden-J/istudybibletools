@@ -111,15 +111,9 @@ namespace BibleCommon.Services
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
-            var cell1 = GetCell(verseText, nms);
+            var cell1 = GetCell(verseText, locale, nms);            
 
-            if (!string.IsNullOrEmpty(locale))
-                cell1.Add(new XAttribute("lang", locale));
-
-            var cell2 = GetCell(string.Empty, nms);
-
-            if (!string.IsNullOrEmpty(locale))
-                cell2.Add(new XAttribute("lang", locale));
+            var cell2 = GetCell(string.Empty, string.Empty, nms);            
 
             XElement newRow = new XElement(nms + "Row", cell1, cell2);
 
@@ -186,24 +180,29 @@ namespace BibleCommon.Services
 
                 for (int i = 0; i < translationIndex; i++)
                 {
-                    verseRow.Add(GetCell(string.Empty, nms));
+                    verseRow.Add(GetCell(string.Empty, string.Empty, nms));
                 }
                 
                 tableElement.Add(verseRow);
             }
 
-            verseRow.Add(GetCell(verseContent, nms));
+            verseRow.Add(GetCell(verseContent, locale, nms));
         }
 
-        public static XElement GetCell(string cellText, XNamespace nms)
+        public static XElement GetCell(string cellText, string locale, XNamespace nms)
         {
-            return new XElement(nms + "Cell",
+            var cell = new XElement(nms + "Cell",
                             new XElement(nms + "OEChildren",
                                 new XElement(nms + "OE",
                                     new XElement(nms + "T",
                                         new XCData(
                                             cellText
                                                     )))));
+
+            if (!string.IsNullOrEmpty(locale))
+                cell.Add(new XAttribute("lang", locale));
+
+            return cell;
         }
 
         public static void GenerateSummaryOfNotesNotebook(Application oneNoteApp, string bibleNotebookName, string targetEmptyNotebookName)
