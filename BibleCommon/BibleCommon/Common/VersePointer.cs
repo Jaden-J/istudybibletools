@@ -36,7 +36,10 @@ namespace BibleCommon.Common
 
         public override bool Equals(object obj)
         {
-            SimpleVersePointer other = (SimpleVersePointer)obj;
+            if (obj == null)
+                return false;
+
+            SimpleVersePointer other = (SimpleVersePointer)obj;            
             return this.BookIndex == other.BookIndex
                 && this.Chapter == other.Chapter
                 && this.Verse == other.Verse;
@@ -58,9 +61,7 @@ namespace BibleCommon.Common
                 result += "(empty)";
 
             return result;
-        }
-
-
+        }        
 
         public virtual object Clone()
         {

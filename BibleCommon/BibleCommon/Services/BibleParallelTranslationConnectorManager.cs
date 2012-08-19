@@ -6,21 +6,86 @@ using BibleCommon.Common;
 
 namespace BibleCommon.Services
 {
+    public class ParallelBibleInfo : Dictionary<int, SimpleVersePointersComparisonTable>
+    {
+        public new SimpleVersePointersComparisonTable this[int bookIndex]
+        {
+            get
+            {
+                if (base.ContainsKey(bookIndex))
+                    return base[bookIndex];
+
+                return null;
+            }
+        }
+    }
+
     public static class BibleParallelTranslationConnectorManager
     {
-        public static Dictionary<int, SimpleVersePointersComparisonTable> ConnectBibleTranslations(string baseModuleShortName, string parallelModuleShortName,
+        private static Dictionary<string, ParallelBibleInfo> _cache = new Dictionary<string, ParallelBibleInfo>();
+        private static string GetKey(string baseModuleShortName, string parallelModuleShortName)
+        {
+            return string.Format("{0}_{1}", baseModuleShortName, parallelModuleShortName).ToLower();
+        }
+
+        public static SimpleVersePointer GetParallelVersePointer(SimpleVersePointer baseVersePointer, string baseModuleShortName, string parallelModuleShortName)
+        {
+            SimpleVersePointer result = null;
+
+            var parallelBibleInfo = GetParallelBibleInfo(baseModuleShortName, parallelModuleShortName);
+            var parallelBookInfo = parallelBibleInfo[baseVersePointer.BookIndex];
+            if (parallelBookInfo != null)
+            {
+                if (parallelBookInfo.ContainsKey(baseVersePointer))
+                    result = parallelBookInfo[baseVersePointer].FirstOrDefault();
+            }
+
+            if (result == null)
+                result = (SimpleVersePointer)baseVersePointer.Clone();
+
+            return result;
+        }
+
+        public static ParallelBibleInfo GetParallelBibleInfo(string baseModuleShortName, string parallelModuleShortName)
+        {
+             var key = GetKey(baseModuleShortName, parallelModuleShortName);
+
+             if (_cache.ContainsKey(key))
+                 return _cache[key];
+             else
+             {
+                 var baseModuleInfo = ModulesManager.GetModuleInfo(baseModuleShortName);
+                 var parallelModuleInfo = ModulesManager.GetModuleInfo(parallelModuleShortName);
+
+                 return GetBibleParallelTranslationInfo(baseModuleShortName, parallelModuleShortName,
+                     baseModuleInfo.BibleTranslationDifferences, parallelModuleInfo.BibleTranslationDifferences);
+             }            
+        }
+
+        public static ParallelBibleInfo GetBibleParallelTranslationInfo(string baseModuleShortName, string parallelModuleShortName,
             BibleTranslationDifferences baseBookTranslationDifferences,
             BibleTranslationDifferences parallelBookTranslationDifferences)
         {
-            var result = new Dictionary<int, SimpleVersePointersComparisonTable>();
+            var key = GetKey(baseModuleShortName, parallelModuleShortName);
 
-            if (baseModuleShortName.ToLower() != parallelModuleShortName.ToLower())
+            ParallelBibleInfo result;
+
+            if (_cache.ContainsKey(key))
+                result = _cache[key];
+            else
             {
-                var baseTranslationDifferencesEx = new BibleTranslationDifferencesEx(baseBookTranslationDifferences);
-                var parallelTranslationDifferencesEx = new BibleTranslationDifferencesEx(parallelBookTranslationDifferences);
+                result = new ParallelBibleInfo();
 
-                ProcessForBaseBookVerses(baseTranslationDifferencesEx, parallelTranslationDifferencesEx, result);
-                ProcessForParallelBookVerses(baseTranslationDifferencesEx, parallelTranslationDifferencesEx, result);
+                if (baseModuleShortName.ToLower() != parallelModuleShortName.ToLower())
+                {
+                    var baseTranslationDifferencesEx = new BibleTranslationDifferencesEx(baseBookTranslationDifferences);
+                    var parallelTranslationDifferencesEx = new BibleTranslationDifferencesEx(parallelBookTranslationDifferences);
+
+                    ProcessForBaseBookVerses(baseTranslationDifferencesEx, parallelTranslationDifferencesEx, result);
+                    ProcessForParallelBookVerses(baseTranslationDifferencesEx, parallelTranslationDifferencesEx, result);
+                }
+
+                _cache.Add(key, result);
             }
 
             return result;
@@ -29,7 +94,7 @@ namespace BibleCommon.Services
        
 
         private static void ProcessForBaseBookVerses(BibleTranslationDifferencesEx baseTranslationDifferencesEx, BibleTranslationDifferencesEx parallelTranslationDifferencesEx,
-            Dictionary<int, SimpleVersePointersComparisonTable> result)
+            ParallelBibleInfo result)
         {
             foreach (int bookIndex in baseTranslationDifferencesEx.BibleVersesDifferences.Keys)
             {
@@ -193,7 +258,7 @@ namespace BibleCommon.Services
         }
 
         private static void ProcessForParallelBookVerses(BibleTranslationDifferencesEx baseTranslationDifferencesEx, BibleTranslationDifferencesEx parallelTranslationDifferencesEx,
-           Dictionary<int, SimpleVersePointersComparisonTable> result)
+           ParallelBibleInfo result)
         {
             foreach (int bookIndex in parallelTranslationDifferencesEx.BibleVersesDifferences.Keys)
             {

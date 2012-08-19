@@ -48,7 +48,7 @@ namespace BibleCommon.Services
             var baseBibleInfo = ModulesManager.GetModuleBibleInfo(baseModuleInfo.ShortName);
             var parallelBibleInfo = ModulesManager.GetModuleBibleInfo(moduleShortName);
 
-            var bibleVersePointersComparisonTable = BibleParallelTranslationConnectorManager.ConnectBibleTranslations(
+            var bibleVersePointersComparisonTable = BibleParallelTranslationConnectorManager.GetBibleParallelTranslationInfo(
                                                             baseModuleInfo.ShortName, parallelModuleInfo.ShortName,
                                                             baseModuleInfo.BibleTranslationDifferences,
                                                             parallelModuleInfo.BibleTranslationDifferences);                        
@@ -60,7 +60,7 @@ namespace BibleCommon.Services
         private static BibleParallelTranslationConnectionResult GenerateParallelBibleTables(Application oneNoteApp, string bibleNotebookId, 
             ModuleInfo baseModuleInfo, ModuleBibleInfo baseBibleInfo, 
             ModuleInfo parallelModuleInfo, ModuleBibleInfo parallelBibleInfo,
-            Dictionary<int, SimpleVersePointersComparisonTable> bibleVersePointersComparisonTable)
+            ParallelBibleInfo bibleVersePointersComparisonTable)
         {
             var result = new BibleParallelTranslationConnectionResult();
             
