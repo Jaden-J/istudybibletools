@@ -117,14 +117,14 @@ namespace BibleVersePointer
 
         private bool GoToVerse(VersePointer vp)
         {            
-            HierarchySearchManager.HierarchySearchResult result = HierarchySearchManager.GetHierarchyObject(OneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp);
+            HierarchySearchManager.HierarchySearchResult result = HierarchySearchManager.GetHierarchyObject(OneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, false);
 
             if (result.ResultType != HierarchySearchManager.HierarchySearchResultType.NotFound)
             {
                 string hierarchyObjectId = !string.IsNullOrEmpty(result.HierarchyObjectInfo.PageId)
                     ? result.HierarchyObjectInfo.PageId : result.HierarchyObjectInfo.SectionId;
 
-                OneNoteApp.NavigateTo(hierarchyObjectId, result.HierarchyObjectInfo.ContentObjectId);
+                NavigateTo(OneNoteApp, hierarchyObjectId, result.HierarchyObjectInfo.GetAllObjectsIds().ToArray());
                 return true;
             }
             else
@@ -151,6 +151,28 @@ namespace BibleVersePointer
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             _onenoteApp = null;
-        }         
+        }
+
+
+        private static void NavigateTo(Microsoft.Office.Interop.OneNote.Application oneNoteApp, string pageId, params string[] objectsIds)
+        {
+            oneNoteApp.NavigateTo(pageId, objectsIds.Length > 0 ? objectsIds[0] : null);            
+
+            if (objectsIds.Length > 1)
+            {   
+                XmlNamespaceManager xnm;                
+                var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, pageId, PageInfo.piSelection, out xnm);
+                OneNoteLocker.UnlockCurrentSection(oneNoteApp);
+                
+                foreach (var objectId in objectsIds.Skip(1))
+                {
+                    var el = pageDoc.Root.XPathSelectElement(string.Format("//one:OE[@objectID='{0}']/one:T", objectId), xnm);
+                    if (el != null)
+                        el.SetAttributeValue("selected", "all");
+                }
+                
+                OneNoteUtils.UpdatePageContentSafe(oneNoteApp, pageDoc, xnm);
+            }
+        }
     }
 }

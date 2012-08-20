@@ -348,17 +348,18 @@ namespace BibleCommon.Common
         {
             return new VersePointer(this.OriginalBookName, this.Chapter.Value, 0);
         }
+        
 
         /// <summary>
         /// возвращает список всех вложенных стихов (за исключением первого) если Multiverse. 
         /// </summary>
         /// <returns></returns>
-        public List<VersePointer> GetAllIncludedVersesExceptFirst(Application oneNoteApp, string bibleNotebookId, bool force = false)
+        public List<VersePointer> GetAllIncludedVersesExceptFirst(Application oneNoteApp, GetAllIncludedVersesExceptFirstArgs args)
         {
             List<VersePointer> result = new List<VersePointer>();
-            if ((IsValid || force) && IsMultiVerse)
+            if ((IsValid || args.Force) && IsMultiVerse)
             {
-                if (TopChapter != null && TopVerse != null)
+                if (TopChapter != null && TopVerse != null && !args.SearchOnlyForFirstChapter)
                 {
                     for (int chapterIndex = Chapter.Value; chapterIndex <= TopChapter; chapterIndex++)
                     {
@@ -367,7 +368,7 @@ namespace BibleCommon.Common
                             topVerse = TopVerse.Value;
                         else
                             topVerse = HierarchySearchManager.GetChapterVersesCount(
-                                            oneNoteApp, bibleNotebookId, 
+                                            oneNoteApp, args.BibleNotebookId, 
                                             VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex))
                                             .GetValueOrDefault(0);
 

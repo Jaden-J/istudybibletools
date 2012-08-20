@@ -601,7 +601,9 @@ namespace BibleCommon.Services
             List<VersePointer> verses = new List<VersePointer>() { searchResult.VersePointer };
 
             if (SettingsManager.Instance.ExpandMultiVersesLinking && searchResult.VersePointer.IsMultiVerse)
-                verses.AddRange(searchResult.VersePointer.GetAllIncludedVersesExceptFirst(oneNoteApp, SettingsManager.Instance.NotebookId_Bible));            
+                verses.AddRange(searchResult.VersePointer
+                                    .GetAllIncludedVersesExceptFirst(oneNoteApp,
+                                        new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible }));            
 
             bool first = true;
             foreach (VersePointer vp in verses)
@@ -684,7 +686,9 @@ namespace BibleCommon.Services
                 List<VersePointer> rubbishVerses = new List<VersePointer>() { searchResult.VersePointer };
 
                 if (SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking && searchResult.VersePointer.IsMultiVerse)
-                    rubbishVerses.AddRange(searchResult.VersePointer.GetAllIncludedVersesExceptFirst(oneNoteApp, SettingsManager.Instance.NotebookId_Bible));
+                    rubbishVerses.AddRange(searchResult.VersePointer
+                                                .GetAllIncludedVersesExceptFirst(oneNoteApp,
+                                                        new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible }));
 
                 foreach (VersePointer vp in rubbishVerses)
                 {

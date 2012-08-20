@@ -108,7 +108,7 @@ namespace BibleCommon.Services
 
                             if (mainBibleChapterDoc != null)
                             {
-                                var mainBibleVerseEl = HierarchySearchManager.FindVerse(oneNoteApp, mainBibleChapterDoc, false, parallelVersePointer.Verse, xnm);
+                                var mainBibleVerseEl = HierarchySearchManager.FindVerse(mainBibleChapterDoc, false, parallelVersePointer.Verse, xnm);
                                 if (mainBibleVerseEl == null)
                                     throw new Exception(string.Format("Can not find Bible verse cell for '{0} {1}:{2}'", bibleBookInfo.Name, chapterIndex, verseIndex));
 

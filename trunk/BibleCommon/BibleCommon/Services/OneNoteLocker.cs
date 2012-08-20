@@ -23,6 +23,19 @@ namespace BibleCommon.Services
             LockOrUnlockAllBIble(oneNoteApp, false);
         }
 
+        public static void LockCurrentSection(Microsoft.Office.Interop.OneNote.Application oneNoteApp)
+        {
+            var currentPageInfo = OneNoteUtils.GetCurrentPageInfo(oneNoteApp);
+
+            oneNoteApp.SyncHierarchy(currentPageInfo.SectionId);
+
+            string sectionFilePath = GetElementPath(oneNoteApp, currentPageInfo.SectionId);
+
+            LockSection(sectionFilePath);
+
+            oneNoteApp.SyncHierarchy(currentPageInfo.SectionId);
+        }
+
         public static void UnlockCurrentSection(Microsoft.Office.Interop.OneNote.Application oneNoteApp)
         {
             var currentPageInfo = OneNoteUtils.GetCurrentPageInfo(oneNoteApp);
