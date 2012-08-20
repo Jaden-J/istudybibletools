@@ -69,8 +69,13 @@ namespace BibleCommon.Helpers
 
         public static XDocument GetPageContent(Application oneNoteApp, string pageId, out XmlNamespaceManager xnm)
         {
+            return GetPageContent(oneNoteApp, pageId, PageInfo.piBasic, out xnm);
+        }
+
+        public static XDocument GetPageContent(Application oneNoteApp, string pageId, PageInfo pageInfo, out XmlNamespaceManager xnm)
+        {
             string xml;
-            oneNoteApp.GetPageContent(pageId, out xml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);            
+            oneNoteApp.GetPageContent(pageId, out xml, pageInfo, Constants.CurrentOneNoteSchema);            
             return OneNoteUtils.GetXDocument(xml, out xnm);
         }
 

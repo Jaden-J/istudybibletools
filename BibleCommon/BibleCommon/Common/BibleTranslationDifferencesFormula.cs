@@ -96,7 +96,7 @@ namespace BibleCommon.Common
                 _allVerses.Add(new SimpleVersePointer(BookIndex, FirstChapter, FirstVerse));
 
                 if (IsMultiVerse)
-                    _allVerses.AddRange(BaseVersePointer.GetAllIncludedVersesExceptFirst(null, null, true)
+                    _allVerses.AddRange(BaseVersePointer.GetAllIncludedVersesExceptFirst(null, new GetAllIncludedVersesExceptFirstArgs() { Force = true })
                         .ConvertAll<SimpleVersePointer>(v => new SimpleVersePointer(BookIndex, v.Chapter.GetValueOrDefault(), v.Verse.GetValueOrDefault(0))));
             }
 

@@ -27,6 +27,18 @@ namespace BibleCommon.Services
             public string SectionId { get; set; }
             public string PageId { get; set; }
             public string ContentObjectId { get; set; }
+            public List<string> AdditionalObjectsIds { get; set; }
+            public List<string> GetAllObjectsIds()
+            {
+                var result = new List<string>() { ContentObjectId };
+                result.AddRange(AdditionalObjectsIds);
+                return result;
+            }
+
+            public HierarchyObjectInfo()
+            {
+                this.AdditionalObjectsIds = new List<string>();
+            }
         }
 
         public enum HierarchySearchResultType
@@ -50,6 +62,11 @@ namespace BibleCommon.Services
 
         public static HierarchySearchResult GetHierarchyObject(Application oneNoteApp, string bibleNotebookId, VersePointer vp)
         {
+            return GetHierarchyObject(oneNoteApp, bibleNotebookId, vp, false);
+        }
+
+        public static HierarchySearchResult GetHierarchyObject(Application oneNoteApp, string bibleNotebookId, VersePointer vp, bool findAllVerseObjects)
+        {
             HierarchySearchResult result = new HierarchySearchResult();
             result.ResultType = HierarchySearchResultType.NotFound;
 
@@ -70,13 +87,30 @@ namespace BibleCommon.Services
                     result.HierarchyObjectInfo.PageId = (string)targetPage.Attribute("ID");
                     result.HierarchyStage = HierarchyStage.Page;
 
-                    XElement targetVerse = HierarchySearchManager.FindVerse(oneNoteApp, result.HierarchyObjectInfo.PageId, vp);
-                    if (targetVerse != null)
+                    var pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, result.HierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);
+                    XElement targetVerseEl = FindVerse(pageContent.Content, vp.IsChapter, vp.Verse.Value, pageContent.Xnm);
+
+                    if (targetVerseEl != null)
                     {
-                        result.HierarchyObjectInfo.ContentObjectId = (string)targetVerse.Parent.Attribute("objectID");
+                        result.HierarchyObjectInfo.ContentObjectId = (string)targetVerseEl.Parent.Attribute("objectID");
 
                         if (!vp.IsChapter)
+                        {
                             result.HierarchyStage = HierarchyStage.ContentPlaceholder;
+
+                            if (findAllVerseObjects && vp.IsMultiVerse)
+                            {
+                                foreach (var additionalVerse in vp.GetAllIncludedVersesExceptFirst(null,
+                                                                    new GetAllIncludedVersesExceptFirstArgs() { SearchOnlyForFirstChapter = true }))
+                                {
+                                    var additionalVeseEl = FindVerse(pageContent.Content, vp.IsChapter, additionalVerse.Verse.Value, pageContent.Xnm);
+                                    if (additionalVeseEl != null)
+                                        result.HierarchyObjectInfo.AdditionalObjectsIds.Add((string)additionalVeseEl.Parent.Attribute("objectID"));
+                                    else
+                                        break;
+                                }
+                            }
+                        }
                     }
                     else if (!vp.IsChapter)   // Если по идее должны были найти, а не нашли...
                     {
@@ -97,15 +131,9 @@ namespace BibleCommon.Services
             }
 
             return null;
-        }
+        }        
 
-        private static XElement FindVerse(Application oneNoteApp, string pageId, VersePointer vp)
-        {
-            OneNoteProxy.PageContent pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, pageId, OneNoteProxy.PageType.Bible);
-            return FindVerse(oneNoteApp, pageContent.Content, vp.IsChapter, vp.Verse.Value, pageContent.Xnm);
-        }
-
-        internal static XElement FindVerse(Application oneNoteApp, XDocument pageContent, bool isChapter, int verse, XmlNamespaceManager xnm)
+        internal static XElement FindVerse(XDocument pageContent, bool isChapter, int verse, XmlNamespaceManager xnm)
         {
             XElement pointerElement = null;
 

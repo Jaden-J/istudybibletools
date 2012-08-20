@@ -13,4 +13,11 @@ namespace BibleCommon.Common
         public string PageId { get; set; }
         public string PageTitleId { get; set; }
     }
+    
+    public struct GetAllIncludedVersesExceptFirstArgs
+    {
+        public string BibleNotebookId { get; set; }
+        public bool Force { get; set; }
+        public bool SearchOnlyForFirstChapter { get; set; }           
+    }
 }
