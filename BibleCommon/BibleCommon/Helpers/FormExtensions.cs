@@ -76,7 +76,7 @@ namespace BibleCommon.Helpers
             }
         }
 
-        public static void RunSingleInstance(string messageIfSecondInstance, Action singleAction)
+        public static void RunSingleInstance(string messageIfSecondInstance, Action singleAction, bool silent = false)
         {
             string appGuid = ((GuidAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute), false).GetValue(0)).Value.ToString();
 
@@ -84,7 +84,9 @@ namespace BibleCommon.Helpers
             {
                 if (!mutex.WaitOne(0, false))
                 {
-                    MessageBox.Show(messageIfSecondInstance);
+                    if (!silent)                    
+                        MessageBox.Show(messageIfSecondInstance);
+
                     return;
                 }
 

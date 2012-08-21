@@ -78,7 +78,7 @@ namespace BibleConfigurator
                     {                        
                         Application.Run(form);
                     }
-                });
+                }, args.Contains(Consts.RunOnOneNoteStarts));
             }
             catch (Exception ex)
             {
