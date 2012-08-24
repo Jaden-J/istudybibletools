@@ -62,6 +62,7 @@ namespace BibleCommon.Services
         public int Language { get; set; }
         public int PageWidth_Bible { get; set; }
         public List<string> SupplementalBibleModules { get; set; }
+        public string SupplementalBibleLinkName { get; set; }
 
         /// <summary>
         /// Необходимо ли линковать каждый стих, входящий в MultiVerse
@@ -278,6 +279,7 @@ namespace BibleCommon.Services
             this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, true);
             this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);
             this.SupplementalBibleModules = GetParameterValue<List<string>>(xdoc, Consts.Constants.ParameterName_SupplementalBibleModules, new List<string>());
+            this.SupplementalBibleLinkName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SupplementalBibleLinkName, Consts.Constants.DefaultSupplementalBibleLinkName);
         }
 
         private void LoadGeneralSettings(XDocument xdoc)
@@ -338,6 +340,7 @@ namespace BibleCommon.Services
             this.RubbishPage_ExpandMultiVersesLinking = Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking;
             this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
             this.SupplementalBibleModules = new List<string>();
+            this.SupplementalBibleLinkName = Consts.Constants.DefaultSupplementalBibleLinkName;
 
             LoadDefaultLocalazibleSettings();
         }
@@ -402,7 +405,8 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_ModuleName, this.ModuleName),
                                   new XElement(Consts.Constants.ParameterName_UseDefaultSettings, this.UseDefaultSettings.Value),
                                   new XElement(Consts.Constants.ParameterName_PageWidthBible, this.PageWidth_Bible),
-                                  new XElement(Consts.Constants.ParameterName_SupplementalBibleModules, this.SupplementalBibleModules)
+                                  new XElement(Consts.Constants.ParameterName_SupplementalBibleModules, this.SupplementalBibleModules),
+                                  new XElement(Consts.Constants.ParameterName_SupplementalBibleLinkName, this.SupplementalBibleLinkName)
                                   );
 
                     xDoc.Save(sw);

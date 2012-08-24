@@ -31,13 +31,12 @@ namespace BibleCommon.Consts
         public static readonly bool DefaultRubbishPage_Use = false;
         public static readonly bool DefaultRubbishPage_ExpandMultiVersesLinking = true;
         public static readonly bool DefaultRubbishPage_ExcludedVersesLinking = true;
+        public static readonly string DefaultSupplementalBibleLinkName = "S";
 
         public static readonly string ResourceName_DefaultPageNameDefaultBookOverview = "DefaultPageNameDefaultBookOverview";
         public static readonly string ResourceName_DefaultPageNameDefaultComments = "DefaultPageNameDefaultComments";
         public static readonly string ResourceName_DefaultPageName_Notes = "DefaultPageName_Notes";
         public static readonly string ResourceName_DefaultPageName_RubbishNotes = "DefaultPageName_RubbishNotes";
-        
-
 
         public static readonly string ParameterName_NotebookIdBible = "NotebookId_Bible";
         public static readonly string ParameterName_NotebookIdBibleComments = "NotebookId_BibleComments";
@@ -56,7 +55,9 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_NewVersionOnServerLatestCheckTime = "NewVersionOnServerLatestCheckTime";
 
         public static readonly string ParameterName_ModuleName = "ModuleName";
-        public static readonly string ParameterName_SupplementalBibleModules = "ParallelModules";
+        public static readonly string ParameterName_SupplementalBibleModules = "SupplementalBibleModules";
+        public static readonly string ParameterName_SupplementalBibleLinkName = "SupplementalBibleLinkName";
+        
 
         public static readonly string ParameterName_PageWidthNotes = "Width_NotesPage";
         public static readonly string ParameterName_PageWidthBible = "Width_BiblePage";

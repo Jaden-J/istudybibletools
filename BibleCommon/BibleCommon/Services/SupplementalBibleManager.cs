@@ -51,31 +51,22 @@ namespace BibleCommon.Services
                 foreach (var chapter in bibleBook.Chapters)
                 {   
                     GenerateChapterPage(oneNoteApp, chapter, bookSectionId, moduleInfo, bibleBookInfo, bibleInfo);                    
-                }
-
-                OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp, pageContent => pageContent.PageType == OneNoteProxy.PageType.Bible, null, null);
+                }                
             }            
         }
 
-        private static void GenerateChapterPage(Application oneNoteApp, BibleChapterContent chapter, string bookSectionId,
-            ModuleInfo moduleInfo, BibleBookInfo bibleBookInfo, ModuleBibleInfo bibleInfo)
+        public static void LinkSupplementalBibleWithMainBible(Application oneNoteApp, int supplementalModuleIndex)
         {
-            string chapterPageName = string.Format(moduleInfo.BibleStructure.ChapterSectionNameTemplate, chapter.Index, bibleBookInfo.Name);
 
-            XmlNamespaceManager xnm;
-            var currentChapterDoc = NotebookGenerator.AddChapterPageToBibleNotebook(oneNoteApp, bookSectionId, chapterPageName, 1, bibleInfo.Content.Locale, out xnm);
 
-            var currentTableElement = NotebookGenerator.AddTableToBibleChapterPage(currentChapterDoc, SettingsManager.Instance.PageWidth_Bible, xnm);
 
-            NotebookGenerator.AddParallelBibleTitle(currentTableElement, moduleInfo.Name, 0, bibleInfo.Content.Locale, xnm);
+            var chapterPageId = (string)chapterPageDoc.Root.Attribute("ID");
+            oneNoteApp.SyncHierarchy(chapterPageId);
 
-            foreach (var verse in chapter.Verses)
-            {
-                NotebookGenerator.AddVerseRowToBibleTable(currentTableElement, string.Format("{0} {1}", verse.Index, verse.Value), bibleInfo.Content.Locale);                
-            }
+            UpdateBibleChapterLinksToSupplementalBible(oneNoteApp, chapterPageId, chapterIndex, bibleBookInfo);
 
-            UpdateChapterPage(oneNoteApp, currentChapterDoc, chapter.Index, bibleBookInfo);
-        }
+            OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp, pageContent => pageContent.PageType == OneNoteProxy.PageType.Bible, null, null);
+        }               
 
         private static void UpdateBibleChapterLinksToSupplementalBible(Application oneNoteApp, string chapterPageId, int chapterIndex, BibleBookInfo bibleBookInfo)
         {
@@ -93,7 +84,7 @@ namespace BibleCommon.Services
                 if (verseIndex.HasValue)
                 {
                     var cellId = (string)cell.Parent.Attribute("objectID").Value;
-                    string link = OneNoteUtils.GenerateHref(oneNoteApp, "S", chapterPageId, cellId);
+                    string link = OneNoteUtils.GenerateHref(oneNoteApp, SettingsManager.Instance.SupplementalBibleLinkName, chapterPageId, cellId);
 
                     var baseVersePointer = new SimpleVersePointer(bibleBookInfo.Index, chapterIndex, verseIndex.Value);
                     var parallelVersePointer = BibleParallelTranslationConnectorManager.GetParallelVersePointer(baseVersePointer,
@@ -134,7 +125,7 @@ namespace BibleCommon.Services
         {
             xnm = null;
 
-            var mainBibleBookInfo = SettingsManager.Instance.CurrentModule.BibleStructure.BibleBooks.FirstOrDefault(book => book.Index == versePointer.BookIndex);            
+            var mainBibleBookInfo = SettingsManager.Instance.CurrentModule.BibleStructure.BibleBooks.FirstOrDefault(book => book.Index == versePointer.BookIndex);
             if (mainBibleBookInfo != null)
             {
 
@@ -159,6 +150,26 @@ namespace BibleCommon.Services
             return null;
         }
 
+        private static void GenerateChapterPage(Application oneNoteApp, BibleChapterContent chapter, string bookSectionId,
+           ModuleInfo moduleInfo, BibleBookInfo bibleBookInfo, ModuleBibleInfo bibleInfo)
+        {
+            string chapterPageName = string.Format(moduleInfo.BibleStructure.ChapterSectionNameTemplate, chapter.Index, bibleBookInfo.Name);
+
+            XmlNamespaceManager xnm;
+            var currentChapterDoc = NotebookGenerator.AddChapterPageToBibleNotebook(oneNoteApp, bookSectionId, chapterPageName, 1, bibleInfo.Content.Locale, out xnm);
+
+            var currentTableElement = NotebookGenerator.AddTableToBibleChapterPage(currentChapterDoc, SettingsManager.Instance.PageWidth_Bible, xnm);
+
+            NotebookGenerator.AddParallelBibleTitle(currentTableElement, moduleInfo.Name, 0, bibleInfo.Content.Locale, xnm);
+
+            foreach (var verse in chapter.Verses)
+            {
+                NotebookGenerator.AddVerseRowToBibleTable(currentTableElement, string.Format("{0} {1}", verse.Index, verse.Value), bibleInfo.Content.Locale);
+            }
+
+            UpdateChapterPage(oneNoteApp, currentChapterDoc, chapter.Index, bibleBookInfo);
+        }       
+
         private static string GetCurrentSectionGroupId(Application oneNoteApp, string currentSectionGroupId, Common.ModuleInfo moduleInfo, int i)
         {
             if (string.IsNullOrEmpty(currentSectionGroupId))
@@ -173,14 +184,9 @@ namespace BibleCommon.Services
             return currentSectionGroupId;
         }
 
-
         private static void UpdateChapterPage(Application oneNoteApp, XDocument chapterPageDoc, int chapterIndex, BibleBookInfo bibleBookInfo)
         {
-            oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
-            var chapterPageId = (string)chapterPageDoc.Root.Attribute("ID");
-            oneNoteApp.SyncHierarchy(chapterPageId);
-
-            UpdateBibleChapterLinksToSupplementalBible(oneNoteApp, chapterPageId, chapterIndex, bibleBookInfo);
+            oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);            
         }
 
         public static BibleParallelTranslationConnectionResult AddParallelBible(Application oneNoteApp, string moduleShortName)
