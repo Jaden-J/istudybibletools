@@ -52,12 +52,17 @@ namespace BibleCommon.Services
                 {   
                     GenerateChapterPage(oneNoteApp, chapter, bookSectionId, moduleInfo, bibleBookInfo, bibleInfo);                    
                 }                
-            }            
+            }         
         }
 
         public static void LinkSupplementalBibleWithMainBible(Application oneNoteApp, int supplementalModuleIndex)
         {
+            string supplementalModuleSortName = SettingsManager.Instance.SupplementalBibleModules[supplementalModuleIndex];
+            bool needToLinkMainBibleToSupplementalBible = supplementalModuleIndex == 0;
 
+            var supplementalBibleInfo = ModulesManager.GetModuleBibleInfo(supplementalModuleSortName);
+
+            for
 
 
             var chapterPageId = (string)chapterPageDoc.Root.Attribute("ID");
@@ -76,7 +81,6 @@ namespace BibleCommon.Services
             var chapterPageDoc = OneNoteUtils.GetPageContent(oneNoteApp, chapterPageId, out xnm);
             var bibleTable = NotebookGenerator.GetBibleTable(chapterPageDoc, xnm);
             SimpleVersePointer prevParallelVersePointer = null;
-
 
             foreach(var cell in bibleTable.XPathSelectElements("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm).Skip(1))
             {
@@ -128,7 +132,6 @@ namespace BibleCommon.Services
             var mainBibleBookInfo = SettingsManager.Instance.CurrentModule.BibleStructure.BibleBooks.FirstOrDefault(book => book.Index == versePointer.BookIndex);
             if (mainBibleBookInfo != null)
             {
-
                 var mainBibleChapterPageEl = HierarchySearchManager.FindChapterPage(oneNoteApp, SettingsManager.Instance.NotebookId_Bible, mainBibleBookInfo.SectionName, versePointer.Chapter);
                 if (mainBibleChapterPageEl == null)
                     throw new Exception(string.Format("The Bible page for chapter {0} of book {1} does not found", versePointer.Chapter, mainBibleBookInfo.Name));

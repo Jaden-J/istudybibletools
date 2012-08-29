@@ -141,7 +141,35 @@ namespace BibleCommon.Services
             }
 
             return result;
-        }        
+        }
+
+
+        доделать этот метод
+        public static void IterateBaseBible(Application oneNoteApp, XElement sectionEl, BibleBookInfo baseBibleInfo,
+            BibleBookContent baseBibleBook, BibleBookInfo baseBookInfo, BibleBookContent parallelBibleBook,
+            string parallelTranslationModuleName, string partVersesAlphabet,
+            SimpleVersePointersComparisonTable bookVersePointersComparisonTable, string locale)
+        {
+            int lastProcessedChapter = 0;
+            int lastProcessedVerse = 0;     
+
+            foreach (var baseChapter in baseBibleBook.Chapters)
+            {
+                foreach (var baseVerse in baseChapter.Verses)
+                {
+                    var baseVersePointer = new SimpleVersePointer(baseBibleBook.Index, baseChapter.Index, baseVerse.Index);
+
+                    var parallelVerse = GetParallelVerse(baseVersePointer, parallelBibleBook, partVersesAlphabet, bookVersePointersComparisonTable,
+                                                                                                lastProcessedChapter, lastProcessedVerse, result);                    
+
+                    if (!parallelVerse.IsEmpty)
+                    {
+                        lastProcessedChapter = parallelVerse.Chapter;
+                        lastProcessedVerse = parallelVerse.TopVerse ?? parallelVerse.Verse;
+                    }
+                }       
+            }
+        }
 
         private static SimpleVerse GetParallelVerse(SimpleVersePointer baseVersePointer, BibleBookContent parallelBibleBook, string partVersesAlphabet,
             SimpleVersePointersComparisonTable bookVersePointersComparisonTable, int lastProcessedChapter, int lastProcessedVerse, 
