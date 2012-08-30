@@ -78,6 +78,15 @@ namespace BibleCommon.Common
             verse.PartIndex = this.PartIndex;
             verse.TopVerse = this.TopVerse;
         }
+
+        public VersePointer ToVersePointer(ModuleInfo moduleInfo)
+        {
+            var bookInfo = moduleInfo.BibleStructure.BibleBooks.FirstOrDefault(book => book.Index == this.BookIndex);
+            if (bookInfo == null)
+                throw new ArgumentException(string.Format("Book with index {0} was not found in module {1}", this.BookIndex, moduleInfo.ShortName));
+
+            return new VersePointer(bookInfo.Name, this.Chapter, this.Verse, this.TopVerse);
+        }
     }
 
     public class SimpleVerse : SimpleVersePointer
@@ -150,7 +159,13 @@ namespace BibleCommon.Common
         }
 
         public VersePointer(string bookName, int chapter, int verse)
-            : this(string.Format("{0} {1}:{2}", bookName, chapter, verse))
+            : this(bookName, chapter, verse, null)
+        {
+
+        }
+
+        public VersePointer(string bookName, int chapter, int verse, int? topVerse)
+            : this(string.Format("{0} {1}:{2}{3}{4}", bookName, chapter, verse, topVerse.HasValue ? "-" : string.Empty, topVerse))
         {
 
         }

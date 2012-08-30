@@ -94,7 +94,7 @@ namespace BibleCommon.Services
             {
                 ModulesManager.CheckModule(moduleName);
             }
-            catch
+            catch (InvalidModuleException)
             {              
                 return false;
             }
@@ -116,7 +116,7 @@ namespace BibleCommon.Services
             foreach (NotebookType notebookType in Enum.GetValues(typeof(NotebookType)).Cast<NotebookType>().Where(t => t != NotebookType.Single))
             {
                 if (!module.Notebooks.Exists(n => n.Type == notebookType))
-                    throw new Exception(string.Format(Resources.Constants.Error_NotebookTemplateNotDefined, notebookType)); 
+                    throw new InvalidModuleException(string.Format(Resources.Constants.Error_NotebookTemplateNotDefined, notebookType)); 
             }
 
             if (module.UseSingleNotebook())
@@ -124,14 +124,14 @@ namespace BibleCommon.Services
                 foreach (SectionGroupType sectionGroupType in Enum.GetValues(typeof(SectionGroupType)))
                 {
                     if (!module.GetNotebook(NotebookType.Single).SectionGroups.Exists(sg => sg.Type == sectionGroupType))
-                        throw new Exception(string.Format(Resources.Constants.Error_SectionGroupNotDefined, sectionGroupType, NotebookType.Single));
+                        throw new InvalidModuleException(string.Format(Resources.Constants.Error_SectionGroupNotDefined, sectionGroupType, NotebookType.Single));
                 }
             }
 
             foreach (var notebook in module.Notebooks)
             {
                 if (!File.Exists(Path.Combine(moduleDirectory, notebook.Name)))
-                    throw new Exception(string.Format(Resources.Constants.Error_NotebookTemplateNotFound, notebook.Name, notebook.Type));  
+                    throw new InvalidModuleException(string.Format(Resources.Constants.Error_NotebookTemplateNotFound, notebook.Name, notebook.Type));  
             }            
         }
 
