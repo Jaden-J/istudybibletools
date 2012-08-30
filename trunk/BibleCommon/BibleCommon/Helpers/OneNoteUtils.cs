@@ -51,11 +51,18 @@ namespace BibleCommon.Helpers
             return (string)doc.Content.Root.Attribute("name");
         }
 
+        public static XmlNamespaceManager GetOneNoteXNM()
+        {
+            var xnm = new XmlNamespaceManager(new NameTable());
+            xnm.AddNamespace("one", Constants.OneNoteXmlNs);
+
+            return xnm;
+        }
+
         public static XDocument GetXDocument(string xml, out XmlNamespaceManager xnm)
         {
             XDocument xd = XDocument.Parse(xml);
-            xnm = new XmlNamespaceManager(new NameTable());
-            xnm.AddNamespace("one", Constants.OneNoteXmlNs);
+            xnm = GetOneNoteXNM();
             return xd;
         }
 
