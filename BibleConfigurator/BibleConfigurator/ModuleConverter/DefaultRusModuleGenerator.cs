@@ -30,6 +30,7 @@ namespace BibleConfigurator.ModuleConverter
                     OldTestamentBooksCount = 39,
                     NewTestamentBooksCount = 27,
                     Alphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя",
+                    ChapterSectionNameTemplate = "{0} глава. {1}",
                     BibleBooks = new List<BibleBookInfo>()
                     {
                         new BibleBookInfo() { Name = "Бытие", SectionName = "01. Бытие", Abbreviations = new List<Abbreviation>() { "быт", "бт", "бытие" } },

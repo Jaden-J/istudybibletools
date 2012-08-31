@@ -39,10 +39,10 @@ namespace BibleCommon.Common
         }
     }
 
-    public class VerseNotFoundException : BaseVersePointerException
+    public class ParallelVerseNotFoundException : BaseVersePointerException
     {
-        public VerseNotFoundException(SimpleVersePointer verse, Severity level)
-            : base(string.Format("There is no verse '{0}'", verse), level)
+        public ParallelVerseNotFoundException(SimpleVersePointer verse, Severity level)
+            : base(string.Format("There is no parallel verse '{0}'", verse), level)
         {
         }
     }

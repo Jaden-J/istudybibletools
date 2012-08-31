@@ -62,23 +62,29 @@ namespace TestProject
             catch (Exception ex)
             {
                 Logger.LogError(ex.ToString());
-            }           
+            }
+
+            Console.ReadKey();
         }
 
 
         private static void CreateSupplementalBible()
         {
-            SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, "kjv");
-            SupplementalBibleManager.LinkSupplementalBibleWithMainBible(OneNoteApp, 0);
+           // SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, "kjv");
+            var result = SupplementalBibleManager.LinkSupplementalBibleWithMainBible(OneNoteApp, 0);
+
+            int i = result.Errors.Count;
         }
 
         private static void GenerateParallelBible()
         {
             OneNoteLocker.UnlockAllBible(OneNoteApp);
-            var manager = new BibleParallelTranslationManager(OneNoteApp, SettingsManager.Instance.ModuleName, "rstp", SettingsManager.Instance.NotebookId_Bible);
-            var result = manager.AddParallelTranslation();
+            using (var manager = new BibleParallelTranslationManager(OneNoteApp, SettingsManager.Instance.ModuleName, "rstp", SettingsManager.Instance.NotebookId_Bible))
+            {
+                var result = manager.AddParallelTranslation();
 
-            int i = result.Errors.Count;
+                int i = result.Errors.Count;
+            }
         }
 
         private static void ConvertRussianModule()
