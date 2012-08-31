@@ -131,7 +131,7 @@ namespace BibleCommon.Helpers
             return string.Format("<a href=\"{0}\">{1}</a>", link, title);
         }
 
-        public static void NormalizeTextElement(XElement textElement)  // must be one:T element
+        public static XElement NormalizeTextElement(XElement textElement)  // must be one:T element
         {
             if (textElement != null)
             {
@@ -140,6 +140,8 @@ namespace BibleCommon.Helpers
                     textElement.Value = textElement.Value.Replace("\n", " ").Replace("&nbsp;", " ");
                 }
             }
+
+            return textElement;
         }
 
 

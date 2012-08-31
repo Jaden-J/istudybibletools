@@ -93,6 +93,11 @@ namespace BibleCommon.Common
     {
         public string VerseContent { get; set; }
 
+        /// <summary>
+        /// string.IsNullOrEmpty(verseContent) - это не то же самое, что this.IsEmpty
+        /// </summary>
+        /// <param name="versePointer"></param>
+        /// <param name="verseContent"></param>
         public SimpleVerse(SimpleVersePointer versePointer, string verseContent)
             : base(versePointer.BookIndex, versePointer.Chapter, versePointer.Verse)
         {

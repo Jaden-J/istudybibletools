@@ -48,7 +48,7 @@ namespace BibleCommon.Services
         public List<BaseVersePointerException> Errors { get; set; }
 
         public BibleParallelTranslationManager(Application oneNoteApp, string baseModuleShortName, string parallelModuleShortName, string bibleNotebookId)
-        {
+        {            
             this.BibleNotebookId = bibleNotebookId;
             this.BaseModuleShortName = baseModuleShortName;
             this.ParallelModuleShortName = parallelModuleShortName;
@@ -62,6 +62,8 @@ namespace BibleCommon.Services
             Errors = new List<BaseVersePointerException>();
 
             CheckModules();
+
+            _oneNoteApp = oneNoteApp;
         }
 
         private void CheckModules()
@@ -112,7 +114,7 @@ namespace BibleCommon.Services
 
             var result = new BibleParallelTranslationConnectionResult();
 
-            foreach (var baseBookContent in BaseBibleInfo.Content.Books)
+            foreach (var baseBookContent in BaseBibleInfo.Content.Books.Skip(18))
             {
                 var baseBookInfo = BaseModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBookContent.Index);
                 if (baseBookInfo == null)
@@ -152,7 +154,7 @@ namespace BibleCommon.Services
             int lastProcessedChapter = 0;
             int lastProcessedVerse = 0;
 
-            foreach (var baseChapter in baseBookContent.Chapters)
+            foreach (var baseChapter in baseBookContent.Chapters.Skip(11))
             {
                 XDocument chapterPageDoc = null;
                 BibleIteratorArgs bibleIteratorArgs = null;

@@ -29,7 +29,7 @@ namespace BibleConfigurator.ModuleConverter
         protected abstract void ProcessBibleBooks(ExternalModuleInfo externalModuleInfo);        
 
         protected Application OneNoteApp { get; set; }
-        protected string EmptyNotebookName { get; set; }
+        protected string NewNotebookName { get; set; }
         protected string NotebookId { get; set; }
         protected string ManifestFilesFolderPath { get; set; }        
         protected string OldTestamentName { get; set; }
@@ -55,14 +55,14 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="newTestamentBooksCount"></param>
         /// <param name="locale">can be not specified</param>
         /// <param name="notebooksInfo"></param>
-        public ConverterBase(string emptyNotebookName, string manifestFilesFolderPath,
+        public ConverterBase(string newNotebookName, string manifestFilesFolderPath,
             string oldTestamentName, string newTestamentName, int oldTestamentBooksCount, int newTestamentBooksCount,
             string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, 
             BibleTranslationDifferences translationDifferences, string chapterSectionNameTemplate, string version)
         {
             OneNoteApp = new Application();
-            this.EmptyNotebookName = emptyNotebookName;
-            this.NotebookId = OneNoteUtils.GetNotebookIdByName(OneNoteApp, EmptyNotebookName, true);
+            this.NewNotebookName = newNotebookName;
+            this.NotebookId = NotebookGenerator.CreateNotebook(OneNoteApp, NewNotebookName);
             this.ManifestFilesFolderPath = manifestFilesFolderPath;
             this.OldTestamentName = oldTestamentName;
             this.NewTestamentName = newTestamentName;

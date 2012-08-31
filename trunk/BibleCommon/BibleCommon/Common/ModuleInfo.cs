@@ -92,9 +92,10 @@ namespace BibleCommon.Common
         private BibleBookInfo GetBibleBookByExactMatch(string s, bool endsWithDot)
         {
             return BibleStructure.BibleBooks.FirstOrDefault(
-                book => book.Abbreviations.Any(abbr => 
-                           abbr.Value == s
-                        && (!endsWithDot || !abbr.IsFullBookName)));
+                        book => 
+                            book.Abbreviations.Any(abbr => abbr.Value == s 
+                                                        && (!endsWithDot || !abbr.IsFullBookName))
+                        || (book.Name.ToLowerInvariant() == s && !endsWithDot));
         }
     }
 
@@ -321,12 +322,12 @@ namespace BibleCommon.Common
         public string GetVerseContent(SimpleVersePointer verse)
         {
             if (this.Chapters.Count < verse.Chapter)
-                throw new VerseNotFoundException(verse, BaseVersePointerException.Severity.Warning);
+                throw new ParallelVerseNotFoundException(verse, BaseVersePointerException.Severity.Warning);
             
             var chapter = this.Chapters[verse.Chapter - 1];
 
             if (chapter.Verses.Count < verse.Verse)
-                throw new VerseNotFoundException(verse, BaseVersePointerException.Severity.Warning);
+                throw new ParallelVerseNotFoundException(verse, BaseVersePointerException.Severity.Warning);
 
             string verseContent = chapter.Verses[verse.Verse - 1].Value;
 

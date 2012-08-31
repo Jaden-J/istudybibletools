@@ -277,9 +277,7 @@ namespace BibleCommon.Services
                                                         GetResourceString(Consts.Constants.ResourceName_DefaultPageName_RubbishNotes));
             this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
             this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, true);
-            this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);
-            this.SupplementalBibleModules = GetParameterValue<List<string>>(xdoc, Consts.Constants.ParameterName_SupplementalBibleModules, new List<string>());
-            this.SupplementalBibleLinkName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SupplementalBibleLinkName, Consts.Constants.DefaultSupplementalBibleLinkName);
+            this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);            
         }
 
         private void LoadGeneralSettings(XDocument xdoc)
@@ -293,7 +291,11 @@ namespace BibleCommon.Services
             this.SectionGroupId_BibleComments = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionGroupIdBibleComments);
             this.SectionGroupId_BibleNotesPages = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionGroupIdBibleNotesPages);
 
-            this.NotebookId_SupplementalBible = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdSupplementalBible);            
+            this.NotebookId_SupplementalBible = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdSupplementalBible);
+            this.SupplementalBibleModules = GetParameterValue<List<string>>(xdoc, Consts.Constants.ParameterName_SupplementalBibleModules, new List<string>(), 
+                                                s => new List<string>(s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)));
+            this.SupplementalBibleLinkName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SupplementalBibleLinkName,
+                                                  Consts.Constants.DefaultSupplementalBibleLinkName);
         }
 
         private T GetParameterValue<T>(XDocument xdoc, string parameterName, object defaultValue = null, Func<string, T> convertFunc = null)
@@ -326,6 +328,10 @@ namespace BibleCommon.Services
             return (T)Convert.ChangeType(value, typeParameterType);
         }
 
+
+        /// <summary>
+        /// Загружает настройки по умолчанию, если стоит галочка "Использовать настройки по умолчанию"
+        /// </summary>
         public void LoadDefaultSettings()
         {
             this.UseDefaultSettings = true;      
@@ -338,9 +344,7 @@ namespace BibleCommon.Services
             this.RubbishPage_Use = Consts.Constants.DefaultRubbishPage_Use;            
             this.PageWidth_RubbishNotes = Consts.Constants.DefaultPageWidth_RubbishNotes;
             this.RubbishPage_ExpandMultiVersesLinking = Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking;
-            this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
-            this.SupplementalBibleModules = new List<string>();
-            this.SupplementalBibleLinkName = Consts.Constants.DefaultSupplementalBibleLinkName;
+            this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;            
 
             LoadDefaultLocalazibleSettings();
         }
@@ -405,7 +409,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_ModuleName, this.ModuleName),
                                   new XElement(Consts.Constants.ParameterName_UseDefaultSettings, this.UseDefaultSettings.Value),
                                   new XElement(Consts.Constants.ParameterName_PageWidthBible, this.PageWidth_Bible),
-                                  new XElement(Consts.Constants.ParameterName_SupplementalBibleModules, this.SupplementalBibleModules),
+                                  new XElement(Consts.Constants.ParameterName_SupplementalBibleModules, string.Join(";", this.SupplementalBibleModules.ToArray())),
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleLinkName, this.SupplementalBibleLinkName)
                                   );
 
