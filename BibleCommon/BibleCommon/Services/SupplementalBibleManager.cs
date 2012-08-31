@@ -73,6 +73,8 @@ namespace BibleCommon.Services
             {
                 result = bibleTranslationManager.IterateBaseBible(chapterPageDoc =>
                     {
+                        OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp, pageContent => pageContent.PageType == OneNoteProxy.PageType.Bible, null, null);
+
                         return new BibleIteratorArgs() { ChapterDocument = chapterPageDoc };
                     }, true,
                     (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
