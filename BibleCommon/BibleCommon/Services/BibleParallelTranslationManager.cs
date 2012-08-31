@@ -114,7 +114,7 @@ namespace BibleCommon.Services
 
             var result = new BibleParallelTranslationConnectionResult();
 
-            foreach (var baseBookContent in BaseBibleInfo.Content.Books.Skip(18))
+            foreach (var baseBookContent in BaseBibleInfo.Content.Books)
             {
                 var baseBookInfo = BaseModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBookContent.Index);
                 if (baseBookInfo == null)
@@ -154,7 +154,7 @@ namespace BibleCommon.Services
             int lastProcessedChapter = 0;
             int lastProcessedVerse = 0;
 
-            foreach (var baseChapter in baseBookContent.Chapters.Skip(11))
+            foreach (var baseChapter in baseBookContent.Chapters)
             {
                 XDocument chapterPageDoc = null;
                 BibleIteratorArgs bibleIteratorArgs = null;
