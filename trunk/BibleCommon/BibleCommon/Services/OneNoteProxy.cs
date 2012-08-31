@@ -197,6 +197,9 @@ namespace BibleCommon.Services
 
         public string GenerateHref(Application oneNoteApp, string pageId, string objectId)
         {
+            if (string.IsNullOrEmpty(pageId))
+                throw new ArgumentNullException("pageId");
+
             LinkId key = new LinkId()
             {                
                 PageId = pageId,
