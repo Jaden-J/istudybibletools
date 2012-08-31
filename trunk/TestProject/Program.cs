@@ -70,8 +70,16 @@ namespace TestProject
 
         private static void CreateSupplementalBible()
         {
-         //   SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, "rst");
+            DateTime dtStart = DateTime.Now;
+
+            SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, "rst");
             var result = SupplementalBibleManager.LinkSupplementalBibleWithMainBible(OneNoteApp, 0);
+
+            DateTime dtEnd = DateTime.Now;
+
+            var elapsed = dtStart - dtEnd;
+
+            Console.WriteLine("Successfully! Elapsed time - {0} seconds", elapsed.TotalSeconds);
 
             int i = result.Errors.Count;
         }
