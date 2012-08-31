@@ -70,7 +70,7 @@ namespace TestProject
 
         private static void CreateSupplementalBible()
         {
-           // SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, "kjv");
+            SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, "rst");
             var result = SupplementalBibleManager.LinkSupplementalBibleWithMainBible(OneNoteApp, 0);
 
             int i = result.Errors.Count;
