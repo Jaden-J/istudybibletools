@@ -15,12 +15,6 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_13DFE88A4719376D4F968251DE4753D3"
-        "OwnerKey" = "8:_3FC71294DAB247EDA89368E781DCDC4E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_154C3F58C5664894873383FE9BFF835D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -171,6 +165,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_E67375423425D9E25FC2BE6D789D1A32"
+        "OwnerKey" = "8:_3FC71294DAB247EDA89368E781DCDC4E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_3FC71294DAB247EDA89368E781DCDC4E"
         "MsmSig" = "8:_UNDEFINED"
@@ -238,13 +238,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
+        "OwnerKey" = "8:_ED719A349F5B313C255C912C8C20862E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_ED719A349F5B313C255C912C8C20862E"
+        "OwnerKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -380,26 +380,6 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_13DFE88A4719376D4F968251DE4753D3"
-            {
-            "SourcePath" = "8:RibbonButtons.tlb"
-            "TargetName" = "8:RibbonButtons.tlb"
-            "Tag" = "8:"
-            "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:2"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2DFCD76B1C964A5C80A8963AAA930E62"
             {
             "SourcePath" = "8:..\\Instruction (1049).docx"
@@ -495,7 +475,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=2.2.7.381, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=2.2.7.382, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_D9E5FBBAF4306B9B4546971D1F1D2FB4"
@@ -518,6 +498,26 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E67375423425D9E25FC2BE6D789D1A32"
+            {
+            "SourcePath" = "8:RibbonButtons.tlb"
+            "TargetName" = "8:RibbonButtons.tlb"
+            "Tag" = "8:"
+            "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:2"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
@@ -564,7 +564,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_2E65B00FCBEA4B929A4925CDD75CFEBB"
             {
-            "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer]\\[ProductName]"
+            "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\[ProductName]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -657,7 +657,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OneNote IStudyBibleTools"
         "ProductCode" = "8:{23955CA4-518D-421B-9932-D9F711F00A1C}"
-        "PackageCode" = "8:{CF7ABE05-95CD-4129-A028-AF5E47515157}"
+        "PackageCode" = "8:{8632A47E-0404-4663-BE60-23CC6FF999B1}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -678,7 +678,7 @@
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
-        "TargetPlatform" = "3:1"
+        "TargetPlatform" = "3:0"
         "PreBuildEvent" = "8:"
         "PostBuildEvent" = "8:"
         "RunPostBuildEvent" = "3:0"

@@ -1149,7 +1149,10 @@ namespace BibleConfigurator
             {
                 pnModules.Height = top;
                 btnUploadModule.Top = top + 50;
-                btnUploadModule.Left = 415 + pnModules.Left;
+                btnUploadModule.Left = 311 + pnModules.Left;
+
+                btnSupplementalBibleManagement.Top = btnUploadModule.Top;
+                btnSupplementalBibleManagement.Left = btnUploadModule.Right + 6;
 
                 lblMustUploadModule.Visible = false;
                 lblMustSelectModule.Visible = !SettingsManager.Instance.CurrentModuleIsCorrect();
@@ -1158,6 +1161,7 @@ namespace BibleConfigurator
             {
                 lblMustUploadModule.Visible = true;
                 lblMustSelectModule.Visible = false;
+                btnSupplementalBibleManagement.Visible = false;
             }
             
             _wasLoadedModulesInfo = true;
@@ -1285,6 +1289,12 @@ namespace BibleConfigurator
         private void hlModules_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start(BibleCommon.Resources.Constants.WebSiteUrl + "/modules.htm");
+        }
+
+        private void btnSupplementalBibleManagement_Click(object sender, EventArgs e)
+        {
+            var form = new SupplementalBibleForm(_oneNoteApp, this);
+            form.ShowDialog();
         }        
     }
 }

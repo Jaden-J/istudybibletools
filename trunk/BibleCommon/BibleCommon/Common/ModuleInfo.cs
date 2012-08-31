@@ -24,12 +24,21 @@ namespace BibleCommon.Common
         BibleStudy        
     }
 
-    
+    public enum ModuleType
+    {
+        Bible,
+        Dictionary,
+        Strong
+    }
 
     [Serializable]
     [XmlRoot(ElementName="IStudyBibleTools_Module")]
     public class ModuleInfo
     {
+        [XmlAttribute]
+        [DefaultValue((int)ModuleType.Bible)]
+        public ModuleType Type { get; set; }        
+
         [XmlAttribute]
         public string Version { get; set; }
 
