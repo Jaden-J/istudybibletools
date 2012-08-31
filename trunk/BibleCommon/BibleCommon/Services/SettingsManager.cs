@@ -121,6 +121,15 @@ namespace BibleCommon.Services
 
         #endregion
 
+        public string GetValidSupplementalBibleNotebookId(Application oneNoteApp)
+        {
+            if (!string.IsNullOrEmpty(NotebookId_SupplementalBible))
+                if (!OneNoteUtils.NotebookExists(oneNoteApp, NotebookId_SupplementalBible))
+                    return null;
+
+            return NotebookId_SupplementalBible;
+        }
+
         public bool CurrentModuleIsCorrect()
         {
             return !string.IsNullOrEmpty(ModuleName) && ModulesManager.ModuleIsCorrect(ModuleName);
