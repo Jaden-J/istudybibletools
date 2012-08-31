@@ -6,6 +6,19 @@ using BibleCommon.Resources;
 
 namespace BibleCommon.Common
 {
+    public class NotConfiguredException : Exception
+    {
+        public NotConfiguredException()
+            : base(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures)
+        {
+        }
+
+        public NotConfiguredException(string message)
+            : base(string.Format("{0} {1}", BibleCommon.Resources.Constants.Error_SystemIsNotConfigures, message))
+        {
+        }
+    }
+
     public class NotFoundVerseLinkPageExceptions : Exception
     {
         public NotFoundVerseLinkPageExceptions(string message)

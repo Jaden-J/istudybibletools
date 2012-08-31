@@ -17,12 +17,7 @@ namespace BibleCommon.Services
     {
         public static void CreateSupplementalBible(Application oneNoteApp, string moduleShortName)
         {
-            if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_SupplementalBible))            
-                if (!OneNoteUtils.NotebookExists(oneNoteApp, SettingsManager.Instance.NotebookId_SupplementalBible))
-                    SettingsManager.Instance.NotebookId_SupplementalBible = null;
-            
-
-            if (string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_SupplementalBible))            
+            if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(oneNoteApp)))            
                 SettingsManager.Instance.NotebookId_SupplementalBible = NotebookGenerator.CreateNotebook(oneNoteApp, Resources.Constants.SupplementalBibleName);                            
             else
                 throw new InvalidOperationException("Supplemental Bible already exists");
@@ -58,13 +53,19 @@ namespace BibleCommon.Services
         public static BibleParallelTranslationConnectionResult LinkSupplementalBibleWithMainBible(Application oneNoteApp, int supplementalModuleIndex)
         {
             if (supplementalModuleIndex != 0)
-                throw new NotSupportedException("supplementalModuleIndex != 0");
+                throw new NotSupportedException("supplementalModuleIndex != 0");            
+
+            if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(oneNoteApp)) 
+                || SettingsManager.Instance.SupplementalBibleModules.Count == 0)
+                throw new NotConfiguredException("Supplemental Bible does not exists.");
 
             string supplementalModuleSortName = SettingsManager.Instance.SupplementalBibleModules[supplementalModuleIndex];
             bool needToLinkMainBibleToSupplementalBible = supplementalModuleIndex == 0;
 
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
+
+            OneNoteLocker.UnlockAllBible(oneNoteApp);
 
             BibleParallelTranslationConnectionResult result;
             using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
@@ -200,8 +201,9 @@ namespace BibleCommon.Services
 
         public static BibleParallelTranslationConnectionResult AddParallelBible(Application oneNoteApp, string moduleShortName)
         {
-            if (string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_SupplementalBible) || SettingsManager.Instance.SupplementalBibleModules.Count == 0)            
-                throw new Exception(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
+            if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(oneNoteApp)) 
+                || SettingsManager.Instance.SupplementalBibleModules.Count == 0)
+                throw new NotConfiguredException();
 
 
             BibleParallelTranslationConnectionResult result;

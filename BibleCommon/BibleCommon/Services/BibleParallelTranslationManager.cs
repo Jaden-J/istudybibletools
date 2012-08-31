@@ -85,7 +85,7 @@ namespace BibleCommon.Services
         
         public BibleParallelTranslationConnectionResult AddParallelTranslation()
         {
-            XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
+            XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();            
             
             return IterateBaseBible(chapterPageDoc =>
                 {
@@ -241,7 +241,7 @@ namespace BibleCommon.Services
             {
                 if (lastProcessedChapter > 0 && firstParallelVerse.Chapter > lastProcessedChapter)
                 {
-                    if (parallelBookContent.Chapters[lastProcessedChapter - 1].Verses.Count > lastProcessedVerse)
+                    if ((parallelBookContent.Chapters.Count > lastProcessedChapter - 1) && (parallelBookContent.Chapters[lastProcessedChapter - 1].Verses.Count > lastProcessedVerse))
                         throw new GetParallelVerseException("Miss verse (x01)", baseVersePointer, BaseVersePointerException.Severity.Warning);
                     else if (firstParallelVerse.Verse > 1)  // начали главу не с начала                    
                         throw new GetParallelVerseException("Miss verse (x02)", baseVersePointer, BaseVersePointerException.Severity.Warning);

@@ -26,14 +26,7 @@ namespace BibleConfigurator
 
         private void SupplementalBibleForm_Load(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_SupplementalBible))
-                if (!OneNoteUtils.NotebookExists(_oneNoteApp, SettingsManager.Instance.NotebookId_SupplementalBible))
-                {
-                    SettingsManager.Instance.NotebookId_SupplementalBible = null;
-                    SettingsManager.Instance.Save();
-                }
-
-            chkUseSupplementalBible.Checked = !string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_SupplementalBible);
+            chkUseSupplementalBible.Checked = !string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(_oneNoteApp));
 
             LoadModules();
         }
@@ -72,10 +65,10 @@ namespace BibleConfigurator
         private void AddModulesComboBox()
         {
             ComboBox cb = new ComboBox();
-            foreach (var moduleName in ModulesManager.GetModules())
-            {
-                cb.Items.Add(moduleName);
-            }
+            //foreach (var moduleName in ModulesManager.GetModules())
+            //{
+            //    cb.Items.Add(moduleName);
+            //}
             pnModules.Controls.Add(cb);
         }
     }
