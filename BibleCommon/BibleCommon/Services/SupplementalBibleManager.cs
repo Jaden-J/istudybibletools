@@ -96,7 +96,7 @@ namespace BibleCommon.Services
                     SettingsManager.Instance.NotebookId_Bible, parallelVerse.ToVersePointer(SettingsManager.Instance.CurrentModule), true);
 
             if (baseBibleObjectsSearchResult.ResultType != HierarchySearchManager.HierarchySearchResultType.Successfully
-                && baseBibleObjectsSearchResult.HierarchyStage != HierarchySearchManager.HierarchyStage.ContentPlaceholder)
+                || baseBibleObjectsSearchResult.HierarchyStage != HierarchySearchManager.HierarchyStage.ContentPlaceholder)
                 throw new ParallelVerseNotFoundException(parallelVerse, BaseVersePointerException.Severity.Error);
 
             var baseVerseEl = OneNoteUtils.NormalizeTextElement(
