@@ -61,18 +61,24 @@ namespace BibleCommon.Services
             return pageDoc;
         }
         
-        public static XElement AddTableToBibleChapterPage(XDocument chapterDoc, int bibleCellWidth, XmlNamespaceManager xnm)
+        public static XElement AddTableToBibleChapterPage(XDocument chapterDoc, int bibleCellWidth, int columnsCount, XmlNamespaceManager xnm)
         {
-            var nms = XNamespace.Get(Constants.OneNoteXmlNs);           
+            var nms = XNamespace.Get(Constants.OneNoteXmlNs);
+
+            var columns = new XElement(nms + "Columns", 
+                                new XElement(nms + "Column", new XAttribute("index", 0), new XAttribute("width", bibleCellWidth), new XAttribute("isLocked", true)));
+
+            for (int i = 0; i < columnsCount - 1; i++)
+            {
+                columns.Add(new XElement(nms + "Column", new XAttribute("index", i + 1), new XAttribute("width", MinimalCellWidth), new XAttribute("isLocked", true)));
+            }
 
             var tableEl = new XElement(nms + "Outline",
                                             new XElement(nms + "OEChildren",
                                               new XElement(nms + "OE",
                                                   new XElement(nms + "Table", new XAttribute("bordersVisible", false),
-                                                      new XElement(nms + "Columns",
-                                                          new XElement(nms + "Column", new XAttribute("index", 0), new XAttribute("width", bibleCellWidth), new XAttribute("isLocked", true)),
-                                                          new XElement(nms + "Column", new XAttribute("index", 1), new XAttribute("width", MinimalCellWidth), new XAttribute("isLocked", true))
-                                                              )))));
+                                                      columns 
+                                                    ))));
 
             //var outlines = chapterDoc.Root.XPathSelectElements("//one:Outline", xnm);
             //int bibleIndex = outlines.Count();
@@ -107,15 +113,18 @@ namespace BibleCommon.Services
             return chapterPageDoc.Root.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", xnm);            
         }
 
-        public static void AddVerseRowToBibleTable(XElement tableElement, string verseText, string locale)
+        public static void AddVerseRowToBibleTable(XElement tableElement, string verseText, int emptyCellsCount, string locale)
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
-            var cell1 = GetCell(verseText, locale, nms);            
+            var cell1 = GetCell(verseText, locale, nms);                        
 
-            var cell2 = GetCell(string.Empty, string.Empty, nms);            
+            XElement newRow = new XElement(nms + "Row", cell1);
 
-            XElement newRow = new XElement(nms + "Row", cell1, cell2);
+            for (int i = 0; i < emptyCellsCount; i++)
+            {
+                newRow.Add(GetCell(string.Empty, string.Empty, nms));
+            }
 
             tableElement.Add(newRow);
         }
