@@ -462,4 +462,7 @@
   <data name="SupplementalBibleName" xml:space="preserve">
     <value>Справочная Библия</value>
   </data>
+  <data name="AddSupplementalModule" xml:space="preserve">
+    <value>Добавить новый модуль</value>
+  </data>
 </root>

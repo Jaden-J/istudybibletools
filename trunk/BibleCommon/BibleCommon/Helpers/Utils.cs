@@ -52,5 +52,19 @@ namespace BibleCommon.Helpers
 
             return directoryPath;
         }
+
+        public static string GetNewDirectoryPath(string folderPath)
+        {
+            string result = folderPath;
+            for (int i = 0; i < 200; i++)
+            {
+                result = folderPath + (i > 0 ? " (" + i.ToString() + ")" : string.Empty);
+
+                if (!Directory.Exists(result))
+                    return result;
+            }
+
+            return folderPath;
+        }
     }
 }

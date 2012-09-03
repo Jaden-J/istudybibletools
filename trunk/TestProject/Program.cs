@@ -72,7 +72,7 @@ namespace TestProject
         {
             DateTime dtStart = DateTime.Now;
 
-            //SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, "kjv");
+            SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, "kjv");
             var result = SupplementalBibleManager.LinkSupplementalBibleWithMainBible(OneNoteApp, 0);
 
             DateTime dtEnd = DateTime.Now;

@@ -489,10 +489,10 @@ namespace BibleConfigurator
             {
                 string folderPath = Path.Combine(notebookFromTemplatePath, Path.GetFileNameWithoutExtension(notebookTemplateFileName));                
 
-                folderPath = GetNewDirectoryPath(folderPath);
+                folderPath = Utils.GetNewDirectoryPath(folderPath);
 
-                if (!string.IsNullOrEmpty(folderPath))
-                {
+                //if (!string.IsNullOrEmpty(folderPath))
+                //{
                     _oneNoteApp.OpenPackage(packageFilePath, folderPath, out s);
 
                     string[] files = Directory.GetFiles(s, "*.onetoc2", SearchOption.TopDirectoryOnly);
@@ -502,29 +502,15 @@ namespace BibleConfigurator
                         Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorErrorWhileNotebookOpenning, notebookTemplateFileName));
 
                     return Path.GetFileNameWithoutExtension(folderPath);
-                }
-                else
-                    Logger.LogError(BibleCommon.Resources.Constants.ConfiguratorSelectAnotherFolder);
+                //}
+                //else
+                //    Logger.LogError(BibleCommon.Resources.Constants.ConfiguratorSelectAnotherFolder);
             }
             else
                 Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorNotebookTemplateNotFound, packageFilePath));
 
             return string.Empty;
-        }
-
-        private string GetNewDirectoryPath(string folderPath)
-        {
-            string result = folderPath;
-            for (int i = 0; i < 100; i++)
-            {
-                result = folderPath + (i > 0 ? " (" + i.ToString() + ")" : string.Empty);
-
-                if (!Directory.Exists(result))
-                    return result;
-            }
-
-            return string.Empty;
-        }
+        }       
 
         private LoadForm _loadForm;
         private bool _firstShown = true;
