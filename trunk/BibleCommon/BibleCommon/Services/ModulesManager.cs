@@ -37,7 +37,7 @@ namespace BibleCommon.Services
         public static ModuleInfo GetModuleInfo(string moduleDirectoryName)
         {   
             var module = GetModuleFile<ModuleInfo>(moduleDirectoryName, Consts.Constants.ManifestFileName);
-            module.ShortName = moduleDirectoryName;
+            module.ShortName = moduleDirectoryName.ToLowerInvariant();
             return module;
         }
 
@@ -86,6 +86,18 @@ namespace BibleCommon.Services
                 Directory.CreateDirectory(modulesDirectory);
 
             return modulesDirectory;
+        }
+
+        public static List<ModuleInfo> GetModules()
+        {
+            var result = new List<ModuleInfo>();
+
+            foreach (string moduleName in Directory.GetDirectories(GetModulesDirectory(), "*", SearchOption.TopDirectoryOnly))
+            {
+                result.Add(GetModuleInfo(moduleName));
+            }
+
+            return result;
         }
 
         public static bool ModuleIsCorrect(string moduleName)
