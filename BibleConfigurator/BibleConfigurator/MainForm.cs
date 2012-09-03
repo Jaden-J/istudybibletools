@@ -1196,15 +1196,15 @@ namespace BibleConfigurator
             bInfo.Click += new EventHandler(btnModuleInfo_Click);
             pnModules.Controls.Add(bInfo);            
 
-            Button b = new Button();
-            b.Text = BibleCommon.Resources.Constants.UseThisModule;      
-            b.Enabled = SettingsManager.Instance.ModuleName != moduleName;
-            b.Tag = moduleName;
-            b.Top = top;
-            b.Left = 415;
-            b.Width = 180;
-            b.Click += new EventHandler(btnUseThisModule_Click);
-            pnModules.Controls.Add(b);
+            Button bUseThisModule = new Button();
+            bUseThisModule.Text = BibleCommon.Resources.Constants.UseThisModule;      
+            bUseThisModule.Enabled = SettingsManager.Instance.ModuleName != moduleName;
+            bUseThisModule.Tag = moduleName;
+            bUseThisModule.Top = top;
+            bUseThisModule.Left = 415;
+            bUseThisModule.Width = 180;
+            bUseThisModule.Click += new EventHandler(btnUseThisModule_Click);
+            pnModules.Controls.Add(bUseThisModule);
 
             Button bDel = new Button();
             bDel.Image = BibleConfigurator.Properties.Resources.del;
@@ -1215,8 +1215,7 @@ namespace BibleConfigurator
             bDel.Left = 600;
             bDel.Width = bDel.Height;
             bDel.Click += new EventHandler(btnDeleteModule_Click);
-            pnModules.Controls.Add(bDel);
-            
+            pnModules.Controls.Add(bDel);            
         }
 
         void btnModuleInfo_Click(object sender, EventArgs e)

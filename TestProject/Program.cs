@@ -87,18 +87,16 @@ namespace TestProject
         private static void GenerateParallelBible()
         {
             DateTime dtStart = DateTime.Now;
-            using (var manager = new BibleParallelTranslationManager(OneNoteApp, "kjv", "rst", SettingsManager.Instance.NotebookId_SupplementalBible))
-            {
-                var result = manager.AddParallelTranslation();
 
-                DateTime dtEnd = DateTime.Now;
+            var result = SupplementalBibleManager.AddParallelBible(OneNoteApp, "rst");
 
-                var elapsed = dtEnd - dtStart;
+            DateTime dtEnd = DateTime.Now;
 
-                Console.WriteLine("Successfully! Elapsed time - {0} seconds", elapsed.TotalSeconds);
+            var elapsed = dtEnd - dtStart;
 
-                int i = result.Errors.Count;
-            }
+            Console.WriteLine("Successfully! Elapsed time - {0} seconds", elapsed.TotalSeconds);
+
+            int i = result.Errors.Count;
         }
 
         private static void ConvertRussianModule()
