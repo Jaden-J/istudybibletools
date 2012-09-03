@@ -10,6 +10,7 @@ using System.Xml.XPath;
 using BibleCommon.Consts;
 using System.Globalization;
 using BibleCommon.Common;
+using System.IO;
 
 namespace BibleCommon.Services
 {
@@ -149,7 +150,7 @@ namespace BibleCommon.Services
             var rows = tableElement.XPathSelectElements("one:Row", xnm);
 
             XElement verseRow = null;
-
+            int textBreakIndex, htmlBreakIndex;
             foreach (var row in rows.Skip(baseVerse.Verse - 1))
             {
                 int rowChildsCount = row.Elements().Count();
@@ -159,9 +160,9 @@ namespace BibleCommon.Services
                     {
                         var firstCell = row.XPathSelectElement("one:Cell[1]/one:OEChildren/one:OE/one:T", xnm);
                         if (firstCell != null)
-                        {
-                            int? index = StringUtils.GetStringFirstNumber(firstCell.Value);
-                            if (!index.HasValue || index.Value != baseVerse.Verse)
+                        {                            
+                            var baseVerseNumber = StringUtils.GetNextString(firstCell.Value, -1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound), out textBreakIndex, out htmlBreakIndex);                                
+                            if (baseVerseNumber != baseVerse.Verse.ToString())
                                 continue;
                         }
                     }
@@ -242,9 +243,11 @@ namespace BibleCommon.Services
             string defaultNotebookFolderPath;
 
             oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
-            var newNotebookPath = defaultNotebookFolderPath + "\\" + notebookName;
-            var notebookEl = new XElement(nms + "Notebook", 
-                                new XAttribute("name", notebookName),                                
+            var newNotebookPath = Utils.GetNewDirectoryPath(defaultNotebookFolderPath + "\\" + notebookName);
+            notebookName = Path.GetFileName(newNotebookPath);
+
+            var notebookEl = new XElement(nms + "Notebook",
+                                new XAttribute("name", notebookName),
                                 new XAttribute("path", newNotebookPath));
             var notebooksEl = OneNoteUtils.GetHierarchyElement(oneNoteApp, null, HierarchyScope.hsNotebooks, out xnm);
             notebooksEl.Root.Elements().Last().AddBeforeSelf(notebookEl);

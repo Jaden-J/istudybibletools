@@ -94,7 +94,7 @@ namespace BibleCommon.Services
 
             foreach (string moduleName in Directory.GetDirectories(GetModulesDirectory(), "*", SearchOption.TopDirectoryOnly))
             {
-                result.Add(GetModuleInfo(moduleName));
+                result.Add(GetModuleInfo(Path.GetFileName(moduleName)));
             }
 
             return result;

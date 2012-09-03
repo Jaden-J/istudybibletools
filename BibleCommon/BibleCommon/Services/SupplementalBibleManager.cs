@@ -22,32 +22,34 @@ namespace BibleCommon.Services
             else
                 throw new InvalidOperationException("Supplemental Bible already exists");
 
+            string currentSectionGroupId = null;
+            var moduleInfo = ModulesManager.GetModuleInfo(moduleShortName);
+            var bibleInfo = ModulesManager.GetModuleBibleInfo(moduleShortName);
+
+            for (int i = 0; i < moduleInfo.BibleStructure.BibleBooks.Count; i++)
+            {
+                var bibleBookInfo = moduleInfo.BibleStructure.BibleBooks[i];
+                bibleBookInfo.SectionName = NotebookGenerator.GetBibleBookSectionName(bibleBookInfo.Name, i, moduleInfo.BibleStructure.OldTestamentBooksCount);
+
+                currentSectionGroupId = GetCurrentSectionGroupId(oneNoteApp, currentSectionGroupId, moduleInfo, i);
+
+                var bookSectionId = NotebookGenerator.AddBookSectionToBibleNotebook(oneNoteApp, currentSectionGroupId, bibleBookInfo.SectionName, bibleBookInfo.Name);
+
+                var bibleBook = bibleInfo.Content.Books.FirstOrDefault(book => book.Index == bibleBookInfo.Index);
+                if (bibleBook == null)
+                    throw new Exception("Manifest.xml has Bible books that do not exist in bible.xml");
+
+                foreach (var chapter in bibleBook.Chapters)
+                {
+                    GenerateChapterPage(oneNoteApp, chapter, bookSectionId, moduleInfo, bibleBookInfo, bibleInfo);
+                }
+            }
+
+            oneNoteApp.SyncHierarchy(SettingsManager.Instance.NotebookId_SupplementalBible);
+
             SettingsManager.Instance.SupplementalBibleModules.Clear();
             SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
             SettingsManager.Instance.Save();
-            
-            //string currentSectionGroupId = null;
-            //var moduleInfo = ModulesManager.GetModuleInfo(moduleShortName);
-            //var bibleInfo = ModulesManager.GetModuleBibleInfo(moduleShortName);            
-
-            //for (int i = 0; i < moduleInfo.BibleStructure.BibleBooks.Count; i++)
-            //{
-            //    var bibleBookInfo = moduleInfo.BibleStructure.BibleBooks[i];
-            //    bibleBookInfo.SectionName = NotebookGenerator.GetBibleBookSectionName(bibleBookInfo.Name, i, moduleInfo.BibleStructure.OldTestamentBooksCount);
-
-            //    currentSectionGroupId = GetCurrentSectionGroupId(oneNoteApp, currentSectionGroupId, moduleInfo, i);                
-
-            //    var bookSectionId = NotebookGenerator.AddBookSectionToBibleNotebook(oneNoteApp, currentSectionGroupId, bibleBookInfo.SectionName, bibleBookInfo.Name);
-
-            //    var bibleBook = bibleInfo.Content.Books.FirstOrDefault(book => book.Index == bibleBookInfo.Index);
-            //    if (bibleBook == null)
-            //        throw new Exception("Manifest.xml has Bible books that do not exist in bible.xml");
-
-            //    foreach (var chapter in bibleBook.Chapters)
-            //    {   
-            //        GenerateChapterPage(oneNoteApp, chapter, bookSectionId, moduleInfo, bibleBookInfo, bibleInfo);                    
-            //    }                
-            //}         
         }
 
         public static BibleParallelTranslationConnectionResult LinkSupplementalBibleWithMainBible(Application oneNoteApp, int supplementalModuleIndex)
@@ -207,12 +209,12 @@ namespace BibleCommon.Services
 
             BibleParallelTranslationConnectionResult result = null;
 
-            //using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
-            //    SettingsManager.Instance.SupplementalBibleModules.First(), moduleShortName,
-            //    SettingsManager.Instance.NotebookId_SupplementalBible))
-            //{
-            //    result = bibleTranslationManager.AddParallelTranslation();
-            //}
+            using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
+                SettingsManager.Instance.SupplementalBibleModules.First(), moduleShortName,
+                SettingsManager.Instance.NotebookId_SupplementalBible))
+            {
+                result = bibleTranslationManager.AddParallelTranslation();
+            }
 
 
             SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);

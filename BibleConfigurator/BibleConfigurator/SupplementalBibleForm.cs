@@ -17,12 +17,15 @@ namespace BibleConfigurator
         private Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
         private MainForm _form;
         private List<ModuleInfo> _modules;
+        private Button _btnAddNewModule;
+        private int _top;
 
         public SupplementalBibleForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
         {
             _oneNoteApp = oneNoteApp;
             _form = form;
             _modules = ModulesManager.GetModules();
+            _top = 10;
 
             InitializeComponent();            
         }
@@ -31,27 +34,47 @@ namespace BibleConfigurator
         {
             chkUseSupplementalBible.Checked = !string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(_oneNoteApp));
 
+            GenerateNewModuleButton();            
+
             LoadModules();
 
             chkUseSupplementalBible_CheckedChanged(this, null);
         }
 
+        private void GenerateNewModuleButton()
+        {
+            _btnAddNewModule = new Button();
+            _btnAddNewModule.Image = BibleConfigurator.Properties.Resources.plus;
+            FormExtensions.SetToolTip(_btnAddNewModule, BibleCommon.Resources.Constants.AddSupplementalModule);
+            _btnAddNewModule.Click += new EventHandler(_btnAddNewModule_Click);
+            _btnAddNewModule.Width = _btnAddNewModule.Height;            
+            _btnAddNewModule.Enabled = SettingsManager.Instance.SupplementalBibleModules.Count < _modules.Count;
+            pnModules.Controls.Add(_btnAddNewModule);
+        }
+
+        void _btnAddNewModule_Click(object sender, EventArgs e)
+        {
+            AddModulesComboBox();
+
+            _btnAddNewModule.Top = _top;
+        }
+
         private void LoadModules()
         {
-            int top = 10;
-
             if (SettingsManager.Instance.SupplementalBibleModules.Count > 0)
             {
                 for (int i = 0; i < SettingsManager.Instance.SupplementalBibleModules.Count; i++)
                 {
-                    AddModuleRow(SettingsManager.Instance.SupplementalBibleModules[i], i, top);
-                    top += 30;
+                    AddModuleRow(_modules.First(m => m.ShortName == SettingsManager.Instance.SupplementalBibleModules[i]).Name, i, _top);
+                    _top += 30;
                 }
             }
             else
             {
                 AddModulesComboBox();
             }
+
+            _btnAddNewModule.Top = _top;
         }
 
         private void AddModuleRow(string moduleName, int index, int top)
@@ -66,10 +89,10 @@ namespace BibleConfigurator
             Button bDel = new Button();
             bDel.Image = BibleConfigurator.Properties.Resources.del;
             bDel.Enabled = index != 0 && index == SettingsManager.Instance.SupplementalBibleModules.Count - 1;
-            SetToolTip(bDel, BibleCommon.Resources.Constants.DeleteThisModule);
+            FormExtensions.SetToolTip(bDel, BibleCommon.Resources.Constants.DeleteThisModule);
             bDel.Tag = moduleName;
             bDel.Top = top;
-            bDel.Left = 600;
+            bDel.Left = 250;
             bDel.Width = bDel.Height;
             bDel.Click += new EventHandler(btnDeleteModule_Click);
             pnModules.Controls.Add(bDel);
@@ -99,24 +122,7 @@ namespace BibleConfigurator
             }
 
             return false;
-        }
-
-
-        private ToolTip _toolTip = null;
-        private void SetToolTip(Control c, string toolTip)
-        {
-            if (_toolTip == null)
-            {
-                _toolTip = new ToolTip();
-
-                _toolTip.AutoPopDelay = 5000;
-                _toolTip.InitialDelay = 1000;
-                _toolTip.ReshowDelay = 500;
-                _toolTip.ShowAlways = true;
-            }
-
-            _toolTip.SetToolTip(c, toolTip);
-        }
+        }       
 
 
         private void SupplementalBibleForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -138,7 +144,10 @@ namespace BibleConfigurator
         private void AddModulesComboBox()
         {
             ComboBox cb = new ComboBox();
-            cb.Width = 300;
+            cb.Width = 250;
+            cb.Top = _top;
+
+            _top = _top + 30;
 
             foreach (var moduleInfo in _modules)
             {

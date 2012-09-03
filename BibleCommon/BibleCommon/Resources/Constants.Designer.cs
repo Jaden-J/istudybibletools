@@ -70,6 +70,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add new module.
+        /// </summary>
+        public static string AddSupplementalModule {
+            get {
+                return ResourceManager.GetString("AddSupplementalModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sasha &amp; Natasha.
         /// </summary>
         public static string Author {
