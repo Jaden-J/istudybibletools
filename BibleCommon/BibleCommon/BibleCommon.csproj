@@ -57,6 +57,7 @@
     <Compile Include="Common\ResultClasses.cs" />
     <Compile Include="Common\VersePointerSearchResult.cs" />
     <Compile Include="Consts\Consts.cs" />
+    <Compile Include="Contracts\ICustomLogger.cs" />
     <Compile Include="Helpers\FormExtensions.cs" />
     <Compile Include="Helpers\StringUtils.cs" />
     <Compile Include="Helpers\Utils.cs" />

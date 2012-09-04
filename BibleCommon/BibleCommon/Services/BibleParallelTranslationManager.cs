@@ -9,6 +9,7 @@ using BibleCommon.Helpers;
 using System.Xml;
 using BibleCommon.Consts;
 using System.Xml.XPath;
+using BibleCommon.Contracts;
 
 namespace BibleCommon.Services
 {
@@ -44,6 +45,8 @@ namespace BibleCommon.Services
 
         public ModuleBibleInfo BaseBibleInfo { get; set; }
         public ModuleBibleInfo ParallelBibleInfo { get; set; }
+
+        public ICustomLogger Logger { get; set; }
 
         public List<BaseVersePointerException> Errors { get; set; }
 
@@ -120,6 +123,9 @@ namespace BibleCommon.Services
                 if (baseBookInfo == null)
                     throw new InvalidModuleException(string.Format("Book with index {0} is not found in module manifest", baseBookContent.Index));
 
+                if (Logger != null)
+                    Logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessBook, baseBookInfo.Name);
+
                 var parallelBookContent = ParallelBibleInfo.Content.Books.FirstOrDefault(b => b.Index == baseBookContent.Index);
                 if (parallelBookContent != null)
                 {
@@ -156,6 +162,9 @@ namespace BibleCommon.Services
 
             foreach (var baseChapter in baseBookContent.Chapters)
             {
+                if (Logger != null)
+                    Logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessChapter, baseChapter.Index);
+
                 XDocument chapterPageDoc = null;
                 BibleIteratorArgs bibleIteratorArgs = null;
 

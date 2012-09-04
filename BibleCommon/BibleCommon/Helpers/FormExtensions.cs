@@ -93,19 +93,14 @@ namespace BibleCommon.Helpers
                 singleAction();
             }
         }
-
-        public static ToolTip _toolTip = null;
         public static void SetToolTip(Control c, string toolTip)
         {
-            if (_toolTip == null)
-            {
-                _toolTip = new ToolTip();
+            var _toolTip = new ToolTip();
 
-                _toolTip.AutoPopDelay = 5000;
-                _toolTip.InitialDelay = 1000;
-                _toolTip.ReshowDelay = 500;
-                _toolTip.ShowAlways = true;
-            }
+            _toolTip.AutoPopDelay = 5000;
+            _toolTip.InitialDelay = 1000;
+            _toolTip.ReshowDelay = 500;
+            _toolTip.ShowAlways = true;
 
             _toolTip.SetToolTip(c, toolTip);
         }
