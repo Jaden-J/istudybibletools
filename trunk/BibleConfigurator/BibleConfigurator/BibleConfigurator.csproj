@@ -63,6 +63,7 @@
     </Compile>
     <Compile Include="Common.cs" />
     <Compile Include="Consts.cs" />
+    <Compile Include="CustomFormLogger.cs" />
     <Compile Include="Installer.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -210,6 +211,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\apply.png" />
     <Content Include="Resources\plus.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -10,12 +10,13 @@ using BibleCommon.Consts;
 using System.Xml;
 using BibleCommon.Common;
 using System.Xml.XPath;
+using BibleCommon.Contracts;
 
 namespace BibleCommon.Services
 {
     public static class SupplementalBibleManager
     {
-        public static void CreateSupplementalBible(Application oneNoteApp, string moduleShortName)
+        public static void CreateSupplementalBible(Application oneNoteApp, string moduleShortName, ICustomLogger logger)
         {
             if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(oneNoteApp)))            
                 SettingsManager.Instance.NotebookId_SupplementalBible = NotebookGenerator.CreateNotebook(oneNoteApp, Resources.Constants.SupplementalBibleName);                            
@@ -29,6 +30,10 @@ namespace BibleCommon.Services
             for (int i = 0; i < moduleInfo.BibleStructure.BibleBooks.Count; i++)
             {
                 var bibleBookInfo = moduleInfo.BibleStructure.BibleBooks[i];
+
+                if (logger != null)
+                    logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessBook, bibleBookInfo.Name);
+
                 bibleBookInfo.SectionName = NotebookGenerator.GetBibleBookSectionName(bibleBookInfo.Name, i, moduleInfo.BibleStructure.OldTestamentBooksCount);
 
                 currentSectionGroupId = GetCurrentSectionGroupId(oneNoteApp, currentSectionGroupId, moduleInfo, i);
@@ -41,6 +46,9 @@ namespace BibleCommon.Services
 
                 foreach (var chapter in bibleBook.Chapters)
                 {
+                    if (logger != null)
+                        logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessChapter, chapter.Index);
+
                     GenerateChapterPage(oneNoteApp, chapter, bookSectionId, moduleInfo, bibleBookInfo, bibleInfo);
                 }
             }
@@ -52,7 +60,7 @@ namespace BibleCommon.Services
             SettingsManager.Instance.Save();
         }
 
-        public static BibleParallelTranslationConnectionResult LinkSupplementalBibleWithMainBible(Application oneNoteApp, int supplementalModuleIndex)
+        public static BibleParallelTranslationConnectionResult LinkSupplementalBibleWithMainBible(Application oneNoteApp, int supplementalModuleIndex, ICustomLogger logger)
         {
             if (supplementalModuleIndex != 0)
                 throw new NotSupportedException("supplementalModuleIndex != 0");            
@@ -74,6 +82,8 @@ namespace BibleCommon.Services
                             supplementalModuleSortName, SettingsManager.Instance.ModuleName,
                             SettingsManager.Instance.NotebookId_SupplementalBible))
             {
+                bibleTranslationManager.Logger = logger;
+
                 result = bibleTranslationManager.IterateBaseBible(chapterPageDoc =>
                     {
                         OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp, pageContent => pageContent.PageType == OneNoteProxy.PageType.Bible, null, null);
@@ -201,7 +211,7 @@ namespace BibleCommon.Services
             oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);            
         }
 
-        public static BibleParallelTranslationConnectionResult AddParallelBible(Application oneNoteApp, string moduleShortName)
+        public static BibleParallelTranslationConnectionResult AddParallelBible(Application oneNoteApp, string moduleShortName, ICustomLogger logger)
         {
             if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(oneNoteApp)) 
                 || SettingsManager.Instance.SupplementalBibleModules.Count == 0)
@@ -227,9 +237,16 @@ namespace BibleCommon.Services
             return result;
         }
 
-        public static void RemoveLastSupplementalModule()
+        public static void RemoveLastSupplementalModule(ICustomLogger logger)
         {
-            SettingsManager.Instance.SupplementalBibleModules.RemoveAt(SettingsManager.Instance.SupplementalBibleModules.Count - 1);
+            SettingsManager.Instance.SupplementalBibleModules.RemoveAt(SettingsManager.Instance.SupplementalBibleModules.Count - 1);                        
+
+            if (SettingsManager.Instance.SupplementalBibleModules.Count == 0)
+            {
+                //NotebookGenerator.DeleteNotebook(SettingsManager.Instance.NotebookId_SupplementalBible);
+                SettingsManager.Instance.NotebookId_SupplementalBible = null;
+            }
+
             SettingsManager.Instance.Save();
         }
     }

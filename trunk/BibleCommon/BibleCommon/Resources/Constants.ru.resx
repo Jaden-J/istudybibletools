@@ -465,4 +465,19 @@
   <data name="AddSupplementalModule" xml:space="preserve">
     <value>Добавить новый модуль</value>
   </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="ModuleDisplayName" xml:space="preserve">
+    <value>Название модуля</value>
+  </data>
+  <data name="ModuleIsActive" xml:space="preserve">
+    <value>Текущий ли модуль</value>
+  </data>
+  <data name="ModuleVersion" xml:space="preserve">
+    <value>Версия модуля</value>
+  </data>
+  <data name="ProcessBook" xml:space="preserve">
+    <value>Обработка книги</value>
+  </data>
 </root>

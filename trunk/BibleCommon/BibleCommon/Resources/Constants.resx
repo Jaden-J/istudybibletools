@@ -468,4 +468,19 @@
   <data name="AddSupplementalModule" xml:space="preserve">
     <value>Add new module</value>
   </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="ModuleDisplayName" xml:space="preserve">
+    <value>Display Name</value>
+  </data>
+  <data name="ModuleIsActive" xml:space="preserve">
+    <value>Is Active</value>
+  </data>
+  <data name="ModuleVersion" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="ProcessBook" xml:space="preserve">
+    <value>Processing the book</value>
+  </data>
 </root>

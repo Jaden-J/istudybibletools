@@ -173,6 +173,6 @@ namespace BibleVersePointer
                 
                 OneNoteUtils.UpdatePageContentSafe(oneNoteApp, pageDoc, xnm);
             }
-        }
+        }      
     }
 }
