@@ -32,7 +32,7 @@ namespace BibleCommon.Services
 
     public class BibleParallelTranslationManager : IDisposable
     {
-        private const string SupportedModuleMinVersion = "2.0";
+        public const string SupportedModuleMinVersion = "2.0";
 
         private Application _oneNoteApp;
 
@@ -69,15 +69,20 @@ namespace BibleCommon.Services
             _oneNoteApp = oneNoteApp;
         }
 
+        public static bool IsModuleSupported(ModuleInfo moduleInfo)
+        {
+            return moduleInfo.Version.CompareTo(SupportedModuleMinVersion) >= 0;
+        }
+
         private void CheckModules()
         {
             ModulesManager.CheckModule(BaseModuleInfo);
             ModulesManager.CheckModule(ParallelModuleInfo);
 
-            if (BaseModuleInfo.Version.CompareTo(SupportedModuleMinVersion) < 0)
+            if (!IsModuleSupported(BaseModuleInfo))
                 throw new NotSupportedException(string.Format("Version of base module is {0}. Only {1} and greater is supported.", BaseModuleInfo.Version, SupportedModuleMinVersion));
 
-            if (ParallelModuleInfo.Version.CompareTo(SupportedModuleMinVersion) < 0)
+            if (!IsModuleSupported(ParallelModuleInfo))
                 throw new NotSupportedException(string.Format("Version of parallel module is {0}. Only {1} and greater is supported.", ParallelModuleInfo.Version, SupportedModuleMinVersion));
         }
 
@@ -110,7 +115,7 @@ namespace BibleCommon.Services
         {
             Errors.Clear();
 
-            var bibleVersePointersComparisonTable = BibleParallelTranslationConnectorManager.GetBibleParallelTranslationInfo(
+            var bibleVersePointersComparisonTable = BibleParallelTranslationConnectorManager.GetParallelBibleInfo(
                                                           BaseModuleInfo.ShortName, ParallelModuleInfo.ShortName,
                                                           BaseModuleInfo.BibleTranslationDifferences,
                                                           ParallelModuleInfo.BibleTranslationDifferences);
@@ -121,10 +126,7 @@ namespace BibleCommon.Services
             {
                 var baseBookInfo = BaseModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBookContent.Index);
                 if (baseBookInfo == null)
-                    throw new InvalidModuleException(string.Format("Book with index {0} is not found in module manifest", baseBookContent.Index));
-
-                if (Logger != null)
-                    Logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessBook, baseBookInfo.Name);
+                    throw new InvalidModuleException(string.Format("Book with index {0} is not found in module manifest", baseBookContent.Index));                
 
                 var parallelBookContent = ParallelBibleInfo.Content.Books.FirstOrDefault(b => b.Index == baseBookContent.Index);
                 if (parallelBookContent != null)
@@ -162,8 +164,8 @@ namespace BibleCommon.Services
 
             foreach (var baseChapter in baseBookContent.Chapters)
             {
-                if (Logger != null)
-                    Logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessChapter, baseChapter.Index);
+                if (Logger != null)                
+                    Logger.LogMessage("{0} '{1} {2}'", BibleCommon.Resources.Constants.ProcessChapter, baseBookInfo.Name, baseChapter.Index);                
 
                 XDocument chapterPageDoc = null;
                 BibleIteratorArgs bibleIteratorArgs = null;

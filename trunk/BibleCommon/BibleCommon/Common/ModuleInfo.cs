@@ -78,33 +78,46 @@ namespace BibleCommon.Common
         /// <param name="s"></param>
         /// <param name="endsWithDot">Методу передаётся уже стримленная строка. Потому отдельно передаётся: заканчивалось ли название книги на точку. Если имя книги было полное (а не сокращённое) и оно окончивалось на точку, то не считаем это верной записью</param>
         /// <returns></returns>
-        public BibleBookInfo GetBibleBook(string s, bool endsWithDot)
+        public BibleBookInfo GetBibleBook(string s, bool endsWithDot, out string moduleName)
         {
             s = s.ToLowerInvariant();
 
-            var result = GetBibleBookByExactMatch(s, endsWithDot);
+            var result = GetBibleBookByExactMatch(s, endsWithDot, out moduleName);
 
             if (result == null && s.Length > 0 && StringUtils.IsDigit(s[0]))
             {
 
                 s = s.Replace(" ", string.Empty); // чтоб находил "1 John", когда в списке сокращений только "1John"
-                result = GetBibleBookByExactMatch(s, endsWithDot);
-            }
-
-            if (result != null && endsWithDot)
-                if (result.Name.ToLowerInvariant() == s)
-                    result = null;
+                result = GetBibleBookByExactMatch(s, endsWithDot, out moduleName);
+            }            
 
             return result;
         }
 
-        private BibleBookInfo GetBibleBookByExactMatch(string s, bool endsWithDot)
+        private BibleBookInfo GetBibleBookByExactMatch(string s, bool endsWithDot, out string moduleName)
         {
-            return BibleStructure.BibleBooks.FirstOrDefault(
-                        book => 
-                            book.Abbreviations.Any(abbr => abbr.Value == s 
-                                                        && (!endsWithDot || !abbr.IsFullBookName))
-                        || (book.Name.ToLowerInvariant() == s && !endsWithDot));
+            moduleName = null;
+
+            foreach (var book in BibleStructure.BibleBooks)
+            {
+                if (book.Name.ToLowerInvariant() == s)
+                {
+                    if (endsWithDot)
+                        return null;
+
+                    return book;                        
+                }
+
+                var abbreviation = book.Abbreviations.FirstOrDefault(abbr => abbr.Value == s
+                                                        && (!endsWithDot || !abbr.IsFullBookName));
+                if (abbreviation != null)
+                {
+                    moduleName = abbreviation.ModuleName;
+                    return book;
+                }
+            }
+
+            return null;
         }
     }
 
@@ -186,6 +199,10 @@ namespace BibleCommon.Common
 
         [XmlText]
         public string Value { get; set; }
+
+        [XmlAttribute]
+        [DefaultValue("")]
+        public string ModuleName { get; set; }
 
         public Abbreviation()
         {

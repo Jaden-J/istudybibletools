@@ -72,8 +72,8 @@ namespace TestProject
         {
             DateTime dtStart = DateTime.Now;
 
-            SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, "kjv");
-            var result = SupplementalBibleManager.LinkSupplementalBibleWithMainBible(OneNoteApp, 0);
+            SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, "kjv", null);
+            var result = SupplementalBibleManager.LinkSupplementalBibleWithMainBible(OneNoteApp, 0, null);
 
             DateTime dtEnd = DateTime.Now;
 
@@ -88,7 +88,7 @@ namespace TestProject
         {
             DateTime dtStart = DateTime.Now;
 
-            var result = SupplementalBibleManager.AddParallelBible(OneNoteApp, "rst");
+            var result = SupplementalBibleManager.AddParallelBible(OneNoteApp, "rst", null);
 
             DateTime dtEnd = DateTime.Now;
 

@@ -45,7 +45,8 @@ namespace BibleConfigurator.Tools
                     //todo: log it
                 }
 
-                _form.PrepareForExternalProcessing(1255, 1, BibleCommon.Resources.Constants.ResizeBibleTableManagerStartMessage);
+                int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleName);
+                _form.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.ResizeBibleTableManagerStartMessage);
 
                 NotebookIteratorHelper.Iterate(_oneNoteApp,
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>

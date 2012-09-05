@@ -45,7 +45,8 @@ namespace BibleConfigurator.Tools
                     //todo: log it
                 }
 
-                _form.PrepareForExternalProcessing(1255, 1, BibleCommon.Resources.Constants.RelinkBibleCommentsManagerStartMessage);
+                int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleName);
+                _form.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.RelinkBibleCommentsManagerStartMessage);
 
                 //для тестирования
                 //RelinkPageComments(_oneNoteApp.Windows.CurrentWindow.CurrentSectionId, 

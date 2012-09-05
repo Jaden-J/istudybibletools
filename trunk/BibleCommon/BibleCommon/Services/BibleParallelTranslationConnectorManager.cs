@@ -26,7 +26,7 @@ namespace BibleCommon.Services
         private static string GetKey(string baseModuleShortName, string parallelModuleShortName)
         {
             return string.Format("{0}_{1}", baseModuleShortName, parallelModuleShortName).ToLower();
-        }
+        }        
 
         public static SimpleVersePointer GetParallelVersePointer(SimpleVersePointer baseVersePointer, string baseModuleShortName, string parallelModuleShortName)
         {
@@ -57,12 +57,12 @@ namespace BibleCommon.Services
                  var baseModuleInfo = ModulesManager.GetModuleInfo(baseModuleShortName);
                  var parallelModuleInfo = ModulesManager.GetModuleInfo(parallelModuleShortName);
 
-                 return GetBibleParallelTranslationInfo(baseModuleShortName, parallelModuleShortName,
+                 return GetParallelBibleInfo(baseModuleShortName, parallelModuleShortName,
                      baseModuleInfo.BibleTranslationDifferences, parallelModuleInfo.BibleTranslationDifferences);
              }            
         }
 
-        public static ParallelBibleInfo GetBibleParallelTranslationInfo(string baseModuleShortName, string parallelModuleShortName,
+        public static ParallelBibleInfo GetParallelBibleInfo(string baseModuleShortName, string parallelModuleShortName,
             BibleTranslationDifferences baseBookTranslationDifferences,
             BibleTranslationDifferences parallelBookTranslationDifferences)
         {

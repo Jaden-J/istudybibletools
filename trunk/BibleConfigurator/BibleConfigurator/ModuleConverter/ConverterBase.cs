@@ -202,12 +202,7 @@ namespace BibleConfigurator.ModuleConverter
 
         protected virtual void SaveToXmlFile(object data, string fileName)
         {
-            XmlSerializer ser = new XmlSerializer(data.GetType());
-            using (var fs = new FileStream(Path.Combine(ManifestFilesFolderPath, fileName), FileMode.Create))
-            {
-                ser.Serialize(fs, data);
-                fs.Flush();
-            }
+            Utils.SaveToXmlFile(data, Path.Combine(ManifestFilesFolderPath, fileName));
         }
 
         protected virtual void GenerateManifest(ExternalModuleInfo externalModuleInfo)

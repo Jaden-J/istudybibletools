@@ -37,8 +37,9 @@ namespace BibleConfigurator.Tools
                 BibleCommon.Services.Logger.Init("DeleteNotesPagesManager");
 
                 Dictionary<string, string> pagesToDelete = GetAllNotesPagesIds();
+                int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleName);
 
-                _form.PrepareForExternalProcessing(1255 + pagesToDelete.Count, 1, BibleCommon.Resources.Constants.DeleteNotesPagesManagerStartMessage);
+                _form.PrepareForExternalProcessing(chaptersCount + pagesToDelete.Count, 1, BibleCommon.Resources.Constants.DeleteNotesPagesManagerStartMessage);
 
                 NotebookIteratorHelper.Iterate(_oneNoteApp,
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>

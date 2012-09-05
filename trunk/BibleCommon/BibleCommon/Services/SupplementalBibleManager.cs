@@ -23,41 +23,40 @@ namespace BibleCommon.Services
             else
                 throw new InvalidOperationException("Supplemental Bible already exists");
 
-            string currentSectionGroupId = null;
-            var moduleInfo = ModulesManager.GetModuleInfo(moduleShortName);
-            var bibleInfo = ModulesManager.GetModuleBibleInfo(moduleShortName);
+            //string currentSectionGroupId = null;
+            //var moduleInfo = ModulesManager.GetModuleInfo(moduleShortName);
+            //var bibleInfo = ModulesManager.GetModuleBibleInfo(moduleShortName);
 
-            for (int i = 0; i < moduleInfo.BibleStructure.BibleBooks.Count; i++)
-            {
-                var bibleBookInfo = moduleInfo.BibleStructure.BibleBooks[i];
+            //for (int i = 0; i < moduleInfo.BibleStructure.BibleBooks.Count; i++)
+            //{
+            //    var bibleBookInfo = moduleInfo.BibleStructure.BibleBooks[i];                
 
-                if (logger != null)
-                    logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessBook, bibleBookInfo.Name);
+            //    bibleBookInfo.SectionName = NotebookGenerator.GetBibleBookSectionName(bibleBookInfo.Name, i, moduleInfo.BibleStructure.OldTestamentBooksCount);
 
-                bibleBookInfo.SectionName = NotebookGenerator.GetBibleBookSectionName(bibleBookInfo.Name, i, moduleInfo.BibleStructure.OldTestamentBooksCount);
+            //    currentSectionGroupId = GetCurrentSectionGroupId(oneNoteApp, currentSectionGroupId, moduleInfo, i);
 
-                currentSectionGroupId = GetCurrentSectionGroupId(oneNoteApp, currentSectionGroupId, moduleInfo, i);
+            //    var bookSectionId = NotebookGenerator.AddBookSectionToBibleNotebook(oneNoteApp, currentSectionGroupId, bibleBookInfo.SectionName, bibleBookInfo.Name);
 
-                var bookSectionId = NotebookGenerator.AddBookSectionToBibleNotebook(oneNoteApp, currentSectionGroupId, bibleBookInfo.SectionName, bibleBookInfo.Name);
+            //    var bibleBook = bibleInfo.Content.Books.FirstOrDefault(book => book.Index == bibleBookInfo.Index);
+            //    if (bibleBook == null)
+            //        throw new Exception("Manifest.xml has Bible books that do not exist in bible.xml");
 
-                var bibleBook = bibleInfo.Content.Books.FirstOrDefault(book => book.Index == bibleBookInfo.Index);
-                if (bibleBook == null)
-                    throw new Exception("Manifest.xml has Bible books that do not exist in bible.xml");
+            //    foreach (var chapter in bibleBook.Chapters)
+            //    {
+            //        if (logger != null)
+            //            logger.LogMessage("{0} '{1} {2}'", BibleCommon.Resources.Constants.ProcessChapter, bibleBookInfo.Name, chapter.Index);
 
-                foreach (var chapter in bibleBook.Chapters)
-                {
-                    if (logger != null)
-                        logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessChapter, chapter.Index);
+            //        GenerateChapterPage(oneNoteApp, chapter, bookSectionId, moduleInfo, bibleBookInfo, bibleInfo);
+            //    }
+            //}
 
-                    GenerateChapterPage(oneNoteApp, chapter, bookSectionId, moduleInfo, bibleBookInfo, bibleInfo);
-                }
-            }
-
-            oneNoteApp.SyncHierarchy(SettingsManager.Instance.NotebookId_SupplementalBible);
+            //oneNoteApp.SyncHierarchy(SettingsManager.Instance.NotebookId_SupplementalBible);
 
             SettingsManager.Instance.SupplementalBibleModules.Clear();
-            SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
+            SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);            
             SettingsManager.Instance.Save();
+            
+            AggregateBookAbbreviations(moduleShortName);
         }
 
         public static BibleParallelTranslationConnectionResult LinkSupplementalBibleWithMainBible(Application oneNoteApp, int supplementalModuleIndex, ICustomLogger logger)
@@ -99,6 +98,36 @@ namespace BibleCommon.Services
             OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp, pageContent => pageContent.PageType == OneNoteProxy.PageType.Bible, null, null);
 
             return result;
+        }
+
+        public static void AggregateBookAbbreviations(string parallelModuleName)
+        {
+            if (SettingsManager.Instance.ModuleName != parallelModuleName)
+            {
+                var baseModuleInfo = ModulesManager.GetModuleInfo(SettingsManager.Instance.ModuleName);
+                var parallelModuleInfo = ModulesManager.GetModuleInfo(parallelModuleName);
+
+                foreach (var baseBook in baseModuleInfo.BibleStructure.BibleBooks)
+                {
+                    var parallelBook = parallelModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBook.Index);
+                    if (parallelBook != null)
+                    {
+                        foreach (var parallelBookAbbreviation in parallelBook.Abbreviations)
+                        {
+                            if (!baseBook.Abbreviations.Exists(abbr => abbr.Value == parallelBookAbbreviation.Value))
+                            {
+                                baseBook.Abbreviations.Add(new Abbreviation(parallelBookAbbreviation.Value) 
+                                { 
+                                    ModuleName = parallelModuleName,
+                                    IsFullBookName = parallelBookAbbreviation.IsFullBookName
+                                });
+                            }
+                        }
+                    }
+                }
+
+                ModulesManager.UpdateModuleManifest(baseModuleInfo);
+            }
         }
 
         private static void LinkdMainBibleAndSupplementalVerses(Application oneNoteApp, SimpleVersePointer baseVersePointer,
@@ -223,16 +252,15 @@ namespace BibleCommon.Services
                 SettingsManager.Instance.SupplementalBibleModules.First(), moduleShortName,
                 SettingsManager.Instance.NotebookId_SupplementalBible))
             {
+                bibleTranslationManager.Logger = logger;
                 result = bibleTranslationManager.AddParallelTranslation();
             }
 
 
             SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
-
-
-            // ещё надо объединить сокращения книг
-
             SettingsManager.Instance.Save();
+
+            AggregateBookAbbreviations(moduleShortName);
 
             return result;
         }
