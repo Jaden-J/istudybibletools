@@ -70,6 +70,24 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adding parallel Bible translation start.
+        /// </summary>
+        public static string AddParallelBibleTranslation {
+            get {
+                return ResourceManager.GetString("AddParallelBibleTranslation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parallel Bible translation was added successfully.
+        /// </summary>
+        public static string AddParallelBibleTranslationFinishMessage {
+            get {
+                return ResourceManager.GetString("AddParallelBibleTranslationFinishMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add new module.
         /// </summary>
         public static string AddSupplementalModule {
@@ -300,6 +318,24 @@ namespace BibleCommon.Resources {
         public static string ConfiguratorWrongParameterValue {
             get {
                 return ResourceManager.GetString("ConfiguratorWrongParameterValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating Supplemental Bible start.
+        /// </summary>
+        public static string CreateSupplementalBible {
+            get {
+                return ResourceManager.GetString("CreateSupplementalBible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Supplemental Bible was created successfully.
+        /// </summary>
+        public static string CreateSupplementalBibleFinishMessage {
+            get {
+                return ResourceManager.GetString("CreateSupplementalBibleFinishMessage", resourceCulture);
             }
         }
         
@@ -547,6 +583,24 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Linking Supplemental Bible start.
+        /// </summary>
+        public static string LinkSupplementalBible {
+            get {
+                return ResourceManager.GetString("LinkSupplementalBible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Supplimental Bible was linked successfully.
+        /// </summary>
+        public static string LinkSupplementalBibleFinishMessage {
+            get {
+                return ResourceManager.GetString("LinkSupplementalBibleFinishMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To upload the module, use the tab &quot;Modules&quot; of the running application..
         /// </summary>
         public static string LoadMofuleInExistingInstance {
@@ -790,15 +844,6 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stage.
-        /// </summary>
-        public static string NoteLinkerStage {
-            get {
-                return ResourceManager.GetString("NoteLinkerStage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Final chapter processing.
         /// </summary>
         public static string NoteLinkManagerChapterProcessing {
@@ -993,6 +1038,15 @@ namespace BibleCommon.Resources {
         public static string SkyDriveBibleIsNotSupportedForLock {
             get {
                 return ResourceManager.GetString("SkyDriveBibleIsNotSupportedForLock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stage.
+        /// </summary>
+        public static string Stage {
+            get {
+                return ResourceManager.GetString("Stage", resourceCulture);
             }
         }
         

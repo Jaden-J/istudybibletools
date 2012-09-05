@@ -228,8 +228,41 @@ namespace BibleCommon.Common
                 }
 
                 bool endsWithDot;
+                string moduleName;
                 OriginalBookName = TrimBookName(s, out endsWithDot);
-                Book = GetBibleBook(OriginalBookName, endsWithDot);
+                Book = GetBibleBook(OriginalBookName, endsWithDot, out moduleName);
+
+                if (!string.IsNullOrEmpty(moduleName))   // значит ссылка дана для модуля, отличного от установленного                
+                    ConvertToBaseVerse(moduleName);                
+            }
+        }
+
+        private void ConvertToBaseVerse(string moduleName)
+        {
+            if (IsValid)
+            {
+                var parallelVersePointer = BibleParallelTranslationConnectorManager.GetParallelVersePointer(
+                                                new SimpleVersePointer(this.Book.Index, this.Chapter.Value, this.Verse.Value), 
+                                                moduleName, SettingsManager.Instance.ModuleName);
+
+                this.OriginalBookName = this.Book.Name;
+                this.Chapter = parallelVersePointer.Chapter;
+                this.Verse = parallelVersePointer.Verse;
+
+                if (IsMultiVerse)
+                {
+                    parallelVersePointer = BibleParallelTranslationConnectorManager.GetParallelVersePointer(
+                                                new SimpleVersePointer(
+                                                                    this.Book.Index, 
+                                                                    this.TopChapter.GetValueOrDefault(this.Chapter.Value), 
+                                                                    this.TopVerse.GetValueOrDefault(this.Verse.Value)), 
+                                                moduleName, SettingsManager.Instance.ModuleName);
+
+                    if (TopChapter.HasValue)
+                        _topChapter = parallelVersePointer.Chapter;
+                    if (TopVerse.HasValue)
+                        _topVerse = parallelVersePointer.Verse;
+                }
             }
         }
 
@@ -359,9 +392,9 @@ namespace BibleCommon.Common
             }
         }
 
-        private static BibleBookInfo GetBibleBook(string s, bool endsWithDot)
-        {
-            return SettingsManager.Instance.CurrentModule.GetBibleBook(s, endsWithDot);
+        private static BibleBookInfo GetBibleBook(string s, bool endsWithDot, out string moduleName)
+        {   
+            return SettingsManager.Instance.CurrentModule.GetBibleBook(s, endsWithDot, out moduleName);
         }
 
         public VersePointer GetChapterPointer()

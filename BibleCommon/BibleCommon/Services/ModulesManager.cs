@@ -41,19 +41,40 @@ namespace BibleCommon.Services
             return module;
         }
 
+        public static int GetBibleChaptersCount(string moduleDirectoryName)
+        {
+            var bibleInfo = GetModuleBibleInfo(moduleDirectoryName);
+            var result = bibleInfo.Content.Books.Sum(b => b.Chapters.Count);
+            return result;
+        }
+
         public static ModuleBibleInfo GetModuleBibleInfo(string moduleDirectoryName)
         {
             return GetModuleFile<ModuleBibleInfo>(moduleDirectoryName, Consts.Constants.BibleInfoFileName);
         }
 
-        private static T GetModuleFile<T>(string moduleDirectoryName, string fileRelativePath)
+        private static string GetModuleFilePath(string moduleDirectoryName, string fileRelativePath)
         {
             string moduleDirectory = Path.Combine(GetModulesDirectory(), moduleDirectoryName);
             string filePath = Path.Combine(moduleDirectory, fileRelativePath);
             if (!File.Exists(filePath))
                 throw new InvalidModuleException(string.Format(BibleCommon.Resources.Constants.FileNotFound, filePath));
 
+            return filePath;
+        }
+
+        private static T GetModuleFile<T>(string moduleDirectoryName, string fileRelativePath)
+        {
+            var filePath = GetModuleFilePath(moduleDirectoryName, fileRelativePath);
+
             return Dessirialize<T>(filePath);
+        }
+
+        public static void UpdateModuleManifest(ModuleInfo moduleInfo)
+        {
+            var filePath = GetModuleFilePath(moduleInfo.ShortName, Consts.Constants.ManifestFileName);
+
+            Utils.SaveToXmlFile(moduleInfo, filePath);
         }
 
         private static T Dessirialize<T>(string xmlFilePath)

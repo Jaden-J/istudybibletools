@@ -5,6 +5,7 @@ using System.Text;
 using System.Reflection;
 using System.IO;
 using BibleCommon.Consts;
+using System.Xml.Serialization;
 
 
 namespace BibleCommon.Helpers
@@ -65,6 +66,16 @@ namespace BibleCommon.Helpers
             }
 
             return folderPath;
+        }
+
+        public static void SaveToXmlFile(object data, string filePath)
+        {
+            XmlSerializer ser = new XmlSerializer(data.GetType());
+            using (var fs = new FileStream(filePath, FileMode.Create))
+            {
+                ser.Serialize(fs, data);
+                fs.Flush();
+            }
         }
     }
 }

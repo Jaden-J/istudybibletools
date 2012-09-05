@@ -279,7 +279,7 @@
   <data name="NoteLinkerShowDetails" xml:space="preserve">
     <value>Show details</value>
   </data>
-  <data name="NoteLinkerStage" xml:space="preserve">
+  <data name="Stage" xml:space="preserve">
     <value>Stage</value>
   </data>
   <data name="NoteLinkManagerChapterProcessing" xml:space="preserve">
@@ -482,5 +482,23 @@
   </data>
   <data name="ProcessBook" xml:space="preserve">
     <value>Processing the book</value>
+  </data>
+  <data name="AddParallelBibleTranslation" xml:space="preserve">
+    <value>Adding parallel Bible translation start</value>
+  </data>
+  <data name="AddParallelBibleTranslationFinishMessage" xml:space="preserve">
+    <value>Parallel Bible translation was added successfully</value>
+  </data>
+  <data name="CreateSupplementalBible" xml:space="preserve">
+    <value>Creating Supplemental Bible start</value>
+  </data>
+  <data name="CreateSupplementalBibleFinishMessage" xml:space="preserve">
+    <value>Supplemental Bible was created successfully</value>
+  </data>
+  <data name="LinkSupplementalBible" xml:space="preserve">
+    <value>Linking Supplemental Bible start</value>
+  </data>
+  <data name="LinkSupplementalBibleFinishMessage" xml:space="preserve">
+    <value>Supplimental Bible was linked successfully</value>
   </data>
 </root>

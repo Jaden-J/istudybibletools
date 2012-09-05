@@ -224,7 +224,7 @@ namespace BibleNoteLinker
                 message = message.Substring(0, maxCount) + "...";
 
             if (stage.HasValue)
-                message = string.Format("{0} {1}/{2}: {3}", BibleCommon.Resources.Constants.NoteLinkerStage, stage, maxStageCount, message);
+                message = string.Format("{0} {1}/{2}: {3}", BibleCommon.Resources.Constants.Stage, stage, maxStageCount, message);
 
             _highLevelMessage = message;
             lblProgress.Text = message;

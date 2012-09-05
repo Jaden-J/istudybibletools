@@ -925,6 +925,7 @@ namespace BibleConfigurator
             lblProgressInfo.Text = infoText;
 
             btnOK.Enabled = false;
+            System.Windows.Forms.Application.DoEvents();
         }
 
         public void ExternalProcessingDone(string infoText)
@@ -935,7 +936,9 @@ namespace BibleConfigurator
             FormExtensions.SetControlPropertyThreadSafe(pbMain, "Visible", false);
             FormExtensions.SetControlPropertyThreadSafe(tbcMain, "Enabled", true);
             FormExtensions.SetControlPropertyThreadSafe(lblProgressInfo, "Text", infoText);
-            FormExtensions.SetControlPropertyThreadSafe(btnOK, "Enabled", true);         
+            FormExtensions.SetControlPropertyThreadSafe(btnOK, "Enabled", true);
+
+            System.Windows.Forms.Application.DoEvents();
         }
 
         public void PerformProgressStep(string infoText)

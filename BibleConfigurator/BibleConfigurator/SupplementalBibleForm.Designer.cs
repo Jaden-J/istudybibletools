@@ -52,12 +52,14 @@
             resources.ApplyResources(this.btnOk, "btnOk");
             this.btnOk.Name = "btnOk";
             this.btnOk.UseVisualStyleBackColor = true;
+            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 
             // btnCancel
             // 
             resources.ApplyResources(this.btnCancel, "btnCancel");
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // SupplementalBibleForm
             // 
@@ -71,6 +73,7 @@
             this.KeyPreview = true;
             this.Name = "SupplementalBibleForm";
             this.ShowInTaskbar = false;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SupplementalBibleForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SupplementalBibleForm_FormClosed);
             this.Load += new System.EventHandler(this.SupplementalBibleForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SupplementalBibleForm_KeyDown);
