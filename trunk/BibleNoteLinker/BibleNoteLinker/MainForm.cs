@@ -226,8 +226,8 @@ namespace BibleNoteLinker
 
         private void llblShowErrors_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            ErrorsForm errors = new ErrorsForm();
-            errors.ShowDialog();
+            var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(Logger.Errors);
+            errorsForm.ShowDialog();
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)

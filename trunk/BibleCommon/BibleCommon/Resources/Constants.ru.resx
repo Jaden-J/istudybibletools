@@ -498,4 +498,13 @@
   <data name="LinkSupplementalBibleFinishMessage" xml:space="preserve">
     <value>Привязка справочной Библии успешно завершена</value>
   </data>
+  <data name="ErrorOccurred" xml:space="preserve">
+    <value>Произошла ошибка</value>
+  </data>
+  <data name="RemoveParallelBibleTranslation" xml:space="preserve">
+    <value>Старт удаления параллельного перевода</value>
+  </data>
+  <data name="RemoveParallelBibleTranslationFinishMessage" xml:space="preserve">
+    <value>Параллельный перевод Библии успешно удалён</value>
+  </data>
 </root>
