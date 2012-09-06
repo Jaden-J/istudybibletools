@@ -51,10 +51,9 @@ namespace BibleConfigurator
             {
                 Label lblDescription = new Label();
                 lblDescription.Text = 
-@"Здесь можно управлять справочной 
-Библией";
+@"Здесь Вы можете управлять справочной Библией. Обратите внимание, ";
                 lblDescription.Top = _top;
-                lblDescription.Width = 200;
+                lblDescription.Width = 250;
                 lblDescription.Height = 100;
                 lblDescription.Left = 30;
                 pnModules.Controls.Add(lblDescription);
