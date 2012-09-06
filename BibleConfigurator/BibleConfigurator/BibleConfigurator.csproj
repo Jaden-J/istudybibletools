@@ -88,6 +88,7 @@
     </Compile>
     <Compile Include="ModuleConverter\BibleQuotaConverter.cs" />
     <Compile Include="ModuleConverter\ConverterBase.cs" />
+    <Compile Include="ModuleConverter\ConverterManager.cs" />
     <Compile Include="ModuleConverter\DefaultRusModuleGenerator.cs" />
     <Compile Include="ModuleConverter\PredefinedInfo.cs" />
     <Compile Include="NotebookChecker.cs" />
@@ -134,6 +135,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AboutProgramForm.ru.resx">
       <DependentUpon>AboutProgramForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConverterForm.resx">
+      <DependentUpon>ConverterForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoadForm.resx">
       <DependentUpon>LoadForm.cs</DependentUpon>

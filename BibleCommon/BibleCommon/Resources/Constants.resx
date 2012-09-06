@@ -504,6 +504,9 @@
   <data name="ErrorOccurred" xml:space="preserve">
     <value>Error occurred</value>
   </data>
+  <data name="DeleteSupplementalBibleQuestion" xml:space="preserve">
+    <value>Close the Supplemental Bible Notebook?</value>
+  </data>
   <data name="RemoveParallelBibleTranslation" xml:space="preserve">
     <value>Removing parallel Bible translation start</value>
   </data>

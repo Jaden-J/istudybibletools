@@ -501,6 +501,9 @@
   <data name="ErrorOccurred" xml:space="preserve">
     <value>Произошла ошибка</value>
   </data>
+  <data name="DeleteSupplementalBibleQuestion" xml:space="preserve">
+    <value>Закрыть записную книжку справочной Библии?</value>
+  </data>
   <data name="RemoveParallelBibleTranslation" xml:space="preserve">
     <value>Старт удаления параллельного перевода</value>
   </data>
