@@ -60,11 +60,13 @@ namespace BibleConfigurator
             Form result = null;
 
             try
-            {                
+            {
                 if (args.Contains(Consts.ShowModuleInfo) && SettingsManager.Instance.IsConfigured(OneNoteApp))
                     result = new AboutModuleForm(SettingsManager.Instance.ModuleName, true);
                 else if (args.Contains(Consts.ShowAboutProgram))
                     result = new AboutProgramForm();
+                else if (args.Contains(Consts.ShowConverter))
+                    result = new ConverterForm();
                 else if (args.Contains(Consts.ShowManual))
                 {
                     OpenManual();
@@ -83,7 +85,7 @@ namespace BibleConfigurator
                         }
                     }
                     else
-                        result = new MainForm(args);                    
+                        result = new MainForm(args);
                 }
                 else if (args.Contains(Consts.LockAllBible))
                 {
@@ -140,7 +142,7 @@ namespace BibleConfigurator
                     }
                 }
                 else
-                {   
+                {
                     result = new MainForm(args);
                 }
             }
