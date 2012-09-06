@@ -421,6 +421,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close the Supplemental Bible Notebook?.
+        /// </summary>
+        public static string DeleteSupplementalBibleQuestion {
+            get {
+                return ResourceManager.GetString("DeleteSupplementalBibleQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove this module.
         /// </summary>
         public static string DeleteThisModule {

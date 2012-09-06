@@ -22,6 +22,7 @@ namespace BibleConfigurator
         private ComboBox _cbModule;
         private CustomFormLogger _logger;
         private bool _needToCommitChanges = false;
+        private bool _wasLoaded = false;
 
         public SupplementalBibleForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
         {
@@ -36,9 +37,18 @@ namespace BibleConfigurator
 
         private void SupplementalBibleForm_Load(object sender, EventArgs e)
         {
+            LoadFormData();
+        }
+
+        private void LoadFormData()
+        {
+            _wasLoaded = false;  
+
             chkUseSupplementalBible.Checked = !string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(_oneNoteApp));
 
-            chkUseSupplementalBible_CheckedChanged(this, null);            
+            chkUseSupplementalBible_CheckedChanged(this, null);
+
+            _wasLoaded = true;
         }
 
         private void LoadUI()
@@ -223,7 +233,7 @@ namespace BibleConfigurator
                     _form.ExternalProcessingDone(BibleCommon.Resources.Constants.ErrorOccurred);
                 }
 
-                SupplementalBibleForm_Load(this, null);
+                LoadFormData();
                 return true;
             }
 
@@ -240,9 +250,29 @@ namespace BibleConfigurator
 
         private void chkUseSupplementalBible_CheckedChanged(object sender, EventArgs e)
         {
-            pnModules.Enabled = chkUseSupplementalBible.Checked;
+            bool needToUpdate = true;
 
-            LoadUI();
+            if (_wasLoaded && !chkUseSupplementalBible.Checked 
+                && !string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(_oneNoteApp)))
+            {
+                if (MessageBox.Show(BibleCommon.Resources.Constants.DeleteSupplementalBibleQuestion,
+                    BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+                    == System.Windows.Forms.DialogResult.Yes)
+                {
+                    SupplementalBibleManager.RemoveSupplementalBible(_oneNoteApp);
+                }
+                else
+                {
+                    chkUseSupplementalBible.Checked = !chkUseSupplementalBible.Checked;
+                    needToUpdate = false;
+                }
+            }
+            
+            if (needToUpdate)
+            {
+                pnModules.Enabled = chkUseSupplementalBible.Checked;
+                LoadUI();
+            }
         }
 
         private void SupplementalBibleForm_KeyDown(object sender, KeyEventArgs e)
