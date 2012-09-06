@@ -6,6 +6,37 @@ using BibleCommon.Common;
 
 namespace BibleConfigurator.ModuleConverter
 {
+    public static class PredefinedNotebooksInfo
+    {        
+        public static List<NotebookInfo> Russian
+        {
+            get
+            {
+                return new List<NotebookInfo>() 
+                {  
+                    new NotebookInfo() { Type = NotebookType.Bible, Name = "Библия.onepkg" },
+                    new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Изучение Библии.onepkg" },
+                    new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Комментарии к Библии.onepkg" },
+                    new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Сводные заметок.onepkg" }
+                };
+            }
+        }
+
+        public static List<NotebookInfo> English
+        {
+            get
+            {
+                return new List<NotebookInfo>()             
+                {   
+                    new NotebookInfo() { Type = NotebookType.Bible, Name = "Bible.onepkg" },
+                    new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Bible Study.onepkg" },
+                    new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Comments to the Bible.onepkg" },
+                    new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Summary of Notes.onepkg" }
+                };
+            }
+        }      
+    }
+
     public static class PredefinedBookDifferences
     {
         public static readonly BibleTranslationDifferences KJV = new BibleTranslationDifferences();
