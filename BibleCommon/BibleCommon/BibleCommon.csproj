@@ -96,6 +96,12 @@
     <Compile Include="Services\VerseRecognitionManager.cs" />
     <Compile Include="Services\VersionOnServerManager.cs" />
     <Compile Include="Helpers\ZipLibHelper.cs" />
+    <Compile Include="UI\Forms\ErrorsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\ErrorsForm.Designer.cs">
+      <DependentUpon>ErrorsForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Constants.ru.resx">
@@ -107,6 +113,12 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Constants.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\ErrorsForm.resx">
+      <DependentUpon>ErrorsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\ErrorsForm.ru.resx">
+      <DependentUpon>ErrorsForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

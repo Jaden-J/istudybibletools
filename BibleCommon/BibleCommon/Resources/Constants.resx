@@ -501,4 +501,13 @@
   <data name="LinkSupplementalBibleFinishMessage" xml:space="preserve">
     <value>Supplimental Bible was linked successfully</value>
   </data>
+  <data name="ErrorOccurred" xml:space="preserve">
+    <value>Error occurred</value>
+  </data>
+  <data name="RemoveParallelBibleTranslation" xml:space="preserve">
+    <value>Removing parallel Bible translation start</value>
+  </data>
+  <data name="RemoveParallelBibleTranslationFinishMessage" xml:space="preserve">
+    <value>Parallel Bible translation was removed successfully</value>
+  </data>
 </root>

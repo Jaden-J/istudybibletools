@@ -90,6 +90,48 @@ namespace BibleCommon.Services
         {
             _oneNoteApp = null;
         }
+
+        public void RemoveLastParallelTranslation()
+        {
+            if (SettingsManager.Instance.SupplementalBibleModules.Count > 1)
+            {
+                string lastModuleName = SettingsManager.Instance.SupplementalBibleModules.Last();
+                var moduleInfo = ModulesManager.GetModuleInfo(lastModuleName);
+
+                XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
+
+                IterateBaseBible(chapterPageDoc =>
+                {
+                    var tableEl = NotebookGenerator.GetBibleTable(chapterPageDoc, xnm);
+
+                    var cellIndex = 0;
+                    var cellFound = false;
+                    foreach (var cell in tableEl.XPathSelectElements("one:Row[1]/one:Cell/one:OEChildren/one:OE/one:T", xnm))
+                    {
+                        if (StringUtils.GetText(cell.Value) == moduleInfo.Name)
+                        {
+                            cellFound = true;
+                            break;
+                        }
+                        cellIndex++;
+                    }
+
+                    if (cellFound)
+                    {
+                        tableEl.XPathSelectElements(string.Format("one:Row/one:Cell[{0}]", cellIndex + 1), xnm).Remove();
+                        tableEl.XPathSelectElements(string.Format("one:Columns/one:Column[{0}]", cellIndex + 1), xnm).Remove();
+                    }
+
+                    int index = 0;
+                    foreach (var column in tableEl.XPathSelectElements("one:Columns/one:Column", xnm))
+                    {
+                        column.SetAttributeValue("index", index++);
+                    }
+
+                    return null;
+                }, true, false, null);
+            }
+        }
         
         public BibleParallelTranslationConnectionResult AddParallelTranslation()
         {
@@ -102,7 +144,7 @@ namespace BibleCommon.Services
                     NotebookGenerator.AddParallelBibleTitle(tableEl, ParallelModuleInfo.Name, bibleIndex, ParallelBibleInfo.Content.Locale, xnm);
 
                     return new BibleIteratorArgs() { BibleIndex = bibleIndex, TableElement = tableEl };
-                }, true,
+                }, true, true,
                 (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
                 {
                     NotebookGenerator.AddParallelVerseRowToBibleTable(bibleIteratorArgs.TableElement, parallelVerse, 
@@ -110,8 +152,8 @@ namespace BibleCommon.Services
                 });
         }
 
-        public BibleParallelTranslationConnectionResult IterateBaseBible(Func<XDocument, BibleIteratorArgs> chapterAction, bool needToUpdateChapter,
-            Action<SimpleVersePointer, SimpleVerse, BibleIteratorArgs> verseAction)
+        public BibleParallelTranslationConnectionResult IterateBaseBible(Func<XDocument, BibleIteratorArgs> chapterAction, bool needToUpdateChapter, 
+            bool iterateVerses, Action<SimpleVersePointer, SimpleVerse, BibleIteratorArgs> verseAction)
         {
             Errors.Clear();
 
@@ -138,7 +180,8 @@ namespace BibleCommon.Services
                     SimpleVersePointersComparisonTable bookVersePointersComparisonTable = bibleVersePointersComparisonTable.ContainsKey(baseBookContent.Index)
                         ? bibleVersePointersComparisonTable[baseBookContent.Index] : new SimpleVersePointersComparisonTable();
 
-                    ProcessBibleBook(sectionEl, baseBookInfo, baseBookContent, parallelBookContent, bookVersePointersComparisonTable, chapterAction, needToUpdateChapter, verseAction);
+                    ProcessBibleBook(sectionEl, baseBookInfo, baseBookContent, parallelBookContent, bookVersePointersComparisonTable,
+                        chapterAction, needToUpdateChapter, iterateVerses, verseAction);
                 }
             }
 
@@ -150,8 +193,8 @@ namespace BibleCommon.Services
         private void ProcessBibleBook(XElement bibleBookSectionEl, BibleBookInfo baseBookInfo,
             BibleBookContent baseBookContent, BibleBookContent parallelBookContent, 
             SimpleVersePointersComparisonTable bookVersePointersComparisonTable,
-            Func<XDocument, BibleIteratorArgs> chapterAction, bool needToUpdateChapter, 
-            Action<SimpleVersePointer, SimpleVerse, BibleIteratorArgs> verseAction)
+            Func<XDocument, BibleIteratorArgs> chapterAction, bool needToUpdateChapter,
+            bool iterateVerses, Action<SimpleVersePointer, SimpleVerse, BibleIteratorArgs> verseAction)
         {
             XmlNamespaceManager xnm;
             string sectionId = (string)bibleBookSectionEl.Attribute("ID");
@@ -181,30 +224,33 @@ namespace BibleCommon.Services
                     chapterPageDoc = OneNoteUtils.GetPageContent(_oneNoteApp, chapterPageId, out xnm);
 
                     bibleIteratorArgs = chapterAction(chapterPageDoc);
-                }             
+                }
 
-                foreach (var baseVerse in baseChapter.Verses)
+                if (iterateVerses)
                 {
-                    var baseVersePointer = new SimpleVersePointer(baseBookContent.Index, baseChapter.Index, baseVerse.Index);
-
-                    var parallelVerse = GetParallelVerse(baseVersePointer, parallelBookContent, bookVersePointersComparisonTable, lastProcessedChapter, lastProcessedVerse);
-
-                    if (verseAction != null)
+                    foreach (var baseVerse in baseChapter.Verses)
                     {
-                        try
-                        {
-                            verseAction(baseVersePointer, parallelVerse, bibleIteratorArgs);
-                        }
-                        catch (BaseVersePointerException ex)
-                        {
-                            Errors.Add(ex);
-                        }
-                    }
+                        var baseVersePointer = new SimpleVersePointer(baseBookContent.Index, baseChapter.Index, baseVerse.Index);
 
-                    if (!parallelVerse.IsEmpty)
-                    {
-                        lastProcessedChapter = parallelVerse.Chapter;
-                        lastProcessedVerse = parallelVerse.TopVerse ?? parallelVerse.Verse;
+                        var parallelVerse = GetParallelVerse(baseVersePointer, parallelBookContent, bookVersePointersComparisonTable, lastProcessedChapter, lastProcessedVerse);
+
+                        if (verseAction != null)
+                        {
+                            try
+                            {
+                                verseAction(baseVersePointer, parallelVerse, bibleIteratorArgs);
+                            }
+                            catch (BaseVersePointerException ex)
+                            {
+                                Errors.Add(ex);
+                            }
+                        }
+
+                        if (!parallelVerse.IsEmpty)
+                        {
+                            lastProcessedChapter = parallelVerse.Chapter;
+                            lastProcessedVerse = parallelVerse.TopVerse ?? parallelVerse.Verse;
+                        }
                     }
                 }
 

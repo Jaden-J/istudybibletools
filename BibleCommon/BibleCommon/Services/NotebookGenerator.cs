@@ -254,7 +254,7 @@ namespace BibleCommon.Services
             oneNoteApp.UpdateHierarchy(notebooksEl.ToString(), Constants.CurrentOneNoteSchema);
 
             return OneNoteUtils.GetNotebookIdByName(oneNoteApp, notebookName, true);
-        }
+        }        
 
         public static string GetBibleBookSectionName(string bookName, int bookIndex, int oldTestamentBooksCount)
         {
@@ -282,6 +282,6 @@ namespace BibleCommon.Services
 
             parentElement.Add(newSectionGroup);
             oneNoteApp.UpdateHierarchy(parentElement.ToString(), Constants.CurrentOneNoteSchema);
-        }
+        }     
     }
 }

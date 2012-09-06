@@ -547,6 +547,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error occurred.
+        /// </summary>
+        public static string ErrorOccurred {
+            get {
+                return ResourceManager.GetString("ErrorOccurred", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ERROR.
         /// </summary>
         public static string ErrorUpper {
@@ -975,6 +984,24 @@ namespace BibleCommon.Resources {
         public static string RelinkBibleCommentsManagerStartMessage {
             get {
                 return ResourceManager.GetString("RelinkBibleCommentsManagerStartMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removing parallel Bible translation start.
+        /// </summary>
+        public static string RemoveParallelBibleTranslation {
+            get {
+                return ResourceManager.GetString("RemoveParallelBibleTranslation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parallel Bible translation was removed successfully.
+        /// </summary>
+        public static string RemoveParallelBibleTranslationFinishMessage {
+            get {
+                return ResourceManager.GetString("RemoveParallelBibleTranslationFinishMessage", resourceCulture);
             }
         }
         
