@@ -274,11 +274,18 @@ namespace BibleCommon.Services
             SettingsManager.Instance.Save();
         }
 
-        public static void RemoveLastSupplementalBibleModule(Application oneNoteApp, ICustomLogger logger)
+        public enum RemoveResult
+        {
+            RemoveLastModule,
+            RemoveSupplementalBible
+        }
+
+        public static RemoveResult RemoveLastSupplementalBibleModule(Application oneNoteApp, ICustomLogger logger)
         {
             if (SettingsManager.Instance.SupplementalBibleModules.Count <= 1)
             {
                 RemoveSupplementalBible(oneNoteApp);
+                return RemoveResult.RemoveSupplementalBible;
             }
             else
             {
@@ -292,6 +299,7 @@ namespace BibleCommon.Services
 
                 SettingsManager.Instance.SupplementalBibleModules.RemoveAt(SettingsManager.Instance.SupplementalBibleModules.Count - 1);
                 SettingsManager.Instance.Save();
+                return RemoveResult.RemoveLastModule;
             }
         }
     }

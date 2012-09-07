@@ -45,6 +45,8 @@ namespace BibleConfigurator
             _wasLoaded = false;  
 
             chkUseSupplementalBible.Checked = !string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(_oneNoteApp));
+            if (!chkUseSupplementalBible.Checked)
+                SettingsManager.Instance.SupplementalBibleModules.Clear(); // на всякий пожарный
 
             chkUseSupplementalBible_CheckedChanged(this, null);
 
@@ -219,8 +221,11 @@ namespace BibleConfigurator
                 {
                     int chaptersCount = ModulesManager.GetBibleChaptersCount(moduleName);
                     _form.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.RemoveParallelBibleTranslation);
-                    SupplementalBibleManager.RemoveLastSupplementalBibleModule(_oneNoteApp, _logger);
-                    _form.ExternalProcessingDone(BibleCommon.Resources.Constants.RemoveParallelBibleTranslationFinishMessage);
+                    var result = SupplementalBibleManager.RemoveLastSupplementalBibleModule(_oneNoteApp, _logger);
+                    _form.ExternalProcessingDone(
+                        result == SupplementalBibleManager.RemoveResult.RemoveLastModule
+                            ? BibleCommon.Resources.Constants.RemoveParallelBibleTranslationFinishMessage
+                            : BibleCommon.Resources.Constants.RemoveSupplementalBibleFinishMessage);
                 }
                 catch (ProcessAbortedByUserException)
                 {

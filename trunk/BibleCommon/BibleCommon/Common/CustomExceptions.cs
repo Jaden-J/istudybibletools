@@ -45,6 +45,8 @@ namespace BibleCommon.Common
 
         public Severity Level { get; set; }
 
+        public bool IsChapterException { get; set; }
+
         public BaseVersePointerException(string message, Severity level)
             : base(message)
         {
@@ -67,4 +69,24 @@ namespace BibleCommon.Common
         {
         }
     }
+
+    public class BaseChapterSectionNotFoundException : BaseVersePointerException
+    {
+        public BaseChapterSectionNotFoundException(int baseChapterIndex, int baseBookInfoIndex)
+            : base(string.Format("Can not find the page for chapter '{0} {1}' in base Bible", baseBookInfoIndex, baseChapterIndex), Severity.Error)
+        {
+            this.IsChapterException = true;
+        }
+    }
+
+    public class ParallelChapterNotFoundException: BaseVersePointerException
+    {
+        public ParallelChapterNotFoundException(SimpleVersePointer verse, Severity level)
+            : base(string.Format("There is no parallel chapter '{0} {1}'", verse.BookIndex, verse.Chapter), level)
+        {
+            this.IsChapterException = true;
+        }
+    }
+
+   
 }

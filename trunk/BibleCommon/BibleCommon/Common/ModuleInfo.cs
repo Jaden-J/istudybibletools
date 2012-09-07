@@ -348,7 +348,7 @@ namespace BibleCommon.Common
         public string GetVerseContent(SimpleVersePointer verse)
         {
             if (this.Chapters.Count < verse.Chapter)
-                throw new ParallelVerseNotFoundException(verse, BaseVersePointerException.Severity.Warning);
+                throw new ParallelChapterNotFoundException(verse, BaseVersePointerException.Severity.Warning);
             
             var chapter = this.Chapters[verse.Chapter - 1];
 
