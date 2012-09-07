@@ -510,4 +510,7 @@
   <data name="RemoveParallelBibleTranslationFinishMessage" xml:space="preserve">
     <value>Параллельный перевод Библии успешно удалён</value>
   </data>
+  <data name="RemoveSupplementalBibleFinishMessage" xml:space="preserve">
+    <value>Справочная Библия была закрыта</value>
+  </data>
 </root>

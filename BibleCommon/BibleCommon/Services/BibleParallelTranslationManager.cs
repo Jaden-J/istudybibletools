@@ -180,8 +180,15 @@ namespace BibleCommon.Services
                     SimpleVersePointersComparisonTable bookVersePointersComparisonTable = bibleVersePointersComparisonTable.ContainsKey(baseBookContent.Index)
                         ? bibleVersePointersComparisonTable[baseBookContent.Index] : new SimpleVersePointersComparisonTable();
 
-                    ProcessBibleBook(sectionEl, baseBookInfo, baseBookContent, parallelBookContent, bookVersePointersComparisonTable,
-                        chapterAction, needToUpdateChapter, iterateVerses, verseAction);
+                    try
+                    {
+                        ProcessBibleBook(sectionEl, baseBookInfo, baseBookContent, parallelBookContent, bookVersePointersComparisonTable,
+                            chapterAction, needToUpdateChapter, iterateVerses, verseAction);
+                    }
+                    catch (BaseVersePointerException ex)
+                    {
+                        Errors.Add(ex);
+                    }
                 }
             }
 
@@ -218,7 +225,7 @@ namespace BibleCommon.Services
                     var chapterPageEl = HierarchySearchManager.FindChapterPage(_oneNoteApp, sectionPagesEl.Root, baseChapter.Index, xnm);
 
                     if (chapterPageEl == null)
-                        throw new Exception(string.Format("The page for chapter {0} of book {1} does not found", baseChapter.Index, baseBookInfo.Name));
+                        throw new BaseChapterSectionNotFoundException(baseChapter.Index, baseBookInfo.Index);
 
                     string chapterPageId = (string)chapterPageEl.Attribute("ID");
                     chapterPageDoc = OneNoteUtils.GetPageContent(_oneNoteApp, chapterPageId, out xnm);
@@ -286,6 +293,9 @@ namespace BibleCommon.Services
             }
             catch (BaseVersePointerException ex)
             {
+                if (ex.IsChapterException)
+                    throw;
+
                 Errors.Add(ex);
                 return new SimpleVerse(firstParallelVerse != null ? firstParallelVerse : baseVersePointer, string.Empty);
             }

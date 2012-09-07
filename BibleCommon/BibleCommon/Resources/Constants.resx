@@ -513,4 +513,7 @@
   <data name="RemoveParallelBibleTranslationFinishMessage" xml:space="preserve">
     <value>Parallel Bible translation was removed successfully</value>
   </data>
+  <data name="RemoveSupplementalBibleFinishMessage" xml:space="preserve">
+    <value>Supplemental Bible was closed successfully</value>
+  </data>
 </root>
