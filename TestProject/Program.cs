@@ -56,7 +56,9 @@ namespace TestProject
 
                 //GenerateParallelBible();   
 
-                CreateSupplementalBible();
+                //CreateSupplementalBible();
+
+                //GenerateBookDifferencesFile();
 
             }
             catch (Exception ex)
@@ -66,6 +68,11 @@ namespace TestProject
 
             Console.ReadKey();
         }
+
+        //private static void GenerateBookDifferencesFile()
+        //{
+        //    Utils.SaveToXmlFile(PredefinedBookDifferences.RST, "G:\\rst.xml");
+        //}
 
 
         private static void CreateSupplementalBible()
@@ -102,14 +109,9 @@ namespace TestProject
         private static void ConvertRussianModule()
         {
             var converter = new BibleQuotaConverter("RST2", @"C:\Users\ademko\Dropbox\temp\RST77", @"c:\temp\RST", Encoding.Default,
-                "Ветхий Завет", "Новый Завет", 39, 27, "ru", new List<NotebookInfo>() 
-                {  
-                    new NotebookInfo() { Type = NotebookType.Bible, Name = "Библия.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Изучение Библии.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Комментарии к Библии.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Сводные заметок.onepkg" }
-                },
-                PredefinedBookIndexes.RST, PredefinedBookDifferences.RST, "{0} глава. {1}", "2.0");
+                "Ветхий Завет", "Новый Завет", 39, 27, "ru",
+                PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst), 
+                "{0} глава. {1}", "2.0");
 
             converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
             {
@@ -125,14 +127,8 @@ namespace TestProject
         private static void ConvertRomanModule()
         {
             var converter = new BibleQuotaConverter("Bible", @"C:\Temp\RCCV", @"c:\manifest.xml", Encoding.Unicode,
-                "1. Vechiul Testament", "2. Noul Testament", 39, 27, "ro", new List<NotebookInfo>()             
-                {   
-                    new NotebookInfo() { Type = NotebookType.Bible, Name = "Bible.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Bible Study.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Comments to the Bible.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Summary of Notes.onepkg" }
-                },
-                PredefinedBookIndexes.KJV, PredefinedBookDifferences.KJV, "{0} capitolul. {1}", "2.0");
+                "1. Vechiul Testament", "2. Noul Testament", 39, 27, "ro",
+                PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(), "{0} capitolul. {1}", "2.0");
 
             converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
             {
@@ -148,14 +144,8 @@ namespace TestProject
         private static void ConvertEnglishModule()
         {
             var converter = new BibleQuotaConverter("KJV", @"C:\Temp\King_James_Version", @"c:\temp\KJV", Encoding.ASCII,
-                "1. Old Testament", "2. New Testament", 39, 27, "en", new List<NotebookInfo>() 
-                {  
-                    new NotebookInfo() { Type = NotebookType.Bible, Name = "Bible.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Bible Study.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Comments to the Bible.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Summary of Notes.onepkg" }
-                },
-                PredefinedBookIndexes.KJV, PredefinedBookDifferences.KJV, "{0} chapter. {1}", "2.0");
+                "1. Old Testament", "2. New Testament", 39, 27, "en",
+                PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(), "{0} chapter. {1}", "2.0");
 
             converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
             {

@@ -13,7 +13,6 @@ namespace BibleConfigurator
         internal const string LockAllBible = "-lockAllBible";
         internal const string RunOnOneNoteStarts = "-runOnOneNoteStarts";
         internal const string UnlockAllBible = "-unlockAllBible";
-        internal const string UnlockBibleSection = "-unlockBibleSection";
-        internal const string ShowConverter = "-showConverter";        
+        internal const string UnlockBibleSection = "-unlockBibleSection";        
     }
 }

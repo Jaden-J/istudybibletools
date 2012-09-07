@@ -70,12 +70,35 @@ namespace BibleCommon.Helpers
 
         public static void SaveToXmlFile(object data, string filePath)
         {
-            XmlSerializer ser = new XmlSerializer(data.GetType());
+            XmlSerializer serializer = new XmlSerializer(data.GetType());
             using (var fs = new FileStream(filePath, FileMode.Create))
             {
-                ser.Serialize(fs, data);
+                serializer.Serialize(fs, data);
                 fs.Flush();
             }
+        }
+
+        public static T LoadFromXmlFile<T>(string filePath)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            return (T)serializer.Deserialize(new MemoryStream(File.ReadAllBytes(filePath)));
+        }
+
+        public static T LoadFromXmlString<T>(string value)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (StreamWriter sw = new StreamWriter(ms))
+                {
+                    sw.WriteLine(value);
+                    sw.Flush();
+                    ms.Position = 0;
+                }
+
+                return (T)serializer.Deserialize(ms);
+            }
+            
         }
     }
 }
