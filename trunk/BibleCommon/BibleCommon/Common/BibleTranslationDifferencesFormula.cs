@@ -32,6 +32,7 @@ namespace BibleCommon.Common
     {
         public int BookIndex { get; set; }
         protected VersePointer BaseVersePointer { get; set; }
+        protected bool IsEmpty { get; set; }
 
         internal bool IsMultiVerse
         {
@@ -74,14 +75,20 @@ namespace BibleCommon.Common
         }
             
 
-        public BibleTranslationDifferencesBaseVersesFormula(int bookIndex, string baseVersesFormula, BibleBookDifference.CorrespondenceVerseType correspondenceType)
+        public BibleTranslationDifferencesBaseVersesFormula(int bookIndex, string baseVersesFormula, string parallelVersesFormula, BibleBookDifference.CorrespondenceVerseType correspondenceType)
             : base(baseVersesFormula)
         {
             this.BookIndex = bookIndex;
-            Initialize(baseVersesFormula);
-
             if (string.IsNullOrEmpty(this.OriginalFormula))
-                throw new NotSupportedException("Empty formula is not supported for base verses");
+            {
+                if (parallelVersesFormula.IndexOfAny(new char[] { 'X', '+' }) != -1)
+                    throw new NotSupportedException("For empty base verse must be defined concrete parallel verse.");
+                
+                Initialize(parallelVersesFormula);
+                IsEmpty = true;
+            }
+            else
+                Initialize(baseVersesFormula);         
 
             if (IsMultiVerse && correspondenceType != BibleBookDifference.CorrespondenceVerseType.All)
                 throw new NotSupportedException("Multi Base Verses are not supported for not strict processing (when correspondenceType != 'All').");
@@ -93,11 +100,11 @@ namespace BibleCommon.Common
             if (_allVerses == null)
             {
                 _allVerses = new List<SimpleVersePointer>();
-                _allVerses.Add(new SimpleVersePointer(BookIndex, FirstChapter, FirstVerse));
+                _allVerses.Add(new SimpleVersePointer(BookIndex, FirstChapter, FirstVerse) { IsEmpty = IsEmpty });
 
                 if (IsMultiVerse)
                     _allVerses.AddRange(BaseVersePointer.GetAllIncludedVersesExceptFirst(null, new GetAllIncludedVersesExceptFirstArgs() { Force = true })
-                        .ConvertAll<SimpleVersePointer>(v => new SimpleVersePointer(BookIndex, v.Chapter.GetValueOrDefault(), v.Verse.GetValueOrDefault(0))));
+                        .ConvertAll<SimpleVersePointer>(v => new SimpleVersePointer(BookIndex, v.Chapter.GetValueOrDefault(), v.Verse.GetValueOrDefault(0)) { IsEmpty = IsEmpty }));
             }
 
             return _allVerses;
