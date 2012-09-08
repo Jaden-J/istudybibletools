@@ -185,7 +185,7 @@ namespace BibleCommon.Services
                         ProcessBibleBook(sectionEl, baseBookInfo, baseBookContent, parallelBookContent, bookVersePointersComparisonTable,
                             chapterAction, needToUpdateChapter, iterateVerses, verseAction);
                     }
-                    catch (BaseVersePointerException ex)
+                    catch (BaseVersePointerException ex) 
                     {
                         Errors.Add(ex);
                     }
@@ -195,7 +195,7 @@ namespace BibleCommon.Services
             result.Errors = Errors;
 
             return result;
-        }     
+        }      
 
         private void ProcessBibleBook(XElement bibleBookSectionEl, BibleBookInfo baseBookInfo,
             BibleBookContent baseBookContent, BibleBookContent parallelBookContent, 
@@ -236,8 +236,11 @@ namespace BibleCommon.Services
                 if (iterateVerses)
                 {
                     foreach (var baseVerse in baseChapter.Verses)
-                    {
+                    {                        
                         var baseVersePointer = new SimpleVersePointer(baseBookContent.Index, baseChapter.Index, baseVerse.Index);
+
+                        if (bookVersePointersComparisonTable.ContainsKey(baseVersePointer) && bookVersePointersComparisonTable[baseVersePointer]  здесь бы понять, что он IsEmpty.
+                            
 
                         var parallelVerse = GetParallelVerse(baseVersePointer, parallelBookContent, bookVersePointersComparisonTable, lastProcessedChapter, lastProcessedVerse);
 
@@ -264,11 +267,7 @@ namespace BibleCommon.Services
                 if (needToUpdateChapter && chapterAction != null)
                     _oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
             }            
-        }
-
-
-
-       
+        }       
 
         private  SimpleVerse GetParallelVerse(SimpleVersePointer baseVersePointer, BibleBookContent parallelBookContent, 
             SimpleVersePointersComparisonTable bookVersePointersComparisonTable, int lastProcessedChapter, int lastProcessedVerse)
@@ -407,9 +406,57 @@ namespace BibleCommon.Services
             return result;
         }
 
-        public static void RemoveLastParallelTranslation(Application oneNoteApp)
+        /// <summary>
+        /// With base Bible
+        /// </summary>
+        /// <param name="parallelModuleName"></param>
+        public static void AggregateBookAbbreviations(string parallelModuleName)
         {
-            throw new NotImplementedException();
+            if (SettingsManager.Instance.ModuleName != parallelModuleName)
+            {
+                var baseModuleInfo = ModulesManager.GetModuleInfo(SettingsManager.Instance.ModuleName);
+                var parallelModuleInfo = ModulesManager.GetModuleInfo(parallelModuleName);
+
+                foreach (var baseBook in baseModuleInfo.BibleStructure.BibleBooks)
+                {
+                    var parallelBook = parallelModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBook.Index);
+                    if (parallelBook != null)
+                    {
+                        foreach (var parallelBookAbbreviation in parallelBook.Abbreviations)
+                        {
+                            if (!baseBook.Abbreviations.Exists(abbr => abbr.Value == parallelBookAbbreviation.Value))
+                            {
+                                baseBook.Abbreviations.Add(new Abbreviation(parallelBookAbbreviation.Value)
+                                {
+                                    ModuleName = parallelModuleName,
+                                    IsFullBookName = parallelBookAbbreviation.IsFullBookName
+                                });
+                            }
+                        }
+                    }
+                }
+
+                ModulesManager.UpdateModuleManifest(baseModuleInfo);
+            }
+        }
+
+        /// <summary>
+        /// From base Bible
+        /// </summary>
+        /// <param name="parallelModuleName"></param>
+        public static void RemoveBookAbbreviations(string parallelModuleName)
+        {
+            if (SettingsManager.Instance.ModuleName != parallelModuleName)
+            {
+                var baseModuleInfo = ModulesManager.GetModuleInfo(SettingsManager.Instance.ModuleName);
+
+                foreach (var baseBook in baseModuleInfo.BibleStructure.BibleBooks)
+                {
+                    baseBook.Abbreviations.RemoveAll(abbr => abbr.ModuleName == parallelModuleName);
+                }
+
+                ModulesManager.UpdateModuleManifest(baseModuleInfo);
+            }
         }
     }
 }

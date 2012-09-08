@@ -54,9 +54,7 @@ namespace BibleCommon.Services
 
             SettingsManager.Instance.SupplementalBibleModules.Clear();
             SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);            
-            SettingsManager.Instance.Save();
-            
-            AggregateBookAbbreviations(moduleShortName);
+            SettingsManager.Instance.Save();            
         }
 
         public static BibleParallelTranslationConnectionResult LinkSupplementalBibleWithMainBible(Application oneNoteApp, int supplementalModuleIndex, ICustomLogger logger)
@@ -68,11 +66,12 @@ namespace BibleCommon.Services
                 || SettingsManager.Instance.SupplementalBibleModules.Count == 0)
                 throw new NotConfiguredException("Supplemental Bible does not exists.");
 
-            string supplementalModuleSortName = SettingsManager.Instance.SupplementalBibleModules[supplementalModuleIndex];
-            bool needToLinkMainBibleToSupplementalBible = supplementalModuleIndex == 0;
-
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
+
+            string supplementalModuleSortName = SettingsManager.Instance.SupplementalBibleModules[supplementalModuleIndex];
+
+            BibleParallelTranslationManager.AggregateBookAbbreviations(supplementalModuleSortName);                       
 
             OneNoteLocker.UnlockAllBible(oneNoteApp);
 
@@ -100,35 +99,7 @@ namespace BibleCommon.Services
             return result;
         }
 
-        public static void AggregateBookAbbreviations(string parallelModuleName)
-        {
-            if (SettingsManager.Instance.ModuleName != parallelModuleName)
-            {
-                var baseModuleInfo = ModulesManager.GetModuleInfo(SettingsManager.Instance.ModuleName);
-                var parallelModuleInfo = ModulesManager.GetModuleInfo(parallelModuleName);
-
-                foreach (var baseBook in baseModuleInfo.BibleStructure.BibleBooks)
-                {
-                    var parallelBook = parallelModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBook.Index);
-                    if (parallelBook != null)
-                    {
-                        foreach (var parallelBookAbbreviation in parallelBook.Abbreviations)
-                        {
-                            if (!baseBook.Abbreviations.Exists(abbr => abbr.Value == parallelBookAbbreviation.Value))
-                            {
-                                baseBook.Abbreviations.Add(new Abbreviation(parallelBookAbbreviation.Value) 
-                                { 
-                                    ModuleName = parallelModuleName,
-                                    IsFullBookName = parallelBookAbbreviation.IsFullBookName
-                                });
-                            }
-                        }
-                    }
-                }
-
-                ModulesManager.UpdateModuleManifest(baseModuleInfo);
-            }
-        }
+      
 
         private static void LinkdMainBibleAndSupplementalVerses(Application oneNoteApp, SimpleVersePointer baseVersePointer,
             SimpleVerse parallelVerse, BibleIteratorArgs bibleIteratorArgs, XmlNamespaceManager xnm, XNamespace nms)
@@ -260,7 +231,7 @@ namespace BibleCommon.Services
             SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
             SettingsManager.Instance.Save();
 
-            AggregateBookAbbreviations(moduleShortName);
+            BibleParallelTranslationManager.AggregateBookAbbreviations(moduleShortName);
 
             return result;
         }
@@ -268,6 +239,11 @@ namespace BibleCommon.Services
         public static void RemoveSupplementalBible(Application oneNoteApp)
         {
             oneNoteApp.CloseNotebook(SettingsManager.Instance.NotebookId_SupplementalBible);
+
+            foreach (var parallelModuleName in SettingsManager.Instance.SupplementalBibleModules)
+            {
+                BibleParallelTranslationManager.RemoveBookAbbreviations(parallelModuleName);
+            }
 
             SettingsManager.Instance.SupplementalBibleModules.Clear();
             SettingsManager.Instance.NotebookId_SupplementalBible = null;
@@ -296,6 +272,8 @@ namespace BibleCommon.Services
                     bibleTranslationManager.Logger = logger;
                     bibleTranslationManager.RemoveLastParallelTranslation();
                 }
+
+                BibleParallelTranslationManager.RemoveBookAbbreviations(SettingsManager.Instance.SupplementalBibleModules.Last());
 
                 SettingsManager.Instance.SupplementalBibleModules.RemoveAt(SettingsManager.Instance.SupplementalBibleModules.Count - 1);
                 SettingsManager.Instance.Save();
