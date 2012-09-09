@@ -102,34 +102,39 @@ namespace BibleCommon.Services
 
                 IterateBaseBible(chapterPageDoc =>
                 {
-                    var tableEl = NotebookGenerator.GetBibleTable(chapterPageDoc, xnm);
-
-                    var cellIndex = 0;
-                    var cellFound = false;
-                    foreach (var cell in tableEl.XPathSelectElements("one:Row[1]/one:Cell/one:OEChildren/one:OE/one:T", xnm))
-                    {
-                        if (StringUtils.GetText(cell.Value) == moduleInfo.Name)
-                        {
-                            cellFound = true;
-                            break;
-                        }
-                        cellIndex++;
-                    }
-
-                    if (cellFound)
-                    {
-                        tableEl.XPathSelectElements(string.Format("one:Row/one:Cell[{0}]", cellIndex + 1), xnm).Remove();
-                        tableEl.XPathSelectElements(string.Format("one:Columns/one:Column[{0}]", cellIndex + 1), xnm).Remove();
-                    }
-
-                    int index = 0;
-                    foreach (var column in tableEl.XPathSelectElements("one:Columns/one:Column", xnm))
-                    {
-                        column.SetAttributeValue("index", index++);
-                    }
+                    RemoveLastChapterParallelTranslation(chapterPageDoc, moduleInfo, xnm);                   
 
                     return null;
                 }, true, false, null);
+            }
+        }
+
+        internal static void RemoveLastChapterParallelTranslation(XDocument chapterPageDoc, ModuleInfo lastModuleInfo, XmlNamespaceManager xnm)
+        {
+            var tableEl = NotebookGenerator.GetBibleTable(chapterPageDoc, xnm);
+
+            var cellIndex = 0;
+            var cellFound = false;
+            foreach (var cell in tableEl.XPathSelectElements("one:Row[1]/one:Cell/one:OEChildren/one:OE/one:T", xnm))
+            {
+                if (StringUtils.GetText(cell.Value) == lastModuleInfo.Name)
+                {
+                    cellFound = true;
+                    break;
+                }
+                cellIndex++;
+            }
+
+            if (cellFound)
+            {
+                tableEl.XPathSelectElements(string.Format("one:Row/one:Cell[{0}]", cellIndex + 1), xnm).Remove();
+                tableEl.XPathSelectElements(string.Format("one:Columns/one:Column[{0}]", cellIndex + 1), xnm).Remove();
+            }
+
+            int index = 0;
+            foreach (var column in tableEl.XPathSelectElements("one:Columns/one:Column", xnm))
+            {
+                column.SetAttributeValue("index", index++);
             }
         }
         
@@ -137,14 +142,16 @@ namespace BibleCommon.Services
         {
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();            
             
-            return IterateBaseBible(chapterPageDoc =>
+            return IterateBaseBible(
+                chapterPageDoc =>
                 {
                     var tableEl = NotebookGenerator.GetBibleTable(chapterPageDoc, xnm);
                     var bibleIndex = NotebookGenerator.AddColumnToTable(tableEl, SettingsManager.Instance.PageWidth_Bible, xnm);
                     NotebookGenerator.AddParallelBibleTitle(tableEl, ParallelModuleInfo.Name, bibleIndex, ParallelBibleInfo.Content.Locale, xnm);
 
                     return new BibleIteratorArgs() { BibleIndex = bibleIndex, TableElement = tableEl };
-                }, true, true,
+                },               
+                true, true,
                 (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
                 {
                     NotebookGenerator.AddParallelVerseRowToBibleTable(bibleIteratorArgs.TableElement, parallelVerse, 
@@ -152,7 +159,17 @@ namespace BibleCommon.Services
                 });
         }
 
-        public BibleParallelTranslationConnectionResult IterateBaseBible(Func<XDocument, BibleIteratorArgs> chapterAction, bool needToUpdateChapter, 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="chapterAction"></param>
+        /// <param name="chapterUndoAction">если например ни одного стиха в главе не оказалось и ничего не сделали - то чтобы удалить заготовку колонки</param>
+        /// <param name="needToUpdateChapter"></param>
+        /// <param name="iterateVerses"></param>
+        /// <param name="verseAction"></param>
+        /// <returns></returns>
+        public BibleParallelTranslationConnectionResult IterateBaseBible(
+            Func<XDocument, BibleIteratorArgs> chapterAction, bool needToUpdateChapter, 
             bool iterateVerses, Action<SimpleVersePointer, SimpleVerse, BibleIteratorArgs> verseAction)
         {
             Errors.Clear();
@@ -164,7 +181,7 @@ namespace BibleCommon.Services
 
             var result = new BibleParallelTranslationConnectionResult();
 
-            foreach (var baseBookContent in BaseBibleInfo.Content.Books)
+            foreach (var baseBookContent in BaseBibleInfo.Content.Books.Skip(26))
             {
                 var baseBookInfo = BaseModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBookContent.Index);
                 if (baseBookInfo == null)
@@ -233,14 +250,18 @@ namespace BibleCommon.Services
                     bibleIteratorArgs = chapterAction(chapterPageDoc);
                 }
 
+
+                bool? chapterWasModified = null;
                 if (iterateVerses)
                 {
+                    chapterWasModified = false;
                     foreach (var baseVerse in baseChapter.Verses)
                     {                        
                         var baseVersePointer = new SimpleVersePointer(baseBookContent.Index, baseChapter.Index, baseVerse.Index);
 
-                        if (bookVersePointersComparisonTable.ContainsKey(baseVersePointer) && bookVersePointersComparisonTable[baseVersePointer]  здесь бы понять, что он IsEmpty.
-                            
+                        //var originalVersePointer = bookVersePointersComparisonTable.GetOriginalKey(baseVersePointer);
+                        //if (originalVersePointer != null && originalVersePointer.IsEmpty)
+                        //    continue;                            
 
                         var parallelVerse = GetParallelVerse(baseVersePointer, parallelBookContent, bookVersePointersComparisonTable, lastProcessedChapter, lastProcessedVerse);
 
@@ -260,11 +281,12 @@ namespace BibleCommon.Services
                         {
                             lastProcessedChapter = parallelVerse.Chapter;
                             lastProcessedVerse = parallelVerse.TopVerse ?? parallelVerse.Verse;
+                            chapterWasModified = true;
                         }
                     }
                 }
 
-                if (needToUpdateChapter && chapterAction != null)
+                if (needToUpdateChapter && chapterAction != null && chapterWasModified.GetValueOrDefault(true) == true)
                     _oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
             }            
         }       
@@ -305,19 +327,22 @@ namespace BibleCommon.Services
         {
             try
             {
-                if (lastProcessedChapter > 0 && firstParallelVerse.Chapter > lastProcessedChapter)
+                if (!firstParallelVerse.IsEmpty)
                 {
-                    if ((parallelBookContent.Chapters.Count > lastProcessedChapter - 1) && (parallelBookContent.Chapters[lastProcessedChapter - 1].Verses.Count > lastProcessedVerse))
-                        throw new GetParallelVerseException("Miss verse (x01)", baseVersePointer, BaseVersePointerException.Severity.Warning);
-                    else if (firstParallelVerse.Verse > 1)  // начали главу не с начала                    
-                        throw new GetParallelVerseException("Miss verse (x02)", baseVersePointer, BaseVersePointerException.Severity.Warning);
-                }
-                else
-                {
-                    if (lastProcessedVerse > 0 && firstParallelVerse.Verse > lastProcessedVerse + 1)
-                        throw new GetParallelVerseException("Miss verse (x03)", baseVersePointer, BaseVersePointerException.Severity.Warning);
-                    else if (lastProcessedChapter == firstParallelVerse.Chapter && lastProcessedVerse == firstParallelVerse.Verse && !firstParallelVerse.PartIndex.HasValue)
-                        throw new GetParallelVerseException("Double verse (x04)", baseVersePointer, BaseVersePointerException.Severity.Warning);
+                    if (lastProcessedChapter > 0 && firstParallelVerse.Chapter > lastProcessedChapter)
+                    {
+                        if ((parallelBookContent.Chapters.Count > lastProcessedChapter - 1) && (parallelBookContent.Chapters[lastProcessedChapter - 1].Verses.Count > lastProcessedVerse))
+                            throw new GetParallelVerseException("Miss verse (x01)", baseVersePointer, BaseVersePointerException.Severity.Warning);
+                        else if (firstParallelVerse.Verse > 1)  // начали главу не с начала                    
+                            throw new GetParallelVerseException("Miss verse (x02)", baseVersePointer, BaseVersePointerException.Severity.Warning);
+                    }
+                    else
+                    {
+                        if (lastProcessedVerse > 0 && firstParallelVerse.Verse > lastProcessedVerse + 1)
+                            throw new GetParallelVerseException("Miss verse (x03)", baseVersePointer, BaseVersePointerException.Severity.Warning);
+                        else if (lastProcessedChapter == firstParallelVerse.Chapter && lastProcessedVerse == firstParallelVerse.Verse && !firstParallelVerse.PartIndex.HasValue)
+                            throw new GetParallelVerseException("Double verse (x04)", baseVersePointer, BaseVersePointerException.Severity.Warning);
+                    }
                 }
             }
             catch (BaseVersePointerException ex)

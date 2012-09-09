@@ -54,7 +54,7 @@ namespace BibleConfigurator
         }
 
         private void LoadUI()
-        {
+        {            
             pnModules.Controls.Clear();
             _top = 10;
             _needToCommitChanges = false;
@@ -257,20 +257,30 @@ namespace BibleConfigurator
         {
             bool needToUpdate = true;
 
-            if (_wasLoaded && !chkUseSupplementalBible.Checked 
-                && !string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(_oneNoteApp)))
+            string sbNotebookId = SettingsManager.Instance.GetValidSupplementalBibleNotebookId(_oneNoteApp);
+
+            if (_wasLoaded && !chkUseSupplementalBible.Checked)
             {
-                if (MessageBox.Show(BibleCommon.Resources.Constants.DeleteSupplementalBibleQuestion,
-                    BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                    == System.Windows.Forms.DialogResult.Yes)
+                btnSBFolder.Visible = false;
+
+                if (!string.IsNullOrEmpty(sbNotebookId))
                 {
-                    SupplementalBibleManager.RemoveSupplementalBible(_oneNoteApp);
+                    if (MessageBox.Show(BibleCommon.Resources.Constants.DeleteSupplementalBibleQuestion,
+                        BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+                        == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        SupplementalBibleManager.RemoveSupplementalBible(_oneNoteApp);
+                    }
+                    else
+                    {
+                        chkUseSupplementalBible.Checked = !chkUseSupplementalBible.Checked;
+                        needToUpdate = false;
+                    }
                 }
-                else
-                {
-                    chkUseSupplementalBible.Checked = !chkUseSupplementalBible.Checked;
-                    needToUpdate = false;
-                }
+            }
+            else if (chkUseSupplementalBible.Checked && string.IsNullOrEmpty(sbNotebookId))
+            {
+                btnSBFolder.Visible = true;
             }
             
             if (needToUpdate)

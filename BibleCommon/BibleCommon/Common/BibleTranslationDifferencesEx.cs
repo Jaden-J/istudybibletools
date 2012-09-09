@@ -31,7 +31,25 @@ namespace BibleCommon.Common
                 base.Add(key, value);
             else
                 base[key].AddRange(value);
-        }        
+        }
+
+        private Dictionary<SimpleVersePointer, SimpleVersePointer> _keys;
+        public SimpleVersePointer GetOriginalKey(SimpleVersePointer key)
+        {
+            if (_keys == null)
+            {
+                _keys = new Dictionary<SimpleVersePointer, SimpleVersePointer>();
+                foreach (var k in this.Keys)
+                {
+                    _keys.Add(k, k);
+                }                
+            }
+
+            if (_keys.ContainsKey(key))
+                return _keys[key];
+
+            return null;
+        }
     }
 
     public class BibleTranslationDifferencesEx
