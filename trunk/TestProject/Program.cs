@@ -38,8 +38,8 @@ namespace TestProject
            
             try
             {
-                var result = BibleParallelTranslationConnectorManager.GetParallelBibleInfo("rst", "kjv");
-                int i = result.Count;   как оказалось, здесь IsEmpty теряется для baseVerses
+                //var result = BibleParallelTranslationConnectorManager.GetParallelBibleInfo("rst", "kjv");
+                //int i = result.Count;  
                 
                 //SearchForEnText();
 

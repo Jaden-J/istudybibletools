@@ -123,7 +123,7 @@ namespace BibleCommon.Services
                                 new SimpleVersePointer(baseVerseKey) 
                                 { 
                                     PartIndex = versePartIndex.HasValue ? versePartIndex++ : null,
-                                    IsEmpty = baseVersePointer.IsApocrypha
+                                    IsEmpty = baseVersePointer.IsApocrypha || baseVerseKey.IsEmpty
                                 });                            
 
                             bookVersePointersComparisonTables.Add(baseVersePointer, parallelVerses); 

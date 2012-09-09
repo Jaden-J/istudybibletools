@@ -33,6 +33,7 @@
             this.pnModules = new System.Windows.Forms.Panel();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.btnSBFolder = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // chkUseSupplementalBible
@@ -61,10 +62,17 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // btnSBFolder
+            // 
+            resources.ApplyResources(this.btnSBFolder, "btnSBFolder");
+            this.btnSBFolder.Name = "btnSBFolder";
+            this.btnSBFolder.UseVisualStyleBackColor = true;
+            // 
             // SupplementalBibleForm
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnSBFolder);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.pnModules);
@@ -88,5 +96,6 @@
         private System.Windows.Forms.Panel pnModules;
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnSBFolder;
     }
 }
