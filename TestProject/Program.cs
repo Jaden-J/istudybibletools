@@ -15,6 +15,7 @@ using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
 using BibleCommon.Consts;
+using Microsoft.Office.Interop.OneNote;
 
 
 namespace TestProject
@@ -47,7 +48,7 @@ namespace TestProject
 
                 //TryToUpdateInkNodes();
 
-                //ConvertRussianModule();
+                ConvertRussianModule();
 
                 //ConvertEnglishModule();
 
@@ -82,7 +83,10 @@ namespace TestProject
         {
             DateTime dtStart = DateTime.Now;
 
-            SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, "kjv", null);
+            string defaultNotebookFolderPath;
+            OneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+
+            SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, "kjv", defaultNotebookFolderPath, null);
             var result = SupplementalBibleManager.LinkSupplementalBibleWithMainBible(OneNoteApp, 0, null);
 
             DateTime dtEnd = DateTime.Now;
@@ -111,7 +115,7 @@ namespace TestProject
 
         private static void ConvertRussianModule()
         {
-            var converter = new BibleQuotaConverter("RST2", @"C:\Users\ademko\Dropbox\temp\RST77", @"c:\temp\RST", Encoding.Default,
+            var converter = new BibleQuotaConverter("IBS", @"C:\Users\ademko\Dropbox\temp\IBS", @"c:\temp\IBS", Encoding.Default,
                 "Ветхий Завет", "Новый Завет", 39, 27, "ru",
                 PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst), 
                 "{0} глава. {1}", "2.0");
@@ -125,6 +129,8 @@ namespace TestProject
             };
 
             converter.Convert();
+
+            int i = converter.Errors.Count;
         }
 
         private static void ConvertRomanModule()

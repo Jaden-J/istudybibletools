@@ -94,9 +94,9 @@ namespace BibleCommon.Helpers
                     sw.WriteLine(value);
                     sw.Flush();
                     ms.Position = 0;
-                }
 
-                return (T)serializer.Deserialize(ms);
+                    return (T)serializer.Deserialize(ms);
+                }                
             }
             
         }

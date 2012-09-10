@@ -238,12 +238,17 @@ namespace BibleCommon.Services
 
         public static string CreateNotebook(Application oneNoteApp, string notebookName)
         {
+            string defaultNotebookFolderPath;
+            oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+            return CreateNotebook(oneNoteApp, notebookName, defaultNotebookFolderPath);
+        }
+
+        public static string CreateNotebook(Application oneNoteApp, string notebookName, string notebookDirectory)
+        {
             XmlNamespaceManager xnm;
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
-            string defaultNotebookFolderPath;
 
-            oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
-            var newNotebookPath = Utils.GetNewDirectoryPath(defaultNotebookFolderPath + "\\" + notebookName);
+            var newNotebookPath = Utils.GetNewDirectoryPath(notebookDirectory + "\\" + notebookName);
             notebookName = Path.GetFileName(newNotebookPath);
 
             var notebookEl = new XElement(nms + "Notebook",

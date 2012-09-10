@@ -16,10 +16,11 @@ namespace BibleCommon.Services
 {
     public static class SupplementalBibleManager
     {
-        public static void CreateSupplementalBible(Application oneNoteApp, string moduleShortName, ICustomLogger logger)
+        public static void CreateSupplementalBible(Application oneNoteApp, string moduleShortName, string notebookDirectory, ICustomLogger logger)
         {
             if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(oneNoteApp)))            
-                SettingsManager.Instance.NotebookId_SupplementalBible = NotebookGenerator.CreateNotebook(oneNoteApp, Resources.Constants.SupplementalBibleName);                            
+                SettingsManager.Instance.NotebookId_SupplementalBible 
+                    = NotebookGenerator.CreateNotebook(oneNoteApp, Resources.Constants.SupplementalBibleName, notebookDirectory);                            
             else
                 throw new InvalidOperationException("Supplemental Bible already exists");
 
