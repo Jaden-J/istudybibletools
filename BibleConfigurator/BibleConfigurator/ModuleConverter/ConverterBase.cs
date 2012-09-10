@@ -23,25 +23,25 @@ namespace BibleConfigurator.ModuleConverter
         public int BooksCount { get; set; }        
     }
 
-    public abstract class ConverterException : Exception
+    public abstract class ConverterExceptionBase : Exception
     {
-        public ConverterException(string message, params object[] args)
+        public ConverterExceptionBase(string message, params object[] args)
             :base(string.Format(message, args))
         {
         }
     }
 
-    public class VerseReadException : ConverterException
+    public class VerseReadException : ConverterExceptionBase
     {
-        public VerseReadException(int bookIndex, int chapterIndex, int expectedVerseIndex, int verseIndex)
-            : base("{0} {1}: expectedVerseIndex != verseIndex: {2} != {3}", bookIndex, chapterIndex, expectedVerseIndex, verseIndex)
+        public VerseReadException(string message, params object[] args)
+            : base(message, args)
         {
         }
     }
 
     public abstract class ConverterBase
     {
-        public List<ConverterException> Errors { get; set; }
+        public List<ConverterExceptionBase> Errors { get; set; }
 
         protected abstract ExternalModuleInfo ReadExternalModuleInfo();
         protected abstract void ProcessBibleBooks(ExternalModuleInfo externalModuleInfo);        
@@ -94,7 +94,7 @@ namespace BibleConfigurator.ModuleConverter
             this.BookIndexes = bookIndexes;
             this.ChapterSectionNameTemplate = chapterSectionNameTemplate;
             this.Version = version;
-            this.Errors = new List<ConverterException>();
+            this.Errors = new List<ConverterExceptionBase>();
 
             if (!Directory.Exists(manifestFilesFolderPath))
                 Directory.CreateDirectory(manifestFilesFolderPath);
@@ -204,7 +204,7 @@ namespace BibleConfigurator.ModuleConverter
             {
                 AddNewVerseContent(verseNumber, verseText);
             }
-            catch (ConverterException ex)
+            catch (ConverterExceptionBase ex)
             {
                 Errors.Add(ex);
             }
@@ -226,7 +226,8 @@ namespace BibleConfigurator.ModuleConverter
                     });
                 }
 
-                throw new VerseReadException(currentBook.Index, currentChapter.Index, currentVerseIndex, verseNumber);
+                throw new VerseReadException("{0} {1}: expectedVerseIndex != verseIndex: {2} != {3}", 
+                                                currentBook.Index, currentChapter.Index, currentVerseIndex, verseNumber);
             }
 
             currentChapter.Verses.Add(new BibleVerseContent()

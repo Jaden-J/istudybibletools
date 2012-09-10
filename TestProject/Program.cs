@@ -16,6 +16,7 @@ using System.Xml;
 using System.Xml.Linq;
 using BibleCommon.Consts;
 using Microsoft.Office.Interop.OneNote;
+using BibleCommon.UI.Forms;
 
 
 namespace TestProject
@@ -124,14 +125,18 @@ namespace TestProject
             {
                 int? chapterIndex = StringUtils.GetStringLastNumber(chapterNameInput);
                 if (!chapterIndex.HasValue)
-                    throw new Exception("Can not extract chapter index from string: " + chapterNameInput);
+                    chapterIndex = 1;
                 return string.Format("{0} глава. {1}", chapterIndex, bookInfo.Name);
             };
 
             converter.Convert();
 
-            int i = converter.Errors.Count;
+            var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message));
+            form.ShowDialog();           
+
         }
+
+        
 
         private static void ConvertRomanModule()
         {
@@ -143,7 +148,7 @@ namespace TestProject
             {
                 int? chapterIndex = StringUtils.GetStringLastNumber(chapterNameInput);
                 if (!chapterIndex.HasValue)
-                    throw new Exception("Can not extract chapter index from string: " + chapterNameInput);
+                    chapterIndex = 1;
                 return string.Format("{0} capitolul. {1}", chapterIndex, bookInfo.Name);
             };
 
@@ -160,7 +165,7 @@ namespace TestProject
             {
                 int? chapterIndex = StringUtils.GetStringLastNumber(chapterNameInput);
                 if (!chapterIndex.HasValue)
-                    throw new Exception("Can not extract chapter index from string: " + chapterNameInput);
+                    chapterIndex = 1;
                 return string.Format("{0} chapter. {1}", chapterIndex, bookInfo.Name);
             };
 
