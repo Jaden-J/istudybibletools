@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using BibleCommon.Services;
 using BibleCommon.Helpers;
 using BibleCommon.Common;
+using Microsoft.Office.Interop.OneNote;
 
 namespace BibleConfigurator
 {
@@ -38,6 +39,12 @@ namespace BibleConfigurator
         private void SupplementalBibleForm_Load(object sender, EventArgs e)
         {
             LoadFormData();
+
+            string defaultNotebookFolderPath;
+            _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);  
+            folderBrowserDialog.SelectedPath = defaultNotebookFolderPath;
+            folderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetNotebookFolder;
+            folderBrowserDialog.ShowNewFolderButton = true;
         }
 
         private void LoadFormData()
@@ -133,7 +140,7 @@ namespace BibleConfigurator
                     int chaptersCount = ModulesManager.GetBibleChaptersCount(selectedModuleInfo.ShortName);
                     _form.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.CreateSupplementalBible);
                     _logger.Preffix = string.Format("{0} 1/2: ", BibleCommon.Resources.Constants.Stage);
-                    SupplementalBibleManager.CreateSupplementalBible(_oneNoteApp, selectedModuleInfo.ShortName, _logger);
+                    SupplementalBibleManager.CreateSupplementalBible(_oneNoteApp, selectedModuleInfo.ShortName, folderBrowserDialog.SelectedPath, _logger);
 
                     _form.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.LinkSupplementalBible);
                     _logger.Preffix = string.Format("{0} 2/2: ", BibleCommon.Resources.Constants.Stage);
@@ -335,6 +342,11 @@ namespace BibleConfigurator
         private void SupplementalBibleForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             _logger.AbortedByUsers = true;            
+        }
+
+        private void btnSBFolder_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialog.ShowDialog();            
         }
 
     }

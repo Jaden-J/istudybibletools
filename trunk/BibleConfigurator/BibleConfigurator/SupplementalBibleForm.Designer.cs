@@ -34,6 +34,7 @@
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSBFolder = new System.Windows.Forms.Button();
+            this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.SuspendLayout();
             // 
             // chkUseSupplementalBible
@@ -67,6 +68,7 @@
             resources.ApplyResources(this.btnSBFolder, "btnSBFolder");
             this.btnSBFolder.Name = "btnSBFolder";
             this.btnSBFolder.UseVisualStyleBackColor = true;
+            this.btnSBFolder.Click += new System.EventHandler(this.btnSBFolder_Click);
             // 
             // SupplementalBibleForm
             // 
@@ -97,5 +99,6 @@
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnSBFolder;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
     }
 }

@@ -21,10 +21,28 @@ namespace BibleConfigurator.ModuleConverter
         public string ShortName { get; set; }
         public string Alphabet { get; set; }
         public int BooksCount { get; set; }        
-    }        
+    }
+
+    public abstract class ConverterException : Exception
+    {
+        public ConverterException(string message, params object[] args)
+            :base(string.Format(message, args))
+        {
+        }
+    }
+
+    public class VerseReadException : ConverterException
+    {
+        public VerseReadException(int bookIndex, int chapterIndex, int expectedVerseIndex, int verseIndex)
+            : base("{0} {1}: expectedVerseIndex != verseIndex: {2} != {3}", bookIndex, chapterIndex, expectedVerseIndex, verseIndex)
+        {
+        }
+    }
 
     public abstract class ConverterBase
     {
+        public List<ConverterException> Errors { get; set; }
+
         protected abstract ExternalModuleInfo ReadExternalModuleInfo();
         protected abstract void ProcessBibleBooks(ExternalModuleInfo externalModuleInfo);        
 
@@ -42,7 +60,7 @@ namespace BibleConfigurator.ModuleConverter
         protected BibleTranslationDifferences TranslationDifferences { get; set; }
         protected List<int> BookIndexes { get; set; }  // массив индексов книг. Для KJV - упорядоченный массив цифр от 1 до 66.                 
         protected string ChapterSectionNameTemplate { get; set; }
-        protected string Version { get; set; }
+        protected string Version { get; set; }        
 
         /// <summary>
         /// 
@@ -76,6 +94,7 @@ namespace BibleConfigurator.ModuleConverter
             this.BookIndexes = bookIndexes;
             this.ChapterSectionNameTemplate = chapterSectionNameTemplate;
             this.Version = version;
+            this.Errors = new List<ConverterException>();
 
             if (!Directory.Exists(manifestFilesFolderPath))
                 Directory.CreateDirectory(manifestFilesFolderPath);
@@ -179,9 +198,16 @@ namespace BibleConfigurator.ModuleConverter
 
         protected virtual void AddVerseRowToTable(XElement tableElement, int verseNumber, string verseText)
         {
-            NotebookGenerator.AddVerseRowToBibleTable(tableElement, string.Format("{0} {1}", verseNumber, verseText), 1, Locale);            
+            NotebookGenerator.AddVerseRowToBibleTable(tableElement, string.Format("{0} {1}", verseNumber, verseText), 1, Locale);
 
-            AddNewVerseContent(verseNumber, verseText);            
+            try
+            {
+                AddNewVerseContent(verseNumber, verseText);
+            }
+            catch (ConverterException ex)
+            {
+                Errors.Add(ex);
+            }
         }
 
         private void AddNewVerseContent(int verseNumber, string verseText)
@@ -189,9 +215,19 @@ namespace BibleConfigurator.ModuleConverter
             var currentBook = BibleInfo.Content.Books.Last();
             var currentChapter = currentBook.Chapters.Last();
             int currentVerseIndex = currentChapter.Verses.Count + 1;
-            
+
             if (verseNumber != currentVerseIndex)
-                throw new InvalidDataException(string.Format("verseIndex != currentVerseIndex: {0} != {1}", verseNumber, currentVerseIndex));
+            {
+                for (int i = currentVerseIndex; i <= verseNumber; i++)
+                {
+                    currentChapter.Verses.Add(new BibleVerseContent()
+                    {
+                        Index = i, Value = string.Empty
+                    });
+                }
+
+                throw new VerseReadException(currentBook.Index, currentChapter.Index, currentVerseIndex, verseNumber);
+            }
 
             currentChapter.Verses.Add(new BibleVerseContent()
             {
