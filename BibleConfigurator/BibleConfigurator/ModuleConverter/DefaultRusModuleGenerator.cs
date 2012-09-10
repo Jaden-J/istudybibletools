@@ -20,8 +20,9 @@ namespace BibleConfigurator.ModuleConverter
                 {                    
                     new NotebookInfo() { Type = NotebookType.Bible, Name = "Библия.onepkg" },
                     new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Изучение Библии.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Комментарии к Библии.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Сводные заметок.onepkg" }
+                    new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Комментарии к Библии.onepkg" }
+                    //,
+                    //new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Сводные заметок.onepkg" }
                 },
                 BibleStructure = new BibleStructureInfo()
                 {

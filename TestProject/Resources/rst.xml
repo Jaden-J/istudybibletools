@@ -205,8 +205,8 @@
   <BookDifferences BookIndex="27">
     <Difference BaseVerses="4:1-3" ParallelVerses="3:31-33" />
     <Difference BaseVerses="4:4-37" ParallelVerses="4:X-3" />
-    <Difference BaseVerses="" ParallelVerses="13" />
-    <Difference BaseVerses="" ParallelVerses="14" />
+    <Difference BaseVerses="" ParallelVerses="13:1-64" />
+    <Difference BaseVerses="" ParallelVerses="14:1-42" />
   </BookDifferences>
   <BookDifferences BookIndex="28">
     <Difference BaseVerses="13:16" ParallelVerses="14:1" />
