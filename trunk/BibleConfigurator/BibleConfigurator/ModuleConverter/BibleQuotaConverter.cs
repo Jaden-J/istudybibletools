@@ -141,7 +141,7 @@ namespace BibleConfigurator.ModuleConverter
                     string lineText = ShellText(line, moduleInfo); 
 
                     if (line.StartsWith(moduleInfo.ChapterSign))
-                    {
+                    {                        
                         if (currentChapterDoc != null)
                             UpdateChapterPage(currentChapterDoc);
 
@@ -155,16 +155,14 @@ namespace BibleConfigurator.ModuleConverter
                     }
                     else if (line.StartsWith(moduleInfo.VerseSign))
                     {
-                        if (currentTableElement == null)
-                           throw new Exception("currentTableElement is null");                        
-
-                        int? verseNumber;
-                        string verseText = GetVerseTextWithoutNumber(lineText, out verseNumber);
-
-                        if (!verseNumber.HasValue)
-                            throw new Exception(string.Format("Verse has no number: {0}", lineText));
-
-                        AddVerseRowToTable(currentTableElement, verseNumber.Value, verseText);       
+                        try
+                        {
+                            ProcessVerse(lineText, currentTableElement);
+                        }
+                        catch (ConverterExceptionBase ex)
+                        {
+                            Errors.Add(ex);
+                        }
                     }
                 }
             }
@@ -175,15 +173,39 @@ namespace BibleConfigurator.ModuleConverter
             }
         }
 
+        private void ProcessVerse(string lineText, XElement currentTableElement)
+        {
+            if (currentTableElement == null)
+                throw new Exception("currentTableElement is null");
+
+            int? verseNumber;
+            if (!string.IsNullOrEmpty(lineText))
+            {
+                string verseText = GetVerseTextWithoutNumber(lineText, out verseNumber);
+
+                if (!verseNumber.HasValue)
+                {
+                    var currentBook = BibleInfo.Content.Books.Last();
+                    var currentChapter = currentBook.Chapters.Last();
+                    throw new VerseReadException("{0} {1}: Verse has no number: {2}", currentBook.Index, currentChapter.Index, lineText);
+                }
+
+                AddVerseRowToTable(currentTableElement, verseNumber.Value, verseText);
+            }
+        }
+
         private string GetVerseTextWithoutNumber(string lineText, out int? verseNumber)
         {
             verseNumber = null;
 
-            if (StringUtils.IsDigit(lineText[0]))
+            if (!string.IsNullOrEmpty(lineText.Trim()))
             {
-                verseNumber = StringUtils.GetStringFirstNumber(lineText);
+                if (StringUtils.IsDigit(lineText[0]))
+                {
+                    verseNumber = StringUtils.GetStringFirstNumber(lineText);
 
-                lineText = lineText.Remove(0, verseNumber.Value.ToString().Length).Trim();
+                    lineText = lineText.Remove(0, verseNumber.Value.ToString().Length).Trim();
+                }
             }
 
             return lineText;
