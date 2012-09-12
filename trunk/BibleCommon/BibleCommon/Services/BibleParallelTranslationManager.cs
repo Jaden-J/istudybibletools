@@ -291,7 +291,7 @@ namespace BibleCommon.Services
             }            
         }       
 
-        private  SimpleVerse GetParallelVerse(SimpleVersePointer baseVersePointer, BibleBookContent parallelBookContent, 
+        private SimpleVerse GetParallelVerse(SimpleVersePointer baseVersePointer, BibleBookContent parallelBookContent, 
             SimpleVersePointersComparisonTable bookVersePointersComparisonTable, int lastProcessedChapter, int lastProcessedVerse)
         {
             ComparisonVersesInfo parallelVersePointers = null;
@@ -430,18 +430,15 @@ namespace BibleCommon.Services
 
             return result;
         }
-
-        /// <summary>
-        /// With base Bible
-        /// </summary>
-        /// <param name="parallelModuleName"></param>
-        public static void AggregateBookAbbreviations(string parallelModuleName)
+        
+        public static void MergeModuleWithMainBible(string parallelModuleName)
         {
             if (SettingsManager.Instance.ModuleName != parallelModuleName)
             {
                 var baseModuleInfo = ModulesManager.GetModuleInfo(SettingsManager.Instance.ModuleName);
-                var parallelModuleInfo = ModulesManager.GetModuleInfo(parallelModuleName);
+                var parallelModuleInfo = ModulesManager.GetModuleInfo(parallelModuleName);                
 
+                // merge book abbriviations
                 foreach (var baseBook in baseModuleInfo.BibleStructure.BibleBooks)
                 {
                     var parallelBook = parallelModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBook.Index);
@@ -461,15 +458,18 @@ namespace BibleCommon.Services
                     }
                 }
 
+                //merge alphabets
+                foreach (var c in parallelModuleInfo.BibleStructure.Alphabet)
+                {
+                    if (!baseModuleInfo.BibleStructure.Alphabet.Contains(c))
+                        baseModuleInfo.BibleStructure.Alphabet += c;
+                }
+
                 ModulesManager.UpdateModuleManifest(baseModuleInfo);
             }
         }
-
-        /// <summary>
-        /// From base Bible
-        /// </summary>
-        /// <param name="parallelModuleName"></param>
-        public static void RemoveBookAbbreviations(string parallelModuleName)
+        
+        public static void RemoveBookAbbreviationsFromMainBible(string parallelModuleName)
         {
             if (SettingsManager.Instance.ModuleName != parallelModuleName)
             {

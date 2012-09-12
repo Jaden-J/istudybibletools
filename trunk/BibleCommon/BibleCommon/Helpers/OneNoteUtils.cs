@@ -17,9 +17,9 @@ namespace BibleCommon.Helpers
 {
     public static class OneNoteUtils
     {
-        public static bool NotebookExists(Application oneNoteApp, string notebookId)
+        public static bool NotebookExists(Application oneNoteApp, string notebookId, bool refreshCache = false)
         {
-            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, null, HierarchyScope.hsNotebooks);
+            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, null, HierarchyScope.hsNotebooks, refreshCache);
             XElement bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@ID='{0}']", notebookId), hierarchy.Xnm);
             return bibleNotebook != null;            
         }

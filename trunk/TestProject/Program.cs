@@ -40,8 +40,7 @@ namespace TestProject
            
             try
             {
-                //var result = BibleParallelTranslationConnectorManager.GetParallelBibleInfo("rst", "kjv");
-                //int i = result.Count;  
+                BibleParallelTranslationManager.MergeModuleWithMainBible("kjv");
                 
                 //SearchForEnText();
 
@@ -49,7 +48,7 @@ namespace TestProject
 
                 //TryToUpdateInkNodes();
 
-                ConvertRussianModule();
+                //ConvertRussianModule();
 
                 //ConvertEnglishModule();
 
