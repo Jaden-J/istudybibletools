@@ -18,7 +18,7 @@ namespace BibleCommon.Services
     {
         public const int MinimalCellWidth = 37;
 
-        public static string AddBookSectionToBibleNotebook(Application oneNoteApp, string sectionGroupId, string sectionName, string bookName)
+        public static string AddSection(Application oneNoteApp, string sectionGroupId, string sectionName)
         {
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
             XElement section = new XElement(nms + "Section", new XAttribute("name", sectionName));
@@ -36,10 +36,10 @@ namespace BibleCommon.Services
         }
 
 
-        public static XDocument AddChapterPageToBibleNotebook(Application oneNoteApp, string bookSectionId, string pageTitle, int pageLevel, string locale, out XmlNamespaceManager xnm)
+        public static XDocument AddPage(Application oneNoteApp, string sectionId, string pageTitle, int pageLevel, string locale, out XmlNamespaceManager xnm)
         {
             string pageId;
-            oneNoteApp.CreateNewPage(bookSectionId, out pageId, NewPageStyle.npsBlankPageWithTitle);
+            oneNoteApp.CreateNewPage(sectionId, out pageId, NewPageStyle.npsBlankPageWithTitle);
 
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
             XDocument pageDocument = new XDocument(new XElement(nms + "Page",
@@ -60,6 +60,21 @@ namespace BibleCommon.Services
             var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, pageId, out xnm);
 
             return pageDoc;
+        }
+
+        public static void AddTextElementToPage(XDocument pageDoc, string pageContent)
+        {
+            var nms = XNamespace.Get(Constants.OneNoteXmlNs);
+
+            var textEl = new XElement(nms + "Outline",
+                            new XElement(nms + "OEChildren",
+                                new XElement(nms + "OE",
+                                    new XElement(nms + "T",
+                                        new XCData(
+                                            pageContent
+                                                    )))));
+
+            pageDoc.Root.Add(textEl);
         }
         
         public static XElement AddTableToBibleChapterPage(XDocument chapterDoc, int bibleCellWidth, int columnsCount, XmlNamespaceManager xnm)
@@ -140,6 +155,14 @@ namespace BibleCommon.Services
             columnsEl.Add(new XElement(nms + "Column", new XAttribute("index", columnsCount), new XAttribute("width", cellWidth), new XAttribute("isLocked", true)));
 
             return columnsCount;
+        }
+
+        public static void RenameHierarchyElement(Application oneNoteApp, string hierarchyElementId, HierarchyScope scope, string newName)
+        {
+            XmlNamespaceManager xnm;
+            var element = OneNoteUtils.GetHierarchyElement(oneNoteApp, hierarchyElementId, scope, out xnm);
+            element.Root.SetAttributeValue("name", newName);
+            oneNoteApp.UpdateHierarchy(element.ToString(), Constants.CurrentOneNoteSchema);
         }
 
         public static void AddParallelVerseRowToBibleTable(XElement tableElement, SimpleVerse verse, int translationIndex, 

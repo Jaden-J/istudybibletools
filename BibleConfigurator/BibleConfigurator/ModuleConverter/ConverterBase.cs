@@ -39,7 +39,7 @@ namespace BibleConfigurator.ModuleConverter
         }
     }
 
-    public abstract class ConverterBase
+    public abstract class ConverterBase: IDisposable
     {
         public List<ConverterExceptionBase> Errors { get; set; }
 
@@ -143,7 +143,7 @@ namespace BibleConfigurator.ModuleConverter
 
         protected virtual string AddBookSection(string sectionGroupId, string sectionName, string bookName)
         {
-            var sectionId = NotebookGenerator.AddBookSectionToBibleNotebook(OneNoteApp, sectionGroupId, sectionName, bookName);
+            var sectionId = NotebookGenerator.AddSection(OneNoteApp, sectionGroupId, sectionName);
 
             AddNewBookContent();
 
@@ -169,7 +169,7 @@ namespace BibleConfigurator.ModuleConverter
 
         protected virtual XDocument AddPage(string bookSectionId, string pageTitle, int pageLevel, out XmlNamespaceManager xnm)
         {
-            return NotebookGenerator.AddChapterPageToBibleNotebook(OneNoteApp, bookSectionId, pageTitle, pageLevel, Locale, out xnm);    
+            return NotebookGenerator.AddPage(OneNoteApp, bookSectionId, pageTitle, pageLevel, Locale, out xnm);    
         }
 
         protected virtual XDocument AddChapterPage(string bookSectionId, string pageTitle, int pageLevel, out XmlNamespaceManager xnm)
@@ -272,6 +272,11 @@ namespace BibleConfigurator.ModuleConverter
             }
 
             SaveToXmlFile(module, Constants.ManifestFileName);
+        }
+
+        public void Dispose()
+        {
+            OneNoteApp = null;
         }
     }
 }

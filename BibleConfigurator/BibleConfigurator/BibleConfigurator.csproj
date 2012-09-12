@@ -81,6 +81,8 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ModuleConverter\BibleQuotaConverter.cs" />
+    <Compile Include="ModuleConverter\BibleQuotaDictionaryConverter.cs" />
+    <Compile Include="ModuleConverter\BibleQuotaStrongConverter.cs" />
     <Compile Include="ModuleConverter\ConverterBase.cs" />
     <Compile Include="ModuleConverter\DefaultRusModuleGenerator.cs" />
     <Compile Include="ModuleConverter\PredefinedInfo.cs" />
