@@ -123,10 +123,13 @@ namespace BibleConfigurator
         {
             EnableUI(false);
 
+            BibleCommon.Services.Logger.LogMessage("Start work with supplemental Bible");
+            var dt = DateTime.Now;
+
             try
             {
                 var selectedModuleInfo = ((ModuleInfo)_cbModule.SelectedItem);
-                BibleParallelTranslationConnectionResult result;
+                BibleParallelTranslationConnectionResult result;                
 
                 if (SettingsManager.Instance.SupplementalBibleModules.Count > 0)
                 {
@@ -165,6 +168,8 @@ namespace BibleConfigurator
                 Logger.LogError(ex.ToString());
                 _form.ExternalProcessingDone(BibleCommon.Resources.Constants.ErrorOccurred);
             }
+
+            BibleCommon.Services.Logger.LogMessage("Finish work with supplemental Bible. Elapsed time = '{0}'", DateTime.Now - dt);
 
             EnableUI(true);
 
