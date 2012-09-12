@@ -489,16 +489,16 @@
   <data name="AddParallelBibleTranslationFinishMessage" xml:space="preserve">
     <value>Parallel Bible translation was added successfully</value>
   </data>
-  <data name="CreateSupplementalBible" xml:space="preserve">
+  <data name="CreateSupplementalBibleStart" xml:space="preserve">
     <value>Creating Supplemental Bible start</value>
   </data>
-  <data name="CreateSupplementalBibleFinishMessage" xml:space="preserve">
+  <data name="CreateSupplementalBibleFinish" xml:space="preserve">
     <value>Supplemental Bible was created successfully</value>
   </data>
-  <data name="LinkSupplementalBible" xml:space="preserve">
+  <data name="LinkSupplementalBibleStart" xml:space="preserve">
     <value>Linking Supplemental Bible start</value>
   </data>
-  <data name="LinkSupplementalBibleFinishMessage" xml:space="preserve">
+  <data name="LinkSupplementalBibleFinish" xml:space="preserve">
     <value>Supplimental Bible was linked successfully</value>
   </data>
   <data name="ErrorOccurred" xml:space="preserve">
@@ -515,5 +515,14 @@
   </data>
   <data name="RemoveSupplementalBibleFinishMessage" xml:space="preserve">
     <value>Supplemental Bible was closed successfully</value>
+  </data>
+  <data name="AbortTheOperation" xml:space="preserve">
+    <value>Abort the operation?</value>
+  </data>
+  <data name="CreateSupplementalBible" xml:space="preserve">
+    <value>Creating Supplemental Bible</value>
+  </data>
+  <data name="LinkSupplementalBible" xml:space="preserve">
+    <value>Linking Supplemental Bible</value>
   </data>
 </root>

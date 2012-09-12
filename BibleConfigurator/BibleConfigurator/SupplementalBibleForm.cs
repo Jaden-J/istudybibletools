@@ -24,6 +24,7 @@ namespace BibleConfigurator
         private CustomFormLogger _logger;
         private bool _needToCommitChanges = false;
         private bool _wasLoaded = false;
+        private bool _inProgress = false;
 
         public SupplementalBibleForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
         {
@@ -45,13 +46,15 @@ namespace BibleConfigurator
             folderBrowserDialog.SelectedPath = defaultNotebookFolderPath;
             folderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetNotebookFolder;
             folderBrowserDialog.ShowNewFolderButton = true;
+
+            FormExtensions.SetToolTip(btnSBFolder, BibleCommon.Resources.Constants.DefineNotebookDirectory);
         }
 
         private void LoadFormData()
         {
             _wasLoaded = false;  
 
-            chkUseSupplementalBible.Checked = !string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(_oneNoteApp));
+            chkUseSupplementalBible.Checked = !string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(_oneNoteApp, true));
             if (!chkUseSupplementalBible.Checked)
                 SettingsManager.Instance.SupplementalBibleModules.Clear(); // на всякий пожарный
 
@@ -72,9 +75,9 @@ namespace BibleConfigurator
                 lblDescription.Text = 
 @"Здесь Вы можете управлять справочной Библией. Обратите внимание, ";
                 lblDescription.Top = _top;
-                lblDescription.Width = 250;
+                lblDescription.Width = 260;
                 lblDescription.Height = 100;
-                lblDescription.Left = 30;
+                lblDescription.Left = 20;
                 pnModules.Controls.Add(lblDescription);
             }
             else
@@ -122,6 +125,7 @@ namespace BibleConfigurator
         private void CommitChanges()
         {
             EnableUI(false);
+            _inProgress = true;
 
             BibleCommon.Services.Logger.LogMessage("Start work with supplemental Bible");
             var dt = DateTime.Now;
@@ -129,7 +133,7 @@ namespace BibleConfigurator
             try
             {
                 var selectedModuleInfo = ((ModuleInfo)_cbModule.SelectedItem);
-                BibleParallelTranslationConnectionResult result;                
+                BibleParallelTranslationConnectionResult result;
 
                 if (SettingsManager.Instance.SupplementalBibleModules.Count > 0)
                 {
@@ -141,15 +145,15 @@ namespace BibleConfigurator
                 else
                 {
                     int chaptersCount = ModulesManager.GetBibleChaptersCount(selectedModuleInfo.ShortName);
-                    _form.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.CreateSupplementalBible);
-                    _logger.Preffix = string.Format("{0} 1/2: ", BibleCommon.Resources.Constants.Stage);
+                    _form.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.CreateSupplementalBibleStart);
+                    _logger.Preffix = string.Format("{0} 1/2: {1}: ", BibleCommon.Resources.Constants.Stage, BibleCommon.Resources.Constants.CreateSupplementalBible);
                     SupplementalBibleManager.CreateSupplementalBible(_oneNoteApp, selectedModuleInfo.ShortName, folderBrowserDialog.SelectedPath, _logger);
 
-                    _form.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.LinkSupplementalBible);
-                    _logger.Preffix = string.Format("{0} 2/2: ", BibleCommon.Resources.Constants.Stage);
+                    _form.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.LinkSupplementalBibleStart);
+                    _logger.Preffix = string.Format("{0} 2/2: {1}: ", BibleCommon.Resources.Constants.Stage, BibleCommon.Resources.Constants.LinkSupplementalBible);
                     result = SupplementalBibleManager.LinkSupplementalBibleWithMainBible(_oneNoteApp, 0, _logger);
 
-                    _form.ExternalProcessingDone(BibleCommon.Resources.Constants.CreateSupplementalBibleFinishMessage);
+                    _form.ExternalProcessingDone(BibleCommon.Resources.Constants.CreateSupplementalBibleFinish);
                 }
 
                 if (result.Errors.Count > 0)
@@ -167,11 +171,12 @@ namespace BibleConfigurator
             {
                 Logger.LogError(ex.ToString());
                 _form.ExternalProcessingDone(BibleCommon.Resources.Constants.ErrorOccurred);
-            }
+            }            
 
             BibleCommon.Services.Logger.LogMessage("Finish work with supplemental Bible. Elapsed time = '{0}'", DateTime.Now - dt);
 
             EnableUI(true);
+            _inProgress = false;
 
             LoadUI();
         }
@@ -182,6 +187,7 @@ namespace BibleConfigurator
             chkUseSupplementalBible.Enabled = enabled;
             btnOk.Enabled = enabled;
             btnCancel.Enabled = enabled;
+            btnSBFolder.Enabled = enabled;
         }
 
         private void LoadModules()
@@ -201,7 +207,7 @@ namespace BibleConfigurator
             lblName.Text = moduleInfo.Name;
             lblName.Top = top + 5;
             lblName.Left = 0;
-            lblName.Width = 265;
+            lblName.Width = 245;
             pnModules.Controls.Add(lblName);
 
             Button btnDel = new Button();
@@ -210,7 +216,7 @@ namespace BibleConfigurator
             FormExtensions.SetToolTip(btnDel, BibleCommon.Resources.Constants.DeleteThisModule);
             btnDel.Tag = moduleInfo.ShortName;
             btnDel.Top = top;
-            btnDel.Left = 268;
+            btnDel.Left = 248;
             btnDel.Width = btnDel.Height;
             btnDel.Click += new EventHandler(btnDeleteModule_Click);
             pnModules.Controls.Add(btnDel);
@@ -226,6 +232,10 @@ namespace BibleConfigurator
 
         private bool DeleteModuleWithConfirm(string moduleName)
         {
+            _inProgress = true;
+
+            var result = false;
+
             if (MessageBox.Show(BibleCommon.Resources.Constants.DeleteThisModuleQuestion, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                 == System.Windows.Forms.DialogResult.Yes)
             {
@@ -233,9 +243,9 @@ namespace BibleConfigurator
                 {
                     int chaptersCount = ModulesManager.GetBibleChaptersCount(moduleName);
                     _form.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.RemoveParallelBibleTranslation);
-                    var result = SupplementalBibleManager.RemoveLastSupplementalBibleModule(_oneNoteApp, _logger);
+                    var removeResult = SupplementalBibleManager.RemoveLastSupplementalBibleModule(_oneNoteApp, _logger);
                     _form.ExternalProcessingDone(
-                        result == SupplementalBibleManager.RemoveResult.RemoveLastModule
+                        removeResult == SupplementalBibleManager.RemoveResult.RemoveLastModule
                             ? BibleCommon.Resources.Constants.RemoveParallelBibleTranslationFinishMessage
                             : BibleCommon.Resources.Constants.RemoveSupplementalBibleFinishMessage);
                 }
@@ -251,10 +261,11 @@ namespace BibleConfigurator
                 }
 
                 LoadFormData();
-                return true;
+                result = true;
             }
 
-            return false;
+            _inProgress = false;
+            return result;
         }  
 
 
@@ -269,7 +280,7 @@ namespace BibleConfigurator
         {
             bool needToUpdate = true;
 
-            string sbNotebookId = SettingsManager.Instance.GetValidSupplementalBibleNotebookId(_oneNoteApp);
+            string sbNotebookId = SettingsManager.Instance.GetValidSupplementalBibleNotebookId(_oneNoteApp, true);
 
             if (_wasLoaded && !chkUseSupplementalBible.Checked)
             {
@@ -312,7 +323,7 @@ namespace BibleConfigurator
         {            
             _cbModule = new ComboBox();
             _cbModule.DropDownStyle = ComboBoxStyle.DropDownList;
-            _cbModule.Width = 260;
+            _cbModule.Width = 245;
             _cbModule.Top = _top;
             _cbModule.ValueMember = "Name";
 
@@ -346,7 +357,14 @@ namespace BibleConfigurator
 
         private void SupplementalBibleForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _logger.AbortedByUsers = true;            
+            if (_inProgress)
+            {
+                if (MessageBox.Show(BibleCommon.Resources.Constants.AbortTheOperation, 
+                        BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)
+                    e.Cancel = true;
+                else
+                    _logger.AbortedByUsers = true;
+            }
         }
 
         private void btnSBFolder_Click(object sender, EventArgs e)
