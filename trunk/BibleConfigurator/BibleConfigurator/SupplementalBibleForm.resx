@@ -219,7 +219,7 @@
     <value>1</value>
   </data>
   <data name="btnSBFolder.Location" type="System.Drawing.Point, System.Drawing">
-    <value>266, 9</value>
+    <value>251, 9</value>
   </data>
   <data name="btnSBFolder.Size" type="System.Drawing.Size, System.Drawing">
     <value>26, 23</value>
