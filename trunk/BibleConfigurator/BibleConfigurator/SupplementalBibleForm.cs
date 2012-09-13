@@ -156,6 +156,8 @@ namespace BibleConfigurator
                     _form.ExternalProcessingDone(BibleCommon.Resources.Constants.CreateSupplementalBibleFinish);
                 }
 
+                BibleCommon.Services.Logger.LogMessage("Finish work with supplemental Bible. Elapsed time = '{0}'", DateTime.Now - dt);
+
                 if (result.Errors.Count > 0)
                 {
                     var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(result.Errors.ConvertAll(ex => ex.Message));
@@ -171,9 +173,7 @@ namespace BibleConfigurator
             {
                 Logger.LogError(ex.ToString());
                 _form.ExternalProcessingDone(BibleCommon.Resources.Constants.ErrorOccurred);
-            }            
-
-            BibleCommon.Services.Logger.LogMessage("Finish work with supplemental Bible. Elapsed time = '{0}'", DateTime.Now - dt);
+            }                        
 
             EnableUI(true);
             _inProgress = false;
