@@ -47,6 +47,7 @@ namespace BibleConfigurator.ModuleConverter
         protected abstract void ProcessBibleBooks(ExternalModuleInfo externalModuleInfo);        
 
         protected Application OneNoteApp { get; set; }
+        protected bool IsStrong { get; set; }
         protected string NewNotebookName { get; set; }
         protected string NotebookId { get; set; }
         protected string ManifestFilesFolderPath { get; set; }        
@@ -73,12 +74,13 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="newTestamentBooksCount"></param>
         /// <param name="locale">can be not specified</param>
         /// <param name="notebooksInfo"></param>
-        public ConverterBase(string newNotebookName, string manifestFilesFolderPath,
+        public ConverterBase(string newNotebookName, string manifestFilesFolderPath, bool isStrong,
             string oldTestamentName, string newTestamentName, int oldTestamentBooksCount, int newTestamentBooksCount,
             string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, 
             BibleTranslationDifferences translationDifferences, string chapterSectionNameTemplate, string version)
         {
             OneNoteApp = new Application();
+            this.IsStrong = isStrong;
             this.NewNotebookName = newNotebookName;
             this.NotebookId = NotebookGenerator.CreateNotebook(OneNoteApp, NewNotebookName);
             this.ManifestFilesFolderPath = manifestFilesFolderPath;
@@ -246,7 +248,13 @@ namespace BibleConfigurator.ModuleConverter
         {
             var extModuleInfo = (BibleQuotaModuleInfo)externalModuleInfo;
 
-            ModuleInfo module = new ModuleInfo() { Name = extModuleInfo.Name, Version = this.Version, Notebooks = NotebooksInfo };
+            ModuleInfo module = new ModuleInfo() 
+            { 
+                Name = extModuleInfo.Name, 
+                Version = this.Version, 
+                Notebooks = NotebooksInfo, 
+                Type = IsStrong ? ModuleType.Strong: ModuleType.Bible 
+            };
             module.BibleTranslationDifferences = this.TranslationDifferences;
             module.BibleStructure = new BibleStructureInfo()
             {

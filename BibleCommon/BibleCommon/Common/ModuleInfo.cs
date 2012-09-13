@@ -21,7 +21,10 @@ namespace BibleCommon.Common
     {
         Bible,
         BibleComments,
-        BibleStudy        
+        BibleStudy,
+        NewTestament,
+        OldTestament,
+        Other
     }
 
     public enum ModuleType
@@ -132,6 +135,9 @@ namespace BibleCommon.Common
 
         [XmlElement(typeof(SectionGroupInfo), ElementName="SectionGroup")]
         public List<SectionGroupInfo> SectionGroups { get; set; }
+
+        [XmlElement(typeof(SectionInfo), ElementName="Section")]
+        public List<SectionInfo> Sections { get; set; }
     }
 
     [Serializable]
@@ -141,8 +147,24 @@ namespace BibleCommon.Common
         public SectionGroupType Type { get; set; }
 
         [XmlAttribute]
-        public string Name { get; set; }        
+        public string Name { get; set; }
+
+        [XmlElement(typeof(SectionInfo), ElementName = "Section")]
+        public List<SectionInfo> Sections { get; set; }
     }
+
+    [Serializable]
+    public class SectionInfo
+    {
+        [XmlAttribute]
+        public string Name { get; set; }
+
+        [XmlAttribute]        
+        public bool CheckPagesCount { get; set; }
+
+        [XmlAttribute]
+        public int PagesCount { get; set; }
+    }    
 
     [Serializable]
     public class BibleStructureInfo
