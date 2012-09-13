@@ -91,7 +91,7 @@ namespace BibleConfigurator.ModuleConverter
                             pagesInSectionCount++;
                             pageIndex++;
 
-                            var newSectionId = AddTermPage(file, sectionGroupId, sectionId, termName, termDescription.ToString(), pagesInSectionCount, pageIndex);
+                            var newSectionId = AddTermPage(file, sectionGroupId, sectionId, termName, termDescription.ToString(), pagesInSectionCount, pageIndex, false);
                             if (!string.IsNullOrEmpty(newSectionId))
                             {
                                 pagesInSectionCount = 0;
@@ -110,7 +110,7 @@ namespace BibleConfigurator.ModuleConverter
 
                 if (!string.IsNullOrEmpty(termName))
                 {
-                    AddTermPage(file, sectionGroupId, sectionId, termName, termDescription.ToString(), pagesInSectionCount, pageIndex);
+                    AddTermPage(file, sectionGroupId, sectionId, termName, termDescription.ToString(), pagesInSectionCount, pageIndex, true);
                 }
             }            
         }
@@ -183,7 +183,8 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="pagesInSectionCount"></param>
         /// <param name="pageIndex"></param>
         /// <returns>new section Id</returns>
-        private string AddTermPage(DictionaryFile file, string sectionGroupId, string sectionId, string termName, string termDescription, int pagesInSectionCount, int pageIndex)
+        private string AddTermPage(DictionaryFile file, string sectionGroupId, string sectionId, 
+            string termName, string termDescription, int pagesInSectionCount, int pageIndex, bool isLatestSection)
         {
             XmlNamespaceManager xnm;
             var termPageDoc = NotebookGenerator.AddPage(OneNoteApp, sectionId, GetPageName(termName), 1, Locale, out xnm);
@@ -196,12 +197,15 @@ namespace BibleConfigurator.ModuleConverter
                 if (int.Parse(StringUtils.GetText(termName.Substring(file.TermPrefix.Length))) != pageIndex)
                     throw new Exception(string.Format("termName != fileIndex: {0} != {1}", termName, pageIndex));
 
-                if (pagesInSectionCount >= maxFileInSectionForStrong)
+                if (pagesInSectionCount >= maxFileInSectionForStrong || isLatestSection)
                 {
                     string latestSectionName = OneNoteUtils.GetHierarchyElementName(OneNoteApp, sectionId);
-                    NotebookGenerator.RenameHierarchyElement(OneNoteApp, sectionId, HierarchyScope.hsSections, latestSectionName + pageIndex.ToString("0000"));                    
-                    sectionId = NotebookGenerator.AddSection(OneNoteApp, sectionGroupId, string.Format("{0:0000}-", pageIndex + 1));
-                    return sectionId;
+                    NotebookGenerator.RenameHierarchyElement(OneNoteApp, sectionId, HierarchyScope.hsSections, latestSectionName + pageIndex.ToString("0000"));
+                    if (!isLatestSection)
+                    {
+                        sectionId = NotebookGenerator.AddSection(OneNoteApp, sectionGroupId, string.Format("{0:0000}-", pageIndex + 1));
+                        return sectionId;
+                    }
                 }
             }
 
