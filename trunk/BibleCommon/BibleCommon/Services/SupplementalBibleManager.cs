@@ -92,7 +92,8 @@ namespace BibleCommon.Services
                     }, true, true,
                     (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
                     {
-                        LinkdMainBibleAndSupplementalVerses(oneNoteApp, baseVersePointer, parallelVerse, bibleIteratorArgs, xnm, nms);
+                        LinkdMainBibleAndSupplementalVerses(oneNoteApp, baseVersePointer, parallelVerse, bibleIteratorArgs, 
+                            bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong,xnm, nms);                       
                     });
             }
 
@@ -104,7 +105,7 @@ namespace BibleCommon.Services
       
 
         private static void LinkdMainBibleAndSupplementalVerses(Application oneNoteApp, SimpleVersePointer baseVersePointer,
-            SimpleVerse parallelVerse, BibleIteratorArgs bibleIteratorArgs, XmlNamespaceManager xnm, XNamespace nms)
+            SimpleVerse parallelVerse, BibleIteratorArgs bibleIteratorArgs, bool isStrong, XmlNamespaceManager xnm, XNamespace nms)
         {
 
             var baseBibleObjectsSearchResult = HierarchySearchManager.GetHierarchyObject(oneNoteApp,
@@ -120,7 +121,13 @@ namespace BibleCommon.Services
             var baseVerseElementId = (string)baseVerseEl.Parent.Attribute("objectID").Value;
 
             LinkMainBibleVersesToSupplementalBibleVerse(oneNoteApp, baseChapterPageId, baseVerseElementId, parallelVerse, baseBibleObjectsSearchResult, xnm, nms);
-            LinkSupplementalBibleVerseToMainBibleVerse(oneNoteApp, baseVersePointer, baseVerseEl, baseBibleObjectsSearchResult);           
+            LinkSupplementalBibleVerseToMainBibleVerse(oneNoteApp, baseVersePointer, baseVerseEl, baseBibleObjectsSearchResult);
+
+            if (isStrong)
+            {
+                // находим номера стронга и меняем их на ссылки на словарь стронга. До этого надо пробежаться по записной книжке стронга и закэшировать ссылки на все слова стронга
+                 baseVerseEl.Value
+            }
         }
 
         private static void LinkSupplementalBibleVerseToMainBibleVerse(Application oneNoteApp, SimpleVersePointer baseVersePointer, XElement baseVerseEl, HierarchySearchManager.HierarchySearchResult baseBibleObjectsSearchResult)
