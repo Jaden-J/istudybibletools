@@ -117,11 +117,11 @@ namespace BibleConfigurator.ModuleConverter
 
         private string GetTermName(string line, DictionaryFile file)
         {
-            var result = StringUtils.GetText(line);
+            var result = StringUtils.GetText(line).Trim();
             if (Type == StructureType.Strong)
             {
-                result = result.Substring(result.Length - 4, 4);                
-                result = file.TermPrefix + result;
+                var number = int.Parse(result);
+                result = string.Format("{0}{1:0000}", file.TermPrefix, number);
             }
 
             return result;
