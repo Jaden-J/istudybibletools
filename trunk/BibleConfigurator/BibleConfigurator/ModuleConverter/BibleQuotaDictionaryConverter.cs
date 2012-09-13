@@ -134,13 +134,14 @@ namespace BibleConfigurator.ModuleConverter
 
             if (Type == StructureType.Strong)
             {                
+                //shell font
                 var indexOfFont = result.IndexOf("<font");
                 if (indexOfFont != -1)
                 {
                     var endIndexOfFontString = "</font>";
                     var endIndexOfFont = result.IndexOf(endIndexOfFontString, indexOfFont) + endIndexOfFontString.Length;
                     var fontFaceString = "face=\"";
-                    var startIndex = result.IndexOf(fontFaceString) + fontFaceString.Length;
+                    var startIndex = result.IndexOf(fontFaceString, indexOfFont) + fontFaceString.Length;
                     var endIndex = result.IndexOf("\"", startIndex);
                     var fontName = result.Substring(startIndex, endIndex - startIndex);
 
@@ -150,10 +151,26 @@ namespace BibleConfigurator.ModuleConverter
                                 + result.Substring(endIndexOfFont);
 
                 }                
+
+                //shell anchor
+                result = ShellTag(result, "a");               
+
             }
 
             return result;
-        }        
+        }
+
+        private static string ShellTag(string s, string tagName)
+        {
+            var startIndex = s.IndexOf(string.Format("<{0}", tagName));
+            if (startIndex != -1)
+            {
+                var endIndex = s.IndexOf(string.Format("</{0}>", tagName), startIndex) + tagName.Length + 3;
+                s = s.Substring(0, startIndex) + StringUtils.GetText(s.Substring(startIndex, endIndex - startIndex)) + s.Substring(endIndex);
+            }
+
+            return s;
+        }
         
         /// <summary>
         /// 
