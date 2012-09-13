@@ -110,7 +110,7 @@ namespace BibleConfigurator.ModuleConverter
 
                 if (!string.IsNullOrEmpty(termName))
                 {
-                    AddTermPage(file, sectionGroupId, sectionId, termName, termDescription.ToString(), pagesInSectionCount, pageIndex, true);
+                    AddTermPage(file, sectionGroupId, sectionId, termName, termDescription.ToString(), pagesInSectionCount, ++pageIndex, true);
                 }
             }            
         }
