@@ -77,8 +77,8 @@ namespace TestProject
         {
             var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Strong", 
                 new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = @"C:\Users\ademko\Dropbox\IStudyBibleTools\ForGenerating\Strongs\HEBREW.HTM", SectionGroupName = "Ветхий Завет", TermPrefix = "H", StartIndex = 0 },
-                    new DictionaryFile() { FilePath = @"C:\Users\ademko\Dropbox\IStudyBibleTools\ForGenerating\Strongs\GREEK.HTM", SectionGroupName = "Новый Завет", TermPrefix= "G", StartIndex = 0 }
+                    new DictionaryFile() { FilePath = @"C:\Users\ademko\Dropbox\IStudyBibleTools\ForGenerating\Strongs\HEBREW.HTM", SectionName = "Ветхий Завет", TermPrefix = "H", StartIndex = 0 },
+                    new DictionaryFile() { FilePath = @"C:\Users\ademko\Dropbox\IStudyBibleTools\ForGenerating\Strongs\GREEK.HTM", SectionName = "Новый Завет", TermPrefix= "G", StartIndex = 0 }
                 }, BibleQuotaDictionaryConverter.StructureType.Strong, @"c:\temp\strong", "<h4>", Encoding.Default, "ru", "1.0");
 
             converter.Convert();

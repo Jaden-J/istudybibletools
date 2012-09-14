@@ -14,6 +14,16 @@ using System.IO;
 
 namespace BibleCommon.Services
 {
+    public class CellInfo
+    {
+        public int Width { get; set; }
+
+        public CellInfo(int cellWidth)
+        {
+            this.Width = cellWidth;
+        }
+    }
+
     public static class NotebookGenerator
     {
         public const int MinimalCellWidth = 37;
@@ -75,74 +85,69 @@ namespace BibleCommon.Services
                                                     )))));
 
             pageDoc.Root.Add(textEl);
-        }
-        
-        public static XElement AddTableToBibleChapterPage(XDocument chapterDoc, int bibleCellWidth, int columnsCount, XmlNamespaceManager xnm)
+        }        
+
+        public static XElement AddTableToPage(XDocument chapterDoc, bool bordersVisible, XmlNamespaceManager xnm, params CellInfo[] cells)
         {
-            var nms = XNamespace.Get(Constants.OneNoteXmlNs);
-
-            var columns = new XElement(nms + "Columns", 
-                                new XElement(nms + "Column", new XAttribute("index", 0), new XAttribute("width", bibleCellWidth), new XAttribute("isLocked", true)));
-
-            for (int i = 0; i < columnsCount - 1; i++)
-            {
-                columns.Add(new XElement(nms + "Column", new XAttribute("index", i + 1), new XAttribute("width", MinimalCellWidth), new XAttribute("isLocked", true)));
-            }
+            var nms = XNamespace.Get(Constants.OneNoteXmlNs);           
 
             var tableEl = new XElement(nms + "Outline",
                                             new XElement(nms + "OEChildren",
                                               new XElement(nms + "OE",
-                                                  new XElement(nms + "Table", new XAttribute("bordersVisible", false),
-                                                      columns 
-                                                    ))));
-
-            //var outlines = chapterDoc.Root.XPathSelectElements("//one:Outline", xnm);
-            //int bibleIndex = outlines.Count();
-            //if (bibleIndex > 0)
-            //{
-            //    var lastOutline = outlines.Last();
-
-            //    if (lastOutline != null)
-            //    {
-            //        var prevPosition = lastOutline.XPathSelectElement("one:Position", xnm);
-            //        var prevX = prevPosition.Attribute("x");
-            //        var prevWidth = lastOutline.XPathSelectElement("one:Size", xnm).Attribute("width");
-
-            //        var newX = (prevX != null ? float.Parse(prevX.Value, CultureInfo.InvariantCulture) : 0) + (prevWidth != null ? float.Parse(prevWidth.Value, CultureInfo.InvariantCulture) : 0) + 30;
-
-            //        var positionEl = new XElement(nms + "Position",
-            //                            new XAttribute("x", newX),
-            //                            new XAttribute("y", prevPosition.Attribute("y").Value),
-            //                            new XAttribute("z", prevPosition.Attribute("z").Value));
-
-            //        tableEl.AddFirst(positionEl);
-            //    }
-            //}
+                                                  GenerateTableElement(bordersVisible, cells)
+                                                  )));           
 
             chapterDoc.Root.Add(tableEl);
 
-            return GetBibleTable(chapterDoc, xnm);
+            return GetPageTable(chapterDoc, xnm);
         }
 
-        public static XElement GetBibleTable(XDocument chapterPageDoc, XmlNamespaceManager xnm)
+        public static XElement GenerateTableElement(bool bordersVisible, params CellInfo[] cells)
+        {
+            var nms = XNamespace.Get(Constants.OneNoteXmlNs);           
+
+            var columns = new XElement(nms + "Columns");                               
+
+            for (int i = 0; i < cells.Length; i++)
+            {
+                columns.Add(new XElement(nms + "Column", new XAttribute("index", i), new XAttribute("width", cells[i].Width), new XAttribute("isLocked", true)));
+            }
+
+            var tableEl = new XElement(new XElement(nms + "Table", new XAttribute("bordersVisible", bordersVisible), columns));
+
+            return tableEl;                
+        }
+
+        public static XElement GetPageTable(XDocument chapterPageDoc, XmlNamespaceManager xnm)
         {
             return chapterPageDoc.Root.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", xnm);            
         }
 
-        public static void AddVerseRowToBibleTable(XElement tableElement, string verseText, int emptyCellsCount, string locale)
+        public static XElement AddRowToTable(XElement tableElement, List<XElement> cells)
+        {
+            var nms = XNamespace.Get(Constants.OneNoteXmlNs);           
+
+            XElement newRow = new XElement(nms + "Row", cells);            
+
+            tableElement.Add(newRow);
+
+            return newRow;
+        }
+
+        public static XElement AddVerseRowToTable(XElement tableElement, string verseText, int emptyCellsCount, string locale)
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
-            var cell1 = GetCell(verseText, locale, nms);                        
+            var cells = new List<XElement>();
 
-            XElement newRow = new XElement(nms + "Row", cell1);
+            cells.Add(GetCell(verseText, locale, nms));
 
             for (int i = 0; i < emptyCellsCount; i++)
             {
-                newRow.Add(GetCell(string.Empty, string.Empty, nms));
+                cells.Add(GetCell(string.Empty, string.Empty, nms));
             }
 
-            tableElement.Add(newRow);
+            return AddRowToTable(tableElement, cells);
         }
 
         public static int AddColumnToTable(XElement tableElement, int cellWidth, XmlNamespaceManager xnm)
@@ -222,18 +227,24 @@ namespace BibleCommon.Services
             verseRow.Add(GetCell(verseContent, locale, nms));
         }
 
-        public static XElement GetCell(string cellText, string locale, XNamespace nms)
+        public static XElement GetCell(XElement child, string locale, XNamespace nms)
         {
             var cell = new XElement(nms + "Cell",
                             new XElement(nms + "OEChildren",
                                 new XElement(nms + "OE",
-                                    new XElement(nms + "T",
-                                        new XCData(
-                                            cellText
-                                                    )))));
+                                    child
+                                    )));
 
             if (!string.IsNullOrEmpty(locale))
                 cell.Add(new XAttribute("lang", locale));
+
+            return cell;
+        }
+
+        public static XElement GetCell(string cellText, string locale, XNamespace nms)
+        {
+            var cell = GetCell(new XElement(nms + "T",
+                                    new XCData(cellText)), locale, nms);
 
             return cell;
         }
