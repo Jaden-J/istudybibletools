@@ -195,12 +195,12 @@ namespace BibleConfigurator.ModuleConverter
 
         protected virtual XElement AddTableToChapterPage(XDocument chapterDoc, XmlNamespaceManager xnm)
         {
-            return NotebookGenerator.AddTableToBibleChapterPage(chapterDoc, SettingsManager.Instance.PageWidth_Bible, 2, xnm);
+            return NotebookGenerator.AddTableToPage(chapterDoc, SettingsManager.Instance.PageWidth_Bible, 2, xnm);
         }
 
         protected virtual void AddVerseRowToTable(XElement tableElement, int verseNumber, string verseText)
         {
-            NotebookGenerator.AddVerseRowToBibleTable(tableElement, string.Format("{0} {1}", verseNumber, verseText), 1, Locale);
+            NotebookGenerator.AddVerseRowToTable(tableElement, string.Format("{0} {1}", verseNumber, verseText), 1, Locale);
 
             try
             {

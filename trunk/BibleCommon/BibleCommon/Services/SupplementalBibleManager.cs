@@ -126,7 +126,7 @@ namespace BibleCommon.Services
             if (isStrong)
             {
                 // находим номера стронга и меняем их на ссылки на словарь стронга. До этого надо пробежаться по записной книжке стронга и закэшировать ссылки на все слова стронга
-                 baseVerseEl.Value
+                 //baseVerseEl.Value
             }
         }
 
@@ -170,7 +170,7 @@ namespace BibleCommon.Services
         private static OneNoteProxy.PageContent PrepareMainBibleTable(Application oneNoteApp, string mainBibleChapterPageId)
         {
             var parallelChapterPageDoc = OneNoteProxy.Instance.GetPageContent(oneNoteApp, mainBibleChapterPageId, OneNoteProxy.PageType.Bible);
-            var parallelBibleTableElement = NotebookGenerator.GetBibleTable(parallelChapterPageDoc.Content, parallelChapterPageDoc.Xnm);
+            var parallelBibleTableElement = NotebookGenerator.GetPageTable(parallelChapterPageDoc.Content, parallelChapterPageDoc.Xnm);
 
             var columnsCount = parallelBibleTableElement.XPathSelectElements("one:Columns/one:Column", parallelChapterPageDoc.Xnm).Count();
             if (columnsCount == 2)
@@ -189,13 +189,13 @@ namespace BibleCommon.Services
             XmlNamespaceManager xnm;
             var currentChapterDoc = NotebookGenerator.AddPage(oneNoteApp, bookSectionId, chapterPageName, 1, bibleInfo.Content.Locale, out xnm);
 
-            var currentTableElement = NotebookGenerator.AddTableToBibleChapterPage(currentChapterDoc, SettingsManager.Instance.PageWidth_Bible, 1, xnm);
+            var currentTableElement = NotebookGenerator.AddTableToPage(currentChapterDoc, false, xnm, new CellInfo(SettingsManager.Instance.PageWidth_Bible));
 
             NotebookGenerator.AddParallelBibleTitle(currentTableElement, moduleInfo.Name, 0, bibleInfo.Content.Locale, xnm);
 
             foreach (var verse in chapter.Verses)
             {
-                NotebookGenerator.AddVerseRowToBibleTable(currentTableElement, string.Format("{0} {1}", verse.Index, verse.Value), 0, bibleInfo.Content.Locale);
+                NotebookGenerator.AddVerseRowToTable(currentTableElement, string.Format("{0} {1}", verse.Index, verse.Value), 0, bibleInfo.Content.Locale);
             }
 
             UpdateChapterPage(oneNoteApp, currentChapterDoc, chapter.Index, bibleBookInfo);

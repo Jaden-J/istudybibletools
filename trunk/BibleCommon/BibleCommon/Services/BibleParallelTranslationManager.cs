@@ -111,7 +111,7 @@ namespace BibleCommon.Services
 
         internal static void RemoveLastChapterParallelTranslation(XDocument chapterPageDoc, ModuleInfo lastModuleInfo, XmlNamespaceManager xnm)
         {
-            var tableEl = NotebookGenerator.GetBibleTable(chapterPageDoc, xnm);
+            var tableEl = NotebookGenerator.GetPageTable(chapterPageDoc, xnm);
 
             var cellIndex = 0;
             var cellFound = false;
@@ -145,7 +145,7 @@ namespace BibleCommon.Services
             return IterateBaseBible(
                 chapterPageDoc =>
                 {
-                    var tableEl = NotebookGenerator.GetBibleTable(chapterPageDoc, xnm);
+                    var tableEl = NotebookGenerator.GetPageTable(chapterPageDoc, xnm);
                     var bibleIndex = NotebookGenerator.AddColumnToTable(tableEl, SettingsManager.Instance.PageWidth_Bible, xnm);
                     NotebookGenerator.AddParallelBibleTitle(tableEl, ParallelModuleInfo.Name, bibleIndex, ParallelBibleInfo.Content.Locale, xnm);
 
