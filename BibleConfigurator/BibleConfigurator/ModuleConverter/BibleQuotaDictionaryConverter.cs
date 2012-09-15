@@ -22,7 +22,13 @@ namespace BibleConfigurator.ModuleConverter
 
     public class BibleQuotaDictionaryConverter: IDisposable
     {
-        private const int maxFileInSectionForStrong = 100;                
+        internal class TermPageInfo
+        {
+            internal XDocument PageDocument { get; set; }
+            internal XElement TableElement { get; set; }
+        }
+
+        private const int MaxTermsInPageForStrong = 100;                
 
         public enum StructureType
         {
@@ -40,15 +46,16 @@ namespace BibleConfigurator.ModuleConverter
         public string Version { get; set; }
         public string TermStartString { get; set; }
         public string DictionaryName { get; set; }
+        public List<Exception> Errors { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="newNotebookName"></param>
+        /// <param name="notebookName"></param>
         /// <param name="bqDictionaryFolder">Только один словарь может быть в папке.</param>
         /// <param name="type"></param>
         /// <param name="manifestFilesFolder"></param>
-        public BibleQuotaDictionaryConverter(Application oneNoteApp, string newNotebookName, string dictionaryName,
+        public BibleQuotaDictionaryConverter(Application oneNoteApp, string notebookName, string dictionaryName,
             List<DictionaryFile> dictionaryFiles, StructureType type, string manifestFilesFolder, string termStartString,
             Encoding fileEncoding, string locale, string version)
         {
@@ -56,23 +63,20 @@ namespace BibleConfigurator.ModuleConverter
             this.DictionaryName = dictionaryName;
             this.OneNoteApp = oneNoteApp;
             this.ManifestFilesFolder = manifestFilesFolder;
-            this.NotebookId = NotebookGenerator.CreateNotebook(OneNoteApp, newNotebookName);
+            this.NotebookId = OneNoteUtils.GetNotebookIdByName(OneNoteApp, notebookName, true);
+            if (string.IsNullOrEmpty(this.NotebookId))
+                this.NotebookId = NotebookGenerator.CreateNotebook(OneNoteApp, notebookName);
             this.DictionaryFiles = dictionaryFiles;
             this.FileEncoding = fileEncoding;
             this.Locale = locale;
             this.TermStartString = termStartString;
-        }
-
-        private string GetPageName(string termName)
-        {
-            return string.Format("{0}", termName);
-        }
+            this.Errors = new List<Exception>();
+        }        
 
         public void Convert()
         {
             var sectionGroupEl = NotebookGenerator.AddRootSectionGroupToNotebook(OneNoteApp, NotebookId, this.DictionaryName);
-            var sectionGroupId = sectionGroupEl.Attribute("ID").Value;
-            XmlNamespaceManager xnm;
+            var sectionGroupId = sectionGroupEl.Attribute("ID").Value;            
 
             foreach(var file in DictionaryFiles)
             {
@@ -83,9 +87,7 @@ namespace BibleConfigurator.ModuleConverter
 
                 int termsInPageCount = 0;
                 int termIndex = file.StartIndex - 1;
-                var pageDoc = NotebookGenerator.AddPage(OneNoteApp, sectionId,
-                                        Type == StructureType.Strong ? string.Format("{0:0000}-", file.StartIndex) : "First Alphabet Char", 1, Locale, out xnm);
-                                    
+                var pageInfo = AddTermsPage(sectionId, Type == StructureType.Strong ? string.Format("{0:0000}-", file.StartIndex) : "First Alphabet Char");                                    
 
                 foreach (string line in File.ReadAllLines(file.FilePath, FileEncoding))
                 {
@@ -96,11 +98,11 @@ namespace BibleConfigurator.ModuleConverter
                             termsInPageCount++;
                             termIndex++;
 
-                            var newSectionId = AddTermPage(file, sectionGroupId, sectionId, termName, termDescription.ToString(), termsInPageCount, termIndex, false);
-                            if (!string.IsNullOrEmpty(newSectionId))
+                            var newPageInfo = AddTermToPage(file, sectionId, pageInfo, termName, termDescription.ToString(), termsInPageCount, ref termIndex, false);
+                            if (newPageInfo != null)
                             {
                                 termsInPageCount = 0;
-                                sectionId = newSectionId;
+                                pageInfo = newPageInfo;
                             }
                         }
 
@@ -114,45 +116,62 @@ namespace BibleConfigurator.ModuleConverter
                 }
 
                 if (!string.IsNullOrEmpty(termName))
-                {
-                    AddTermPage(file, sectionGroupId, sectionId, termName, termDescription.ToString(), pagesInSectionCount, ++pageIndex, true);
+                {                    
+                    termIndex++;
+                    AddTermToPage(file, sectionId, pageInfo, termName, termDescription.ToString(), termsInPageCount, ref termIndex, true);
                 }
             }            
         }
 
-        private XDocument AddTermsPage(string sectionId, string pageName)
-        {
-
-        }
-
-        private string AddTermPage(DictionaryFile file, string sectionGroupId, string sectionId, 
-            string termName, string termDescription, int pagesInSectionCount, int pageIndex, bool isLatestSection)
+        private TermPageInfo AddTermsPage(string sectionId, string pageName)
         {
             XmlNamespaceManager xnm;
-            var termPageDoc = NotebookGenerator.AddPage(OneNoteApp, sectionId, GetPageName(termName), 1, Locale, out xnm);
-            NotebookGenerator.AddTextElementToPage(termPageDoc, termDescription);
+            var pageDoc = NotebookGenerator.AddPage(OneNoteApp, sectionId, pageName, 1, Locale, out xnm);
+            var tableEl = NotebookGenerator.AddTableToPage(pageDoc, true, xnm, new CellInfo(NotebookGenerator.MinimalCellWidth), new CellInfo(SettingsManager.Instance.PageWidth_Bible));
+            return new TermPageInfo() { PageDocument = pageDoc, TableElement = tableEl };
+        }
 
-            UpdatePage(termPageDoc);
+        private TermPageInfo AddTermToPage(DictionaryFile file, string sectionId, TermPageInfo pageInfo, string termName, string termDescription,
+            int termsInPageCount, ref int termIndex, bool isLatestTermInSection)
+        {
+            var nms = XNamespace.Get(Constants.OneNoteXmlNs);  
+           
+            
+            var termTable = NotebookGenerator.GenerateTableElement(false, new CellInfo(SettingsManager.Instance.PageWidth_Bible - 10));
+            NotebookGenerator.AddRowToTable(termTable, NotebookGenerator.GetCell(termDescription, Locale, nms));
+            var userNotesCell = NotebookGenerator.GetCell(string.Format("<b>{0}</b>", BibleCommon.Resources.Constants.UserNotesCellTitle), Locale, nms);
+            NotebookGenerator.AddRowToTable(termTable, userNotesCell);
+            for (int i = 0; i <= 4; i++)
+                NotebookGenerator.AddChildToCell(userNotesCell, string.Empty, nms);
+
+            NotebookGenerator.AddRowToTable(pageInfo.TableElement, 
+                                NotebookGenerator.GetCell(string.Format("<b>{0}</b>", termName), Locale, nms),
+                                NotebookGenerator.GetCell(termTable, Locale, nms));
 
             if (Type == StructureType.Strong)
             {
-                if (int.Parse(StringUtils.GetText(termName.Substring(file.TermPrefix.Length))) != pageIndex)
-                    throw new Exception(string.Format("termName != fileIndex: {0} != {1}", termName, pageIndex));
-
-                if (pagesInSectionCount >= maxFileInSectionForStrong || isLatestSection)
+                int bqTermIndex = int.Parse(StringUtils.GetText(termName.Substring(file.TermPrefix.Length)));
+                if (bqTermIndex != termIndex)
                 {
-                    string latestSectionName = OneNoteUtils.GetHierarchyElementName(OneNoteApp, sectionId);
-                    NotebookGenerator.RenameHierarchyElement(OneNoteApp, sectionId, HierarchyScope.hsSections, latestSectionName + pageIndex.ToString("0000"));
-                    if (!isLatestSection)
+                    Errors.Add(new Exception(string.Format("bqTermIndex != termIndex: {0} != {1}", termName, termIndex)));
+                    termIndex = bqTermIndex;
+                }
+
+                if ((termsInPageCount >= MaxTermsInPageForStrong && (termIndex % 100 == 99)) || isLatestTermInSection)
+                {                    
+                    string currentPageName = pageInfo.PageDocument.Root.Attribute("name").Value;
+                    NotebookGenerator.UpdatePageTitle(pageInfo.PageDocument, currentPageName + termIndex.ToString("0000"), OneNoteUtils.GetOneNoteXNM());
+                    UpdatePage(pageInfo.PageDocument);
+
+                    if (!isLatestTermInSection)
                     {
-                        sectionId = NotebookGenerator.AddSection(OneNoteApp, sectionGroupId, string.Format("{0:0000}-", pageIndex + 1));
-                        return sectionId;
+                        return AddTermsPage(sectionId, string.Format("{0:0000}-", termIndex + 1));                                                
                     }
                 }
             }
 
-            return string.Empty;
-        }
+            return null;
+        }      
 
         private string GetTermName(string line, DictionaryFile file)
         {

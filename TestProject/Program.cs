@@ -75,14 +75,14 @@ namespace TestProject
 
         private static void GenerateStrongDictionary()
         {
-            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Strong", 
+            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "Strong", 
                 new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = @"C:\Users\ademko\Dropbox\IStudyBibleTools\ForGenerating\Strongs\HEBREW.HTM", SectionName = "Ветхий Завет", TermPrefix = "H", StartIndex = 0 },
-                    new DictionaryFile() { FilePath = @"C:\Users\ademko\Dropbox\IStudyBibleTools\ForGenerating\Strongs\GREEK.HTM", SectionName = "Новый Завет", TermPrefix= "G", StartIndex = 0 }
+                    new DictionaryFile() { FilePath = @"G:\Dropbox\IStudyBibleTools\ForGenerating\Strongs\HEBREW.HTM", SectionName = "Ветхий Завет", TermPrefix = "H", StartIndex = 0 },
+                    new DictionaryFile() { FilePath = @"G:\Dropbox\IStudyBibleTools\ForGenerating\Strongs\GREEK.HTM", SectionName = "Новый Завет", TermPrefix= "G", StartIndex = 0 }
                 }, BibleQuotaDictionaryConverter.StructureType.Strong, @"c:\temp\strong", "<h4>", Encoding.Default, "ru", "1.0");
 
             converter.Convert();
- 
+            int i = converter.Errors.Count;
         }
 
         //private static void GenerateBookDifferencesFile()
@@ -127,7 +127,7 @@ namespace TestProject
 
         private static void ConvertRussianModule()
         {
-            var converter = new BibleQuotaConverter("RST", @"C:\Users\ademko\Dropbox\IStudyBibleTools\ForGenerating\RST", @"c:\temp\RST", Encoding.Default, true,
+            var converter = new BibleQuotaConverter("RST", @"G:\Dropbox\IStudyBibleTools\ForGenerating\RST", @"c:\temp\RST", Encoding.Default, true,
                 "Ветхий Завет", "Новый Завет", 39, 27, "ru",
                 PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst), 
                 "{0} глава. {1}", "2.0");
