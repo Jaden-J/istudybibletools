@@ -72,6 +72,13 @@ namespace BibleCommon.Services
             return pageDoc;
         }
 
+        public static void UpdatePageTitle(XDocument pageDoc, string newTitle, XmlNamespaceManager xnm)
+        {
+            var pageTitleEl = pageDoc.Root.XPathSelectElement("one:Title/one:OE/one:T", xnm);
+            if (pageTitleEl != null)
+                pageTitleEl.Value = newTitle;
+        }
+
         public static void AddTextElementToPage(XDocument pageDoc, string pageContent)
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
@@ -87,19 +94,19 @@ namespace BibleCommon.Services
             pageDoc.Root.Add(textEl);
         }        
 
-        public static XElement AddTableToPage(XDocument chapterDoc, bool bordersVisible, XmlNamespaceManager xnm, params CellInfo[] cells)
+        public static XElement AddTableToPage(XDocument pageDoc, bool bordersVisible, XmlNamespaceManager xnm, params CellInfo[] cells)
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);           
 
-            var tableEl = new XElement(nms + "Outline",
+            var tableEl = GenerateTableElement(bordersVisible, cells);
+
+            pageDoc.Root.Add(new XElement(nms + "Outline",
                                             new XElement(nms + "OEChildren",
                                               new XElement(nms + "OE",
-                                                  GenerateTableElement(bordersVisible, cells)
-                                                  )));           
+                                                    tableEl                  
+                                                  ))));
 
-            chapterDoc.Root.Add(tableEl);
-
-            return GetPageTable(chapterDoc, xnm);
+            return tableEl;
         }
 
         public static XElement GenerateTableElement(bool bordersVisible, params CellInfo[] cells)
@@ -123,7 +130,7 @@ namespace BibleCommon.Services
             return chapterPageDoc.Root.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", xnm);            
         }
 
-        public static XElement AddRowToTable(XElement tableElement, List<XElement> cells)
+        public static XElement AddRowToTable(XElement tableElement, params XElement[] cells)
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);           
 
@@ -147,7 +154,7 @@ namespace BibleCommon.Services
                 cells.Add(GetCell(string.Empty, string.Empty, nms));
             }
 
-            return AddRowToTable(tableElement, cells);
+            return AddRowToTable(tableElement, cells.ToArray());
         }
 
         public static int AddColumnToTable(XElement tableElement, int cellWidth, XmlNamespaceManager xnm)
@@ -239,6 +246,13 @@ namespace BibleCommon.Services
                 cell.Add(new XAttribute("lang", locale));
 
             return cell;
+        }
+
+        public static void AddChildToCell(XElement cell, string content, XNamespace nms)
+        {
+            cell.Elements().First().Add(new XElement(nms + "OE",
+                        new XElement(nms + "T",
+                            new XCData(content))));
         }
 
         public static XElement GetCell(string cellText, string locale, XNamespace nms)

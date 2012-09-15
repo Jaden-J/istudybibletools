@@ -195,7 +195,7 @@ namespace BibleConfigurator.ModuleConverter
 
         protected virtual XElement AddTableToChapterPage(XDocument chapterDoc, XmlNamespaceManager xnm)
         {
-            return NotebookGenerator.AddTableToPage(chapterDoc, SettingsManager.Instance.PageWidth_Bible, 2, xnm);
+            return NotebookGenerator.AddTableToPage(chapterDoc, false, xnm, new CellInfo(SettingsManager.Instance.PageWidth_Bible), new CellInfo(NotebookGenerator.MinimalCellWidth));
         }
 
         protected virtual void AddVerseRowToTable(XElement tableElement, int verseNumber, string verseText)

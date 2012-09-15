@@ -522,4 +522,7 @@
   <data name="LinkSupplementalBible" xml:space="preserve">
     <value>Привязка справочной Библии</value>
   </data>
+  <data name="UserNotesCellTitle" xml:space="preserve">
+    <value>Пользовательские заметки</value>
+  </data>
 </root>
