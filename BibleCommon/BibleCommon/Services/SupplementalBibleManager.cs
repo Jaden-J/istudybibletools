@@ -76,6 +76,11 @@ namespace BibleCommon.Services
 
             OneNoteLocker.UnlockAllBible(oneNoteApp);
 
+            if (bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong)
+            {
+                // индексируем словарь стронга
+            }
+
             BibleParallelTranslationConnectionResult result;
             using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
                             supplementalModuleSortName, SettingsManager.Instance.ModuleName,
