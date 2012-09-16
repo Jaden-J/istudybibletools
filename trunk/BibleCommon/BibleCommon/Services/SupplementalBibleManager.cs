@@ -14,6 +14,11 @@ using BibleCommon.Contracts;
 
 namespace BibleCommon.Services
 {
+    public class StrongTerm  // термин словаря Стронга
+    {
+        public 
+    }
+
     public static class SupplementalBibleManager
     {
         public static void CreateSupplementalBible(Application oneNoteApp, string moduleShortName, string notebookDirectory, ICustomLogger logger)
@@ -70,23 +75,20 @@ namespace BibleCommon.Services
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
-            string supplementalModuleSortName = SettingsManager.Instance.SupplementalBibleModules[supplementalModuleIndex];
+            string supplementalModuleShortName = SettingsManager.Instance.SupplementalBibleModules[supplementalModuleIndex];            
 
-            BibleParallelTranslationManager.MergeModuleWithMainBible(supplementalModuleSortName);                       
-
-            OneNoteLocker.UnlockAllBible(oneNoteApp);
-
-            if (bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong)
-            {
-                // индексируем словарь стронга
-            }
+            BibleParallelTranslationManager.MergeModuleWithMainBible(supplementalModuleShortName);                       
+            OneNoteLocker.UnlockAllBible(oneNoteApp);            
 
             BibleParallelTranslationConnectionResult result;
             using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
-                            supplementalModuleSortName, SettingsManager.Instance.ModuleName,
+                            supplementalModuleShortName, SettingsManager.Instance.ModuleName,
                             SettingsManager.Instance.NotebookId_SupplementalBible))
             {
                 bibleTranslationManager.Logger = logger;
+
+                if (bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong)            
+
 
                 result = bibleTranslationManager.IterateBaseBible(
                     chapterPageDoc =>
@@ -107,7 +109,9 @@ namespace BibleCommon.Services
             return result;
         }
 
-      
+        internal static Dictionary<> IndexStrongDictionary()
+        {
+        }
 
         private static void LinkdMainBibleAndSupplementalVerses(Application oneNoteApp, SimpleVersePointer baseVersePointer,
             SimpleVerse parallelVerse, BibleIteratorArgs bibleIteratorArgs, bool isStrong, XmlNamespaceManager xnm, XNamespace nms)

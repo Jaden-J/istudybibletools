@@ -43,6 +43,7 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_NotebookIdBibleNotesPages = "NotebookId_BibleNotesPages";
         public static readonly string ParameterName_NotebookIdBibleStudy = "NotebookId_BibleStudy";
         public static readonly string ParameterName_NotebookIdSupplementalBible = "NotebookId_SupplementalBible";
+        public static readonly string ParameterName_NotebookIdDictionaries = "NotebookId_Dictionaries";
         public static readonly string ParameterName_SectionGroupIdBible = "SectionGroupId_Bible";        
         public static readonly string ParameterName_SectionGroupIdBibleStudy = "SectionGroupId_BibleStudy";
         public static readonly string ParameterName_SectionGroupIdBibleComments = "SectionGroupId_BibleComments";
@@ -57,6 +58,7 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_ModuleName = "ModuleName";
         public static readonly string ParameterName_SupplementalBibleModules = "SupplementalBibleModules";
         public static readonly string ParameterName_SupplementalBibleLinkName = "SupplementalBibleLinkName";
+        public static readonly string ParameterName_DictionariesModules = "DictionariesModules";
         
 
         public static readonly string ParameterName_PageWidthNotes = "Width_NotesPage";
