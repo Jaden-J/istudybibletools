@@ -15,6 +15,26 @@ using System.Globalization;
 
 namespace BibleCommon.Services
 {
+    public class DictionaryModuleInfo
+    {
+        public string ModuleName { get; set; }
+        public string SectionId { get; set; }
+
+        internal DictionaryModuleInfo(string xmlString)
+        {
+            var s = xmlString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            if (s.Length != 2)
+                throw new NotSupportedException(string.Format("Invalid DictionaryModuleInfo: '{0}'", xmlString));
+            this.ModuleName = s[0];
+            this.SectionId = s[1];
+        }
+
+        public override string ToString()
+        {
+            return string.Join(",", new string[] { this.ModuleName, this.SectionId });
+        }
+    }
+
     public class SettingsManager
     {
         #region Properties
@@ -48,6 +68,8 @@ namespace BibleCommon.Services
         public string NotebookId_BibleNotesPages { get; set; }        
         public string NotebookId_BibleStudy { get; set; }
         public string NotebookId_SupplementalBible { get; set; }
+        public string NotebookId_Dictionaries { get; set; }
+        public List<DictionaryModuleInfo> DictionariesModules { get; set; }
         public string SectionGroupId_Bible { get; set; }
         public string SectionGroupId_BibleStudy { get; set; }
         public string SectionGroupId_BibleComments { get; set; }        
@@ -63,6 +85,7 @@ namespace BibleCommon.Services
         public int PageWidth_Bible { get; set; }
         public List<string> SupplementalBibleModules { get; set; }
         public string SupplementalBibleLinkName { get; set; }
+        
 
         /// <summary>
         /// Необходимо ли линковать каждый стих, входящий в MultiVerse
@@ -128,6 +151,15 @@ namespace BibleCommon.Services
                     return null;
 
             return NotebookId_SupplementalBible;
+        }
+
+        public string GetValidDictionariesNotebookId(Application oneNoteApp, bool refreshCache = false)
+        {
+            if (!string.IsNullOrEmpty(NotebookId_Dictionaries))
+                if (!OneNoteUtils.NotebookExists(oneNoteApp, NotebookId_Dictionaries, refreshCache))
+                    return null;
+
+            return NotebookId_Dictionaries;
         }
 
         public bool CurrentModuleIsCorrect()
@@ -305,6 +337,10 @@ namespace BibleCommon.Services
                                                 s => new List<string>(s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)));
             this.SupplementalBibleLinkName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SupplementalBibleLinkName,
                                                   Consts.Constants.DefaultSupplementalBibleLinkName);
+
+            this.NotebookId_Dictionaries = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdDictionaries);
+            this.DictionariesModules = GetParameterValue<List<DictionaryModuleInfo>>(xdoc, Consts.Constants.ParameterName_DictionariesModules, new List<DictionaryModuleInfo>(), 
+                                                s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(xmlString => new DictionaryModuleInfo(xmlString)));
         }
 
         private T GetParameterValue<T>(XDocument xdoc, string parameterName, object defaultValue = null, Func<string, T> convertFunc = null)
@@ -419,7 +455,9 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_UseDefaultSettings, this.UseDefaultSettings.Value),
                                   new XElement(Consts.Constants.ParameterName_PageWidthBible, this.PageWidth_Bible),
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleModules, string.Join(";", this.SupplementalBibleModules.ToArray())),
-                                  new XElement(Consts.Constants.ParameterName_SupplementalBibleLinkName, this.SupplementalBibleLinkName)
+                                  new XElement(Consts.Constants.ParameterName_SupplementalBibleLinkName, this.SupplementalBibleLinkName),
+                                  new XElement(Consts.Constants.ParameterName_NotebookIdDictionaries, this.NotebookId_Dictionaries),
+                                  new XElement(Consts.Constants.ParameterName_DictionariesModules, string.Join(";", this.DictionariesModules.ConvertAll(dm => dm.ToString()).ToArray()))
                                   );
 
                     xDoc.Save(sw);
