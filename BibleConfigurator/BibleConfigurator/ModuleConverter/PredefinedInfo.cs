@@ -78,6 +78,21 @@ namespace BibleConfigurator.ModuleConverter
         }
     }
 
+    public static class PredefinedSectionsInfo
+    {
+        public static List<SectionInfo> RSTStrong
+        {
+            get
+            {
+                return new List<SectionInfo>()
+                {
+                    new SectionInfo() { Name = "Ветхий Завет" },
+                    new SectionInfo() { Name = "Новый Завет" }
+                };
+            }
+        }
+    }
+
     //public static class PredefinedBookDifferences
     //{
     //    //public static readonly BibleTranslationDifferences KJV = new BibleTranslationDifferences();        

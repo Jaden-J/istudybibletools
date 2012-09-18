@@ -18,6 +18,10 @@ namespace BibleCommon.Services
     public class DictionaryModuleInfo
     {
         public string ModuleName { get; set; }
+        
+        /// <summary>
+        /// Section or SectionGroup ID
+        /// </summary>
         public string SectionId { get; set; }
 
         internal DictionaryModuleInfo(string xmlString)

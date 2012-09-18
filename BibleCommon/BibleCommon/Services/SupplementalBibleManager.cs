@@ -14,11 +14,6 @@ using BibleCommon.Contracts;
 
 namespace BibleCommon.Services
 {
-    public class StrongTerm  // термин словаря Стронга
-    {
-        public 
-    }
-
     public static class SupplementalBibleManager
     {
         public static void CreateSupplementalBible(Application oneNoteApp, string moduleShortName, string notebookDirectory, ICustomLogger logger)
@@ -87,8 +82,9 @@ namespace BibleCommon.Services
             {
                 bibleTranslationManager.Logger = logger;
 
-                if (bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong)            
-
+                Dictionary<string, string> strongTermLinksCache = null;
+                if (bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong)
+                    strongTermLinksCache = IndexStrongDictionary(oneNoteApp, bibleTranslationManager.BaseModuleInfo);
 
                 result = bibleTranslationManager.IterateBaseBible(
                     chapterPageDoc =>
@@ -109,8 +105,36 @@ namespace BibleCommon.Services
             return result;
         }
 
-        internal static Dictionary<> IndexStrongDictionary()
+        internal static Dictionary<string, string> IndexStrongDictionary(Application oneNoteApp, ModuleInfo strongModuleInfo)
         {
+            var result = new Dictionary<string, string>();
+            var dictionaryModuleInfo = SettingsManager.Instance.DictionariesModules.FirstOrDefault(m => m.ModuleName == strongModuleInfo.ShortName);
+            if (dictionaryModuleInfo != null)
+            {
+                XmlNamespaceManager xnm;
+                var sectionGroupDoc = OneNoteUtils.GetHierarchyElement(oneNoteApp, dictionaryModuleInfo.SectionId, HierarchyScope.hsPages, out xnm);
+
+                var sectionsEl = sectionGroupDoc.Root.XPathSelectElements("one:Section", xnm);
+                if (sectionsEl.Count() > 0)
+                {
+                    foreach (var sectionEl in sectionsEl)
+                    {
+                        IndexStrongSection(oneNoteApp, sectionEl, result);
+                    }
+                }
+                else
+                    IndexStrongSection(oneNoteApp, sectionGroupDoc.Root, result); 
+            }
+
+            return result;
+        }
+
+        private static void IndexStrongSection(Application oneNoteApp, XElement sectionEl, Dictionary<string, string> result)
+        {
+            string sectionName = (string)sectionEl.Attribute("name");
+            
+            здесь нам не важно какие префиксы. Ведь в словаре и в Библии номера уже идут с префиксами. Другое дело, что надо Библию создавать с правильными префиксами!!
+
         }
 
         private static void LinkdMainBibleAndSupplementalVerses(Application oneNoteApp, SimpleVersePointer baseVersePointer,

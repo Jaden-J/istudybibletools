@@ -128,17 +128,7 @@ namespace BibleCommon.Common
 
             return null;
         }
-    }
-
-    [Serializable]
-    public class SectionInfo
-    {
-        [XmlAttribute]
-        public string Name { get; set; }
-
-        [XmlAttribute]
-        public string StrongPrefix { get; set; }
-    }
+    }   
 
     [Serializable]    
     public class NotebookInfo
@@ -179,7 +169,7 @@ namespace BibleCommon.Common
         public bool CheckPagesCount { get; set; }
 
         [XmlAttribute]
-        public int PagesCount { get; set; }
+        public int PagesCount { get; set; }       
     }    
 
     [Serializable]
