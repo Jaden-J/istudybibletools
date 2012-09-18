@@ -119,22 +119,34 @@ namespace BibleCommon.Services
                 {
                     foreach (var sectionEl in sectionsEl)
                     {
-                        IndexStrongSection(oneNoteApp, sectionEl, result);
+                        IndexStrongSection(oneNoteApp, sectionEl, result, xnm);
                     }
                 }
                 else
-                    IndexStrongSection(oneNoteApp, sectionGroupDoc.Root, result); 
+                    IndexStrongSection(oneNoteApp, sectionGroupDoc.Root, result, xnm); 
             }
 
             return result;
         }
 
-        private static void IndexStrongSection(Application oneNoteApp, XElement sectionEl, Dictionary<string, string> result)
+        private static void IndexStrongSection(Application oneNoteApp, XElement sectionEl, Dictionary<string, string> result, XmlNamespaceManager xnm)
         {
             string sectionName = (string)sectionEl.Attribute("name");
-            
-            здесь нам не важно какие префиксы. Ведь в словаре и в Библии номера уже идут с префиксами. Другое дело, что надо Библию создавать с правильными префиксами!!
 
+            foreach (var pageEl in sectionEl.XPathSelectElements("one:Page", xnm))
+            {
+                var pageId = (string)pageEl.Attribute("ID");
+                var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, pageId, out xnm);
+
+                var tableEl = NotebookGenerator.GetPageTable(pageDoc, xnm);
+
+                foreach (var termTextEl in tableEl.XPathSelectElements("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
+                {
+                    var termName = termTextEl.Value;
+                    var termTextElementId = (string)termTextEl.Attribute("objectID");
+                    result.Add(termName, OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, termTextElementId));
+                }
+            }
         }
 
         private static void LinkdMainBibleAndSupplementalVerses(Application oneNoteApp, SimpleVersePointer baseVersePointer,
@@ -158,8 +170,9 @@ namespace BibleCommon.Services
 
             if (isStrong)
             {
-                // находим номера стронга и меняем их на ссылки на словарь стронга. До этого надо пробежаться по записной книжке стронга и закэшировать ссылки на все слова стронга
-                 //baseVerseEl.Value
+                нужно правильно формировать записную книжку Библии!! с префиксами
+                 находим номера стронга и меняем их на ссылки на словарь стронга. До этого надо пробежаться по записной книжке стронга и закэшировать ссылки на все слова стронга
+                 baseVerseEl.Value
             }
         }
 
