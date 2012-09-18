@@ -54,6 +54,12 @@ namespace BibleCommon.Common
         [XmlElement(typeof(NotebookInfo), ElementName = "Notebook")]
         public List<NotebookInfo> Notebooks { get; set; }
 
+        [XmlAttribute]
+        public string DictionarySectionGroupName { get; set; }
+
+        [XmlElement(typeof(SectionInfo), ElementName="Section")]
+        public List<SectionInfo> Sections { get; set; }
+
         [XmlElement]
         public BibleTranslationDifferences BibleTranslationDifferences { get; set; }
 
@@ -122,6 +128,16 @@ namespace BibleCommon.Common
 
             return null;
         }
+    }
+
+    [Serializable]
+    public class SectionInfo
+    {
+        [XmlAttribute]
+        public string Name { get; set; }
+
+        [XmlAttribute]
+        public string StrongPrefix { get; set; }
     }
 
     [Serializable]    
