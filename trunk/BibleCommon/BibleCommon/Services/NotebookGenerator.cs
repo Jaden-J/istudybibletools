@@ -125,9 +125,9 @@ namespace BibleCommon.Services
             return tableEl;                
         }
 
-        public static XElement GetPageTable(XDocument chapterPageDoc, XmlNamespaceManager xnm)
+        public static XElement GetPageTable(XDocument pageDoc, XmlNamespaceManager xnm)
         {
-            return chapterPageDoc.Root.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", xnm);            
+            return pageDoc.Root.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", xnm);            
         }
 
         public static XElement AddRowToTable(XElement tableElement, params XElement[] cells)
