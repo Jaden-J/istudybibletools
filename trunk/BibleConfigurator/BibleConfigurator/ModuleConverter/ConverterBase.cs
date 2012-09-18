@@ -61,6 +61,8 @@ namespace BibleConfigurator.ModuleConverter
         protected BibleTranslationDifferences TranslationDifferences { get; set; }
         protected List<int> BookIndexes { get; set; }  // массив индексов книг. Для KJV - упорядоченный массив цифр от 1 до 66.                 
         protected string ChapterSectionNameTemplate { get; set; }
+        protected List<SectionInfo> SectionsInfo { get; set; }
+        protected string DictionarySectionGroupName { get; set; }
         protected string Version { get; set; }        
 
         /// <summary>
@@ -77,7 +79,8 @@ namespace BibleConfigurator.ModuleConverter
         public ConverterBase(string newNotebookName, string manifestFilesFolderPath, bool isStrong,
             string oldTestamentName, string newTestamentName, int oldTestamentBooksCount, int newTestamentBooksCount,
             string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, 
-            BibleTranslationDifferences translationDifferences, string chapterSectionNameTemplate, string version)
+            BibleTranslationDifferences translationDifferences, string chapterSectionNameTemplate,
+            List<SectionInfo> sectionsInfo, string dictionarySectionGroupName, string version)
         {
             OneNoteApp = new Application();
             this.IsStrong = isStrong;
@@ -95,6 +98,8 @@ namespace BibleConfigurator.ModuleConverter
             this.BibleInfo.Content.Locale = locale;
             this.BookIndexes = bookIndexes;
             this.ChapterSectionNameTemplate = chapterSectionNameTemplate;
+            this.SectionsInfo = sectionsInfo;
+            this.DictionarySectionGroupName = dictionarySectionGroupName;
             this.Version = version;
             this.Errors = new List<ConverterExceptionBase>();
 
@@ -265,6 +270,8 @@ namespace BibleConfigurator.ModuleConverter
                 NewTestamentBooksCount = NewTestamentBooksCount,
                 ChapterSectionNameTemplate = ChapterSectionNameTemplate              
             };
+            module.Sections = this.SectionsInfo;
+            module.DictionarySectionGroupName = this.DictionarySectionGroupName;
 
             int index = 0;
             foreach (var bibleBookInfo in extModuleInfo.BibleBooksInfo)
