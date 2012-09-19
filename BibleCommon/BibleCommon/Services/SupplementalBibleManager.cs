@@ -96,7 +96,7 @@ namespace BibleCommon.Services
                     (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
                     {
                         LinkdMainBibleAndSupplementalVerses(oneNoteApp, baseVersePointer, parallelVerse, bibleIteratorArgs, 
-                            bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong,xnm, nms);                       
+                            bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong, strongTermLinksCache, bibleTranslationManager.BaseModuleInfo.BibleStructure.Alphabet, xnm, nms);                       
                     });
             }
 
@@ -150,9 +150,8 @@ namespace BibleCommon.Services
         }
 
         private static void LinkdMainBibleAndSupplementalVerses(Application oneNoteApp, SimpleVersePointer baseVersePointer,
-            SimpleVerse parallelVerse, BibleIteratorArgs bibleIteratorArgs, bool isStrong, XmlNamespaceManager xnm, XNamespace nms)
+            SimpleVerse parallelVerse, BibleIteratorArgs bibleIteratorArgs, bool isStrong, Dictionary<string, string> strongTermLinksCache, string alphabet, XmlNamespaceManager xnm, XNamespace nms)
         {
-
             var baseBibleObjectsSearchResult = HierarchySearchManager.GetHierarchyObject(oneNoteApp,
                     SettingsManager.Instance.NotebookId_Bible, parallelVerse.ToVersePointer(SettingsManager.Instance.CurrentModule), true);
 
@@ -170,10 +169,38 @@ namespace BibleCommon.Services
 
             if (isStrong)
             {
-                нужно правильно формировать записную книжку Библии!! с префиксами
-                 находим номера стронга и меняем их на ссылки на словарь стронга. До этого надо пробежаться по записной книжке стронга и закэшировать ссылки на все слова стронга
-                 baseVerseEl.Value
+                baseVerseEl.Value = ProcessStrongVerse(baseVerseEl.Value, strongTermLinksCache, alphabet);                
             }
+        }
+
+        private static string ProcessStrongVerse(string verseText, Dictionary<string, string> strongTermLinksCache, string alphabet)
+        {
+            int cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, null);
+            int temp, htmlBreakIndex = -1;
+            string strongNumber;
+
+            while (cursorPosition > -1)
+            {
+                strongNumber = StringUtils.GetNextString(verseText, cursorPosition - 1, new SearchMissInfo(null, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
+                                                                    out temp, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
+                if (!string.IsNullOrEmpty(strongNumber))
+                {
+                    string prefix = StringUtils.GetPrevString(verseText, cursorPosition, new SearchMissInfo(null, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
+                                                                    out temp, out temp, StringSearchIgnorance.None, StringSearchMode.SearchFirstChar);
+                    if (!string.IsNullOrEmpty(prefix) && prefix.Length == 1 && StringUtils.IsCharAlphabetical(prefix[0], alphabet))
+                    {
+                        string strongTerm = prefix + strongNumber;
+                        if (strongTermLinksCache.ContainsKey(strongTerm))
+                            verseText = string.Concat(verseText.Substring(0, cursorPosition), 
+                                                        string.Format("<a href=\"{0}\">{1}</a>", strongTermLinksCache[strongTerm], strongTerm), добавить <sup>
+                                                        verseText.Substring(htmlBreakIndex));
+                    }
+                }
+
+                cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, htmlBreakIndex);
+            }
+
+            return verseText;
         }
 
         private static void LinkSupplementalBibleVerseToMainBibleVerse(Application oneNoteApp, SimpleVersePointer baseVersePointer, XElement baseVerseEl, HierarchySearchManager.HierarchySearchResult baseBibleObjectsSearchResult)

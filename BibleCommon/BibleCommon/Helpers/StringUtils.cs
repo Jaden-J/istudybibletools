@@ -151,7 +151,7 @@ namespace BibleCommon.Helpers
 
         public static bool IsDigit(char c)
         {
-            return (c >= '0' && c <= '9');
+            return char.IsDigit(c);            
         }
 
         public static bool IsCharAlphabetical(char c)
@@ -300,6 +300,11 @@ namespace BibleCommon.Helpers
         }
 
 
+        public static string GetPrevString(string s, int index, SearchMissInfo missInfo, out int textBreakIndex, out int htmlBreakIndex,
+           StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
+        {
+            return GetPrevString(s, index, missInfo, null, out textBreakIndex, out htmlBreakIndex, ignoreSpaces, searchMode);
+        }
 
         /// <summary>
         /// 
@@ -311,7 +316,7 @@ namespace BibleCommon.Helpers
         /// <param name="ignoreSpaces">Правила игнорирования проблелов. Но если режим searchMode установлен в SearchFirstValueChar, то данный параметр игнорируется, так как пробел тоже считается разделителем</param>
         /// <param name="searchMode">что ищем</param>
         /// <returns></returns>
-        public static string GetPrevString(string s, int index, SearchMissInfo missInfo, out int textBreakIndex, out int htmlBreakIndex,
+        public static string GetPrevString(string s, int index, SearchMissInfo missInfo, string alphabet, out int textBreakIndex, out int htmlBreakIndex,
             StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
         {
             if (searchMode == StringSearchMode.SearchFirstValueChar || searchMode == StringSearchMode.SearchFirstChar)
@@ -386,7 +391,7 @@ namespace BibleCommon.Helpers
                         }
                     }
                 }
-                else if (IsCharAlphabetical(c))
+                else if (IsCharAlphabetical(c, alphabet))
                 {
                     foundValidChars = true;
 
@@ -626,6 +631,25 @@ namespace BibleCommon.Helpers
             textBreakIndex = iBeforeHtml != -1 ? iBeforeHtml : i;
             htmlBreakIndex = i;
             return result;
+        }
+
+        public static int GetNextIndexOfDigit(string s, int? index)
+        {
+            if (s.Length >= index.GetValueOrDefault(0) + 2)
+            {
+                index = s
+                    .IndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '<' }, index.HasValue ? index.Value + 1 : 0);
+
+                if (index != -1 && s[index.Value] == '<')
+                {
+                    index = s.IndexOf('>', index.Value + 1);
+                    return GetNextIndexOfDigit(s, index);
+                }
+            }
+            else
+                index = -1;
+
+            return index.Value;
         }
 
         //public static string GetNextCloseTag(string s, int index)

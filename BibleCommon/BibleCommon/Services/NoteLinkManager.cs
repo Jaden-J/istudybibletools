@@ -466,7 +466,7 @@ namespace BibleCommon.Services
         {
 
             string localChapterName = string.Empty;    // имя главы в пределах данного абзаца. например, действительно только для девятки в "Откр 5:7,9"
-            int cursorPosition = GetNextIndexOfDigit(textElement.Value, null);
+            int cursorPosition = StringUtils.GetNextIndexOfDigit(textElement.Value, null);
 
             int verseIndex = 0;
             while (cursorPosition > -1)
@@ -524,29 +524,12 @@ namespace BibleCommon.Services
                     Logger.LogError(ex);
                 }
 
-                cursorPosition = GetNextIndexOfDigit(textElement.Value, cursorPosition);
+                cursorPosition = StringUtils.GetNextIndexOfDigit(textElement.Value, cursorPosition);
             }
         }
         
 
-        private static int GetNextIndexOfDigit(string s, int? index)
-        {
-            if (s.Length >= index.GetValueOrDefault(0) + 2)
-            {
-                index = s
-                    .IndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '<' }, index.HasValue ? index.Value + 1 : 0);
-
-                if (index != -1 && s[index.Value] == '<')
-                {
-                    index = s.IndexOf('>', index.Value + 1);
-                    return GetNextIndexOfDigit(s, index);
-                }
-            }
-            else
-                index = -1;
-
-            return index.Value;
-        }
+     
 
 
         /// <summary>
