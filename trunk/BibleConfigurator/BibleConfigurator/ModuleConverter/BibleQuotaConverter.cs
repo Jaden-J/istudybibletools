@@ -158,7 +158,7 @@ namespace BibleConfigurator.ModuleConverter
                     {
                         try
                         {
-                            ProcessVerse(lineText, currentTableElement);
+                            ProcessVerse(lineText, currentTableElement, externalModuleInfo.Alphabet);
                         }
                         catch (ConverterExceptionBase ex)
                         {
@@ -174,7 +174,7 @@ namespace BibleConfigurator.ModuleConverter
             }
         }
 
-        private void ProcessVerse(string lineText, XElement currentTableElement)
+        private void ProcessVerse(string lineText, XElement currentTableElement, string alphabet)
         {
             if (currentTableElement == null)
                 throw new Exception("currentTableElement is null");
@@ -191,8 +191,37 @@ namespace BibleConfigurator.ModuleConverter
                     throw new VerseReadException("{0} {1}: Verse has no number: {2}", currentBook.Index, currentChapter.Index, lineText);
                 }
 
+                if (IsStrong)
+                {
+                    verseText = ProcessStrongVerse(verseText, alphabet);
+                }
+
                 AddVerseRowToTable(currentTableElement, verseNumber.Value, verseText);
             }
+        }
+
+        private string ProcessStrongVerse(string verseText, string alphabet)
+        {
+            int currentBookNumber = BibleInfo.Content.Books.Count;
+            var prefix = currentBookNumber <= OldTestamentBooksCount ? "H" : "G";
+
+            int cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, null);
+            int textBreakIndex, htmlBreakIndex = -1;
+            string strongNumber;
+
+            while (cursorPosition > -1)
+            {                
+                strongNumber = StringUtils.GetNextString(verseText, cursorPosition - 1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
+                                                                    out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
+                if (!string.IsNullOrEmpty(strongNumber))
+                {
+                    verseText = string.Concat(verseText.Substring(0, cursorPosition), prefix, strongNumber, verseText.Substring(htmlBreakIndex));
+                }
+                
+                cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, htmlBreakIndex);
+            }
+
+            return verseText;
         }
 
         private string GetVerseTextWithoutNumber(string lineText, out int? verseNumber)

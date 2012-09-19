@@ -23,6 +23,9 @@ namespace TestProject
 {
     class Program
     {
+        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Dropbox\IStudyBibleTools\ForGenerating\";
+        private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\";
+
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
         private static Microsoft.Office.Interop.OneNote.Application OneNoteApp
         {
@@ -70,6 +73,7 @@ namespace TestProject
                 Logger.LogError(ex.ToString());
             }
 
+            Console.WriteLine("Finish");
             Console.ReadKey();
         }
 
@@ -77,9 +81,9 @@ namespace TestProject
         {
             var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "Strong", 
                 new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = @"G:\Dropbox\IStudyBibleTools\ForGenerating\Strongs\HEBREW.HTM", SectionName = "Ветхий Завет", TermPrefix = "H", StartIndex = 0 },
-                    new DictionaryFile() { FilePath = @"G:\Dropbox\IStudyBibleTools\ForGenerating\Strongs\GREEK.HTM", SectionName = "Новый Завет", TermPrefix= "G", StartIndex = 0 }
-                }, BibleQuotaDictionaryConverter.StructureType.Strong, @"c:\temp\strong", "<h4>", Encoding.Default, "ru", "1.0");
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs\HEBREW.HTM"), SectionName = "Ветхий Завет", TermPrefix = "H", StartIndex = 0 },
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs\GREEK.HTM"), SectionName = "Новый Завет", TermPrefix= "G", StartIndex = 0 }
+                }, BibleQuotaDictionaryConverter.StructureType.Strong, Path.Combine(TempFolderPath, "strong"), "<h4>", Encoding.Default, "ru", "1.0");
 
             converter.Convert();
             int i = converter.Errors.Count;
@@ -127,7 +131,7 @@ namespace TestProject
 
         private static void ConvertRussianModule()
         {
-            var converter = new BibleQuotaConverter("RST", @"G:\Dropbox\IStudyBibleTools\ForGenerating\RST", @"c:\temp\RST", Encoding.Default, true,
+            var converter = new BibleQuotaConverter("RST", Path.Combine(ForGeneratingFolderPath, "RST"), Path.Combine(TempFolderPath, "RST"), Encoding.Default, true,
                 "Ветхий Завет", "Новый Завет", 39, 27, "ru",
                 PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst), 
                 "{0} глава. {1}", PredefinedSectionsInfo.RSTStrong, "Стронга", "2.0");
@@ -151,7 +155,7 @@ namespace TestProject
 
         private static void ConvertRomanModule()
         {
-            var converter = new BibleQuotaConverter("Bible", @"C:\Temp\RCCV", @"c:\manifest.xml", Encoding.Unicode, false,
+            var converter = new BibleQuotaConverter("Bible", Path.Combine(ForGeneratingFolderPath, "RCCV"), Path.Combine(TempFolderPath, "RCCV"), Encoding.Unicode, false,
                 "1. Vechiul Testament", "2. Noul Testament", 39, 27, "ro",
                 PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
                 "{0} capitolul. {1}", null, null, "2.0");
@@ -169,7 +173,7 @@ namespace TestProject
 
         private static void ConvertEnglishModule()
         {
-            var converter = new BibleQuotaConverter("KJV", @"C:\Temp\King_James_Version", @"c:\temp\KJV", Encoding.ASCII, false,
+            var converter = new BibleQuotaConverter("KJV", Path.Combine(ForGeneratingFolderPath, "King_James_Version"), Path.Combine(TempFolderPath, "KJV"), Encoding.ASCII, false,
                 "1. Old Testament", "2. New Testament", 39, 27, "en",
                 PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(), 
                 "{0} chapter. {1}", null, null, "2.0");
