@@ -25,6 +25,12 @@ namespace BibleCommon.Services
         /// </summary>
         public string SectionId { get; set; }
 
+        public DictionaryModuleInfo(string moduleName, string sectionId)
+        {
+            this.ModuleName = moduleName;
+            this.SectionId = sectionId;
+        }
+
         internal DictionaryModuleInfo(string xmlString)
         {
             var s = xmlString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);

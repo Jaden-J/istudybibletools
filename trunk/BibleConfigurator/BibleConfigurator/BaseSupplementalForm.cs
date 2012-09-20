@@ -27,7 +27,7 @@ namespace BibleConfigurator
         protected bool InProgress { get; set; }
 
         protected abstract string GetValidSupplementalNotebookId();
-        protected abstract void DeleteSupplementalModulesInSettingsStorage();
+        protected abstract void ClearSupplementalModulesInSettingsStorage();
         protected abstract int GetSupplementalModulesCount();
         protected abstract bool SupplementalModuleAlreadyAdded(string moduleShortName);
         protected abstract string FormDescription { get; }
@@ -83,7 +83,7 @@ namespace BibleConfigurator
 
             chkUseSupplementalBible.Checked = !string.IsNullOrEmpty(GetValidSupplementalNotebookId());
             if (!chkUseSupplementalBible.Checked)
-                DeleteSupplementalModulesInSettingsStorage(); // на всякий пожарный
+                ClearSupplementalModulesInSettingsStorage(); // на всякий пожарный
 
             chkUseSupplementalBible_CheckedChanged(this, null);
 

@@ -58,7 +58,7 @@ namespace BibleCommon.Common
         public string DictionarySectionGroupName { get; set; }
 
         [XmlElement(typeof(SectionInfo), ElementName="Section")]
-        public List<SectionInfo> Sections { get; set; }
+        public List<SectionInfo> DictionarySections { get; set; }
 
         [XmlElement]
         public BibleTranslationDifferences BibleTranslationDifferences { get; set; }

@@ -528,4 +528,7 @@
   <data name="UserNotesCellTitle" xml:space="preserve">
     <value>User Notes</value>
   </data>
+  <data name="DictionariesNotebookName" xml:space="preserve">
+    <value>Dictionaries</value>
+  </data>
 </root>

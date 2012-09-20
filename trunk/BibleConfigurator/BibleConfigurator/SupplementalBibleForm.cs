@@ -18,7 +18,7 @@ namespace BibleConfigurator
             return SettingsManager.Instance.GetValidSupplementalBibleNotebookId(OneNoteApp, true);
         }
 
-        protected override void DeleteSupplementalModulesInSettingsStorage()
+        protected override void ClearSupplementalModulesInSettingsStorage()
         {
             SettingsManager.Instance.SupplementalBibleModules.Clear(); 
         }
@@ -49,7 +49,7 @@ namespace BibleConfigurator
             {
                 int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.SupplementalBibleModules.First());
                 MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.AddParallelBibleTranslation);
-                result = SupplementalBibleManager.AddParallelBible(OneNoteApp, selectedModuleInfo.ShortName, Logger);
+                result = SupplementalBibleManager.AddParallelBible(OneNoteApp, selectedModuleInfo.ShortName, FolderBrowserDialog.SelectedPath, Logger);
                 MainForm.ExternalProcessingDone(BibleCommon.Resources.Constants.AddParallelBibleTranslationFinishMessage);
             }
             else
@@ -92,7 +92,7 @@ namespace BibleConfigurator
 
         protected override void CloseSupplementalNotebook()
         {
-            SupplementalBibleManager.RemoveSupplementalBible(OneNoteApp);
+            SupplementalBibleManager.CloseSupplementalBible(OneNoteApp);
         }
 
         protected override bool IsModuleSupported(ModuleInfo moduleInfo)
