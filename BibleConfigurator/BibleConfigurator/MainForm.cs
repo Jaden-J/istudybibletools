@@ -1275,7 +1275,7 @@ namespace BibleConfigurator
 
         private void btnSupplementalBibleManagement_Click(object sender, EventArgs e)
         {
-            var form = new SupplementalBibleForm(_oneNoteApp, this);
+            var form = new BaseSupplementalBibleForm(_oneNoteApp, this);
             form.ShowDialog();
         }        
     }
