@@ -86,8 +86,8 @@ namespace BibleConfigurator.ModuleConverter
             {
                 return new List<SectionInfo>()
                 {
-                    new SectionInfo() { Name = "Ветхий Завет" },
-                    new SectionInfo() { Name = "Новый Завет" }
+                    new SectionInfo() { Name = "Ветхий Завет.one" },
+                    new SectionInfo() { Name = "Новый Завет.one" }
                 };
             }
         }

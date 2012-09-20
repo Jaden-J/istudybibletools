@@ -47,6 +47,7 @@ namespace BibleConfigurator.ModuleConverter
         public string TermStartString { get; set; }
         public string DictionaryName { get; set; }
         public List<Exception> Errors { get; set; }
+        public string UserNotesString { get; set; }
 
         /// <summary>
         /// 
@@ -56,8 +57,8 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="type"></param>
         /// <param name="manifestFilesFolder"></param>
         public BibleQuotaDictionaryConverter(Application oneNoteApp, string notebookName, string dictionaryName,
-            List<DictionaryFile> dictionaryFiles, StructureType type, string manifestFilesFolder, string termStartString,
-            Encoding fileEncoding, string locale, string version)
+            List<DictionaryFile> dictionaryFiles, StructureType type, string manifestFilesFolder, string termStartString, string userNotesString,
+            Encoding fileEncoding, string locale)
         {
             this.Type = type;
             this.DictionaryName = dictionaryName;
@@ -71,6 +72,7 @@ namespace BibleConfigurator.ModuleConverter
             this.Locale = locale;
             this.TermStartString = termStartString;
             this.Errors = new List<Exception>();
+            this.UserNotesString = userNotesString;
         }        
 
         public void Convert()
@@ -139,7 +141,7 @@ namespace BibleConfigurator.ModuleConverter
             
             var termTable = NotebookGenerator.GenerateTableElement(false, new CellInfo(SettingsManager.Instance.PageWidth_Bible - 10));
             NotebookGenerator.AddRowToTable(termTable, NotebookGenerator.GetCell(termDescription, Locale, nms));
-            var userNotesCell = NotebookGenerator.GetCell(string.Format("<b>{0}</b>", BibleCommon.Resources.Constants.UserNotesCellTitle), Locale, nms);
+            var userNotesCell = NotebookGenerator.GetCell(string.Format("<b>{0}</b>", UserNotesString), Locale, nms);
             NotebookGenerator.AddRowToTable(termTable, userNotesCell);
             for (int i = 0; i <= 4; i++)
                 NotebookGenerator.AddChildToCell(userNotesCell, string.Empty, nms);

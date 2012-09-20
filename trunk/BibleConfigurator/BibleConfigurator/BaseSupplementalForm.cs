@@ -64,7 +64,14 @@ namespace BibleConfigurator
             {
                 FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
                 Close();
-            }   
+            }
+
+            if (!BibleParallelTranslationManager.IsModuleSupported(SettingsManager.Instance.CurrentModule))
+            {
+                FormLogger.LogError(string.Format(BibleCommon.Resources.Constants.BaseModuleIsNotSupported, 
+                                        SettingsManager.Instance.CurrentModule.Version, BibleParallelTranslationManager.SupportedModuleMinVersion));
+                Close();
+            }
 
             LoadFormData();
 
@@ -178,7 +185,7 @@ namespace BibleConfigurator
             catch (Exception ex)
             {
                 BibleCommon.Services.Logger.LogError(ex.ToString());
-                MainForm.ExternalProcessingDone(BibleCommon.Resources.Constants.ErrorOccurred);
+                MainForm.ExternalProcessingDone(string.Format("{0}: {1}", BibleCommon.Resources.Constants.ErrorOccurred, ex.Message));
             }                        
 
             EnableUI(true);
