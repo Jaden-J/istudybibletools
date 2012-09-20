@@ -13,7 +13,7 @@ using Microsoft.Office.Interop.OneNote;
 
 namespace BibleConfigurator
 {
-    public abstract partial class BaseSupplementalBibleForm : Form
+    public abstract partial class BaseSupplementalForm : Form
     {
         protected Microsoft.Office.Interop.OneNote.Application OneNoteApp { get; set; }
         protected MainForm MainForm { get; set; }
@@ -26,7 +26,7 @@ namespace BibleConfigurator
         protected bool WasLoaded { get; set; }
         protected bool InProgress { get; set; }
 
-        public BaseSupplementalBibleForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
+        public BaseSupplementalForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
         {
             OneNoteApp = oneNoteApp;
             MainForm = form;
@@ -50,7 +50,7 @@ namespace BibleConfigurator
             FormExtensions.SetToolTip(btnSBFolder, BibleCommon.Resources.Constants.DefineNotebookDirectory);
         }
 
-        protected abstract GetValidSupplementalNotebookId
+        //protected abstract GetValidSupplementalNotebookId
 
 
         private void LoadFormData()

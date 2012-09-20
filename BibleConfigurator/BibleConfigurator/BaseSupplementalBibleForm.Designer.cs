@@ -1,6 +1,6 @@
 ﻿namespace BibleConfigurator
 {
-    abstract partial class BaseSupplementalBibleForm
+    abstract partial class BaseSupplementalForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BaseSupplementalBibleForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BaseSupplementalForm));
             this.chkUseSupplementalBible = new System.Windows.Forms.CheckBox();
             this.pnModules = new System.Windows.Forms.Panel();
             this.btnOk = new System.Windows.Forms.Button();
