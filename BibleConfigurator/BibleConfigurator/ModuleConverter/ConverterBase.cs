@@ -270,7 +270,7 @@ namespace BibleConfigurator.ModuleConverter
                 NewTestamentBooksCount = NewTestamentBooksCount,
                 ChapterSectionNameTemplate = ChapterSectionNameTemplate              
             };
-            module.Sections = this.SectionsInfo;
+            module.DictionarySections = this.SectionsInfo;
             module.DictionarySectionGroupName = this.DictionarySectionGroupName;
 
             int index = 0;

@@ -525,4 +525,7 @@
   <data name="UserNotesCellTitle" xml:space="preserve">
     <value>Пользовательские заметки</value>
   </data>
+  <data name="DictionariesNotebookName" xml:space="preserve">
+    <value>Словари</value>
+  </data>
 </root>

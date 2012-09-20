@@ -18,9 +18,11 @@ namespace BibleCommon.Services
     {
         public static void CreateSupplementalBible(Application oneNoteApp, string moduleShortName, string notebookDirectory, ICustomLogger logger)
         {
-            if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(oneNoteApp, true)))            
-                SettingsManager.Instance.NotebookId_SupplementalBible 
-                    = NotebookGenerator.CreateNotebook(oneNoteApp, Resources.Constants.SupplementalBibleName, notebookDirectory);                            
+            if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(oneNoteApp, true)))
+            {
+                SettingsManager.Instance.NotebookId_SupplementalBible
+                    = NotebookGenerator.CreateNotebook(oneNoteApp, Resources.Constants.SupplementalBibleName, notebookDirectory);                
+            }
             else
                 throw new InvalidOperationException("Supplemental Bible already exists");
 
@@ -55,7 +57,12 @@ namespace BibleCommon.Services
 
             SettingsManager.Instance.SupplementalBibleModules.Clear();
             SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);            
-            SettingsManager.Instance.Save();            
+            SettingsManager.Instance.Save();
+
+            if (moduleInfo.Type == ModuleType.Strong)
+            {
+                DictionaryManager.AddDictionary(oneNoteApp, moduleShortName, notebookDirectory);
+            }
         }
 
         public static BibleParallelTranslationConnectionResult LinkSupplementalBibleWithMainBible(Application oneNoteApp, int supplementalModuleIndex, ICustomLogger logger)
@@ -84,8 +91,7 @@ namespace BibleCommon.Services
 
                 Dictionary<string, string> strongTermLinksCache = null;
                 if (bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong)
-                {
-                    AddStrongDictionaryToDictionaryModulesNotebook();
+                {                    
                     strongTermLinksCache = IndexStrongDictionary(oneNoteApp, bibleTranslationManager.BaseModuleInfo);
                 }
 
@@ -108,9 +114,88 @@ namespace BibleCommon.Services
             return result;
         }
 
-        private static void AddStrongDictionaryToDictionaryModulesNotebook()
+        public static BibleParallelTranslationConnectionResult AddParallelBible(Application oneNoteApp, string moduleShortName, string notebookDirectory, ICustomLogger logger)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(oneNoteApp, true))
+                || SettingsManager.Instance.SupplementalBibleModules.Count == 0)
+                throw new NotConfiguredException();
+
+            BibleParallelTranslationConnectionResult result = null;
+
+            using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
+                SettingsManager.Instance.SupplementalBibleModules.First(), moduleShortName,
+                SettingsManager.Instance.NotebookId_SupplementalBible))
+            {
+                if (bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong)
+                {
+                    DictionaryManager.AddDictionary(oneNoteApp, moduleShortName, notebookDirectory);
+                }
+
+                bibleTranslationManager.Logger = logger;
+                result = bibleTranslationManager.AddParallelTranslation();
+            }
+
+
+            SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
+            SettingsManager.Instance.Save();
+
+            BibleParallelTranslationManager.MergeModuleWithMainBible(moduleShortName);
+
+            return result;
+        }
+
+        public static void CloseSupplementalBible(Application oneNoteApp)
+        {
+            oneNoteApp.CloseNotebook(SettingsManager.Instance.NotebookId_SupplementalBible);
+
+            foreach (var parallelModuleName in SettingsManager.Instance.SupplementalBibleModules)
+            {
+                BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(parallelModuleName);
+                var moduleInfo = ModulesManager.GetModuleInfo(parallelModuleName);
+                if (moduleInfo.Type == ModuleType.Strong)
+                {
+                    DictionaryManager.RemoveDictionary(oneNoteApp, parallelModuleName);
+                }
+            }
+
+            SettingsManager.Instance.SupplementalBibleModules.Clear();
+            SettingsManager.Instance.NotebookId_SupplementalBible = null;
+            SettingsManager.Instance.Save();
+        }
+
+        public enum RemoveResult
+        {
+            RemoveLastModule,
+            RemoveSupplementalBible
+        }
+
+        public static RemoveResult RemoveLastSupplementalBibleModule(Application oneNoteApp, ICustomLogger logger)
+        {
+            if (SettingsManager.Instance.SupplementalBibleModules.Count <= 1)
+            {
+                CloseSupplementalBible(oneNoteApp);
+                return RemoveResult.RemoveSupplementalBible;
+            }
+            else
+            {
+                using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
+                   SettingsManager.Instance.SupplementalBibleModules.First(), SettingsManager.Instance.SupplementalBibleModules.Last(),
+                   SettingsManager.Instance.NotebookId_SupplementalBible))
+                {
+                    bibleTranslationManager.Logger = logger;
+                    bibleTranslationManager.RemoveLastParallelTranslation();
+                }
+
+                string lastSupplementalBibleModuleName = SettingsManager.Instance.SupplementalBibleModules.Last();
+                BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(lastSupplementalBibleModuleName);
+
+                SettingsManager.Instance.SupplementalBibleModules.RemoveAt(SettingsManager.Instance.SupplementalBibleModules.Count - 1);
+                SettingsManager.Instance.Save();
+
+                DictionaryManager.RemoveDictionary(oneNoteApp, lastSupplementalBibleModuleName);
+
+                return RemoveResult.RemoveLastModule;
+            }
         }
 
         internal static Dictionary<string, string> IndexStrongDictionary(Application oneNoteApp, ModuleInfo strongModuleInfo)
@@ -299,81 +384,6 @@ namespace BibleCommon.Services
         private static void UpdateChapterPage(Application oneNoteApp, XDocument chapterPageDoc, int chapterIndex, BibleBookInfo bibleBookInfo)
         {
             oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);            
-        }
-
-        public static BibleParallelTranslationConnectionResult AddParallelBible(Application oneNoteApp, string moduleShortName, ICustomLogger logger)
-        {
-            if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(oneNoteApp, true)) 
-                || SettingsManager.Instance.SupplementalBibleModules.Count == 0)
-                throw new NotConfiguredException();
-
-            BibleParallelTranslationConnectionResult result = null;
-
-            using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
-                SettingsManager.Instance.SupplementalBibleModules.First(), moduleShortName,
-                SettingsManager.Instance.NotebookId_SupplementalBible))
-            {
-                if (bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong)
-                {
-                    AddStrongDictionaryToDictionaryModulesNotebook();
-                }
-
-                bibleTranslationManager.Logger = logger;
-                result = bibleTranslationManager.AddParallelTranslation();
-            }
-
-
-            SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
-            SettingsManager.Instance.Save();
-
-            BibleParallelTranslationManager.MergeModuleWithMainBible(moduleShortName);
-
-            return result;
-        }
-
-        public static void RemoveSupplementalBible(Application oneNoteApp)
-        {
-            oneNoteApp.CloseNotebook(SettingsManager.Instance.NotebookId_SupplementalBible);
-
-            foreach (var parallelModuleName in SettingsManager.Instance.SupplementalBibleModules)
-            {
-                BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(parallelModuleName);
-            }
-
-            SettingsManager.Instance.SupplementalBibleModules.Clear();
-            SettingsManager.Instance.NotebookId_SupplementalBible = null;
-            SettingsManager.Instance.Save();
-        }
-
-        public enum RemoveResult
-        {
-            RemoveLastModule,
-            RemoveSupplementalBible
-        }
-
-        public static RemoveResult RemoveLastSupplementalBibleModule(Application oneNoteApp, ICustomLogger logger)
-        {
-            if (SettingsManager.Instance.SupplementalBibleModules.Count <= 1)
-            {
-                RemoveSupplementalBible(oneNoteApp);
-                return RemoveResult.RemoveSupplementalBible;
-            }
-            else
-            {
-                using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
-                   SettingsManager.Instance.SupplementalBibleModules.First(), SettingsManager.Instance.SupplementalBibleModules.Last(),
-                   SettingsManager.Instance.NotebookId_SupplementalBible))
-                {
-                    bibleTranslationManager.Logger = logger;
-                    bibleTranslationManager.RemoveLastParallelTranslation();
-                }
-
-                BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(SettingsManager.Instance.SupplementalBibleModules.Last());
-
-                SettingsManager.Instance.SupplementalBibleModules.RemoveAt(SettingsManager.Instance.SupplementalBibleModules.Count - 1);
-                SettingsManager.Instance.Save();
-                return RemoveResult.RemoveLastModule;
-            }
-        }
+        }       
     }
 }

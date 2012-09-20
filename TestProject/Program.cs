@@ -118,7 +118,10 @@ namespace TestProject
         {
             DateTime dtStart = DateTime.Now;
 
-            var result = SupplementalBibleManager.AddParallelBible(OneNoteApp, "rst", null);
+            string defaultNotebookFolderPath;
+            OneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+
+            var result = SupplementalBibleManager.AddParallelBible(OneNoteApp, "rst", defaultNotebookFolderPath, null);
 
             DateTime dtEnd = DateTime.Now;
 

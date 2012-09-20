@@ -31,7 +31,12 @@ namespace BibleCommon.Services
 
         public static string GetCurrentModuleDirectiory()
         {
-            return Path.Combine(GetModulesDirectory(), SettingsManager.Instance.ModuleName);
+            return GetModuleDirectory(SettingsManager.Instance.ModuleName);
+        }
+
+        public static string GetModuleDirectory(string moduleShortName)
+        {
+            return Path.Combine(GetModulesDirectory(), moduleShortName);
         }
 
         public static ModuleInfo GetModuleInfo(string moduleDirectoryName)
@@ -55,7 +60,7 @@ namespace BibleCommon.Services
 
         private static string GetModuleFilePath(string moduleDirectoryName, string fileRelativePath)
         {
-            string moduleDirectory = Path.Combine(GetModulesDirectory(), moduleDirectoryName);
+            string moduleDirectory = GetModuleDirectory(moduleDirectoryName);
             string filePath = Path.Combine(moduleDirectory, fileRelativePath);
             if (!File.Exists(filePath))
                 throw new InvalidModuleException(string.Format(BibleCommon.Resources.Constants.FileNotFound, filePath));
@@ -144,7 +149,7 @@ namespace BibleCommon.Services
 
         public static void CheckModule(ModuleInfo module)
         {
-            string moduleDirectory = Path.Combine(GetModulesDirectory(), module.ShortName);
+            string moduleDirectory = GetModuleDirectory(module.ShortName);
 
             foreach (NotebookType notebookType in Enum.GetValues(typeof(NotebookType)).Cast<NotebookType>().Where(t => t != NotebookType.Single))
             {
@@ -175,7 +180,7 @@ namespace BibleCommon.Services
 
             File.Copy(originalFilePath, destFilePath, true);
 
-            string destFolder = Path.Combine(ModulesManager.GetModulesDirectory(), moduleName);
+            string destFolder = GetModuleDirectory(moduleName);
             if (Directory.Exists(destFolder))
                 Directory.Delete(destFolder, true);
 
@@ -194,7 +199,7 @@ namespace BibleCommon.Services
 
         public static void DeleteModule(string moduleDirectoryName)
         {
-            string moduleDirectory = Path.Combine(GetModulesDirectory(), moduleDirectoryName);
+            string moduleDirectory = GetModuleDirectory(moduleDirectoryName);
             if (Directory.Exists(moduleDirectory))
                 Directory.Delete(moduleDirectory, true);
 

@@ -16,7 +16,7 @@ namespace BibleConfigurator
             throw new NotImplementedException();
         }
 
-        protected override void DeleteSupplementalModulesInSettingsStorage()
+        protected override void ClearSupplementalModulesInSettingsStorage()
         {
             throw new NotImplementedException();
         }
