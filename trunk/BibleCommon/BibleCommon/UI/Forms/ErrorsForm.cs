@@ -16,14 +16,17 @@ namespace BibleCommon.UI.Forms
         public List<string> Errors { get; set; }
 
         public ErrorsForm(List<string> errors)
-        {
-            Errors = errors;
+        {            
+            Errors = errors;            
 
             InitializeComponent();            
         }
 
         private void Errors_Load(object sender, EventArgs e)
         {
+            if (Errors.Count == 0)
+                Close();
+
             foreach(string error in Errors)
             {
                 lbErrors.Items.Add(error);

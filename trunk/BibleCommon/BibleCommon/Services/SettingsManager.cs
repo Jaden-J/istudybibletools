@@ -12,6 +12,7 @@ using System.Threading;
 using BibleCommon.Common;
 using System.Resources;
 using System.Globalization;
+using System.ComponentModel;
 
 namespace BibleCommon.Services
 {
@@ -72,8 +73,7 @@ namespace BibleCommon.Services
         public string NotebookId_BibleNotesPages { get; set; }        
         public string NotebookId_BibleStudy { get; set; }
         public string NotebookId_SupplementalBible { get; set; }
-        public string NotebookId_Dictionaries { get; set; }
-        public List<DictionaryModuleInfo> DictionariesModules { get; set; }
+        public string NotebookId_Dictionaries { get; set; }        
         public string SectionGroupId_Bible { get; set; }
         public string SectionGroupId_BibleStudy { get; set; }
         public string SectionGroupId_BibleComments { get; set; }        
@@ -86,9 +86,10 @@ namespace BibleCommon.Services
         public DateTime? NewVersionOnServerLatestCheckTime { get; set; }
         public int PageWidth_Notes { get; set; }
         public int Language { get; set; }
-        public int PageWidth_Bible { get; set; }
+        public int PageWidth_Bible { get; set; }        
         public List<string> SupplementalBibleModules { get; set; }
-        public string SupplementalBibleLinkName { get; set; }
+        public string SupplementalBibleLinkName { get; set; }        
+        public List<DictionaryModuleInfo> DictionariesModules { get; set; }
         
 
         /// <summary>
@@ -234,9 +235,17 @@ namespace BibleCommon.Services
 
         protected SettingsManager()
         {
+            SetDefaultSettings();
+
             _filePath = Path.Combine(Utils.GetProgramDirectory(), Consts.Constants.ConfigFileName);
 
             ReLoadSettings();
+        }
+
+        private void SetDefaultSettings()
+        {
+            SupplementalBibleModules = new List<string>();
+            DictionariesModules = new List<DictionaryModuleInfo>();
         }
 
         private void LoadSettingsFromFile()

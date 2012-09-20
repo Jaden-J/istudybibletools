@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="Services\BibleParallelTranslationConnectorManager.cs" />
     <Compile Include="Services\BibleParallelTranslationManager.cs" />
+    <Compile Include="Services\DictionaryManager.cs" />
     <Compile Include="Services\LanguageManager.cs" />
     <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\ModulesManager.cs" />

@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace BibleConfigurator
 {
-    public static class Logger
+    public static class FormLogger
     {
         public static bool WasErrorLogged = false;
 
