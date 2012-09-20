@@ -61,9 +61,18 @@
     <Compile Include="AboutProgramForm.Designer.cs">
       <DependentUpon>AboutProgramForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="BaseSupplementalBibleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BaseSupplementalBibleForm.Designer.cs">
+      <DependentUpon>BaseSupplementalBibleForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Common.cs" />
     <Compile Include="Consts.cs" />
     <Compile Include="CustomFormLogger.cs" />
+    <Compile Include="DictionaryModulesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Installer.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -109,9 +118,6 @@
     <Compile Include="SupplementalBibleForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SupplementalBibleForm.Designer.cs">
-      <DependentUpon>SupplementalBibleForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Tools\BackupManager.cs" />
     <Compile Include="Tools\ResizeBibleManager.cs" />
     <Compile Include="Tools\DeleteNotesPagesManager.cs" />
@@ -129,6 +135,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AboutProgramForm.ru.resx">
       <DependentUpon>AboutProgramForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BaseSupplementalBibleForm.resx">
+      <DependentUpon>BaseSupplementalBibleForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoadForm.resx">
       <DependentUpon>LoadForm.cs</DependentUpon>
@@ -168,9 +177,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SetWidthForm.ru.resx">
       <DependentUpon>SetWidthForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SupplementalBibleForm.resx">
-      <DependentUpon>SupplementalBibleForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config">
       <SubType>Designer</SubType>
