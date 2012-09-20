@@ -159,14 +159,20 @@ namespace BibleCommon.Helpers
             return IsCharAlphabetical(c, null);
         }
 
-        public static bool IsCharAlphabetical(char c, string alphabet)
+        public static bool IsCharAlphabetical(char c, string alphabet, bool strict = false)
         {
             if (string.IsNullOrEmpty(alphabet))
-                alphabet = SettingsManager.Instance.CurrentModule.BibleStructure.Alphabet;
+            {
+                if (!string.IsNullOrEmpty(SettingsManager.Instance.ModuleName))
+                    alphabet = SettingsManager.Instance.CurrentModule.BibleStructure.Alphabet;
+            }
 
-            return alphabet.Contains(c)
-                 || (c >= 'a' && c <= 'z')
-                 || (c >= 'A' && c <= 'Z');
+            if (!string.IsNullOrEmpty(alphabet))
+                return alphabet.Contains(c)
+                        || (!strict && (c >= 'a' && c <= 'z'))
+                        || (!strict && (c >= 'A' && c <= 'Z'));
+            else
+                return char.IsLetter(c);
         }
 
         public static int GetEntranceCount(string s, string searchString)

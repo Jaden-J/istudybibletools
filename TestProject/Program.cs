@@ -23,8 +23,8 @@ namespace TestProject
 {
     class Program
     {
-        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Dropbox\IStudyBibleTools\ForGenerating\";
-        private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\";
+        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\IStudyBibleTools\ForGenerating\";
+        private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp\";
 
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
         private static Microsoft.Office.Interop.OneNote.Application OneNoteApp
@@ -83,10 +83,12 @@ namespace TestProject
                 new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs\HEBREW.HTM"), SectionName = "Ветхий Завет", TermPrefix = "H", StartIndex = 0 },
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs\GREEK.HTM"), SectionName = "Новый Завет", TermPrefix= "G", StartIndex = 0 }
-                }, BibleQuotaDictionaryConverter.StructureType.Strong, Path.Combine(TempFolderPath, "strong"), "<h4>", Encoding.Default, "ru", "1.0");
+                }, BibleQuotaDictionaryConverter.StructureType.Strong, Path.Combine(TempFolderPath, "strong"), "<h4>", "Пользовательские заметки", Encoding.Default, "ru");
 
             converter.Convert();
-            int i = converter.Errors.Count;
+
+            var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message));
+            form.ShowDialog();           
         }
 
         //private static void GenerateBookDifferencesFile()
@@ -111,7 +113,8 @@ namespace TestProject
 
             Console.WriteLine("Successfully! Elapsed time - {0} seconds", elapsed.TotalSeconds);
 
-            int i = result.Errors.Count;
+            var form = new ErrorsForm(result.Errors.ConvertAll(er => er.Message));
+            form.ShowDialog();           
         }
 
         private static void GenerateParallelBible()
@@ -129,7 +132,8 @@ namespace TestProject
 
             Console.WriteLine("Successfully! Elapsed time - {0} seconds", elapsed.TotalSeconds);
 
-            int i = result.Errors.Count;
+            var form = new ErrorsForm(result.Errors.ConvertAll(er => er.Message));
+            form.ShowDialog();           
         }
 
         private static void ConvertRussianModule()
@@ -151,7 +155,6 @@ namespace TestProject
 
             var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message));
             form.ShowDialog();           
-
         }
 
         

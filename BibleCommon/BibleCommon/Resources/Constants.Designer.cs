@@ -160,6 +160,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Version of primary Bible module is {0}. Only {1} and greater is supported..
+        /// </summary>
+        public static string BaseModuleIsNotSupported {
+            get {
+                return ResourceManager.GetString("BaseModuleIsNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на The passage can not be found.
         /// </summary>
         public static string BibleVersePointerCanNotFindPlace {
@@ -1155,15 +1164,6 @@ namespace BibleCommon.Resources {
         public static string TimeSpent {
             get {
                 return ResourceManager.GetString("TimeSpent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на User Notes.
-        /// </summary>
-        public static string UserNotesCellTitle {
-            get {
-                return ResourceManager.GetString("UserNotesCellTitle", resourceCulture);
             }
         }
         

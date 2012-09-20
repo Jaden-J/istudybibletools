@@ -106,6 +106,7 @@ namespace BibleConfigurator.ModuleConverter
                                 .ToLowerInvariant()
                                 .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
                                 .Select(s => s.Trim(new char[] { '.' })).Distinct()
+                                .Where(s => s.All(c => StringUtils.IsDigit(c) || char.IsSymbol(c) || StringUtils.IsCharAlphabetical(c, result.Alphabet, true)))  // чтобы отсечь сокращения на других языках. Потому что на другиз языках другие модули
                                 .Select(s => new Abbreviation(s)).ToList();
                     else if (key == "ChapterQty")
                         result.BibleBooksInfo[result.BibleBooksInfo.Count - 1].ChaptersCount = int.Parse(value);

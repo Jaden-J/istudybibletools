@@ -522,8 +522,8 @@
   <data name="LinkSupplementalBible" xml:space="preserve">
     <value>Привязка справочной Библии</value>
   </data>
-  <data name="UserNotesCellTitle" xml:space="preserve">
-    <value>Пользовательские заметки</value>
+  <data name="BaseModuleIsNotSupported" xml:space="preserve">
+    <value>Версия модуля основной Библии - {0}. Поддерживаются модули только начиная с версии {1}.</value>
   </data>
   <data name="DictionariesNotebookName" xml:space="preserve">
     <value>Словари</value>

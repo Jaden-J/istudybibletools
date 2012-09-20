@@ -525,8 +525,8 @@
   <data name="LinkSupplementalBible" xml:space="preserve">
     <value>Linking Supplemental Bible</value>
   </data>
-  <data name="UserNotesCellTitle" xml:space="preserve">
-    <value>User Notes</value>
+  <data name="BaseModuleIsNotSupported" xml:space="preserve">
+    <value>Version of primary Bible module is {0}. Only {1} and greater is supported.</value>
   </data>
   <data name="DictionariesNotebookName" xml:space="preserve">
     <value>Dictionaries</value>

@@ -7,6 +7,7 @@ using BibleCommon.Helpers;
 using System.Xml.Linq;
 using System.IO;
 using BibleCommon.Common;
+using System.Xml;
 
 namespace BibleCommon.Services
 {
@@ -25,7 +26,9 @@ namespace BibleCommon.Services
             if (!SettingsManager.Instance.DictionariesModules.Any(m => m.ModuleName == moduleName))
             {
                 //section or sectionGroup Id
-                string dictionarySectionId = null;                
+                string dictionarySectionId = null;
+                string dictionarySectionPath = null;
+                XElement dictionarySectionEl = null;
 
                 var moduleInfo = ModulesManager.GetModuleInfo(moduleName);
 
@@ -37,15 +40,24 @@ namespace BibleCommon.Services
 
                 if (!string.IsNullOrEmpty(moduleInfo.DictionarySectionGroupName))
                 {
-                    var sectionGroupEl = NotebookGenerator.AddRootSectionGroupToNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries, moduleInfo.DictionarySectionGroupName);
-                    dictionarySectionId = (string)sectionGroupEl.Attribute("ID");
+                    dictionarySectionEl = NotebookGenerator.AddRootSectionGroupToNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries, moduleInfo.DictionarySectionGroupName);                    
                 }
+                else
+                {
+                    XmlNamespaceManager xnm;
+                    dictionarySectionEl = OneNoteUtils.GetHierarchyElement(oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries, HierarchyScope.hsSelf, out xnm).Root;
+                }
+
+                dictionarySectionId = (string)dictionarySectionEl.Attribute("ID");
+                dictionarySectionPath = (string)dictionarySectionEl.Attribute("path");
 
                 foreach(var sectionInfo in moduleInfo.DictionarySections)
                 {
                     string sectionElId;
-                    oneNoteApp.OpenHierarchy(Path.Combine(ModulesManager.GetModuleDirectory(moduleName), sectionInfo.Name), 
-                                                dictionarySectionId ?? SettingsManager.Instance.NotebookId_Dictionaries, out sectionElId);
+                    File.Copy(Path.Combine(ModulesManager.GetModuleDirectory(moduleName), sectionInfo.Name), 
+                                                Path.Combine(dictionarySectionPath, sectionInfo.Name));
+                    oneNoteApp.OpenHierarchy(sectionInfo.Name,
+                                                dictionarySectionId, out sectionElId, CreateFileType.cftSection);
 
                     if (string.IsNullOrEmpty(dictionarySectionId))
                         dictionarySectionId = sectionElId;
