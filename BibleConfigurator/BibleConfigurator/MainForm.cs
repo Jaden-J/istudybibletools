@@ -79,7 +79,7 @@ namespace BibleConfigurator
             }
             catch (InvalidModuleException ex)
             {
-                Logger.LogMessage(ex.Message);
+                FormLogger.LogMessage(ex.Message);
                 return;
             }
 
@@ -89,7 +89,7 @@ namespace BibleConfigurator
 
             try
             {
-                Logger.Initialize();
+                FormLogger.Initialize();
 
                 if (rbSingleNotebook.Checked && module.UseSingleNotebook())
                 {
@@ -115,7 +115,7 @@ namespace BibleConfigurator
                         chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, BibleNotesPagesNotebookFromTemplatePath);
                 }
 
-                if (!Logger.WasErrorLogged)
+                if (!FormLogger.WasErrorLogged)
                 {
                     SetProgramParameters();
 
@@ -125,7 +125,7 @@ namespace BibleConfigurator
             }
             catch (SaveParametersException ex)
             {
-                Logger.LogError(ex.Message);
+                FormLogger.LogError(ex.Message);
                 if (ex.NeedToReload)
                     LoadParameters(module, null);
 
@@ -192,7 +192,7 @@ namespace BibleConfigurator
                         }
                         catch (InvalidNotebookException)
                         {
-                            Logger.LogError(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected);
+                            FormLogger.LogError(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected);
                         }
                     }
                 }
@@ -456,7 +456,7 @@ namespace BibleConfigurator
                     sectionGroup.SetAttributeValue("name", renamedSectionGroups[sectionGroupId]);
                 }
                 else
-                    Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorSectionGroupNotFound, sectionGroupId));
+                    FormLogger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorSectionGroupNotFound, sectionGroupId));
             }
 
             _oneNoteApp.UpdateHierarchy(notebook.Content.ToString(), Constants.CurrentOneNoteSchema);
@@ -483,7 +483,7 @@ namespace BibleConfigurator
                     if (files.Length > 0)
                         Process.Start(files[0]);
                     else
-                        Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorErrorWhileNotebookOpenning, notebookTemplateFileName));
+                        FormLogger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorErrorWhileNotebookOpenning, notebookTemplateFileName));
 
                     return Path.GetFileNameWithoutExtension(folderPath);
                 //}
@@ -491,7 +491,7 @@ namespace BibleConfigurator
                 //    Logger.LogError(BibleCommon.Resources.Constants.ConfiguratorSelectAnotherFolder);
             }
             else
-                Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorNotebookTemplateNotFound, packageFilePath));
+                FormLogger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorNotebookTemplateNotFound, packageFilePath));
 
             return string.Empty;
         }       
@@ -813,12 +813,12 @@ namespace BibleConfigurator
                 }
                 else
                 {
-                    Logger.LogError(string.Format(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected + "\n" + errorText, notebookName, NotebookType.Single));
+                    FormLogger.LogError(string.Format(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected + "\n" + errorText, notebookName, NotebookType.Single));
                 }
             }
             else
             {
-                Logger.LogMessage(BibleCommon.Resources.Constants.ConfiguratorNotebookNotDefined);
+                FormLogger.LogMessage(BibleCommon.Resources.Constants.ConfiguratorNotebookNotDefined);
             }
         }
 
@@ -1110,7 +1110,7 @@ namespace BibleConfigurator
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogMessage(string.Format(BibleCommon.Resources.Constants.ModuleUploadError, moduleDirectory, ex.Message));
+                    FormLogger.LogMessage(string.Format(BibleCommon.Resources.Constants.ModuleUploadError, moduleDirectory, ex.Message));
                     if (DeleteModuleWithConfirm(moduleName))
                         return;
                 }
@@ -1126,6 +1126,7 @@ namespace BibleConfigurator
 
                 btnSupplementalBibleManagement.Top = btnUploadModule.Top;
                 btnSupplementalBibleManagement.Left = btnUploadModule.Right + 6;
+                btnSupplementalBibleManagement.Visible = true;
 
                 lblMustUploadModule.Visible = false;
                 lblMustSelectModule.Visible = !SettingsManager.Instance.CurrentModuleIsCorrect();
@@ -1275,7 +1276,7 @@ namespace BibleConfigurator
 
         private void btnSupplementalBibleManagement_Click(object sender, EventArgs e)
         {
-            var form = new BaseSupplementalForm(_oneNoteApp, this);
+            var form = new SupplementalBibleForm(_oneNoteApp, this);
             form.ShowDialog();
         }        
     }

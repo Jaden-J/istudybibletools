@@ -84,7 +84,10 @@ namespace BibleCommon.Services
 
                 Dictionary<string, string> strongTermLinksCache = null;
                 if (bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong)
+                {
+                    AddStrongDictionaryToDictionaryModulesNotebook();
                     strongTermLinksCache = IndexStrongDictionary(oneNoteApp, bibleTranslationManager.BaseModuleInfo);
+                }
 
                 result = bibleTranslationManager.IterateBaseBible(
                     chapterPageDoc =>
@@ -103,6 +106,11 @@ namespace BibleCommon.Services
             OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp, pageContent => pageContent.PageType == OneNoteProxy.PageType.Bible, null, null);
 
             return result;
+        }
+
+        private static void AddStrongDictionaryToDictionaryModulesNotebook()
+        {
+            throw new NotImplementedException();
         }
 
         internal static Dictionary<string, string> IndexStrongDictionary(Application oneNoteApp, ModuleInfo strongModuleInfo)
@@ -192,7 +200,7 @@ namespace BibleCommon.Services
                         string strongTerm = prefix + strongNumber;
                         if (strongTermLinksCache.ContainsKey(strongTerm))
                             verseText = string.Concat(verseText.Substring(0, cursorPosition), 
-                                                        string.Format("<a href=\"{0}\">{1}</a>", strongTermLinksCache[strongTerm], strongTerm), добавить <sup>
+                                                        string.Format("<a href=\"{0}\">{1}</a>", strongTermLinksCache[strongTerm], strongTerm), //добавить <sup>
                                                         verseText.Substring(htmlBreakIndex));
                     }
                 }
@@ -305,6 +313,11 @@ namespace BibleCommon.Services
                 SettingsManager.Instance.SupplementalBibleModules.First(), moduleShortName,
                 SettingsManager.Instance.NotebookId_SupplementalBible))
             {
+                if (bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong)
+                {
+                    AddStrongDictionaryToDictionaryModulesNotebook();
+                }
+
                 bibleTranslationManager.Logger = logger;
                 result = bibleTranslationManager.AddParallelTranslation();
             }

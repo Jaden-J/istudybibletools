@@ -61,11 +61,11 @@
     <Compile Include="AboutProgramForm.Designer.cs">
       <DependentUpon>AboutProgramForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="BaseSupplementalBibleForm.cs">
+    <Compile Include="BaseSupplementalForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BaseSupplementalBibleForm.Designer.cs">
-      <DependentUpon>BaseSupplementalBibleForm.cs</DependentUpon>
+    <Compile Include="BaseSupplementalForm.Designer.cs">
+      <DependentUpon>BaseSupplementalForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Common.cs" />
     <Compile Include="Consts.cs" />
@@ -136,8 +136,8 @@
     <EmbeddedResource Include="AboutProgramForm.ru.resx">
       <DependentUpon>AboutProgramForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BaseSupplementalBibleForm.resx">
-      <DependentUpon>BaseSupplementalBibleForm.cs</DependentUpon>
+    <EmbeddedResource Include="BaseSupplementalForm.resx">
+      <DependentUpon>BaseSupplementalForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoadForm.resx">
       <DependentUpon>LoadForm.cs</DependentUpon>

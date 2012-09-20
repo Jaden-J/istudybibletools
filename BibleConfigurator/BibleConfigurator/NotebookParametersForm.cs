@@ -69,7 +69,7 @@ namespace BibleConfigurator
                 }
                 catch (InvalidNotebookException)
                 {
-                    Logger.LogError(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected);
+                    FormLogger.LogError(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected);
                     this.Close();
                 }
             }

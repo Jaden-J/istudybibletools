@@ -97,8 +97,7 @@ namespace BibleCommon.Helpers
 
                     return (T)serializer.Deserialize(ms);
                 }                
-            }
-            
+            }           
         }
     }
 }
