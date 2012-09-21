@@ -56,12 +56,20 @@ namespace BibleConfigurator
             {
                 int chaptersCount = ModulesManager.GetBibleChaptersCount(selectedModuleInfo.ShortName);
                 MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.CreateSupplementalBibleStart);
-                Logger.Preffix = string.Format("{0} 1/2: {1}: ", BibleCommon.Resources.Constants.Stage, BibleCommon.Resources.Constants.CreateSupplementalBible);
+                Logger.Preffix = string.Format("{0} 1/3: {1}: ", BibleCommon.Resources.Constants.Stage, BibleCommon.Resources.Constants.CreateSupplementalBible);
                 SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, selectedModuleInfo.ShortName, FolderBrowserDialog.SelectedPath, Logger);
 
+                Dictionary<string, string> strongTermLinksCache = null;
+                if (selectedModuleInfo.Type == ModuleType.Strong)
+                {
+                    MainForm.PrepareForExternalProcessing(16000, 1, BibleCommon.Resources.Constants.IndexStrongDictionaryStart);
+                    Logger.Preffix = string.Format("{0} 2/3: {1}: ", BibleCommon.Resources.Constants.Stage, BibleCommon.Resources.Constants.IndexStrongDictionary);
+                    strongTermLinksCache = SupplementalBibleManager.IndexStrongDictionary(OneNoteApp, selectedModuleInfo, Logger);
+                }
+
                 MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.LinkSupplementalBibleStart);
-                Logger.Preffix = string.Format("{0} 2/2: {1}: ", BibleCommon.Resources.Constants.Stage, BibleCommon.Resources.Constants.LinkSupplementalBible);
-                result = SupplementalBibleManager.LinkSupplementalBibleWithMainBible(OneNoteApp, 0, Logger);
+                Logger.Preffix = string.Format("{0} 3/3: {1}: ", BibleCommon.Resources.Constants.Stage, BibleCommon.Resources.Constants.LinkSupplementalBible);
+                result = SupplementalBibleManager.LinkSupplementalBibleWithMainBible(OneNoteApp, 0, strongTermLinksCache, Logger);
 
                 MainForm.ExternalProcessingDone(BibleCommon.Resources.Constants.CreateSupplementalBibleFinish);
             }
