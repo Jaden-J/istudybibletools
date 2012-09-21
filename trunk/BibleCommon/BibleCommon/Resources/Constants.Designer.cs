@@ -637,6 +637,24 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Indexing Strong Dictionary.
+        /// </summary>
+        public static string IndexStrongDictionary {
+            get {
+                return ResourceManager.GetString("IndexStrongDictionary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Indexing Strong Dictionary start.
+        /// </summary>
+        public static string IndexStrongDictionaryStart {
+            get {
+                return ResourceManager.GetString("IndexStrongDictionaryStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Linking Supplemental Bible.
         /// </summary>
         public static string LinkSupplementalBible {

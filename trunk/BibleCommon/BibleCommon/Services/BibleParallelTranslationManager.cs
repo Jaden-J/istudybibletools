@@ -15,11 +15,11 @@ namespace BibleCommon.Services
 {
     public class BibleParallelTranslationConnectionResult
     {
-        public List<BaseVersePointerException> Errors { get; set; }
+        public List<Exception> Errors { get; set; }
 
         public BibleParallelTranslationConnectionResult()
         {
-            this.Errors = new List<BaseVersePointerException>();
+            this.Errors = new List<Exception>();
         }
     }
 
@@ -48,7 +48,7 @@ namespace BibleCommon.Services
 
         public ICustomLogger Logger { get; set; }
 
-        public List<BaseVersePointerException> Errors { get; set; }
+        public List<Exception> Errors { get; set; }
 
         public BibleParallelTranslationManager(Application oneNoteApp, string baseModuleShortName, string parallelModuleShortName, string bibleNotebookId)
         {            
@@ -62,7 +62,7 @@ namespace BibleCommon.Services
             this.BaseBibleInfo = ModulesManager.GetModuleBibleInfo(this.BaseModuleShortName);
             this.ParallelBibleInfo = ModulesManager.GetModuleBibleInfo(this.ParallelModuleShortName);
 
-            Errors = new List<BaseVersePointerException>();
+            Errors = new List<Exception>();
 
             CheckModules();
 

@@ -40,7 +40,7 @@ namespace BibleCommon.Services
 
                 if (!string.IsNullOrEmpty(moduleInfo.DictionarySectionGroupName))
                 {
-                    dictionarySectionEl = NotebookGenerator.AddRootSectionGroupToNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries, moduleInfo.DictionarySectionGroupName);                    
+                    dictionarySectionEl = NotebookGenerator.AddRootSectionGroupToNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries, moduleInfo.DictionarySectionGroupName);                                        
                 }
                 else
                 {
@@ -51,17 +51,23 @@ namespace BibleCommon.Services
                 dictionarySectionId = (string)dictionarySectionEl.Attribute("ID");
                 dictionarySectionPath = (string)dictionarySectionEl.Attribute("path");
 
+                oneNoteApp.SyncHierarchy(dictionarySectionId);
+
                 foreach(var sectionInfo in moduleInfo.DictionarySections)
                 {
                     string sectionElId;
-                    File.Copy(Path.Combine(ModulesManager.GetModuleDirectory(moduleName), sectionInfo.Name), 
-                                                Path.Combine(dictionarySectionPath, sectionInfo.Name));
-                    oneNoteApp.OpenHierarchy(sectionInfo.Name,
-                                                dictionarySectionId, out sectionElId, CreateFileType.cftSection);
+                    string moduleDirectory = ModulesManager.GetModuleDirectory(moduleName);
+                    if (!Directory.Exists(moduleDirectory))
+                        Directory.CreateDirectory(moduleDirectory);
+
+                    File.Copy(Path.Combine(moduleDirectory, sectionInfo.Name), Path.Combine(dictionarySectionPath, sectionInfo.Name), false);
+                    oneNoteApp.OpenHierarchy(sectionInfo.Name, dictionarySectionId, out sectionElId, CreateFileType.cftSection);
 
                     if (string.IsNullOrEmpty(dictionarySectionId))
                         dictionarySectionId = sectionElId;
                 }
+
+                oneNoteApp.SyncHierarchy(dictionarySectionId);
 
                 SettingsManager.Instance.DictionariesModules.Add(new DictionaryModuleInfo(moduleName, dictionarySectionId));
                 SettingsManager.Instance.Save();

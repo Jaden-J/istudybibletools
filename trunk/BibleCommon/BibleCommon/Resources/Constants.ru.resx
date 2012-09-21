@@ -528,4 +528,10 @@
   <data name="DictionariesNotebookName" xml:space="preserve">
     <value>Словари</value>
   </data>
+  <data name="IndexStrongDictionary" xml:space="preserve">
+    <value>Индексирование словаря Стронга</value>
+  </data>
+  <data name="IndexStrongDictionaryStart" xml:space="preserve">
+    <value>Старт индексирования словаря Стронга</value>
+  </data>
 </root>

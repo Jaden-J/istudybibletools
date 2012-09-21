@@ -531,4 +531,10 @@
   <data name="DictionariesNotebookName" xml:space="preserve">
     <value>Dictionaries</value>
   </data>
+  <data name="IndexStrongDictionary" xml:space="preserve">
+    <value>Indexing Strong Dictionary</value>
+  </data>
+  <data name="IndexStrongDictionaryStart" xml:space="preserve">
+    <value>Indexing Strong Dictionary start</value>
+  </data>
 </root>
