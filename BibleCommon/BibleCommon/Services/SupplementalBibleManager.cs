@@ -30,6 +30,11 @@ namespace BibleCommon.Services
             var moduleInfo = ModulesManager.GetModuleInfo(moduleShortName);
             var bibleInfo = ModulesManager.GetModuleBibleInfo(moduleShortName);
 
+            if (moduleInfo.Type == ModuleType.Strong)
+            {
+                DictionaryManager.AddDictionary(oneNoteApp, moduleShortName, notebookDirectory);
+            }
+
             for (int i = 0; i < moduleInfo.BibleStructure.BibleBooks.Count; i++)
             {
                 var bibleBookInfo = moduleInfo.BibleStructure.BibleBooks[i];
@@ -57,12 +62,7 @@ namespace BibleCommon.Services
 
             SettingsManager.Instance.SupplementalBibleModules.Clear();
             SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);            
-            SettingsManager.Instance.Save();
-
-            if (moduleInfo.Type == ModuleType.Strong)
-            {
-                DictionaryManager.AddDictionary(oneNoteApp, moduleShortName, notebookDirectory);
-            }
+            SettingsManager.Instance.Save();            
         }
 
         public static BibleParallelTranslationConnectionResult LinkSupplementalBibleWithMainBible(Application oneNoteApp, int supplementalModuleIndex, 
@@ -282,6 +282,7 @@ namespace BibleCommon.Services
             int cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, null);
             int temp, htmlBreakIndex = -1;
             string strongNumber;
+            bool firstNumber = true;
 
             while (cursorPosition > -1)
             {
@@ -289,20 +290,27 @@ namespace BibleCommon.Services
                                                                     out temp, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
                 if (!string.IsNullOrEmpty(strongNumber))
                 {
-                    string prefix = StringUtils.GetPrevString(verseText, cursorPosition, new SearchMissInfo(null, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
-                                                                    out temp, out temp, StringSearchIgnorance.None, StringSearchMode.SearchFirstChar);
-                    if (!string.IsNullOrEmpty(prefix) && prefix.Length == 1 && StringUtils.IsCharAlphabetical(prefix[0], alphabet))
+                    if (firstNumber)
                     {
-                        string strongTerm = prefix + strongNumber;
-                        string link = string.Format("<a href=\"{0}\">{1}</a>", strongTermLinksCache[strongTerm], strongTerm); //добавить <sup>
-                        if (strongTermLinksCache.ContainsKey(strongTerm))
-                        {
-                            verseText = string.Concat(verseText.Substring(0, cursorPosition), link, verseText.Substring(htmlBreakIndex));
-                            htmlBreakIndex += link.Length;
-                        }
-                        else
-                            errors.Add(new Exception(string.Format("There is no strongTermName '{0}' in strongTermLinksCache", strongTerm)));
+                        firstNumber = false;
                     }
+                    else
+                    {
+                        string prefix = StringUtils.GetPrevString(verseText, cursorPosition, new SearchMissInfo(null, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
+                                                                        out temp, out temp, StringSearchIgnorance.None, StringSearchMode.SearchFirstChar);
+                        if (!string.IsNullOrEmpty(prefix) && prefix.Length == 1 && StringUtils.IsCharAlphabetical(prefix[0], alphabet))
+                        {
+                            string strongTerm = string.Format("{0}{1:0000}", prefix, int.Parse(strongNumber));
+                            if (strongTermLinksCache.ContainsKey(strongTerm))
+                            {
+                                string link = string.Format("<a href=\"{0}\"><span style='vertical-align:super;color:black;'>{1}</span></a>", strongTermLinksCache[strongTerm], strongTerm); //добавить <sup>
+                                verseText = string.Concat(verseText.Substring(0, cursorPosition - 1), link, verseText.Substring(htmlBreakIndex));
+                                htmlBreakIndex += link.Length - strongNumber.Length - 1; 
+                            }
+                            else
+                                errors.Add(new Exception(string.Format("There is no strongTermName '{0}' in strongTermLinksCache", strongTerm)));
+                        }
+                    }                    
                 }
 
                 cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, htmlBreakIndex);

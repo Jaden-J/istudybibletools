@@ -62,7 +62,8 @@ namespace BibleConfigurator
                 Dictionary<string, string> strongTermLinksCache = null;
                 if (selectedModuleInfo.Type == ModuleType.Strong)
                 {
-                    MainForm.PrepareForExternalProcessing(16000, 1, BibleCommon.Resources.Constants.IndexStrongDictionaryStart);
+                    int strongTermsCount = 14700;
+                    MainForm.PrepareForExternalProcessing(strongTermsCount, 1, BibleCommon.Resources.Constants.IndexStrongDictionaryStart);
                     Logger.Preffix = string.Format("{0} 2/3: {1}: ", BibleCommon.Resources.Constants.Stage, BibleCommon.Resources.Constants.IndexStrongDictionary);
                     strongTermLinksCache = SupplementalBibleManager.IndexStrongDictionary(OneNoteApp, selectedModuleInfo, Logger);
                 }

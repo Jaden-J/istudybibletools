@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using System.IO;
 using BibleCommon.Common;
 using System.Xml;
+using System.Threading;
 
 namespace BibleCommon.Services
 {
@@ -50,17 +51,18 @@ namespace BibleCommon.Services
 
                 dictionarySectionId = (string)dictionarySectionEl.Attribute("ID");
                 dictionarySectionPath = (string)dictionarySectionEl.Attribute("path");
-
+                
                 oneNoteApp.SyncHierarchy(dictionarySectionId);
+                while (!Directory.Exists(dictionarySectionPath))
+                {
+                    Thread.Sleep(1000);
+                }
 
                 foreach(var sectionInfo in moduleInfo.DictionarySections)
                 {
-                    string sectionElId;
-                    string moduleDirectory = ModulesManager.GetModuleDirectory(moduleName);
-                    if (!Directory.Exists(moduleDirectory))
-                        Directory.CreateDirectory(moduleDirectory);
+                    string sectionElId;                    
 
-                    File.Copy(Path.Combine(moduleDirectory, sectionInfo.Name), Path.Combine(dictionarySectionPath, sectionInfo.Name), false);
+                    File.Copy(Path.Combine(ModulesManager.GetModuleDirectory(moduleName), sectionInfo.Name), Path.Combine(dictionarySectionPath, sectionInfo.Name), false);
                     oneNoteApp.OpenHierarchy(sectionInfo.Name, dictionarySectionId, out sectionElId, CreateFileType.cftSection);
 
                     if (string.IsNullOrEmpty(dictionarySectionId))
