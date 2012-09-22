@@ -17,6 +17,7 @@ using System.Xml.Linq;
 using BibleCommon.Consts;
 using Microsoft.Office.Interop.OneNote;
 using BibleCommon.UI.Forms;
+using BibleCommon.Handlers;
 
 
 namespace TestProject
@@ -43,6 +44,8 @@ namespace TestProject
            
             try
             {
+                //SearchStrongTerm();
+
                 //AddColorLink();
 
                 GenerateStrongDictionary();
@@ -79,6 +82,12 @@ namespace TestProject
             Console.ReadKey();
         }
 
+        private static void SearchStrongTerm()
+        {
+            var handler = new FindVersesWithStrongNumberHandler();
+            handler.ExecuteCommand("H0559");
+        }
+
         private static void AddColorLink()
         {
             Stopwatch sw = new Stopwatch();
@@ -106,8 +115,8 @@ namespace TestProject
         {
             var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "Strong", 
                 new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs\HEBREW.HTM"), SectionName = "Ветхий Завет", TermPrefix = "H", StartIndex = 0 },
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs\GREEK.HTM"), SectionName = "Новый Завет", TermPrefix= "G", StartIndex = 0 }
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs\HEBREW.HTM"), SectionName = "Ветхий Завет", DisplayName="Еврейский лексикон Стронга (с) Bob Jones University", TermPrefix = "H", StartIndex = 0 },
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs\GREEK.HTM"), SectionName = "Новый Завет", DisplayName="Греческий лексикон Стронга (с) Bob Jones University", TermPrefix= "G", StartIndex = 0 }
                 }, BibleQuotaDictionaryConverter.StructureType.Strong, Path.Combine(TempFolderPath, "strong"), "<h4>", "Пользовательские заметки", "Найти все стихи с этим номером", Encoding.Default, "ru");
 
             converter.Convert();
