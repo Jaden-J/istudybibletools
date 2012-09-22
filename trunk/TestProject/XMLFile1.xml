@@ -1,79 +1,67 @@
-﻿<?xml version="1.0"?>
-<one:Page xmlns:one="http://schemas.microsoft.com/office/onenote/2010/onenote" ID="{AE425EF2-A44A-48C6-8B17-C1824CAB2E87}{1}{B0}" name="0-99" dateTime="2012-09-14T06:13:27.000Z" lastModifiedTime="2012-09-14T06:55:50.000Z" pageLevel="1" isCurrentlyViewed="true" selected="partial" lang="en-US">
+﻿- <one:Page xmlns:one="http://schemas.microsoft.com/office/onenote/2010/onenote" ID="{123C4D81-EB2D-41D6-99BB-24A4089F6F3B}{1}{B0}" name="Test" dateTime="2012-09-22T07:37:12.000Z" lastModifiedTime="2012-09-22T07:47:42.000Z" pageLevel="1" isCurrentlyViewed="true" lang="en-US">
   <one:QuickStyleDef index="0" name="PageTitle" fontColor="automatic" highlightColor="automatic" font="Calibri" fontSize="17.0" spaceBefore="0.0" spaceAfter="0.0" />
   <one:QuickStyleDef index="1" name="p" fontColor="automatic" highlightColor="automatic" font="Calibri" fontSize="11.0" spaceBefore="0.0" spaceAfter="0.0" />
-  <one:QuickStyleDef index="2" name="h3" fontColor="#366092" highlightColor="automatic" font="Calibri" fontSize="11.0" bold="true" spaceBefore="0.0" spaceAfter="0.0" />
-  <one:PageSettings RTL="false" color="automatic">
-    <one:PageSize>
+  - <one:PageSettings RTL="false" color="automatic">
+    - <one:PageSize>
       <one:Automatic />
     </one:PageSize>
     <one:RuleLines visible="false" />
   </one:PageSettings>
-  <one:Title lang="ru">
-    <one:OE author="Demko, Aleksandr" authorInitials="DA" lastModifiedBy="Demko, Aleksandr" lastModifiedByInitials="DA" creationTime="2012-09-14T06:13:40.000Z" lastModifiedTime="2012-09-14T06:13:40.000Z" objectID="{B612858F-9891-45A6-93BD-C4217006AC83}{33}{B0}" alignment="left" quickStyleIndex="0">
-      <one:T><![CDATA[0-99]]></one:T>
+  - <one:Title lang="en-US">
+    - <one:OE author="Alexander.Demko" authorInitials="A" lastModifiedBy="Alexander.Demko" lastModifiedByInitials="A" creationTime="2012-09-22T07:47:24.000Z" lastModifiedTime="2012-09-22T07:47:24.000Z" objectID="{FF19A8C3-349B-41E0-ABD6-9FBD59D9F0E5}{33}{B0}" alignment="left" quickStyleIndex="0">
+      - <one:T>
+        - <![CDATA[ Test
+  ]]>
+      </one:T>
     </one:OE>
   </one:Title>
-  <one:Outline selected="partial" author="Demko, Aleksandr" authorInitials="DA" lastModifiedBy="Demko, Aleksandr" lastModifiedByInitials="DA" lastModifiedTime="2012-09-14T06:27:25.000Z" objectID="{B612858F-9891-45A6-93BD-C4217006AC83}{35}{B0}">
-    <one:Position x="36.0" y="86.4000015258789" z="0" />
-    <one:Size width="647.1000366210937" height="406.0730285644531" isSetByUser="true" />
-    <one:OEChildren selected="partial">
-      <one:OE creationTime="2012-09-14T06:13:49.000Z" lastModifiedTime="2012-09-14T06:27:25.000Z" objectID="{B612858F-9891-45A6-93BD-C4217006AC83}{39}{B0}" alignment="left" selected="partial">
-        <one:Table bordersVisible="true" lastModifiedTime="2012-09-14T06:27:25.000Z" objectID="{B612858F-9891-45A6-93BD-C4217006AC83}{40}{B0}" selected="partial">
-          <one:Columns>
-            <one:Column index="0" width="37.11000061035156" isLocked="true" />
-            <one:Column index="1" width="597.3600463867187" isLocked="true" />
-          </one:Columns>
-          <one:Row objectID="{B612858F-9891-45A6-93BD-C4217006AC83}{90}{B0}" lastModifiedTime="2012-09-14T06:27:25.000Z" selected="partial">
-            <one:Cell lastModifiedTime="2012-09-14T06:27:25.000Z" objectID="{B612858F-9891-45A6-93BD-C4217006AC83}{94}{B0}" lastModifiedByInitials="DA">
-              <one:OEChildren>
-                <one:OE creationTime="2012-09-14T06:27:25.000Z" lastModifiedTime="2012-09-14T06:27:25.000Z" objectID="{B612858F-9891-45A6-93BD-C4217006AC83}{97}{B0}" alignment="center" quickStyleIndex="1">
-                  <one:T>
-                    <![CDATA[<span
-lang=en-US>H</span><span lang=ru>00001</span>]]>
-                  </one:T>
-                </one:OE>
-              </one:OEChildren>
-            </one:Cell>
-            <one:Cell lastModifiedTime="2012-09-14T06:26:11.000Z" objectID="{B612858F-9891-45A6-93BD-C4217006AC83}{91}{B0}" selected="partial" lastModifiedByInitials="DA">
-              <one:OEChildren selected="partial">
-                <one:OE creationTime="2012-09-14T06:14:11.000Z" lastModifiedTime="2012-09-14T06:26:11.000Z" objectID="{B612858F-9891-45A6-93BD-C4217006AC83}{99}{B0}" alignment="left" selected="partial">
-                  <one:Table bordersVisible="false" lastModifiedTime="2012-09-14T06:26:11.000Z" objectID="{B612858F-9891-45A6-93BD-C4217006AC83}{100}{B0}" selected="partial">
-                    <one:Columns>
-                      <one:Column index="0" width="585.3599853515624" isLocked="true" />
-                    </one:Columns>
-                    <one:Row objectID="{B612858F-9891-45A6-93BD-C4217006AC83}{105}{B0}" lastModifiedTime="2012-09-14T06:14:53.000Z" selected="partial">
-                      <one:Cell lastModifiedTime="2012-09-14T06:14:53.000Z" objectID="{B612858F-9891-45A6-93BD-C4217006AC83}{106}{B0}" selected="partial" lastModifiedByInitials="DA">
-                        <one:OEChildren selected="partial">
-                          <one:OE creationTime="2012-09-14T06:14:51.000Z" lastModifiedTime="2012-09-14T06:14:51.000Z" objectID="{B612858F-9891-45A6-93BD-C4217006AC83}{118}{B0}" alignment="left" quickStyleIndex="1">
-                            <one:T>
-                              <![CDATA[<span
-style='font-family:Calibri' lang=ru>﻿</span><span style='font-family:Calibri'
-lang=en-US> </span><span style='font-family:bqtheb' lang=ru>edy</span><span
-style='font-family:Calibri' lang=ru> </span>]]>
-                            </one:T>
-                          </one:OE>
-                        </one:OEChildren>
-                      </one:Cell>
-                    </one:Row>
-                    <one:Row objectID="{B612858F-9891-45A6-93BD-C4217006AC83}{101}{B0}" lastModifiedTime="2012-09-14T06:26:11.000Z" lang="ru">
-                      <one:Cell lastModifiedTime="2012-09-14T06:26:11.000Z" objectID="{B612858F-9891-45A6-93BD-C4217006AC83}{102}{B0}" lastModifiedByInitials="DA">
-                        <one:OEChildren>
-                          <one:OE creationTime="2012-09-14T06:14:21.000Z" lastModifiedTime="2012-09-14T06:17:44.000Z" objectID="{B612858F-9891-45A6-93BD-C4217006AC83}{111}{B0}" alignment="left" quickStyleIndex="2">
-                            <one:T><![CDATA[<span style='font-weight:bold'>Пользовательские заметки</span>]]></one:T>
-                          </one:OE>
-                          <one:OE creationTime="2012-09-14T06:26:11.000Z" lastModifiedTime="2012-09-14T06:26:11.000Z" objectID="{9B922762-7324-4CFF-8297-C2B85347D242}{146}{B0}" alignment="left" quickStyleIndex="1" lang="en-US">
-                            <one:T><![CDATA[ ]]></one:T>
-                          </one:OE>
-                        </one:OEChildren>
-                      </one:Cell>
-                    </one:Row>
-                  </one:Table>
-                </one:OE>
-              </one:OEChildren>
-            </one:Cell>
-          </one:Row>         
-        </one:Table>
+  - <one:Outline author="Alexander.Demko" authorInitials="A" lastModifiedBy="Alexander.Demko" lastModifiedByInitials="A" lastModifiedTime="2012-09-22T07:47:42.000Z" objectID="{FF19A8C3-349B-41E0-ABD6-9FBD59D9F0E5}{107}{B0}">
+    <one:Position x="36.74999618530273" y="91.65000915527344" z="0" />
+    <one:Size width="103.4083480834961" height="13.42771339416504" />
+    - <one:OEChildren>
+      - <one:OE creationTime="2012-09-22T07:47:24.000Z" lastModifiedTime="2012-09-22T07:47:24.000Z" objectID="{FF19A8C3-349B-41E0-ABD6-9FBD59D9F0E5}{108}{B0}" alignment="left" quickStyleIndex="1">
+        - <one:T>
+          - <![CDATA[ <span
+style='color:#76923C'>Test</span><span style='color:black'> </span><a
+href="onenote:#test2&amp;section-id={53C00DFF-C18F-451D-B3CF-1B2287A608BE}&amp;page-id={08B9F398-FA7C-484E-B9AB-71D5821CD49A}&amp;object-id={841C9499-A273-4D06-8D85-3B334CEC012B}&amp;22&amp;base-path=ADEMKO\Users\Alexander.Demko\Documents\Записные%20книжки%20OneNote\test\Новый%20раздел%201.one">test2</a><span
+style='color:black'> </span><span style='color:#B8CCE4'>test</span>
+  ]]>
+        </one:T>
+      </one:OE>
+    </one:OEChildren>
+  </one:Outline>
+</one:Page>
+
+- <one:Page xmlns:one="http://schemas.microsoft.com/office/onenote/2010/onenote" ID="{123C4D81-EB2D-41D6-99BB-24A4089F6F3B}{1}{B0}" name="Test" dateTime="2012-09-22T07:37:12.000Z" lastModifiedTime="2012-09-22T07:48:35.000Z" pageLevel="1" isCurrentlyViewed="true" lang="en-US">
+  <one:QuickStyleDef index="0" name="PageTitle" fontColor="automatic" highlightColor="automatic" font="Calibri" fontSize="17.0" spaceBefore="0.0" spaceAfter="0.0" />
+  <one:QuickStyleDef index="1" name="p" fontColor="automatic" highlightColor="automatic" font="Calibri" fontSize="11.0" spaceBefore="0.0" spaceAfter="0.0" />
+  - <one:PageSettings RTL="false" color="automatic">
+    - <one:PageSize>
+      <one:Automatic />
+    </one:PageSize>
+    <one:RuleLines visible="false" />
+  </one:PageSettings>
+  - <one:Title lang="en-US">
+    - <one:OE author="Alexander.Demko" authorInitials="A" lastModifiedBy="Alexander.Demko" lastModifiedByInitials="A" creationTime="2012-09-22T07:47:24.000Z" lastModifiedTime="2012-09-22T07:47:24.000Z" objectID="{FF19A8C3-349B-41E0-ABD6-9FBD59D9F0E5}{33}{B0}" alignment="left" quickStyleIndex="0">
+      - <one:T>
+        - <![CDATA[ Test
+  ]]>
+      </one:T>
+    </one:OE>
+  </one:Title>
+  - <one:Outline author="Alexander.Demko" authorInitials="A" lastModifiedBy="Alexander.Demko" lastModifiedByInitials="A" lastModifiedTime="2012-09-22T07:48:34.000Z" objectID="{FF19A8C3-349B-41E0-ABD6-9FBD59D9F0E5}{107}{B0}">
+    <one:Position x="36.74999618530273" y="91.65000915527344" z="0" />
+    <one:Size width="103.4083480834961" height="13.42771339416504" />
+    - <one:OEChildren>
+      - <one:OE creationTime="2012-09-22T07:47:24.000Z" lastModifiedTime="2012-09-22T07:48:34.000Z" objectID="{FF19A8C3-349B-41E0-ABD6-9FBD59D9F0E5}{108}{B0}" alignment="left" quickStyleIndex="1">
+        - <one:T>
+          - <![CDATA[ <span
+style='color:#76923C'>Test</span><span style='color:black'> </span><a
+href="onenote:#test2&amp;section-id={53C00DFF-C18F-451D-B3CF-1B2287A608BE}&amp;page-id={08B9F398-FA7C-484E-B9AB-71D5821CD49A}&amp;object-id={841C9499-A273-4D06-8D85-3B334CEC012B}&amp;22&amp;base-path=ADEMKO\Users\Alexander.Demko\Documents\Записные%20книжки%20OneNote\test\Новый%20раздел%201.one"><span
+style='color:black'>test2</span></a><span style='color:black'> </span><span
+style='color:#B8CCE4'>test</span>
+  ]]>
+        </one:T>
       </one:OE>
     </one:OEChildren>
   </one:Outline>

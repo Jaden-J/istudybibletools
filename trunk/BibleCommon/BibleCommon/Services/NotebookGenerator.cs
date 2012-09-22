@@ -210,12 +210,14 @@ namespace BibleCommon.Services
             AddParallelVerseCellToBibleRow(tableElement, verseRow, verse.VerseContent, translationIndex, locale);            
         }
 
-        public static void AddParallelBibleTitle(XElement tableElement, string parallelTranslationModuleName, int bibleIndex, string locale, XmlNamespaceManager xnm)
+        public static void AddParallelBibleTitle(XDocument pageDoc, XElement tableElement, string parallelTranslationModuleName, int bibleIndex, string locale, XmlNamespaceManager xnm)
         {
-            AddParallelVerseCellToBibleRow(tableElement, tableElement.XPathSelectElement("one:Row", xnm), string.Format("<b>{0}</b>", parallelTranslationModuleName), bibleIndex, locale);            
+            var styleIndex = QuickStyleManager.AddQuickStyleDef(pageDoc, QuickStyleManager.StyleNameH2, QuickStyleManager.PredefinedStyles.H2, xnm);
+            var cell = AddParallelVerseCellToBibleRow(tableElement, tableElement.XPathSelectElement("one:Row", xnm), parallelTranslationModuleName, bibleIndex, locale);
+            QuickStyleManager.SetQuickStyleDefForCell(cell, styleIndex, xnm);            
         }
 
-        public static void AddParallelVerseCellToBibleRow(XElement tableElement, XElement verseRow, string verseContent, int translationIndex, string locale)
+        public static XElement AddParallelVerseCellToBibleRow(XElement tableElement, XElement verseRow, string verseContent, int translationIndex, string locale)
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
@@ -231,7 +233,10 @@ namespace BibleCommon.Services
                 tableElement.Add(verseRow);
             }
 
-            verseRow.Add(GetCell(verseContent, locale, nms));
+            var cell = GetCell(verseContent, locale, nms);
+            verseRow.Add(cell);
+
+            return cell;
         }
 
         public static XElement GetCell(XElement child, string locale, XNamespace nms)

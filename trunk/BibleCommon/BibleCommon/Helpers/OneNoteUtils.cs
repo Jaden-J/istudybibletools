@@ -24,6 +24,12 @@ namespace BibleCommon.Helpers
             return bibleNotebook != null;            
         }
 
+        public static void CloseNotebookSafe(Application oneNoteApp, string notebookId)
+        {
+            if (NotebookExists(oneNoteApp, notebookId, true))
+                oneNoteApp.CloseNotebook(notebookId);
+        }
+
         public static bool RootSectionGroupExists(Application oneNoteApp, string notebookId, string sectionGroupId)
         {
             OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, HierarchyScope.hsChildren);
@@ -219,7 +225,7 @@ namespace BibleCommon.Helpers
             }
 
             return string.Empty;
-        }
+        }    
 
         public static NotebookIterator.PageInfo GetCurrentPageInfo(Application oneNoteApp)
         {

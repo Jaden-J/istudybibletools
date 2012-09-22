@@ -26,6 +26,7 @@ namespace BibleConfigurator.ModuleConverter
         {
             internal XDocument PageDocument { get; set; }
             internal XElement TableElement { get; set; }
+            internal int StyleIndex { get; set; }
         }
 
         private const int MaxTermsInPageForStrong = 100;                
@@ -78,7 +79,8 @@ namespace BibleConfigurator.ModuleConverter
         public void Convert()
         {
             var sectionGroupEl = NotebookGenerator.AddRootSectionGroupToNotebook(OneNoteApp, NotebookId, this.DictionaryName);
-            var sectionGroupId = sectionGroupEl.Attribute("ID").Value;            
+            var sectionGroupId = sectionGroupEl.Attribute("ID").Value;
+            XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
 
             foreach(var file in DictionaryFiles)
             {
@@ -100,7 +102,7 @@ namespace BibleConfigurator.ModuleConverter
                             termsInPageCount++;
                             termIndex++;
 
-                            var newPageInfo = AddTermToPage(file, sectionId, pageInfo, termName, termDescription.ToString(), termsInPageCount, ref termIndex, false);
+                            var newPageInfo = AddTermToPage(file, sectionId, pageInfo, termName, termDescription.ToString(), termsInPageCount, ref termIndex, false, xnm);
                             if (newPageInfo != null)
                             {
                                 termsInPageCount = 0;
@@ -120,7 +122,7 @@ namespace BibleConfigurator.ModuleConverter
                 if (!string.IsNullOrEmpty(termName))
                 {                    
                     termIndex++;
-                    AddTermToPage(file, sectionId, pageInfo, termName, termDescription.ToString(), termsInPageCount, ref termIndex, true);
+                    AddTermToPage(file, sectionId, pageInfo, termName, termDescription.ToString(), termsInPageCount, ref termIndex, true, xnm);
                 }
             }            
         }
@@ -130,18 +132,20 @@ namespace BibleConfigurator.ModuleConverter
             XmlNamespaceManager xnm;
             var pageDoc = NotebookGenerator.AddPage(OneNoteApp, sectionId, pageName, 1, Locale, out xnm);
             var tableEl = NotebookGenerator.AddTableToPage(pageDoc, true, xnm, new CellInfo(NotebookGenerator.MinimalCellWidth), new CellInfo(SettingsManager.Instance.PageWidth_Bible));
-            return new TermPageInfo() { PageDocument = pageDoc, TableElement = tableEl };
+            var styleIndex = QuickStyleManager.AddQuickStyleDef(pageDoc, QuickStyleManager.StyleNameH3, QuickStyleManager.PredefinedStyles.H3, xnm);
+            return new TermPageInfo() { PageDocument = pageDoc, TableElement = tableEl, StyleIndex = styleIndex };
         }
 
         private TermPageInfo AddTermToPage(DictionaryFile file, string sectionId, TermPageInfo pageInfo, string termName, string termDescription,
-            int termsInPageCount, ref int termIndex, bool isLatestTermInSection)
+            int termsInPageCount, ref int termIndex, bool isLatestTermInSection, XmlNamespaceManager xnm)
         {
-            var nms = XNamespace.Get(Constants.OneNoteXmlNs);  
-           
+            var nms = XNamespace.Get(Constants.OneNoteXmlNs);            
             
             var termTable = NotebookGenerator.GenerateTableElement(false, new CellInfo(SettingsManager.Instance.PageWidth_Bible - 10));
             NotebookGenerator.AddRowToTable(termTable, NotebookGenerator.GetCell(termDescription, Locale, nms));
-            var userNotesCell = NotebookGenerator.GetCell(string.Format("<b>{0}</b>", UserNotesString), Locale, nms);
+            var userNotesCell = NotebookGenerator.GetCell(UserNotesString, Locale, nms);
+            QuickStyleManager.SetQuickStyleDefForCell(userNotesCell, pageInfo.StyleIndex, xnm);
+
             NotebookGenerator.AddRowToTable(termTable, userNotesCell);
             for (int i = 0; i <= 4; i++)
                 NotebookGenerator.AddChildToCell(userNotesCell, string.Empty, nms);
