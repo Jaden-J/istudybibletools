@@ -8,6 +8,7 @@ using Microsoft.Office.Interop.OneNote;
 using BibleCommon.Helpers;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.XPath;
 using BibleCommon.Consts;
 using BibleCommon.Handlers;
 
@@ -17,8 +18,9 @@ namespace BibleConfigurator.ModuleConverter
     {
         public string TermPrefix { get; set; }
         public string FilePath { get; set; }
+        public string DisplayName { get; set; }
         public string SectionName { get; set; }
-        public int StartIndex { get; set; }
+        public int StartIndex { get; set; }        
     }
 
     public class BibleQuotaDictionaryConverter: IDisposable
@@ -94,7 +96,7 @@ namespace BibleConfigurator.ModuleConverter
 
                 int termsInPageCount = 0;
                 int termIndex = file.StartIndex - 1;
-                var pageInfo = AddTermsPage(sectionId, Type == StructureType.Strong ? string.Format("{0:0000}-", file.StartIndex) : "First Alphabet Char");                                    
+                var pageInfo = AddTermsPage(sectionId, Type == StructureType.Strong ? string.Format("{0:0000}-", file.StartIndex) : "First Alphabet Char", file.DisplayName);                                    
 
                 foreach (string line in File.ReadAllLines(file.FilePath, FileEncoding))
                 {
@@ -130,12 +132,14 @@ namespace BibleConfigurator.ModuleConverter
             }            
         }
 
-        private TermPageInfo AddTermsPage(string sectionId, string pageName)
+        private TermPageInfo AddTermsPage(string sectionId, string pageName, string pageDisplayName)
         {
             XmlNamespaceManager xnm;
             var pageDoc = NotebookGenerator.AddPage(OneNoteApp, sectionId, pageName, 1, Locale, out xnm);
             var tableEl = NotebookGenerator.AddTableToPage(pageDoc, true, xnm, new CellInfo(NotebookGenerator.MinimalCellWidth), new CellInfo(SettingsManager.Instance.PageWidth_Bible));
             var styleIndex = QuickStyleManager.AddQuickStyleDef(pageDoc, QuickStyleManager.StyleNameH3, QuickStyleManager.PredefinedStyles.H3, xnm);
+            if (!string.IsNullOrEmpty(pageDisplayName))
+                AddPageDisplayName(pageDoc, pageDisplayName, xnm);
             return new TermPageInfo() { PageDocument = pageDoc, TableElement = tableEl, StyleIndex = styleIndex };
         }
 
@@ -178,7 +182,7 @@ namespace BibleConfigurator.ModuleConverter
 
                     if (!isLatestTermInSection)
                     {
-                        return AddTermsPage(sectionId, string.Format("{0:0000}-", termIndex + 1));                                                
+                        return AddTermsPage(sectionId, string.Format("{0:0000}-", termIndex + 1), file.DisplayName);                                                
                     }
                 }
             }
@@ -198,6 +202,21 @@ namespace BibleConfigurator.ModuleConverter
             return result;
         }
 
+        private void AddPageDisplayName(XDocument pageDoc, string displayName, XmlNamespaceManager xnm)
+        {
+            var titleElement = pageDoc.Root.XPathSelectElement("one:Title", xnm);
+
+            XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
+            titleElement.AddAfterSelf(new XElement(nms + "Outline",
+                             new XElement(nms + "Position",
+                                    new XAttribute("x", "300.0"),
+                                    new XAttribute("y", "14.40000057220459"),
+                                    new XAttribute("z", "1")),
+                             new XElement(nms + "OEChildren",
+                               new XElement(nms + "OE",
+                                   new XElement(nms + "T",
+                                       new XCData(displayName))))));
+        }
 
         private string ShellText(string text)
         {

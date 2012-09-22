@@ -70,7 +70,7 @@
             this.btnSBFolder.UseVisualStyleBackColor = true;
             this.btnSBFolder.Click += new System.EventHandler(this.btnSBFolder_Click);
             // 
-            // SupplementalBibleForm
+            // BaseSupplementalForm
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -81,7 +81,7 @@
             this.Controls.Add(this.chkUseSupplementalBible);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.KeyPreview = true;
-            this.Name = "SupplementalBibleForm";
+            this.Name = "BaseSupplementalForm";
             this.ShowInTaskbar = false;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SupplementalBibleForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SupplementalBibleForm_FormClosed);

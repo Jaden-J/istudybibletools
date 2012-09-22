@@ -108,8 +108,8 @@ namespace BibleConfigurator
                 Label lblDescription = new Label();
                 lblDescription.Text = FormDescription;
                 lblDescription.Top = TopControlsPosition;
-                lblDescription.Width = 260;
-                lblDescription.Height = 100;
+                lblDescription.Width = 360;
+                lblDescription.Height = 150;
                 lblDescription.Left = 20;
                 pnModules.Controls.Add(lblDescription);
             }
@@ -220,7 +220,7 @@ namespace BibleConfigurator
             lblName.Text = moduleInfo.Name;
             lblName.Top = top + 5;
             lblName.Left = 0;
-            lblName.Width = 245;
+            lblName.Width = 345;
             pnModules.Controls.Add(lblName);
 
             Button btnDel = new Button();
@@ -229,7 +229,7 @@ namespace BibleConfigurator
             FormExtensions.SetToolTip(btnDel, BibleCommon.Resources.Constants.DeleteThisModule);
             btnDel.Tag = moduleInfo.ShortName;
             btnDel.Top = top;
-            btnDel.Left = 248;
+            btnDel.Left = 348;
             btnDel.Width = btnDel.Height;
             btnDel.Click += new EventHandler(btnDeleteModule_Click);
             pnModules.Controls.Add(btnDel);
@@ -264,7 +264,7 @@ namespace BibleConfigurator
                 catch (Exception ex)
                 {
                     BibleCommon.Services.Logger.LogError(ex.ToString());
-                    MainForm.ExternalProcessingDone(BibleCommon.Resources.Constants.ErrorOccurred);
+                    MainForm.ExternalProcessingDone(string.Format("{0}: {1}", BibleCommon.Resources.Constants.ErrorOccurred, ex.Message));
                 }
 
                 LoadFormData();
@@ -330,7 +330,7 @@ namespace BibleConfigurator
         {            
             CbModule = new ComboBox();
             CbModule.DropDownStyle = ComboBoxStyle.DropDownList;
-            CbModule.Width = 245;
+            CbModule.Width = 345;
             CbModule.Top = TopControlsPosition;
             CbModule.ValueMember = "Name";
 

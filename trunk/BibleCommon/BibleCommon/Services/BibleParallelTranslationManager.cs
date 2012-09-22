@@ -50,6 +50,7 @@ namespace BibleCommon.Services
         public ICustomLogger Logger { get; set; }
 
         public List<Exception> Errors { get; set; }
+        public bool ForCheckOnly { get; set; }
 
         public BibleParallelTranslationManager(Application oneNoteApp, string baseModuleShortName, string parallelModuleShortName, string bibleNotebookId)
         {            

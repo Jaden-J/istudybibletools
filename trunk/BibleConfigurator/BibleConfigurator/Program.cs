@@ -64,7 +64,9 @@ namespace BibleConfigurator
                 if (args.Contains(Consts.ShowModuleInfo) && SettingsManager.Instance.IsConfigured(OneNoteApp))
                     result = new AboutModuleForm(SettingsManager.Instance.ModuleName, true);
                 else if (args.Contains(Consts.ShowAboutProgram))
-                    result = new AboutProgramForm();                
+                    result = new AboutProgramForm();
+                else if (args.Contains(Consts.ShowParallelBibleChecker))
+                    result = new ParallelBibleChecker();
                 else if (args.Contains(Consts.ShowManual))
                 {
                     OpenManual();
