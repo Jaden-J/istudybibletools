@@ -9,6 +9,7 @@ using BibleCommon.Helpers;
 using System.Xml;
 using System.Xml.Linq;
 using BibleCommon.Consts;
+using BibleCommon.Handlers;
 
 namespace BibleConfigurator.ModuleConverter
 {
@@ -49,6 +50,7 @@ namespace BibleConfigurator.ModuleConverter
         public string DictionaryName { get; set; }
         public List<Exception> Errors { get; set; }
         public string UserNotesString { get; set; }
+        public string FindAllVersesString { get; set; }
 
         /// <summary>
         /// 
@@ -58,7 +60,7 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="type"></param>
         /// <param name="manifestFilesFolder"></param>
         public BibleQuotaDictionaryConverter(Application oneNoteApp, string notebookName, string dictionaryName,
-            List<DictionaryFile> dictionaryFiles, StructureType type, string manifestFilesFolder, string termStartString, string userNotesString,
+            List<DictionaryFile> dictionaryFiles, StructureType type, string manifestFilesFolder, string termStartString, string userNotesString, string findAllVersesString,
             Encoding fileEncoding, string locale)
         {
             this.Type = type;
@@ -74,6 +76,7 @@ namespace BibleConfigurator.ModuleConverter
             this.TermStartString = termStartString;
             this.Errors = new List<Exception>();
             this.UserNotesString = userNotesString;
+            this.FindAllVersesString = findAllVersesString;
         }        
 
         public void Convert()
@@ -150,8 +153,12 @@ namespace BibleConfigurator.ModuleConverter
             for (int i = 0; i <= 4; i++)
                 NotebookGenerator.AddChildToCell(userNotesCell, string.Empty, nms);
 
-            NotebookGenerator.AddRowToTable(pageInfo.TableElement, 
-                                NotebookGenerator.GetCell(string.Format("<b>{0}</b>", termName), Locale, nms),
+            var protocolHandler = new FindVersesWithStrongNumberHandler();
+            var commandUrl = protocolHandler.GetCommandUrl(termName);
+
+            NotebookGenerator.AddRowToTable(pageInfo.TableElement,
+                                NotebookGenerator.GetCell(string.Format("<b>{0}</b> <a href='{1}'><span style='font-size:8.0pt'>{2}</span></a>", 
+                                                            termName, commandUrl, FindAllVersesString), Locale, nms),
                                 NotebookGenerator.GetCell(termTable, Locale, nms));
 
             if (Type == StructureType.Strong)

@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using BibleCommon.Services;
 using System.IO;
+using BibleCommon.Helpers;
 
 namespace BibleCommon.UI.Forms
 {
@@ -16,7 +17,7 @@ namespace BibleCommon.UI.Forms
         public List<string> Errors { get; set; }
 
         public ErrorsForm(List<string> errors)
-        {            
+        {   
             Errors = errors;            
 
             InitializeComponent();            
@@ -26,6 +27,8 @@ namespace BibleCommon.UI.Forms
         {
             if (Errors.Count == 0)
                 Close();
+
+            FormExtensions.SetFocus(this);
 
             foreach(string error in Errors)
             {
