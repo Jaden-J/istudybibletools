@@ -96,7 +96,7 @@ namespace BibleCommon.Services
 
         public static void CloseDictionariesNotebook(Application oneNoteApp)
         {
-            oneNoteApp.CloseNotebook(SettingsManager.Instance.NotebookId_Dictionaries);
+            OneNoteUtils.CloseNotebookSafe(oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries);
 
             SettingsManager.Instance.NotebookId_Dictionaries = null;
             SettingsManager.Instance.DictionariesModules.Clear();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections.Specialized;
 using Microsoft.Office.Interop.OneNote;
+using System.Xml.Linq;
 
 namespace BibleCommon.Consts
 {
@@ -20,7 +21,6 @@ namespace BibleCommon.Consts
         public static readonly string IsbtFileExtension = ".isbt";        
         public static readonly string TempDirectory = "Temp";
         public static readonly string DefaultPartVersesAlphabet = "abcdefghijklmnopqrstuvwxyz";
-
         
         public static readonly int DefaultPageWidth_Notes = 500;
         public static readonly int DefaultPageWidth_RubbishNotes = 500;
@@ -80,7 +80,7 @@ namespace BibleCommon.Consts
         
 
         public static readonly string Key_IsSummaryNotesPage = "IsSummaryNotesPage";
-        public static readonly string Key_LatestAnalyzeTime = "LatestAnalyzeTime";
-    }
+        public static readonly string Key_LatestAnalyzeTime = "LatestAnalyzeTime";        
+    }   
 }
 

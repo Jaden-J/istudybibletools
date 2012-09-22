@@ -27,7 +27,8 @@ namespace BibleCommon.Services
     {
         public XDocument ChapterDocument { get; set; }
         public XElement TableElement { get; set; }
-        public int BibleIndex { get; set; }        
+        public int BibleIndex { get; set; }
+        public int StyleIndex { get; set; }
     }
 
     public class BibleParallelTranslationManager : IDisposable
@@ -147,7 +148,7 @@ namespace BibleCommon.Services
                 {
                     var tableEl = NotebookGenerator.GetPageTable(chapterPageDoc, xnm);
                     var bibleIndex = NotebookGenerator.AddColumnToTable(tableEl, SettingsManager.Instance.PageWidth_Bible, xnm);
-                    NotebookGenerator.AddParallelBibleTitle(tableEl, ParallelModuleInfo.Name, bibleIndex, ParallelBibleInfo.Content.Locale, xnm);
+                    NotebookGenerator.AddParallelBibleTitle(chapterPageDoc, tableEl, ParallelModuleInfo.Name, bibleIndex, ParallelBibleInfo.Content.Locale, xnm);
 
                     return new BibleIteratorArgs() { BibleIndex = bibleIndex, TableElement = tableEl };
                 },               
@@ -287,7 +288,11 @@ namespace BibleCommon.Services
                 }
 
                 if (needToUpdateChapter && chapterAction != null && chapterWasModified.GetValueOrDefault(true) == true)
+                {
+                    SupplementalBibleManager.UpdatePageXmlForStrongDictionary(chapterPageDoc);
+
                     _oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+                }
             }            
         }       
 

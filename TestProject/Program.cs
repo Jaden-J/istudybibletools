@@ -23,8 +23,8 @@ namespace TestProject
 {
     class Program
     {
-        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\IStudyBibleTools\ForGenerating\";
-        private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp\";
+        private const string ForGeneratingFolderPath = @"G:\Dropbox\IStudyBibleTools\ForGenerating\";
+        private const string TempFolderPath = @"C:\temp\";
 
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
         private static Microsoft.Office.Interop.OneNote.Application OneNoteApp
@@ -43,7 +43,9 @@ namespace TestProject
            
             try
             {
-                //GenerateStrongDictionary();
+                //AddColorLink();
+
+                GenerateStrongDictionary();
                 
                 //SearchForEnText();
 
@@ -51,7 +53,7 @@ namespace TestProject
 
                 //TryToUpdateInkNodes();
 
-                ConvertRussianModule();
+                //ConvertRussianModule();
 
                 //ConvertEnglishModule();
 
@@ -75,6 +77,29 @@ namespace TestProject
 
             Console.WriteLine("Finish");
             Console.ReadKey();
+        }
+
+        private static void AddColorLink()
+        {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();             
+            string xml;
+            oneNoteApp.GetPageContent(OneNoteApp.Windows.CurrentWindow.CurrentPageId, out xml, PageInfo.piAll , XMLSchema.xs2010);
+            var currentPageDoc = XDocument.Parse(xml);
+
+            
+            SupplementalBibleManager.UpdatePageXmlForStrongDictionary(currentPageDoc);
+            
+
+//            NotebookGenerator.AddTextElementToPage(currentPageDoc, 
+//@"
+//<a href='http://google.com'> 
+//  <span style='color:#000000'>test link</span>
+//</a>");
+            oneNoteApp.UpdatePageContent(currentPageDoc.ToString(), DateTime.MinValue, XMLSchema.xs2010);
+            sw.Stop();
+            Console.WriteLine(sw.ElapsedMilliseconds);
         }
 
         private static void GenerateStrongDictionary()

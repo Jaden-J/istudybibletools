@@ -101,7 +101,9 @@ namespace BibleCommon.Services
                     {
                         OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp, pageContent => pageContent.PageType == OneNoteProxy.PageType.Bible, null, null);
 
-                        return new BibleIteratorArgs() { ChapterDocument = chapterPageDoc };
+                        int styleIndex = QuickStyleManager.AddQuickStyleDef(chapterPageDoc, QuickStyleManager.StyleForStrongName, QuickStyleManager.PredefinedStyles.GrayHyperlink, xnm);
+
+                        return new BibleIteratorArgs() { ChapterDocument = chapterPageDoc, StyleIndex = styleIndex };
                     }, true, true,
                     (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
                     {                        
@@ -129,7 +131,7 @@ namespace BibleCommon.Services
                 SettingsManager.Instance.SupplementalBibleModules.First(), moduleShortName,
                 SettingsManager.Instance.NotebookId_SupplementalBible))
             {
-                if (bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong)
+                if (bibleTranslationManager.ParallelModuleInfo.Type == ModuleType.Strong)
                 {
                     DictionaryManager.AddDictionary(oneNoteApp, moduleShortName, notebookDirectory);                    
                 }
@@ -137,7 +139,6 @@ namespace BibleCommon.Services
                 bibleTranslationManager.Logger = logger;
                 result = bibleTranslationManager.AddParallelTranslation();
             }
-
 
             SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
             SettingsManager.Instance.Save();
@@ -148,8 +149,8 @@ namespace BibleCommon.Services
         }
 
         public static void CloseSupplementalBible(Application oneNoteApp)
-        {
-            oneNoteApp.CloseNotebook(SettingsManager.Instance.NotebookId_SupplementalBible);
+        {            
+            OneNoteUtils.CloseNotebookSafe(oneNoteApp, SettingsManager.Instance.NotebookId_SupplementalBible);
 
             foreach (var parallelModuleName in SettingsManager.Instance.SupplementalBibleModules)
             {
@@ -203,7 +204,7 @@ namespace BibleCommon.Services
 
         public static Dictionary<string, string> IndexStrongDictionary(Application oneNoteApp, ModuleInfo strongModuleInfo, ICustomLogger logger)
         {
-            var result = new Dictionary<string, string>();
+            var result = new Dictionary<string, string>();            
             var dictionaryModuleInfo = SettingsManager.Instance.DictionariesModules.FirstOrDefault(m => m.ModuleName == strongModuleInfo.ShortName);
             if (dictionaryModuleInfo != null)
             {
@@ -223,6 +224,44 @@ namespace BibleCommon.Services
             }
 
             return result;
+        }
+
+        // перед обновлением страницы Библии со стронгом нужно обязательно вызывать этот метод, иначе все ссылки станут синими
+        public static void UpdatePageXmlForStrongDictionary(XDocument pageDoc)
+        {
+            XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
+            var styleEl = pageDoc.Root.XPathSelectElement(string.Format("one:QuickStyleDef[@name='{0}']", QuickStyleManager.StyleForStrongName), xnm);
+            if (styleEl != null)  // значит видимо есть Библия Стронга на текущей странице
+            {
+                string searchTemplate = "</a>";
+                XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);                
+
+                foreach (var textEl in pageDoc.Root.XPathSelectElements(string.Format("//one:OE[@quickStyleIndex='{0}']/one:T", (string)styleEl.Attribute("index")), xnm))
+                {
+                    OneNoteUtils.NormalizeTextElement(textEl);
+                    int firstLinkEndIndex = textEl.Value.IndexOf(searchTemplate);
+
+                    if (firstLinkEndIndex != -1)
+                    {
+                        firstLinkEndIndex = firstLinkEndIndex + searchTemplate.Length;
+                        var nextTagStartIndex = textEl.Value.IndexOf("<", firstLinkEndIndex);
+                        var nextTagEndIndex = textEl.Value.IndexOf("</", firstLinkEndIndex);
+
+                        if (nextTagEndIndex == nextTagStartIndex)
+                        {
+                            firstLinkEndIndex = textEl.Value.IndexOf(">", nextTagEndIndex + 1) + 1;                            
+                        }
+
+                        string firstLink = textEl.Value.Substring(0, firstLinkEndIndex);
+
+                        textEl.AddBeforeSelf(new XElement(nms + "T",
+                                               new XCData(firstLink))
+                                             );
+
+                        textEl.Value = string.Format(" {0}", textEl.Value.Substring(firstLinkEndIndex));
+                    }
+                }
+            }
         }
 
         private static void IndexStrongSection(Application oneNoteApp, XElement sectionEl, Dictionary<string, string> result, ICustomLogger logger, XmlNamespaceManager xnm)
@@ -263,54 +302,54 @@ namespace BibleCommon.Services
 
             var baseVerseEl = OneNoteUtils.NormalizeTextElement(
                                     HierarchySearchManager.FindVerse(bibleIteratorArgs.ChapterDocument, false, baseVersePointer.Verse, xnm));
+            baseVerseEl.Parent.SetAttributeValue("quickStyleIndex", bibleIteratorArgs.StyleIndex);            
+                
             var baseChapterPageId = (string)bibleIteratorArgs.ChapterDocument.Root.Attribute("ID").Value;
             var baseVerseElementId = (string)baseVerseEl.Parent.Attribute("objectID").Value;
 
             LinkMainBibleVersesToSupplementalBibleVerse(oneNoteApp, baseChapterPageId, baseVerseElementId, parallelVerse, baseBibleObjectsSearchResult, xnm, nms);
-            LinkSupplementalBibleVerseToMainBibleVerse(oneNoteApp, baseVersePointer, baseVerseEl, baseBibleObjectsSearchResult);
-
-            if (isStrong)
-            {
-                baseVerseEl.Value = ProcessStrongVerse(baseVerseEl.Value, strongTermLinksCache, alphabet, result);                
-            }
+            LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(oneNoteApp, baseVersePointer, baseVerseEl, baseBibleObjectsSearchResult, 
+                isStrong, strongTermLinksCache, alphabet, result, nms);                        
 
             return result;
-        }
+        }        
 
         private static string ProcessStrongVerse(string verseText, Dictionary<string, string> strongTermLinksCache, string alphabet, List<Exception> errors)
         {
             int cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, null);
             int temp, htmlBreakIndex = -1;
-            string strongNumber;
-            bool firstNumber = true;
-
-            while (cursorPosition > -1)
+            string strongNumber;            
+            
+            var verseParts = StringUtils.GetText(verseText).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < verseParts.Length; i++)
             {
+                verseParts[i] = string.Format("<span style='color:#000000'>{0}</span>", verseParts[i]);
+            }
+            verseText = string.Join(" ", verseParts);
+            
+            while (cursorPosition > -1)
+            {                
                 strongNumber = StringUtils.GetNextString(verseText, cursorPosition - 1, new SearchMissInfo(null, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
                                                                     out temp, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
                 if (!string.IsNullOrEmpty(strongNumber))
                 {
-                    if (firstNumber)
+                    string prefix = StringUtils.GetPrevString(verseText, cursorPosition, new SearchMissInfo(null, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
+                                                                    out temp, out temp, StringSearchIgnorance.None, StringSearchMode.SearchFirstChar);
+                    if (!string.IsNullOrEmpty(prefix) && prefix.Length == 1 && StringUtils.IsCharAlphabetical(prefix[0], alphabet))
                     {
-                        firstNumber = false;
-                    }
-                    else
-                    {
-                        string prefix = StringUtils.GetPrevString(verseText, cursorPosition, new SearchMissInfo(null, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
-                                                                        out temp, out temp, StringSearchIgnorance.None, StringSearchMode.SearchFirstChar);
-                        if (!string.IsNullOrEmpty(prefix) && prefix.Length == 1 && StringUtils.IsCharAlphabetical(prefix[0], alphabet))
+                        string strongTerm = string.Format("{0}{1:0000}", prefix, int.Parse(strongNumber));
+                        if (strongTermLinksCache.ContainsKey(strongTerm))
                         {
-                            string strongTerm = string.Format("{0}{1:0000}", prefix, int.Parse(strongNumber));
-                            if (strongTermLinksCache.ContainsKey(strongTerm))
-                            {
-                                string link = string.Format("<a href=\"{0}\"><span style='vertical-align:super;color:black;'>{1}</span></a>", strongTermLinksCache[strongTerm], strongTerm); //добавить <sup>
-                                verseText = string.Concat(verseText.Substring(0, cursorPosition - 1), link, verseText.Substring(htmlBreakIndex));
-                                htmlBreakIndex += link.Length - strongNumber.Length - 1; 
-                            }
-                            else
-                                errors.Add(new Exception(string.Format("There is no strongTermName '{0}' in strongTermLinksCache", strongTerm)));
+                            string link = string.Format("<a href=\"{0}\"><span style='vertical-align:super;'>{1}</span></a>",
+                                strongTermLinksCache[strongTerm], strongTerm);
+
+                            verseText = string.Concat(verseText.Substring(0, cursorPosition - 1), link, verseText.Substring(htmlBreakIndex));
+
+                            htmlBreakIndex += link.Length - strongNumber.Length - 1;
                         }
-                    }                    
+                        else
+                            errors.Add(new Exception(string.Format("There is no strongTermName '{0}' in strongTermLinksCache", strongTerm)));
+                    }
                 }
 
                 cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, htmlBreakIndex);
@@ -319,10 +358,13 @@ namespace BibleCommon.Services
             return verseText;
         }
 
-        private static void LinkSupplementalBibleVerseToMainBibleVerse(Application oneNoteApp, SimpleVersePointer baseVersePointer, XElement baseVerseEl, HierarchySearchManager.HierarchySearchResult baseBibleObjectsSearchResult)
+        private static void LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(Application oneNoteApp, SimpleVersePointer baseVersePointer, XElement baseVerseEl,
+            HierarchySearchManager.HierarchySearchResult baseBibleObjectsSearchResult, 
+            bool isStrong, Dictionary<string, string> strongTermLinksCache, string alphabet, List<Exception> result, XNamespace nms)
         {
             int textBreakIndex, htmlBreakIndex;
-            var baseVerseNumber = StringUtils.GetNextString(baseVerseEl.Value, -1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound), out textBreakIndex, out htmlBreakIndex);
+            var baseVerseNumber = StringUtils.GetNextString(baseVerseEl.Value, -1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound), 
+                out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
 
             if (baseVerseNumber != baseVersePointer.Verse.ToString())
                 throw new InvalidOperationException(
@@ -331,7 +373,14 @@ namespace BibleCommon.Services
             string linkToParallelVerse = OneNoteUtils.GenerateHref(oneNoteApp, baseVerseNumber,
                 baseBibleObjectsSearchResult.HierarchyObjectInfo.PageId, baseBibleObjectsSearchResult.HierarchyObjectInfo.ContentObjectId);
 
-            baseVerseEl.Value = string.Format("{0} {1}", linkToParallelVerse, baseVerseEl.Value.Substring(htmlBreakIndex + 1));
+            string versePart = baseVerseEl.Value.Substring(htmlBreakIndex + 1);
+
+            if (isStrong)
+            {
+                versePart = ProcessStrongVerse(versePart, strongTermLinksCache, alphabet, result);
+            }
+
+            baseVerseEl.Value = string.Format("{0}<span> </span>{1}", linkToParallelVerse, versePart);
         }
 
         private static void LinkMainBibleVersesToSupplementalBibleVerse(Application oneNoteApp, string baseChapterPageId, string baseVerseElementId, 
@@ -341,17 +390,27 @@ namespace BibleCommon.Services
             {
                 var parallelChapterPageDoc = PrepareMainBibleTable(oneNoteApp, baseBibleObjectsSearchResult.HierarchyObjectInfo.PageId);
 
-                string linkToBaseVerse = OneNoteUtils.GenerateHref(oneNoteApp, SettingsManager.Instance.SupplementalBibleLinkName, baseChapterPageId, baseVerseElementId);
+                string linkToBaseVerse = string.Format("<font size='2pt'>{0}</font>",
+                                            OneNoteUtils.GenerateHref(oneNoteApp, SettingsManager.Instance.SupplementalBibleLinkName, baseChapterPageId, baseVerseElementId));
 
                 foreach (var parallelVerseElementId in baseBibleObjectsSearchResult.HierarchyObjectInfo.GetAllObjectsIds())
                 {                    
-                    var cell = parallelChapterPageDoc.Content.Root
+                    var bibleCell = parallelChapterPageDoc.Content.Root
                                     .XPathSelectElement(string.Format("//one:OE[@objectID='{0}']", parallelVerseElementId), xnm).Parent.Parent;
-                    var row = cell.Parent;
+                    var row = bibleCell.Parent;
+                    XElement sCell = null;
                     if (row.Elements().Count() == 3)
-                        row.Elements().Last().XPathSelectElement("one:OEChildren/one:OE/one:T", xnm).Value = linkToBaseVerse;
+                    {
+                        sCell = row.Elements().Last();
+                        sCell.XPathSelectElement("one:OEChildren/one:OE/one:T", xnm).Value = linkToBaseVerse;
+                    }
                     else
-                        row.Add(NotebookGenerator.GetCell(linkToBaseVerse, string.Empty, nms));
+                    {
+                        sCell = NotebookGenerator.GetCell(linkToBaseVerse, string.Empty, nms);
+                        row.Add(sCell);
+                    }
+
+                    sCell.XPathSelectElement("one:OEChildren/one:OE", xnm).SetAttributeValue("alignment", "center");
                 }
             }
         }
@@ -380,7 +439,7 @@ namespace BibleCommon.Services
 
             var currentTableElement = NotebookGenerator.AddTableToPage(currentChapterDoc, false, xnm, new CellInfo(SettingsManager.Instance.PageWidth_Bible));
 
-            NotebookGenerator.AddParallelBibleTitle(currentTableElement, moduleInfo.Name, 0, bibleInfo.Content.Locale, xnm);
+            NotebookGenerator.AddParallelBibleTitle(currentChapterDoc, currentTableElement, moduleInfo.Name, 0, bibleInfo.Content.Locale, xnm);
 
             foreach (var verse in chapter.Verses)
             {
