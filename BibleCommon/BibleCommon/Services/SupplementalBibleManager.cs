@@ -278,6 +278,7 @@ namespace BibleCommon.Services
                 foreach (var termTextEl in tableEl.XPathSelectElements("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
                 {
                     var termName = StringUtils.GetText(termTextEl.Value);
+                    termName = termName.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0];
                     var termTextElementId = (string)termTextEl.Parent.Attribute("objectID");
                     result.Add(termName, OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, termTextElementId));
 
