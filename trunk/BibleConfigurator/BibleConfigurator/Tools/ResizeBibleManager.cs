@@ -114,7 +114,7 @@ namespace BibleConfigurator.Tools
 
         private static void SetWidthAttribute(XElement column, int width)
         {
-            column.Attribute("width").Value = width.ToString();
+            column.SetAttributeValue("width", width);
         }
 
         public void Dispose()

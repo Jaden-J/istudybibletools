@@ -30,9 +30,10 @@ namespace BibleCommon.UI.Forms
 
             FormExtensions.SetFocus(this);
 
+            int index = 1;
             foreach(string error in Errors)
             {
-                lbErrors.Items.Add(error);
+                lbErrors.Items.Add(string.Format("{0}. {1}", index++, error));
 
                 int width = Convert.ToInt32(error.Length * 5.75);
                 if (width > lbErrors.HorizontalExtent)
@@ -49,13 +50,16 @@ namespace BibleCommon.UI.Forms
                 {
                     using (StreamWriter sw = new StreamWriter(fs))
                     {
+                        int index = 1;
                         foreach (var error in Errors)
                         {
-                            sw.WriteLine(error);
+                            sw.WriteLine(string.Format("{0}. {1}", index++, error));
                         }
                         sw.Flush();
                     }
-                }                
+                }
+
+                MessageBox.Show("Successfully.");
             }
         }
     }

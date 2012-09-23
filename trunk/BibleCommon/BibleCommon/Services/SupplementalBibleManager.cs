@@ -304,8 +304,8 @@ namespace BibleCommon.Services
                                     HierarchySearchManager.FindVerse(bibleIteratorArgs.ChapterDocument, false, baseVersePointer.Verse, xnm));
             baseVerseEl.Parent.SetAttributeValue("quickStyleIndex", bibleIteratorArgs.StyleIndex);            
                 
-            var baseChapterPageId = (string)bibleIteratorArgs.ChapterDocument.Root.Attribute("ID").Value;
-            var baseVerseElementId = (string)baseVerseEl.Parent.Attribute("objectID").Value;
+            var baseChapterPageId = (string)bibleIteratorArgs.ChapterDocument.Root.Attribute("ID");
+            var baseVerseElementId = (string)baseVerseEl.Parent.Attribute("objectID");
 
             LinkMainBibleVersesToSupplementalBibleVerse(oneNoteApp, baseChapterPageId, baseVerseElementId, parallelVerse, baseBibleObjectsSearchResult, xnm, nms);
             LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(oneNoteApp, baseVersePointer, baseVerseEl, baseBibleObjectsSearchResult, 
@@ -453,12 +453,12 @@ namespace BibleCommon.Services
         {
             if (string.IsNullOrEmpty(currentSectionGroupId))
                 currentSectionGroupId
-                    = NotebookGenerator.AddRootSectionGroupToNotebook(oneNoteApp,
-                        SettingsManager.Instance.NotebookId_SupplementalBible, moduleInfo.BibleStructure.OldTestamentName).Attribute("ID").Value;
+                    = (string)NotebookGenerator.AddRootSectionGroupToNotebook(oneNoteApp,
+                        SettingsManager.Instance.NotebookId_SupplementalBible, moduleInfo.BibleStructure.OldTestamentName).Attribute("ID");
             else if (i == moduleInfo.BibleStructure.OldTestamentBooksCount)
                 currentSectionGroupId
-                    = NotebookGenerator.AddRootSectionGroupToNotebook(oneNoteApp,
-                        SettingsManager.Instance.NotebookId_SupplementalBible, moduleInfo.BibleStructure.NewTestamentName).Attribute("ID").Value;
+                    = (string)NotebookGenerator.AddRootSectionGroupToNotebook(oneNoteApp,
+                        SettingsManager.Instance.NotebookId_SupplementalBible, moduleInfo.BibleStructure.NewTestamentName).Attribute("ID");
 
             return currentSectionGroupId;
         }

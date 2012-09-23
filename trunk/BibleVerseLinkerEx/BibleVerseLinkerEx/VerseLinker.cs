@@ -293,7 +293,7 @@ namespace BibleVerseLinkerEx
             if (position == null)
                 commentElement.AddFirst(new XElement(nms + "Position", new XAttribute("x", 36), new XAttribute("y", commentPosition), new XAttribute("z", 0)));
             else
-                position.Attribute("y").Value = commentPosition.ToString();
+                position.SetAttributeValue("y", commentPosition);
 
             return commentPosition;
         }
@@ -312,7 +312,7 @@ namespace BibleVerseLinkerEx
         {
             if (attribute != null)
             {
-                string s = attribute.Value;
+                string s = (string)attribute;
 
                 if (!string.IsNullOrEmpty(s))
                 {

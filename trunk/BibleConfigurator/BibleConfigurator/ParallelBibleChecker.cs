@@ -24,22 +24,30 @@ namespace BibleConfigurator
 
         private void ParallelBibleChecker_Load(object sender, EventArgs e)
         {
-            var modules = ModulesManager.GetModules();
+            SetDataSource(cbBaseModule);  
+            SetDataSource(cbParallelModule);            
+        }
 
-            cbBaseModule.DataSource = modules;
-            cbBaseModule.DisplayMember = "ShortName";
-            cbBaseModule.ValueMember = "ShortName";
-
-            cbParallelModule.DataSource = modules;
-            cbParallelModule.DisplayMember = "ShortName";
-            cbParallelModule.ValueMember = "ShortName";
+        private void SetDataSource(ComboBox cb)
+        {
+            cb.DataSource = ModulesManager.GetModules(); // приходится каждый раз загружать, чтобы разные были дата сорсы - иначе они вместе меняются
+            cb.DisplayMember = "ShortName";
+            cb.ValueMember = "ShortName";
         }
 
         private void btnOk_Click(object sender, EventArgs e)
         {
             var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
             var manager = new BibleParallelTranslationManager(oneNoteApp, (string)cbBaseModule.SelectedValue, (string)cbParallelModule.SelectedValue, SettingsManager.Instance.NotebookId_Bible);
-            manager.ForCheckOnly = true; здесь
+            manager.ForCheckOnly = true;
+            var result = manager.IterateBaseBible(null, false, true, null);
+            if (result.Errors.Count > 0)
+            {
+                var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(result.Errors.ConvertAll(ex => ex.Message));
+                errorsForm.ShowDialog();
+            }
+            else
+                MessageBox.Show("There is no errors");
         }
     }
 }
