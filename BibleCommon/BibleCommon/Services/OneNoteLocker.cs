@@ -72,7 +72,7 @@ namespace BibleCommon.Services
         {
             XmlNamespaceManager xnm;
             var xDoc = OneNoteUtils.GetHierarchyElement(oneNoteApp, elementId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsSelf, out xnm);
-            return xDoc.Root.Attribute("path").Value;
+            return (string)xDoc.Root.Attribute("path");
         }
 
         private static void LockSection(string sectionFilePath)

@@ -123,7 +123,7 @@ namespace BibleCommon.Helpers
         {
             if (el.Attribute(attributeName) != null)
             {
-                return (string)el.Attribute(attributeName).Value;                
+                return (string)el.Attribute(attributeName);                
             }
 
             return defaultValue;
@@ -221,7 +221,7 @@ namespace BibleCommon.Helpers
             var metaElement = pageContent.XPathSelectElement(string.Format("one:Meta[@name='{0}']", key), xnm);
             if (metaElement != null)
             {
-                return metaElement.Attribute("content").Value;
+                return (string)metaElement.Attribute("content");
             }
 
             return string.Empty;

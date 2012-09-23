@@ -145,7 +145,7 @@ namespace BibleConfigurator.ModuleConverter
 
         protected virtual string AddTestamentSectionGroup(string testamentName)
         {
-            return NotebookGenerator.AddRootSectionGroupToNotebook(OneNoteApp, NotebookId, testamentName).Attribute("ID").Value;            
+            return (string)NotebookGenerator.AddRootSectionGroupToNotebook(OneNoteApp, NotebookId, testamentName).Attribute("ID");            
         }
 
         protected virtual string AddBookSection(string sectionGroupId, string sectionName, string bookName)

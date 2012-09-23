@@ -84,7 +84,7 @@ namespace BibleConfigurator.ModuleConverter
         public void Convert()
         {
             var sectionGroupEl = NotebookGenerator.AddRootSectionGroupToNotebook(OneNoteApp, NotebookId, this.DictionaryName);
-            var sectionGroupId = sectionGroupEl.Attribute("ID").Value;
+            var sectionGroupId = (string)sectionGroupEl.Attribute("ID");
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
 
             foreach(var file in DictionaryFiles)
@@ -176,7 +176,7 @@ namespace BibleConfigurator.ModuleConverter
 
                 if ((termsInPageCount >= MaxTermsInPageForStrong && (termIndex % 100 == 99)) || isLatestTermInSection)
                 {                    
-                    string currentPageName = pageInfo.PageDocument.Root.Attribute("name").Value;
+                    string currentPageName = (string)pageInfo.PageDocument.Root.Attribute("name");
                     NotebookGenerator.UpdatePageTitle(pageInfo.PageDocument, currentPageName + termIndex.ToString("0000"), OneNoteUtils.GetOneNoteXNM());
                     UpdatePage(pageInfo.PageDocument);
 

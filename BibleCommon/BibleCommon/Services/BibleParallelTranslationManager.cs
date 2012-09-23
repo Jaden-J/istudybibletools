@@ -192,8 +192,8 @@ namespace BibleCommon.Services
                 var parallelBookContent = ParallelBibleInfo.Content.Books.FirstOrDefault(b => b.Index == baseBookContent.Index);
                 if (parallelBookContent != null)
                 {
-                    XElement sectionEl = HierarchySearchManager.FindBibleBookSection(_oneNoteApp, BibleNotebookId, baseBookInfo.SectionName);
-                    if (sectionEl == null)
+                    XElement sectionEl = ForCheckOnly ? null : HierarchySearchManager.FindBibleBookSection(_oneNoteApp, BibleNotebookId, baseBookInfo.SectionName);
+                    if (sectionEl == null && !ForCheckOnly)
                         throw new Exception(string.Format("Section with name {0} is not found", baseBookInfo.SectionName));
 
                     SimpleVersePointersComparisonTable bookVersePointersComparisonTable = bibleVersePointersComparisonTable.ContainsKey(baseBookContent.Index)
@@ -222,11 +222,10 @@ namespace BibleCommon.Services
             Func<XDocument, BibleIteratorArgs> chapterAction, bool needToUpdateChapter,
             bool iterateVerses, Action<SimpleVersePointer, SimpleVerse, BibleIteratorArgs> verseAction)
         {
-            XmlNamespaceManager xnm;
-            string sectionId = (string)bibleBookSectionEl.Attribute("ID");
-            string sectionName = (string)bibleBookSectionEl.Attribute("name");
+            XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
+            string sectionId = ForCheckOnly ? null : (string)bibleBookSectionEl.Attribute("ID");            
 
-            var sectionPagesEl = OneNoteUtils.GetHierarchyElement(_oneNoteApp, sectionId, HierarchyScope.hsPages, out xnm);
+            var sectionPagesEl = ForCheckOnly ? null : OneNoteUtils.GetHierarchyElement(_oneNoteApp, sectionId, HierarchyScope.hsPages, out xnm);
 
             int lastProcessedChapter = 0;
             int lastProcessedVerse = 0;
@@ -241,13 +240,13 @@ namespace BibleCommon.Services
 
                 if (chapterAction != null)
                 {
-                    var chapterPageEl = HierarchySearchManager.FindChapterPage(_oneNoteApp, sectionPagesEl.Root, baseChapter.Index, xnm);
+                    var chapterPageEl = ForCheckOnly ? null : HierarchySearchManager.FindChapterPage(_oneNoteApp, sectionPagesEl.Root, baseChapter.Index, xnm);
 
-                    if (chapterPageEl == null)
+                    if (chapterPageEl == null && !ForCheckOnly)
                         throw new BaseChapterSectionNotFoundException(baseChapter.Index, baseBookInfo.Index);
 
-                    string chapterPageId = (string)chapterPageEl.Attribute("ID");
-                    chapterPageDoc = OneNoteUtils.GetPageContent(_oneNoteApp, chapterPageId, out xnm);
+                    string chapterPageId = ForCheckOnly ? null : (string)chapterPageEl.Attribute("ID");
+                    chapterPageDoc = ForCheckOnly ? null : OneNoteUtils.GetPageContent(_oneNoteApp, chapterPageId, out xnm);
 
                     bibleIteratorArgs = chapterAction(chapterPageDoc);
                 }
@@ -288,7 +287,7 @@ namespace BibleCommon.Services
                     }
                 }
 
-                if (needToUpdateChapter && chapterAction != null && chapterWasModified.GetValueOrDefault(true) == true)
+                if (needToUpdateChapter && chapterAction != null && chapterWasModified.GetValueOrDefault(true) == true && !ForCheckOnly)
                 {
                     SupplementalBibleManager.UpdatePageXmlForStrongDictionary(chapterPageDoc);
 
@@ -373,7 +372,11 @@ namespace BibleCommon.Services
 
                 if (string.IsNullOrEmpty(verseContent))  // значит нет такого стиха, либо такой по счёту части стиха                                    
                     throw new GetParallelVerseException(
-                        string.Format("Can not find verseContent (versePart = {0})", firstParallelVerse.PartIndex + 1), baseVersePointer, BaseVersePointerException.Severity.Warning);
+                        string.Format("Can not find verseContent{0}", 
+                                        firstParallelVerse.PartIndex.HasValue
+                                            ? string.Format(" (versePart = {0})", firstParallelVerse.PartIndex + 1)
+                                            : string.Empty), 
+                                        baseVersePointer, BaseVersePointerException.Severity.Warning);
 
                 if (parallelVersePointers.Count > 1)
                     topVerse = parallelVersePointers.Last().Verse;

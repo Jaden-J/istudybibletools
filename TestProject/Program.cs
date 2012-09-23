@@ -237,12 +237,12 @@ namespace TestProject
             var pages = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, false);
             foreach (var page in pages.Content.Root.XPathSelectElements("//one:Page", pages.Xnm))
             {
-                string pageId = page.Attribute("ID").Value;
+                string pageId = (string)page.Attribute("ID");
                 XmlNamespaceManager xnm;
                 var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, pageId, out xnm);
                 if (pageDoc.ToString().IndexOf("en-US") != -1)
                 {
-                    string pageName = page.Attribute("name").Value;
+                    string pageName = (string)page.Attribute("name");
                 }
             }
         }

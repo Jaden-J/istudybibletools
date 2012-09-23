@@ -129,7 +129,7 @@ namespace BibleCommon.Services
                     IsExcludedCurrentNotePage = true;
 
                 XElement titleElement = notePageDocument.Content.Root.XPathSelectElement("one:Title/one:OE", notePageDocument.Xnm);
-                string pageTitleId = titleElement != null ? titleElement.Attribute("objectID").Value : null;
+                string pageTitleId = titleElement != null ? (string)titleElement.Attribute("objectID") : null;
 
 
                 string noteSectionGroupName = OneNoteUtils.GetHierarchyElementName(_oneNoteApp, sectionGroupId);

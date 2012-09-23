@@ -40,7 +40,7 @@ namespace BibleCommon.Services
 
             sectionGroup = OneNoteUtils.GetHierarchyElement(oneNoteApp, sectionGroupId, HierarchyScope.hsSections, out xnm);
             section = sectionGroup.Root.XPathSelectElement(string.Format("one:Section[@name='{0}']", sectionName), xnm);
-            string sectionId = section.Attribute("ID").Value;
+            string sectionId = (string)section.Attribute("ID");
 
             return sectionId;
         }
@@ -278,12 +278,12 @@ namespace BibleCommon.Services
 
             foreach (var testamentSectionGroup in bibleNotebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm))
             {
-                string testamentSectionGroupName = testamentSectionGroup.Attribute("name").Value;
+                string testamentSectionGroupName = (string)testamentSectionGroup.Attribute("name");
                 XElement testamentSectionGroupEl =  AddRootSectionGroupToNotebook(oneNoteApp, targetNotebookId, testamentSectionGroupName);                
 
                 foreach (var bibleBookSection in testamentSectionGroup.XPathSelectElements("one:Section", xnm))
                 {
-                    string bibleBookSectionName = bibleBookSection.Attribute("name").Value;
+                    string bibleBookSectionName = (string)bibleBookSection.Attribute("name");
                     AddSectionGroup(oneNoteApp, testamentSectionGroupEl, bibleBookSectionName);
                 }
             }
