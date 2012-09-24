@@ -102,12 +102,13 @@ namespace BibleCommon.Services
 
                 XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
 
-                IterateBaseBible(chapterPageDoc =>
-                {
-                    RemoveLastChapterParallelTranslation(chapterPageDoc, moduleInfo, xnm);                   
+                IterateBaseBible(
+                    (chapterPageDoc, chapterPointer) =>
+                    {
+                        RemoveLastChapterParallelTranslation(chapterPageDoc, moduleInfo, xnm);                   
 
-                    return null;
-                }, true, false, null);
+                        return null;
+                    }, true, false, null);
             }
         }
 
@@ -145,7 +146,7 @@ namespace BibleCommon.Services
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();            
             
             return IterateBaseBible(
-                chapterPageDoc =>
+                (chapterPageDoc, chapterPointer) =>
                 {
                     var tableEl = NotebookGenerator.GetPageTable(chapterPageDoc, xnm);
                     var bibleIndex = NotebookGenerator.AddColumnToTable(tableEl, SettingsManager.Instance.PageWidth_Bible, xnm);
@@ -171,7 +172,7 @@ namespace BibleCommon.Services
         /// <param name="verseAction"></param>
         /// <returns></returns>
         public BibleParallelTranslationConnectionResult IterateBaseBible(
-            Func<XDocument, BibleIteratorArgs> chapterAction, bool needToUpdateChapter, 
+            Func<XDocument, SimpleVersePointer, BibleIteratorArgs> chapterAction, bool needToUpdateChapter, 
             bool iterateVerses, Action<SimpleVersePointer, SimpleVerse, BibleIteratorArgs> verseAction)
         {
             Errors.Clear();
@@ -219,7 +220,7 @@ namespace BibleCommon.Services
         private void ProcessBibleBook(XElement bibleBookSectionEl, BibleBookInfo baseBookInfo,
             BibleBookContent baseBookContent, BibleBookContent parallelBookContent, 
             SimpleVersePointersComparisonTable bookVersePointersComparisonTable,
-            Func<XDocument, BibleIteratorArgs> chapterAction, bool needToUpdateChapter,
+            Func<XDocument, SimpleVersePointer, BibleIteratorArgs> chapterAction, bool needToUpdateChapter,
             bool iterateVerses, Action<SimpleVersePointer, SimpleVerse, BibleIteratorArgs> verseAction)
         {
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
@@ -248,7 +249,7 @@ namespace BibleCommon.Services
                     string chapterPageId = ForCheckOnly ? null : (string)chapterPageEl.Attribute("ID");
                     chapterPageDoc = ForCheckOnly ? null : OneNoteUtils.GetPageContent(_oneNoteApp, chapterPageId, out xnm);
 
-                    bibleIteratorArgs = chapterAction(chapterPageDoc);
+                    bibleIteratorArgs = chapterAction(chapterPageDoc, new SimpleVersePointer(baseBookInfo.Index, baseChapter.Index));
                 }
 
 

@@ -97,7 +97,7 @@ namespace BibleCommon.Services
                 var linkResult = new List<Exception>();
 
                 result = bibleTranslationManager.IterateBaseBible(
-                    chapterPageDoc =>
+                    (chapterPageDoc, chapterPointer) =>
                     {
                         OneNoteProxy.Instance.CommitAllModifiedPages(oneNoteApp, pageContent => pageContent.PageType == OneNoteProxy.PageType.Bible, null, null);
 
