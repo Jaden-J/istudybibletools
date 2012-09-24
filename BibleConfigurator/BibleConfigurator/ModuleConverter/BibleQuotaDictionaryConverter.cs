@@ -49,7 +49,7 @@ namespace BibleConfigurator.ModuleConverter
         public string Locale { get; set; }
         public string Version { get; set; }
         public string TermStartString { get; set; }
-        public string DictionaryName { get; set; }
+        public string DictionaryName { get; set; }        
         public List<Exception> Errors { get; set; }
         public string UserNotesString { get; set; }
         public string FindAllVersesString { get; set; }
@@ -75,7 +75,7 @@ namespace BibleConfigurator.ModuleConverter
             this.DictionaryFiles = dictionaryFiles;
             this.FileEncoding = fileEncoding;
             this.Locale = locale;
-            this.TermStartString = termStartString;
+            this.TermStartString = termStartString;            
             this.Errors = new List<Exception>();
             this.UserNotesString = userNotesString;
             this.FindAllVersesString = findAllVersesString;

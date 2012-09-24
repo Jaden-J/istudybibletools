@@ -1326,10 +1326,15 @@ namespace BibleConfigurator
             form.ShowDialog();
         }
 
+        private void btnDictionariesManagement_Click(object sender, EventArgs e)
+        {
+            ShowDictionariesManagementForm();
+        }
+
         private void ShowDictionariesManagementForm()
         {
             var form = new DictionaryModulesForm(_oneNoteApp, this);
             form.ShowDialog();
-        }
+        }        
     }
 }

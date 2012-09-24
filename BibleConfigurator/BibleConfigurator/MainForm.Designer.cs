@@ -544,6 +544,7 @@
             resources.ApplyResources(this.btnDictionariesManagement, "btnDictionariesManagement");
             this.btnDictionariesManagement.Name = "btnDictionariesManagement";
             this.btnDictionariesManagement.UseVisualStyleBackColor = true;
+            this.btnDictionariesManagement.Click += new System.EventHandler(this.btnDictionariesManagement_Click);
             // 
             // btnSupplementalBibleManagement
             // 

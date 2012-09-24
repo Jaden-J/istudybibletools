@@ -57,6 +57,9 @@ namespace BibleCommon.Common
         [XmlAttribute]
         public string DictionarySectionGroupName { get; set; }
 
+        [XmlAttribute]
+        public string StrongNumbersCount { get; set; }
+
         [XmlElement(typeof(SectionInfo), ElementName="Section")]
         public List<SectionInfo> DictionarySections { get; set; }
 

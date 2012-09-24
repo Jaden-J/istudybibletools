@@ -175,7 +175,7 @@ namespace TestProject
             var converter = new BibleQuotaConverter("RST", Path.Combine(ForGeneratingFolderPath, "RST"), Path.Combine(TempFolderPath, "RST"), Encoding.Default, true,
                 "Ветхий Завет", "Новый Завет", 39, 27, "ru",
                 PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst), 
-                "{0} глава. {1}", PredefinedSectionsInfo.RSTStrong, "Стронга", "2.0");
+                "{0} глава. {1}", PredefinedSectionsInfo.RSTStrong, "Стронга", 14700, "2.0");
 
             converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
             {
@@ -198,7 +198,7 @@ namespace TestProject
             var converter = new BibleQuotaConverter("Bible", Path.Combine(ForGeneratingFolderPath, "RCCV"), Path.Combine(TempFolderPath, "RCCV"), Encoding.Unicode, false,
                 "1. Vechiul Testament", "2. Noul Testament", 39, 27, "ro",
                 PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
-                "{0} capitolul. {1}", null, null, "2.0");
+                "{0} capitolul. {1}", null, null, null, "2.0");
 
             converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
             {
@@ -216,7 +216,7 @@ namespace TestProject
             var converter = new BibleQuotaConverter("KJV", Path.Combine(ForGeneratingFolderPath, "King_James_Version"), Path.Combine(TempFolderPath, "KJV"), Encoding.ASCII, false,
                 "1. Old Testament", "2. New Testament", 39, 27, "en",
                 PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(), 
-                "{0} chapter. {1}", null, null, "2.0");
+                "{0} chapter. {1}", null, null, null, "2.0");
 
             converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
             {

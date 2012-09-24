@@ -103,7 +103,7 @@ namespace BibleCommon.Services
 
                         int styleIndex = QuickStyleManager.AddQuickStyleDef(chapterPageDoc, QuickStyleManager.StyleForStrongName, QuickStyleManager.PredefinedStyles.GrayHyperlink, xnm);
 
-                        return new BibleIteratorArgs() { ChapterDocument = chapterPageDoc, StyleIndex = styleIndex };
+                        return new BibleIteratorArgs() { ChapterDocument = chapterPageDoc, StrongStyleIndex = styleIndex };
                     }, true, true,
                     (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
                     {                        
@@ -303,7 +303,8 @@ namespace BibleCommon.Services
 
             var baseVerseEl = OneNoteUtils.NormalizeTextElement(
                                     HierarchySearchManager.FindVerse(bibleIteratorArgs.ChapterDocument, false, baseVersePointer.Verse, xnm));
-            baseVerseEl.Parent.SetAttributeValue("quickStyleIndex", bibleIteratorArgs.StyleIndex);            
+            if (isStrong)
+                baseVerseEl.Parent.SetAttributeValue("quickStyleIndex", bibleIteratorArgs.StrongStyleIndex);            
                 
             var baseChapterPageId = (string)bibleIteratorArgs.ChapterDocument.Root.Attribute("ID");
             var baseVerseElementId = (string)baseVerseEl.Parent.Attribute("objectID");
@@ -368,8 +369,9 @@ namespace BibleCommon.Services
                 out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
 
             if (baseVerseNumber != baseVersePointer.Verse.ToString())
-                throw new InvalidOperationException(
-                    string.Format("baseVerseNumber != baseVersePointer (baseVerseNumber = '{0}', baseVersePointer = '{1}')", baseVerseNumber, baseVersePointer));
+                result.Add(
+                    new InvalidOperationException(
+                        string.Format("baseVerseNumber != baseVersePointer (baseVerseNumber = '{0}', baseVersePointer = '{1}')", baseVerseNumber, baseVersePointer)));
 
             string linkToParallelVerse = OneNoteUtils.GenerateHref(oneNoteApp, baseVerseNumber,
                 baseBibleObjectsSearchResult.HierarchyObjectInfo.PageId, baseBibleObjectsSearchResult.HierarchyObjectInfo.ContentObjectId);

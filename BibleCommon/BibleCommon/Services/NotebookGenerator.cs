@@ -185,7 +185,7 @@ namespace BibleCommon.Services
             var rows = tableElement.XPathSelectElements("one:Row", xnm);
 
             XElement verseRow = null;
-            int textBreakIndex, htmlBreakIndex;
+            int textBreakIndex, htmlBreakIndex;            
             foreach (var row in rows.Skip(baseVerse.Verse - 1))
             {
                 int rowChildsCount = row.Elements().Count();
@@ -200,14 +200,15 @@ namespace BibleCommon.Services
                             if (baseVerseNumber != baseVerse.Verse.ToString())
                                 continue;
                         }
+                        verse.VerseLink = StringUtils.GetAttributeValue(firstCell.Value, "href");
                     }
 
                     verseRow = row;
                     break;
                 }
-            }
+            }    
 
-            AddParallelVerseCellToBibleRow(tableElement, verseRow, verse.VerseContent, translationIndex, locale);            
+            AddParallelVerseCellToBibleRow(tableElement, verseRow, verse.GetVerseFullString(), translationIndex, locale);            
         }
 
         public static void AddParallelBibleTitle(XDocument pageDoc, XElement tableElement, string parallelTranslationModuleName, int bibleIndex, string locale, XmlNamespaceManager xnm)

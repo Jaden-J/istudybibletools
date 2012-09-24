@@ -59,19 +59,22 @@ namespace BibleConfigurator
                 int chaptersCount = ModulesManager.GetBibleChaptersCount(selectedModuleInfo.ShortName);
                 MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.CreateSupplementalBibleStart);
                 Logger.Preffix = string.Format("{0} 1/{1}: {2}: ", BibleCommon.Resources.Constants.Stage, stagesCount, BibleCommon.Resources.Constants.CreateSupplementalBible);
+                BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
                 SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, selectedModuleInfo.ShortName, FolderBrowserDialog.SelectedPath, Logger);
 
                 Dictionary<string, string> strongTermLinksCache = null;
                 if (selectedModuleInfo.Type == ModuleType.Strong)
                 {
-                    int strongTermsCount = 14700;
+                    int strongTermsCount = !string.IsNullOrEmpty(selectedModuleInfo.StrongNumbersCount) ? int.Parse(selectedModuleInfo.StrongNumbersCount) : 14700;
                     MainForm.PrepareForExternalProcessing(strongTermsCount, 1, BibleCommon.Resources.Constants.IndexStrongDictionaryStart);
                     Logger.Preffix = string.Format("{0} 2/{1}: {2}: ", BibleCommon.Resources.Constants.Stage, stagesCount, BibleCommon.Resources.Constants.IndexStrongDictionary);
+                    BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
                     strongTermLinksCache = SupplementalBibleManager.IndexStrongDictionary(OneNoteApp, selectedModuleInfo, Logger);
                 }
 
                 MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.LinkSupplementalBibleStart);
                 Logger.Preffix = string.Format("{0} {1}/{1}: {2}: ", BibleCommon.Resources.Constants.Stage, stagesCount, BibleCommon.Resources.Constants.LinkSupplementalBible);
+                BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
                 result = SupplementalBibleManager.LinkSupplementalBibleWithMainBible(OneNoteApp, 0, strongTermLinksCache, Logger);
 
                 MainForm.ExternalProcessingDone(BibleCommon.Resources.Constants.CreateSupplementalBibleFinish);
