@@ -475,6 +475,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Dictionaries Management.
+        /// </summary>
+        public static string DictionariesManagement {
+            get {
+                return ResourceManager.GetString("DictionariesManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Dictionaries.
         /// </summary>
         public static string DictionariesNotebookName {
@@ -552,6 +561,15 @@ namespace BibleCommon.Resources {
         public static string Error_OpenedNotePageNotFound {
             get {
                 return ResourceManager.GetString("Error_OpenedNotePageNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Section file not found: &apos;{0}&apos;..
+        /// </summary>
+        public static string Error_SectionFileNotFound {
+            get {
+                return ResourceManager.GetString("Error_SectionFileNotFound", resourceCulture);
             }
         }
         
@@ -1105,6 +1123,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на The query is invalid or Microsoft Search 3.0 or 4.0 is not installed on your computer.
+        /// </summary>
+        public static string SearchQueryIsInvalid {
+            get {
+                return ResourceManager.GetString("SearchQueryIsInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Section group &apos;{0}&apos; not found..
         /// </summary>
         public static string SectionGroupNotFound {
@@ -1164,6 +1191,15 @@ namespace BibleCommon.Resources {
         public static string StartTime {
             get {
                 return ResourceManager.GetString("StartTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Supplemental Bible Management.
+        /// </summary>
+        public static string SupplementalBibleManagement {
+            get {
+                return ResourceManager.GetString("SupplementalBibleManagement", resourceCulture);
             }
         }
         

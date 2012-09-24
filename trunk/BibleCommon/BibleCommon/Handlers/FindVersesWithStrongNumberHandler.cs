@@ -5,24 +5,49 @@ using System.Text;
 using BibleCommon.Contracts;
 using Microsoft.Office.Interop.OneNote;
 using BibleCommon.Services;
+using System.Runtime.InteropServices;
 
 namespace BibleCommon.Handlers
 {
     public class FindVersesWithStrongNumberHandler : IProtocolHandler
     {
-        public string GetCommandUrl(string strongNumber)
+        public string ProtocolName
         {
-            return string.Format("isbt_fvwsn://{0}", strongNumber);
+            get { return "isbtfsnu"; }
         }
 
-        public void ExecuteCommand(string strongNumber)
+        public string GetCommandUrl(string strongNumber)
         {
+            return string.Format("{0}:{1}", ProtocolName, strongNumber);
+        }
+
+        public bool IsProtocolCommand(string[] args)
+        {
+            return args.Length > 0 && args[0].StartsWith(ProtocolName);
+        }
+
+        public void ExecuteCommand(string[] args)
+        {
+            if (args.Length == 0)
+                throw new ArgumentNullException("args");
+
             if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_SupplementalBible))
             {
+                string strongNumber = args[0].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries)[1];
                 Application oneNoteApp = new Application();
                 string result;
-                oneNoteApp.FindPages(SettingsManager.Instance.NotebookId_SupplementalBible, strongNumber, out result, true, true, Consts.Constants.CurrentOneNoteSchema);
+                try
+                {
+                    oneNoteApp.FindPages(SettingsManager.Instance.NotebookId_SupplementalBible, strongNumber, out result, true, true, Consts.Constants.CurrentOneNoteSchema);
+                }
+                catch (COMException ex)
+                {
+                    if (ex.Message.EndsWith("0x80042019"))  // The query is invalid.
+                    {
+                        throw new Exception(BibleCommon.Resources.Constants.SearchQueryIsInvalid);
+                    }
+                }
             }
-        }
+        }        
     }
 }

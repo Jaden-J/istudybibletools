@@ -16,6 +16,7 @@ using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
 using BibleCommon.Consts;
+using BibleCommon.Handlers;
 
 
 namespace BibleConfigurator
@@ -61,12 +62,18 @@ namespace BibleConfigurator
 
             try
             {
+                var strongProtocolHandler = new FindVersesWithStrongNumberHandler();
+
                 if (args.Contains(Consts.ShowModuleInfo) && SettingsManager.Instance.IsConfigured(OneNoteApp))
                     result = new AboutModuleForm(SettingsManager.Instance.ModuleName, true);
                 else if (args.Contains(Consts.ShowAboutProgram))
                     result = new AboutProgramForm();
                 else if (args.Contains(Consts.ShowParallelBibleChecker))
                     result = new ParallelBibleChecker();
+                else if (strongProtocolHandler.IsProtocolCommand(args))
+                {
+                    strongProtocolHandler.ExecuteCommand(args);
+                }
                 else if (args.Contains(Consts.ShowManual))
                 {
                     OpenManual();
