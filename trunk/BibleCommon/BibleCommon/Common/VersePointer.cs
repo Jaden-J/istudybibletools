@@ -7,6 +7,7 @@ using BibleCommon.Consts;
 using BibleCommon.Helpers;
 using BibleCommon.Services;
 using Microsoft.Office.Interop.OneNote;
+using BibleCommon.Contracts;
 
 namespace BibleCommon.Common
 {
@@ -21,11 +22,23 @@ namespace BibleCommon.Common
         public bool IsApocrypha { get; set; }
         //public SimpleVersePointer BaseVersePointer { get; set; }  // если IsApocrypha - стих, к которому привязан данный стих
 
+        public bool IsChapter
+        {
+            get
+            {
+                return this.Verse == 0;
+            }
+        }
+
         public SimpleVersePointer(SimpleVersePointer verse)
             : this(verse.BookIndex, verse.Chapter, verse.Verse)
         {
 
         }
+
+        public SimpleVersePointer(int bookIndex, int chapter)
+            : this(bookIndex, chapter, 0)
+        { }
 
         public SimpleVersePointer(int bookIndex, int chapter, int verse)
         {
@@ -270,6 +283,11 @@ namespace BibleCommon.Common
                 if (!string.IsNullOrEmpty(moduleName))   // значит ссылка дана для модуля, отличного от установленного                
                     ConvertToBaseVerse(moduleName);                
             }
+        }
+
+        public SimpleVersePointer ToSimpleVersePointer()
+        {
+            return new SimpleVersePointer(Book.Index, Chapter.GetValueOrDefault(0), Verse.GetValueOrDefault(0)) { TopVerse = this.TopVerse };
         }
 
         private void ConvertToBaseVerse(string moduleName)
@@ -540,6 +558,6 @@ namespace BibleCommon.Common
                 return true;
 
             return !vp1.Equals(vp2);
-        }
+        }        
     }
 }

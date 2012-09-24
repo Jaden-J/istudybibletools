@@ -44,11 +44,13 @@ namespace TestProject
            
             try
             {
+                GenerateBibleVersesLinks();
+
                 //SearchStrongTerm(args);
 
                 //AddColorLink();
 
-                GenerateStrongDictionary();
+                //GenerateStrongDictionary();
                 
                 //SearchForEnText();
 
@@ -80,6 +82,15 @@ namespace TestProject
 
             Console.WriteLine("Finish");
             Console.ReadKey();
+        }
+
+        private static void GenerateBibleVersesLinks()
+        {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            var result = OneNoteProxy.Instance.GenerateBibleVersesLinks();
+            sw.Stop();
+            Console.WriteLine(sw.Elapsed.TotalSeconds);
         }
 
         private static void SearchStrongTerm(string[] args)

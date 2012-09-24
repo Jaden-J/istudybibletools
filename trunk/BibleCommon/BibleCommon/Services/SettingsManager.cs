@@ -98,6 +98,8 @@ namespace BibleCommon.Services
         public List<DictionaryModuleInfo> DictionariesModules { get; set; }
         
 
+        
+
         /// <summary>
         /// Необходимо ли линковать каждый стих, входящий в MultiVerse
         /// </summary>
@@ -189,7 +191,8 @@ namespace BibleCommon.Services
                 && !string.IsNullOrEmpty(this.PageName_Notes)
                 && !string.IsNullOrEmpty(this.ModuleName)
                 && ModulesManager.ModuleIsCorrect(this.ModuleName)
-                && _useDefaultSettingsNodeExists;
+                && _useDefaultSettingsNodeExists
+                && BibleVersesLinksCacheManager.CacheIsActive();
 
             if (result)
             {

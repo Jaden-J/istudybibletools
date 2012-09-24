@@ -9,6 +9,9 @@ using System.Xml;
 using BibleCommon.Common;
 using BibleCommon.Consts;
 using System.Runtime.InteropServices;
+using BibleCommon.Contracts;
+using System.Xml.XPath;
+using System.IO;
 
 namespace BibleCommon.Services
 {
@@ -169,6 +172,7 @@ namespace BibleCommon.Services
         private Dictionary<LinkId, string> _linksCache = new Dictionary<LinkId, string>();        
         private HashSet<VersePointer> _processedVerses = new HashSet<VersePointer>();
         private List<SortPageInfo> _sortVerseLinkPagesInfo = new List<SortPageInfo>();
+        private Dictionary<SimpleVersePointer, string> _bibleVersesLinks = new Dictionary<SimpleVersePointer, string>();
 
 
         protected OneNoteProxy()
@@ -194,7 +198,7 @@ namespace BibleCommon.Services
                 PageLevel = pageLevel
             });
         }
-
+      
         public string GenerateHref(Application oneNoteApp, string pageId, string objectId)
         {
             if (string.IsNullOrEmpty(pageId))
@@ -458,5 +462,18 @@ namespace BibleCommon.Services
         //{
         //    GetPageContent(oneNoteApp, pageId, true);
         //}
+
+        public string GetBibleVerseLink(SimpleVersePointer vp)
+        {
+            if (_bibleVersesLinks == null)
+            {
+                _bibleVersesLinks = BibleVersesLinksCacheManager.LoadBibleVersesLinks();  
+            }
+
+            if (_bibleVersesLinks.ContainsKey(vp))
+                return _bibleVersesLinks[vp];
+
+            throw new ArgumentException(string.Format("Can not find verse element: '{0}'", vp));
+        }       
     }
 }
