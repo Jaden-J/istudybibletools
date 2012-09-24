@@ -534,4 +534,16 @@
   <data name="IndexStrongDictionaryStart" xml:space="preserve">
     <value>Старт индексирования словаря Стронга</value>
   </data>
+  <data name="DictionariesManagement" xml:space="preserve">
+    <value>Управление словарями</value>
+  </data>
+  <data name="Error_SectionFileNotFound" xml:space="preserve">
+    <value>Не найден файл раздела '{0}.</value>
+  </data>
+  <data name="SearchQueryIsInvalid" xml:space="preserve">
+    <value>Неверный поисковый запрос или на компьютере не установлен компонент Microsoft Search 3.0 или 4.0</value>
+  </data>
+  <data name="SupplementalBibleManagement" xml:space="preserve">
+    <value>Управление справочной Библией</value>
+  </data>
 </root>

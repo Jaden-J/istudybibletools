@@ -24,8 +24,8 @@ namespace TestProject
 {
     class Program
     {
-        private const string ForGeneratingFolderPath = @"G:\Dropbox\IStudyBibleTools\ForGenerating\";
-        private const string TempFolderPath = @"C:\temp\";
+        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\IStudyBibleTools\ForGenerating\";
+        private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp\";
 
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
         private static Microsoft.Office.Interop.OneNote.Application OneNoteApp
@@ -44,7 +44,7 @@ namespace TestProject
            
             try
             {
-                //SearchStrongTerm();
+                //SearchStrongTerm(args);
 
                 //AddColorLink();
 
@@ -82,10 +82,10 @@ namespace TestProject
             Console.ReadKey();
         }
 
-        private static void SearchStrongTerm()
+        private static void SearchStrongTerm(string[] args)
         {
             var handler = new FindVersesWithStrongNumberHandler();
-            handler.ExecuteCommand("H0559");
+            handler.ExecuteCommand(args);
         }
 
         private static void AddColorLink()

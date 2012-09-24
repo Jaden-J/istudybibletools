@@ -537,4 +537,16 @@
   <data name="IndexStrongDictionaryStart" xml:space="preserve">
     <value>Indexing Strong Dictionary start</value>
   </data>
+  <data name="DictionariesManagement" xml:space="preserve">
+    <value>Dictionaries Management</value>
+  </data>
+  <data name="Error_SectionFileNotFound" xml:space="preserve">
+    <value>Section file not found: '{0}'.</value>
+  </data>
+  <data name="SearchQueryIsInvalid" xml:space="preserve">
+    <value>The query is invalid or Microsoft Search 3.0 or 4.0 is not installed on your computer</value>
+  </data>
+  <data name="SupplementalBibleManagement" xml:space="preserve">
+    <value>Supplemental Bible Management</value>
+  </data>
 </root>

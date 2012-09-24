@@ -7,7 +7,9 @@ namespace BibleCommon.Contracts
 {
     public interface IProtocolHandler
     {
+        string ProtocolName { get; }
         string GetCommandUrl(string args);
-        void ExecuteCommand(string args);
+        bool IsProtocolCommand(string[] args);
+        void ExecuteCommand(string[] args);
     }
 }
