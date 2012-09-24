@@ -63,6 +63,7 @@ namespace BibleConfigurator.ModuleConverter
         protected string ChapterSectionNameTemplate { get; set; }
         protected List<SectionInfo> SectionsInfo { get; set; }
         protected string DictionarySectionGroupName { get; set; }
+        public int? StrongNumbersCount { get; set; }
         protected string Version { get; set; }        
 
         /// <summary>
@@ -80,7 +81,7 @@ namespace BibleConfigurator.ModuleConverter
             string oldTestamentName, string newTestamentName, int oldTestamentBooksCount, int newTestamentBooksCount,
             string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, 
             BibleTranslationDifferences translationDifferences, string chapterSectionNameTemplate,
-            List<SectionInfo> sectionsInfo, string dictionarySectionGroupName, string version)
+            List<SectionInfo> sectionsInfo, string dictionarySectionGroupName, int? strongNumbersCount, string version)
         {
             OneNoteApp = new Application();
             this.IsStrong = isStrong;
@@ -100,11 +101,22 @@ namespace BibleConfigurator.ModuleConverter
             this.ChapterSectionNameTemplate = chapterSectionNameTemplate;
             this.SectionsInfo = sectionsInfo;
             this.DictionarySectionGroupName = dictionarySectionGroupName;
+            this.StrongNumbersCount = strongNumbersCount;
             this.Version = version;
             this.Errors = new List<ConverterExceptionBase>();
 
             if (!Directory.Exists(manifestFilesFolderPath))
                 Directory.CreateDirectory(manifestFilesFolderPath);
+
+            CheckModuleParameters();
+        }
+
+        private void CheckModuleParameters()
+        {
+            if (this.IsStrong)
+            {
+
+            }
         }
 
         public void Convert()
@@ -272,6 +284,7 @@ namespace BibleConfigurator.ModuleConverter
             };
             module.DictionarySections = this.SectionsInfo;
             module.DictionarySectionGroupName = this.DictionarySectionGroupName;
+            module.StrongNumbersCount = this.StrongNumbersCount.HasValue ? this.StrongNumbersCount.ToString() : null;
 
             int index = 0;
             foreach (var bibleBookInfo in extModuleInfo.BibleBooksInfo)

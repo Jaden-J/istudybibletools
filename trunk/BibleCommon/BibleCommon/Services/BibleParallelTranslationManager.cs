@@ -28,7 +28,7 @@ namespace BibleCommon.Services
         public XDocument ChapterDocument { get; set; }
         public XElement TableElement { get; set; }
         public int BibleIndex { get; set; }
-        public int StyleIndex { get; set; }
+        public int StrongStyleIndex { get; set; }
     }
 
     public class BibleParallelTranslationManager : IDisposable
@@ -382,10 +382,7 @@ namespace BibleCommon.Services
                     topVerse = parallelVersePointers.Last().Verse;
             }
 
-            return new SimpleVerse(firstParallelVerse, string.Format("{0}{1}{2}",
-                                                            verseNumberContent,
-                                                            string.IsNullOrEmpty(verseContent) ? string.Empty : " ",
-                                                            verseContent)) { TopVerse = topVerse, IsEmpty = firstParallelVerse.IsEmpty };
+            return new SimpleVerse(firstParallelVerse, verseNumberContent, verseContent) { TopVerse = topVerse, IsEmpty = firstParallelVerse.IsEmpty };
         }
 
         private string GetVersesNumberString(SimpleVersePointer baseVersePointer, ComparisonVersesInfo parallelVersePointers)

@@ -91,22 +91,57 @@ namespace BibleCommon.Common
 
     public class SimpleVerse : SimpleVersePointer
     {
+
+        /// <summary>
+        /// СТрока, соответствующая номерам/номеру стиха. Может быть: "5", "5-6", "6:5-6"
+        /// </summary>
+        public string VerseNumber { get; set; }
+
+        /// <summary>
+        /// Ссылка, ведующая с номера стиха
+        /// </summary>
+        public string VerseLink { get; set; }
+
+        /// <summary>
+        /// Текст стиха без номера
+        /// </summary>
         public string VerseContent { get; set; }
 
+        public string GetVerseFullString()
+        {
+            string verseNumber = string.IsNullOrEmpty(VerseLink) 
+                                    ? this.VerseNumber
+                                    : string.Format("<a href='{0}'>{1}</a>", VerseLink, VerseNumber);
+
+            return string.Format("{0}{1}{2}",
+                            verseNumber,
+                            string.IsNullOrEmpty(VerseContent) ? string.Empty : " ",
+                            VerseContent);
+        }
+
+        public SimpleVerse(SimpleVersePointer versePointer, string verseContent)
+            : this(versePointer, null, verseContent)
+        { }
+     
         /// <summary>
         /// string.IsNullOrEmpty(verseContent) - это не то же самое, что this.IsEmpty
         /// </summary>
         /// <param name="versePointer"></param>
         /// <param name="verseContent"></param>
-        public SimpleVerse(SimpleVersePointer versePointer, string verseContent)
+        public SimpleVerse(SimpleVersePointer versePointer, string verseNumber, string verseContent)
             : base(versePointer.BookIndex, versePointer.Chapter, versePointer.Verse)
         {
             this.VerseContent = verseContent;
+
+            if (!string.IsNullOrEmpty(verseNumber))
+                this.VerseNumber = verseNumber;
+            else
+                this.VerseNumber = versePointer.Verse.ToString();            
         }
 
         public override object Clone()
         {
-            var result = new SimpleVerse(this, this.VerseContent);
+            var result = new SimpleVerse(this, this.VerseNumber, this.VerseContent);
             CopyProperties(result);
 
             return result;            
