@@ -15,6 +15,7 @@ namespace BibleCommon.UI.Forms
     public partial class ErrorsForm : Form
     {
         public List<string> Errors { get; set; }
+        public string ErrorsDecription { get; set; }
 
         public ErrorsForm(List<string> errors)
         {   
@@ -29,6 +30,9 @@ namespace BibleCommon.UI.Forms
                 Close();
 
             FormExtensions.SetFocus(this);
+
+            if (!string.IsNullOrEmpty(ErrorsDecription))
+                lbErrors.Items.Add(ErrorsDecription);
 
             int index = 1;
             foreach(string error in Errors)
@@ -50,6 +54,9 @@ namespace BibleCommon.UI.Forms
                 {
                     using (StreamWriter sw = new StreamWriter(fs))
                     {
+                        if (!string.IsNullOrEmpty(ErrorsDecription))
+                            sw.WriteLine(ErrorsDecription);
+
                         int index = 1;
                         foreach (var error in Errors)
                         {
