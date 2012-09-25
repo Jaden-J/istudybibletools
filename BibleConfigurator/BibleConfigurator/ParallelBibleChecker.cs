@@ -37,13 +37,17 @@ namespace BibleConfigurator
 
         private void btnOk_Click(object sender, EventArgs e)
         {
+            string baseModule = (string)cbBaseModule.SelectedValue;
+            string parallelModule = (string)cbParallelModule.SelectedValue;
+
             var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
-            var manager = new BibleParallelTranslationManager(oneNoteApp, (string)cbBaseModule.SelectedValue, (string)cbParallelModule.SelectedValue, SettingsManager.Instance.NotebookId_Bible);
+            var manager = new BibleParallelTranslationManager(oneNoteApp, baseModule, parallelModule, SettingsManager.Instance.NotebookId_Bible);
             manager.ForCheckOnly = true;
             var result = manager.IterateBaseBible(null, false, true, null);
             if (result.Errors.Count > 0)
             {
                 var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(result.Errors.ConvertAll(ex => ex.Message));
+                errorsForm.ErrorsDecription = string.Format("{0} -> {1}", baseModule, parallelModule);
                 errorsForm.ShowDialog();
             }
             else

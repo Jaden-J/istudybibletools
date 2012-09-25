@@ -50,7 +50,7 @@ namespace TestProject
 
                 //AddColorLink();
 
-                GenerateStrongDictionary();
+                //GenerateStrongDictionary();
                 
                 //SearchForEnText();
 
@@ -58,7 +58,7 @@ namespace TestProject
 
                 //TryToUpdateInkNodes();
 
-                //ConvertRussianModule();
+                ConvertRussianModule();
 
                 //ConvertEnglishModule();
 
@@ -188,7 +188,7 @@ namespace TestProject
 
         private static void ConvertRussianModule()
         {
-            var converter = new BibleQuotaConverter("RST", Path.Combine(ForGeneratingFolderPath, "RST"), Path.Combine(TempFolderPath, "RST"), Encoding.Default, true,
+            var converter = new BibleQuotaConverter("RSTMOS", Path.Combine(ForGeneratingFolderPath, "Bible_Russian_RST_Strong"), Path.Combine(TempFolderPath, "RSTMOS"), Encoding.UTF8, true,
                 "Ветхий Завет", "Новый Завет", 39, 27, "ru",
                 PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst), 
                 "{0} глава. {1}", PredefinedSectionsInfo.RSTStrong, "Стронга", 14700, "2.0");

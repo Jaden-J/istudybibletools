@@ -15,12 +15,6 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_0DE839D873DB0E59B3B9DB3268395AF9"
-        "OwnerKey" = "8:_3FC71294DAB247EDA89368E781DCDC4E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_154C3F58C5664894873383FE9BFF835D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -125,6 +119,12 @@
         {
         "MsmKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
         "OwnerKey" = "8:_FC6527971F32780710FA9C904D1890AE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E67375423425D9E25FC2BE6D789D1A32"
+        "OwnerKey" = "8:_3FC71294DAB247EDA89368E781DCDC4E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -416,26 +416,6 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0DE839D873DB0E59B3B9DB3268395AF9"
-            {
-            "SourcePath" = "8:RibbonButtons.tlb"
-            "TargetName" = "8:RibbonButtons.tlb"
-            "Tag" = "8:"
-            "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:2"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2DFCD76B1C964A5C80A8963AAA930E62"
             {
             "SourcePath" = "8:..\\Instruction (1049).docx"
@@ -543,6 +523,26 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E67375423425D9E25FC2BE6D789D1A32"
+            {
+            "SourcePath" = "8:RibbonButtons.tlb"
+            "TargetName" = "8:RibbonButtons.tlb"
+            "Tag" = "8:"
+            "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:2"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
@@ -671,7 +671,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_2E65B00FCBEA4B929A4925CDD75CFEBB"
             {
-            "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer]\\[ProductName]"
+            "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\[ProductName]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -774,15 +774,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OneNote IStudyBibleTools"
-        "ProductCode" = "8:{3D2EE087-C7B3-453D-AAF3-56555D4D7460}"
-        "PackageCode" = "8:{949F67D3-7B56-48FB-81D2-ACB8E413CCC0}"
+        "ProductCode" = "8:{37E0CFBF-573C-4F75-8EBB-DD60C9BB3BFB}"
+        "PackageCode" = "8:{6FEBED09-4FD6-48CD-B18B-B5F74467DC6B}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.3.11"
+        "ProductVersion" = "8:2.3.12"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://IStudyBibleTools.com"
@@ -796,7 +796,7 @@
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
-        "TargetPlatform" = "3:1"
+        "TargetPlatform" = "3:0"
         "PreBuildEvent" = "8:"
         "PostBuildEvent" = "8:"
         "RunPostBuildEvent" = "3:0"
