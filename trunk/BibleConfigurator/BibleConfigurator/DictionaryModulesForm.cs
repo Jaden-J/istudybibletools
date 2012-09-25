@@ -70,5 +70,15 @@ namespace BibleConfigurator
         {
             throw new NotImplementedException();
         }
+
+        protected override string GetFormText()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string GetChkUseText()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

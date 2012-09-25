@@ -44,13 +44,13 @@ namespace TestProject
            
             try
             {                
-                GenerateBibleVersesLinks();
+                //GenerateBibleVersesLinks();
 
                 //SearchStrongTerm(args);
 
                 //AddColorLink();
 
-                //GenerateStrongDictionary();
+                GenerateStrongDictionary();
                 
                 //SearchForEnText();
 

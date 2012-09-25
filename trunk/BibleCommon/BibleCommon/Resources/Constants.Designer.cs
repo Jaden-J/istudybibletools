@@ -1240,6 +1240,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Use Supplemental Bible.
+        /// </summary>
+        public static string UseSupplementalBible {
+            get {
+                return ResourceManager.GetString("UseSupplementalBible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Use this module.
         /// </summary>
         public static string UseThisModule {

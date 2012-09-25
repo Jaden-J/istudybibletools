@@ -45,6 +45,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_5CCC60B29BE94330BE7C27E63D77D852"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6EB90D269F004B0D8591B6DB745A2157"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -173,6 +179,12 @@
         {
         "MsmKey" = "8:_EF9B67FAD13975DA69DD7D00A9DF61B8"
         "OwnerKey" = "8:_4CE1B79E46764008A1969F6323ECDDE5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FBBDD79B3A0D4095BE96BA1636DF7325"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -444,6 +456,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5CCC60B29BE94330BE7C27E63D77D852"
+            {
+            "SourcePath" = "8:..\\BQTGrk.ttf"
+            "TargetName" = "8:BQTGrk.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_9803495708AC441CA90B78CD17CF681A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:5"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_94E1AB757EAF4C5A8D864AB3DE806EF5"
             {
             "SourcePath" = "8:..\\Instruction (1033).docx"
@@ -546,11 +578,31 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FBBDD79B3A0D4095BE96BA1636DF7325"
+            {
+            "SourcePath" = "8:..\\BQTHeb.ttf"
+            "TargetName" = "8:BQTHeb.ttf"
+            "Tag" = "8:"
+            "Folder" = "8:_9803495708AC441CA90B78CD17CF681A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:5"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_FC6527971F32780710FA9C904D1890AE"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=2.3.8.444, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=2.3.11.500, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_FC6527971F32780710FA9C904D1890AE"
@@ -684,6 +736,17 @@
                     }
                 }
             }
+            "{1525181F-901A-416C-8A58-119130FE478E}:_9803495708AC441CA90B78CD17CF681A"
+            {
+            "Name" = "8:#1911"
+            "AlwaysCreate" = "11:FALSE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Property" = "8:FontsFolder"
+                "Folders"
+                {
+                }
+            }
             "{1525181F-901A-416C-8A58-119130FE478E}:_A70A17B72FF34E5ABC9E44BAC81B47AA"
             {
             "Name" = "8:#1916"
@@ -711,15 +774,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OneNote IStudyBibleTools"
-        "ProductCode" = "8:{8E13A018-AD57-45AD-92FF-A6FA7C20256D}"
-        "PackageCode" = "8:{1827F154-FA11-4727-BED1-C88757D4C453}"
+        "ProductCode" = "8:{3D2EE087-C7B3-453D-AAF3-56555D4D7460}"
+        "PackageCode" = "8:{949F67D3-7B56-48FB-81D2-ACB8E413CCC0}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.3.10"
+        "ProductVersion" = "8:2.3.11"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://IStudyBibleTools.com"

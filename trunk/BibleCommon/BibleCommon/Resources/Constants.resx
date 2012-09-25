@@ -555,4 +555,7 @@
   <data name="IndexBibleStart" xml:space="preserve">
     <value>Indexing Bible start</value>
   </data>
+  <data name="UseSupplementalBible" xml:space="preserve">
+    <value>Use Supplemental Bible</value>
+  </data>
 </root>
