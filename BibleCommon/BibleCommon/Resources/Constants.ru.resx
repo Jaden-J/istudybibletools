@@ -552,4 +552,7 @@
   <data name="IndexBibleStart" xml:space="preserve">
     <value>Старт индексирования Библии</value>
   </data>
+  <data name="UseSupplementalBible" xml:space="preserve">
+    <value>Использовать справочную Библию</value>
+  </data>
 </root>

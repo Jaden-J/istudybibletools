@@ -70,6 +70,10 @@
             this.btnSBFolder.UseVisualStyleBackColor = true;
             this.btnSBFolder.Click += new System.EventHandler(this.btnSBFolder_Click);
             // 
+            // folderBrowserDialog
+            // 
+            resources.ApplyResources(this.folderBrowserDialog, "folderBrowserDialog");
+            // 
             // BaseSupplementalForm
             // 
             resources.ApplyResources(this, "$this");

@@ -145,6 +145,9 @@
     <EmbeddedResource Include="BaseSupplementalForm.resx">
       <DependentUpon>BaseSupplementalForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="BaseSupplementalForm.ru.resx">
+      <DependentUpon>BaseSupplementalForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LoadForm.resx">
       <DependentUpon>LoadForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -37,7 +37,12 @@ namespace BibleConfigurator
         {
             get
             {
-                return @"Здесь Вы можете управлять справочной Библией. Обратите внимание, ";
+                return 
+@"Данная форма предназначена для управления справочной Библией. 
+Обратите внимание:
+  - в справочную Библию можно добавлять только модули версии 2.0 и выше;
+  - добавление нового модуля в справочную Библию может занимать несколько часов.  
+";
             }
         }
 
@@ -117,6 +122,16 @@ namespace BibleConfigurator
         protected override bool SupplementalModuleAlreadyAdded(string moduleShortName)
         {
             return SettingsManager.Instance.SupplementalBibleModules.Contains(moduleShortName);
+        }
+
+        protected override string GetFormText()
+        {
+            return BibleCommon.Resources.Constants.SupplementalBibleManagement;
+        }
+
+        protected override string GetChkUseText()
+        {
+            return BibleCommon.Resources.Constants.UseSupplementalBible;
         }
     }
 }

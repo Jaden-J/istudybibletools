@@ -26,6 +26,10 @@ namespace BibleConfigurator
         protected bool WasLoaded { get; set; }
         protected bool InProgress { get; set; }
 
+        private Label LblDescription { get; set; }
+
+        protected abstract string GetFormText();
+        protected abstract string GetChkUseText();
         protected abstract string GetValidSupplementalNotebookId();
         protected abstract void ClearSupplementalModulesInSettingsStorage();
         protected abstract int GetSupplementalModulesCount();
@@ -82,6 +86,9 @@ namespace BibleConfigurator
             folderBrowserDialog.ShowNewFolderButton = true;
 
             FormExtensions.SetToolTip(btnSBFolder, BibleCommon.Resources.Constants.DefineNotebookDirectory);
+
+            this.Text = GetFormText();
+            chkUseSupplementalBible.Text = GetChkUseText();
         }
 
         private void LoadFormData()
@@ -105,13 +112,13 @@ namespace BibleConfigurator
 
             if (!chkUseSupplementalBible.Checked && GetSupplementalModulesCount() == 0)
             {
-                Label lblDescription = new Label();
-                lblDescription.Text = FormDescription;
-                lblDescription.Top = TopControlsPosition;
-                lblDescription.Width = 360;
-                lblDescription.Height = 150;
-                lblDescription.Left = 20;
-                pnModules.Controls.Add(lblDescription);
+                LblDescription = new Label();
+                LblDescription.Text = FormDescription;
+                LblDescription.Top = TopControlsPosition;
+                LblDescription.Width = 360;
+                LblDescription.Height = 150;
+                LblDescription.Left = 10;                
+                pnModules.Controls.Add(LblDescription);
             }
             else
             {
@@ -196,11 +203,11 @@ namespace BibleConfigurator
 
         private void EnableUI(bool enabled)
         {
-            pnModules.Enabled = enabled;
+            pnModules.Enabled = enabled;            
             chkUseSupplementalBible.Enabled = enabled;
             btnOk.Enabled = enabled;
             btnCancel.Enabled = enabled;
-            btnSBFolder.Enabled = enabled;
+            btnSBFolder.Enabled = enabled;            
         }
 
         private void LoadModules()

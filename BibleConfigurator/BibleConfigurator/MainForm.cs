@@ -1159,7 +1159,7 @@ namespace BibleConfigurator
             {
                 pnModules.Height = top;
                 btnUploadModule.Top = top + 50;
-                btnUploadModule.Left = 61 + pnModules.Left;
+                btnUploadModule.Left = 31 + pnModules.Left;
 
                 btnSupplementalBibleManagement.Top = btnUploadModule.Top;
                 btnSupplementalBibleManagement.Left = btnUploadModule.Right + 6;
