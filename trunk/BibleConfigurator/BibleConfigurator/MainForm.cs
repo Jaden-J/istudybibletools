@@ -53,6 +53,7 @@ namespace BibleConfigurator
         private const int LoadParametersPauseBetweenAttempts = 10;             // количество секунд ожидания между попытками загрузки параметров
         private const string LoadParametersImageFileName = "loader.gif";
 
+        protected CustomFormLogger LongProcessLogger { get; set; }
 
         private NotebookParametersForm _notebookParametersForm = null;
         
@@ -65,11 +66,25 @@ namespace BibleConfigurator
 
             InitializeComponent();
             BibleCommon.Services.Logger.Init("BibleConfigurator");
+            LongProcessLogger = new CustomFormLogger(this);
         }
 
         public bool StopExternalProcess { get; set; }        
 
         private void btnOK_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                CommitChanges(true);
+            }
+            catch (Exception ex)
+            {
+                //todo: log it
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void CommitChanges(bool closeForm)
         {
             ModuleInfo module = null;
 
@@ -85,7 +100,8 @@ namespace BibleConfigurator
 
             btnOK.Enabled = false;
             bool lblWarningVisibilityBefore = lblWarning.Visible;
-            lblWarning.Visible = false;                                    
+            lblWarning.Visible = false;
+            this.TopMost = true;
 
             try
             {
@@ -112,15 +128,23 @@ namespace BibleConfigurator
                         chkCreateBibleCommentsNotebookFromTemplate, cbBibleCommentsNotebook, BibleCommentsNotebookFromTemplatePath);
 
                     SaveMultiNotebookParameters(module, NotebookType.BibleNotesPages,
-                        chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, BibleNotesPagesNotebookFromTemplatePath);
+                        chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, BibleNotesPagesNotebookFromTemplatePath);                    
                 }
+
+                //if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible))
+                //{
+                //    IndexBible();                    
+                //}
 
                 if (!FormLogger.WasErrorLogged)
                 {
                     SetProgramParameters();
 
                     SettingsManager.Instance.Save();
-                    Close();
+                    if (closeForm)
+                        Close();
+                    else
+                        ReLoadParameters(false);
                 }
             }
             catch (SaveParametersException ex)
@@ -135,9 +159,18 @@ namespace BibleConfigurator
             finally
             {
                 btnOK.Enabled = true;
-                
+                this.TopMost = false;
             }
         }
+
+        //private void IndexBible()
+        //{   
+        //    int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleName);
+        //    PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.IndexBibleStart);
+        //    LongProcessLogger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexBible);
+        //    BibleVersesLinksCacheManager.GenerateBibleVersesLinks(_oneNoteApp, 
+        //        SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, LongProcessLogger);
+        //}
 
         private void SaveMultiNotebookParameters(ModuleInfo module, NotebookType notebookType,
             CheckBox createFromTemplateControl, ComboBox selectedNotebookNameControl, string notebookFromTemplatePath)
@@ -897,7 +930,8 @@ namespace BibleConfigurator
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            StopExternalProcess = true;            
+            StopExternalProcess = true;
+            LongProcessLogger.AbortedByUsers = true;
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)

@@ -18,7 +18,6 @@ namespace BibleConfigurator.Tools
 
             using (NotebookIterator iterator = new NotebookIterator(oneNoteApp))
             {
-
                 BibleCommon.Services.NotebookIterator.NotebookInfo notebook = iterator.GetNotebookPages(notebookId, sectionGroupId, null);
 
                 BibleCommon.Services.Logger.LogMessage("{0}: '{1}'", BibleCommon.Resources.Constants.ProcessNotebook, notebook.Title);

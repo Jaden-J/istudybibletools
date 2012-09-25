@@ -43,7 +43,7 @@ namespace TestProject
         {
            
             try
-            {
+            {                
                 GenerateBibleVersesLinks();
 
                 //SearchStrongTerm(args);
@@ -87,8 +87,13 @@ namespace TestProject
         private static void GenerateBibleVersesLinks()
         {
             Stopwatch sw = new Stopwatch();
+            //sw.Start();
+            //BibleVersesLinksCacheManager.GenerateBibleVersesLinks(OneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, null);
+            //sw.Stop();
+            //Console.WriteLine(sw.Elapsed.TotalSeconds);
+
             sw.Start();
-            var result = OneNoteProxy.Instance.GenerateBibleVersesLinks();
+            var result = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
             sw.Stop();
             Console.WriteLine(sw.Elapsed.TotalSeconds);
         }

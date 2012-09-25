@@ -11,6 +11,7 @@ using BibleCommon.Contracts;
 
 namespace BibleCommon.Common
 {
+    [Serializable]
     public class SimpleVersePointer: ICloneable
     {
         public int BookIndex { get; set; }
@@ -161,6 +162,7 @@ namespace BibleCommon.Common
         }
     }
 
+    [Serializable]
     public class VersePointer
     {      
         public BibleBookInfo Book { get; set; }
@@ -207,6 +209,12 @@ namespace BibleCommon.Common
 
         public VersePointer(VersePointer chapterPointer, int verse)
             : this(string.Format("{0} {1}:{2}", chapterPointer.OriginalBookName, chapterPointer.Chapter, verse))
+        {
+
+        }
+
+        public VersePointer(string bookName, int chapter)
+            : this(bookName, chapter, 0)
         {
 
         }
@@ -525,7 +533,7 @@ namespace BibleCommon.Common
 
         public override int GetHashCode()
         {
-            var result =  this.Chapter.GetHashCode() ^ this.Verse.GetHashCode();
+            var result =  this.Chapter.GetValueOrDefault(0).GetHashCode() ^ this.Verse.GetValueOrDefault(0).GetHashCode();
             if (this.Book != null)
                 result = result ^ this.Book.Name.GetHashCode();
 
