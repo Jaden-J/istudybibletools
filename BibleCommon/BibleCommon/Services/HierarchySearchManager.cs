@@ -22,6 +22,7 @@ namespace BibleCommon.Services
             ContentPlaceholder
         }        
 
+        [Serializable]
         public class HierarchyObjectInfo
         {            
             public string SectionId { get; set; }
@@ -48,6 +49,7 @@ namespace BibleCommon.Services
             Successfully,            
         }
         
+        [Serializable]
         public class HierarchySearchResult
         {
             public HierarchyObjectInfo HierarchyObjectInfo { get; set; } // дополнительная информация о найденном объекте            
@@ -57,7 +59,7 @@ namespace BibleCommon.Services
             public HierarchySearchResult()
             {
                 HierarchyObjectInfo = new HierarchyObjectInfo();
-            }
+            }          
         }
 
         public static HierarchySearchResult GetHierarchyObject(Application oneNoteApp, string bibleNotebookId, VersePointer vp)
@@ -72,6 +74,9 @@ namespace BibleCommon.Services
 
             if (!vp.IsValid)
                 throw new ArgumentException("versePointer is not valid");
+
+            //if (OneNoteProxy.Instance.IsBibleVersesLinksCacheActive())
+            //    return OneNoteProxy.Instance.GetBibleVerseLink(vp);
 
             XElement targetSection = FindBibleBookSection(oneNoteApp, bibleNotebookId, vp.Book.SectionName);
             if (targetSection != null)
@@ -140,17 +145,16 @@ namespace BibleCommon.Services
             if (!isChapter)
             {
                 string[] searchPatterns = new string[] { 
-                "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell/one:OEChildren/one:OE/one:T[starts-with(.,'{0} ')]",
-                "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[starts-with(.,'{0} ')]",
-                "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell/one:OEChildren/one:OE/one:T[starts-with(.,'{0}&nbsp;')]",
-                "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[starts-with(.,'{0}&nbsp;')]",
-                "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell/one:OEChildren/one:OE/one:T[contains(.,'>{0}<')]",
-                "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[contains(.,'>{0}<')]",
-                "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell/one:OEChildren/one:OE/one:T[contains(.,'>{0}&nbsp;')]",
-                "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[contains(.,'>{0}&nbsp;')]",
-                "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell/one:OEChildren/one:OE/one:T[contains(.,'>{0} ')]",
-                "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[contains(.,'>{0} ')]"
-            };
+                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[starts-with(.,'{0} ')]",
+                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[starts-with(.,'{0} ')]",
+                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[starts-with(.,'{0}&nbsp;')]",
+                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[starts-with(.,'{0}&nbsp;')]",
+                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>{0}<')]",
+                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[contains(.,'>{0}<')]",
+                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>{0}&nbsp;')]",
+                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[contains(.,'>{0}&nbsp;')]",
+                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>{0} ')]",
+                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[contains(.,'>{0} ')]" };
 
                 foreach (string pattern in searchPatterns)
                 {
@@ -161,13 +165,35 @@ namespace BibleCommon.Services
                         break;
                     }
                 }
+
+                int temp;
+                string verseNumber = StringUtils.GetNextString(pointerElement.Value, -1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound),
+                                                    out temp, out temp, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
+                if (string.IsNullOrEmpty(verseNumber) || int.Parse(verseNumber) != verse)
+                    pointerElement = FindVerseWithIterate(pageContent, verse, xnm);
             }
             else               // тогда возвращаем хотя бы ссылку на заголовок
             {
-                pointerElement = pageContent.Root.XPathSelectElement("one:Title/one:OE/one:T", xnm);
+                pointerElement = NotebookGenerator.GetPageTitle(pageContent, xnm);
             }
 
             return pointerElement;
+        }
+
+        private static XElement FindVerseWithIterate(XDocument pageContent, int verse, XmlNamespaceManager xnm)
+        {
+            int temp;
+
+            foreach (var textEl in pageContent.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm)
+                .Union(pageContent.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:T", xnm)))
+            {                
+                string verseNumber = StringUtils.GetNextString(textEl.Value, -1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound),
+                                                    out temp, out temp, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
+                if (!string.IsNullOrEmpty(verseNumber) && int.Parse(verseNumber) == verse)
+                    return textEl;
+            }
+
+            return null;
         }
 
         private static XElement FindPage(Application oneNoteApp, string sectionId, int chapter)

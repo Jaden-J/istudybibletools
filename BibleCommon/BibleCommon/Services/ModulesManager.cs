@@ -48,13 +48,23 @@ namespace BibleCommon.Services
 
         public static int GetBibleChaptersCount(string moduleDirectoryName)
         {
-            var bibleInfo = GetModuleBibleInfo(moduleDirectoryName);
-            var result = bibleInfo.Content.Books.Sum(b => b.Chapters.Count);
+            ModuleBibleInfo bibleInfo = null;
+            int result;
+            try
+            {
+                bibleInfo = GetModuleBibleInfo(moduleDirectoryName);
+                result = bibleInfo.Content.Books.Sum(b => b.Chapters.Count);
+            }
+            catch (InvalidModuleException)
+            {
+                result = 1189;
+            }
+
             return result;
         }
 
         public static ModuleBibleInfo GetModuleBibleInfo(string moduleDirectoryName)
-        {
+        {            
             return GetModuleFile<ModuleBibleInfo>(moduleDirectoryName, Consts.Constants.BibleInfoFileName);
         }
 

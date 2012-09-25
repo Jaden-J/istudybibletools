@@ -98,7 +98,6 @@ namespace BibleCommon.Common
 
             if (result == null && s.Length > 0 && StringUtils.IsDigit(s[0]))
             {
-
                 s = s.Replace(" ", string.Empty); // чтоб находил "1 John", когда в списке сокращений только "1John"
                 result = GetBibleBookByExactMatch(s, endsWithDot, out moduleName);
             }            
@@ -112,13 +111,13 @@ namespace BibleCommon.Common
 
             foreach (var book in BibleStructure.BibleBooks)
             {
-                if (book.Name.ToLowerInvariant() == s)
+                if (book.Name.ToLowerInvariant() == s || book.SectionName.ToLowerInvariant() == s)
                 {
                     if (endsWithDot)
                         return null;
 
                     return book;                        
-                }
+                }                
 
                 var abbreviation = book.Abbreviations.FirstOrDefault(abbr => abbr.Value == s
                                                         && (!endsWithDot || !abbr.IsFullBookName));

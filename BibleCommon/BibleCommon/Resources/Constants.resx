@@ -549,4 +549,10 @@
   <data name="SupplementalBibleManagement" xml:space="preserve">
     <value>Supplemental Bible Management</value>
   </data>
+  <data name="IndexBible" xml:space="preserve">
+    <value>Indexing Bible</value>
+  </data>
+  <data name="IndexBibleStart" xml:space="preserve">
+    <value>Indexing Bible start</value>
+  </data>
 </root>

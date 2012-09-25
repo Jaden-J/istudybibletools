@@ -13,11 +13,7 @@ namespace BibleCommon.Helpers
     /// </summary>
     public static class BinarySerializerHelper
     {
-        #region Constants
-        /// <summary>
-        /// Default Binary File Extension 
-        /// </summary>
-        private const string FILE_EXTENSION = ".dat";
+        #region Constants       
         /// <summary>
         /// Category for Exceptions thrown
         /// </summary>
@@ -50,9 +46,6 @@ namespace BibleCommon.Helpers
             if(string.IsNullOrEmpty(filename))
                 throw new ArgumentNullException(string.Format(
                     CATEGORY, "Serialize,Cannot Serialize object, Filename Is Null"));
-                        
-            //Append File Extension
-            filename += FILE_EXTENSION;
 
             using(Stream fileStream = new FileStream(filename, FileMode.Create))
                 _formatter.Serialize(fileStream, currentObject);
@@ -96,6 +89,7 @@ namespace BibleCommon.Helpers
 
             using(Stream memoryStream = new MemoryStream())
             {                                                
+
                 memoryStream.Write(binaryData, 0, binaryData.Length);
                 memoryStream.Position = 0;
                 deserializedObject = _formatter.Deserialize(memoryStream);
@@ -117,8 +111,8 @@ namespace BibleCommon.Helpers
 
             object deserializedObject = null;
 
-            using(Stream fileStream = File.OpenRead(filename))
-                deserializedObject = _formatter.Deserialize(fileStream);
+            using (MemoryStream ms = new MemoryStream(File.ReadAllBytes(filename)))            
+                deserializedObject = _formatter.Deserialize(ms);
 
             return deserializedObject;
         } 

@@ -74,7 +74,7 @@ namespace BibleCommon.Services
 
         public static void UpdatePageTitle(XDocument pageDoc, string newTitle, XmlNamespaceManager xnm)
         {
-            var pageTitleEl = pageDoc.Root.XPathSelectElement("one:Title/one:OE/one:T", xnm);
+            var pageTitleEl = GetPageTitle(pageDoc, xnm);
             if (pageTitleEl != null)
                 pageTitleEl.Value = newTitle;
         }
@@ -123,6 +123,11 @@ namespace BibleCommon.Services
             var tableEl = new XElement(new XElement(nms + "Table", new XAttribute("bordersVisible", bordersVisible), columns));
 
             return tableEl;                
+        }
+
+        public static XElement GetPageTitle(XDocument pageDoc, XmlNamespaceManager xnm)
+        {
+            return pageDoc.Root.XPathSelectElement("one:Title/one:OE/one:T", xnm);
         }
 
         public static XElement GetPageTable(XDocument pageDoc, XmlNamespaceManager xnm)

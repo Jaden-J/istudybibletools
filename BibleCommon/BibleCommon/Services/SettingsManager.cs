@@ -192,7 +192,8 @@ namespace BibleCommon.Services
                 && !string.IsNullOrEmpty(this.ModuleName)
                 && ModulesManager.ModuleIsCorrect(this.ModuleName)
                 && _useDefaultSettingsNodeExists
-                && BibleVersesLinksCacheManager.CacheIsActive();
+                //&& BibleVersesLinksCacheManager.CacheIsActive(this.NotebookId_Bible)
+                ;
 
             if (result)
             {

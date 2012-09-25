@@ -172,7 +172,7 @@ namespace BibleCommon.Services
         private Dictionary<LinkId, string> _linksCache = new Dictionary<LinkId, string>();        
         private HashSet<VersePointer> _processedVerses = new HashSet<VersePointer>();
         private List<SortPageInfo> _sortVerseLinkPagesInfo = new List<SortPageInfo>();
-        private Dictionary<SimpleVersePointer, string> _bibleVersesLinks = new Dictionary<SimpleVersePointer, string>();
+        private Dictionary<VersePointer, HierarchySearchManager.HierarchySearchResult> _bibleVersesLinks = null;
 
 
         protected OneNoteProxy()
@@ -463,17 +463,22 @@ namespace BibleCommon.Services
         //    GetPageContent(oneNoteApp, pageId, true);
         //}
 
-        public string GetBibleVerseLink(SimpleVersePointer vp)
-        {
-            if (_bibleVersesLinks == null)
-            {
-                _bibleVersesLinks = BibleVersesLinksCacheManager.LoadBibleVersesLinks();  
-            }
+        //public bool IsBibleVersesLinksCacheActive()
+        //{
+        //    return BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible);
+        //}
 
-            if (_bibleVersesLinks.ContainsKey(vp))
-                return _bibleVersesLinks[vp];
+        //public HierarchySearchManager.HierarchySearchResult GetBibleVerseLink(VersePointer vp)
+        //{
+        //    if (_bibleVersesLinks == null)
+        //    {
+        //        _bibleVersesLinks = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);  
+        //    }
 
-            throw new ArgumentException(string.Format("Can not find verse element: '{0}'", vp));
-        }       
+        //    if (_bibleVersesLinks.ContainsKey(vp))
+        //        return _bibleVersesLinks[vp];
+
+        //    throw new ArgumentException(string.Format("Can not find verse element: '{0}'", vp));
+        //}       
     }
 }

@@ -546,4 +546,10 @@
   <data name="SupplementalBibleManagement" xml:space="preserve">
     <value>Управление справочной Библией</value>
   </data>
+  <data name="IndexBible" xml:space="preserve">
+    <value>Индексирование Библии</value>
+  </data>
+  <data name="IndexBibleStart" xml:space="preserve">
+    <value>Старт индексирования Библии</value>
+  </data>
 </root>
