@@ -15,13 +15,73 @@ namespace BibleConfigurator.ModuleConverter
             {
                 return new List<NotebookInfo>() 
                 {  
-                    new NotebookInfo() { Type = NotebookType.Bible, Name = "Библия.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Изучение Библии.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Комментарии к Библии.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Сводные заметок.onepkg" }
+                    new NotebookInfo() 
+                    { 
+                        Type = ContainerType.Bible, 
+                        Name = "Библия.onepkg", 
+                        SectionGroups = new List<SectionGroupInfo>() 
+                        {        
+                            new SectionGroupInfo() 
+                            { 
+                                Name = "Ветхий Завет", 
+                                CheckSectionsCount = true, 
+                                SectionsCount = 39, 
+                                Type = ContainerType.OldTestament
+                            },
+                            new SectionGroupInfo() 
+                            { 
+                                Name = "Новый Завет", 
+                                CheckSectionsCount = true, 
+                                SectionsCount = 27, 
+                                Type = ContainerType.NewTestament 
+                            }
+                        }
+                    },
+                    new NotebookInfo() 
+                    { 
+                        Type = ContainerType.BibleStudy, 
+                        Name = "Изучение Библии.onepkg" 
+                    },
+                    new NotebookInfo() 
+                    { 
+                        Type = ContainerType.BibleComments, 
+                        Name = "Комментарии к Библии.onepkg",
+                        SectionGroups = RussianNotebookCommentsSectionGroups
+                    },
+                    new NotebookInfo() 
+                    { 
+                        Type = ContainerType.BibleNotesPages, 
+                        Name = "Сводные заметок.onepkg",
+                        SectionGroups = RussianNotebookCommentsSectionGroups
+                    }
                 };
             }
         }
+
+        private static List<SectionGroupInfo> RussianNotebookCommentsSectionGroups
+        {
+            get
+            {
+                return new List<SectionGroupInfo>()
+                        {
+                            new SectionGroupInfo() 
+                            { 
+                                Name = "Ветхий Завет", 
+                                CheckSectionsCount = true, 
+                                SectionsCountMax = 3, 
+                                Type = ContainerType.OldTestament 
+                            },
+                            new SectionGroupInfo() 
+                            { 
+                                Name = "Новый Завет", 
+                                CheckSectionsCount = true, 
+                                SectionsCountMax = 3, 
+                                Type = ContainerType.NewTestament 
+                            }
+                        };
+            }
+        }
+
 
         public static List<NotebookInfo> English
         {
@@ -29,13 +89,72 @@ namespace BibleConfigurator.ModuleConverter
             {
                 return new List<NotebookInfo>()             
                 {   
-                    new NotebookInfo() { Type = NotebookType.Bible, Name = "Bible.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Bible Study.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Comments to the Bible.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Summary of Notes.onepkg" }
+                    new NotebookInfo() 
+                    { 
+                        Type = ContainerType.Bible, 
+                        Name = "Bible.onepkg",
+                        SectionGroups = new List<SectionGroupInfo>() 
+                        {        
+                            new SectionGroupInfo() 
+                            { 
+                                Name = "1. Old Testament", 
+                                CheckSectionsCount = true, 
+                                SectionsCount = 39, 
+                                Type = ContainerType.OldTestament
+                            },
+                            new SectionGroupInfo() 
+                            { 
+                                Name = "2. New Testament", 
+                                CheckSectionsCount = true, 
+                                SectionsCount = 27, 
+                                Type = ContainerType.NewTestament 
+                            }
+                        }
+                    },
+                    new NotebookInfo() 
+                    { 
+                        Type = ContainerType.BibleStudy, 
+                        Name = "Bible Study.onepkg" 
+                    },
+                    new NotebookInfo() 
+                    { 
+                        Type = ContainerType.BibleComments, 
+                        Name = "Comments to the Bible.onepkg",
+                        SectionGroups = EnglishNotebookCommentsSectionGroups
+                    },
+                    new NotebookInfo()
+                    { 
+                        Type = ContainerType.BibleNotesPages, 
+                        Name = "Summary of Notes.onepkg",
+                        SectionGroups = EnglishNotebookCommentsSectionGroups 
+                    }
                 };
             }
-        }      
+        }
+
+        private static List<SectionGroupInfo> EnglishNotebookCommentsSectionGroups
+        {
+            get
+            {
+                return new List<SectionGroupInfo>()
+                        {
+                            new SectionGroupInfo() 
+                            { 
+                                Name = "1. Old Testament", 
+                                CheckSectionsCount = true, 
+                                SectionsCountMax = 3, 
+                                Type = ContainerType.OldTestament 
+                            },
+                            new SectionGroupInfo() 
+                            { 
+                                Name = "2. New Testament", 
+                                CheckSectionsCount = true, 
+                                SectionsCountMax = 3, 
+                                Type = ContainerType.NewTestament 
+                            }
+                        };
+            }
+        }
     }
 
     public static class PredefinedBookIndexes

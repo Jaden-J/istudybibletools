@@ -6,9 +6,9 @@ using BibleCommon.Common;
 
 namespace BibleConfigurator
 {
-    public class SectionGroupInfo
+    public class SectionGroupDTO
     {
-        public SectionGroupType Type { get; set; }
+        public ContainerType Type { get; set; }
         public string Id { get; set; }
         public string OriginalName { get; set; }
         public string NewName { get; set; }

@@ -997,6 +997,33 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Pages count in &apos;{0}&apos; is not as expected: expected min {1}, found {2}..
+        /// </summary>
+        public static string PagesCountLessThanMin {
+            get {
+                return ResourceManager.GetString("PagesCountLessThanMin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Pages count in &apos;{0}&apos; is not as expected: expected max {1}, found {2}..
+        /// </summary>
+        public static string PagesCountMoreThanMax {
+            get {
+                return ResourceManager.GetString("PagesCountMoreThanMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Pages count in &apos;{0}&apos; is not as expected: expected {1}, found {2}..
+        /// </summary>
+        public static string PagesCountNotEqual {
+            get {
+                return ResourceManager.GetString("PagesCountNotEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Process aborted by user.
         /// </summary>
         public static string ProcessAbortedByUser {
@@ -1159,11 +1186,92 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Section group &apos;{0}&apos; not found in &apos;{1}&apos;..
+        /// </summary>
+        public static string SectionGroupNotFoundInContainer {
+            get {
+                return ResourceManager.GetString("SectionGroupNotFoundInContainer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Section group of type &apos;{0}&apos; not found..
         /// </summary>
         public static string SectionGroupOfTypeNotFound {
             get {
                 return ResourceManager.GetString("SectionGroupOfTypeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Section groups count in &apos;{0}&apos; is not as expected: expected min {1}, found {2}..
+        /// </summary>
+        public static string SectionGroupsCountLessThanMin {
+            get {
+                return ResourceManager.GetString("SectionGroupsCountLessThanMin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Section groups count in &apos;{0}&apos; is not as expected: expected max {1}, found {2}..
+        /// </summary>
+        public static string SectionGroupsCountMoreThanMax {
+            get {
+                return ResourceManager.GetString("SectionGroupsCountMoreThanMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Section groups count in &apos;{0}&apos; is not as expected: expected {1}, found {2}..
+        /// </summary>
+        public static string SectionGroupsCountNotEqual {
+            get {
+                return ResourceManager.GetString("SectionGroupsCountNotEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Section &apos;{0}&apos; not found..
+        /// </summary>
+        public static string SectionNotFound {
+            get {
+                return ResourceManager.GetString("SectionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Section &apos;{0}&apos; not found in &apos;{1}&apos;..
+        /// </summary>
+        public static string SectionNotFoundInContainer {
+            get {
+                return ResourceManager.GetString("SectionNotFoundInContainer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Sections count in &apos;{0}&apos; is not as expected: expected min {1}, found {2}..
+        /// </summary>
+        public static string SectionsCountLessThanMin {
+            get {
+                return ResourceManager.GetString("SectionsCountLessThanMin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Sections count in &apos;{0}&apos; is not as expected: expected max {1}, found {2}..
+        /// </summary>
+        public static string SectionsCountMoreThanMax {
+            get {
+                return ResourceManager.GetString("SectionsCountMoreThanMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Sections count in &apos;{0}&apos; is not as expected: expected {1}, found {2}..
+        /// </summary>
+        public static string SectionsCountNotEqual {
+            get {
+                return ResourceManager.GetString("SectionsCountNotEqual", resourceCulture);
             }
         }
         

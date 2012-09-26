@@ -163,34 +163,36 @@ namespace BibleCommon.Services
 
             if (module.Type == ModuleType.Bible)
             {
-                foreach (NotebookType notebookType in Enum.GetValues(typeof(NotebookType)).Cast<NotebookType>().Where(t => t != NotebookType.Single))
-                {
-                    if (!module.Notebooks.Exists(n => n.Type == notebookType))
-                        throw new InvalidModuleException(string.Format(Resources.Constants.Error_NotebookTemplateNotDefined, notebookType));
-                }
+                var bibleModulePartTypes = new ContainerType[] { ContainerType.Bible, ContainerType.BibleStudy, ContainerType.BibleComments, ContainerType.BibleNotesPages };
 
-                if (module.UseSingleNotebook())
+                if (!module.UseSingleNotebook())
                 {
-                    foreach (SectionGroupType sectionGroupType in Enum.GetValues(typeof(SectionGroupType)))
+                    foreach (var notebookType in bibleModulePartTypes)
                     {
-                        if (!module.GetNotebook(NotebookType.Single).SectionGroups.Exists(sg => sg.Type == sectionGroupType))
-                            throw new InvalidModuleException(string.Format(Resources.Constants.Error_SectionGroupNotDefined, sectionGroupType, NotebookType.Single));
+                        if (!module.Notebooks.Exists(n => n.Type == notebookType))
+                            throw new InvalidModuleException(string.Format(Resources.Constants.Error_NotebookTemplateNotDefined, notebookType));
                     }
                 }
-
-                foreach (var notebook in module.Notebooks)
+                else
                 {
-                    if (!File.Exists(Path.Combine(moduleDirectory, notebook.Name)))
-                        throw new InvalidModuleException(string.Format(Resources.Constants.Error_NotebookTemplateNotFound, notebook.Name, notebook.Type));
+                    foreach (var sectionGroupType in bibleModulePartTypes)
+                    {
+                        if (!module.GetNotebook(ContainerType.Single).SectionGroups.Exists(sg => sg.Type == sectionGroupType))
+                            throw new InvalidModuleException(string.Format(Resources.Constants.Error_SectionGroupNotDefined, sectionGroupType, ContainerType.Single));
+                    }
                 }
             }
-            else
+
+            foreach (var notebook in module.Notebooks)
             {
-                foreach (var section in module.DictionarySections)
-                {
-                    if (!File.Exists(Path.Combine(moduleDirectory, section.Name)))
-                        throw new InvalidModuleException(string.Format(Resources.Constants.Error_SectionFileNotFound, section.Name));
-                }
+                if (!File.Exists(Path.Combine(moduleDirectory, notebook.Name)))
+                    throw new InvalidModuleException(string.Format(Resources.Constants.Error_NotebookTemplateNotFound, notebook.Name, notebook.Type));
+            }
+
+            foreach (var section in module.Sections)
+            {
+                if (!File.Exists(Path.Combine(moduleDirectory, section.Name)))
+                    throw new InvalidModuleException(string.Format(Resources.Constants.Error_SectionFileNotFound, section.Name));
             }
         }
 

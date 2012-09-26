@@ -220,7 +220,12 @@ namespace BibleConfigurator.ModuleConverter
 
         private string ShellText(string text)
         {
-            var result = text.Replace("<br/>", Environment.NewLine).Replace("<br />", Environment.NewLine).Replace("<br>", Environment.NewLine);
+            var result = text
+                            .Replace("<br/>", Environment.NewLine)
+                            .Replace("<br />", Environment.NewLine)
+                            .Replace("<br>", Environment.NewLine)
+                            .Replace("<p>", Environment.NewLine + "<span>")
+                            .Replace("</p>", "</span>");
 
             if (Type == StructureType.Strong)
             {
