@@ -158,6 +158,8 @@ namespace BibleConfigurator.ModuleConverter
 
                         if (ConvertChapterNameFunc != null)
                             lineText = ConvertChapterNameFunc(bibleBookInfo, lineText);
+                        else                       
+                            lineText = ConvertChapterName(bibleBookInfo, lineText);                                                   
 
                         XmlNamespaceManager xnm;
                         currentChapterDoc = AddChapterPage(bookSectionId, lineText, 2, out xnm);
@@ -182,6 +184,15 @@ namespace BibleConfigurator.ModuleConverter
             {
                 UpdateChapterPage(currentChapterDoc);
             }
+        }
+
+        private string ConvertChapterName(BibleQuotaBibleBookInfo bibleBookInfo, string lineText)
+        {
+            int? chapterIndex = StringUtils.GetStringLastNumber(lineText);
+            if (!chapterIndex.HasValue)
+                chapterIndex = 1;
+            
+            return string.Format(this.ChapterSectionNameTemplate, chapterIndex, bibleBookInfo.Name);            
         }
 
         private void GetTestamentInfo(ContainerType type, out string testamentName, out int? testamentSectionsCount)

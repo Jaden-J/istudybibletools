@@ -63,7 +63,7 @@ namespace TestProject
 
                 //TryToUpdateInkNodes();
 
-                //ConvertRussianModule();
+                ConvertRussianModule();
 
                 //ConvertEnglishModule();
 
@@ -218,17 +218,9 @@ namespace TestProject
 
         private static void ConvertRussianModule()
         {
-            var converter = new BibleQuotaConverter("RSTMOS", Path.Combine(ForGeneratingFolderPath, "Bible_Russian_RST_Strong"), Path.Combine(TempFolderPath, "RSTMOS"), Encoding.UTF8, true,
+            var converter = new BibleQuotaConverter("RSTStrong", Path.Combine(ForGeneratingFolderPath, "RSTStrong"), Path.Combine(TempFolderPath, "RSTStrong"), Encoding.Default, true,
                 "ru", PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst), 
-                "{0} глава. {1}", PredefinedSectionsInfo.RSTStrong, "Стронга", 14700, "2.0");
-
-            converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
-            {
-                int? chapterIndex = StringUtils.GetStringLastNumber(chapterNameInput);
-                if (!chapterIndex.HasValue)
-                    chapterIndex = 1;
-                return string.Format("{0} глава. {1}", chapterIndex, bookInfo.Name);
-            };
+                "{0} глава. {1}", PredefinedSectionsInfo.RSTStrong, "Стронга", 14700, "2.0");            
 
             converter.Convert();
 
@@ -242,34 +234,24 @@ namespace TestProject
         {
             var converter = new BibleQuotaConverter("Bible", Path.Combine(ForGeneratingFolderPath, "RCCV"), Path.Combine(TempFolderPath, "RCCV"), Encoding.Unicode, false,
                 "ro", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
-                "{0} capitolul. {1}", null, null, null, "2.0");
-
-            converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
-            {
-                int? chapterIndex = StringUtils.GetStringLastNumber(chapterNameInput);
-                if (!chapterIndex.HasValue)
-                    chapterIndex = 1;
-                return string.Format("{0} capitolul. {1}", chapterIndex, bookInfo.Name);
-            };
+                "{0} capitolul. {1}", null, null, null, "2.0");            
 
             converter.Convert();
+
+            var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message));
+            form.ShowDialog();           
         }
 
         private static void ConvertEnglishModule()
         {
             var converter = new BibleQuotaConverter("KJV", Path.Combine(ForGeneratingFolderPath, "King_James_Version"), Path.Combine(TempFolderPath, "KJV"), Encoding.ASCII, false,
                 "en", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(), 
-                "{0} chapter. {1}", null, null, null, "2.0");
-
-            converter.ConvertChapterNameFunc = (bookInfo, chapterNameInput) =>
-            {
-                int? chapterIndex = StringUtils.GetStringLastNumber(chapterNameInput);
-                if (!chapterIndex.HasValue)
-                    chapterIndex = 1;
-                return string.Format("{0} chapter. {1}", chapterIndex, bookInfo.Name);
-            };
+                "{0} chapter. {1}", null, null, null, "2.0");            
 
             converter.Convert();
+
+            var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message));
+            form.ShowDialog();           
         }
 
         private static void SearchForEnText()
