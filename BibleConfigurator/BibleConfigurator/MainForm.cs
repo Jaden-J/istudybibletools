@@ -84,6 +84,24 @@ namespace BibleConfigurator
             }
         }
 
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void btnApply_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                CommitChanges(false);
+            }
+            catch (Exception ex)
+            {
+                //todo: log it
+                MessageBox.Show(ex.Message);
+            }
+        }    
+
         private void CommitChanges(bool closeForm)
         {
             ModuleInfo module = null;
@@ -99,6 +117,8 @@ namespace BibleConfigurator
             }
 
             btnOK.Enabled = false;
+            btnClose.Enabled = false;
+            btnApply.Enabled = false;
             bool lblWarningVisibilityBefore = lblWarning.Visible;
             lblWarning.Visible = false;
             this.TopMost = true;
@@ -159,6 +179,8 @@ namespace BibleConfigurator
             finally
             {
                 btnOK.Enabled = true;
+                btnClose.Enabled = true;
+                btnApply.Enabled = true;
                 this.TopMost = false;
             }
         }
@@ -666,6 +688,7 @@ namespace BibleConfigurator
 
             var currentLanguage = LanguageManager.UserLanguage;
 
+            cbLanguage.Items.Clear();
             foreach (var pair in languages)
             {
                 cbLanguage.Items.Add(new ComboBoxItem() { Key = pair.Key, Value = pair.Value });
@@ -959,6 +982,8 @@ namespace BibleConfigurator
             lblProgressInfo.Text = infoText;
 
             btnOK.Enabled = false;
+            btnClose.Enabled = false;
+            btnApply.Enabled = false;
             System.Windows.Forms.Application.DoEvents();
         }
 
@@ -971,6 +996,8 @@ namespace BibleConfigurator
             FormExtensions.SetControlPropertyThreadSafe(tbcMain, "Enabled", true);
             FormExtensions.SetControlPropertyThreadSafe(lblProgressInfo, "Text", infoText);
             FormExtensions.SetControlPropertyThreadSafe(btnOK, "Enabled", true);
+            FormExtensions.SetControlPropertyThreadSafe(btnClose, "Enabled", true);
+            FormExtensions.SetControlPropertyThreadSafe(btnApply, "Enabled", true);
 
             System.Windows.Forms.Application.DoEvents();
         }
@@ -1043,13 +1070,21 @@ namespace BibleConfigurator
 
         private void btnUploadModule_Click(object sender, EventArgs e)
         {
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            try
             {
-                bool moduleWasAdded;
-                bool needToReload = AddNewModule(openFileDialog.FileName, out moduleWasAdded);
-                if (needToReload)
-                    ReLoadParameters(true);
-            }            
+                btnUploadModule.Enabled = false;
+                if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    bool moduleWasAdded;
+                    bool needToReload = AddNewModule(openFileDialog.FileName, out moduleWasAdded);
+                    if (needToReload)
+                        ReLoadParameters(true);
+                }
+            }
+            finally
+            {
+                btnUploadModule.Enabled = true;
+            }
         }
 
         private void ReLoadModulesInfo()
@@ -1067,12 +1102,13 @@ namespace BibleConfigurator
         /// <returns>true если новый модуль стал основным</returns>
         public bool AddNewModule(string filePath, out bool moduleWasAdded)
         {
+            var preModuleInfo = ModulesManager.ReadModuleInfo(filePath);
+            string moduleName = preModuleInfo.ShortName;            
+            
+            string destFilePath = Path.Combine(ModulesManager.GetModulesPackagesDirectory(), moduleName + Constants.FileExtensionIsbt);
+
             moduleWasAdded = true;
-            string moduleName = Path.GetFileNameWithoutExtension(filePath);
-            string destFilePath = Path.Combine(ModulesManager.GetModulesPackagesDirectory(), Path.GetFileName(filePath));
-
             bool canContinue = true;
-
             if (File.Exists(destFilePath))
             {
                 if (MessageBox.Show(BibleCommon.Resources.Constants.ModuleWithSameNameAlreadyExists, BibleCommon.Resources.Constants.Warning,
@@ -1085,17 +1121,19 @@ namespace BibleConfigurator
 
             if (canContinue)
             {
+                ModuleInfo module = null;
+
                 try
                 {
                     bool currentModuleIsCorrect = SettingsManager.Instance.CurrentModuleIsCorrect();  // а то может быть, что мы загрузили модуль, и он стал корретным, но UI не обновилось
 
-                    ModulesManager.UploadModule(filePath, destFilePath, moduleName);
+                    module = ModulesManager.UploadModule(filePath, destFilePath, moduleName);
 
                     bool needToReload = false;
 
-                    if (!currentModuleIsCorrect)
+                    if (!currentModuleIsCorrect && module.Type == ModuleType.Bible)
                     {
-                        SettingsManager.Instance.ModuleName = moduleName;
+                        SettingsManager.Instance.ModuleName = module.ShortName;
                         needToReload = true;
                     }
                     
@@ -1107,7 +1145,12 @@ namespace BibleConfigurator
                 {
                     MessageBox.Show(ex.Message);
                     Thread.Sleep(500);
-                    ModulesManager.DeleteModule(moduleName);
+
+                    if (module != null)
+                        ModulesManager.DeleteModule(module.ShortName);
+                    else
+                        ModulesManager.DeleteModule(moduleName);
+
                     moduleWasAdded = false;
                 }
             }
@@ -1174,7 +1217,9 @@ namespace BibleConfigurator
             }
             else
             {
+                btnUploadModule.Top = lblMustUploadModule.Top + 20;
                 btnUploadModule.Left = (this.Width - btnUploadModule.Width) / 2;
+                
                 lblMustUploadModule.Visible = true;
                 lblMustSelectModule.Visible = false;
                 btnSupplementalBibleManagement.Visible = false;
@@ -1294,7 +1339,7 @@ namespace BibleConfigurator
                     }
 
                     if (canContinue)
-                    {
+                    {                        
                         SettingsManager.Instance.ModuleName = moduleInfo.ShortName;
                         ReLoadModulesInfo();
                         ReLoadParameters(true);
@@ -1311,6 +1356,7 @@ namespace BibleConfigurator
 
         private void ReLoadParameters(bool needToSaveSettings)
         {
+            _loadForm.SetDesktopLocation(this.Left, this.Top);
             _loadForm.Show();
             try
             {
@@ -1369,6 +1415,6 @@ namespace BibleConfigurator
         {
             var form = new DictionaryModulesForm(_oneNoteApp, this);
             form.ShowDialog();
-        }        
+        }          
     }
 }

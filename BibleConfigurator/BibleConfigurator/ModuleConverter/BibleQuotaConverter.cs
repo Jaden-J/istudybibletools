@@ -59,10 +59,10 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="newTestamentBooksCount"></param>
         /// <param name="locale">can be not specified</param>
         /// <param name="notebooksInfo"></param>
-        public BibleQuotaConverter(string newNotebookName, string bqModuleFolder, string manifestFilesFolderPath, Encoding fileEncoding, bool isStrong,            
+        public BibleQuotaConverter(string moduleShortName, string bqModuleFolder, string manifestFilesFolderPath, Encoding fileEncoding, bool isStrong,            
             string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, BibleTranslationDifferences translationDifferences, string chapterSectionNameTemplate,
              List<SectionInfo> sectionsInfo, string dictionarySectionGroupName, int? strongNumbersCount, string version)
-            : base(newNotebookName, manifestFilesFolderPath, isStrong, locale, notebooksInfo, bookIndexes, 
+            : base(moduleShortName, manifestFilesFolderPath, isStrong, locale, notebooksInfo, bookIndexes, 
                         translationDifferences, chapterSectionNameTemplate, sectionsInfo, dictionarySectionGroupName, strongNumbersCount, version)
         {
             this.ModuleFolder = bqModuleFolder;

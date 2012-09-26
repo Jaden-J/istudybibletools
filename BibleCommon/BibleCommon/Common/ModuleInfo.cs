@@ -38,8 +38,19 @@ namespace BibleCommon.Common
         [XmlAttribute]
         public string Version { get; set; }
 
-        [XmlIgnore]
-        public string ShortName { get; set; }
+        private string _moduleShortName;
+        [XmlAttribute]
+        public string ShortName
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(_moduleShortName) ? _moduleShortName.ToLower() : _moduleShortName;
+            }
+            set
+            {
+                _moduleShortName = value;
+            }
+        }
 
         [XmlAttribute]
         public string Name { get; set; }
@@ -201,6 +212,10 @@ namespace BibleCommon.Common
 
         [XmlAttribute]
         [DefaultValue(false)]
+        public bool SkipCheck { get; set; }
+
+        [XmlAttribute]
+        [DefaultValue(false)]
         public bool CheckSectionGroupsCount { get; set; }
 
         [XmlAttribute]
@@ -243,6 +258,10 @@ namespace BibleCommon.Common
     {
         [XmlAttribute]
         public string Name { get; set; }
+
+        [XmlAttribute]
+        [DefaultValue(false)]
+        public bool SkipCheck { get; set; }
 
         [XmlAttribute]
         [DefaultValue(false)]

@@ -63,9 +63,9 @@ namespace TestProject
 
                 //TryToUpdateInkNodes();
 
-                ConvertRussianModule();
+                //ConvertRussianModule();
 
-                //ConvertEnglishModule();
+                ConvertEnglishModule();
 
                 //ConvertRomanModule();
 
@@ -218,23 +218,27 @@ namespace TestProject
 
         private static void ConvertRussianModule()
         {
-            var converter = new BibleQuotaConverter("RSTStrong", Path.Combine(ForGeneratingFolderPath, "RSTStrong"), Path.Combine(TempFolderPath, "RSTStrong"), Encoding.Default, true,
-                "ru", PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst), 
-                "{0} глава. {1}", PredefinedSectionsInfo.RSTStrong, "Стронга", 14700, "2.0");            
+            string moduleShortName = "ibs";
+            var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), 
+                Encoding.Default, true, "ru", 
+                PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst), "{0} глава. {1}", 
+                null, null, null, // параметры для стронга
+                "2.0");            
 
             converter.Convert();
 
             var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message));
             form.ShowDialog();           
-        }
-
-        
+        }        
 
         private static void ConvertRomanModule()
         {
-            var converter = new BibleQuotaConverter("Bible", Path.Combine(ForGeneratingFolderPath, "RCCV"), Path.Combine(TempFolderPath, "RCCV"), Encoding.Unicode, false,
-                "ro", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
-                "{0} capitolul. {1}", null, null, null, "2.0");            
+            string moduleShortName = "rccv";
+            var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), 
+                Encoding.Unicode, false, "ro", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
+                "{0} capitolul. {1}", 
+                null, null, null, 
+                "2.0");            
 
             converter.Convert();
 
@@ -244,9 +248,12 @@ namespace TestProject
 
         private static void ConvertEnglishModule()
         {
-            var converter = new BibleQuotaConverter("KJV", Path.Combine(ForGeneratingFolderPath, "King_James_Version"), Path.Combine(TempFolderPath, "KJV"), Encoding.ASCII, false,
-                "en", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(), 
-                "{0} chapter. {1}", null, null, null, "2.0");            
+            string moduleShortName = "kjv";
+            var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), 
+                Encoding.ASCII, false, "en", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(), 
+                "{0} chapter. {1}", 
+                null, null, null,
+                "2.0");            
 
             converter.Convert();
 

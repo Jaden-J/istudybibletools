@@ -9,6 +9,23 @@ namespace BibleConfigurator.ModuleConverter
 {
     public static class PredefinedNotebooksInfo
     {   
+        public static List<NotebookInfo> RussianStrong
+        {
+            get
+            {
+                return new List<NotebookInfo>() 
+                {  
+                    new NotebookInfo() 
+                    { 
+                        Type = ContainerType.Bible, 
+                        Name = "Библия.onepkg", 
+                        SkipCheck = true,
+                        SectionGroups = RussianNotebookBibleSectionGroups
+                    }
+                };
+            }
+        }
+
         public static List<NotebookInfo> Russian
         {
             get
@@ -19,23 +36,7 @@ namespace BibleConfigurator.ModuleConverter
                     { 
                         Type = ContainerType.Bible, 
                         Name = "Библия.onepkg", 
-                        SectionGroups = new List<SectionGroupInfo>() 
-                        {        
-                            new SectionGroupInfo() 
-                            { 
-                                Name = "Ветхий Завет", 
-                                CheckSectionsCount = true, 
-                                SectionsCount = 39, 
-                                Type = ContainerType.OldTestament
-                            },
-                            new SectionGroupInfo() 
-                            { 
-                                Name = "Новый Завет", 
-                                CheckSectionsCount = true, 
-                                SectionsCount = 27, 
-                                Type = ContainerType.NewTestament 
-                            }
-                        }
+                        SectionGroups = RussianNotebookBibleSectionGroups
                     },
                     new NotebookInfo() 
                     { 
@@ -55,6 +56,30 @@ namespace BibleConfigurator.ModuleConverter
                         SectionGroups = RussianNotebookCommentsSectionGroups
                     }
                 };
+            }
+        }
+
+        private static List<SectionGroupInfo> RussianNotebookBibleSectionGroups
+        {
+            get
+            {
+                return new List<SectionGroupInfo>() 
+                        {        
+                            new SectionGroupInfo() 
+                            { 
+                                Name = "Ветхий Завет", 
+                                CheckSectionsCount = true, 
+                                SectionsCount = 39, 
+                                Type = ContainerType.OldTestament
+                            },
+                            new SectionGroupInfo() 
+                            { 
+                                Name = "Новый Завет", 
+                                CheckSectionsCount = true, 
+                                SectionsCount = 27, 
+                                Type = ContainerType.NewTestament 
+                            }
+                        };
             }
         }
 
@@ -83,6 +108,25 @@ namespace BibleConfigurator.ModuleConverter
         }
 
 
+
+        public static List<NotebookInfo> EnglishStrong
+        {
+            get
+            {
+                return new List<NotebookInfo>()             
+                {   
+                    new NotebookInfo() 
+                    { 
+                        Type = ContainerType.Bible, 
+                        Name = "Bible.onepkg",
+                        SkipCheck = true,
+                        SectionGroups = EnglishNotebookBibleSectionGroups
+                    }
+                };
+            }
+        }
+
+
         public static List<NotebookInfo> English
         {
             get
@@ -93,23 +137,7 @@ namespace BibleConfigurator.ModuleConverter
                     { 
                         Type = ContainerType.Bible, 
                         Name = "Bible.onepkg",
-                        SectionGroups = new List<SectionGroupInfo>() 
-                        {        
-                            new SectionGroupInfo() 
-                            { 
-                                Name = "1. Old Testament", 
-                                CheckSectionsCount = true, 
-                                SectionsCount = 39, 
-                                Type = ContainerType.OldTestament
-                            },
-                            new SectionGroupInfo() 
-                            { 
-                                Name = "2. New Testament", 
-                                CheckSectionsCount = true, 
-                                SectionsCount = 27, 
-                                Type = ContainerType.NewTestament 
-                            }
-                        }
+                        SectionGroups = EnglishNotebookBibleSectionGroups
                     },
                     new NotebookInfo() 
                     { 
@@ -129,6 +157,30 @@ namespace BibleConfigurator.ModuleConverter
                         SectionGroups = EnglishNotebookCommentsSectionGroups 
                     }
                 };
+            }
+        }
+
+        private static List<SectionGroupInfo> EnglishNotebookBibleSectionGroups
+        {
+            get
+            {
+                return new List<SectionGroupInfo>() 
+                        {        
+                            new SectionGroupInfo() 
+                            { 
+                                Name = "1. Old Testament", 
+                                CheckSectionsCount = true, 
+                                SectionsCount = 39, 
+                                Type = ContainerType.OldTestament
+                            },
+                            new SectionGroupInfo() 
+                            { 
+                                Name = "2. New Testament", 
+                                CheckSectionsCount = true, 
+                                SectionsCount = 27, 
+                                Type = ContainerType.NewTestament 
+                            }
+                        };
             }
         }
 
