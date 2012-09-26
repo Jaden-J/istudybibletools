@@ -7,6 +7,7 @@ using BibleCommon.Common;
 using System.IO;
 using BibleCommon.Consts;
 using BibleCommon.Helpers;
+using System.Threading;
 
 namespace BibleCommon.Services
 {
@@ -39,10 +40,12 @@ namespace BibleCommon.Services
             return Path.Combine(GetModulesDirectory(), moduleShortName);
         }
 
-        public static ModuleInfo GetModuleInfo(string moduleDirectoryName)
+        public static ModuleInfo GetModuleInfo(string moduleShortName)
         {   
-            var module = GetModuleFile<ModuleInfo>(moduleDirectoryName, Consts.Constants.ManifestFileName);
-            module.ShortName = moduleDirectoryName.ToLowerInvariant();
+            var module = GetModuleFile<ModuleInfo>(moduleShortName, Consts.Constants.ManifestFileName);
+            if (string.IsNullOrEmpty(module.ShortName))
+                module.ShortName = moduleShortName;
+            
             return module;
         }
 
@@ -134,13 +137,13 @@ namespace BibleCommon.Services
             }
 
             return result;
-        }
+        }        
 
-        public static bool ModuleIsCorrect(string moduleName)
+        public static bool ModuleIsCorrect(string moduleName, ModuleType? moduleType = null)
         {
             try
             {
-                ModulesManager.CheckModule(moduleName);
+                ModulesManager.CheckModule(moduleName, moduleType);
             }
             catch (InvalidModuleException)
             {              
@@ -150,16 +153,20 @@ namespace BibleCommon.Services
             return true;
         }
 
-        public static void CheckModule(string moduleDirectoryName)
+        public static void CheckModule(string moduleDirectoryName, ModuleType? moduleType = null)
         {
             ModuleInfo module = GetModuleInfo(moduleDirectoryName);
             
-            CheckModule(module);
-        }
+            CheckModule(module, moduleType);
+        }        
 
-        public static void CheckModule(ModuleInfo module)
+        public static void CheckModule(ModuleInfo module, ModuleType? moduleType = null)
         {
             string moduleDirectory = GetModuleDirectory(module.ShortName);
+
+            if (moduleType.HasValue)
+                if (module.Type != moduleType.Value)
+                    throw new InvalidModuleException(string.Format("Invalid module type: expected '{0}', actual '{1}'", moduleType, module.Type));
 
             if (module.Type == ModuleType.Bible)
             {
@@ -185,21 +192,23 @@ namespace BibleCommon.Services
 
             foreach (var notebook in module.Notebooks)
             {
-                if (!File.Exists(Path.Combine(moduleDirectory, notebook.Name)))
-                    throw new InvalidModuleException(string.Format(Resources.Constants.Error_NotebookTemplateNotFound, notebook.Name, notebook.Type));
+                if (!notebook.SkipCheck)                
+                    if (!File.Exists(Path.Combine(moduleDirectory, notebook.Name)))
+                        throw new InvalidModuleException(string.Format(Resources.Constants.Error_NotebookTemplateNotFound, notebook.Name, notebook.Type));
             }
 
             foreach (var section in module.Sections)
             {
-                if (!File.Exists(Path.Combine(moduleDirectory, section.Name)))
-                    throw new InvalidModuleException(string.Format(Resources.Constants.Error_SectionFileNotFound, section.Name));
+                if (!section.SkipCheck)
+                    if (!File.Exists(Path.Combine(moduleDirectory, section.Name)))
+                        throw new InvalidModuleException(string.Format(Resources.Constants.Error_SectionFileNotFound, section.Name));
             }
         }
 
-        public static void UploadModule(string originalFilePath, string destFilePath, string moduleName)
+        public static ModuleInfo UploadModule(string originalFilePath, string destFilePath, string moduleName)
         {
-            if (Path.GetExtension(originalFilePath).ToLower() != Constants.IsbtFileExtension)
-                throw new InvalidModuleException(string.Format(Resources.Constants.SelectFileWithExtension, Constants.IsbtFileExtension)); 
+            if (Path.GetExtension(originalFilePath).ToLower() != Constants.FileExtensionIsbt)
+                throw new InvalidModuleException(string.Format(Resources.Constants.SelectFileWithExtension, Constants.FileExtensionIsbt)); 
 
             File.Copy(originalFilePath, destFilePath, true);
 
@@ -212,7 +221,10 @@ namespace BibleCommon.Services
             try
             {
                 ZipLibHelper.ExtractZipFile(File.ReadAllBytes(destFilePath), destFolder);
-                CheckModule(moduleName);
+                var module = GetModuleInfo(moduleName);
+                CheckModule(module);
+
+                return module;
             }
             catch (Exception ex)
             {
@@ -220,13 +232,53 @@ namespace BibleCommon.Services
             }
         }
 
-        public static void DeleteModule(string moduleDirectoryName)
+        public static ModuleInfo ReadModuleInfo(string moduleFilePath)
+        {            
+            string destFolder = Path.Combine(Utils.GetTempFolderPath(), Path.GetFileNameWithoutExtension(moduleFilePath));
+            try
+            {
+                if (Directory.Exists(destFolder))
+                    Directory.Delete(destFolder, true);
+
+                Directory.CreateDirectory(destFolder);
+
+                ZipLibHelper.ExtractZipFile(File.ReadAllBytes(moduleFilePath), destFolder, new string[] { Constants.ManifestFileName });
+
+                string manifestFilePath = Path.Combine(destFolder, Constants.ManifestFileName);
+                if (!File.Exists(manifestFilePath))
+                    throw new InvalidModuleException(string.Format(BibleCommon.Resources.Constants.FileNotFound, manifestFilePath));
+
+                var module = Dessirialize<ModuleInfo>(manifestFilePath);
+                if (string.IsNullOrEmpty(module.ShortName))
+                    module.ShortName = Path.GetFileNameWithoutExtension(moduleFilePath);                
+
+                return module;
+            }
+            finally
+            {
+                new Thread(DeleteDirectory).Start(destFolder);
+            }
+        }
+
+
+        private static void DeleteDirectory(object directoryPath)
         {
-            string moduleDirectory = GetModuleDirectory(moduleDirectoryName);
+            Thread.Sleep(500);
+            try
+            {
+                if (Directory.Exists((string)directoryPath))
+                    Directory.Delete((string)directoryPath, true);
+            }
+            catch { }                
+        }
+
+        public static void DeleteModule(string moduleShortName)
+        {
+            string moduleDirectory = GetModuleDirectory(moduleShortName);
             if (Directory.Exists(moduleDirectory))
                 Directory.Delete(moduleDirectory, true);
 
-            string manifestFilePath = Path.Combine(GetModulesPackagesDirectory(), moduleDirectoryName + Constants.IsbtFileExtension);
+            string manifestFilePath = Path.Combine(GetModulesPackagesDirectory(), moduleShortName + Constants.FileExtensionIsbt);
             if (File.Exists(manifestFilePath))
                 File.Delete(manifestFilePath);
         }

@@ -48,7 +48,7 @@ namespace BibleConfigurator.ModuleConverter
 
         protected Application OneNoteApp { get; set; }
         protected bool IsStrong { get; set; }
-        protected string NewNotebookName { get; set; }
+        protected string ModuleShortName { get; set; }
         protected string NotebookId { get; set; }
         protected string ManifestFilesFolderPath { get; set; }                
         protected string Locale { get; set; }
@@ -74,15 +74,15 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="newTestamentBooksCount"></param>
         /// <param name="locale">can be not specified</param>
         /// <param name="notebooksInfo"></param>
-        public ConverterBase(string newNotebookName, string manifestFilesFolderPath, bool isStrong,            
+        public ConverterBase(string moduleShortName, string manifestFilesFolderPath, bool isStrong,            
             string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, 
             BibleTranslationDifferences translationDifferences, string chapterSectionNameTemplate,
             List<SectionInfo> sectionsInfo, string dictionarySectionGroupName, int? strongNumbersCount, string version)
         {
             OneNoteApp = new Application();
             this.IsStrong = isStrong;
-            this.NewNotebookName = newNotebookName;
-            this.NotebookId = NotebookGenerator.CreateNotebook(OneNoteApp, NewNotebookName);
+            this.ModuleShortName = moduleShortName;
+            this.NotebookId = NotebookGenerator.CreateNotebook(OneNoteApp, ModuleShortName);
             this.ManifestFilesFolderPath = manifestFilesFolderPath;            
             this.Locale = locale;
             this.NotebooksInfo = notebooksInfo;
@@ -260,6 +260,7 @@ namespace BibleConfigurator.ModuleConverter
 
             ModuleInfo module = new ModuleInfo() 
             { 
+                ShortName = ModuleShortName,
                 Name = extModuleInfo.Name, 
                 Version = this.Version, 
                 Notebooks = NotebooksInfo, 

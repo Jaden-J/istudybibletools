@@ -50,6 +50,9 @@ namespace BibleConfigurator
 
         private static void CheckContainer(SectionGroupInfo container, XElement containerEl, XmlNamespaceManager xnm)
         {
+            if (container.SkipCheck)
+                return;
+
             if (container.CheckSectionGroupsCount)
             {
                 int subSectionGroupsCount = containerEl.XPathSelectElements("one:SectionGroup", xnm).Count();
@@ -115,6 +118,9 @@ namespace BibleConfigurator
 
         private static void CheckSection(SectionInfo section, XElement sectionEl, XmlNamespaceManager xnm)
         {
+            if (section.SkipCheck)
+                return;
+
             int sectionsCount = sectionEl.XPathSelectElements("one:Page", xnm).Count();
 
             if (section.PagesCount != default(int))

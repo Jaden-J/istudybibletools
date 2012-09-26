@@ -367,6 +367,19 @@
   <data name="tabPage4.Text" xml:space="preserve">
     <value>Модули</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="btnApply.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btnApply.Text" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="btnClose.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btnClose.Text" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
   <data name="lblWarning.Location" type="System.Drawing.Point, System.Drawing">
     <value>474, 0</value>
   </data>

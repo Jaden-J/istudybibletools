@@ -17,12 +17,14 @@ namespace BibleConfigurator
 
         public static void LogError(string message)
         {
+            BibleCommon.Services.Logger.LogError(message);
             MessageBox.Show(message);
             WasErrorLogged = true;
         }
 
         public static void LogMessage(string message)
         {
+            BibleCommon.Services.Logger.LogMessage(message);
             MessageBox.Show(message);            
         }
     }
