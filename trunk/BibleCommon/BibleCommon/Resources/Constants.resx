@@ -558,4 +558,40 @@
   <data name="UseSupplementalBible" xml:space="preserve">
     <value>Use Supplemental Bible</value>
   </data>
+  <data name="PagesCountLessThanMin" xml:space="preserve">
+    <value>Pages count in '{0}' is not as expected: expected min {1}, found {2}.</value>
+  </data>
+  <data name="PagesCountMoreThanMax" xml:space="preserve">
+    <value>Pages count in '{0}' is not as expected: expected max {1}, found {2}.</value>
+  </data>
+  <data name="PagesCountNotEqual" xml:space="preserve">
+    <value>Pages count in '{0}' is not as expected: expected {1}, found {2}.</value>
+  </data>
+  <data name="SectionGroupNotFoundInContainer" xml:space="preserve">
+    <value>Section group '{0}' not found in '{1}'.</value>
+  </data>
+  <data name="SectionGroupsCountLessThanMin" xml:space="preserve">
+    <value>Section groups count in '{0}' is not as expected: expected min {1}, found {2}.</value>
+  </data>
+  <data name="SectionGroupsCountMoreThanMax" xml:space="preserve">
+    <value>Section groups count in '{0}' is not as expected: expected max {1}, found {2}.</value>
+  </data>
+  <data name="SectionGroupsCountNotEqual" xml:space="preserve">
+    <value>Section groups count in '{0}' is not as expected: expected {1}, found {2}.</value>
+  </data>
+  <data name="SectionNotFound" xml:space="preserve">
+    <value>Section '{0}' not found.</value>
+  </data>
+  <data name="SectionNotFoundInContainer" xml:space="preserve">
+    <value>Section '{0}' not found in '{1}'.</value>
+  </data>
+  <data name="SectionsCountLessThanMin" xml:space="preserve">
+    <value>Sections count in '{0}' is not as expected: expected min {1}, found {2}.</value>
+  </data>
+  <data name="SectionsCountMoreThanMax" xml:space="preserve">
+    <value>Sections count in '{0}' is not as expected: expected max {1}, found {2}.</value>
+  </data>
+  <data name="SectionsCountNotEqual" xml:space="preserve">
+    <value>Sections count in '{0}' is not as expected: expected {1}, found {2}.</value>
+  </data>
 </root>

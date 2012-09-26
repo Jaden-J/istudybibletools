@@ -50,11 +50,7 @@ namespace BibleConfigurator.ModuleConverter
         protected bool IsStrong { get; set; }
         protected string NewNotebookName { get; set; }
         protected string NotebookId { get; set; }
-        protected string ManifestFilesFolderPath { get; set; }        
-        protected string OldTestamentName { get; set; }
-        protected string NewTestamentName { get; set; }        
-        protected int OldTestamentBooksCount { get; set; }
-        protected int NewTestamentBooksCount { get; set; }
+        protected string ManifestFilesFolderPath { get; set; }                
         protected string Locale { get; set; }
         protected List<NotebookInfo> NotebooksInfo { get; set; }
         protected ModuleBibleInfo BibleInfo { get; set; }
@@ -64,7 +60,8 @@ namespace BibleConfigurator.ModuleConverter
         protected List<SectionInfo> SectionsInfo { get; set; }
         protected string DictionarySectionGroupName { get; set; }
         public int? StrongNumbersCount { get; set; }
-        protected string Version { get; set; }        
+        protected string Version { get; set; }
+        protected int OldTestamentBooksCount { get; set; }
 
         /// <summary>
         /// 
@@ -77,8 +74,7 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="newTestamentBooksCount"></param>
         /// <param name="locale">can be not specified</param>
         /// <param name="notebooksInfo"></param>
-        public ConverterBase(string newNotebookName, string manifestFilesFolderPath, bool isStrong,
-            string oldTestamentName, string newTestamentName, int oldTestamentBooksCount, int newTestamentBooksCount,
+        public ConverterBase(string newNotebookName, string manifestFilesFolderPath, bool isStrong,            
             string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, 
             BibleTranslationDifferences translationDifferences, string chapterSectionNameTemplate,
             List<SectionInfo> sectionsInfo, string dictionarySectionGroupName, int? strongNumbersCount, string version)
@@ -87,11 +83,7 @@ namespace BibleConfigurator.ModuleConverter
             this.IsStrong = isStrong;
             this.NewNotebookName = newNotebookName;
             this.NotebookId = NotebookGenerator.CreateNotebook(OneNoteApp, NewNotebookName);
-            this.ManifestFilesFolderPath = manifestFilesFolderPath;
-            this.OldTestamentName = oldTestamentName;
-            this.NewTestamentName = newTestamentName;
-            this.OldTestamentBooksCount = oldTestamentBooksCount;
-            this.NewTestamentBooksCount = newTestamentBooksCount;
+            this.ManifestFilesFolderPath = manifestFilesFolderPath;            
             this.Locale = locale;
             this.NotebooksInfo = notebooksInfo;
             this.BibleInfo = new ModuleBibleInfo();
@@ -104,6 +96,7 @@ namespace BibleConfigurator.ModuleConverter
             this.StrongNumbersCount = strongNumbersCount;
             this.Version = version;
             this.Errors = new List<ConverterExceptionBase>();
+
 
             if (!Directory.Exists(manifestFilesFolderPath))
                 Directory.CreateDirectory(manifestFilesFolderPath);
@@ -147,7 +140,7 @@ namespace BibleConfigurator.ModuleConverter
             XmlNamespaceManager xnm;
             var notebook = OneNoteUtils.GetHierarchyElement(OneNoteApp, NotebookId, HierarchyScope.hsSelf, out xnm);
 
-            string notebookName = Path.GetFileNameWithoutExtension(NotebooksInfo.First(n => n.Type == NotebookType.Bible).Name);
+            string notebookName = Path.GetFileNameWithoutExtension(NotebooksInfo.First(n => n.Type == ContainerType.Bible).Name);
 
             notebook.Root.SetAttributeValue("name", notebookName);
             notebook.Root.SetAttributeValue("nickname", notebookName);
@@ -275,14 +268,10 @@ namespace BibleConfigurator.ModuleConverter
             module.BibleTranslationDifferences = this.TranslationDifferences;
             module.BibleStructure = new BibleStructureInfo()
             {
-                Alphabet = extModuleInfo.Alphabet,
-                NewTestamentName = NewTestamentName,
-                OldTestamentName = OldTestamentName,
-                OldTestamentBooksCount = OldTestamentBooksCount,
-                NewTestamentBooksCount = NewTestamentBooksCount,
+                Alphabet = extModuleInfo.Alphabet,                
                 ChapterSectionNameTemplate = ChapterSectionNameTemplate              
             };
-            module.DictionarySections = this.SectionsInfo;
+            module.Sections = this.SectionsInfo;
             module.DictionarySectionGroupName = this.DictionarySectionGroupName;
             module.StrongNumbersCount = this.StrongNumbersCount.HasValue ? this.StrongNumbersCount.ToString() : null;
 

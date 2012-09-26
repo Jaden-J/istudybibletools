@@ -33,10 +33,10 @@ namespace BibleCommon.Services
 
                 var moduleInfo = ModulesManager.GetModuleInfo(moduleName);
 
-                if (moduleInfo.DictionarySections == null || moduleInfo.DictionarySections.Count == 0)
+                if (moduleInfo.Sections == null || moduleInfo.Sections.Count == 0)
                     throw new InvalidModuleException("There is no information about dictionary sections.");
 
-                if (string.IsNullOrEmpty(moduleInfo.DictionarySectionGroupName) && moduleInfo.DictionarySections.Count > 1)
+                if (string.IsNullOrEmpty(moduleInfo.DictionarySectionGroupName) && moduleInfo.Sections.Count > 1)
                     moduleInfo.DictionarySectionGroupName = moduleInfo.Name;
 
                 if (!string.IsNullOrEmpty(moduleInfo.DictionarySectionGroupName))
@@ -58,7 +58,7 @@ namespace BibleCommon.Services
                     Thread.Sleep(1000);
                 }
 
-                foreach(var sectionInfo in moduleInfo.DictionarySections)
+                foreach(var sectionInfo in moduleInfo.Sections)
                 {
                     string sectionElId;                    
 

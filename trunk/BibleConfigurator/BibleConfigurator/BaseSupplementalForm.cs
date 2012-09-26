@@ -119,6 +119,7 @@ namespace BibleConfigurator
                 LblDescription.Height = 150;
                 LblDescription.Left = 10;                
                 pnModules.Controls.Add(LblDescription);
+                pnModules.Enabled = true;
             }
             else
             {

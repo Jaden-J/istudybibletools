@@ -555,4 +555,40 @@
   <data name="UseSupplementalBible" xml:space="preserve">
     <value>Использовать справочную Библию</value>
   </data>
+  <data name="PagesCountLessThanMin" xml:space="preserve">
+    <value>Количество страниц в '{0}' не соответствует ожиданиям: ожидалось минимум {1}, найдено {2}.</value>
+  </data>
+  <data name="PagesCountMoreThanMax" xml:space="preserve">
+    <value>Количество страниц в '{0}' не соответствует ожиданиям: ожидалось максимум {1}, найдено {2}.</value>
+  </data>
+  <data name="PagesCountNotEqual" xml:space="preserve">
+    <value>Количество страниц в '{0}' не соответствует ожиданиям: ожидалось {1}, найдено {2}.</value>
+  </data>
+  <data name="SectionGroupNotFoundInContainer" xml:space="preserve">
+    <value>Не найдена группа разделов '{0}' в '{1}'.</value>
+  </data>
+  <data name="SectionGroupsCountLessThanMin" xml:space="preserve">
+    <value>Количество групп разделов в '{0}' не соответствует ожиданиям: ожидалось минимум {1}, найдено {2}.</value>
+  </data>
+  <data name="SectionGroupsCountMoreThanMax" xml:space="preserve">
+    <value>Количество групп разделов в '{0}' не соответствует ожиданиям: ожидалось максимум {1}, найдено {2}.</value>
+  </data>
+  <data name="SectionGroupsCountNotEqual" xml:space="preserve">
+    <value>Количество групп разделов в '{0}' не соответствует ожиданиям: ожидалось {1}, найдено {2}.</value>
+  </data>
+  <data name="SectionNotFound" xml:space="preserve">
+    <value>Не найден раздел '{0}'.</value>
+  </data>
+  <data name="SectionNotFoundInContainer" xml:space="preserve">
+    <value>Не найден раздел '{0}' в '{1}'.</value>
+  </data>
+  <data name="SectionsCountLessThanMin" xml:space="preserve">
+    <value>Количество разделов в '{0}' не соответствует ожиданиям: ожидалось минимум {1}, найдено {2}.</value>
+  </data>
+  <data name="SectionsCountMoreThanMax" xml:space="preserve">
+    <value>Количество разделов в '{0}' не соответствует ожиданиям: ожидалось максимум {1}, найдено {2}.</value>
+  </data>
+  <data name="SectionsCountNotEqual" xml:space="preserve">
+    <value>Количество разделов в '{0}' не соответствует ожиданиям: ожидалось {1}, найдено {2}.</value>
+  </data>
 </root>

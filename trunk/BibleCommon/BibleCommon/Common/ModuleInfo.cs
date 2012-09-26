@@ -8,19 +8,12 @@ using System.ComponentModel;
 
 namespace BibleCommon.Common
 {
-    public enum NotebookType
+    public enum ContainerType
     {
         Single,
         Bible,
         BibleComments,
         BibleNotesPages,
-        BibleStudy
-    }
-
-    public enum SectionGroupType
-    {
-        Bible,
-        BibleComments,
         BibleStudy,
         NewTestament,
         OldTestament,
@@ -35,12 +28,12 @@ namespace BibleCommon.Common
     }
 
     [Serializable]
-    [XmlRoot(ElementName="IStudyBibleTools_Module")]
+    [XmlRoot(ElementName = "IStudyBibleTools_Module")]
     public class ModuleInfo
     {
         [XmlAttribute]
         [DefaultValue((int)ModuleType.Bible)]
-        public ModuleType Type { get; set; }        
+        public ModuleType Type { get; set; }
 
         [XmlAttribute]
         public string Version { get; set; }
@@ -51,6 +44,9 @@ namespace BibleCommon.Common
         [XmlAttribute]
         public string Name { get; set; }
 
+        /// <summary>
+        /// Должны быть соответствующие файлы .onepkg
+        /// </summary>
         [XmlElement(typeof(NotebookInfo), ElementName = "Notebook")]
         public List<NotebookInfo> Notebooks { get; set; }
 
@@ -60,14 +56,17 @@ namespace BibleCommon.Common
         [XmlAttribute]
         public string StrongNumbersCount { get; set; }
 
-        [XmlElement(typeof(SectionInfo), ElementName="Section")]
-        public List<SectionInfo> DictionarySections { get; set; }
+        /// <summary>
+        /// Должны быть соответствующие файлы .one
+        /// </summary>
+        [XmlElement(typeof(SectionInfo), ElementName = "Section")]
+        public List<SectionInfo> Sections { get; set; } 
 
         [XmlElement]
         public BibleTranslationDifferences BibleTranslationDifferences { get; set; }
 
         [XmlElement]
-        public BibleStructureInfo BibleStructure { get; set; }               
+        public BibleStructureInfo BibleStructure { get; set; }
 
         public ModuleInfo()
         {
@@ -76,14 +75,14 @@ namespace BibleCommon.Common
 
         public bool UseSingleNotebook()
         {
-            return Notebooks.Exists(n => n.Type == NotebookType.Single);
+            return Notebooks.Exists(n => n.Type == ContainerType.Single);
         }
 
-        public NotebookInfo GetNotebook(NotebookType notebookType)
+        public NotebookInfo GetNotebook(ContainerType notebookType)
         {
             return Notebooks.First(n => n.Type == notebookType);
-        }        
-        
+        }
+
         /// <summary>
         /// возвращает книгу Библии с учётом всех сокращений 
         /// </summary>
@@ -100,7 +99,7 @@ namespace BibleCommon.Common
             {
                 s = s.Replace(" ", string.Empty); // чтоб находил "1 John", когда в списке сокращений только "1John"
                 result = GetBibleBookByExactMatch(s, endsWithDot, out moduleName);
-            }            
+            }
 
             return result;
         }
@@ -116,8 +115,8 @@ namespace BibleCommon.Common
                     if (endsWithDot)
                         return null;
 
-                    return book;                        
-                }                
+                    return book;
+                }
 
                 var abbreviation = book.Abbreviations.FirstOrDefault(abbr => abbr.Value == s
                                                         && (!endsWithDot || !abbr.IsFullBookName));
@@ -130,32 +129,110 @@ namespace BibleCommon.Common
 
             return null;
         }
-    }   
 
-    [Serializable]    
-    public class NotebookInfo
+        /// <summary>
+        /// из-за проблем совместимости версий модуля
+        /// </summary>
+        public void CorrectModuleAfterDeserialization()
+        {
+            if (Version.CompareTo("2.0") < 0)
+            {
+                var bibleNotebook = Notebooks.FirstOrDefault(n => n.Type == ContainerType.Bible);
+                if (bibleNotebook != null)
+                {
+                    bibleNotebook.SectionGroups = new List<SectionGroupInfo>() 
+                    {        
+                        new SectionGroupInfo() 
+                        { 
+                            Name = BibleStructure.OldTestamentName, 
+                            CheckSectionsCount = true, 
+                            SectionsCount = BibleStructure.OldTestamentBooksCount, 
+                            Type = ContainerType.OldTestament
+                        },
+                        new SectionGroupInfo() 
+                        { 
+                            Name = BibleStructure.NewTestamentName, 
+                            CheckSectionsCount = true, 
+                            SectionsCount = BibleStructure.NewTestamentBooksCount, 
+                            Type = ContainerType.NewTestament 
+                        }
+                    };
+                }
+
+                var commentsNotebooks = Notebooks.Where(n => n.Type == ContainerType.BibleComments || n.Type == ContainerType.BibleNotesPages);
+                foreach (var commentsNotebook in commentsNotebooks)
+                {
+                    commentsNotebook.SectionGroups = new List<SectionGroupInfo>()
+                    {
+                        new SectionGroupInfo() 
+                        { 
+                            Name = BibleStructure.OldTestamentName, 
+                            CheckSectionsCount = true, 
+                            SectionsCountMax = 3, 
+                            Type = ContainerType.OldTestament 
+                        },
+                        new SectionGroupInfo() 
+                        { 
+                            Name = BibleStructure.NewTestamentName, 
+                            CheckSectionsCount = true, 
+                            SectionsCountMax = 3, 
+                            Type = ContainerType.NewTestament 
+                        }
+                    };
+                }
+            }
+        }
+    }
+
+    [Serializable]
+    public class NotebookInfo : SectionGroupInfo
     {
-        [XmlAttribute]
-        public NotebookType Type { get; set; }
 
-        [XmlAttribute]
-        public string Name { get; set; }
-
-        [XmlElement(typeof(SectionGroupInfo), ElementName="SectionGroup")]
-        public List<SectionGroupInfo> SectionGroups { get; set; }
-
-        [XmlElement(typeof(SectionInfo), ElementName="Section")]
-        public List<SectionInfo> Sections { get; set; }
     }
 
     [Serializable]
     public class SectionGroupInfo
     {
         [XmlAttribute]
-        public SectionGroupType Type { get; set; }
+        public ContainerType Type { get; set; }
 
         [XmlAttribute]
         public string Name { get; set; }
+
+        [XmlAttribute]
+        [DefaultValue(false)]
+        public bool CheckSectionGroupsCount { get; set; }
+
+        [XmlAttribute]
+        [DefaultValue(0)]
+        public int SectionGroupsCount { get; set; }
+
+        [XmlAttribute]
+        [DefaultValue(0)]
+        public int SectionGroupsCountMin { get; set; }
+
+        [XmlAttribute]
+        [DefaultValue(0)]
+        public int SectionGroupsCountMax { get; set; }
+
+        [XmlElement(typeof(SectionGroupInfo), ElementName = "SectionGroup")]
+        public List<SectionGroupInfo> SectionGroups { get; set; }
+
+        [XmlAttribute]
+        [DefaultValue(false)]
+        public bool CheckSectionsCount { get; set; }
+
+        [XmlAttribute]
+        [DefaultValue(0)]
+        public int SectionsCount { get; set; }
+
+        [XmlAttribute]
+        [DefaultValue(0)]
+        public int SectionsCountMin { get; set; }
+
+        [XmlAttribute]
+        [DefaultValue(0)]
+        public int SectionsCountMax { get; set; }
 
         [XmlElement(typeof(SectionInfo), ElementName = "Section")]
         public List<SectionInfo> Sections { get; set; }
@@ -167,27 +244,45 @@ namespace BibleCommon.Common
         [XmlAttribute]
         public string Name { get; set; }
 
-        [XmlAttribute]        
+        [XmlAttribute]
+        [DefaultValue(false)]
         public bool CheckPagesCount { get; set; }
 
         [XmlAttribute]
-        public int PagesCount { get; set; }       
-    }    
+        [DefaultValue(0)]
+        public int PagesCount { get; set; }
+
+        [XmlAttribute]
+        [DefaultValue(0)]
+        public int PagesCountMin { get; set; }
+
+        [XmlAttribute]
+        [DefaultValue(0)]
+        public int PagesCountMax { get; set; }
+    }
 
     [Serializable]
     public class BibleStructureInfo
     {
         [XmlAttribute]
+        [DefaultValue("")]
+        //[Obsolete()]  если пометить - то перестанут значения считываться из XML файла
         public string OldTestamentName { get; set; }
 
         [XmlAttribute]
+        [DefaultValue(0)]
+        //[Obsolete()]
         public int OldTestamentBooksCount { get; set; }
 
         [XmlAttribute]
+        [DefaultValue("")]
+        //[Obsolete()]
         public string NewTestamentName { get; set; }
 
         [XmlAttribute]
-        public int NewTestamentBooksCount { get; set; }        
+        [DefaultValue(0)]
+        //[Obsolete()]
+        public int NewTestamentBooksCount { get; set; }
 
         [XmlAttribute]
         public string Alphabet { get; set; }  // символы, встречающиеся в названии книг Библии                    
@@ -202,7 +297,7 @@ namespace BibleCommon.Common
         {
             this.BibleBooks = new List<BibleBookInfo>();
         }
-    }   
+    }
 
     [Serializable]
     public class BibleBookInfo
@@ -246,7 +341,7 @@ namespace BibleCommon.Common
         public static implicit operator Abbreviation(string value)
         {
             return new Abbreviation(value);
-        }       
+        }
     }
 
     [Serializable]
@@ -319,23 +414,23 @@ namespace BibleCommon.Common
         public string BaseVerses { get; set; }
 
         [XmlAttribute]
-        public string ParallelVerses { get; set; }        
+        public string ParallelVerses { get; set; }
 
         /// <summary>
         /// Выравнивание стихов - при несоответствии, 
         /// </summary>
         [XmlAttribute]
         [DefaultValue((int)CorrespondenceVerseType.All)]
-        public CorrespondenceVerseType CorrespondenceType { get; set; }        
+        public CorrespondenceVerseType CorrespondenceType { get; set; }
 
         /// <summary>
         /// Количество стихов, соответствующих версии KJV. По умолчанию - все стихи соответствуют KJV (если Strict = true), либо только один стих (если Strict = false)
         /// </summary>
         [XmlAttribute]
-        public string ValueVersesCount { get; set; }  
+        public string ValueVersesCount { get; set; }
 
         public BibleBookDifference()
-        {            
+        {
         }
 
         public BibleBookDifference(string baseVerses, string parallelVerses)
@@ -353,13 +448,13 @@ namespace BibleCommon.Common
         public string Locale { get; set; }
 
         [XmlElement(typeof(BibleBookContent), ElementName = "Book")]
-        public List<BibleBookContent> Books { get; set; }        
+        public List<BibleBookContent> Books { get; set; }
 
         public BibleContent()
         {
             this.Books = new List<BibleBookContent>();
         }
-    }    
+    }
 
     [Serializable]
     public class BibleBookContent
@@ -367,8 +462,8 @@ namespace BibleCommon.Common
         [XmlAttribute]
         public int Index { get; set; }
 
-        [XmlElement(typeof(BibleChapterContent), ElementName="Chapter")]
-        public List<BibleChapterContent> Chapters { get; set; }        
+        [XmlElement(typeof(BibleChapterContent), ElementName = "Chapter")]
+        public List<BibleChapterContent> Chapters { get; set; }
 
         public BibleBookContent()
         {
@@ -379,7 +474,7 @@ namespace BibleCommon.Common
         {
             if (this.Chapters.Count < verse.Chapter)
                 throw new ParallelChapterNotFoundException(verse, BaseVersePointerException.Severity.Warning);
-            
+
             var chapter = this.Chapters[verse.Chapter - 1];
 
             if (chapter.Verses.Count < verse.Verse)
@@ -393,7 +488,7 @@ namespace BibleCommon.Common
             {
                 var versesParts = verseContent.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
                 if (versesParts.Length > verse.PartIndex.Value)
-                    result = versesParts[verse.PartIndex.Value];                
+                    result = versesParts[verse.PartIndex.Value];
             }
             else
                 result = verseContent;
@@ -410,7 +505,7 @@ namespace BibleCommon.Common
 
             foreach (var verse in verses)
             {
-                contents.Add(GetVerseContent(verse));                
+                contents.Add(GetVerseContent(verse));
             }
 
             return string.Join(" ", contents.ToArray());
@@ -441,4 +536,5 @@ namespace BibleCommon.Common
         [XmlText]
         public string Value { get; set; }
     }
+
 }

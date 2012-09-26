@@ -16,32 +16,25 @@ namespace BibleConfigurator
 {
     public static class NotebookChecker
     {
-        public static bool CheckNotebook(Application oneNoteApp, ModuleInfo module, string notebookId, NotebookType notebookType, out string errorText)
+        public static bool CheckNotebook(Application oneNoteApp, ModuleInfo module, string notebookId, ContainerType notebookType, out string errorText)
         {
             errorText = string.Empty;
 
             if (!string.IsNullOrEmpty(notebookId))
             {
-                OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, HierarchyScope.hsSections, true);
+                OneNoteProxy.HierarchyElement notebookEl = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, HierarchyScope.hsSections, true);
+                var notebook = module.GetNotebook(notebookType);
 
                 try
                 {
                     switch (notebookType)
-                    {
-                        case NotebookType.Single:
-                            CheckElementIsSingleNotebook(module, notebook.Content, notebook.Xnm);
+                    {   
+                        case ContainerType.BibleStudy:
+                            CheckElementIsBibleStudy(module, notebookEl.Content.Root, notebookEl.Xnm);
                             break;
-                        case NotebookType.Bible:
-                            CheckElementIsBible(module, notebook.Content.Root, notebook.Xnm);
+                        default:
+                            CheckContainer(notebook, notebookEl.Content.Root, notebookEl.Xnm);
                             break;
-                        case NotebookType.BibleComments:
-                        case NotebookType.BibleNotesPages:
-                            CheckElementIsBibleComments(module, notebook.Content.Root, notebook.Xnm);
-                            break;
-                        case NotebookType.BibleStudy:
-                            CheckElementIsBibleStudy(module, notebook.Content.Root, notebook.Xnm);
-                            break;
-
                     }
 
                     return true;
@@ -55,35 +48,106 @@ namespace BibleConfigurator
             return false;
         }
 
+        private static void CheckContainer(SectionGroupInfo container, XElement containerEl, XmlNamespaceManager xnm)
+        {
+            if (container.CheckSectionGroupsCount)
+            {
+                int subSectionGroupsCount = containerEl.XPathSelectElements("one:SectionGroup", xnm).Count();
+
+                if (container.SectionGroupsCount != default(int))
+                {
+                    if (container.SectionGroupsCount != subSectionGroupsCount)
+                        throw new InvalidNotebookException(Constants.SectionGroupsCountNotEqual, container.Name, container.SectionGroupsCount, subSectionGroupsCount);
+                }
+                else if (container.SectionGroupsCountMin != default(int))
+                {
+                    if (container.SectionGroupsCountMin > subSectionGroupsCount)
+                        throw new InvalidNotebookException(Constants.SectionGroupsCountLessThanMin, container.Name, container.SectionGroupsCountMin, subSectionGroupsCount);
+                }
+                else if (container.SectionGroupsCountMax != default(int))
+                {
+                    if (container.SectionGroupsCountMax < subSectionGroupsCount)
+                        throw new InvalidNotebookException(Constants.SectionGroupsCountMoreThanMax, container.Name, container.SectionGroupsCountMax, subSectionGroupsCount);
+                }
+            }
+
+            if (container.CheckSectionsCount)
+            {
+                int sectionsCount = containerEl.XPathSelectElements("one:Section", xnm).Count();
+
+                if (container.SectionsCount != default(int))
+                {
+                    if (container.SectionsCount != sectionsCount)
+                        throw new InvalidNotebookException(Constants.SectionsCountNotEqual, container.Name, container.SectionsCount, sectionsCount);
+                }
+                else if (container.SectionsCountMin != default(int))
+                {
+                    if (container.SectionsCountMin > sectionsCount)
+                        throw new InvalidNotebookException(Constants.SectionsCountLessThanMin, container.Name, container.SectionsCountMin, sectionsCount);
+                }
+                else if (container.SectionsCountMax != default(int))
+                {
+                    if (container.SectionsCountMax < sectionsCount)
+                        throw new InvalidNotebookException(Constants.SectionsCountMoreThanMax, container.Name, container.SectionsCountMax, sectionsCount);
+                }
+            }
+
+            foreach (var section in container.Sections)
+            {
+                var sectionEl = containerEl.XPathSelectElement(string.Format("one:Section", section.Name));
+
+                if (section == null)
+                    throw new InvalidNotebookException(Constants.SectionNotFoundInContainer, section.Name, container.Name);
+
+                CheckSection(section, sectionEl, xnm);
+            }
+
+            foreach (var subSectionGroup in container.SectionGroups)
+            {
+                var subSectionGroupEl = containerEl.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", subSectionGroup.Name), xnm);
+
+                if (subSectionGroupEl == null)
+                    throw new InvalidNotebookException(Constants.SectionGroupNotFoundInContainer, subSectionGroup.Name, container.Name);
+
+                CheckContainer(subSectionGroup, subSectionGroupEl, xnm);
+            }
+        }
+
+        private static void CheckSection(SectionInfo section, XElement sectionEl, XmlNamespaceManager xnm)
+        {
+            int sectionsCount = sectionEl.XPathSelectElements("one:Page", xnm).Count();
+
+            if (section.PagesCount != default(int))
+            {
+                if (section.PagesCount != sectionsCount)
+                    throw new InvalidNotebookException(Constants.PagesCountNotEqual, section.Name, section.PagesCount, sectionsCount);
+            }
+            else if (section.PagesCountMin != default(int))
+            {
+                if (section.PagesCountMin > sectionsCount)
+                    throw new InvalidNotebookException(Constants.PagesCountLessThanMin, section.Name, section.PagesCountMin, sectionsCount);
+            }
+            else if (section.PagesCountMax != default(int))
+            {
+                if (section.PagesCountMax < sectionsCount)
+                    throw new InvalidNotebookException(Constants.PagesCountMoreThanMax, section.Name, section.PagesCountMax, sectionsCount);
+            }
+        }
+
         private static void CheckElementIsBibleStudy(ModuleInfo module, XElement element, XmlNamespaceManager xnm)
         {
             if (ElementIsBible(module, element, xnm))
-                throw new InvalidNotebookException(Constants.SelectedNotebookForType, NotebookType.Bible);
+                throw new InvalidNotebookException(Constants.SelectedNotebookForType, ContainerType.Bible);
 
             if (ElementIsBibleComments(module, element, xnm))
-                throw new InvalidNotebookException(Constants.SelectedNotebookForType, NotebookType.BibleComments);            
-        }
-
-        private static void CheckElementIsSingleNotebook(ModuleInfo module, XDocument notebookDoc, XmlNamespaceManager xnm)
-        {
-            List<XElement> sectionsGroups = notebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm).Where(sg => !OneNoteUtils.IsRecycleBin(sg)).ToList();
-
-            if (sectionsGroups.Count != 3)
-                throw new InvalidNotebookException(Constants.WrongSectionGroupsCount, 3, sectionsGroups.Count);            
-            
-            if (!(ElementIsBible(module, sectionsGroups[0], xnm) || ElementIsBible(module, sectionsGroups[1], xnm) || ElementIsBible(module, sectionsGroups[2], xnm)))
-                throw new InvalidNotebookException(Constants.SectionGroupOfTypeNotFound, SectionGroupType.Bible);            
-
-
-            if (!(ElementIsBibleComments(module, sectionsGroups[0], xnm) || ElementIsBibleComments(module, sectionsGroups[1], xnm) || ElementIsBibleComments(module, sectionsGroups[2], xnm)))
-                throw new InvalidNotebookException(Constants.SectionGroupOfTypeNotFound, SectionGroupType.BibleComments);                               
+                throw new InvalidNotebookException(Constants.SelectedNotebookForType, ContainerType.BibleComments);            
         }
 
         public static bool ElementIsBible(ModuleInfo module, XElement element, XmlNamespaceManager xnm)
         {
             try
             {
-                CheckElementIsBible(module, element, xnm);
+                CheckContainer(module.GetNotebook(ContainerType.Bible), element, xnm);
                 return true;
             }
             catch (InvalidNotebookException)
@@ -92,68 +156,19 @@ namespace BibleConfigurator
             }
 
         }
-
-        private static void CheckElementIsBible(ModuleInfo module, XElement element, XmlNamespaceManager xnm)
-        {            
-            XElement oldTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", module.BibleStructure.OldTestamentName), xnm);
-
-            if (oldTestamentSectionGroup == null)
-                throw new InvalidNotebookException(Constants.SectionGroupNotFound, module.BibleStructure.OldTestamentName);
-
-            int oldTestamentSectionsCount = oldTestamentSectionGroup.XPathSelectElements("one:Section", xnm).Count();
-
-            if (oldTestamentSectionsCount < module.BibleStructure.OldTestamentBooksCount)
-                throw new InvalidNotebookException(Constants.WrongSectionsCountInSectionGroup,
-                    module.BibleStructure.OldTestamentName, module.BibleStructure.OldTestamentBooksCount, oldTestamentSectionsCount);
-
-            XElement newTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", module.BibleStructure.NewTestamentName), xnm);
-
-            if (newTestamentSectionGroup == null)
-                throw new InvalidNotebookException(Constants.SectionGroupNotFound, module.BibleStructure.NewTestamentName);
-
-            int newTestamentSectionsCount = newTestamentSectionGroup.XPathSelectElements("one:Section", xnm).Count();
-
-            if (newTestamentSectionsCount < module.BibleStructure.NewTestamentBooksCount)
-                throw new InvalidNotebookException(Constants.WrongSectionsCountInSectionGroup,
-                    module.BibleStructure.NewTestamentName, module.BibleStructure.NewTestamentBooksCount, newTestamentSectionsCount);
-        }
-
+      
         public static bool ElementIsBibleComments(ModuleInfo module, XElement element, XmlNamespaceManager xnm)
         {
             try
             {
-                CheckElementIsBibleComments(module, element, xnm);
+                CheckContainer(module.GetNotebook(ContainerType.BibleComments), element, xnm);
                 return true;
             }
             catch (InvalidNotebookException)
             {
                 return false;
             }
-
-        }
-
-        private static void CheckElementIsBibleComments(ModuleInfo module, XElement element, XmlNamespaceManager xnm)
-        {
-            XElement oldTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", module.BibleStructure.OldTestamentName), xnm);
-
-            if (oldTestamentSectionGroup == null)
-                throw new InvalidNotebookException(Constants.SectionGroupNotFound, module.BibleStructure.OldTestamentName);
-
-            int subSectionsCount = oldTestamentSectionGroup.XPathSelectElements("one:Section", xnm).Count();
-
-            if (subSectionsCount > 3)
-                throw new InvalidNotebookException(Constants.WrongSectionsCountInSectionGroup, 0, module.BibleStructure.OldTestamentName, subSectionsCount);
-
-            XElement newTestamentSectionGroup = element.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", module.BibleStructure.NewTestamentName), xnm);
-
-            if (newTestamentSectionGroup == null)
-                throw new InvalidNotebookException(Constants.SectionGroupNotFound, module.BibleStructure.NewTestamentName);
-
-            subSectionsCount = newTestamentSectionGroup.XPathSelectElements("one:Section", xnm).Count();
-
-            if (subSectionsCount > 3)
-                throw new InvalidNotebookException(Constants.WrongSectionsCountInSectionGroup, 0, module.BibleStructure.NewTestamentName, subSectionsCount);
-        }
+        }     
 
     }
 }

@@ -35,13 +35,22 @@ namespace BibleCommon.Services
                 DictionaryManager.AddDictionary(oneNoteApp, moduleShortName, notebookDirectory);
             }
 
+            string oldTestamentName = null;
+            int? oldTestamentSectionsCount = null;
+            string newTestamentName = null;
+            int? newTestamentSectionsCount = null;
+
+            GetTestamentInfo(moduleInfo, ContainerType.OldTestament, out oldTestamentName, out oldTestamentSectionsCount);
+            GetTestamentInfo(moduleInfo, ContainerType.NewTestament, out newTestamentName, out newTestamentSectionsCount);
+
             for (int i = 0; i < moduleInfo.BibleStructure.BibleBooks.Count; i++)
             {
                 var bibleBookInfo = moduleInfo.BibleStructure.BibleBooks[i];
 
-                bibleBookInfo.SectionName = NotebookGenerator.GetBibleBookSectionName(bibleBookInfo.Name, i, moduleInfo.BibleStructure.OldTestamentBooksCount);
+                bibleBookInfo.SectionName = NotebookGenerator.GetBibleBookSectionName(bibleBookInfo.Name, i, (oldTestamentSectionsCount ?? newTestamentSectionsCount).Value);
 
-                currentSectionGroupId = GetCurrentSectionGroupId(oneNoteApp, currentSectionGroupId, moduleInfo, i);
+                currentSectionGroupId = GetCurrentSectionGroupId(oneNoteApp, currentSectionGroupId, 
+                    oldTestamentName, oldTestamentSectionsCount, newTestamentName, newTestamentSectionsCount, i);
 
                 var bookSectionId = NotebookGenerator.AddSection(oneNoteApp, currentSectionGroupId, bibleBookInfo.SectionName);
 
@@ -63,6 +72,19 @@ namespace BibleCommon.Services
             SettingsManager.Instance.SupplementalBibleModules.Clear();
             SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);            
             SettingsManager.Instance.Save();            
+        }
+
+        private static void GetTestamentInfo(ModuleInfo moduleInfo, ContainerType type, out string testamentName, out int? testamentSectionsCount)
+        {
+            testamentName = null;
+            testamentSectionsCount = null;
+
+            var testamentSectionGroup = moduleInfo.GetNotebook(ContainerType.Bible).SectionGroups.FirstOrDefault(s => s.Type == type);
+            if (testamentSectionGroup != null)
+            {
+                testamentName = testamentSectionGroup.Name;
+                testamentSectionsCount = testamentSectionGroup.SectionsCount;
+            }
         }
 
         public static BibleParallelTranslationConnectionResult LinkSupplementalBibleWithMainBible(Application oneNoteApp, int supplementalModuleIndex, 
@@ -450,22 +472,22 @@ namespace BibleCommon.Services
             }
 
             UpdateChapterPage(oneNoteApp, currentChapterDoc, chapter.Index, bibleBookInfo);
-        }       
+        }
 
-        private static string GetCurrentSectionGroupId(Application oneNoteApp, string currentSectionGroupId, Common.ModuleInfo moduleInfo, int i)
+        private static string GetCurrentSectionGroupId(Application oneNoteApp, string currentSectionGroupId, 
+            string oldTestamentName, int? oldTestamentSectionsCount, string newTestamentName, int? newTestamentSectionsCount, int i)
         {
             if (string.IsNullOrEmpty(currentSectionGroupId))
                 currentSectionGroupId
                     = (string)NotebookGenerator.AddRootSectionGroupToNotebook(oneNoteApp,
-                        SettingsManager.Instance.NotebookId_SupplementalBible, moduleInfo.BibleStructure.OldTestamentName).Attribute("ID");
-            else if (i == moduleInfo.BibleStructure.OldTestamentBooksCount)
+                        SettingsManager.Instance.NotebookId_SupplementalBible, oldTestamentName ?? newTestamentName).Attribute("ID");
+            else if (i == (oldTestamentSectionsCount ?? newTestamentSectionsCount))  // если только один завет в модуле, то до сюда и не должен дойти
                 currentSectionGroupId
                     = (string)NotebookGenerator.AddRootSectionGroupToNotebook(oneNoteApp,
-                        SettingsManager.Instance.NotebookId_SupplementalBible, moduleInfo.BibleStructure.NewTestamentName).Attribute("ID");
+                        SettingsManager.Instance.NotebookId_SupplementalBible, newTestamentName).Attribute("ID");            
 
             return currentSectionGroupId;
         }
-
         private static void UpdateChapterPage(Application oneNoteApp, XDocument chapterPageDoc, int chapterIndex, BibleBookInfo bibleBookInfo)
         {
             oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);            
