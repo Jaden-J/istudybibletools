@@ -1356,7 +1356,7 @@ namespace BibleConfigurator
 
         private void ReLoadParameters(bool needToSaveSettings)
         {
-            _loadForm.SetDesktopLocation(this.Left, this.Top);
+            _loadForm.SetDesktopLocation(this.Left - 5, this.Top - 5);
             _loadForm.Show();
             try
             {
