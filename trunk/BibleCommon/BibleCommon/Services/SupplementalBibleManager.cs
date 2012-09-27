@@ -22,9 +22,7 @@ namespace BibleCommon.Services
             {
                 SettingsManager.Instance.NotebookId_SupplementalBible
                     = NotebookGenerator.CreateNotebook(oneNoteApp, Resources.Constants.SupplementalBibleName, notebookDirectory);                
-            }
-            else
-                throw new InvalidOperationException("Supplemental Bible already exists");
+            }            
 
             string currentSectionGroupId = null;
             var moduleInfo = ModulesManager.GetModuleInfo(moduleShortName);

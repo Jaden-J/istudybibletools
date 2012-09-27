@@ -44,7 +44,7 @@ namespace TestProject
         {
            
             try
-            {                
+            { 
                 //TestModule();
 
                 //CheckHTML();
@@ -54,6 +54,8 @@ namespace TestProject
                 //SearchStrongTerm(args);
 
                 //AddColorLink();
+
+                GenerateDictionary();
 
                 //GenerateStrongDictionary();
                 
@@ -65,7 +67,7 @@ namespace TestProject
 
                 //ConvertRussianModule();
 
-                ConvertEnglishModule();
+                //ConvertEnglishModule();
 
                 //ConvertRomanModule();
 
@@ -87,7 +89,7 @@ namespace TestProject
 
             Console.WriteLine("Finish");
             Console.ReadKey();
-        }
+        }      
 
         private static void TestModule()
         {
@@ -135,26 +137,24 @@ namespace TestProject
         }
 
         private static void AddColorLink()
-        {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+        {   
             var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();             
             string xml;
-            oneNoteApp.GetPageContent(OneNoteApp.Windows.CurrentWindow.CurrentPageId, out xml, PageInfo.piAll , XMLSchema.xs2010);
+            oneNoteApp.GetPageContent(OneNoteApp.Windows.CurrentWindow.CurrentPageId, out xml);
             var currentPageDoc = XDocument.Parse(xml);
 
-            
-            SupplementalBibleManager.UpdatePageXmlForStrongDictionary(currentPageDoc);
-            
+            var nms = XNamespace.Get("http://schemas.microsoft.com/office/onenote/2010/onenote");
 
-//            NotebookGenerator.AddTextElementToPage(currentPageDoc, 
-//@"
-//<a href='http://google.com'> 
-//  <span style='color:#000000'>test link</span>
-//</a>");
-            oneNoteApp.UpdatePageContent(currentPageDoc.ToString(), DateTime.MinValue, XMLSchema.xs2010);
-            sw.Stop();
-            Console.WriteLine(sw.ElapsedMilliseconds);
+            var textEl = new XElement(nms + "Outline",
+                            new XElement(nms + "OEChildren",
+                                new XElement(nms + "OE",
+                                    new XElement(nms + "T",
+                                        new XCData(                                            
+                                            "text before <a href='http://google.com'><span style='color:#000000'>test link</span></a> text after"
+                                            )))));
+
+            currentPageDoc.Root.Add(textEl);
+            oneNoteApp.UpdatePageContent(currentPageDoc.ToString());
         }
 
         private static void GenerateStrongDictionary()
@@ -169,6 +169,19 @@ namespace TestProject
 
             var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message));
             form.ShowDialog();           
+        }
+
+        private static void GenerateDictionary()
+        {            
+            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "Brockhaus",
+              new List<DictionaryFile>() { 
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Brockhaus\BrockhausLexicon.htm"), SectionName = "Брокгауза", DisplayName="Библейский словарь Брокгауза" }                    
+                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, Path.Combine(TempFolderPath, "Brockhaus"), "<h4>", "Пользовательские заметки", null, Encoding.Default, "ru");
+
+            converter.Convert();
+
+            var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message));
+            form.ShowDialog();        
         }
 
         //private static void GenerateBookDifferencesFile()
