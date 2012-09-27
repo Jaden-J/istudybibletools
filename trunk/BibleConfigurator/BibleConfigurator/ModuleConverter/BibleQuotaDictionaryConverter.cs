@@ -139,8 +139,9 @@ namespace BibleConfigurator.ModuleConverter
         private TermPageInfo AddTermsPage(string sectionId, string pageName, string pageDisplayName)
         {
             XmlNamespaceManager xnm;
+            var firstColumnWidthK = Type == StructureType.Strong ? 1 : 2;
             var pageDoc = NotebookGenerator.AddPage(OneNoteApp, sectionId, pageName, 1, Locale, out xnm);
-            var tableEl = NotebookGenerator.AddTableToPage(pageDoc, true, xnm, new CellInfo(NotebookGenerator.MinimalCellWidth), new CellInfo(SettingsManager.Instance.PageWidth_Bible));
+            var tableEl = NotebookGenerator.AddTableToPage(pageDoc, true, xnm, new CellInfo((int)(NotebookGenerator.MinimalCellWidth * firstColumnWidthK)), new CellInfo(SettingsManager.Instance.PageWidth_Bible));
             var styleIndex = QuickStyleManager.AddQuickStyleDef(pageDoc, QuickStyleManager.StyleNameH3, QuickStyleManager.PredefinedStyles.H3, xnm);
             if (!string.IsNullOrEmpty(pageDisplayName))
                 AddPageDisplayName(pageDoc, pageDisplayName, xnm);
@@ -160,7 +161,10 @@ namespace BibleConfigurator.ModuleConverter
                 pageInfo = AddTermsPage(sectionId, termName.ToUpper()[0].ToString(), file.DisplayName);
                 pageInfoWasChanged = true;
             }
-            
+
+            if (termDescription.StartsWith(Environment.NewLine))
+                termDescription = termDescription.Remove(0, Environment.NewLine.Length);
+
             var termTable = NotebookGenerator.GenerateTableElement(false, new CellInfo(SettingsManager.Instance.PageWidth_Bible - 10));
             NotebookGenerator.AddRowToTable(termTable, NotebookGenerator.GetCell(termDescription, Locale, nms));
             var userNotesCell = NotebookGenerator.GetCell(UserNotesString, Locale, nms);
@@ -168,15 +172,17 @@ namespace BibleConfigurator.ModuleConverter
 
             NotebookGenerator.AddRowToTable(termTable, userNotesCell);
             for (int i = 0; i <= 4; i++)
-                NotebookGenerator.AddChildToCell(userNotesCell, string.Empty, nms);            
+                NotebookGenerator.AddChildToCell(userNotesCell, string.Empty, nms);
 
-            string termCellText = string.Format("<b>{0}</b>", termName);
+            string termCellText;
             if (Type == StructureType.Strong)
             {
                 var protocolHandler = new FindVersesWithStrongNumberHandler();
                 var commandUrl = protocolHandler.GetCommandUrl(termName);
-                termCellText += string.Format(" <a href='{0}'><span style='font-size:8.0pt'>{1}</span></a>", commandUrl, FindAllVersesString);
+                termCellText = string.Format("<b>{0}</b> <a href='{1}'><span style='font-size:8.0pt'>{2}</span></a>", termName, commandUrl, FindAllVersesString);
             }
+            else
+                termCellText = string.Format("<b>·{0}·</b>", termName);
 
             NotebookGenerator.AddRowToTable(pageInfo.TableElement,
                                 NotebookGenerator.GetCell(termCellText, Locale, nms),
@@ -220,9 +226,7 @@ namespace BibleConfigurator.ModuleConverter
             {
                 var number = int.Parse(result);
                 result = string.Format("{0}{1:0000}", file.TermPrefix, number);
-            }
-            else
-                result = string.Format("·{0}·", result);
+            }            
 
             return result;
         }
@@ -249,7 +253,7 @@ namespace BibleConfigurator.ModuleConverter
                             .Replace("<br/>", Environment.NewLine)
                             .Replace("<br />", Environment.NewLine)
                             .Replace("<br>", Environment.NewLine)
-                            .Replace("<p>", "<span>")
+                            .Replace("<p>", Environment.NewLine + "<span>")
                             .Replace("</p>", "</span>")
                             .Replace("<h6>", "<b>")
                             .Replace("</h6>", "</b>")
