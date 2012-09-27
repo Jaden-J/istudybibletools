@@ -166,11 +166,16 @@ namespace BibleCommon.Services
                     }
                 }
 
-                int temp;
-                string verseNumber = StringUtils.GetNextString(pointerElement.Value, -1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound),
-                                                    out temp, out temp, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
-                if (string.IsNullOrEmpty(verseNumber) || int.Parse(verseNumber) != verse)
-                    pointerElement = FindVerseWithIterate(pageContent, verse, xnm);
+                string verseNumber = null;
+                if (pointerElement != null)
+                {
+                    int temp;
+                    verseNumber = StringUtils.GetNextString(pointerElement.Value, -1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound),
+                                                        out temp, out temp, StringSearchIgnorance.None, StringSearchMode.SearchNumber);                    
+                }
+
+                if (pointerElement == null || string.IsNullOrEmpty(verseNumber) || int.Parse(verseNumber) != verse)
+                    pointerElement = FindVerseWithIterate(pageContent, verse, xnm);                
             }
             else               // тогда возвращаем хотя бы ссылку на заголовок
             {
