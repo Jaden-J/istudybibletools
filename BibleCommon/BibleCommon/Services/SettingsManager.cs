@@ -87,7 +87,23 @@ namespace BibleCommon.Services
         public string PageName_DefaultComments { get; set; }
         public string SectionName_DefaultBookOverview { get; set; }
         public string PageName_Notes { get; set; }
-        public string ModuleName { get; set; }
+
+        private string _moduleName { get; set; }
+        public string ModuleName 
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_moduleName))
+                    return _moduleName.ToLower();
+
+                return _moduleName;
+            }
+            set
+            {
+                _moduleName = value;
+            }
+        }
+
         public Version NewVersionOnServer { get; set; }
         public DateTime? NewVersionOnServerLatestCheckTime { get; set; }
         public int PageWidth_Notes { get; set; }
@@ -454,6 +470,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_NotebookIdBibleNotesPages, this.NotebookId_BibleNotesPages),
                                   new XElement(Consts.Constants.ParameterName_NotebookIdBibleStudy, this.NotebookId_BibleStudy),                                  
                                   new XElement(Consts.Constants.ParameterName_NotebookIdSupplementalBible, this.NotebookId_SupplementalBible),
+                                  new XElement(Consts.Constants.ParameterName_NotebookIdDictionaries, this.NotebookId_Dictionaries),
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBible, this.SectionGroupId_Bible),                                                                    
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBibleComments, this.SectionGroupId_BibleComments),
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBibleNotesPages, this.SectionGroupId_BibleNotesPages),
@@ -478,8 +495,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_UseDefaultSettings, this.UseDefaultSettings.Value),
                                   new XElement(Consts.Constants.ParameterName_PageWidthBible, this.PageWidth_Bible),
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleModules, string.Join(";", this.SupplementalBibleModules.ToArray())),
-                                  new XElement(Consts.Constants.ParameterName_SupplementalBibleLinkName, this.SupplementalBibleLinkName),
-                                  new XElement(Consts.Constants.ParameterName_NotebookIdDictionaries, this.NotebookId_Dictionaries),
+                                  new XElement(Consts.Constants.ParameterName_SupplementalBibleLinkName, this.SupplementalBibleLinkName),                                  
                                   new XElement(Consts.Constants.ParameterName_DictionariesModules, string.Join(";", this.DictionariesModules.ConvertAll(dm => dm.ToString()).ToArray()))
                                   );
 

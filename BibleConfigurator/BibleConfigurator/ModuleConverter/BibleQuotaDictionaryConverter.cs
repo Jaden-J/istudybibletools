@@ -52,7 +52,7 @@ namespace BibleConfigurator.ModuleConverter
         public string DictionaryName { get; set; }        
         public List<Exception> Errors { get; set; }
         public string UserNotesString { get; set; }
-        public string FindAllVersesString { get; set; }
+        public string FindAllVersesString { get; set; }        
 
         /// <summary>
         /// 
@@ -61,7 +61,7 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="bqDictionaryFolder">Только один словарь может быть в папке.</param>
         /// <param name="type"></param>
         /// <param name="manifestFilesFolder"></param>
-        public BibleQuotaDictionaryConverter(Application oneNoteApp, string notebookName, string dictionaryName,
+        public BibleQuotaDictionaryConverter(Application oneNoteApp, string notebookName, string dictionaryName, 
             List<DictionaryFile> dictionaryFiles, StructureType type, string manifestFilesFolder, string termStartString, string userNotesString, string findAllVersesString,
             Encoding fileEncoding, string locale)
         {
@@ -78,7 +78,7 @@ namespace BibleConfigurator.ModuleConverter
             this.TermStartString = termStartString;            
             this.Errors = new List<Exception>();
             this.UserNotesString = userNotesString;
-            this.FindAllVersesString = findAllVersesString;
+            this.FindAllVersesString = findAllVersesString;            
         }        
 
         public void Convert()
@@ -96,8 +96,10 @@ namespace BibleConfigurator.ModuleConverter
 
                 int termsInPageCount = 0;
                 int termIndex = file.StartIndex - 1;
-                var pageInfo = AddTermsPage(sectionId, Type == StructureType.Strong ? string.Format("{0:0000}-", file.StartIndex) : "First Alphabet Char", file.DisplayName);                                    
-
+                var pageInfo = Type == StructureType.Strong 
+                                ? AddTermsPage(sectionId, string.Format("{0:0000}-", file.StartIndex), file.DisplayName)
+                                : null;
+                string prevTerm = null;
                 foreach (string line in File.ReadAllLines(file.FilePath, FileEncoding))
                 {
                     if (line.StartsWith(TermStartString))
@@ -107,12 +109,13 @@ namespace BibleConfigurator.ModuleConverter
                             termsInPageCount++;
                             termIndex++;
 
-                            var newPageInfo = AddTermToPage(file, sectionId, pageInfo, termName, termDescription.ToString(), termsInPageCount, ref termIndex, false, xnm);
+                            var newPageInfo = AddTermToPage(file, sectionId, pageInfo, termName, termDescription.ToString(), termsInPageCount, prevTerm, ref termIndex, false, xnm);
                             if (newPageInfo != null)
                             {
                                 termsInPageCount = 0;
                                 pageInfo = newPageInfo;
                             }
+                            prevTerm = termName;
                         }
 
                         termName = GetTermName(line, file);
@@ -120,14 +123,15 @@ namespace BibleConfigurator.ModuleConverter
                     }
                     else
                     {
-                        termDescription.Append(ShellText(line));
+                        if (termDescription != null)
+                            termDescription.Append(ShellText(line));
                     }                    
                 }
 
                 if (!string.IsNullOrEmpty(termName))
                 {                    
                     termIndex++;
-                    AddTermToPage(file, sectionId, pageInfo, termName, termDescription.ToString(), termsInPageCount, ref termIndex, true, xnm);
+                    AddTermToPage(file, sectionId, pageInfo, termName, termDescription.ToString(), termsInPageCount, prevTerm, ref termIndex, true, xnm);
                 }
             }            
         }
@@ -144,9 +148,18 @@ namespace BibleConfigurator.ModuleConverter
         }
 
         private TermPageInfo AddTermToPage(DictionaryFile file, string sectionId, TermPageInfo pageInfo, string termName, string termDescription,
-            int termsInPageCount, ref int termIndex, bool isLatestTermInSection, XmlNamespaceManager xnm)
+            int termsInPageCount, string prevTermName, ref int termIndex, bool isLatestTermInSection, XmlNamespaceManager xnm)
         {
-            var nms = XNamespace.Get(Constants.OneNoteXmlNs);            
+            var nms = XNamespace.Get(Constants.OneNoteXmlNs);
+            var pageInfoWasChanged = false;
+
+            if (pageInfo == null || (Type == StructureType.Dictionary && !string.IsNullOrEmpty(prevTermName) && prevTermName.ToUpper()[0] != termName.ToUpper()[0]))
+            {
+                if (pageInfo != null)
+                    UpdatePage(pageInfo.PageDocument);
+                pageInfo = AddTermsPage(sectionId, termName.ToUpper()[0].ToString(), file.DisplayName);
+                pageInfoWasChanged = true;
+            }
             
             var termTable = NotebookGenerator.GenerateTableElement(false, new CellInfo(SettingsManager.Instance.PageWidth_Bible - 10));
             NotebookGenerator.AddRowToTable(termTable, NotebookGenerator.GetCell(termDescription, Locale, nms));
@@ -155,15 +168,19 @@ namespace BibleConfigurator.ModuleConverter
 
             NotebookGenerator.AddRowToTable(termTable, userNotesCell);
             for (int i = 0; i <= 4; i++)
-                NotebookGenerator.AddChildToCell(userNotesCell, string.Empty, nms);
+                NotebookGenerator.AddChildToCell(userNotesCell, string.Empty, nms);            
 
-            var protocolHandler = new FindVersesWithStrongNumberHandler();
-            var commandUrl = protocolHandler.GetCommandUrl(termName);
+            string termCellText = string.Format("<b>{0}</b>", termName);
+            if (Type == StructureType.Strong)
+            {
+                var protocolHandler = new FindVersesWithStrongNumberHandler();
+                var commandUrl = protocolHandler.GetCommandUrl(termName);
+                termCellText += string.Format(" <a href='{0}'><span style='font-size:8.0pt'>{1}</span></a>", commandUrl, FindAllVersesString);
+            }
 
             NotebookGenerator.AddRowToTable(pageInfo.TableElement,
-                                NotebookGenerator.GetCell(string.Format("<b>{0}</b> <a href='{1}'><span style='font-size:8.0pt'>{2}</span></a>", 
-                                                            termName, commandUrl, FindAllVersesString), Locale, nms),
-                                NotebookGenerator.GetCell(termTable, Locale, nms));
+                                NotebookGenerator.GetCell(termCellText, Locale, nms),
+                                NotebookGenerator.GetCell(termTable, Locale, nms));            
 
             if (Type == StructureType.Strong)
             {
@@ -175,17 +192,23 @@ namespace BibleConfigurator.ModuleConverter
                 }
 
                 if ((termsInPageCount >= MaxTermsInPageForStrong && (termIndex % 100 == 99)) || isLatestTermInSection)
-                {                    
+                {
                     string currentPageName = (string)pageInfo.PageDocument.Root.Attribute("name");
                     NotebookGenerator.UpdatePageTitle(pageInfo.PageDocument, currentPageName + termIndex.ToString("0000"), OneNoteUtils.GetOneNoteXNM());
                     UpdatePage(pageInfo.PageDocument);
 
                     if (!isLatestTermInSection)
                     {
-                        return AddTermsPage(sectionId, string.Format("{0:0000}-", termIndex + 1), file.DisplayName);                                                
+                        pageInfo = AddTermsPage(sectionId, string.Format("{0:0000}-", termIndex + 1), file.DisplayName);
+                        pageInfoWasChanged = true;
                     }
                 }
             }
+            else if (isLatestTermInSection)
+                UpdatePage(pageInfo.PageDocument);
+            
+            if (pageInfoWasChanged)
+                return pageInfo;
 
             return null;
         }      
@@ -198,6 +221,8 @@ namespace BibleConfigurator.ModuleConverter
                 var number = int.Parse(result);
                 result = string.Format("{0}{1:0000}", file.TermPrefix, number);
             }
+            else
+                result = string.Format("·{0}·", result);
 
             return result;
         }
@@ -224,8 +249,13 @@ namespace BibleConfigurator.ModuleConverter
                             .Replace("<br/>", Environment.NewLine)
                             .Replace("<br />", Environment.NewLine)
                             .Replace("<br>", Environment.NewLine)
-                            .Replace("<p>", Environment.NewLine + "<span>")
-                            .Replace("</p>", "</span>");
+                            .Replace("<p>", "<span>")
+                            .Replace("</p>", "</span>")
+                            .Replace("<h6>", "<b>")
+                            .Replace("</h6>", "</b>")
+                            .Replace("<h5>", "<b>")
+                            .Replace("</h5>", "</b>");                            
+                                
 
             if (Type == StructureType.Strong)
             {
@@ -245,12 +275,11 @@ namespace BibleConfigurator.ModuleConverter
                                     StringUtils.GetText(result.Substring(indexOfFont, endIndexOfFont - indexOfFont)))
                                 + result.Substring(endIndexOfFont);
 
-                }
-
-                //shell anchor
-                result = ShellTag(result, "a");
-
+                }                
             }
+
+            //shell anchor
+            result = ShellTag(result, "a");
 
             return result;
         }
@@ -258,10 +287,13 @@ namespace BibleConfigurator.ModuleConverter
         private static string ShellTag(string s, string tagName)
         {
             var startIndex = s.IndexOf(string.Format("<{0}", tagName));
-            if (startIndex != -1)
+
+            while(startIndex > -1)
             {
                 var endIndex = s.IndexOf(string.Format("</{0}>", tagName), startIndex) + tagName.Length + 3;
-                s = s.Substring(0, startIndex) + StringUtils.GetText(s.Substring(startIndex, endIndex - startIndex)) + s.Substring(endIndex);
+                var text = StringUtils.GetText(s.Substring(startIndex, endIndex - startIndex));
+                s = s.Substring(0, startIndex) + text + s.Substring(endIndex);                                
+                startIndex = s.IndexOf(string.Format("<{0}", tagName), startIndex + text.Length);
             }
 
             return s;

@@ -1253,7 +1253,7 @@ namespace BibleConfigurator
             {
                 CheckBox cbIsActive = new CheckBox();
                 cbIsActive.AutoCheck = false;
-                cbIsActive.Checked = SettingsManager.Instance.ModuleName == moduleName;
+                cbIsActive.Checked = SettingsManager.Instance.ModuleName == moduleInfo.ShortName;
                 cbIsActive.Top = top;
                 cbIsActive.Left = 370;
                 cbIsActive.Width = 20;
@@ -1265,7 +1265,7 @@ namespace BibleConfigurator
             {
                 Button btnInfo = new Button();
                 btnInfo.Text = "?";
-                btnInfo.Tag = moduleName;
+                btnInfo.Tag = moduleInfo.ShortName;
                 btnInfo.Top = top;
                 btnInfo.Left = 390;
                 btnInfo.Width = 20;
@@ -1276,7 +1276,7 @@ namespace BibleConfigurator
 
             Button btnUseThisModule = new Button();
             btnUseThisModule.Text = GetBtnModuleManagementText(moduleInfo.Type);                
-            btnUseThisModule.Enabled = moduleInfo.Type == ModuleType.Bible ? SettingsManager.Instance.ModuleName != moduleName : true;
+            btnUseThisModule.Enabled = moduleInfo.Type == ModuleType.Bible ? SettingsManager.Instance.ModuleName != moduleInfo.ShortName : true;
             btnUseThisModule.Tag = moduleInfo;
             btnUseThisModule.Top = top;
             btnUseThisModule.Left = 415;
@@ -1286,15 +1286,15 @@ namespace BibleConfigurator
 
             Button btnDel = new Button();
             btnDel.Image = BibleConfigurator.Properties.Resources.del;
-            btnDel.Enabled = SettingsManager.Instance.ModuleName != moduleName;            
-            btnDel.Tag = moduleName;
+            btnDel.Enabled = SettingsManager.Instance.ModuleName != moduleInfo.ShortName;            
+            btnDel.Tag = moduleInfo.ShortName;
             btnDel.Top = top;            
             btnDel.Left = 605;
             btnDel.Width = btnDel.Height;
             btnDel.Click += new EventHandler(btnDeleteModule_Click);
             FormExtensions.SetToolTip(btnDel, BibleCommon.Resources.Constants.DeleteThisModule);
             pnModules.Controls.Add(btnDel);            
-        }
+        }       
 
         private string GetBtnModuleManagementText(ModuleType moduleType)
         {
