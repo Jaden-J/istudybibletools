@@ -41,6 +41,10 @@ namespace BibleCommon.Services
             GetTestamentInfo(moduleInfo, ContainerType.OldTestament, out oldTestamentName, out oldTestamentSectionsCount);
             GetTestamentInfo(moduleInfo, ContainerType.NewTestament, out newTestamentName, out newTestamentSectionsCount);
 
+            SettingsManager.Instance.SupplementalBibleModules.Clear();
+            SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
+            SettingsManager.Instance.Save();            
+
             for (int i = 0; i < moduleInfo.BibleStructure.BibleBooks.Count; i++)
             {
                 var bibleBookInfo = moduleInfo.BibleStructure.BibleBooks[i];
@@ -65,11 +69,7 @@ namespace BibleCommon.Services
                 }
             }
 
-            oneNoteApp.SyncHierarchy(SettingsManager.Instance.NotebookId_SupplementalBible);
-
-            SettingsManager.Instance.SupplementalBibleModules.Clear();
-            SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);            
-            SettingsManager.Instance.Save();            
+            oneNoteApp.SyncHierarchy(SettingsManager.Instance.NotebookId_SupplementalBible);            
         }
 
         private static void GetTestamentInfo(ModuleInfo moduleInfo, ContainerType type, out string testamentName, out int? testamentSectionsCount)
@@ -127,8 +127,10 @@ namespace BibleCommon.Services
                     }, true, true,
                     (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
                     {                        
-                        linkResult.AddRange(LinkdMainBibleAndSupplementalVerses(oneNoteApp, baseVersePointer, parallelVerse, bibleIteratorArgs, 
-                                        bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong, strongTermLinksCache, bibleTranslationManager.BaseModuleInfo.BibleStructure.Alphabet, xnm, nms));                       
+                        linkResult.AddRange(
+                            LinkdMainBibleAndSupplementalVerses(oneNoteApp, baseVersePointer, parallelVerse, bibleIteratorArgs, 
+                                        bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong, strongTermLinksCache, 
+                                        bibleTranslationManager.BaseModuleInfo.BibleStructure.Alphabet, xnm, nms));                       
                     });
 
                 result.Errors.AddRange(linkResult);
@@ -139,14 +141,21 @@ namespace BibleCommon.Services
             return result;
         }
 
-        public static BibleParallelTranslationConnectionResult AddParallelBible(Application oneNoteApp, string moduleShortName, string notebookDirectory, ICustomLogger logger)
+        public static BibleParallelTranslationConnectionResult AddParallelBible(Application oneNoteApp, string moduleShortName, string notebookDirectory, 
+            Dictionary<string, string> strongTermLinksCache, ICustomLogger logger)
         {
             if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(oneNoteApp, true))
                 || SettingsManager.Instance.SupplementalBibleModules.Count == 0)
                 throw new NotConfiguredException();
 
-            BibleParallelTranslationConnectionResult result = null;
 
+            SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
+            SettingsManager.Instance.Save();
+            BibleParallelTranslationManager.MergeModuleWithMainBible(moduleShortName);
+
+            BibleParallelTranslationConnectionResult result = null;
+            XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
+            var linkResult = new List<Exception>();
             using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
                 SettingsManager.Instance.SupplementalBibleModules.First(), moduleShortName,
                 SettingsManager.Instance.NotebookId_SupplementalBible))
@@ -157,13 +166,38 @@ namespace BibleCommon.Services
                 }
 
                 bibleTranslationManager.Logger = logger;
-                result = bibleTranslationManager.AddParallelTranslation();
+                result = bibleTranslationManager.IterateBaseBible(
+                    (chapterPageDoc, chapterPointer) =>
+                    {
+                        var tableEl = NotebookGenerator.GetPageTable(chapterPageDoc, xnm);
+                        var bibleIndex = NotebookGenerator.AddColumnToTable(tableEl, SettingsManager.Instance.PageWidth_Bible, xnm);
+                        NotebookGenerator.AddParallelBibleTitle(chapterPageDoc, tableEl, 
+                            bibleTranslationManager.ParallelModuleInfo.Name, bibleIndex, bibleTranslationManager.ParallelBibleInfo.Content.Locale, xnm);
+
+                        int styleIndex = QuickStyleManager.AddQuickStyleDef(chapterPageDoc, QuickStyleManager.StyleForStrongName, QuickStyleManager.PredefinedStyles.GrayHyperlink, xnm);
+
+                        return new BibleIteratorArgs() { BibleIndex = bibleIndex, TableElement = tableEl, StrongStyleIndex = styleIndex };
+                    },               
+                    true, true,
+                    (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
+                    {                        
+                        if (bibleTranslationManager.ParallelModuleInfo.Type == ModuleType.Strong)
+                        {
+                            parallelVerse.VerseContent = ProcessStrongVerse(parallelVerse.VerseContent, strongTermLinksCache, 
+                                bibleTranslationManager.ParallelModuleInfo.BibleStructure.Alphabet, linkResult);
+                        }
+
+                        var cell = NotebookGenerator.AddParallelVerseRowToBibleTable(bibleIteratorArgs.TableElement, parallelVerse,
+                            bibleIteratorArgs.BibleIndex, baseVersePointer, bibleTranslationManager.ParallelBibleInfo.Content.Locale, xnm);
+
+                        if (bibleTranslationManager.ParallelModuleInfo.Type == ModuleType.Strong)
+                        {
+                            QuickStyleManager.SetQuickStyleDefForCell(cell, bibleIteratorArgs.StrongStyleIndex, xnm);                            
+                        }
+                    });
             }
 
-            SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
-            SettingsManager.Instance.Save();
-
-            BibleParallelTranslationManager.MergeModuleWithMainBible(moduleShortName);
+            result.Errors.AddRange(linkResult);            
 
             return result;
         }
@@ -202,21 +236,24 @@ namespace BibleCommon.Services
             }
             else
             {
-                using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
-                   SettingsManager.Instance.SupplementalBibleModules.First(), SettingsManager.Instance.SupplementalBibleModules.Last(),
-                   SettingsManager.Instance.NotebookId_SupplementalBible))
-                {
-                    bibleTranslationManager.Logger = logger;
-                    bibleTranslationManager.RemoveLastParallelTranslation();
-                }
+                string lastSupplementalBibleModuleName = SettingsManager.Instance.SupplementalBibleModules.Last();                
 
-                string lastSupplementalBibleModuleName = SettingsManager.Instance.SupplementalBibleModules.Last();
+                var moduleInfo = ModulesManager.GetModuleInfo(lastSupplementalBibleModuleName);
+                if (moduleInfo.Type == ModuleType.Strong)
+                    DictionaryManager.RemoveDictionary(oneNoteApp, lastSupplementalBibleModuleName);
+
                 BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(lastSupplementalBibleModuleName);
 
                 SettingsManager.Instance.SupplementalBibleModules.RemoveAt(SettingsManager.Instance.SupplementalBibleModules.Count - 1);
                 SettingsManager.Instance.Save();
 
-                DictionaryManager.RemoveDictionary(oneNoteApp, lastSupplementalBibleModuleName);
+                using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
+                   SettingsManager.Instance.SupplementalBibleModules.First(), lastSupplementalBibleModuleName,
+                   SettingsManager.Instance.NotebookId_SupplementalBible))
+                {
+                    bibleTranslationManager.Logger = logger;
+                    bibleTranslationManager.RemoveParallelTranslation(lastSupplementalBibleModuleName);
+                }                
 
                 return RemoveResult.RemoveLastModule;
             }
@@ -322,16 +359,14 @@ namespace BibleCommon.Services
                 throw new ParallelVerseNotFoundException(parallelVerse, BaseVersePointerException.Severity.Error);
 
             var baseVerseEl = OneNoteUtils.NormalizeTextElement(
-                                    HierarchySearchManager.FindVerse(bibleIteratorArgs.ChapterDocument, false, baseVersePointer.Verse, xnm));
-            if (isStrong)
-                baseVerseEl.Parent.SetAttributeValue("quickStyleIndex", bibleIteratorArgs.StrongStyleIndex);            
+                                    HierarchySearchManager.FindVerse(bibleIteratorArgs.ChapterDocument, false, baseVersePointer.Verse, xnm));            
                 
             var baseChapterPageId = (string)bibleIteratorArgs.ChapterDocument.Root.Attribute("ID");
             var baseVerseElementId = (string)baseVerseEl.Parent.Attribute("objectID");
 
             LinkMainBibleVersesToSupplementalBibleVerse(oneNoteApp, baseChapterPageId, baseVerseElementId, parallelVerse, baseBibleObjectsSearchResult, xnm, nms);
             LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(oneNoteApp, baseVersePointer, baseVerseEl, baseBibleObjectsSearchResult, 
-                isStrong, strongTermLinksCache, alphabet, result, nms);                        
+                isStrong, bibleIteratorArgs.StrongStyleIndex, strongTermLinksCache, alphabet, result, nms);                        
 
             return result;
         }        
@@ -382,7 +417,7 @@ namespace BibleCommon.Services
 
         private static void LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(Application oneNoteApp, SimpleVersePointer baseVersePointer, XElement baseVerseEl,
             HierarchySearchManager.HierarchySearchResult baseBibleObjectsSearchResult, 
-            bool isStrong, Dictionary<string, string> strongTermLinksCache, string alphabet, List<Exception> result, XNamespace nms)
+            bool isStrong, int strongStyleIndex, Dictionary<string, string> strongTermLinksCache, string alphabet, List<Exception> result, XNamespace nms)
         {
             int textBreakIndex, htmlBreakIndex;
             var baseVerseNumber = StringUtils.GetNextString(baseVerseEl.Value, -1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound), 
@@ -399,7 +434,8 @@ namespace BibleCommon.Services
             string versePart = baseVerseEl.Value.Substring(htmlBreakIndex + 1);
 
             if (isStrong)
-            {
+            {                
+                baseVerseEl.Parent.SetAttributeValue("quickStyleIndex", strongStyleIndex);
                 versePart = ProcessStrongVerse(versePart, strongTermLinksCache, alphabet, result);
             }
 

@@ -78,7 +78,8 @@ namespace BibleCommon.Services
 
         public static void RemoveDictionary(Application oneNoteApp, string moduleName)
         {
-            if (SettingsManager.Instance.DictionariesModules.Count == 1)
+            if (SettingsManager.Instance.DictionariesModules.Count == 1 
+                && SettingsManager.Instance.DictionariesModules.First().ModuleName == moduleName)
             {
                 CloseDictionariesNotebook(oneNoteApp);
             }

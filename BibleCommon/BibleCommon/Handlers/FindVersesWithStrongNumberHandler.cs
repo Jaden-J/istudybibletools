@@ -13,7 +13,7 @@ namespace BibleCommon.Handlers
     {
         public string ProtocolName
         {
-            get { return "isbtfsnu"; }
+            get { return "isbtTermUsage"; }
         }
 
         public string GetCommandUrl(string strongNumber)
@@ -23,7 +23,7 @@ namespace BibleCommon.Handlers
 
         public bool IsProtocolCommand(string[] args)
         {
-            return args.Length > 0 && args[0].StartsWith(ProtocolName);
+            return args.Length > 0 && args[0].StartsWith(ProtocolName, StringComparison.OrdinalIgnoreCase);
         }
 
         public void ExecuteCommand(string[] args)

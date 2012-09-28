@@ -52,6 +52,7 @@ namespace BibleConfigurator
             }
             catch (Exception ex)
             {
+                BibleCommon.Services.Logger.LogError(ex);
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }             

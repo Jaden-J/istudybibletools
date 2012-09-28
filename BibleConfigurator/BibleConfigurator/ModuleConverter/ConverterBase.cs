@@ -74,10 +74,11 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="newTestamentBooksCount"></param>
         /// <param name="locale">can be not specified</param>
         /// <param name="notebooksInfo"></param>
-        public ConverterBase(string moduleShortName, string manifestFilesFolderPath, bool isStrong,            
+        public ConverterBase(string moduleShortName, string manifestFilesFolderPath, 
             string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, 
-            BibleTranslationDifferences translationDifferences, string chapterSectionNameTemplate,
-            List<SectionInfo> sectionsInfo, string dictionarySectionGroupName, int? strongNumbersCount, string version)
+            BibleTranslationDifferences translationDifferences, string chapterSectionNameTemplate, List<SectionInfo> sectionsInfo,
+            bool isStrong, string dictionarySectionGroupName, int? strongNumbersCount, 
+            string version)
         {
             OneNoteApp = new Application();
             this.IsStrong = isStrong;
@@ -98,8 +99,8 @@ namespace BibleConfigurator.ModuleConverter
             this.Errors = new List<ConverterExceptionBase>();
 
 
-            if (!Directory.Exists(manifestFilesFolderPath))
-                Directory.CreateDirectory(manifestFilesFolderPath);
+            if (!Directory.Exists(ManifestFilesFolderPath))
+                Directory.CreateDirectory(ManifestFilesFolderPath);
 
             CheckModuleParameters();
         }
@@ -258,7 +259,7 @@ namespace BibleConfigurator.ModuleConverter
         {
             var extModuleInfo = (BibleQuotaModuleInfo)externalModuleInfo;
 
-            ModuleInfo module = new ModuleInfo() 
+            var module = new ModuleInfo() 
             { 
                 ShortName = ModuleShortName,
                 Name = extModuleInfo.Name, 

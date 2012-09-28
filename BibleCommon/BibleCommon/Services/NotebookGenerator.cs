@@ -182,7 +182,7 @@ namespace BibleCommon.Services
             oneNoteApp.UpdateHierarchy(element.ToString(), Constants.CurrentOneNoteSchema);
         }
 
-        public static void AddParallelVerseRowToBibleTable(XElement tableElement, SimpleVerse verse, int translationIndex, 
+        public static XElement AddParallelVerseRowToBibleTable(XElement tableElement, SimpleVerse verse, int translationIndex, 
             SimpleVersePointer baseVerse, string locale, XmlNamespaceManager xnm)
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
@@ -213,7 +213,7 @@ namespace BibleCommon.Services
                 }
             }    
 
-            AddParallelVerseCellToBibleRow(tableElement, verseRow, verse.GetVerseFullString(), translationIndex, locale);            
+            return AddParallelVerseCellToBibleRow(tableElement, verseRow, verse.GetVerseFullString(), translationIndex, locale);            
         }
 
         public static void AddParallelBibleTitle(XDocument pageDoc, XElement tableElement, string parallelTranslationModuleName, int bibleIndex, string locale, XmlNamespaceManager xnm)

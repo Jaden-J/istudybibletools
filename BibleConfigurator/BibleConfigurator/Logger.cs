@@ -18,14 +18,14 @@ namespace BibleConfigurator
         public static void LogError(string message)
         {
             BibleCommon.Services.Logger.LogError(message);
-            MessageBox.Show(message);
+            MessageBox.Show(message, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             WasErrorLogged = true;
         }
 
         public static void LogMessage(string message)
         {
             BibleCommon.Services.Logger.LogMessage(message);
-            MessageBox.Show(message);            
+            MessageBox.Show(message, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);            
         }
     }
 }

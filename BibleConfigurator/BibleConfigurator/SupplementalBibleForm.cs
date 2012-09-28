@@ -39,6 +39,7 @@ namespace BibleConfigurator
             {
                 return 
 @"Данная форма предназначена для управления справочной Библией. 
+
 Обратите внимание:
   - в справочную Библию можно добавлять только модули версии 2.0 и выше;
   - добавление нового модуля в справочную Библию может занимать несколько часов.  
@@ -52,9 +53,20 @@ namespace BibleConfigurator
 
             if (SettingsManager.Instance.SupplementalBibleModules.Count > 0)
             {
+                int stagesCount = selectedModuleInfo.Type == ModuleType.Strong ? 2 : 1;
+
+                Dictionary<string, string> strongTermLinksCache = null;
+                if (selectedModuleInfo.Type == ModuleType.Strong)
+                {
+                    strongTermLinksCache = RunIndexStrong(selectedModuleInfo, 1, stagesCount);
+                }
+
                 int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.SupplementalBibleModules.First());
-                MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.AddParallelBibleTranslation);
-                result = SupplementalBibleManager.AddParallelBible(OneNoteApp, selectedModuleInfo.ShortName, FolderBrowserDialog.SelectedPath, Logger);
+                MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.AddParallelBibleTranslationStart);
+                string stagesString = stagesCount == 1 ? string.Empty : string.Format("{0} {1}/{1}: ", BibleCommon.Resources.Constants.Stage, stagesCount);
+                Logger.Preffix = string.Format("{0}{1}: ", stagesString, BibleCommon.Resources.Constants.AddParallelBibleTranslation); 
+                BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
+                result = SupplementalBibleManager.AddParallelBible(OneNoteApp, selectedModuleInfo.ShortName, FolderBrowserDialog.SelectedPath, strongTermLinksCache, Logger);
                 MainForm.ExternalProcessingDone(BibleCommon.Resources.Constants.AddParallelBibleTranslationFinishMessage);
             }
             else
@@ -70,11 +82,7 @@ namespace BibleConfigurator
                 Dictionary<string, string> strongTermLinksCache = null;
                 if (selectedModuleInfo.Type == ModuleType.Strong)
                 {
-                    int strongTermsCount = !string.IsNullOrEmpty(selectedModuleInfo.StrongNumbersCount) ? int.Parse(selectedModuleInfo.StrongNumbersCount) : 14700;
-                    MainForm.PrepareForExternalProcessing(strongTermsCount, 1, BibleCommon.Resources.Constants.IndexStrongDictionaryStart);
-                    Logger.Preffix = string.Format("{0} 2/{1}: {2}: ", BibleCommon.Resources.Constants.Stage, stagesCount, BibleCommon.Resources.Constants.IndexStrongDictionary);
-                    BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
-                    strongTermLinksCache = SupplementalBibleManager.IndexStrongDictionary(OneNoteApp, selectedModuleInfo, Logger);
+                    strongTermLinksCache = RunIndexStrong(selectedModuleInfo, 2, stagesCount);                    
                 }
 
                 MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.LinkSupplementalBibleStart);
@@ -86,6 +94,15 @@ namespace BibleConfigurator
             }
 
             return result.Errors.ConvertAll(ex => ex.Message);
+        }
+
+        private Dictionary<string, string> RunIndexStrong(ModuleInfo moduleInfo, int stage, int stagesCount)
+        {
+            int strongTermsCount = !string.IsNullOrEmpty(moduleInfo.StrongNumbersCount) ? int.Parse(moduleInfo.StrongNumbersCount) : 14700;
+            MainForm.PrepareForExternalProcessing(strongTermsCount, 1, BibleCommon.Resources.Constants.IndexStrongDictionaryStart);
+            Logger.Preffix = string.Format("{0} {1}/{2}: {3}: ", BibleCommon.Resources.Constants.Stage, stage, stagesCount, BibleCommon.Resources.Constants.IndexStrongDictionary);
+            BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
+            return SupplementalBibleManager.IndexStrongDictionary(OneNoteApp, moduleInfo, Logger);
         }
 
         protected override bool CanModuleBeDeleted(int index)
@@ -104,7 +121,7 @@ namespace BibleConfigurator
                     : BibleCommon.Resources.Constants.RemoveSupplementalBibleFinishMessage);
         }
 
-        protected override string CloseSupplementalNotebookConfirmText
+        protected override string CloseSupplementalNotebookQuestionText
         {
             get { return BibleCommon.Resources.Constants.DeleteSupplementalBibleQuestion; }
         }
@@ -116,7 +133,8 @@ namespace BibleConfigurator
 
         protected override bool IsModuleSupported(ModuleInfo moduleInfo)
         {
-            return BibleParallelTranslationManager.IsModuleSupported(moduleInfo);
+            return BibleParallelTranslationManager.IsModuleSupported(moduleInfo) 
+                && (moduleInfo.Type == ModuleType.Bible || moduleInfo.Type == ModuleType.Strong);
         }
 
         protected override bool SupplementalModuleAlreadyAdded(string moduleShortName)
@@ -132,6 +150,16 @@ namespace BibleConfigurator
         protected override string GetChkUseText()
         {
             return BibleCommon.Resources.Constants.UseSupplementalBible;
+        }
+
+        protected override bool IsBaseModuleSupported()
+        {
+            return BibleParallelTranslationManager.IsModuleSupported(SettingsManager.Instance.CurrentModule);
+        }
+
+        protected override string DeleteModuleQuestionText
+        {
+            get { return BibleCommon.Resources.Constants.DeleteThisModuleFromSupplementalBibleQuestion; }
         }
     }
 }
