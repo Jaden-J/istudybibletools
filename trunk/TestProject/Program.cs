@@ -42,9 +42,14 @@ namespace TestProject
 
         static void Main(string[] args)
         {
-           
+            Stopwatch sw = new Stopwatch();
+
+            sw.Start();
+
             try
-            { 
+            {
+                //SearchInNotebook();
+
                 //TestModule();
 
                 //CheckHTML();
@@ -55,7 +60,7 @@ namespace TestProject
 
                 //AddColorLink();
 
-                GenerateDictionary();
+                //GenerateDictionary();
 
                 //GenerateStrongDictionary();
                 
@@ -65,7 +70,7 @@ namespace TestProject
 
                 //TryToUpdateInkNodes();
 
-                //ConvertRussianModule();
+                ConvertRussianModule();
 
                 //ConvertEnglishModule();
 
@@ -87,18 +92,32 @@ namespace TestProject
                 Logger.LogError(ex.ToString());
             }
 
-            Console.WriteLine("Finish");
+            sw.Stop();
+
+            Console.WriteLine("Finish. Elapsed time: {0}", sw.Elapsed);
             Console.ReadKey();
+        }
+
+        private static void SearchInNotebook()
+        {
+            var xnm = new XmlNamespaceManager(new NameTable());
+            xnm.AddNamespace("one", Constants.OneNoteXmlNs);
+
+            var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            string xml;
+            oneNoteApp.GetHierarchy(null, HierarchyScope.hsNotebooks, out xml);
+            var notebookId = (string)XDocument.Parse(xml).Root.XPathSelectElement("one:Notebook", xnm).Attribute("ID");
+            oneNoteApp.FindPages(notebookId, "test", out xml, true, true);
         }      
 
         private static void TestModule()
         {
             string filePath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\temp\Modules\RST\manifest.xml";
-            var _serializer = new XmlSerializer(typeof(ModuleInfo.ModuleInfo));
+            var _serializer = new XmlSerializer(typeof(ModuleInfo));
 
             using (var fs = new FileStream(filePath, FileMode.Open))
             {
-                var module = (ModuleInfo.ModuleInfo)_serializer.Deserialize(fs);
+                var module = (ModuleInfo)_serializer.Deserialize(fs);
                 module.CorrectModuleAfterDeserialization();
                 var d = module.BibleStructure;
             }             
@@ -159,11 +178,12 @@ namespace TestProject
 
         private static void GenerateStrongDictionary()
         {
-            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "Strong", 
+            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "Strong", "Словарь Стронга",
                 new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs2\HEBREW.HTM"), SectionName = "Ветхий Завет", DisplayName="Еврейский лексикон Стронга (с) Bob Jones University", TermPrefix = "H", StartIndex = 0 },
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs2\GREEK.HTM"), SectionName = "Новый Завет", DisplayName="Греческий лексикон Стронга (с) Bob Jones University", TermPrefix= "G", StartIndex = 0 }
-                }, BibleQuotaDictionaryConverter.StructureType.Strong, Path.Combine(TempFolderPath, "strong"), "<h4>", "Пользовательские заметки", "Найти все стихи с этим номером", Encoding.Unicode, "ru");
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs2\HEBREW.HTM"), SectionName = "Ветхий Завет.one", DisplayName="Еврейский лексикон Стронга (с) Bob Jones University", TermPrefix = "H", StartIndex = 0 },
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs2\GREEK.HTM"), SectionName = "Новый Завет.one", DisplayName="Греческий лексикон Стронга (с) Bob Jones University", TermPrefix= "G", StartIndex = 0 }
+                }, BibleQuotaDictionaryConverter.StructureType.Strong, "Стронга",
+                Path.Combine(TempFolderPath, "strong"), "<h4>", "Пользовательские заметки", "Найти все стихи с этим номером", Encoding.Unicode, "ru", "2.0");
 
             converter.Convert();
 
@@ -172,11 +192,12 @@ namespace TestProject
         }
 
         private static void GenerateDictionary()
-        {            
-            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "Brockhaus",
+        {
+            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "Brockhaus", "Библейский словарь Брокгауза",
               new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Brockhaus\BrockhausLexicon.htm"), SectionName = "Брокгауза", DisplayName="Библейский словарь Брокгауза" }                    
-                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, Path.Combine(TempFolderPath, "Brockhaus"), "<h4>", "Пользовательские заметки", null, Encoding.Default, "ru");
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Brockhaus\BrockhausLexicon.htm"), SectionName = "Брокгауза.one", DisplayName="Библейский словарь Брокгауза" }                    
+                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, null,
+                Path.Combine(TempFolderPath, "Brockhaus"), "<h4>", "Пользовательские заметки", null, Encoding.Default, "ru", "2.0");
 
             converter.Convert();
 
@@ -217,7 +238,7 @@ namespace TestProject
             string defaultNotebookFolderPath;
             OneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
 
-            var result = SupplementalBibleManager.AddParallelBible(OneNoteApp, "rst", defaultNotebookFolderPath, null);
+            var result = SupplementalBibleManager.AddParallelBible(OneNoteApp, "rst", defaultNotebookFolderPath, new Dictionary<string,string>(), null);
 
             DateTime dtEnd = DateTime.Now;
 
@@ -233,9 +254,10 @@ namespace TestProject
         {
             string moduleShortName = "ibs";
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), 
-                Encoding.Default, true, "ru", 
-                PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst), "{0} глава. {1}", 
-                null, null, null, // параметры для стронга
+                Encoding.Default, "ru", 
+                PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst), "{0} глава. {1}",
+                null, 
+                false, null, null, // параметры для стронга
                 "2.0");            
 
             converter.Convert();
@@ -248,9 +270,10 @@ namespace TestProject
         {
             string moduleShortName = "rccv";
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), 
-                Encoding.Unicode, false, "ro", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
-                "{0} capitolul. {1}", 
-                null, null, null, 
+                Encoding.Unicode, "ro", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
+                "{0} capitolul. {1}",
+                null, 
+                false, null, null, 
                 "2.0");            
 
             converter.Convert();
@@ -263,9 +286,10 @@ namespace TestProject
         {
             string moduleShortName = "kjv";
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), 
-                Encoding.ASCII, false, "en", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(), 
-                "{0} chapter. {1}", 
-                null, null, null,
+                Encoding.ASCII, "en", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(), 
+                "{0} chapter. {1}",
+                null,
+                false, null, null, // параметры для стронга
                 "2.0");            
 
             converter.Convert();

@@ -373,7 +373,7 @@
     <value>books</value>
   </data>
   <data name="ChangeModuleWarning" xml:space="preserve">
-    <value>This module contains another text of the Bible and other versions of abbreviations of books. For correct program work    the follow notebooks must be re-created: Bible, Comments to the Bible, Summary of Notes. Continue?</value>
+    <value>This module contains another text of the Bible and other versions of abbreviations of books. For correct program work the follow notebooks must be re-created: Bible, Comments to the Bible, Summary of Notes. Continue?</value>
   </data>
   <data name="DefineNotebookDirectory" xml:space="preserve">
     <value>Specify notebook folder</value>
@@ -483,7 +483,7 @@
   <data name="ProcessBook" xml:space="preserve">
     <value>Processing the book</value>
   </data>
-  <data name="AddParallelBibleTranslation" xml:space="preserve">
+  <data name="AddParallelBibleTranslationStart" xml:space="preserve">
     <value>Adding parallel Bible translation start</value>
   </data>
   <data name="AddParallelBibleTranslationFinishMessage" xml:space="preserve">
@@ -593,5 +593,23 @@
   </data>
   <data name="SectionsCountNotEqual" xml:space="preserve">
     <value>Sections count in '{0}' is not as expected: expected {1}, found {2}.</value>
+  </data>
+  <data name="AddParallelBibleTranslation" xml:space="preserve">
+    <value>Adding parallel Bible translation</value>
+  </data>
+  <data name="DeleteDictionariesNotebookQuestion" xml:space="preserve">
+    <value>Close the Dictionaries Notebook?</value>
+  </data>
+  <data name="DeleteThisModuleFromDictionariesNotebookQuestion" xml:space="preserve">
+    <value>Remove this module from Dictionaries Notebook?</value>
+  </data>
+  <data name="DeleteThisModuleFromSupplementalBibleQuestion" xml:space="preserve">
+    <value>Remove this module from Supplemental Bible?</value>
+  </data>
+  <data name="SupportedModulesNotFound" xml:space="preserve">
+    <value>Supported modules not found. Please add necessary modules to the program.</value>
+  </data>
+  <data name="UseDictionaries" xml:space="preserve">
+    <value>Use Dictionaries</value>
   </data>
 </root>

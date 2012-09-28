@@ -79,7 +79,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Adding parallel Bible translation start.
+        ///   Ищет локализованную строку, похожую на Adding parallel Bible translation.
         /// </summary>
         public static string AddParallelBibleTranslation {
             get {
@@ -93,6 +93,15 @@ namespace BibleCommon.Resources {
         public static string AddParallelBibleTranslationFinishMessage {
             get {
                 return ResourceManager.GetString("AddParallelBibleTranslationFinishMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Adding parallel Bible translation start.
+        /// </summary>
+        public static string AddParallelBibleTranslationStart {
+            get {
+                return ResourceManager.GetString("AddParallelBibleTranslationStart", resourceCulture);
             }
         }
         
@@ -214,7 +223,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на This module contains another text of the Bible and other versions of abbreviations of books. For correct program work    the follow notebooks must be re-created: Bible, Comments to the Bible, Summary of Notes. Continue?.
+        ///   Ищет локализованную строку, похожую на This module contains another text of the Bible and other versions of abbreviations of books. For correct program work the follow notebooks must be re-created: Bible, Comments to the Bible, Summary of Notes. Continue?.
         /// </summary>
         public static string ChangeModuleWarning {
             get {
@@ -421,6 +430,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Close the Dictionaries Notebook?.
+        /// </summary>
+        public static string DeleteDictionariesNotebookQuestion {
+            get {
+                return ResourceManager.GetString("DeleteDictionariesNotebookQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на &apos;Summary of Notes&apos; pages deleting completed successfully..
         /// </summary>
         public static string DeleteNotesPagesManagerFinishMessage {
@@ -462,6 +480,24 @@ namespace BibleCommon.Resources {
         public static string DeleteThisModule {
             get {
                 return ResourceManager.GetString("DeleteThisModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Remove this module from Dictionaries Notebook?.
+        /// </summary>
+        public static string DeleteThisModuleFromDictionariesNotebookQuestion {
+            get {
+                return ResourceManager.GetString("DeleteThisModuleFromDictionariesNotebookQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Remove this module from Supplemental Bible?.
+        /// </summary>
+        public static string DeleteThisModuleFromSupplementalBibleQuestion {
+            get {
+                return ResourceManager.GetString("DeleteThisModuleFromSupplementalBibleQuestion", resourceCulture);
             }
         }
         
@@ -1339,11 +1375,29 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Supported modules not found. Please add necessary modules to the program..
+        /// </summary>
+        public static string SupportedModulesNotFound {
+            get {
+                return ResourceManager.GetString("SupportedModulesNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Time spent.
         /// </summary>
         public static string TimeSpent {
             get {
                 return ResourceManager.GetString("TimeSpent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Use Dictionaries.
+        /// </summary>
+        public static string UseDictionaries {
+            get {
+                return ResourceManager.GetString("UseDictionaries", resourceCulture);
             }
         }
         

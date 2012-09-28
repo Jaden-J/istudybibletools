@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BibleCommon.Services;
+using BibleCommon.Common;
 
 namespace BibleConfigurator
 {
@@ -13,72 +15,92 @@ namespace BibleConfigurator
 
         protected override string GetValidSupplementalNotebookId()
         {
-            throw new NotImplementedException();
+            return SettingsManager.Instance.GetValidDictionariesNotebookId(OneNoteApp, true);
         }
 
         protected override void ClearSupplementalModulesInSettingsStorage()
         {
-            throw new NotImplementedException();
+            SettingsManager.Instance.DictionariesModules.Clear();
         }
 
         protected override int GetSupplementalModulesCount()
         {
-            throw new NotImplementedException();
+            return SettingsManager.Instance.DictionariesModules.Count;
         }
 
         protected override bool SupplementalModuleAlreadyAdded(string moduleShortName)
         {
-            throw new NotImplementedException();
+            return SettingsManager.Instance.DictionariesModules.Any(m => m.ModuleName == moduleShortName);
         }
 
         protected override string FormDescription
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                return
+@"Данная форма предназначена для управления словарями. 
+
+Обратите внимание:  
+  - необходимо, чтобы в программу были загружены модули типа 'Словарь'  
+";
+            }
         }
 
         protected override List<string> CommitChanges(BibleCommon.Common.ModuleInfo selectedModuleInfo)
         {
-            throw new NotImplementedException();
+            DictionaryManager.AddDictionary(OneNoteApp, selectedModuleInfo.ShortName, FolderBrowserDialog.SelectedPath);
+            return new List<string>();
         }
 
         protected override string GetSupplementalModuleName(int index)
         {
-            throw new NotImplementedException();
+            return SettingsManager.Instance.DictionariesModules[index].ModuleName;
         }
 
         protected override bool CanModuleBeDeleted(int index)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         protected override void DeleteModule(string moduleShortName)
         {
-            throw new NotImplementedException();
+            DictionaryManager.RemoveDictionary(OneNoteApp, moduleShortName);            
         }
 
-        protected override string CloseSupplementalNotebookConfirmText
+        protected override string CloseSupplementalNotebookQuestionText
         {
-            get { throw new NotImplementedException(); }
+            get { return BibleCommon.Resources.Constants.DeleteDictionariesNotebookQuestion; }
         }
 
         protected override void CloseSupplementalNotebook()
         {
-            throw new NotImplementedException();
+            DictionaryManager.CloseDictionariesNotebook(OneNoteApp);
         }
 
         protected override bool IsModuleSupported(BibleCommon.Common.ModuleInfo moduleInfo)
         {
-            throw new NotImplementedException();
+            return BibleParallelTranslationManager.IsModuleSupported(moduleInfo) 
+                && moduleInfo.Type == ModuleType.Dictionary;
         }
 
         protected override string GetFormText()
         {
-            throw new NotImplementedException();
+            return BibleCommon.Resources.Constants.DictionariesManagement;
         }
 
         protected override string GetChkUseText()
         {
-            throw new NotImplementedException();
+            return BibleCommon.Resources.Constants.UseDictionaries;
+        }
+
+        protected override bool IsBaseModuleSupported()
+        {
+            return true;
+        }
+
+        protected override string DeleteModuleQuestionText
+        {
+            get { return BibleCommon.Resources.Constants.DeleteThisModuleFromDictionariesNotebookQuestion; }
         }
     }
 }

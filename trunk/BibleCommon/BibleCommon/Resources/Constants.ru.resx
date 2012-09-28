@@ -259,7 +259,7 @@
     <value>При загрузке модуля '{0}' произошла ошибка: {1}</value>
   </data>
   <data name="ModuleWithSameNameAlreadyExists" xml:space="preserve">
-    <value>Модуль с таким именем уже существует. Существующий модуль будет полностью заменён загружаемым. Продолжить?</value>
+    <value>Модуль с таким именем уже существует. Существующий модуль будет заменён загружаемым. Продолжить?</value>
   </data>
   <data name="NotebookIteratorCanNotFindSectionGroup" xml:space="preserve">
     <value>Не удаётся найти группу секций</value>
@@ -480,7 +480,7 @@
   <data name="ProcessBook" xml:space="preserve">
     <value>Обработка книги</value>
   </data>
-  <data name="AddParallelBibleTranslation" xml:space="preserve">
+  <data name="AddParallelBibleTranslationStart" xml:space="preserve">
     <value>Старт добавления параллельного перевода</value>
   </data>
   <data name="AddParallelBibleTranslationFinishMessage" xml:space="preserve">
@@ -590,5 +590,23 @@
   </data>
   <data name="SectionsCountNotEqual" xml:space="preserve">
     <value>Количество разделов в '{0}' не соответствует ожиданиям: ожидалось {1}, найдено {2}.</value>
+  </data>
+  <data name="AddParallelBibleTranslation" xml:space="preserve">
+    <value>Добавление параллельного перевода</value>
+  </data>
+  <data name="DeleteDictionariesNotebookQuestion" xml:space="preserve">
+    <value>Закрыть записную книжку словарей?</value>
+  </data>
+  <data name="DeleteThisModuleFromDictionariesNotebookQuestion" xml:space="preserve">
+    <value>Удалить данный модуль из записной книжки словарей?</value>
+  </data>
+  <data name="DeleteThisModuleFromSupplementalBibleQuestion" xml:space="preserve">
+    <value>Удалить данный модуль из Справочной Библии?</value>
+  </data>
+  <data name="SupportedModulesNotFound" xml:space="preserve">
+    <value>Не найдено ни одного поддерживаемого модуля. Пожалуйста, добавьте необходимые модули в программу.</value>
+  </data>
+  <data name="UseDictionaries" xml:space="preserve">
+    <value>Использовать словари</value>
   </data>
 </root>

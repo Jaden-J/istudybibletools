@@ -93,26 +93,23 @@ namespace BibleCommon.Services
             _oneNoteApp = null;
         }
 
-        public void RemoveLastParallelTranslation()
+        public void RemoveParallelTranslation(string moduleName)
         {
-            if (SettingsManager.Instance.SupplementalBibleModules.Count > 1)
-            {
-                string lastModuleName = SettingsManager.Instance.SupplementalBibleModules.Last();
-                var moduleInfo = ModulesManager.GetModuleInfo(lastModuleName);
+            var moduleInfo = ModulesManager.GetModuleInfo(moduleName);
 
-                XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
+            XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
 
-                IterateBaseBible(
-                    (chapterPageDoc, chapterPointer) =>
-                    {
-                        RemoveLastChapterParallelTranslation(chapterPageDoc, moduleInfo, xnm);                   
+            IterateBaseBible(
+                (chapterPageDoc, chapterPointer) =>
+                {
+                    RemoveChapterParallelTranslation(chapterPageDoc, moduleInfo, xnm);
 
-                        return null;
-                    }, true, false, null);
-            }
+                    return null;
+                }, true, false, null);
+
         }
 
-        internal static void RemoveLastChapterParallelTranslation(XDocument chapterPageDoc, ModuleInfo lastModuleInfo, XmlNamespaceManager xnm)
+        internal static void RemoveChapterParallelTranslation(XDocument chapterPageDoc, ModuleInfo lastModuleInfo, XmlNamespaceManager xnm)
         {
             var tableEl = NotebookGenerator.GetPageTable(chapterPageDoc, xnm);
 
@@ -139,27 +136,6 @@ namespace BibleCommon.Services
             {
                 column.SetAttributeValue("index", index++);
             }
-        }
-        
-        public BibleParallelTranslationConnectionResult AddParallelTranslation()
-        {
-            XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();            
-            
-            return IterateBaseBible(
-                (chapterPageDoc, chapterPointer) =>
-                {
-                    var tableEl = NotebookGenerator.GetPageTable(chapterPageDoc, xnm);
-                    var bibleIndex = NotebookGenerator.AddColumnToTable(tableEl, SettingsManager.Instance.PageWidth_Bible, xnm);
-                    NotebookGenerator.AddParallelBibleTitle(chapterPageDoc, tableEl, ParallelModuleInfo.Name, bibleIndex, ParallelBibleInfo.Content.Locale, xnm);
-
-                    return new BibleIteratorArgs() { BibleIndex = bibleIndex, TableElement = tableEl };
-                },               
-                true, true,
-                (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
-                {
-                    NotebookGenerator.AddParallelVerseRowToBibleTable(bibleIteratorArgs.TableElement, parallelVerse, 
-                        bibleIteratorArgs.BibleIndex, baseVersePointer, ParallelBibleInfo.Content.Locale, xnm);
-                });
         }
 
         /// <summary>

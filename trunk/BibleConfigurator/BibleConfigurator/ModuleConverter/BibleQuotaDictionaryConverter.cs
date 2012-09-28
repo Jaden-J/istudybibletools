@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using BibleCommon.Consts;
 using BibleCommon.Handlers;
+using BibleCommon.Common;
 
 namespace BibleConfigurator.ModuleConverter
 {
@@ -49,7 +50,9 @@ namespace BibleConfigurator.ModuleConverter
         public string Locale { get; set; }
         public string Version { get; set; }
         public string TermStartString { get; set; }
-        public string DictionaryName { get; set; }        
+        public string DictionaryModuleName { get; set; }
+        public string DictionaryDisplayName { get; set; }
+        public string DictionarySectionGroupName { get; set; }
         public List<Exception> Errors { get; set; }
         public string UserNotesString { get; set; }
         public string FindAllVersesString { get; set; }        
@@ -61,12 +64,14 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="bqDictionaryFolder">Только один словарь может быть в папке.</param>
         /// <param name="type"></param>
         /// <param name="manifestFilesFolder"></param>
-        public BibleQuotaDictionaryConverter(Application oneNoteApp, string notebookName, string dictionaryName, 
-            List<DictionaryFile> dictionaryFiles, StructureType type, string manifestFilesFolder, string termStartString, string userNotesString, string findAllVersesString,
-            Encoding fileEncoding, string locale)
+        public BibleQuotaDictionaryConverter(Application oneNoteApp, string notebookName, string dictionaryModuleName, string dictionaryDisplayName,
+            List<DictionaryFile> dictionaryFiles, StructureType type, string dictionarySectionGroupName, string manifestFilesFolder, string termStartString, string userNotesString, string findAllVersesString,
+            Encoding fileEncoding, string locale, string version)
         {
             this.Type = type;
-            this.DictionaryName = dictionaryName;
+            this.DictionaryModuleName = dictionaryModuleName;
+            this.DictionaryDisplayName = dictionaryDisplayName;
+            this.DictionarySectionGroupName = dictionarySectionGroupName;
             this.OneNoteApp = oneNoteApp;
             this.ManifestFilesFolder = manifestFilesFolder;
             this.NotebookId = OneNoteUtils.GetNotebookIdByName(OneNoteApp, notebookName, true);
@@ -78,12 +83,16 @@ namespace BibleConfigurator.ModuleConverter
             this.TermStartString = termStartString;            
             this.Errors = new List<Exception>();
             this.UserNotesString = userNotesString;
-            this.FindAllVersesString = findAllVersesString;            
+            this.FindAllVersesString = findAllVersesString;
+            this.Version = version;
+
+            if (!Directory.Exists(ManifestFilesFolder))
+                Directory.CreateDirectory(ManifestFilesFolder);
         }        
 
         public void Convert()
         {
-            var sectionGroupEl = NotebookGenerator.AddRootSectionGroupToNotebook(OneNoteApp, NotebookId, this.DictionaryName);
+            var sectionGroupEl = NotebookGenerator.AddRootSectionGroupToNotebook(OneNoteApp, NotebookId, this.DictionaryModuleName);
             var sectionGroupId = (string)sectionGroupEl.Attribute("ID");
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
 
@@ -92,7 +101,7 @@ namespace BibleConfigurator.ModuleConverter
                 StringBuilder termDescription = null;
                 string termName = null;
 
-                var sectionId = NotebookGenerator.AddSection(OneNoteApp, sectionGroupId, file.SectionName);
+                var sectionId = NotebookGenerator.AddSection(OneNoteApp, sectionGroupId, Path.GetFileNameWithoutExtension(file.SectionName));
 
                 int termsInPageCount = 0;
                 int termIndex = file.StartIndex - 1;
@@ -133,8 +142,10 @@ namespace BibleConfigurator.ModuleConverter
                     termIndex++;
                     AddTermToPage(file, sectionId, pageInfo, termName, termDescription.ToString(), termsInPageCount, prevTerm, ref termIndex, true, xnm);
                 }
-            }            
-        }
+            }
+
+            GenerateManifest();
+        }     
 
         private TermPageInfo AddTermsPage(string sectionId, string pageName, string pageDisplayName)
         {
@@ -154,11 +165,12 @@ namespace BibleConfigurator.ModuleConverter
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
             var pageInfoWasChanged = false;
 
-            if (pageInfo == null || (Type == StructureType.Dictionary && !string.IsNullOrEmpty(prevTermName) && prevTermName.ToUpper()[0] != termName.ToUpper()[0]))
+            if (pageInfo == null || (Type == StructureType.Dictionary && !string.IsNullOrEmpty(prevTermName)
+                && GetFirstTermValueChar(prevTermName) != GetFirstTermValueChar(termName)))
             {
                 if (pageInfo != null)
                     UpdatePage(pageInfo.PageDocument);
-                pageInfo = AddTermsPage(sectionId, termName.ToUpper()[0].ToString(), file.DisplayName);
+                pageInfo = AddTermsPage(sectionId, GetFirstTermValueChar(termName).ToString(), file.DisplayName);
                 pageInfoWasChanged = true;
             }
 
@@ -217,11 +229,19 @@ namespace BibleConfigurator.ModuleConverter
                 return pageInfo;
 
             return null;
-        }      
+        }
+
+        private char GetFirstTermValueChar(string termName)
+        {
+            return char.ToUpper(termName[0]);
+            //int temp;
+            //return char.ToUpper(StringUtils.GetNextString(termName, -1,
+            //    new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound), out temp, out temp, StringSearchIgnorance.None, StringSearchMode.SearchText).First());
+        }
 
         private string GetTermName(string line, DictionaryFile file)
         {
-            var result = StringUtils.GetText(line).Trim();
+            var result = StringUtils.GetText(line).Trim(new char[] { ' ', '"' });
             if (Type == StructureType.Strong)
             {
                 var number = int.Parse(result);
@@ -306,6 +326,21 @@ namespace BibleConfigurator.ModuleConverter
         protected void UpdatePage(XDocument pageDoc)
         {
             OneNoteApp.UpdatePageContent(pageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+        }
+
+        private void GenerateManifest()
+        {     
+            var module = new ModuleInfo()
+            {
+                ShortName = DictionaryModuleName,
+                Name = DictionaryDisplayName,
+                Version = this.Version,                
+                Type = ModuleType.Dictionary
+            };
+            module.Sections = this.DictionaryFiles.ConvertAll(df => new SectionInfo() { Name = df.SectionName });
+            module.DictionarySectionGroupName = this.DictionarySectionGroupName;
+
+            Utils.SaveToXmlFile(module, Path.Combine(ManifestFilesFolder, Constants.ManifestFileName));
         }
 
         public void Dispose()

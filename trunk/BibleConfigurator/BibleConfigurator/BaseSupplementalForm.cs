@@ -39,9 +39,11 @@ namespace BibleConfigurator
         protected abstract string GetSupplementalModuleName(int index);
         protected abstract bool CanModuleBeDeleted(int index);
         protected abstract void DeleteModule(string moduleShortName);
-        protected abstract string CloseSupplementalNotebookConfirmText { get; }
+        protected abstract string CloseSupplementalNotebookQuestionText { get; }
         protected abstract void CloseSupplementalNotebook();
-        protected abstract bool IsModuleSupported(ModuleInfo moduleInfo);        
+        protected abstract bool IsModuleSupported(ModuleInfo moduleInfo);
+        protected abstract bool IsBaseModuleSupported();
+        protected abstract string DeleteModuleQuestionText { get; }
 
         protected FolderBrowserDialog FolderBrowserDialog
         {
@@ -70,12 +72,12 @@ namespace BibleConfigurator
                 Close();
             }
 
-            if (!BibleParallelTranslationManager.IsModuleSupported(SettingsManager.Instance.CurrentModule))
+            if (!IsBaseModuleSupported())
             {
                 FormLogger.LogError(string.Format(BibleCommon.Resources.Constants.BaseModuleIsNotSupported, 
                                         SettingsManager.Instance.CurrentModule.Version, BibleParallelTranslationManager.SupportedModuleMinVersion));
                 Close();
-            }
+            }            
 
             LoadFormData();
 
@@ -253,11 +255,12 @@ namespace BibleConfigurator
 
         private bool DeleteModuleWithConfirm(string moduleName)
         {
+            EnableUI(false);
             InProgress = true;
 
             var result = false;
 
-            if (MessageBox.Show(BibleCommon.Resources.Constants.DeleteThisModuleQuestion, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+            if (MessageBox.Show(DeleteModuleQuestionText, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                 == System.Windows.Forms.DialogResult.Yes)
             {
                 try
@@ -279,6 +282,7 @@ namespace BibleConfigurator
                 result = true;
             }
 
+            EnableUI(true);
             InProgress = false;
             return result;
         }  
@@ -303,7 +307,7 @@ namespace BibleConfigurator
 
                 if (!string.IsNullOrEmpty(sbNotebookId))
                 {
-                    if (MessageBox.Show(CloseSupplementalNotebookConfirmText,
+                    if (MessageBox.Show(CloseSupplementalNotebookQuestionText,
                         BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                         == System.Windows.Forms.DialogResult.Yes)
                     {
@@ -318,7 +322,17 @@ namespace BibleConfigurator
             }
             else if (chkUseSupplementalBible.Checked && string.IsNullOrEmpty(sbNotebookId))
             {
-                btnSBFolder.Visible = true;
+                if (!Modules.Any(m => IsModuleSupported(m)))
+                {
+                    FormLogger.LogError(BibleCommon.Resources.Constants.SupportedModulesNotFound);
+
+                    chkUseSupplementalBible.Checked = !chkUseSupplementalBible.Checked;
+                    needToUpdate = false;
+                }
+                else
+                {
+                    btnSBFolder.Visible = true;
+                }
             }
             
             if (needToUpdate)
@@ -353,7 +367,7 @@ namespace BibleConfigurator
             if (CbModule.Items.Count > 0)
                 CbModule.SelectedIndex = 0;
 
-            pnModules.Controls.Add(CbModule);
+            pnModules.Controls.Add(CbModule);            
         }
 
         private void btnOk_Click(object sender, EventArgs e)

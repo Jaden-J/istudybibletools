@@ -129,7 +129,7 @@ namespace BibleCommon.Common
 
             return string.Format("{0}{1}{2}",
                             verseNumber,
-                            string.IsNullOrEmpty(VerseContent) ? string.Empty : " ",
+                            string.IsNullOrEmpty(VerseContent) ? string.Empty : "<span> </span>",
                             VerseContent);
         }
 
