@@ -40,8 +40,7 @@ namespace BibleConfigurator.ModuleConverter
     {
         protected const string IniFileName = "bibleqt.ini";
 
-        protected string ModuleFolder { get; set; }
-        protected Encoding FileEncoding { get; set; }
+        protected string ModuleFolder { get; set; }        
 
         public Func<BibleQuotaBibleBookInfo, string, string> ConvertChapterNameFunc { get; set; }        
         
@@ -59,7 +58,7 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="newTestamentBooksCount"></param>
         /// <param name="locale">can be not specified</param>
         /// <param name="notebooksInfo"></param>
-        public BibleQuotaConverter(string moduleShortName, string bqModuleFolder, string manifestFilesFolderPath, Encoding fileEncoding,             
+        public BibleQuotaConverter(string moduleShortName, string bqModuleFolder, string manifestFilesFolderPath, 
             string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, BibleTranslationDifferences translationDifferences, 
             string chapterSectionNameTemplate, List<SectionInfo> sectionsInfo,
             bool isStrong, string dictionarySectionGroupName, int? strongNumbersCount, 
@@ -67,8 +66,7 @@ namespace BibleConfigurator.ModuleConverter
             : base(moduleShortName, manifestFilesFolderPath, locale, notebooksInfo, bookIndexes,
                         translationDifferences, chapterSectionNameTemplate, sectionsInfo, isStrong, dictionarySectionGroupName, strongNumbersCount, version)
         {
-            this.ModuleFolder = bqModuleFolder;
-            this.FileEncoding = fileEncoding;            
+            this.ModuleFolder = bqModuleFolder;            
         }
 
         protected override ExternalModuleInfo ReadExternalModuleInfo()
@@ -77,7 +75,7 @@ namespace BibleConfigurator.ModuleConverter
 
             var result = new BibleQuotaModuleInfo();
 
-            foreach (string line in File.ReadAllLines(iniFilePath, FileEncoding))
+            foreach (string line in File.ReadAllLines(iniFilePath, Utils.GetFileEncoding(iniFilePath)))
             {
                 var pair = line.Split(new char[] { '=' }, 2, StringSplitOptions.RemoveEmptyEntries);
                 if (pair.Length == 2)
@@ -147,9 +145,9 @@ namespace BibleConfigurator.ModuleConverter
 
                 var bookSectionId = AddBookSection(currentSectionGroupId, bibleBookInfo.SectionName, bibleBookInfo.Name);
 
-                string bookFile = Path.Combine(ModuleFolder, bibleBookInfo.FileName);
+                string bookFile = Path.Combine(ModuleFolder, bibleBookInfo.FileName);                
 
-                foreach (string line in File.ReadAllLines(bookFile, FileEncoding))
+                foreach (string line in File.ReadAllLines(bookFile, Utils.GetFileEncoding(bookFile)))
                 {
                     string lineText = ShellText(line, moduleInfo); 
 
@@ -186,7 +184,7 @@ namespace BibleConfigurator.ModuleConverter
             {
                 UpdateChapterPage(currentChapterDoc);
             }
-        }
+        }    
 
         private string ConvertChapterName(BibleQuotaBibleBookInfo bibleBookInfo, string lineText)
         {

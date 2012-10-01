@@ -507,7 +507,7 @@ namespace BibleCommon.Common
             {
                 var versesParts = verseContent.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
                 if (versesParts.Length > verse.PartIndex.Value)
-                    result = versesParts[verse.PartIndex.Value];
+                    result = versesParts[verse.PartIndex.Value].Trim();
             }
             else
                 result = verseContent;
