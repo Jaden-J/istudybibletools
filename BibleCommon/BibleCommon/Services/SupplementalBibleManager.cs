@@ -43,8 +43,8 @@ namespace BibleCommon.Services
 
             SettingsManager.Instance.SupplementalBibleModules.Clear();
             SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
-            SettingsManager.Instance.Save();            
-
+            SettingsManager.Instance.Save();
+            return;
             for (int i = 0; i < moduleInfo.BibleStructure.BibleBooks.Count; i++)
             {
                 var bibleBookInfo = moduleInfo.BibleStructure.BibleBooks[i];
@@ -151,6 +151,8 @@ namespace BibleCommon.Services
 
             SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
             SettingsManager.Instance.Save();
+
+            return new BibleParallelTranslationConnectionResult();
             BibleParallelTranslationManager.MergeModuleWithMainBible(moduleShortName);
 
             BibleParallelTranslationConnectionResult result = null;

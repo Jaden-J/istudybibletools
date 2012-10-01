@@ -612,4 +612,10 @@
   <data name="UseDictionaries" xml:space="preserve">
     <value>Use Dictionaries</value>
   </data>
+  <data name="AdditionalModules" xml:space="preserve">
+    <value>Additional modules</value>
+  </data>
+  <data name="BaseModules" xml:space="preserve">
+    <value>Base modules</value>
+  </data>
 </root>

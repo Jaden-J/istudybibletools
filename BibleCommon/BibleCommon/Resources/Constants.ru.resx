@@ -609,4 +609,10 @@
   <data name="UseDictionaries" xml:space="preserve">
     <value>Использовать словари</value>
   </data>
+  <data name="AdditionalModules" xml:space="preserve">
+    <value>Дополнительные модули</value>
+  </data>
+  <data name="BaseModules" xml:space="preserve">
+    <value>Основные модули</value>
+  </data>
 </root>

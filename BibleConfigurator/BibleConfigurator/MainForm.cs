@@ -1172,26 +1172,42 @@ namespace BibleConfigurator
             btnDictionariesManagement.Text = BibleCommon.Resources.Constants.DictionariesManagement;
         }
 
-        private void LoadModulesInfo()
+        private static int GetModuleTypeWeight(ModuleType type)
         {
-            string modulesDirectory = ModulesManager.GetModulesDirectory();
-
-            int top = 10;
-            var modules = Directory.GetDirectories(modulesDirectory, "*", SearchOption.TopDirectoryOnly);
-            foreach (var moduleDirectory in modules)
+            switch (type)
             {
-                string moduleName = Path.GetFileNameWithoutExtension(moduleDirectory).ToLower();                
+                case ModuleType.Bible:
+                    return 0;
+                default:
+                    return 1;
+            }
+        }
 
+
+        private bool _lblModulesBibleTitleWasAdded = false;
+        private bool _lblModulesDictionariesTitleWasAdded = false;
+
+        private void LoadModulesInfo()
+        {            
+            int top = 10;
+            _lblModulesBibleTitleWasAdded = false;
+            _lblModulesDictionariesTitleWasAdded = false;
+            var modules = ModulesManager.GetModules();
+            foreach (var module in modules.OrderBy(m => GetModuleTypeWeight(m.Type)).ThenBy(m => m.Name))
+            {
                 try
                 {
-                    ModulesManager.CheckModule(moduleName);
-                    
-                    LoadModuleToUI(moduleName, top);                    
+                    ModulesManager.CheckModule(module);
+
+                    top = SetModulesGroupTitle(module, top);
+
+                    LoadModuleToUI(module, top);                    
                 }
                 catch (Exception ex)
                 {
+                    string moduleDirectory = ModulesManager.GetModuleDirectory(module.ShortName);
                     FormLogger.LogMessage(string.Format(BibleCommon.Resources.Constants.ModuleUploadError, moduleDirectory, ex.Message));
-                    if (DeleteModuleWithConfirm(moduleName))
+                    if (DeleteModuleWithConfirm(module.ShortName))
                         return;
                 }
 
@@ -1229,15 +1245,43 @@ namespace BibleConfigurator
             _wasLoadedModulesInfo = true;
         }
 
-        private void LoadModuleToUI(string moduleName, int top)
-        {   
-            var moduleInfo = ModulesManager.GetModuleInfo(moduleName);            
+        private int SetModulesGroupTitle(ModuleInfo module, int top)
+        {
+            Label lblTitle = null;
+            if (module.Type == ModuleType.Bible)
+            {
+                if (!_lblModulesBibleTitleWasAdded)
+                {
+                    lblTitle = new Label() { Text = BibleCommon.Resources.Constants.BaseModules, Top = top + 10, Width = 600 };
+                    _lblModulesBibleTitleWasAdded = true;
+                }
+            }
+            else
+            {
+                if (!_lblModulesDictionariesTitleWasAdded)
+                {
+                    lblTitle = new Label() { Text = BibleCommon.Resources.Constants.AdditionalModules, Top = top + 10, Width = 600 };
+                    _lblModulesDictionariesTitleWasAdded = true;
+                }
+            }
 
+            if (lblTitle != null)
+            {
+                lblTitle.Font = new Font(lblTitle.Font, FontStyle.Bold);
+                pnModules.Controls.Add(lblTitle);
+                top += 35;
+            }
+
+            return top;
+        }
+
+        private void LoadModuleToUI(ModuleInfo moduleInfo, int top)
+        {   
             Label lblName = new Label();
             lblName.Text = moduleInfo.Name;
             lblName.Top = top + 5;
-            lblName.Left = 0;
-            lblName.Width = 340;
+            lblName.Left = 15;
+            lblName.Width = 325;
             FormExtensions.SetToolTip(lblName, BibleCommon.Resources.Constants.ModuleDisplayName);
             pnModules.Controls.Add(lblName);
 
@@ -1274,15 +1318,18 @@ namespace BibleConfigurator
                 pnModules.Controls.Add(btnInfo);
             }
 
-            Button btnUseThisModule = new Button();
-            btnUseThisModule.Text = GetBtnModuleManagementText(moduleInfo.Type);                
-            btnUseThisModule.Enabled = moduleInfo.Type == ModuleType.Bible ? SettingsManager.Instance.ModuleName != moduleInfo.ShortName : true;
-            btnUseThisModule.Tag = moduleInfo;
-            btnUseThisModule.Top = top;
-            btnUseThisModule.Left = 415;
-            btnUseThisModule.Width = 185;
-            btnUseThisModule.Click += new EventHandler(btnUseThisModule_Click);
-            pnModules.Controls.Add(btnUseThisModule);
+            if (moduleInfo.Type == ModuleType.Bible)
+            {
+                Button btnUseThisModule = new Button();
+                btnUseThisModule.Text = GetBtnModuleManagementText(moduleInfo.Type);
+                btnUseThisModule.Enabled = moduleInfo.Type == ModuleType.Bible ? SettingsManager.Instance.ModuleName != moduleInfo.ShortName : true;
+                btnUseThisModule.Tag = moduleInfo;
+                btnUseThisModule.Top = top;
+                btnUseThisModule.Left = 415;
+                btnUseThisModule.Width = 185;
+                btnUseThisModule.Click += new EventHandler(btnUseThisModule_Click);
+                pnModules.Controls.Add(btnUseThisModule);
+            }
 
             Button btnDel = new Button();
             btnDel.Image = BibleConfigurator.Properties.Resources.del;

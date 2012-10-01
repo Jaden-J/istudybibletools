@@ -172,7 +172,7 @@ namespace BibleCommon.Services
         private Dictionary<LinkId, string> _linksCache = new Dictionary<LinkId, string>();        
         private HashSet<VersePointer> _processedVerses = new HashSet<VersePointer>();
         private List<SortPageInfo> _sortVerseLinkPagesInfo = new List<SortPageInfo>();
-        private Dictionary<VersePointer, HierarchySearchManager.HierarchySearchResult> _bibleVersesLinks = null;
+        //private Dictionary<VersePointer, HierarchySearchManager.HierarchySearchResult> _bibleVersesLinks = null;
 
 
         protected OneNoteProxy()

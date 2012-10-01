@@ -79,6 +79,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Additional modules.
+        /// </summary>
+        public static string AdditionalModules {
+            get {
+                return ResourceManager.GetString("AdditionalModules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Adding parallel Bible translation.
         /// </summary>
         public static string AddParallelBibleTranslation {
@@ -174,6 +183,15 @@ namespace BibleCommon.Resources {
         public static string BaseModuleIsNotSupported {
             get {
                 return ResourceManager.GetString("BaseModuleIsNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Base modules.
+        /// </summary>
+        public static string BaseModules {
+            get {
+                return ResourceManager.GetString("BaseModules", resourceCulture);
             }
         }
         

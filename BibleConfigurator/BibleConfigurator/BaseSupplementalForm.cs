@@ -122,15 +122,19 @@ namespace BibleConfigurator
                 LblDescription.Left = 10;                
                 pnModules.Controls.Add(LblDescription);
                 pnModules.Enabled = true;
+                btnSBFolder.Visible = false;
             }
             else
             {
-                GenerateNewModuleButton();
+                if (AreThereModulesToAdd())
+                    GenerateNewModuleButton();
 
                 if (GetSupplementalModulesCount() == 0)
-                    _btnAddNewModule_Click(this, null);
+                    _btnAddNewModule_Click(this, null);  
                 else
                     LoadModules();
+                
+                btnSBFolder.Visible = string.IsNullOrEmpty(GetValidSupplementalNotebookId());
             }
         }
 
@@ -217,8 +221,12 @@ namespace BibleConfigurator
         {
             for (int i = 0; i < GetSupplementalModulesCount(); i++)
             {
-                AddModuleRow(Modules.First(m => m.ShortName == GetSupplementalModuleName(i)), i, TopControlsPosition);
-                TopControlsPosition += 30;
+                var module = Modules.First(m => m.ShortName == GetSupplementalModuleName(i));
+                if (IsModuleSupported(module))
+                {
+                    AddModuleRow(module, i, TopControlsPosition);
+                    TopControlsPosition += 30;
+                }
             }
 
             BtnAddNewModule.Top = TopControlsPosition;
@@ -303,8 +311,6 @@ namespace BibleConfigurator
 
             if (WasLoaded && !chkUseSupplementalBible.Checked)
             {
-                btnSBFolder.Visible = false;
-
                 if (!string.IsNullOrEmpty(sbNotebookId))
                 {
                     if (MessageBox.Show(CloseSupplementalNotebookQuestionText,
@@ -328,11 +334,7 @@ namespace BibleConfigurator
 
                     chkUseSupplementalBible.Checked = !chkUseSupplementalBible.Checked;
                     needToUpdate = false;
-                }
-                else
-                {
-                    btnSBFolder.Visible = true;
-                }
+                }                
             }
             
             if (needToUpdate)
@@ -346,6 +348,11 @@ namespace BibleConfigurator
         {
             if (e.KeyCode == Keys.Escape)
                 Close();
+        }
+
+        private bool AreThereModulesToAdd()
+        {
+            return Modules.Any(m => IsModuleSupported(m) && !SupplementalModuleAlreadyAdded(m.ShortName));            
         }
 
         private void AddModulesComboBox()

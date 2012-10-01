@@ -22,9 +22,9 @@ namespace BibleCommon.Common
 
     public enum ModuleType
     {
-        Bible,
-        Dictionary,
-        Strong
+        Bible = 0,
+        Strong = 1,
+        Dictionary = 2        
     }
 
     [Serializable]
