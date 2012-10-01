@@ -25,7 +25,7 @@ namespace TestProject
 {
     class Program
     {
-        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\IStudyBibleTools\ForGenerating\";
+        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\Holy Bible\ForGenerating\";
         private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp\";
 
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
@@ -70,7 +70,7 @@ namespace TestProject
 
                 //TryToUpdateInkNodes();
 
-                ConvertRussianModule();
+                //ConvertRussianModule();
 
                 //ConvertEnglishModule();
 
@@ -183,7 +183,7 @@ namespace TestProject
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs2\HEBREW.HTM"), SectionName = "Ветхий Завет.one", DisplayName="Еврейский лексикон Стронга (с) Bob Jones University", TermPrefix = "H", StartIndex = 0 },
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs2\GREEK.HTM"), SectionName = "Новый Завет.one", DisplayName="Греческий лексикон Стронга (с) Bob Jones University", TermPrefix= "G", StartIndex = 0 }
                 }, BibleQuotaDictionaryConverter.StructureType.Strong, "Стронга",
-                Path.Combine(TempFolderPath, "strong"), "<h4>", "Пользовательские заметки", "Найти все стихи с этим номером", Encoding.Unicode, "ru", "2.0");
+                Path.Combine(TempFolderPath, "strong"), "<h4>", "Пользовательские заметки", "Найти все стихи с этим номером", "ru", "2.0");
 
             converter.Convert();
 
@@ -197,7 +197,7 @@ namespace TestProject
               new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Brockhaus\BrockhausLexicon.htm"), SectionName = "Брокгауза.one", DisplayName="Библейский словарь Брокгауза" }                    
                 }, BibleQuotaDictionaryConverter.StructureType.Dictionary, null,
-                Path.Combine(TempFolderPath, "Brockhaus"), "<h4>", "Пользовательские заметки", null, Encoding.Default, "ru", "2.0");
+                Path.Combine(TempFolderPath, "Brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", "2.0");
 
             converter.Convert();
 
@@ -252,10 +252,9 @@ namespace TestProject
 
         private static void ConvertRussianModule()
         {
-            string moduleShortName = "ibs";
+            string moduleShortName = "rst";
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), 
-                Encoding.Default, "ru", 
-                PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst), "{0} глава. {1}",
+                "ru", PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst), "{0} глава. {1}",
                 null, 
                 false, null, null, // параметры для стронга
                 "2.0");            
@@ -270,7 +269,7 @@ namespace TestProject
         {
             string moduleShortName = "rccv";
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), 
-                Encoding.Unicode, "ro", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
+                "ro", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
                 "{0} capitolul. {1}",
                 null, 
                 false, null, null, 
@@ -286,7 +285,7 @@ namespace TestProject
         {
             string moduleShortName = "kjv";
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), 
-                Encoding.ASCII, "en", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(), 
+                "en", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(), 
                 "{0} chapter. {1}",
                 null,
                 false, null, null, // параметры для стронга

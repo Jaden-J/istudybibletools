@@ -45,8 +45,7 @@ namespace BibleConfigurator.ModuleConverter
         public string NotebookId { get; set; }        
         public StructureType Type { get; set; }
         public string ManifestFilesFolder { get; set; }
-        List<DictionaryFile> DictionaryFiles { get; set; }
-        public Encoding FileEncoding { get; set; }
+        List<DictionaryFile> DictionaryFiles { get; set; }        
         public string Locale { get; set; }
         public string Version { get; set; }
         public string TermStartString { get; set; }
@@ -66,7 +65,7 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="manifestFilesFolder"></param>
         public BibleQuotaDictionaryConverter(Application oneNoteApp, string notebookName, string dictionaryModuleName, string dictionaryDisplayName,
             List<DictionaryFile> dictionaryFiles, StructureType type, string dictionarySectionGroupName, string manifestFilesFolder, string termStartString, string userNotesString, string findAllVersesString,
-            Encoding fileEncoding, string locale, string version)
+            string locale, string version)
         {
             this.Type = type;
             this.DictionaryModuleName = dictionaryModuleName;
@@ -77,8 +76,7 @@ namespace BibleConfigurator.ModuleConverter
             this.NotebookId = OneNoteUtils.GetNotebookIdByName(OneNoteApp, notebookName, true);
             if (string.IsNullOrEmpty(this.NotebookId))
                 this.NotebookId = NotebookGenerator.CreateNotebook(OneNoteApp, notebookName);
-            this.DictionaryFiles = dictionaryFiles;
-            this.FileEncoding = fileEncoding;
+            this.DictionaryFiles = dictionaryFiles;            
             this.Locale = locale;
             this.TermStartString = termStartString;            
             this.Errors = new List<Exception>();
@@ -109,7 +107,7 @@ namespace BibleConfigurator.ModuleConverter
                                 ? AddTermsPage(sectionId, string.Format("{0:0000}-", file.StartIndex), file.DisplayName)
                                 : null;
                 string prevTerm = null;
-                foreach (string line in File.ReadAllLines(file.FilePath, FileEncoding))
+                foreach (string line in File.ReadAllLines(file.FilePath, Utils.GetFileEncoding(file.FilePath)))
                 {
                     if (line.StartsWith(TermStartString))
                     {
