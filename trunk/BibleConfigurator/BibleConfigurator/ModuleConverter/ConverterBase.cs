@@ -109,7 +109,11 @@ namespace BibleConfigurator.ModuleConverter
         {
             if (this.IsStrong)
             {
+                if (string.IsNullOrEmpty(this.DictionarySectionGroupName))
+                    throw new ArgumentNullException("DictionarySectionGroupName");
 
+                if (!this.StrongNumbersCount.HasValue)
+                    throw new ArgumentNullException("StrongNumbersCount");
             }
         }
 
