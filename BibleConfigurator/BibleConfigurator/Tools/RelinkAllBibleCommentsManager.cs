@@ -38,7 +38,7 @@ namespace BibleConfigurator.Tools
 
                 try
                 {
-                    OneNoteLocker.UnlockAllBible(_oneNoteApp);
+                    OneNoteLocker.UnlockBible(_oneNoteApp);
                 }
                 catch (NotSupportedException)
                 {

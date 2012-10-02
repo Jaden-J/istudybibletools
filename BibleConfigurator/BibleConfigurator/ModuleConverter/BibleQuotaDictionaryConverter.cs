@@ -54,7 +54,8 @@ namespace BibleConfigurator.ModuleConverter
         public string DictionarySectionGroupName { get; set; }
         public List<Exception> Errors { get; set; }
         public string UserNotesString { get; set; }
-        public string FindAllVersesString { get; set; }        
+        public string FindAllVersesString { get; set; }
+        public List<string> Terms { get; set; }
 
         /// <summary>
         /// 
@@ -83,6 +84,7 @@ namespace BibleConfigurator.ModuleConverter
             this.UserNotesString = userNotesString;
             this.FindAllVersesString = findAllVersesString;
             this.Version = version;
+            this.Terms = new List<string>();
 
             if (!Directory.Exists(ManifestFilesFolder))
                 Directory.CreateDirectory(ManifestFilesFolder);
@@ -196,7 +198,9 @@ namespace BibleConfigurator.ModuleConverter
 
             NotebookGenerator.AddRowToTable(pageInfo.TableElement,
                                 NotebookGenerator.GetCell(termCellText, Locale, nms),
-                                NotebookGenerator.GetCell(termTable, Locale, nms));            
+                                NotebookGenerator.GetCell(termTable, Locale, nms));
+
+            Terms.Add(termName);
 
             if (Type == StructureType.Strong)
             {
@@ -239,7 +243,7 @@ namespace BibleConfigurator.ModuleConverter
 
         private string GetTermName(string line, DictionaryFile file)
         {
-            var result = StringUtils.GetText(line).Trim(new char[] { ' ', '"' });
+            var result = StringUtils.GetText(line).Trim(new char[] { ' ', '"', '.' });
             if (Type == StructureType.Strong)
             {
                 var number = int.Parse(result);
@@ -338,7 +342,16 @@ namespace BibleConfigurator.ModuleConverter
             module.Sections = this.DictionaryFiles.ConvertAll(df => new SectionInfo() { Name = df.SectionName });
             module.DictionarySectionGroupName = this.DictionarySectionGroupName;
 
-            Utils.SaveToXmlFile(module, Path.Combine(ManifestFilesFolder, Constants.ManifestFileName));
+            Utils.SaveToXmlFile(
+                module, 
+                Path.Combine(ManifestFilesFolder, Constants.ManifestFileName));
+
+            if (Type == StructureType.Dictionary)
+            {
+                Utils.SaveToXmlFile(
+                    new ModuleDictionaryInfo() { TermSet = new TermSet() { Terms = this.Terms } },
+                    Path.Combine(ManifestFilesFolder, Constants.DictionaryInfoFileName));
+            }
         }
 
         public void Dispose()

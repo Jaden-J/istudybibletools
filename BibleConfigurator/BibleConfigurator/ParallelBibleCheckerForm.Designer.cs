@@ -1,6 +1,6 @@
 ﻿namespace BibleConfigurator
 {
-    partial class ParallelBibleChecker
+    partial class ParallelBibleCheckerForm
     {
         /// <summary>
         /// Required designer variable.

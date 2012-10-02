@@ -70,7 +70,7 @@ namespace BibleConfigurator
                 else if (args.Contains(Consts.ShowAboutProgram))
                     result = new AboutProgramForm();
                 else if (args.Contains(Consts.ShowParallelBibleChecker))
-                    result = new ParallelBibleChecker();
+                    result = new ParallelBibleCheckerForm();
                 else if (strongProtocolHandler.IsProtocolCommand(args))
                 {
                     strongProtocolHandler.ExecuteCommand(args);
@@ -85,7 +85,8 @@ namespace BibleConfigurator
                     {
                         try
                         {
-                            OneNoteLocker.LockAllBible(OneNoteApp);
+                            OneNoteLocker.LockBible(OneNoteApp);
+                            OneNoteLocker.LockSupplementalBible(OneNoteApp);
                         }
                         catch (NotSupportedException)
                         {
@@ -99,7 +100,8 @@ namespace BibleConfigurator
                 {
                     try
                     {
-                        OneNoteLocker.LockAllBible(OneNoteApp);
+                        OneNoteLocker.LockBible(OneNoteApp);
+                        OneNoteLocker.LockSupplementalBible(OneNoteApp);
                     }
                     catch (NotSupportedException)
                     {
@@ -110,7 +112,8 @@ namespace BibleConfigurator
                 {
                     try
                     {
-                        OneNoteLocker.UnlockAllBible(OneNoteApp);
+                        OneNoteLocker.UnlockBible(OneNoteApp);
+                        OneNoteLocker.UnlockSupplementalBible(OneNoteApp);
                     }
                     catch (NotSupportedException)
                     {
