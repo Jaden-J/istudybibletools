@@ -75,9 +75,10 @@ namespace BibleCommon.Common
         {
             int? valueVersesCount = string.IsNullOrEmpty(bookDifference.ValueVersesCount) ? (int?)null : int.Parse(bookDifference.ValueVersesCount);
 
-            var baseVersesFormula = new BibleTranslationDifferencesBaseVersesFormula(bookIndex, bookDifference.BaseVerses, bookDifference.ParallelVerses, bookDifference.CorrespondenceType);
+            var baseVersesFormula = new BibleTranslationDifferencesBaseVersesFormula(bookIndex, bookDifference.BaseVerses, bookDifference.ParallelVerses, 
+                                                    bookDifference.CorrespondenceType, bookDifference.SkipCheck);
             var parallelVersesFormula = new BibleTranslationDifferencesParallelVersesFormula(bookDifference.ParallelVerses, baseVersesFormula,
-                bookDifference.CorrespondenceType, valueVersesCount);
+                bookDifference.CorrespondenceType, valueVersesCount, bookDifference.SkipCheck);
 
             SimpleVersePointer prevVerse = null;
             foreach (var verse in baseVersesFormula.GetAllVerses())

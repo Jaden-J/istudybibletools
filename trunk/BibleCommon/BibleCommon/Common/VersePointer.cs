@@ -21,6 +21,7 @@ namespace BibleCommon.Common
         public int? TopVerse { get; set; }
         public bool IsEmpty { get; set; }
         public bool IsApocrypha { get; set; }
+        public bool SkipCheck { get; set; }  
         //public SimpleVersePointer BaseVersePointer { get; set; }  // если IsApocrypha - стих, к которому привязан данный стих
 
         public bool IsChapter
@@ -91,6 +92,7 @@ namespace BibleCommon.Common
             verse.IsEmpty = this.IsEmpty;
             verse.PartIndex = this.PartIndex;
             verse.TopVerse = this.TopVerse;
+            verse.SkipCheck = this.SkipCheck;
         }
 
         public VersePointer ToVersePointer(ModuleInfo moduleInfo)

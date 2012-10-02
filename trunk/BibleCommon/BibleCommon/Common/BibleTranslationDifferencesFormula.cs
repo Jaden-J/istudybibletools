@@ -33,6 +33,7 @@ namespace BibleCommon.Common
         public int BookIndex { get; set; }
         protected VersePointer BaseVersePointer { get; set; }
         protected bool IsEmpty { get; set; }
+        protected bool SkipCheck { get; set; }
 
         internal bool IsMultiVerse
         {
@@ -75,7 +76,8 @@ namespace BibleCommon.Common
         }
             
 
-        public BibleTranslationDifferencesBaseVersesFormula(int bookIndex, string baseVersesFormula, string parallelVersesFormula, BibleBookDifference.CorrespondenceVerseType correspondenceType)
+        public BibleTranslationDifferencesBaseVersesFormula(int bookIndex, string baseVersesFormula, string parallelVersesFormula, 
+            BibleBookDifference.CorrespondenceVerseType correspondenceType, bool skipCheck)
             : base(baseVersesFormula)
         {
             this.BookIndex = bookIndex;
@@ -92,6 +94,8 @@ namespace BibleCommon.Common
 
             if (IsMultiVerse && correspondenceType != BibleBookDifference.CorrespondenceVerseType.All)
                 throw new NotSupportedException("Multi Base Verses are not supported for not strict processing (when correspondenceType != 'All').");
+
+            this.SkipCheck = skipCheck;
         }     
 
         private List<SimpleVersePointer> _allVerses;
@@ -105,6 +109,9 @@ namespace BibleCommon.Common
                 if (IsMultiVerse)
                     _allVerses.AddRange(BaseVersePointer.GetAllIncludedVersesExceptFirst(null, new GetAllIncludedVersesExceptFirstArgs() { Force = true })
                         .ConvertAll<SimpleVersePointer>(v => new SimpleVersePointer(BookIndex, v.Chapter.GetValueOrDefault(), v.Verse.GetValueOrDefault(0)) { IsEmpty = IsEmpty }));
+
+                if (SkipCheck)
+                    _allVerses.ForEach(v => v.SkipCheck = SkipCheck);
             }
 
             return _allVerses;
@@ -341,14 +348,18 @@ namespace BibleCommon.Common
         protected ParallelVersesFormulaPart VersesFormulaPart { get; set; }
         protected bool IsEmpty { get; set; }
         protected BibleBookDifference.CorrespondenceVerseType CorrespondenceType { get; set; }
-        protected int? ValueVersesCount { get; set; }        
+        protected int? ValueVersesCount { get; set; }
+        protected bool SkipCheck { get; set; }
 
         public BibleTranslationDifferencesParallelVersesFormula(string parallelVersesFormula,
-            BibleTranslationDifferencesBaseVersesFormula baseVersesFormula, BibleBookDifference.CorrespondenceVerseType correspondenceType, int? valueVersesCount)
+            BibleTranslationDifferencesBaseVersesFormula baseVersesFormula, BibleBookDifference.CorrespondenceVerseType correspondenceType, int? valueVersesCount, bool skipCheck)
             : base(parallelVersesFormula)
         {
             if (valueVersesCount.HasValue && valueVersesCount == 0)
-                throw new NotSupportedException("ValueVersesCount must be greater than 0.");
+                throw new NotSupportedException("ValueVersesCount must be greater than 0.");            
+
+            if (valueVersesCount.HasValue && correspondenceType == BibleBookDifference.CorrespondenceVerseType.All)
+                throw new ArgumentException("CorrespondenceType must not be 'All' if ValueVersesCount defined.");            
 
             this.BaseVersesFormula = baseVersesFormula;            
             this.CorrespondenceType = correspondenceType;
@@ -364,6 +375,8 @@ namespace BibleCommon.Common
             {
                 this.IsEmpty = true;
             }
+
+            this.SkipCheck = skipCheck;
         }
 
         public List<SimpleVersePointer> GetParallelVerses(SimpleVersePointer baseVerse, SimpleVersePointer prevVerse)
@@ -403,6 +416,9 @@ namespace BibleCommon.Common
                 if (VersesFormulaPart.LastVersePartIndex.HasValue)
                     result[result.Count - 1].PartIndex = VersesFormulaPart.LastVersePartIndex;
             }
+
+            if (this.SkipCheck)
+                result.ForEach(v => v.SkipCheck = SkipCheck);
 
             return result;
         }
