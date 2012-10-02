@@ -45,7 +45,7 @@ namespace BibleCommon.Services
             SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
             SettingsManager.Instance.Save();
             
-            for (int i = 18; i < 19 /*moduleInfo.BibleStructure.BibleBooks.Count*/; i++)
+            for (int i = 44; i < 45 /*moduleInfo.BibleStructure.BibleBooks.Count*/; i++)
             {
                 var bibleBookInfo = moduleInfo.BibleStructure.BibleBooks[i];
 

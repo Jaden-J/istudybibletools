@@ -160,7 +160,7 @@ namespace BibleCommon.Services
 
             var result = new BibleParallelTranslationConnectionResult();
 
-            foreach (var baseBookContent in BaseBibleInfo.Content.Books.Skip(18).Take(1))
+            foreach (var baseBookContent in BaseBibleInfo.Content.Books.Skip(44).Take(1))
             {
                 var baseBookInfo = BaseModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBookContent.Index);
                 if (baseBookInfo == null)
@@ -309,6 +309,8 @@ namespace BibleCommon.Services
         {
             try
             {
+                if (firstParallelVerse.SkipCheck)
+                    return;
                 if (!firstParallelVerse.IsEmpty)
                 {
                     if (lastProcessedChapter > 0 && firstParallelVerse.Chapter > lastProcessedChapter)

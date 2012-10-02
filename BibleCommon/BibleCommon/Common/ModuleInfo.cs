@@ -435,6 +435,10 @@ namespace BibleCommon.Common
         [XmlAttribute]
         public string ParallelVerses { get; set; }
 
+        [XmlAttribute]
+        [DefaultValue(false)]
+        public bool SkipCheck { get; set; }
+
         /// <summary>
         /// Выравнивание стихов - при несоответствии, 
         /// </summary>
@@ -452,12 +456,12 @@ namespace BibleCommon.Common
         {
         }
 
-        public BibleBookDifference(string baseVerses, string parallelVerses)
-            : this()
-        {
-            this.BaseVerses = baseVerses;
-            this.ParallelVerses = parallelVerses;
-        }
+        //public BibleBookDifference(string baseVerses, string parallelVerses)
+        //    : this()
+        //{
+        //    this.BaseVerses = baseVerses;
+        //    this.ParallelVerses = parallelVerses;
+        //}
     }
 
     [Serializable]
