@@ -160,7 +160,7 @@ namespace BibleCommon.Services
 
             var result = new BibleParallelTranslationConnectionResult();
 
-            foreach (var baseBookContent in BaseBibleInfo.Content.Books.Skip(44).Take(1))
+            foreach (var baseBookContent in BaseBibleInfo.Content.Books.Skip(18).Take(1))
             {
                 var baseBookInfo = BaseModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBookContent.Index);
                 if (baseBookInfo == null)
@@ -372,7 +372,7 @@ namespace BibleCommon.Services
                 result = GetVerseNumberString(firstParallelVerse);
 
                 if (parallelVersePointers[0].Chapter != baseVersePointer.Chapter)
-                    result = string.Format("{0}:{1} ", firstParallelVerse.Chapter, result);
+                    result = string.Format("{0}:{1}", firstParallelVerse.Chapter, result);
 
                 if (parallelVersePointers.Count > 1)
                 {
@@ -386,11 +386,11 @@ namespace BibleCommon.Services
         }
 
         private string GetVerseNumberString(SimpleVersePointer versePointer)
-        {
-            string partVersesAlphabet = ParallelModuleInfo.BibleTranslationDifferences.PartVersesAlphabet;
+        {            
             var result = string.Format("{0}", versePointer.Verse);
             if (versePointer.PartIndex.HasValue)
             {
+                var partVersesAlphabet = ParallelModuleInfo.BibleTranslationDifferences.PartVersesAlphabet;
                 if (string.IsNullOrEmpty(partVersesAlphabet) || partVersesAlphabet.Length <= versePointer.PartIndex.Value)
                     partVersesAlphabet = Consts.Constants.DefaultPartVersesAlphabet;
 

@@ -82,8 +82,8 @@
             // 
             // AboutProgramForm
             // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.lblNewVersion);
             this.Controls.Add(this.lblAuthor);

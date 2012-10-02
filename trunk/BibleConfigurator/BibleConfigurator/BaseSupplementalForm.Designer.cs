@@ -70,14 +70,10 @@
             this.btnSBFolder.UseVisualStyleBackColor = true;
             this.btnSBFolder.Click += new System.EventHandler(this.btnSBFolder_Click);
             // 
-            // folderBrowserDialog
-            // 
-            resources.ApplyResources(this.folderBrowserDialog, "folderBrowserDialog");
-            // 
             // BaseSupplementalForm
             // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.btnSBFolder);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);

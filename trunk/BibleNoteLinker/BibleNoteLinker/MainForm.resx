@@ -385,13 +385,13 @@ Click to go to the download page.</value>
     <value>17, 17</value>
   </metadata>
   <data name="tsmiSeelctNotebooks.Size" type="System.Drawing.Size, System.Drawing">
-    <value>164, 22</value>
+    <value>156, 22</value>
   </data>
   <data name="tsmiSeelctNotebooks.Text" xml:space="preserve">
     <value>Select notebooks</value>
   </data>
   <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>50, 20</value>
+    <value>45, 20</value>
   </data>
   <data name="toolStripMenuItem1.Text" xml:space="preserve">
     <value>Menu</value>
@@ -474,9 +474,6 @@ Click to go to the download page.</value>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 13</value>
-  </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>514, 445</value>
   </data>
