@@ -10,9 +10,9 @@ using BibleCommon.Services;
 
 namespace BibleConfigurator
 {
-    public partial class ParallelBibleChecker : Form
+    public partial class ParallelBibleCheckerForm : Form
     {
-        public ParallelBibleChecker()
+        public ParallelBibleCheckerForm()
         {
             InitializeComponent();
         }
