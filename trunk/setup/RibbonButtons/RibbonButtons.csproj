@@ -68,6 +68,7 @@
     <None Include="Resources\VersePointerButton.png" />
     <None Include="Resources\VerseLinkerButton.png" />
     <None Include="Resources\NoteLinkerButton.png" />
+    <Content Include="Resources\Dictionary.png" />
     <Content Include="Resources\isbt.ico" />
     <Content Include="Resources\QuickAnalyze.png" />
     <Content Include="Resources\UnlockFile.png" />

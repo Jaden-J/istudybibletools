@@ -60,7 +60,7 @@ namespace TestProject
 
                 //AddColorLink();
 
-                //GenerateDictionary();
+                GenerateDictionary();
 
                 //GenerateStrongDictionary();
                 

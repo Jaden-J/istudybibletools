@@ -14,6 +14,7 @@ namespace BibleConfigurator
         internal const string RunOnOneNoteStarts = "-runOnOneNoteStarts";
         internal const string UnlockAllBible = "-unlockAllBible";
         internal const string UnlockBibleSection = "-unlockBibleSection";
-        internal const string ShowParallelBibleChecker = "-parallelBibleCheck";        
+        internal const string ShowParallelBibleChecker = "-parallelBibleCheck";
+        internal const string ShowSearchInDictionaries = "-searchInDictionaries";        
     }
 }

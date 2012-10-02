@@ -100,8 +100,17 @@ namespace BibleCommon.Services
 
             string supplementalModuleShortName = SettingsManager.Instance.SupplementalBibleModules[supplementalModuleIndex];            
 
-            BibleParallelTranslationManager.MergeModuleWithMainBible(supplementalModuleShortName);                       
-            OneNoteLocker.UnlockAllBible(oneNoteApp);            
+            BibleParallelTranslationManager.MergeModuleWithMainBible(supplementalModuleShortName);
+
+            try
+            {
+                OneNoteLocker.UnlockBible(oneNoteApp);
+                //OneNoteLocker.UnlockSupplementalBible(oneNoteApp);  // пока вроде как это не надо, так как данный метод вызывается только при создании спр Библии
+            }
+            catch (NotSupportedException)
+            {
+                //todo: log it
+            }
 
             BibleParallelTranslationConnectionResult result;
             using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,

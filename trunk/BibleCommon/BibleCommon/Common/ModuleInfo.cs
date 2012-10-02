@@ -193,6 +193,17 @@ namespace BibleCommon.Common
                 }
             }
         }
+
+        public override int GetHashCode()
+        {
+            return this.ShortName.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            var otherObj = (ModuleInfo)obj;
+            return this.ShortName == otherObj.ShortName;
+        }
     }
 
     [Serializable]
@@ -361,6 +372,21 @@ namespace BibleCommon.Common
         {
             return new Abbreviation(value);
         }
+    }
+
+    [Serializable]
+    [XmlRoot(ElementName = "IStudyBibleTools_Dictionary")]
+    public class ModuleDictionaryInfo
+    {
+        [XmlElement]
+        public TermSet TermSet { get; set; }        
+    }
+
+    [Serializable]
+    public class TermSet 
+    {
+        [XmlElement(typeof(string), ElementName = "Term")]
+        public List<string> Terms { get; set; }
     }
 
     [Serializable]

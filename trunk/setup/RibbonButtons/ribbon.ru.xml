@@ -9,6 +9,9 @@
           <button id="NoteLinkerButton" label="Анализ заметок" size="large" screentip="Нажмите, чтобы запустить анализ заметок" onAction="ButtonClick" image="NoteLinkerButton.png"/>
           <button id="QuickNoteLinkerButton" label="Быстрый анализ текущей страницы" size="large" screentip="Нажмите, чтобы запустить быстрый анализ текущей страницы" onAction="ButtonClick" image="QuickAnalyze.png"/>
         </group>
+        <group id="Search" label="Поиск">
+          <button id="SearchInDictionaries" label="Поиск в словарях" size="large" screentip="Нажмите, чтобы начать поиск в словарях" onAction="ButtonClick" image="Dictionary.png"/>
+        </group>
         <group id="Unlock" label="Разблокирование Библии">
           <button id="UnlockCurrentSection" label="Разблокировать текущую книгу" size="large" screentip="Нажмите, чтобы разблокировать текущую книгу Библии" onAction="ButtonClick" image="UnlockFile.png"/>
           <button id="UnlockAllBible" label="Разблокировать всю Библию" size="large" screentip="Нажмите, чтобы разблокировать всю Библию" onAction="ButtonClick" image="UnlockFolder.png"/>

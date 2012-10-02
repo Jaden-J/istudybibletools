@@ -197,6 +197,8 @@ namespace RibbonButtons
                         programClassName = BibleConfiguratorProgramClassName;
                         //loadInSameProcess = true;
                         break;
+                    case "SearchInDictionaries":
+                        break;
                 }
 
                 RunProgram(path, programClassName, args, loadInSameProcess);
@@ -275,6 +277,9 @@ namespace RibbonButtons
                         break;
                     case "UnlockFolder.png":
                         Properties.Resources.UnlockFolder.Save(mem, ImageFormat.Png);
+                        break;
+                    case "Dictionary.png":
+                        Properties.Resources.Dictionary.Save(mem, ImageFormat.Png);
                         break;
                 }
 

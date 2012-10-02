@@ -23,7 +23,7 @@ namespace BibleNoteLinker
 
             try
             {
-                OneNoteLocker.UnlockAllBible(_oneNoteApp);
+                OneNoteLocker.UnlockBible(_oneNoteApp);
             }
             catch (NotSupportedException)
             {
