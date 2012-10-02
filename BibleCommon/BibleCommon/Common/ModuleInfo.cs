@@ -512,8 +512,7 @@ namespace BibleCommon.Common
             else
                 result = verseContent;
 
-            if (!string.IsNullOrEmpty(result))
-                result = result.Replace("|", string.Empty);
+            result = ShellVerseText(result);            
 
             return result;
         }
@@ -528,6 +527,19 @@ namespace BibleCommon.Common
             }
 
             return string.Join(" ", contents.ToArray());
+        }
+
+        public static string GetFullVerseString(int verseNumber, string verseText)
+        {
+            return string.Format("{0} {1}", verseNumber, ShellVerseText(verseText));
+        }
+
+        private static string ShellVerseText(string verseText)
+        {
+            if (!string.IsNullOrEmpty(verseText))
+                verseText = verseText.Replace("|", string.Empty);
+
+            return verseText;
         }
     }
 
@@ -553,7 +565,7 @@ namespace BibleCommon.Common
         public int Index { get; set; }
 
         [XmlText]
-        public string Value { get; set; }
+        public string Value { get; set; }        
     }
 
 }

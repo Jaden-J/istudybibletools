@@ -126,7 +126,9 @@ namespace BibleCommon.Services
                                     IsEmpty = baseVersePointer.IsApocrypha || baseVerseKey.IsEmpty
                                 });                            
 
-                            bookVersePointersComparisonTables.Add(baseVersePointer, parallelVerses); 
+                            var key = (SimpleVersePointer)baseVersePointer.Clone();
+                            key.PartIndex = null;  // нам просто здесь не важно - часть это стиха или нет.
+                            bookVersePointersComparisonTables.Add(key, parallelVerses); 
                         }
                     }
                 }

@@ -107,16 +107,16 @@ namespace BibleConfigurator
 
         protected override bool CanModuleBeDeleted(int index)
         {
-            return index == GetSupplementalModulesCount() - 1;
+            return index != 0 || index == GetSupplementalModulesCount() - 1;
         }
 
         protected override void DeleteModule(string moduleShortName)
         {
             int chaptersCount = ModulesManager.GetBibleChaptersCount(moduleShortName);
             MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.RemoveParallelBibleTranslation);
-            var removeResult = SupplementalBibleManager.RemoveLastSupplementalBibleModule(OneNoteApp, Logger);
+            var removeResult = SupplementalBibleManager.RemoveSupplementalBibleModule(OneNoteApp, moduleShortName, Logger);
             MainForm.ExternalProcessingDone(
-                removeResult == SupplementalBibleManager.RemoveResult.RemoveLastModule
+                removeResult == SupplementalBibleManager.RemoveResult.RemoveModule
                     ? BibleCommon.Resources.Constants.RemoveParallelBibleTranslationFinishMessage
                     : BibleCommon.Resources.Constants.RemoveSupplementalBibleFinishMessage);
         }

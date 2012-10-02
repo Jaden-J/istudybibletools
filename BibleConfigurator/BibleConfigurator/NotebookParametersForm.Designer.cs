@@ -109,8 +109,8 @@
             // NotebookParametersForm
             // 
             this.AcceptButton = this.btnOK;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnBibleStudySectionRename);
             this.Controls.Add(this.btnBibleCommentsSectionRename);

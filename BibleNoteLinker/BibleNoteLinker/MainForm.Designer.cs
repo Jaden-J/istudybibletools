@@ -154,8 +154,8 @@
             // MainForm
             // 
             this.AcceptButton = this.btnOk;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.llblShowErrors);
             this.Controls.Add(this.pbBaseElements);
             this.Controls.Add(this.llblDetails);

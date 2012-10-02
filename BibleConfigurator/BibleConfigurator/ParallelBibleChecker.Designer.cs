@@ -94,8 +94,7 @@
             // 
             // ParallelBibleChecker
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(337, 130);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnOk);

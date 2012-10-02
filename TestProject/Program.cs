@@ -257,23 +257,7 @@ namespace TestProject
                 "ru", PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst), "{0} глава. {1}",
                 null, 
                 false, null, null, // параметры для стронга
-                "2.0");            
-
-            converter.Convert();
-
-            var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message));
-            form.ShowDialog();           
-        }        
-
-        private static void ConvertRomanModule()
-        {
-            string moduleShortName = "rccv";
-            var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), 
-                "ro", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
-                "{0} capitolul. {1}",
-                null, 
-                false, null, null, 
-                "2.0");            
+                "2.0", true);            
 
             converter.Convert();
 
@@ -284,18 +268,34 @@ namespace TestProject
         private static void ConvertEnglishModule()
         {
             string moduleShortName = "kjv";
-            var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), 
-                "en", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(), 
+            var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName),
+                "en", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
                 "{0} chapter. {1}",
                 null,
                 false, null, null, // параметры для стронга
-                "2.0");            
+                "2.0", true);
+
+            converter.Convert();
+
+            var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message));
+            form.ShowDialog();
+        }
+
+        private static void ConvertRomanModule()
+        {
+            string moduleShortName = "rccv";
+            var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), 
+                "ro", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
+                "{0} capitolul. {1}",
+                null, 
+                false, null, null, 
+                "2.0", false);            
 
             converter.Convert();
 
             var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message));
             form.ShowDialog();           
-        }
+        }       
 
         private static void SearchForEnText()
         {

@@ -62,9 +62,9 @@ namespace BibleConfigurator.ModuleConverter
             string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, BibleTranslationDifferences translationDifferences, 
             string chapterSectionNameTemplate, List<SectionInfo> sectionsInfo,
             bool isStrong, string dictionarySectionGroupName, int? strongNumbersCount, 
-            string version)
+            string version, bool generateXmlOnly)
             : base(moduleShortName, manifestFilesFolderPath, locale, notebooksInfo, bookIndexes,
-                        translationDifferences, chapterSectionNameTemplate, sectionsInfo, isStrong, dictionarySectionGroupName, strongNumbersCount, version)
+                        translationDifferences, chapterSectionNameTemplate, sectionsInfo, isStrong, dictionarySectionGroupName, strongNumbersCount, version, generateXmlOnly)
         {
             this.ModuleFolder = bqModuleFolder;            
         }
@@ -210,7 +210,7 @@ namespace BibleConfigurator.ModuleConverter
 
         private void ProcessVerse(string lineText, XElement currentTableElement, string alphabet)
         {
-            if (currentTableElement == null)
+            if (currentTableElement == null && !GenerateXmlOnly)
                 throw new Exception("currentTableElement is null");
 
             int? verseNumber;

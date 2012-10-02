@@ -61,8 +61,8 @@
             // 
             // SetWidthForm
             // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.button2);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.label1);

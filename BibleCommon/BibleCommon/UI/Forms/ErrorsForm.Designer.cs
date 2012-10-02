@@ -64,7 +64,7 @@
             // ErrorsForm
             // 
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.btnSaveToFile);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.lbErrors);

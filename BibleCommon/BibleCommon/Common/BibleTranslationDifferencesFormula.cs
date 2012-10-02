@@ -123,7 +123,7 @@ namespace BibleCommon.Common
         {
             public int? Deviation { get; set; }
             public List<int> ParallelVerses { get; set; }
-            public bool? IsPartVersePointer { get; set; }            
+            public bool? AllVersesArePart { get; set; }            
 
             public string FormulaPart { get; set; }
             public BibleTranslationDifferencesParallelVersesFormula ParallelVersesFormula { get; set; }               
@@ -241,13 +241,61 @@ namespace BibleCommon.Common
 
         public class ParallelVersesFormulaPart : ParallelFormulaPart
         {
-            protected BibleBookDifference.CorrespondenceVerseType CorrespondenceType { get; set; }            
+            protected BibleBookDifference.CorrespondenceVerseType CorrespondenceType { get; set; }
+            public int? FirstVersePartIndex { get; set; } 
+            public int? LastVersePartIndex { get; set; } 
 
             public ParallelVersesFormulaPart(string formulaPart,
                 BibleTranslationDifferencesParallelVersesFormula parallelVersesFormula, BibleBookDifference.CorrespondenceVerseType correspondenceType)
-                : base(formulaPart, parallelVersesFormula)
+                : base(ShellFormula(formulaPart), parallelVersesFormula)
             {
-                this.CorrespondenceType = correspondenceType;                
+                this.CorrespondenceType = correspondenceType;
+
+                CalculateVersePartIndexes(formulaPart);                
+            }
+
+            protected virtual void CalculateVersePartIndexes(string formulaPart)
+            {
+                var parts = formulaPart.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length == 1)
+                    this.FirstVersePartIndex = GetVersePartIndex(parts[0]);
+                else
+                {
+                    this.FirstVersePartIndex = GetVersePartIndex(parts[0]);
+                    this.LastVersePartIndex = GetVersePartIndex(parts[1]);
+                }                
+            }
+
+            private int? GetVersePartIndex(string s)
+            {
+                var firstStartIndex = s.IndexOf("(");
+                if (firstStartIndex != -1)
+                {
+                    if (Deviation.HasValue)
+                        ThrowUnsupportedFormulaException("x006");
+
+                    var result = StringUtils.GetStringFirstNumber(s.Substring(firstStartIndex));
+                    if (result.HasValue)
+                        result -= 1;
+
+                    return result;
+                }
+                else
+                    return null;
+            }            
+
+            private static string ShellFormula(string formulaPart)
+            {
+                var startPartIndex = formulaPart.IndexOf("(");
+                if (startPartIndex != -1)                          
+                {
+                    var endPartIndex = formulaPart.IndexOf(")", startPartIndex);
+                    if (endPartIndex == -1)
+                        throw new NotSupportedException(formulaPart);
+                    return string.Concat(formulaPart.Substring(0, startPartIndex), ShellFormula(formulaPart.Substring(endPartIndex + 1)));                
+                }
+                else
+                    return formulaPart;
             }
 
             protected override void ParseMultiVerse()
@@ -260,7 +308,7 @@ namespace BibleCommon.Common
                     for (int i = FirstVerse.Value; i <= LastVerse.Value; i++)
                         ParallelVerses.Add(i);
                 }
-                else
+                else                                                               // например в случае "1:1-2 -> 1:2-3" 
                 {
                     int firstBaseVerse = ParallelVersesFormula.BaseVersesFormula.FirstVerse;
                     int lastBaseVerse = ParallelVersesFormula.BaseVersesFormula.LastVerse;
@@ -275,7 +323,7 @@ namespace BibleCommon.Common
 
                 if (ParallelVersesFormula.BaseVersesFormula.IsMultiVerse)         // например в случае "1:1-2 -> 1:1"                        
                 {
-                    IsPartVersePointer = true;
+                    AllVersesArePart = true;
                 }
             }
 
@@ -307,7 +355,7 @@ namespace BibleCommon.Common
             this.ValueVersesCount = valueVersesCount;            
 
             if (!string.IsNullOrEmpty(parallelVersesFormula))
-            {
+            {                
                 int indexOfColon = parallelVersesFormula.IndexOf(":");
                 ChapterFormulaPart = new ParallelChapterFormulaPart(parallelVersesFormula.Substring(0, indexOfColon), this);
                 VersesFormulaPart = new ParallelVersesFormulaPart(parallelVersesFormula.Substring(indexOfColon + 1), this, correspondenceType);
@@ -340,7 +388,7 @@ namespace BibleCommon.Common
                     var parallelVersePointer = new SimpleVersePointer(
                             baseVerse.BookIndex, ChapterFormulaPart.CalculateParallelChapter(baseVerse.Chapter), parallelVerse);
 
-                    if (VersesFormulaPart.IsPartVersePointer.GetValueOrDefault(false))                    
+                    if (VersesFormulaPart.AllVersesArePart.GetValueOrDefault(false))                                            
                         parallelVersePointer.PartIndex = versePartIndex++;                    
 
                     if (!VerseIsValue(verseIndex, parallelVerses.Count))                    
@@ -349,6 +397,11 @@ namespace BibleCommon.Common
                     result.Add(parallelVersePointer);
                     verseIndex++;
                 }
+
+                if (VersesFormulaPart.FirstVersePartIndex.HasValue)
+                    result[0].PartIndex = VersesFormulaPart.FirstVersePartIndex;
+                if (VersesFormulaPart.LastVersePartIndex.HasValue)
+                    result[result.Count - 1].PartIndex = VersesFormulaPart.LastVersePartIndex;
             }
 
             return result;
