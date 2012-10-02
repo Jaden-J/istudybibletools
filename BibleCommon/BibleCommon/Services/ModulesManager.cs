@@ -20,6 +20,7 @@ namespace BibleCommon.Services
             _serializers = new Dictionary<Type, XmlSerializer>();
             _serializers.Add(typeof(ModuleInfo), new XmlSerializer(typeof(ModuleInfo)));
             _serializers.Add(typeof(ModuleBibleInfo), new XmlSerializer(typeof(ModuleBibleInfo)));
+            _serializers.Add(typeof(ModuleDictionaryInfo), new XmlSerializer(typeof(ModuleDictionaryInfo)));
         }
 
         public static ModuleInfo GetCurrentModuleInfo()
@@ -49,13 +50,13 @@ namespace BibleCommon.Services
             return module;
         }
 
-        public static int GetBibleChaptersCount(string moduleDirectoryName)
+        public static int GetBibleChaptersCount(string moduleShortName)
         {
             ModuleBibleInfo bibleInfo = null;
             int result;
             try
             {
-                bibleInfo = GetModuleBibleInfo(moduleDirectoryName);
+                bibleInfo = GetModuleBibleInfo(moduleShortName);
                 result = bibleInfo.Content.Books.Sum(b => b.Chapters.Count);
             }
             catch (InvalidModuleException)
@@ -66,14 +67,19 @@ namespace BibleCommon.Services
             return result;
         }
 
-        public static ModuleBibleInfo GetModuleBibleInfo(string moduleDirectoryName)
-        {            
-            return GetModuleFile<ModuleBibleInfo>(moduleDirectoryName, Consts.Constants.BibleInfoFileName);
+        public static ModuleDictionaryInfo GetModuleDictionaryInfo(string moduleShortName)
+        {
+            return GetModuleFile<ModuleDictionaryInfo>(moduleShortName, Consts.Constants.DictionaryInfoFileName);
         }
 
-        private static string GetModuleFilePath(string moduleDirectoryName, string fileRelativePath)
+        public static ModuleBibleInfo GetModuleBibleInfo(string moduleShortName)
+        {            
+            return GetModuleFile<ModuleBibleInfo>(moduleShortName, Consts.Constants.BibleInfoFileName);
+        }
+
+        private static string GetModuleFilePath(string moduleShortName, string fileRelativePath)
         {
-            string moduleDirectory = GetModuleDirectory(moduleDirectoryName);
+            string moduleDirectory = GetModuleDirectory(moduleShortName);
             string filePath = Path.Combine(moduleDirectory, fileRelativePath);
             if (!File.Exists(filePath))
                 throw new InvalidModuleException(string.Format(BibleCommon.Resources.Constants.FileNotFound, filePath));
@@ -81,9 +87,9 @@ namespace BibleCommon.Services
             return filePath;
         }
 
-        private static T GetModuleFile<T>(string moduleDirectoryName, string fileRelativePath)
+        private static T GetModuleFile<T>(string moduleShortName, string fileRelativePath)
         {
-            var filePath = GetModuleFilePath(moduleDirectoryName, fileRelativePath);
+            var filePath = GetModuleFilePath(moduleShortName, fileRelativePath);
 
             return Dessirialize<T>(filePath);
         }

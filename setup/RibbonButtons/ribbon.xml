@@ -9,6 +9,9 @@
           <button id="NoteLinkerButton" label="Notes Analysis" size="large" screentip="Click to launch analysis of the notes" onAction="ButtonClick" image="NoteLinkerButton.png"/>
           <button id="QuickNoteLinkerButton" label="Quick Current Page Analysis" size="large" screentip="Click to launch quick analysis of the current page" onAction="ButtonClick" image="QuickAnalyze.png"/>
         </group>
+        <group id="Search" label="Search">
+          <button id="SearchInDictionaries" label="Search in Dictionaries" size="large" screentip="Click to start searching in dictionaries" onAction="ButtonClick" image="Dictionary.png"/>
+        </group>
         <group id="Unlock" label="Unlock Bible">
           <button id="UnlockCurrentSection" label="Unlock Current Book" size="large" screentip="Click to unlock current Bible book" onAction="ButtonClick" image="UnlockFile.png"/>
           <button id="UnlockAllBible" label="Unlock All Bible" size="large" screentip="Click to unlock all Bible" onAction="ButtonClick" image="UnlockFolder.png"/>
