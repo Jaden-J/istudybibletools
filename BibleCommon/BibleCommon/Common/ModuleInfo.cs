@@ -192,18 +192,7 @@ namespace BibleCommon.Common
                     };
                 }
             }
-        }
-
-        public override int GetHashCode()
-        {
-            return this.ShortName.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            var otherObj = (ModuleInfo)obj;
-            return this.ShortName == otherObj.ShortName;
-        }
+        }               
     }
 
     [Serializable]

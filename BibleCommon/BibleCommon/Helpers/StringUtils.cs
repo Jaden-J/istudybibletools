@@ -254,7 +254,7 @@ namespace BibleCommon.Helpers
         public static string GetDigit(string s, int index)
         {
             int d;
-            if (index > 0 && index < s.Length)
+            if (index > -1 && index < s.Length)
                 if (int.TryParse(s[index].ToString(), out d))
                     return d.ToString();
 
@@ -682,5 +682,21 @@ namespace BibleCommon.Helpers
 
         //    return s;
         //}
+
+        public static string RemoveTags(string s, string startString, string endString)
+        {
+            if (!string.IsNullOrEmpty(s))
+            {
+                int startIndex = s.IndexOf(startString);
+                if (startIndex != -1)
+                {
+                    int endIndex = s.IndexOf(endString, startIndex);
+                    if (startIndex != -1)
+                        s = s.Substring(0, startIndex) + RemoveTags(s.Substring(endIndex + endString.Length), startString, endString);
+                }
+            }
+
+            return s;
+        }
     }
 }

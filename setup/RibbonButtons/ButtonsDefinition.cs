@@ -198,6 +198,10 @@ namespace RibbonButtons
                         //loadInSameProcess = true;
                         break;
                     case "SearchInDictionaries":
+                        path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
+                        programClassName = BibleConfiguratorProgramClassName;
+                        args = "-searchInDictionaries";
+                        loadInSameProcess = true;
                         break;
                 }
 

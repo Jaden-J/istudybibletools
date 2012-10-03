@@ -181,6 +181,10 @@ namespace BibleConfigurator.ModuleConverter
         private void AddNewBookContent()
         {
             int currentBookNumber = BibleInfo.Content.Books.Count;
+
+            if (currentBookNumber > BookIndexes.Count - 1)
+                throw new Exception(string.Format("Invalid book indexes: there is no information about book index for book number {0}", currentBookNumber));
+
             BibleInfo.Content.Books.Add(new BibleBookContent()
             {
                 Index = BookIndexes[currentBookNumber]

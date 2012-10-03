@@ -34,13 +34,20 @@ namespace BibleConfigurator.ModuleConverter
         public int ChaptersCount { get; set; }
         public string FileName { get; set; }
         public string SectionName { get; set; }
-    }
+    }    
 
     public class BibleQuotaConverter: ConverterBase
     {
-        protected const string IniFileName = "bibleqt.ini";
+        public enum ReadParameters
+        {
+            None,
+            RemoveHyperlinks,
+            RemoveStrongs
+        }
 
-        protected string ModuleFolder { get; set; }        
+        protected const string IniFileName = "bibleqt.ini";
+        protected string ModuleFolder { get; set; }
+        protected ReadParameters[] AdditionalReadParameters { get; set; }
 
         public Func<BibleQuotaBibleBookInfo, string, string> ConvertChapterNameFunc { get; set; }        
         
@@ -62,11 +69,15 @@ namespace BibleConfigurator.ModuleConverter
             string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, BibleTranslationDifferences translationDifferences, 
             string chapterSectionNameTemplate, List<SectionInfo> sectionsInfo,
             bool isStrong, string dictionarySectionGroupName, int? strongNumbersCount, 
-            string version, bool generateXmlOnly)
+            string version, bool generateXmlOnly, params ReadParameters[] readParameters)
             : base(moduleShortName, manifestFilesFolderPath, locale, notebooksInfo, bookIndexes,
                         translationDifferences, chapterSectionNameTemplate, sectionsInfo, isStrong, dictionarySectionGroupName, strongNumbersCount, version, generateXmlOnly)
         {
-            this.ModuleFolder = bqModuleFolder;            
+            this.ModuleFolder = bqModuleFolder;
+            this.AdditionalReadParameters = readParameters;
+
+            if (this.AdditionalReadParameters == null)
+                this.AdditionalReadParameters = new ReadParameters[] { };                
         }
 
         protected override ExternalModuleInfo ReadExternalModuleInfo()
@@ -225,7 +236,7 @@ namespace BibleConfigurator.ModuleConverter
                     throw new VerseReadException("{0} {1}: Verse has no number: {2}", currentBook.Index, currentChapter.Index, lineText);
                 }
 
-                if (IsStrong)
+                if (IsStrong || AdditionalReadParameters.Contains(ReadParameters.RemoveStrongs))
                 {
                     verseText = ProcessStrongVerse(verseText, alphabet);
                 }
@@ -240,20 +251,28 @@ namespace BibleConfigurator.ModuleConverter
             var prefix = currentBookNumber <= OldTestamentBooksCount ? "H" : "G";
 
             int cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, null);
-            int textBreakIndex, htmlBreakIndex = -1;
-            string strongNumber;
-
-            while (cursorPosition > -1)
-            {                
-                strongNumber = StringUtils.GetNextString(verseText, cursorPosition - 1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
+            if (cursorPosition > -1)
+            {
+                int textBreakIndex, htmlBreakIndex = -1;
+                string strongNumber = StringUtils.GetNextString(verseText, cursorPosition - 1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
                                                                     out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
                 if (!string.IsNullOrEmpty(strongNumber))
                 {
-                    verseText = string.Concat(verseText.Substring(0, cursorPosition), prefix, strongNumber, verseText.Substring(htmlBreakIndex));
+                    string changedText;
+
+                    if (AdditionalReadParameters.Contains(ReadParameters.RemoveStrongs))
+                    {
+                        changedText = string.Empty;
+                        cursorPosition -= 1;  // чтобы удалить пробел перед номером стронга
+                    }
+                    else
+                        changedText = prefix + strongNumber;                    
+                        
+                    verseText = string.Concat(verseText.Substring(0, cursorPosition), changedText, ProcessStrongVerse(verseText.Substring(htmlBreakIndex), alphabet));
                 }
-                
-                cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, htmlBreakIndex);
             }
+
+            //verseText = verseText.Replace("  ", " ");
 
             return verseText;
         }
@@ -279,7 +298,14 @@ namespace BibleConfigurator.ModuleConverter
         {
             var result = line.Replace("<<", "&lt;").Replace(">>", "&gt;");   // чтобы учитывать строки типа "<p>1 <<To the chief Musician on Neginoth, A Psalm of David.>> Hear me when I call, O God of my righteousness: thou hast enlarged me when I was in distress; have mercy upon me, and hear my prayer."
 
-            result = StringUtils.GetText(result, moduleInfo.Alphabet).Trim();
+            if (AdditionalReadParameters.Contains(ReadParameters.RemoveHyperlinks))
+            {
+                result = StringUtils.RemoveTags(result, "<a>", "</a>");
+                result = StringUtils.RemoveTags(result, "<a ", "</a>");
+                result = result.Replace("  ", " ");
+            }
+
+            result = StringUtils.GetText(result, moduleInfo.Alphabet).Trim();            
 
             return result;
         }

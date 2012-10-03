@@ -22,7 +22,7 @@ using System.Xml.Serialization;
 
 
 namespace TestProject
-{
+{    
     class Program
     {
         private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\Holy Bible\ForGenerating\";
@@ -40,6 +40,7 @@ namespace TestProject
             }
         }
 
+        [STAThread]
         static void Main(string[] args)
         {
             Stopwatch sw = new Stopwatch();
@@ -193,11 +194,11 @@ namespace TestProject
 
         private static void GenerateDictionary()
         {
-            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "Brockhaus", "Библейский словарь Брокгауза",
+            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "goetze", "Библейский словарь Б.Геце",
               new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Brockhaus\BrockhausLexicon.htm"), SectionName = "Брокгауза.one", DisplayName="Библейский словарь Брокгауза" }                    
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Goetze\goetze.htm"), SectionName = "Геце.one", DisplayName="Библейский словарь Б.Геце" }                    
                 }, BibleQuotaDictionaryConverter.StructureType.Dictionary, null,
-                Path.Combine(TempFolderPath, "Brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", "2.0");
+                Path.Combine(TempFolderPath, "goetze"), "<h4>", "Пользовательские заметки", null, "ru", "2.0");
 
             converter.Convert();
 
@@ -252,12 +253,16 @@ namespace TestProject
 
         private static void ConvertRussianModule()
         {
-            string moduleShortName = "rst";
+            string moduleShortName = "rststrong";
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), 
-                "ru", PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst), "{0} глава. {1}",
+                "ru", 
+                PredefinedNotebooksInfo.RussianStrong, PredefinedBookIndexes.RST,  // вот эти тоже часто надо менять
+                Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst), "{0} глава. {1}",
                 null, 
-                false, null, null, // параметры для стронга
-                "2.0", true);            
+                //false, null, null, // параметры для стронга
+                true, "Стронга", 14700,
+                "2.0", false, 
+                BibleQuotaConverter.ReadParameters.None);  // и про эту не забыть
 
             converter.Convert();
 
@@ -273,7 +278,7 @@ namespace TestProject
                 "{0} chapter. {1}",
                 null,
                 false, null, null, // параметры для стронга
-                "2.0", true);
+                "2.0", false);
 
             converter.Convert();
 

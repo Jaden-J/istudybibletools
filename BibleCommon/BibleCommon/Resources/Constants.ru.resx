@@ -615,4 +615,13 @@
   <data name="BaseModules" xml:space="preserve">
     <value>Основные модули</value>
   </data>
+  <data name="AllDictionaries" xml:space="preserve">
+    <value>Все словари</value>
+  </data>
+  <data name="DictionariesNotInstalled" xml:space="preserve">
+    <value>Словари не установлены. Пожалуйста, воспользуйтесь формой управления словарями, доступной на форме Параметров программы, чтобы установить словари.</value>
+  </data>
+  <data name="SelectWord" xml:space="preserve">
+    <value>Пожалуйста, выберите термин для поиска</value>
+  </data>
 </root>
