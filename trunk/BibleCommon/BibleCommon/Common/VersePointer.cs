@@ -125,6 +125,9 @@ namespace BibleCommon.Common
 
         public string GetVerseFullString()
         {
+            if (this.IsApocrypha || this.IsEmpty)
+                return string.Empty;
+
             string verseNumber = string.IsNullOrEmpty(VerseLink) 
                                     ? this.VerseNumber
                                     : string.Format("<a href='{0}'>{1}</a>", VerseLink, VerseNumber);
