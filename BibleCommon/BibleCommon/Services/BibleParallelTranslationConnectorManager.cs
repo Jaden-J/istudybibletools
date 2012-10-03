@@ -116,7 +116,7 @@ namespace BibleCommon.Services
                     else
                     {
                         var baseVerses = baseBookVerses[baseVerseKey];
-                        int? versePartIndex = baseVerses.Count > 1 ? (int?)0 : null;
+                        int? versePartIndex = baseVerses.Count(v => !v.IsApocrypha && !v.IsEmpty) > 1 ? (int?)0 : null;
                         foreach(var baseVersePointer in baseVerses)
                         {
                             var parallelVerses = ComparisonVersesInfo.FromVersePointer(
