@@ -8,80 +8,97 @@ using System.Text;
 using System.Windows.Forms;
 using BibleCommon.Common;
 using BibleCommon.Services;
+using BibleCommon.Helpers;
 
 namespace BibleConfigurator
 {
     public partial class SearchInDictionariesForm : Form
     {
-        public class TermDictionariesInfo
+        private Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
+
+        private Dictionary<string, ModuleDictionaryInfo> _modulesTermSets;
+        private Dictionary<string, ModuleInfo> _modules;
+
+        protected string DictionariesNotebookId { get; set; }
+
+        public Dictionary<string, ModuleDictionaryInfo> ModulesTermSets
         {
-            public Dictionary<string, string> ModulesWithTerm { get; set; }
-
-            public TermDictionariesInfo(string firstModuleShortName, string firstModuleName)
+            get
             {
-                ModulesWithTerm = new Dictionary<string,string>();
-                ModulesWithTerm.Add(firstModuleShortName, firstModuleName);
-            }
+                if (_modulesTermSets == null)                
+                    LoadData();                  
 
-            public void AddTermModue(string moduleShortName, string moduleName)
-            {
-                if (!ModulesWithTerm.ContainsKey(moduleShortName))
-                    ModulesWithTerm.Add(moduleShortName, moduleName);
+                return _modulesTermSets;
             }
         }
-        
-        private Dictionary<ModuleInfo, ModuleDictionaryInfo> _modules;
 
-        public Dictionary<string, TermDictionariesInfo> TermsInDictionariesInfo;
-
-        public Dictionary<ModuleInfo, ModuleDictionaryInfo> Modules
+        public Dictionary<string, ModuleInfo> Modules
         {
             get
             {
                 if (_modules == null)
-                {
-                    try
-                    {
-                        _modules = new Dictionary<ModuleInfo, ModuleDictionaryInfo>();
-                        TermsInDictionariesInfo = new Dictionary<string, TermDictionariesInfo>();
-
-                        foreach (var module in ModulesManager.GetModules())
-                        {
-                            if (module.Type == ModuleType.Dictionary)
-                            {
-                                var dictionaryModuleInfo = ModulesManager.GetModuleDictionaryInfo(module.ShortName);
-                                _modules.Add(module, dictionaryModuleInfo);
-
-                                foreach (var term in dictionaryModuleInfo.TermSet.Terms)
-                                {
-                                    if (!TermsInDictionariesInfo.ContainsKey(term))
-                                        TermsInDictionariesInfo.Add(term, new TermDictionariesInfo(module.ShortName, module.Name));
-                                    else
-                                        TermsInDictionariesInfo[term].AddTermModue(module.ShortName, module.Name);
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError(ex);
-                        throw;
-                    }
-                }
+                    LoadData();
 
                 return _modules;
+            }
+        }
+
+        private void LoadData()
+        {
+            try
+            {
+                DictionariesNotebookId = SettingsManager.Instance.GetValidDictionariesNotebookId(_oneNoteApp);
+
+                if (string.IsNullOrEmpty(DictionariesNotebookId))
+                {
+                    FormLogger.LogError(BibleCommon.Resources.Constants.DictionariesNotInstalled);
+                    this.Visible = false;
+                    Close();
+                }
+
+                _modulesTermSets = new Dictionary<string, ModuleDictionaryInfo>();
+                _modules = new Dictionary<string, ModuleInfo>();
+
+                foreach (var module in ModulesManager.GetModules())
+                {
+                    if (module.Type == ModuleType.Dictionary)
+                    {
+                        var dictionaryModuleInfo = ModulesManager.GetModuleDictionaryInfo(module.ShortName);
+                        _modulesTermSets.Add(module.ShortName, dictionaryModuleInfo);
+                        _modules.Add(module.Name, module);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                BibleCommon.Services.Logger.LogError(ex);
+                throw;
             }
         }
 
         public SearchInDictionariesForm()
         {
             InitializeComponent();
+            _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
         }
 
         private void SearchInDictionariesForm_Load(object sender, EventArgs e)
         {
-            var allTerms = Modules.Values.SelectMany(md => md.TermSet.Terms).OrderBy(t => t).ToArray();
-            cbAllTerms.Items.AddRange(allTerms);
+            LoadDictionary(null);
+
+            cbDictionaries.Items.Add(BibleCommon.Resources.Constants.AllDictionaries);
+            foreach (var dName in Modules.Keys)
+                cbDictionaries.Items.Add(dName);
+            cbDictionaries.SelectedIndex = 0;
+
+            cbTerms.Select();
+        }        
+
+        private void LoadDictionary(string moduleShortName)
+        {
+            var terms = !string.IsNullOrEmpty(moduleShortName) ? ModulesTermSets[moduleShortName].TermSet.Terms : ModulesTermSets.Values.SelectMany(md => md.TermSet.Terms);
+            cbTerms.DataSource = terms.OrderBy(t => t).ToArray();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -91,18 +108,60 @@ namespace BibleConfigurator
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            
+            var term = (string)cbTerms.SelectedItem;
+            if (!string.IsNullOrEmpty(term))
+            {
+                StartTermSearhing(term);
+                Close();
+            }
+            else
+                FormLogger.LogMessage(BibleCommon.Resources.Constants.SelectWord);
         }
 
-        private void cbAllTerms_SelectedIndexChanged(object sender, EventArgs e)
+        private void SearchInDictionariesForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            string term = (string)cbAllTerms.SelectedItem;
-            if (TermsInDictionariesInfo.ContainsKey(term))
+            _oneNoteApp = null;
+        }
+
+        private void cbDictionaries_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectedDictionary = (string)cbDictionaries.SelectedItem;
+
+            if (selectedDictionary == BibleCommon.Resources.Constants.AllDictionaries)
+                LoadDictionary(null);
+            else
             {
-                cbFoundInDictionaries.Items.Clear();            
-                cbFoundInDictionaries.Items.AddRange(TermsInDictionariesInfo[term].ModulesWithTerm.Values.ToArray());
-                cbFoundInDictionaries.SelectedIndex = 0;
+                LoadDictionary(Modules[selectedDictionary].ShortName);   
             }
-        }        
+        }
+
+        private void StartTermSearhing(string term)
+        {
+            string xml;
+            _oneNoteApp.FindPages(DictionariesNotebookId, term, out xml, true, true);
+        }
+
+        private void cbTerms_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            btnOk_Click(this, null);
+        }
+
+        private void SearchInDictionariesForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                btnOk_Click(this, null);
+            else if (e.KeyCode == Keys.Escape)
+                Close();
+        }
+
+        private bool _wasShown = false;
+        private void SearchInDictionariesForm_Shown(object sender, EventArgs e)
+        {
+            if (!_wasShown)
+            {
+                this.SetFocus();
+                _wasShown = true;
+            }
+        }               
     }
 }

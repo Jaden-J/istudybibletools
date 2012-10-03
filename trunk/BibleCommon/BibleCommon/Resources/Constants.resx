@@ -618,4 +618,13 @@
   <data name="BaseModules" xml:space="preserve">
     <value>Base modules</value>
   </data>
+  <data name="AllDictionaries" xml:space="preserve">
+    <value>All Dictionaries</value>
+  </data>
+  <data name="DictionariesNotInstalled" xml:space="preserve">
+    <value>Dictionaries are not installed. Please use Dictionaries Management Form available on Parameters Form to install dictionaries.</value>
+  </data>
+  <data name="SelectWord" xml:space="preserve">
+    <value>Please select term to search</value>
+  </data>
 </root>

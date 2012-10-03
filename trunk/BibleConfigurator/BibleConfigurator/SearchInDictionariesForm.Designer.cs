@@ -30,9 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SearchInDictionariesForm));
             this.cbDictionaries = new System.Windows.Forms.ComboBox();
-            this.cbAllTerms = new System.Windows.Forms.ComboBox();
-            this.cbFoundInDictionaries = new System.Windows.Forms.ComboBox();
-            this.lblFoundInDictionaries = new System.Windows.Forms.Label();
+            this.cbTerms = new System.Windows.Forms.ComboBox();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -43,26 +41,15 @@
             this.cbDictionaries.FormattingEnabled = true;
             resources.ApplyResources(this.cbDictionaries, "cbDictionaries");
             this.cbDictionaries.Name = "cbDictionaries";
+            this.cbDictionaries.SelectedIndexChanged += new System.EventHandler(this.cbDictionaries_SelectedIndexChanged);
             // 
-            // cbAllTerms
+            // cbTerms
             // 
-            this.cbAllTerms.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
-            this.cbAllTerms.FormattingEnabled = true;
-            resources.ApplyResources(this.cbAllTerms, "cbAllTerms");
-            this.cbAllTerms.Name = "cbAllTerms";
-            this.cbAllTerms.SelectedIndexChanged += new System.EventHandler(this.cbAllTerms_SelectedIndexChanged);
-            // 
-            // cbFoundInDictionaries
-            // 
-            this.cbFoundInDictionaries.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbFoundInDictionaries.FormattingEnabled = true;
-            resources.ApplyResources(this.cbFoundInDictionaries, "cbFoundInDictionaries");
-            this.cbFoundInDictionaries.Name = "cbFoundInDictionaries";
-            // 
-            // lblFoundInDictionaries
-            // 
-            resources.ApplyResources(this.lblFoundInDictionaries, "lblFoundInDictionaries");
-            this.lblFoundInDictionaries.Name = "lblFoundInDictionaries";
+            this.cbTerms.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
+            this.cbTerms.FormattingEnabled = true;
+            resources.ApplyResources(this.cbTerms, "cbTerms");
+            this.cbTerms.Name = "cbTerms";
+            this.cbTerms.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.cbTerms_MouseDoubleClick);
             // 
             // btnOk
             // 
@@ -73,6 +60,7 @@
             // 
             // btnCancel
             // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             resources.ApplyResources(this.btnCancel, "btnCancel");
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -80,30 +68,31 @@
             // 
             // SearchInDictionariesForm
             // 
+            this.AcceptButton = this.btnOk;
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnCancel;
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
-            this.Controls.Add(this.lblFoundInDictionaries);
-            this.Controls.Add(this.cbFoundInDictionaries);
-            this.Controls.Add(this.cbAllTerms);
+            this.Controls.Add(this.cbTerms);
             this.Controls.Add(this.cbDictionaries);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SearchInDictionariesForm";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SearchInDictionariesForm_FormClosed);
             this.Load += new System.EventHandler(this.SearchInDictionariesForm_Load);
+            this.Shown += new System.EventHandler(this.SearchInDictionariesForm_Shown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SearchInDictionariesForm_KeyDown);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.ComboBox cbDictionaries;
-        private System.Windows.Forms.ComboBox cbAllTerms;
-        private System.Windows.Forms.ComboBox cbFoundInDictionaries;
-        private System.Windows.Forms.Label lblFoundInDictionaries;
+        private System.Windows.Forms.ComboBox cbTerms;
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
     }

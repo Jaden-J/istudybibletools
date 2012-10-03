@@ -88,6 +88,7 @@
     <None Include="Resources\rst.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\rst77.xml" />
     <Content Include="XMLFile1.xml">
       <SubType>Designer</SubType>
     </Content>

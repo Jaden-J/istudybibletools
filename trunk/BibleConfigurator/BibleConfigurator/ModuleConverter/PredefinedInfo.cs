@@ -59,6 +59,39 @@ namespace BibleConfigurator.ModuleConverter
             }
         }
 
+        public static List<NotebookInfo> Russian77
+        {
+            get
+            {
+                return new List<NotebookInfo>() 
+                {  
+                    new NotebookInfo() 
+                    { 
+                        Type = ContainerType.Bible, 
+                        Name = "Библия.onepkg", 
+                        SectionGroups = RussianNotebookBibleSectionGroups77
+                    },
+                    new NotebookInfo() 
+                    { 
+                        Type = ContainerType.BibleStudy, 
+                        Name = "Изучение Библии.onepkg" 
+                    },
+                    new NotebookInfo() 
+                    { 
+                        Type = ContainerType.BibleComments, 
+                        Name = "Комментарии к Библии.onepkg",
+                        SectionGroups = RussianNotebookCommentsSectionGroups
+                    },
+                    new NotebookInfo() 
+                    { 
+                        Type = ContainerType.BibleNotesPages, 
+                        Name = "Сводные заметок.onepkg",
+                        SectionGroups = RussianNotebookCommentsSectionGroups
+                    }
+                };
+            }
+        }
+
         private static List<SectionGroupInfo> RussianNotebookBibleSectionGroups
         {
             get
@@ -70,6 +103,30 @@ namespace BibleConfigurator.ModuleConverter
                                 Name = "Ветхий Завет", 
                                 CheckSectionsCount = true, 
                                 SectionsCount = 39, 
+                                Type = ContainerType.OldTestament
+                            },
+                            new SectionGroupInfo() 
+                            { 
+                                Name = "Новый Завет", 
+                                CheckSectionsCount = true, 
+                                SectionsCount = 27, 
+                                Type = ContainerType.NewTestament 
+                            }
+                        };
+            }
+        }
+
+        private static List<SectionGroupInfo> RussianNotebookBibleSectionGroups77
+        {
+            get
+            {
+                return new List<SectionGroupInfo>() 
+                        {        
+                            new SectionGroupInfo() 
+                            { 
+                                Name = "Ветхий Завет", 
+                                CheckSectionsCount = true, 
+                                SectionsCount = 50, 
                                 Type = ContainerType.OldTestament
                             },
                             new SectionGroupInfo() 
@@ -216,33 +273,39 @@ namespace BibleConfigurator.ModuleConverter
             for (int i = min; i <= max; i++)
                 yield return i;
         }
-
-        private static List<int> _kjv;
+        
         public static List<int> KJV
         {
             get
             {
-                if (_kjv == null)
-                {
-                    _kjv = new List<int>(GetRange(1, 66));
-                }
-
-                return _kjv;
+                return new List<int>(GetRange(1, 66));                
             }
         }
 
-        private static List<int> _rst;
+        
         public static List<int> RST
         {
             get
             {
-                if (_rst == null)
-                {
-                    _rst = new List<int>(GetRange(1, 44));
-                    _rst.AddRange(GetRange(59, 65));
-                    _rst.AddRange(GetRange(45, 58));
-                    _rst.Add(66);
-                }
+                var _rst = new List<int>(GetRange(1, 44));
+                _rst.AddRange(GetRange(59, 65));
+                _rst.AddRange(GetRange(45, 58));
+                _rst.Add(66);
+
+                return _rst;
+            }
+        }
+
+        public static List<int> RST77
+        {
+            get
+            {
+                var _rst = new List<int>(GetRange(1, 39));
+                _rst.AddRange(GetRange(67, 77));
+                _rst.AddRange(GetRange(40, 44));
+                _rst.AddRange(GetRange(59, 65));
+                _rst.AddRange(GetRange(45, 58));
+                _rst.Add(66);
 
                 return _rst;
             }

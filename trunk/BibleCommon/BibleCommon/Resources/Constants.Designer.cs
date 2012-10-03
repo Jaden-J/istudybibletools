@@ -124,6 +124,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на All Dictionaries.
+        /// </summary>
+        public static string AllDictionaries {
+            get {
+                return ResourceManager.GetString("AllDictionaries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Apply.
         /// </summary>
         public static string Apply {
@@ -543,6 +552,15 @@ namespace BibleCommon.Resources {
         public static string DictionariesNotebookName {
             get {
                 return ResourceManager.GetString("DictionariesNotebookName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Dictionaries are not installed. Please use Dictionaries Management Form available on Parameters Form to install dictionaries..
+        /// </summary>
+        public static string DictionariesNotInstalled {
+            get {
+                return ResourceManager.GetString("DictionariesNotInstalled", resourceCulture);
             }
         }
         
@@ -1344,6 +1362,15 @@ namespace BibleCommon.Resources {
         public static string SelectFileWithExtension {
             get {
                 return ResourceManager.GetString("SelectFileWithExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Please select term to search.
+        /// </summary>
+        public static string SelectWord {
+            get {
+                return ResourceManager.GetString("SelectWord", resourceCulture);
             }
         }
         

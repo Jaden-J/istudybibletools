@@ -66,42 +66,54 @@ namespace BibleConfigurator
 
         private void SupplementalBibleForm_Load(object sender, EventArgs e)
         {
-            if (!SettingsManager.Instance.IsConfigured(OneNoteApp))
+            try
             {
-                FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
-                Close();
+                if (!SettingsManager.Instance.IsConfigured(OneNoteApp))
+                {
+                    FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
+                    Close();
+                }
+
+                if (!IsBaseModuleSupported())
+                {
+                    FormLogger.LogError(string.Format(BibleCommon.Resources.Constants.BaseModuleIsNotSupported,
+                                            SettingsManager.Instance.CurrentModule.Version, BibleParallelTranslationManager.SupportedModuleMinVersion));
+                    Close();
+                }
+
+                LoadFormData();
+
+                string defaultNotebookFolderPath;
+                OneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+                folderBrowserDialog.SelectedPath = defaultNotebookFolderPath;
+                folderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetNotebookFolder;
+                folderBrowserDialog.ShowNewFolderButton = true;
+
+                FormExtensions.SetToolTip(btnSBFolder, BibleCommon.Resources.Constants.DefineNotebookDirectory);
+
+                this.Text = GetFormText();
+                chkUseSupplementalBible.Text = GetChkUseText();
             }
-
-            if (!IsBaseModuleSupported())
+            catch (Exception ex)
             {
-                FormLogger.LogError(string.Format(BibleCommon.Resources.Constants.BaseModuleIsNotSupported, 
-                                        SettingsManager.Instance.CurrentModule.Version, BibleParallelTranslationManager.SupportedModuleMinVersion));
-                Close();
-            }            
-
-            LoadFormData();
-
-            string defaultNotebookFolderPath;
-            OneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);  
-            folderBrowserDialog.SelectedPath = defaultNotebookFolderPath;
-            folderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetNotebookFolder;
-            folderBrowserDialog.ShowNewFolderButton = true;
-
-            FormExtensions.SetToolTip(btnSBFolder, BibleCommon.Resources.Constants.DefineNotebookDirectory);
-
-            this.Text = GetFormText();
-            chkUseSupplementalBible.Text = GetChkUseText();
+                BibleCommon.Services.Logger.LogError(ex);
+                FormLogger.LogError(ex.Message);
+            }
         }
 
         private void LoadFormData()
         {
             WasLoaded = false;  
 
-            chkUseSupplementalBible.Checked = !string.IsNullOrEmpty(GetValidSupplementalNotebookId());
-            if (!chkUseSupplementalBible.Checked)
+            bool supplementalNotebookIsInUse = !string.IsNullOrEmpty(GetValidSupplementalNotebookId());
+
+            if (!supplementalNotebookIsInUse)
                 ClearSupplementalModulesInSettingsStorage(); // на всякий пожарный
 
-            chkUseSupplementalBible_CheckedChanged(this, null);
+            chkUseSupplementalBible.Checked = supplementalNotebookIsInUse;
+            
+
+            //chkUseSupplementalBible_CheckedChanged(this, null);
 
             WasLoaded = true;
         }
@@ -229,7 +241,8 @@ namespace BibleConfigurator
                 }
             }
 
-            BtnAddNewModule.Top = TopControlsPosition;
+            if (BtnAddNewModule != null)
+                BtnAddNewModule.Top = TopControlsPosition;
         }
 
         private void AddModuleRow(ModuleInfo moduleInfo, int index, int top)
