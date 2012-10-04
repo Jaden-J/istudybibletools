@@ -62,7 +62,7 @@ namespace BibleConfigurator.ModuleConverter
         public int? StrongNumbersCount { get; set; }
         protected string Version { get; set; }
         protected int OldTestamentBooksCount { get; set; }
-        protected bool GenerateXmlOnly { get; set; }
+        protected bool GenerateXmlOnly { get; set; }        
 
         /// <summary>
         /// 
@@ -83,8 +83,8 @@ namespace BibleConfigurator.ModuleConverter
         {
             OneNoteApp = new Application();
             this.IsStrong = isStrong;
-            this.ModuleShortName = moduleShortName;
-            this.GenerateXmlOnly = generateXmlOnly;
+            this.ModuleShortName = moduleShortName;            
+            this.GenerateXmlOnly = generateXmlOnly;            
             this.NotebookId = !GenerateXmlOnly ? NotebookGenerator.CreateNotebook(OneNoteApp, ModuleShortName) : null;
             this.ManifestFilesFolderPath = manifestFilesFolderPath;            
             this.Locale = locale;
@@ -234,14 +234,14 @@ namespace BibleConfigurator.ModuleConverter
             return NotebookGenerator.AddTableToPage(chapterDoc, false, xnm, new CellInfo(SettingsManager.Instance.PageWidth_Bible), new CellInfo(NotebookGenerator.MinimalCellWidth));
         }
 
-        protected virtual void AddVerseRowToTable(XElement tableElement, int verseNumber, string verseText)
+        protected virtual void AddVerseRowToTable(XElement tableElement, int verseNumber, int? topVerseNumber, string verseText)
         {
             if (!GenerateXmlOnly)
-                NotebookGenerator.AddVerseRowToTable(tableElement, BibleBookContent.GetFullVerseString(verseNumber, verseText), 1, Locale);
+                NotebookGenerator.AddVerseRowToTable(tableElement, BibleBookContent.GetFullVerseString(verseNumber, topVerseNumber, verseText), 1, Locale);
 
             try
             {
-                AddNewVerseContent(verseNumber, verseText);
+                AddNewVerseContent(verseNumber, topVerseNumber, verseText);
             }
             catch (ConverterExceptionBase ex)
             {
@@ -249,31 +249,40 @@ namespace BibleConfigurator.ModuleConverter
             }
         }
 
-        private void AddNewVerseContent(int verseNumber, string verseText)
+        private void AddNewVerseContent(int verseNumber, int? topVerseNumber, string verseText)
         {
             var currentBook = BibleInfo.Content.Books.Last();
             var currentChapter = currentBook.Chapters.Last();
-            int currentVerseIndex = currentChapter.Verses.Count + 1;
+            var lastVerse = currentChapter.Verses.LastOrDefault();
+            int currentVerseIndex = lastVerse != null ? lastVerse.Index + 1 : currentChapter.Verses.Count + 1;            
+            if (lastVerse != null && lastVerse.TopIndex.HasValue)
+                currentVerseIndex = lastVerse.TopIndex.Value + 1;
 
+            bool throwException = false;
             if (verseNumber != currentVerseIndex)
             {
                 for (int i = currentVerseIndex; i <= verseNumber; i++)
                 {
                     currentChapter.Verses.Add(new BibleVerseContent()
                     {
-                        Index = i, Value = string.Empty
+                        Index = i,
+                        Value = string.Empty
                     });
                 }
 
-                throw new VerseReadException("{0} {1}: expectedVerseIndex != verseIndex: {2} != {3}", 
-                                                currentBook.Index, currentChapter.Index, currentVerseIndex, verseNumber);
+                throwException = true;                
             }
 
             currentChapter.Verses.Add(new BibleVerseContent()
             {
-                Index = currentVerseIndex,
-                Value = verseText
+                Index = verseNumber,
+                TopIndex = topVerseNumber,
+                Value = verseText                
             });
+
+            if (throwException)
+                throw new VerseReadException("{0} {1}: expectedVerseIndex != verseIndex: {2} != {3}",
+                                                currentBook.Index, currentChapter.Index, currentVerseIndex, verseNumber);
         }
 
         protected virtual void SaveToXmlFile(object data, string fileName)
@@ -301,7 +310,7 @@ namespace BibleConfigurator.ModuleConverter
             };
             module.Sections = this.SectionsInfo;
             module.DictionarySectionGroupName = this.DictionarySectionGroupName;
-            module.StrongNumbersCount = this.StrongNumbersCount.HasValue ? this.StrongNumbersCount.ToString() : null;
+            module.StrongNumbersCount = this.StrongNumbersCount;
 
             int index = 0;
             foreach (var bibleBookInfo in extModuleInfo.BibleBooksInfo)

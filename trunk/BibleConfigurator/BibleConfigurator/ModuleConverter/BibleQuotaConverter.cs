@@ -68,10 +68,11 @@ namespace BibleConfigurator.ModuleConverter
         public BibleQuotaConverter(string moduleShortName, string bqModuleFolder, string manifestFilesFolderPath, 
             string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, BibleTranslationDifferences translationDifferences, 
             string chapterSectionNameTemplate, List<SectionInfo> sectionsInfo,
-            bool isStrong, string dictionarySectionGroupName, int? strongNumbersCount, 
+            bool isStrong, string dictionarySectionGroupName, int? strongNumbersCount,
             string version, bool generateXmlOnly, params ReadParameters[] readParameters)
             : base(moduleShortName, manifestFilesFolderPath, locale, notebooksInfo, bookIndexes,
-                        translationDifferences, chapterSectionNameTemplate, sectionsInfo, isStrong, dictionarySectionGroupName, strongNumbersCount, version, generateXmlOnly)
+                        translationDifferences, chapterSectionNameTemplate, sectionsInfo, isStrong, dictionarySectionGroupName, 
+                        strongNumbersCount, version, generateXmlOnly)
         {
             this.ModuleFolder = bqModuleFolder;
             this.AdditionalReadParameters = readParameters;
@@ -225,9 +226,10 @@ namespace BibleConfigurator.ModuleConverter
                 throw new Exception("currentTableElement is null");
 
             int? verseNumber;
+            int? topVerseNumber;
             if (!string.IsNullOrEmpty(lineText))
             {
-                string verseText = GetVerseTextWithoutNumber(lineText, out verseNumber);
+                string verseText = GetVerseTextWithoutNumber(lineText, out verseNumber, out topVerseNumber);
 
                 if (!verseNumber.HasValue)
                 {
@@ -241,7 +243,7 @@ namespace BibleConfigurator.ModuleConverter
                     verseText = ProcessStrongVerse(verseText, alphabet);
                 }
 
-                AddVerseRowToTable(currentTableElement, verseNumber.Value, verseText);
+                AddVerseRowToTable(currentTableElement, verseNumber.Value, topVerseNumber, verseText);
             }
         }
 
@@ -277,9 +279,10 @@ namespace BibleConfigurator.ModuleConverter
             return verseText;
         }
 
-        private string GetVerseTextWithoutNumber(string lineText, out int? verseNumber)
+        private string GetVerseTextWithoutNumber(string lineText, out int? verseNumber, out int? topVerseNumber)
         {
             verseNumber = null;
+            topVerseNumber = null;
 
             if (!string.IsNullOrEmpty(lineText.Trim()))
             {
@@ -288,6 +291,15 @@ namespace BibleConfigurator.ModuleConverter
                     verseNumber = StringUtils.GetStringFirstNumber(lineText);
 
                     lineText = lineText.Remove(0, verseNumber.Value.ToString().Length).Trim();
+
+                    if (lineText.Length >= 2)
+                    {
+                        if (lineText[0] == '-' && StringUtils.IsDigit(lineText[1]))
+                        {
+                            topVerseNumber = StringUtils.GetStringFirstNumber(lineText);
+                            lineText = lineText.Remove(0, topVerseNumber.Value.ToString().Length + 1).Trim();
+                        }
+                    }
                 }
             }
 
@@ -297,13 +309,15 @@ namespace BibleConfigurator.ModuleConverter
         private string ShellText(string line, BibleQuotaModuleInfo moduleInfo)
         {
             var result = line.Replace("<<", "&lt;").Replace(">>", "&gt;");   // чтобы учитывать строки типа "<p>1 <<To the chief Musician on Neginoth, A Psalm of David.>> Hear me when I call, O God of my righteousness: thou hast enlarged me when I was in distress; have mercy upon me, and hear my prayer."
+            result = StringUtils.RemoveIllegalTagStartAndEndSymbols(result);
 
             if (AdditionalReadParameters.Contains(ReadParameters.RemoveHyperlinks))
             {
                 result = StringUtils.RemoveTags(result, "<a>", "</a>");
-                result = StringUtils.RemoveTags(result, "<a ", "</a>");
-                result = result.Replace("  ", " ");
+                result = StringUtils.RemoveTags(result, "<a ", "</a>");                
             }
+
+            result = result.Replace("  ", " ");
 
             result = StringUtils.GetText(result, moduleInfo.Alphabet).Trim();            
 

@@ -67,8 +67,31 @@ namespace BibleCommon.Common
         [XmlAttribute]
         public string DictionarySectionGroupName { get; set; }
 
+        [XmlIgnore]
+        public int? StrongNumbersCount { get; set; }
+
         [XmlAttribute]
-        public string StrongNumbersCount { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public int XmlStrongNumbersCount
+        {
+            get
+            {
+                return StrongNumbersCount.Value;
+            }
+            set
+            {
+                StrongNumbersCount = value;
+            }
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public bool XmlStrongNumbersCountSpecified
+        {
+            get
+            {
+                return StrongNumbersCount.HasValue;
+            }
+        }
 
         /// <summary>
         /// Должны быть соответствующие файлы .one
@@ -551,9 +574,10 @@ namespace BibleCommon.Common
             return string.Join(" ", contents.ToArray());
         }
 
-        public static string GetFullVerseString(int verseNumber, string verseText)
+        public static string GetFullVerseString(int verseNumber, int? topVerseNumber, string verseText)
         {
-            return string.Format("{0} {1}", verseNumber, ShellVerseText(verseText));
+            string verseNumberString = topVerseNumber.HasValue ? string.Format("{0}-{1}", verseNumber, topVerseNumber) : verseNumber.ToString();
+            return string.Format("{0} {1}", verseNumberString, ShellVerseText(verseText));
         }
 
         private static string ShellVerseText(string verseText)
@@ -586,8 +610,33 @@ namespace BibleCommon.Common
         [XmlAttribute]
         public int Index { get; set; }
 
-        [XmlText]
-        public string Value { get; set; }        
-    }
+        [XmlIgnore]
+        public int? TopIndex { get; set; }       
 
+        [XmlText]
+        public string Value { get; set; }
+
+        [XmlAttribute]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public int XmlTopIndex
+        {
+            get
+            {
+                return TopIndex.Value;
+            }
+            set
+            {
+                TopIndex = value;
+            }
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public bool XmlTopIndexSpecified
+        {
+            get
+            {
+                return TopIndex.HasValue;
+            }
+        }
+    }
 }

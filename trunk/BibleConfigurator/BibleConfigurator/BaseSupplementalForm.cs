@@ -61,6 +61,8 @@ namespace BibleConfigurator
             TopControlsPosition = 10;
             Logger = new CustomFormLogger(MainForm);
 
+            this.SetFormUICulture();
+
             InitializeComponent();            
         }
 

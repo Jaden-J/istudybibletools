@@ -698,5 +698,30 @@ namespace BibleCommon.Helpers
 
             return s;
         }
+
+        public static string RemoveIllegalTagStartAndEndSymbols(string s, int startIndex = 0)
+        {
+            startIndex = s.IndexOfAny(new char[] { '<', '>' }, startIndex);
+            if (startIndex != -1)
+            {
+                if (s[startIndex] == '>')
+                    return RemoveIllegalTagStartAndEndSymbols(s.Remove(startIndex, 1));
+                else if (s.Length == startIndex + 1)
+                    return s.Remove(startIndex, 1);
+                else
+                {
+                    var nextChar = char.ToLower(s[startIndex + 1]);
+                    if (!((nextChar >= 'a' && nextChar <= 'z') || nextChar == '/'))
+                        return RemoveIllegalTagStartAndEndSymbols(s.Remove(startIndex, 1));
+                    else
+                        startIndex = s.IndexOf('>', startIndex + 1);
+                }
+
+                if (startIndex != -1)
+                    return RemoveIllegalTagStartAndEndSymbols(s, startIndex + 1);
+            }
+
+            return s;
+        }
     }
 }
