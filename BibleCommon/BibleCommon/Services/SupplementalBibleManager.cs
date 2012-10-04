@@ -513,7 +513,7 @@ namespace BibleCommon.Services
 
             foreach (var verse in chapter.Verses)
             {
-                NotebookGenerator.AddVerseRowToTable(currentTableElement, BibleBookContent.GetFullVerseString(verse.Index, verse.Value), 0, bibleInfo.Content.Locale);
+                NotebookGenerator.AddVerseRowToTable(currentTableElement, BibleBookContent.GetFullVerseString(verse.Index, verse.TopIndex, verse.Value), 0, bibleInfo.Content.Locale);
             }
 
             UpdateChapterPage(oneNoteApp, currentChapterDoc, chapter.Index, bibleBookInfo);

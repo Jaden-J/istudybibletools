@@ -253,10 +253,10 @@ namespace TestProject
 
         private static void ConvertRussianModule()
         {
-            string moduleShortName = "rst77";
+            string moduleShortName = "ibs";
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), 
                 "ru",
-                PredefinedNotebooksInfo.Russian77, PredefinedBookIndexes.RST77, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst77),  // вот эти тоже часто надо менять                
+                PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst),  // вот эти тоже часто надо менять                
                 "{0} глава. {1}",
                 PredefinedSectionsInfo.None, false, null, null,
                 //PredefinedSectionsInfo.RSTStrong, true, "Стронга", 14700,   // параметры для стронга
@@ -275,8 +275,7 @@ namespace TestProject
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName),
                 "en", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
                 "{0} chapter. {1}",
-                null,
-                false, null, null, // параметры для стронга
+                null, false, null, null, // параметры для стронга
                 "2.0", false);
 
             converter.Convert();
@@ -291,8 +290,7 @@ namespace TestProject
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), 
                 "ro", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
                 "{0} capitolul. {1}",
-                null, 
-                false, null, null, 
+                null, false, null, null, 
                 "2.0", false);            
 
             converter.Convert();

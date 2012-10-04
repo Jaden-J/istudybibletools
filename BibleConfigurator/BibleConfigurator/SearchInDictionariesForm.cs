@@ -89,6 +89,7 @@ namespace BibleConfigurator
 
         public SearchInDictionariesForm()
         {
+            this.SetFormUICulture();
             InitializeComponent();
             _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
         }
