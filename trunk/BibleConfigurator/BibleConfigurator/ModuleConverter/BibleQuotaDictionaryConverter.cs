@@ -19,7 +19,7 @@ namespace BibleConfigurator.ModuleConverter
     {
         public string TermPrefix { get; set; }
         public string FilePath { get; set; }
-        public string DisplayName { get; set; }
+        public string DictionaryPageDescription { get; set; }
         public string SectionName { get; set; }
         public int StartIndex { get; set; }        
     }
@@ -50,7 +50,9 @@ namespace BibleConfigurator.ModuleConverter
         public string Version { get; set; }
         public string TermStartString { get; set; }
         public string DictionaryModuleName { get; set; }
-        public string DictionaryDisplayName { get; set; }
+        public string DictionaryName { get; set; }
+        public string DictionaryDescription { get; set; }
+        public string PageTitleFormat { get; set; }
         public string DictionarySectionGroupName { get; set; }
         public List<Exception> Errors { get; set; }
         public string UserNotesString { get; set; }
@@ -64,13 +66,15 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="bqDictionaryFolder">Только один словарь может быть в папке.</param>
         /// <param name="type"></param>
         /// <param name="manifestFilesFolder"></param>
-        public BibleQuotaDictionaryConverter(Application oneNoteApp, string notebookName, string dictionaryModuleName, string dictionaryDisplayName,
+        public BibleQuotaDictionaryConverter(Application oneNoteApp, string notebookName, string dictionaryModuleName, string dictionaryName, string dictionaryDescription, string pageTitleFormat,
             List<DictionaryFile> dictionaryFiles, StructureType type, string dictionarySectionGroupName, string manifestFilesFolder, string termStartString, string userNotesString, string findAllVersesString,
             string locale, string version)
         {
             this.Type = type;
             this.DictionaryModuleName = dictionaryModuleName;
-            this.DictionaryDisplayName = dictionaryDisplayName;
+            this.DictionaryName = dictionaryName;
+            this.DictionaryDescription = dictionaryDescription;
+            this.PageTitleFormat = pageTitleFormat;
             this.DictionarySectionGroupName = dictionarySectionGroupName;
             this.OneNoteApp = oneNoteApp;
             this.ManifestFilesFolder = manifestFilesFolder;
@@ -106,7 +110,7 @@ namespace BibleConfigurator.ModuleConverter
                 int termsInPageCount = 0;
                 int termIndex = file.StartIndex - 1;
                 var pageInfo = Type == StructureType.Strong 
-                                ? AddTermsPage(sectionId, string.Format("{0:0000}-", file.StartIndex), file.DisplayName)
+                                ? AddTermsPage(sectionId, string.Format("{0:0000}-", file.StartIndex), file.DictionaryPageDescription)
                                 : null;
                 string prevTerm = null;
                 foreach (string line in File.ReadAllLines(file.FilePath, Utils.GetFileEncoding(file.FilePath)))
@@ -149,13 +153,15 @@ namespace BibleConfigurator.ModuleConverter
 
         private TermPageInfo AddTermsPage(string sectionId, string pageName, string pageDisplayName)
         {
+            pageName = string.Format(this.PageTitleFormat, pageName);
+
             XmlNamespaceManager xnm;
             var firstColumnWidthK = Type == StructureType.Strong ? 1 : 2;
             var pageDoc = NotebookGenerator.AddPage(OneNoteApp, sectionId, pageName, 1, Locale, out xnm);
             var tableEl = NotebookGenerator.AddTableToPage(pageDoc, true, xnm, new CellInfo((int)(NotebookGenerator.MinimalCellWidth * firstColumnWidthK)), new CellInfo(SettingsManager.Instance.PageWidth_Bible));
             var styleIndex = QuickStyleManager.AddQuickStyleDef(pageDoc, QuickStyleManager.StyleNameH3, QuickStyleManager.PredefinedStyles.H3, xnm);
             if (!string.IsNullOrEmpty(pageDisplayName))
-                AddPageDisplayName(pageDoc, pageDisplayName, xnm);
+                AddPageTitle(pageDoc, pageDisplayName, xnm);
             return new TermPageInfo() { PageDocument = pageDoc, TableElement = tableEl, StyleIndex = styleIndex };
         }
 
@@ -170,7 +176,7 @@ namespace BibleConfigurator.ModuleConverter
             {
                 if (pageInfo != null)
                     UpdatePage(pageInfo.PageDocument);
-                pageInfo = AddTermsPage(sectionId, GetFirstTermValueChar(termName).ToString(), file.DisplayName);
+                pageInfo = AddTermsPage(sectionId, GetFirstTermValueChar(termName).ToString(), file.DictionaryPageDescription);
                 pageInfoWasChanged = true;
             }
 
@@ -194,7 +200,7 @@ namespace BibleConfigurator.ModuleConverter
                 termCellText = string.Format("<b>{0}</b> <a href='{1}'><span style='font-size:8.0pt'>{2}</span></a>", termName, commandUrl, FindAllVersesString);
             }
             else
-                termCellText = string.Format("<b>·{0}·</b>", termName);
+                termCellText = string.Format("<b>{0}{1}{0}</b>", BibleCommon.Consts.Constants.DictionarySearchFrameSymbol, termName);
 
             NotebookGenerator.AddRowToTable(pageInfo.TableElement,
                                 NotebookGenerator.GetCell(termCellText, Locale, nms),
@@ -219,7 +225,7 @@ namespace BibleConfigurator.ModuleConverter
 
                     if (!isLatestTermInSection)
                     {
-                        pageInfo = AddTermsPage(sectionId, string.Format("{0:0000}-", termIndex + 1), file.DisplayName);
+                        pageInfo = AddTermsPage(sectionId, string.Format("{0:0000}-", termIndex + 1), file.DictionaryPageDescription);
                         pageInfoWasChanged = true;
                     }
                 }
@@ -248,12 +254,18 @@ namespace BibleConfigurator.ModuleConverter
             {
                 var number = int.Parse(result);
                 result = string.Format("{0}{1:0000}", file.TermPrefix, number);
-            }            
+            }
+            else
+            {
+                result = result.ToLower();
+                var firstChar = char.ToUpper(result[0]);
+                result = firstChar + result.Substring(1);
+            }
 
             return result;
         }
 
-        private void AddPageDisplayName(XDocument pageDoc, string displayName, XmlNamespaceManager xnm)
+        private void AddPageTitle(XDocument pageDoc, string displayName, XmlNamespaceManager xnm)
         {
             var titleElement = pageDoc.Root.XPathSelectElement("one:Title", xnm);
 
@@ -335,7 +347,8 @@ namespace BibleConfigurator.ModuleConverter
             var module = new ModuleInfo()
             {
                 ShortName = DictionaryModuleName,
-                Name = DictionaryDisplayName,
+                Name = DictionaryName,
+                Description = DictionaryDescription,
                 Version = this.Version,                
                 Type = ModuleType.Dictionary
             };

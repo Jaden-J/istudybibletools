@@ -75,6 +75,9 @@ namespace BibleCommon.Common
             if (IsEmpty)
                 result += "(empty)";
 
+            if (IsApocrypha)
+                result += "(A)";
+
             return result;
         }        
 

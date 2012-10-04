@@ -49,7 +49,7 @@
             this.cbTerms.FormattingEnabled = true;
             resources.ApplyResources(this.cbTerms, "cbTerms");
             this.cbTerms.Name = "cbTerms";
-            this.cbTerms.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.cbTerms_MouseDoubleClick);
+            this.cbTerms.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cbTerms_MouseClick);
             // 
             // btnOk
             // 
@@ -69,9 +69,9 @@
             // SearchInDictionariesForm
             // 
             this.AcceptButton = this.btnOk;
-            resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.btnCancel;
+            resources.ApplyResources(this, "$this");
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.cbTerms);

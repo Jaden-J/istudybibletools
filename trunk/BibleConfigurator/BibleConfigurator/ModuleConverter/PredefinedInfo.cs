@@ -314,6 +314,14 @@ namespace BibleConfigurator.ModuleConverter
 
     public static class PredefinedSectionsInfo
     {
+        public static List<SectionInfo> None
+        {
+            get
+            {
+                return null;
+            }
+        }
+
         public static List<SectionInfo> RSTStrong
         {
             get

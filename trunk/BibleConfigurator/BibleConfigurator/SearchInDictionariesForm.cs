@@ -43,17 +43,25 @@ namespace BibleConfigurator
             }
         }
 
-        private void LoadData()
+        private bool LoadData()
         {
             try
-            {
+            {                
                 DictionariesNotebookId = SettingsManager.Instance.GetValidDictionariesNotebookId(_oneNoteApp);
 
                 if (string.IsNullOrEmpty(DictionariesNotebookId))
                 {
-                    FormLogger.LogError(BibleCommon.Resources.Constants.DictionariesNotInstalled);
+                    SettingsManager.Instance.ReLoadSettings();
+                    DictionariesNotebookId = SettingsManager.Instance.GetValidDictionariesNotebookId(_oneNoteApp, true);
+                }
+
+                if (string.IsNullOrEmpty(DictionariesNotebookId))
+                {
                     this.Visible = false;
+                    this.SetFocus();                    
+                    FormLogger.LogError(BibleCommon.Resources.Constants.DictionariesNotInstalled);                    
                     Close();
+                    return false;
                 }
 
                 _modulesTermSets = new Dictionary<string, ModuleDictionaryInfo>();
@@ -68,6 +76,8 @@ namespace BibleConfigurator
                         _modules.Add(module.Name, module);
                     }
                 }
+
+                return true;
             }
             catch (Exception ex)
             {
@@ -85,19 +95,24 @@ namespace BibleConfigurator
 
         private void SearchInDictionariesForm_Load(object sender, EventArgs e)
         {
-            LoadDictionary(null);
+            if (LoadData())
+            {
+                LoadDictionary(null);
 
-            cbDictionaries.Items.Add(BibleCommon.Resources.Constants.AllDictionaries);
-            foreach (var dName in Modules.Keys)
-                cbDictionaries.Items.Add(dName);
-            cbDictionaries.SelectedIndex = 0;
+                cbDictionaries.Items.Add(BibleCommon.Resources.Constants.AllDictionaries);
+                foreach (var dName in Modules.Keys)
+                    cbDictionaries.Items.Add(dName);
+                cbDictionaries.SelectedIndex = 0;
 
-            cbTerms.Select();
+                cbTerms.Select();
+            }
         }        
 
         private void LoadDictionary(string moduleShortName)
-        {
-            var terms = !string.IsNullOrEmpty(moduleShortName) ? ModulesTermSets[moduleShortName].TermSet.Terms : ModulesTermSets.Values.SelectMany(md => md.TermSet.Terms);
+        {            
+            var terms = !string.IsNullOrEmpty(moduleShortName) 
+                ? ModulesTermSets[moduleShortName].TermSet.Terms 
+                : ModulesTermSets.Values.SelectMany(md => md.TermSet.Terms).Distinct();
             cbTerms.DataSource = terms.OrderBy(t => t).ToArray();
         }
 
@@ -138,13 +153,9 @@ namespace BibleConfigurator
         private void StartTermSearhing(string term)
         {
             string xml;
-            _oneNoteApp.FindPages(DictionariesNotebookId, term, out xml, true, true);
+            _oneNoteApp.FindPages(DictionariesNotebookId, string.Format("{0}{1}{0}", BibleCommon.Consts.Constants.DictionarySearchFrameSymbol, term), out xml, true, true);
         }
-
-        private void cbTerms_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            btnOk_Click(this, null);
-        }
+      
 
         private void SearchInDictionariesForm_KeyDown(object sender, KeyEventArgs e)
         {
@@ -162,6 +173,25 @@ namespace BibleConfigurator
                 this.SetFocus();
                 _wasShown = true;
             }
-        }               
+        }
+
+        private DateTime _lastMouseClickedTime = DateTime.Now;
+        private string _lastSelectedItem = null;
+        private void cbTerms_MouseClick(object sender, MouseEventArgs e)
+        {   
+            if (DateTime.Now.CompareTo(_lastMouseClickedTime.AddMilliseconds(SystemInformation.DoubleClickTime)) < 1)
+            {                
+                if (_lastSelectedItem == (string)cbTerms.SelectedItem)
+                    DoubleClicked();
+            }
+
+            _lastMouseClickedTime = DateTime.Now;
+            _lastSelectedItem = (string)cbTerms.SelectedItem;
+        }
+
+        private void DoubleClicked()
+        {            
+            btnOk_Click(this, null);
+        } 
     }
 }

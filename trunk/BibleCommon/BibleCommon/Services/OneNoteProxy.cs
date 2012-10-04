@@ -403,6 +403,11 @@ namespace BibleCommon.Services
             GetHierarchy(oneNoteApp, hierarchyId, scope, true);
         }
 
+        public void RefreshHierarchyCache()
+        {            
+            _hierarchyContentCache.Clear();
+        }
+
         public void CommitAllModifiedPages(Application oneNoteApp, Func<PageContent, bool> filter, 
             Action<int> onAllPagesToCommitFound, Action<PageContent> onPageProcessed)
         {   

@@ -1187,8 +1187,11 @@ namespace BibleConfigurator
         private bool _lblModulesBibleTitleWasAdded = false;
         private bool _lblModulesDictionariesTitleWasAdded = false;
 
+
+        private const int MaxPnModulesHeight = 265;
         private void LoadModulesInfo()
         {            
+
             int top = 10;
             _lblModulesBibleTitleWasAdded = false;
             _lblModulesDictionariesTitleWasAdded = false;
@@ -1216,6 +1219,9 @@ namespace BibleConfigurator
 
             if (modules.Count() > 0)
             {
+                if (top > MaxPnModulesHeight)
+                    top = MaxPnModulesHeight;
+
                 pnModules.Height = top;
                 btnUploadModule.Top = top + 50;
                 btnUploadModule.Left = 31 + pnModules.Left;
@@ -1281,14 +1287,14 @@ namespace BibleConfigurator
             lblName.Text = moduleInfo.Name;
             lblName.Top = top + 5;
             lblName.Left = 15;
-            lblName.Width = 325;
+            lblName.Width = 310;
             FormExtensions.SetToolTip(lblName, BibleCommon.Resources.Constants.ModuleDisplayName);
             pnModules.Controls.Add(lblName);
 
             Label lblVersion = new Label();
             lblVersion.Text = moduleInfo.Version;
             lblVersion.Top = top + 5;
-            lblVersion.Left = 345;
+            lblVersion.Left = 330;
             lblVersion.Width = 25;
             FormExtensions.SetToolTip(lblVersion, BibleCommon.Resources.Constants.ModuleVersion);
             pnModules.Controls.Add(lblVersion);
@@ -1299,24 +1305,23 @@ namespace BibleConfigurator
                 cbIsActive.AutoCheck = false;
                 cbIsActive.Checked = SettingsManager.Instance.ModuleName == moduleInfo.ShortName;
                 cbIsActive.Top = top;
-                cbIsActive.Left = 370;
+                cbIsActive.Left = 355;
                 cbIsActive.Width = 20;
                 FormExtensions.SetToolTip(cbIsActive, BibleCommon.Resources.Constants.ModuleIsActive);
                 pnModules.Controls.Add(cbIsActive);
             }
 
-            if (moduleInfo.Type != ModuleType.Dictionary)
-            {
-                Button btnInfo = new Button();
-                btnInfo.Text = "?";
-                btnInfo.Tag = moduleInfo.ShortName;
-                btnInfo.Top = top;
-                btnInfo.Left = 390;
-                btnInfo.Width = 20;
-                btnInfo.Click += new EventHandler(btnModuleInfo_Click);
-                FormExtensions.SetToolTip(btnInfo, BibleCommon.Resources.Constants.ModuleInformation);
-                pnModules.Controls.Add(btnInfo);
-            }
+            
+            Button btnInfo = new Button();
+            btnInfo.Text = "?";
+            btnInfo.Tag = moduleInfo;
+            btnInfo.Top = top;
+            btnInfo.Left = 375;
+            btnInfo.Width = 20;
+            btnInfo.Click += new EventHandler(btnModuleInfo_Click);
+            FormExtensions.SetToolTip(btnInfo, BibleCommon.Resources.Constants.ModuleInformation);
+            pnModules.Controls.Add(btnInfo);
+            
 
             if (moduleInfo.Type == ModuleType.Bible)
             {
@@ -1325,7 +1330,7 @@ namespace BibleConfigurator
                 btnUseThisModule.Enabled = moduleInfo.Type == ModuleType.Bible ? SettingsManager.Instance.ModuleName != moduleInfo.ShortName : true;
                 btnUseThisModule.Tag = moduleInfo;
                 btnUseThisModule.Top = top;
-                btnUseThisModule.Left = 415;
+                btnUseThisModule.Left = 400;
                 btnUseThisModule.Width = 185;
                 btnUseThisModule.Click += new EventHandler(btnUseThisModule_Click);
                 pnModules.Controls.Add(btnUseThisModule);
@@ -1336,7 +1341,7 @@ namespace BibleConfigurator
             btnDel.Enabled = SettingsManager.Instance.ModuleName != moduleInfo.ShortName;            
             btnDel.Tag = moduleInfo.ShortName;
             btnDel.Top = top;            
-            btnDel.Left = 605;
+            btnDel.Left = 590;
             btnDel.Width = btnDel.Height;
             btnDel.Click += new EventHandler(btnDeleteModule_Click);
             FormExtensions.SetToolTip(btnDel, BibleCommon.Resources.Constants.DeleteThisModule);
@@ -1361,10 +1366,18 @@ namespace BibleConfigurator
         void btnModuleInfo_Click(object sender, EventArgs e)
         {
             var btn = (Button)sender;
-            var moduleName = (string)btn.Tag;
+            var moduleInfo = (ModuleInfo)btn.Tag;
 
-            AboutModuleForm f = new AboutModuleForm(moduleName, false);
-            f.ShowDialog();                
+            if (moduleInfo.Type == ModuleType.Dictionary)
+            {
+                MessageBox.Show(!string.IsNullOrEmpty(moduleInfo.Description) ? moduleInfo.Description : moduleInfo.Name, 
+                    BibleCommon.Resources.Constants.ModuleInformation, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                AboutModuleForm f = new AboutModuleForm(moduleInfo.ShortName, false);
+                f.ShowDialog();
+            }
         }
 
         void btnUseThisModule_Click(object sender, EventArgs e)
@@ -1462,6 +1475,6 @@ namespace BibleConfigurator
         {
             var form = new DictionaryModulesForm(_oneNoteApp, this);
             form.ShowDialog();
-        }          
+        }                  
     }
 }

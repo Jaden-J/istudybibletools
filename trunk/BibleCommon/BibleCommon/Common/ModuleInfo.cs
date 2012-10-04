@@ -55,6 +55,9 @@ namespace BibleCommon.Common
         [XmlAttribute]
         public string Name { get; set; }
 
+        [XmlAttribute]
+        public string Description { get; set; }
+
         /// <summary>
         /// Должны быть соответствующие файлы .onepkg
         /// </summary>
