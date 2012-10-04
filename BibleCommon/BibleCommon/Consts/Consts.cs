@@ -22,6 +22,7 @@ namespace BibleCommon.Consts
         public static readonly string FileExtensionIsbt = ".isbt";        
         public static readonly string TempDirectory = "Temp";
         public static readonly string DefaultPartVersesAlphabet = "abcdefghijklmnopqrstuvwxyz";
+        public static char DictionarySearchFrameSymbol = '·';
         
         public static readonly int DefaultPageWidth_Notes = 500;
         public static readonly int DefaultPageWidth_RubbishNotes = 500;

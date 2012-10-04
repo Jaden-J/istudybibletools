@@ -326,6 +326,8 @@ namespace BibleCommon.Services
                             throw new GetParallelVerseException("Miss verse (x03)", baseVersePointer, BaseVersePointerException.Severity.Warning);
                         else if (lastProcessedChapter == firstParallelVerse.Chapter && lastProcessedVerse == firstParallelVerse.Verse && !firstParallelVerse.PartIndex.HasValue)
                             throw new GetParallelVerseException("Double verse (x04)", baseVersePointer, BaseVersePointerException.Severity.Warning);
+                        else if (lastProcessedChapter == firstParallelVerse.Chapter && firstParallelVerse.Verse < lastProcessedVerse)
+                            throw new GetParallelVerseException("Reverse verse (x05)", baseVersePointer, BaseVersePointerException.Severity.Warning);                        
                     }
                 }
             }

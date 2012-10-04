@@ -1605,6 +1605,9 @@
   <data name="&gt;&gt;lblModulesLink.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
+  <data name="pnModules.AutoScroll" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="pnModules.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 24</value>
   </data>
