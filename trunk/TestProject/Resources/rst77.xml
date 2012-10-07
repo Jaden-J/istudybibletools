@@ -292,6 +292,8 @@
     <Difference BaseVerses="2:1-10" ParallelVerses="2:X+1" />
   </BookDifferences>
   <BookDifferences BookIndex="44">
+    <Difference BaseVerses="1:15" ParallelVerses="1:15-16(1)" />
+    <Difference BaseVerses="1:16" ParallelVerses="1:16(2)" />
     <Difference BaseVerses="19:40-41" ParallelVerses="19:40" />
   </BookDifferences>
   <BookDifferences BookIndex="45">
@@ -302,6 +304,10 @@
     <Difference BaseVerses="11:32-33" ParallelVerses="11:32" />
     <Difference BaseVerses="13:12-13" ParallelVerses="13:12" />
     <Difference BaseVerses="13:14" ParallelVerses="13:13" />
+  </BookDifferences>
+  <BookDifferences BookIndex="49">
+    <Difference BaseVerses="3:17" ParallelVerses="3:17-18(1)" />
+    <Difference BaseVerses="3:18" ParallelVerses="3:18(2)" />
   </BookDifferences>
   <BookDifferences BookIndex="64">
     <Difference BaseVerses="1:14" ParallelVerses="1:14-15" />
