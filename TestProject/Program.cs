@@ -103,12 +103,11 @@ namespace TestProject
 
         private static void TestVerseNumber()
         {
-            string s = " <a href=''>2<a>-</a><a>3</a></a> Текст стиха 6-6";
+            VerseNumber vs1 = null;
+            VerseNumber vs2 = null;
             
-            var verseNumber = VerseNumber.GetFromVerseText(s);
             
-            
-            Console.WriteLine(verseNumber);
+            Console.WriteLine(vs2 != vs1);
         }
 
         private static void SearchInNotebook()

@@ -125,7 +125,7 @@ namespace BibleCommon.Services
                                 HierarchyStage = HierarchySearchManager.HierarchyStage.ContentPlaceholder,
                                 HierarchyObjectInfo = new HierarchySearchManager.HierarchyObjectInfo()
                                     {
-                                        ContentObjectId = new HierarchySearchManager.VerseObjectInfo() { ContentObjectId = textElId },
+                                        VerseInfo = new HierarchySearchManager.VerseObjectInfo() { ContentObjectId = textElId },
                                         PageId = pageId,
                                         SectionId = section.Id,
                                     }
@@ -159,7 +159,7 @@ namespace BibleCommon.Services
                             HierarchyStage = HierarchySearchManager.HierarchyStage.Page,
                             HierarchyObjectInfo = new HierarchySearchManager.HierarchyObjectInfo()
                             {
-                                ContentObjectId = pageTitleId,
+                                VerseInfo = new HierarchySearchManager.VerseObjectInfo() { ContentObjectId = pageTitleId },
                                 PageId = pageId,
                                 SectionId = section.Id,
                             }

@@ -66,11 +66,18 @@ namespace BibleCommon.Common
 
         public static VerseNumber GetFromVerseText(string verseText)
         {
+            string temp;
+            return GetFromVerseText(verseText, out temp);
+        }
+
+        public static VerseNumber GetFromVerseText(string verseText, out string verseTextWithoutNumber)
+        {
             verseText = verseText.Trim();
+            verseTextWithoutNumber = null;
             int textBreakIndex, htmlBreakIndex;
-            var verse = StringUtils.GetNextString(verseText, -1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound),
+            var verseIndex = StringUtils.GetNextString(verseText, -1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound),
                                                         out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
-            if (!string.IsNullOrEmpty(verse))
+            if (!string.IsNullOrEmpty(verseIndex))
             {
                 int? topVerse = null;
                 if (StringUtils.GetChar(verseText, htmlBreakIndex) == '-')
@@ -79,9 +86,11 @@ namespace BibleCommon.Common
                                                         out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
                     if (!string.IsNullOrEmpty(topVerseString))
                         topVerse = int.Parse(topVerseString);
-                }
+                }                
 
-                return new VerseNumber(int.Parse(verse), topVerse);
+                verseTextWithoutNumber = verseText.Substring(htmlBreakIndex + 1);
+
+                return new VerseNumber(int.Parse(verseIndex), topVerse);
             }
 
             return null;
@@ -114,6 +123,26 @@ namespace BibleCommon.Common
             return this.Verse == anotherObj.Verse 
                 && this.TopVerse == anotherObj.TopVerse;
         }
+
+        public static bool operator ==(VerseNumber vn1, VerseNumber vn2)
+        {
+            if (((object)vn1) == null && ((object)vn2) == null)
+                return true;
+
+            if (((object)vn1) == null)
+                return false;
+
+            if (((object)vn2) == null)
+                return false;
+
+            return vn1.Equals(vn2);
+        }
+
+        public static bool operator !=(VerseNumber vn1, VerseNumber vn2)
+        {
+            return !(vn1 == vn2);
+        }        
+
     }
 
     [Serializable]
@@ -304,7 +333,7 @@ namespace BibleCommon.Common
         /// <param name="versePointer"></param>
         /// <param name="verseContent"></param>
         public SimpleVerse(SimpleVersePointer versePointer, string verseNumber, string verseContent)
-            : base(versePointer.BookIndex, versePointer.Chapter, versePointer.Verse)
+            : base(versePointer.BookIndex, versePointer.Chapter, versePointer.VerseNumber)
         {
             this.VerseContent = verseContent;
 
@@ -333,6 +362,14 @@ namespace BibleCommon.Common
         public string OriginalBookName { get; set; }
 
         public VersePointer ParentVersePointer { get; set; } // родительская ссылка. Например если мы имеем дело со стихом диапазона, то здесь хранится стих, являющийся диапазоном
+
+        public VerseNumber VerseNumber
+        {
+            get
+            {
+                return new VerseNumber(this.Verse.GetValueOrDefault(), this.TopVerse);
+            }
+        }
 
         public override string ToString()
         {
@@ -452,11 +489,11 @@ namespace BibleCommon.Common
                 if (!string.IsNullOrEmpty(moduleName))   // значит ссылка дана для модуля, отличного от установленного                
                     ConvertToBaseVerse(moduleName);                
             }
-        }
+        }       
 
         public SimpleVersePointer ToSimpleVersePointer()
         {
-            return new SimpleVersePointer(Book.Index, Chapter.GetValueOrDefault(0), Verse.GetValueOrDefault(0)) { TopVerse = this.TopVerse };
+            return new SimpleVersePointer(Book.Index, Chapter.GetValueOrDefault(0), new VerseNumber(Verse.GetValueOrDefault(0), this.TopVerse));
         }
 
         private void ConvertToBaseVerse(string moduleName)
@@ -464,8 +501,7 @@ namespace BibleCommon.Common
             if (IsValid)
             {
                 var parallelVersePointer = BibleParallelTranslationConnectorManager.GetParallelVersePointer(
-                                                new SimpleVersePointer(this.Book.Index, this.Chapter.Value, this.Verse.Value), 
-                                                moduleName, SettingsManager.Instance.ModuleName);
+                                                ToSimpleVersePointer(), moduleName, SettingsManager.Instance.ModuleName);
 
                 this.OriginalBookName = this.Book.Name;
                 this.Chapter = parallelVersePointer.Chapter;
@@ -477,7 +513,7 @@ namespace BibleCommon.Common
                                                 new SimpleVersePointer(
                                                                     this.Book.Index, 
                                                                     this.TopChapter.GetValueOrDefault(this.Chapter.Value), 
-                                                                    this.TopVerse.GetValueOrDefault(this.Verse.Value)), 
+                                                                    new VerseNumber(this.TopVerse.GetValueOrDefault(this.Verse.Value))), 
                                                 moduleName, SettingsManager.Instance.ModuleName);
 
                     if (TopChapter.HasValue)
@@ -717,16 +753,7 @@ namespace BibleCommon.Common
 
         public static bool operator !=(VersePointer vp1, VersePointer vp2)
         {
-            if (((object)vp1) == null && ((object)vp2) == null)
-                return false;
-
-            if (((object)vp1) == null)
-                return true;
-
-            if (((object)vp2) == null)
-                return true;
-
-            return !vp1.Equals(vp2);
+            return !(vp1 == vp2);
         }        
     }
 }
