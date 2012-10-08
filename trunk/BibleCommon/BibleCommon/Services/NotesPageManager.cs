@@ -31,7 +31,7 @@ namespace BibleCommon.Services
                 AddLinkToNotesPage(oneNoteApp, noteLinkManager, vp, rowElement, notePageId, 
                     notePageContentObjectId, notesPageDocument, notesPageDocument.Xnm, nms, notesPageName, force);
 
-                targetContentObjectId = GetNotesRowObjectId(oneNoteApp, notesPageId, vp.Verse, isChapter);
+                targetContentObjectId = GetNotesRowObjectId(oneNoteApp, notesPageId, verseHierarchyObjectInfo.VerseNumber, isChapter);
             }
 
             return targetContentObjectId;
@@ -201,7 +201,7 @@ namespace BibleCommon.Services
             return multiVerseString;
         }
 
-        internal static string GetNotesRowObjectId(Application oneNoteApp, string notesPageId, int? verseNumber, bool isChapter)
+        internal static string GetNotesRowObjectId(Application oneNoteApp, string notesPageId, VerseNumber verseNumber, bool isChapter)
         {
             string result = string.Empty;
             OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
@@ -214,7 +214,8 @@ namespace BibleCommon.Services
             return result;
         }
 
-        private static XElement GetNotesRowAndCreateIfNotExists(Application oneNoteApp, VersePointer vp, bool isChapter, int mainColumnWidth, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
+        private static XElement GetNotesRowAndCreateIfNotExists(Application oneNoteApp, VersePointer vp, bool isChapter,
+            int mainColumnWidth, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
             XDocument notesPageDocument, XmlNamespaceManager xnm, XNamespace nms)
         {
             XElement rootElement = notesPageDocument.XPathSelectElement("//one:Outline/one:OEChildren/one:OE", xnm);
@@ -240,24 +241,24 @@ namespace BibleCommon.Services
                 tableElement = rootElement.XPathSelectElement("one:Table", xnm);
             }
 
-            XElement rowElement = GetNotesRow(tableElement, vp.Verse, isChapter, xnm);
+            XElement rowElement = GetNotesRow(tableElement, verseHierarchyObjectInfo.VerseNumber, isChapter, xnm);
 
             if (rowElement == null)
             {
                 AddNewNotesRow(oneNoteApp, vp, isChapter, verseHierarchyObjectInfo, tableElement, xnm, nms);
 
-                rowElement = GetNotesRow(tableElement, vp.Verse, isChapter, xnm);
+                rowElement = GetNotesRow(tableElement, verseHierarchyObjectInfo.VerseNumber, isChapter, xnm);
             }
 
             return rowElement;
         }
 
-        private static XElement GetNotesRow(XElement tableElement, int? verseNumber, bool isChapter, XmlNamespaceManager xnm)
+        private static XElement GetNotesRow(XElement tableElement, VerseNumber verseNumber, bool isChapter, XmlNamespaceManager xnm)
         {
 
             XElement result = !isChapter ?
                                 tableElement
-                                   .XPathSelectElement(string.Format("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>:{0}<')]", verseNumber.GetValueOrDefault(0)), xnm)
+                                   .XPathSelectElement(string.Format("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>:{0}<')]", verseNumber), xnm)
                               : tableElement
                                    .XPathSelectElement("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[normalize-space(.)='']", xnm)
                                 ;
@@ -278,7 +279,7 @@ namespace BibleCommon.Services
                                                 new XElement(nms + "T",
                                                     new XCData(
                                                         !isChapter ?
-                                                            OneNoteUtils.GenerateHref(oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseInfo.VerseNumber),
+                                                            OneNoteUtils.GenerateHref(oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseNumber),
                                                                 verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.VerseContentObjectId)
                                                             :
                                                             string.Empty

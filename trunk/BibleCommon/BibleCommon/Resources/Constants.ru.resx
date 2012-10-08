@@ -624,4 +624,7 @@
   <data name="SelectWord" xml:space="preserve">
     <value>Пожалуйста, выберите термин для поиска</value>
   </data>
+  <data name="Verses" xml:space="preserve">
+    <value>стихи</value>
+  </data>
 </root>

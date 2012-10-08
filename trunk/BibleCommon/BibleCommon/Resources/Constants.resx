@@ -627,4 +627,7 @@
   <data name="SelectWord" xml:space="preserve">
     <value>Please select term to search</value>
   </data>
+  <data name="Verses" xml:space="preserve">
+    <value>verses</value>
+  </data>
 </root>
