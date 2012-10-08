@@ -44,6 +44,17 @@ namespace BibleCommon.Services
                 return result;
             }
 
+            public VerseNumber VerseNumber
+            {
+                get
+                {
+                    if (VerseInfo != null)
+                        return VerseInfo.VerseNumber;
+
+                    return null;
+                }
+            }
+
             public string VerseContentObjectId
             {
                 get

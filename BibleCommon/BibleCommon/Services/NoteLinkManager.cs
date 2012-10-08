@@ -648,7 +648,7 @@ namespace BibleCommon.Services
 
                 if (SettingsManager.Instance.UseDifferentPagesForEachVerse && !vp.IsChapter)  // для каждого стиха своя страница
                 {
-                    string notesPageName = GetDefaultNotesPageName(vp.Verse);
+                    string notesPageName = GetDefaultNotesPageName(hierarchySearchResult.HierarchyObjectInfo.VerseNumber);
                     TryLinkVerseToNotesPage(oneNoteApp, vp, searchResult.ResultType,
                         notePageId, notePageContentObjectId, linkDepth,
                         true, SettingsManager.Instance.ExcludedVersesLinking,
@@ -696,10 +696,11 @@ namespace BibleCommon.Services
                         && searchResult.ResultType != VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString);
         }
 
-        internal static string GetDefaultNotesPageName(int? verseNumber)
+        internal static string GetDefaultNotesPageName(VerseNumber verseNumber)
         {
-            if (verseNumber.GetValueOrDefault(0) > 0 && SettingsManager.Instance.UseDifferentPagesForEachVerse)
-                return string.Format("{1} {2}", SettingsManager.Instance.PageName_Notes, verseNumber, BibleCommon.Resources.Constants.Verse);
+            if (verseNumber != null && SettingsManager.Instance.UseDifferentPagesForEachVerse)
+                return string.Format("{1} {2}", SettingsManager.Instance.PageName_Notes, verseNumber, 
+                    verseNumber.IsMultiVerse ? BibleCommon.Resources.Constants.Verses : BibleCommon.Resources.Constants.Verse);
 
             return SettingsManager.Instance.PageName_Notes;
         }
