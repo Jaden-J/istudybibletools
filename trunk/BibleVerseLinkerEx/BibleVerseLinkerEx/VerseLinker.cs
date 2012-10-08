@@ -12,6 +12,7 @@ using BibleCommon.Helpers;
 using BibleCommon.Consts;
 using BibleCommon.Services;
 using System.Runtime.InteropServices;
+using BibleCommon.Common;
 
 namespace BibleVerseLinkerEx
 {
@@ -39,7 +40,7 @@ namespace BibleVerseLinkerEx
         /// </summary>
         /// <returns></returns>
         private XElement FindSelectedText(string pageId, out XDocument document,
-            out int? verseNumber, out string currentObjectId, out XmlNamespaceManager xnm)
+            out VerseNumber verseNumber, out string currentObjectId, out XmlNamespaceManager xnm)
         {
             verseNumber = null;
             currentObjectId = null;
@@ -53,7 +54,7 @@ namespace BibleVerseLinkerEx
             if (pointerElement != null)
             {
                 OneNoteUtils.NormalizeTextElement(pointerElement);
-                verseNumber = Utils.GetVerseNumber(pointerElement.Parent.Value);
+                verseNumber = VerseNumber.GetFromVerseText(pointerElement.Parent.Value);
                 currentObjectId = (string)pointerElement.Parent.Attribute("objectID");                
 
                 return pointerElement;
@@ -93,7 +94,7 @@ namespace BibleVerseLinkerEx
 
                 XDocument currentPageDocument;
                 XmlNamespaceManager xnm;
-                int? verseNumber;
+                VerseNumber verseNumber;
                 string currentObjectId;
                 XElement selectedElement = FindSelectedText(currentPageId, out currentPageDocument, out verseNumber, out currentObjectId, out xnm);
                 string selectedHtml = selectedElement != null ? ShellText(selectedElement.Value) : string.Empty;                
@@ -172,16 +173,18 @@ namespace BibleVerseLinkerEx
             OneNoteProxy.Instance.CommitAllModifiedHierarchy(_oneNoteApp, null, null);
         }
 
-        private string GetNewObjectContent(string currentPageId, string currentObjectId, string pointerValueString, int? verseNumber)
+        private string GetNewObjectContent(string currentPageId, string currentObjectId, string pointerValueString, VerseNumber verseNumber)
         {
             string newContent;
 
-            if (verseNumber.HasValue)
+            if (verseNumber != null)
             {
+                bool pointerValueIsVerseNumber = verseNumber.ToString() == pointerValueString;
                 string linkToCurrentObject;
                 OneNoteApp.GetHyperlinkToObject(currentPageId, currentObjectId, out linkToCurrentObject);
-                newContent = string.Format("<a href=\"{0}\">:{1}</a>&nbsp;&nbsp;<b>{2}</b>", linkToCurrentObject, verseNumber,
-                    verseNumber.ToString() != pointerValueString ? pointerValueString : string.Empty);
+                newContent = string.Format("<a href=\"{0}\">:{1}</a>{2}<b>{3}</b>", linkToCurrentObject, verseNumber,
+                    !pointerValueIsVerseNumber ? "&nbsp" : string.Empty,
+                    !pointerValueIsVerseNumber ? pointerValueString : string.Empty);
             }
             else
                 newContent = string.Format("<b>{0}</b>", pointerValueString);
@@ -197,7 +200,7 @@ namespace BibleVerseLinkerEx
         /// <param name="pageId"></param>
         /// <param name="pointerValueString"></param>
         /// <returns></returns>
-        public string UpdateDescriptionPage(string pageId, string pointerValueString, int? verseNumber)
+        public string UpdateDescriptionPage(string pageId, string pointerValueString, VerseNumber verseNumber)
         {
             string pageContentXml;
             XDocument pageDocument;
@@ -218,7 +221,7 @@ namespace BibleVerseLinkerEx
 
             XElement prevComment = null;                    
 
-            if (verseNumber.HasValue)
+            if (verseNumber != null)
             {
                 string searchPattern = ">:";
                 foreach (XElement commentElement in pageDocument.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:T", xnm))
@@ -230,7 +233,7 @@ namespace BibleVerseLinkerEx
 
                         if (number.HasValue)
                         {
-                            if (number > verseNumber)
+                            if (number > verseNumber.Verse)
                                 break;
                             prevComment = commentElement.Parent.Parent.Parent;
                         }

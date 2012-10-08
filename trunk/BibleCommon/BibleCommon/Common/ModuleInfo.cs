@@ -534,28 +534,30 @@ namespace BibleCommon.Common
             this.Chapters = new List<BibleChapterContent>();
         }
 
-        public string GetVerseContent(SimpleVersePointer verse)
+        public string GetVerseContent(SimpleVersePointer versPointer)
         {
-            if (this.Chapters.Count < verse.Chapter)
-                throw new ParallelChapterNotFoundException(verse, BaseVersePointerException.Severity.Warning);
+            if (this.Chapters.Count < versPointer.Chapter)
+                throw new ParallelChapterNotFoundException(versPointer, BaseVersePointerException.Severity.Warning);
 
-            var chapter = this.Chapters[verse.Chapter - 1];
+            var chapter = this.Chapters[versPointer.Chapter - 1];
 
-            if (chapter.Verses.Count < verse.Verse)
-                throw new ParallelVerseNotFoundException(verse, BaseVersePointerException.Severity.Warning);
+            var verseContent = chapter.GetVerse(versPointer.Verse);
+            if (verseContent == null)
+                throw new ParallelVerseNotFoundException(versPointer, BaseVersePointerException.Severity.Warning);
 
-            string verseContent = chapter.Verses[verse.Verse - 1].Value;
+            if (verseContent.IsEmpty)
+                return string.Empty;
 
             string result = null;
 
-            if (verse.PartIndex.HasValue)
+            if (versPointer.PartIndex.HasValue)
             {
-                var versesParts = verseContent.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-                if (versesParts.Length > verse.PartIndex.Value)
-                    result = versesParts[verse.PartIndex.Value].Trim();
+                var versesParts = verseContent.Value.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                if (versesParts.Length > versPointer.PartIndex.Value)
+                    result = versesParts[versPointer.PartIndex.Value].Trim();
             }
             else
-                result = verseContent;
+                result = verseContent.Value;
 
             result = ShellVerseText(result);            
 
@@ -598,6 +600,27 @@ namespace BibleCommon.Common
         [XmlElement(typeof(BibleVerseContent), ElementName = "Verse")]
         public List<BibleVerseContent> Verses { get; set; }
 
+        private Dictionary<int, BibleVerseContent> _versesDictionary;
+        public BibleVerseContent GetVerse(int verseNumber)
+        {
+            if (_versesDictionary == null)            
+                LoadVersesDictionary();
+
+            if (_versesDictionary.ContainsKey(verseNumber))
+                return _versesDictionary[verseNumber];
+            else if (Verses.Any(v => v.IsMultiVerse && (v.Index <= verseNumber && verseNumber <= v.TopIndex)))
+                return BibleVerseContent.Empty;
+
+            return null;
+        }
+
+        private void LoadVersesDictionary()
+        {
+            _versesDictionary = new Dictionary<int,BibleVerseContent>();
+            foreach (var verse in Verses)
+                _versesDictionary.Add(verse.Index, verse);            
+        }
+
         public BibleChapterContent()
         {
             this.Verses = new List<BibleVerseContent>();
@@ -611,10 +634,39 @@ namespace BibleCommon.Common
         public int Index { get; set; }
 
         [XmlIgnore]
-        public int? TopIndex { get; set; }       
+        public int? TopIndex { get; set; }
+
+        [XmlIgnore]
+        public bool IsMultiVerse { get { return TopIndex.HasValue; } }
+
+        [XmlIgnore]
+        public VerseNumber VerseNumber
+        {
+            get
+            {
+                return new VerseNumber(Index, TopIndex);
+            }
+        }
 
         [XmlText]
         public string Value { get; set; }
+
+        public static BibleVerseContent Empty
+        {
+            get
+            {
+                return new BibleVerseContent();
+            }
+        }
+
+        [XmlIgnore]
+        public bool IsEmpty
+        {
+            get
+            {
+                return Index == default(int);
+            }
+        }
 
         [XmlAttribute]
         [EditorBrowsable(EditorBrowsableState.Never)]

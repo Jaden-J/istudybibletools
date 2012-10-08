@@ -48,7 +48,9 @@ namespace TestProject
             sw.Start();
 
             try
-            {               
+            {
+                TestVerseNumber();
+
                 //SearchInNotebook();
 
                 //TestModule();
@@ -71,7 +73,7 @@ namespace TestProject
 
                 //TryToUpdateInkNodes();
 
-                ConvertRussianModule();
+                //ConvertRussianModule();
 
                 //ConvertEnglishModule();
 
@@ -97,6 +99,16 @@ namespace TestProject
 
             Console.WriteLine("Finish. Elapsed time: {0}", sw.Elapsed);
             Console.ReadKey();
+        }
+
+        private static void TestVerseNumber()
+        {
+            string s = " <a href=''>2<a>-</a><a>3</a></a> Текст стиха 6-6";
+            
+            var verseNumber = VerseNumber.GetFromVerseText(s);
+            
+            
+            Console.WriteLine(verseNumber);
         }
 
         private static void SearchInNotebook()
