@@ -619,7 +619,7 @@ namespace BibleCommon.Services
 
                             hierarchySearchResult = localHierarchySearchResult;
                             string link = OneNoteUtils.GenerateHref(oneNoteApp, textToChange,
-                                localHierarchySearchResult.HierarchyObjectInfo.PageId, localHierarchySearchResult.HierarchyObjectInfo.ContentObjectId);
+                                localHierarchySearchResult.HierarchyObjectInfo.PageId, localHierarchySearchResult.HierarchyObjectInfo.VerseContentObjectId);
 
                             link = string.Format("<span style='font-weight:normal'>{0}</span>", link);
 
@@ -959,7 +959,7 @@ namespace BibleCommon.Services
 
             //находим ячейку для заметок стиха
             XElement contentObject = pageDocument.XPathSelectElement(string.Format("//one:OE[@objectID = '{0}']",
-                verseHierarchyObjectInfo.ContentObjectId), xnm);
+                verseHierarchyObjectInfo.VerseContentObjectId), xnm);
             if (contentObject == null)
             {
                 Logger.LogError("{0} '{1}'", BibleCommon.Resources.Constants.NoteLinkManagerVerseCellNotFound,  vp.OriginalVerseName);

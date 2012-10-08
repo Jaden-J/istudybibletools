@@ -278,8 +278,8 @@ namespace BibleCommon.Services
                                                 new XElement(nms + "T",
                                                     new XCData(
                                                         !isChapter ?
-                                                            OneNoteUtils.GenerateHref(oneNoteApp, string.Format(":{0}", vp.Verse.GetValueOrDefault(0)),
-                                                                verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.ContentObjectId)
+                                                            OneNoteUtils.GenerateHref(oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseInfo.VerseNumber),
+                                                                verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.VerseContentObjectId)
                                                             :
                                                             string.Empty
                                                                 ))))),

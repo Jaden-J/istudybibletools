@@ -189,9 +189,8 @@ namespace BibleCommon.Services
 
             var rows = tableElement.XPathSelectElements("one:Row", xnm);
 
-            XElement verseRow = null;
-            int textBreakIndex, htmlBreakIndex;            
-            foreach (var row in rows.Skip(baseVerse.Verse - 1))
+            XElement verseRow = null;            
+            foreach (var row in rows.Skip(1))
             {
                 int rowChildsCount = row.Elements().Count();
                 if (rowChildsCount <= translationIndex)
@@ -200,9 +199,9 @@ namespace BibleCommon.Services
                     {
                         var firstCell = row.XPathSelectElement("one:Cell[1]/one:OEChildren/one:OE/one:T", xnm);
                         if (firstCell != null)
-                        {                            
-                            var baseVerseNumber = StringUtils.GetNextString(firstCell.Value, -1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound), out textBreakIndex, out htmlBreakIndex);                                
-                            if (baseVerseNumber != baseVerse.Verse.ToString())
+                        {
+                            var baseVerseNumber = VerseNumber.GetFromVerseText(firstCell.Value);
+                            if (baseVerseNumber != baseVerse.VerseNumber)
                                 continue;
                         }
                         verse.VerseLink = StringUtils.GetAttributeValue(firstCell.Value, "href");

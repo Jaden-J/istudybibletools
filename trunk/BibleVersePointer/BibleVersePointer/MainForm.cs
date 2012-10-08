@@ -154,9 +154,9 @@ namespace BibleVersePointer
         }
 
 
-        private static void NavigateTo(Microsoft.Office.Interop.OneNote.Application oneNoteApp, string pageId, params string[] objectsIds)
+        private static void NavigateTo(Microsoft.Office.Interop.OneNote.Application oneNoteApp, string pageId, params HierarchySearchManager.VerseObjectInfo[] objectsIds)
         {
-            oneNoteApp.NavigateTo(pageId, objectsIds.Length > 0 ? objectsIds[0] : null);            
+            oneNoteApp.NavigateTo(pageId, objectsIds.Length > 0 ? objectsIds[0].ContentObjectId : null);            
 
             if (objectsIds.Length > 1)
             {   

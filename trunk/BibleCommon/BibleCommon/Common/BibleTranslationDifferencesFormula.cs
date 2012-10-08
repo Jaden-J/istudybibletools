@@ -104,11 +104,11 @@ namespace BibleCommon.Common
             if (_allVerses == null)
             {
                 _allVerses = new List<SimpleVersePointer>();
-                _allVerses.Add(new SimpleVersePointer(BookIndex, FirstChapter, FirstVerse) { IsEmpty = IsEmpty });
+                _allVerses.Add(new SimpleVersePointer(BookIndex, FirstChapter, new VerseNumber(FirstVerse)) { IsEmpty = IsEmpty });
 
                 if (IsMultiVerse)
                     _allVerses.AddRange(BaseVersePointer.GetAllIncludedVersesExceptFirst(null, new GetAllIncludedVersesExceptFirstArgs() { Force = true })
-                        .ConvertAll<SimpleVersePointer>(v => new SimpleVersePointer(BookIndex, v.Chapter.GetValueOrDefault(), v.Verse.GetValueOrDefault(0)) { IsEmpty = IsEmpty }));
+                        .ConvertAll<SimpleVersePointer>(v => new SimpleVersePointer(BookIndex, v.Chapter.GetValueOrDefault(), new VerseNumber(v.Verse.GetValueOrDefault())) { IsEmpty = IsEmpty }));
 
                 if (SkipCheck)
                     _allVerses.ForEach(v => v.SkipCheck = SkipCheck);
@@ -399,7 +399,7 @@ namespace BibleCommon.Common
                 foreach (var parallelVerse in parallelVerses)
                 {
                     var parallelVersePointer = new SimpleVersePointer(
-                            baseVerse.BookIndex, ChapterFormulaPart.CalculateParallelChapter(baseVerse.Chapter), parallelVerse);
+                            baseVerse.BookIndex, ChapterFormulaPart.CalculateParallelChapter(baseVerse.Chapter), new VerseNumber(parallelVerse));
 
                     if (VersesFormulaPart.AllVersesArePart.GetValueOrDefault(false))                                            
                         parallelVersePointer.PartIndex = versePartIndex++;                    

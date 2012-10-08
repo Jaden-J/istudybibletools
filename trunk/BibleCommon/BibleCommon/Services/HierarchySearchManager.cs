@@ -35,13 +35,24 @@ namespace BibleCommon.Services
         {            
             public string SectionId { get; set; }
             public string PageId { get; set; }
-            public VerseObjectInfo ContentObjectId { get; set; }
+            public VerseObjectInfo VerseInfo { get; set; }
             public List<VerseObjectInfo> AdditionalObjectsIds { get; set; }
             public List<VerseObjectInfo> GetAllObjectsIds()
             {
-                var result = new List<VerseObjectInfo>() { ContentObjectId };
+                var result = new List<VerseObjectInfo>() { VerseInfo };
                 result.AddRange(AdditionalObjectsIds);
                 return result;
+            }
+
+            public string VerseContentObjectId
+            {
+                get
+                {
+                    if (VerseInfo != null)
+                        return VerseInfo.ContentObjectId;
+
+                    return null;
+                }
             }
 
             public HierarchyObjectInfo()
@@ -102,11 +113,12 @@ namespace BibleCommon.Services
 
                     var pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, result.HierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);
                     VerseNumber verseNumber;
-                    XElement targetVerseEl = FindVerse(pageContent.Content, vp.IsChapter, vp.Verse.Value, pageContent.Xnm, out verseNumber);
+                    string verseTextWithoutNumber;
+                    XElement targetVerseEl = FindVerse(pageContent.Content, vp.IsChapter, vp.Verse.Value, pageContent.Xnm, out verseNumber, out verseTextWithoutNumber);
 
                     if (targetVerseEl != null)
                     {
-                        result.HierarchyObjectInfo.ContentObjectId = new VerseObjectInfo()
+                        result.HierarchyObjectInfo.VerseInfo = new VerseObjectInfo()
                                                                         {
                                                                             ContentObjectId = (string)targetVerseEl.Parent.Attribute("objectID"),
                                                                             VerseNumber = verseNumber
@@ -121,7 +133,9 @@ namespace BibleCommon.Services
                                                                     new GetAllIncludedVersesExceptFirstArgs() { SearchOnlyForFirstChapter = true }))
                                 {
                                     VerseNumber additionalVerseNumber;
-                                    var additionalVeseEl = FindVerse(pageContent.Content, vp.IsChapter, additionalVerse.Verse.Value, pageContent.Xnm, out additionalVerseNumber);
+                                    string additionalVerseTextWithoutNumber;
+                                    var additionalVeseEl = FindVerse(pageContent.Content, vp.IsChapter, additionalVerse.Verse.Value, pageContent.Xnm, 
+                                        out additionalVerseNumber, out additionalVerseTextWithoutNumber);
                                     if (additionalVeseEl != null)
                                         result.HierarchyObjectInfo.AdditionalObjectsIds.Add(new VerseObjectInfo()
                                                                                                 {
@@ -155,10 +169,11 @@ namespace BibleCommon.Services
             return null;
         }        
 
-        internal static XElement FindVerse(XDocument pageContent, bool isChapter, int verse, XmlNamespaceManager xnm, out VerseNumber verseNumber)
+        internal static XElement FindVerse(XDocument pageContent, bool isChapter, int verse, XmlNamespaceManager xnm, out VerseNumber verseNumber, out string verseTextWithoutNumber)
         {
             XElement pointerElement = null;
             verseNumber = null;
+            verseTextWithoutNumber = null;
 
             if (!isChapter)
             {
@@ -186,10 +201,10 @@ namespace BibleCommon.Services
 
                 verseNumber = null;
                 if (pointerElement != null)                
-                    verseNumber = VerseNumber.GetFromVerseText(pointerElement.Value);                
+                    verseNumber = VerseNumber.GetFromVerseText(pointerElement.Value, out verseTextWithoutNumber);                
 
                 if (pointerElement == null || verseNumber == null || !verseNumber.IsVerseBelongs(verse))
-                    pointerElement = FindVerseWithIterate(pageContent, verse, xnm, out verseNumber);                
+                    pointerElement = FindVerseWithIterate(pageContent, verse, xnm, out verseNumber, out verseTextWithoutNumber);                
             }
             else               // тогда возвращаем хотя бы ссылку на заголовок
             {
@@ -199,14 +214,16 @@ namespace BibleCommon.Services
             return pointerElement;
         }
 
-        private static XElement FindVerseWithIterate(XDocument pageContent, int verse, XmlNamespaceManager xnm, out VerseNumber verseNumber)
+        private static XElement FindVerseWithIterate(XDocument pageContent, int verse, XmlNamespaceManager xnm, 
+            out VerseNumber verseNumber, out string verseTextWithoutNumber)
         {
             verseNumber = null;
+            verseTextWithoutNumber = null;
 
             foreach (var textEl in pageContent.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm)
                 .Union(pageContent.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:T", xnm)))
             {
-                verseNumber = VerseNumber.GetFromVerseText(textEl.Value);
+                verseNumber = VerseNumber.GetFromVerseText(textEl.Value, out verseTextWithoutNumber);
                 if (verseNumber != null && verseNumber.IsVerseBelongs(verse))
                     return textEl;
             }

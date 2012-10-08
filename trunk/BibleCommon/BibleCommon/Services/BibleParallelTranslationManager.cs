@@ -320,9 +320,13 @@ namespace BibleCommon.Services
                 if (!firstParallelVerse.IsEmpty)
                 {
                     if (lastProcessedChapter > 0 && firstParallelVerse.Chapter > lastProcessedChapter)
-                    {
-                        if ((parallelBookContent.Chapters.Count > lastProcessedChapter - 1) && (parallelBookContent.Chapters[lastProcessedChapter - 1].Verses.Count > lastProcessedVerse))
-                            throw new GetParallelVerseException("Miss verse (x01)", baseVersePointer, BaseVersePointerException.Severity.Warning);
+                    {                        
+                        if (parallelBookContent.Chapters.Count > lastProcessedChapter - 1)
+                        {
+                            var previousProcessedChapterlastVerse = parallelBookContent.Chapters[lastProcessedChapter - 1].Verses.Last();
+                            if ((previousProcessedChapterlastVerse.TopIndex ?? previousProcessedChapterlastVerse.Index) > lastProcessedVerse)
+                                throw new GetParallelVerseException("Miss verse (x01)", baseVersePointer, BaseVersePointerException.Severity.Warning);
+                        }
                         else if (firstParallelVerse.Verse > 1)  // начали главу не с начала                    
                             throw new GetParallelVerseException("Miss verse (x02)", baseVersePointer, BaseVersePointerException.Severity.Warning);
                     }
