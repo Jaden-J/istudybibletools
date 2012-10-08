@@ -362,21 +362,22 @@ namespace BibleCommon.Services
         {
             var result = new List<Exception>();
 
-            var baseBibleObjectsSearchResult = HierarchySearchManager.GetHierarchyObject(oneNoteApp,
+            var primaryBibleObjectsSearchResult = HierarchySearchManager.GetHierarchyObject(oneNoteApp,
                     SettingsManager.Instance.NotebookId_Bible, parallelVerse.ToVersePointer(SettingsManager.Instance.CurrentModule), true);
 
-            if (baseBibleObjectsSearchResult.ResultType != HierarchySearchManager.HierarchySearchResultType.Successfully
-                || baseBibleObjectsSearchResult.HierarchyStage != HierarchySearchManager.HierarchyStage.ContentPlaceholder)
+            if (primaryBibleObjectsSearchResult.ResultType != HierarchySearchManager.HierarchySearchResultType.Successfully
+                || primaryBibleObjectsSearchResult.HierarchyStage != HierarchySearchManager.HierarchyStage.ContentPlaceholder)
                 throw new ParallelVerseNotFoundException(parallelVerse, BaseVersePointerException.Severity.Error);
 
+            VerseNumber baseVerseNumber;
             var baseVerseEl = OneNoteUtils.NormalizeTextElement(
-                                    HierarchySearchManager.FindVerse(bibleIteratorArgs.ChapterDocument, false, baseVersePointer.Verse, xnm));            
+                                    HierarchySearchManager.FindVerse(bibleIteratorArgs.ChapterDocument, false, baseVersePointer.Verse, xnm, out baseVerseNumber));            
                 
             var baseChapterPageId = (string)bibleIteratorArgs.ChapterDocument.Root.Attribute("ID");
             var baseVerseElementId = (string)baseVerseEl.Parent.Attribute("objectID");
 
-            LinkMainBibleVersesToSupplementalBibleVerse(oneNoteApp, baseChapterPageId, baseVerseElementId, parallelVerse, baseBibleObjectsSearchResult, xnm, nms);
-            LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(oneNoteApp, baseVersePointer, baseVerseEl, baseBibleObjectsSearchResult, 
+            LinkMainBibleVersesToSupplementalBibleVerse(oneNoteApp, baseChapterPageId, baseVerseElementId, parallelVerse, primaryBibleObjectsSearchResult, xnm, nms);
+            LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(oneNoteApp, baseVersePointer, baseVerseEl, baseVerseNumber, primaryBibleObjectsSearchResult, 
                 isStrong, bibleIteratorArgs.StrongStyleIndex, strongTermLinksCache, alphabet, result, nms);                        
 
             return result;
@@ -426,21 +427,18 @@ namespace BibleCommon.Services
             return verseText;
         }
 
-        private static void LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(Application oneNoteApp, SimpleVersePointer baseVersePointer, XElement baseVerseEl,
-            HierarchySearchManager.HierarchySearchResult baseBibleObjectsSearchResult, 
+        private static void LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(Application oneNoteApp, 
+            SimpleVersePointer baseVersePointer, XElement baseVerseEl, VerseNumber baseVerseNumber,
+            HierarchySearchManager.HierarchySearchResult primaryBibleObjectsSearchResult, 
             bool isStrong, int strongStyleIndex, Dictionary<string, string> strongTermLinksCache, string alphabet, List<Exception> result, XNamespace nms)
         {
-            int textBreakIndex, htmlBreakIndex;
-            var baseVerseNumber = StringUtils.GetNextString(baseVerseEl.Value, -1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound), 
-                out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
-
-            if (baseVerseNumber != baseVersePointer.Verse.ToString())
+            if (baseVersePointer.VerseNumber != baseVerseNumber)            
                 result.Add(
                     new InvalidOperationException(
                         string.Format("baseVerseNumber != baseVersePointer (baseVerseNumber = '{0}', baseVersePointer = '{1}')", baseVerseNumber, baseVersePointer)));
 
             string linkToParallelVerse = OneNoteUtils.GenerateHref(oneNoteApp, baseVerseNumber,
-                baseBibleObjectsSearchResult.HierarchyObjectInfo.PageId, baseBibleObjectsSearchResult.HierarchyObjectInfo.ContentObjectId);
+                primaryBibleObjectsSearchResult.HierarchyObjectInfo.PageId, primaryBibleObjectsSearchResult.HierarchyObjectInfo.ContentObjectId);
 
             string versePart = baseVerseEl.Value.Substring(htmlBreakIndex + 1);
 

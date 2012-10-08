@@ -43,15 +43,15 @@ namespace BibleCommon.Services
                     {
                         XElement bibleVerseElement = textElement.Parent.Parent.Parent.Parent.XPathSelectElement("one:Cell[1]/one:OEChildren/one:OE/one:T", biblePageDocument.Xnm);
                         OneNoteUtils.NormalizeTextElement(bibleVerseElement);
-                        int? verseNumber = Utils.GetVerseNumber(bibleVerseElement.Value);
+                        VerseNumber verseNumber = VerseNumber.GetFromVerseText(bibleVerseElement.Value);
 
-                        if (verseNumber.GetValueOrDefault(0) > 0)
+                        if (verseNumber != null)
                         {
-                            VersePointer vp = new VersePointer(chapterPointer, verseNumber.Value);
+                            VersePointer vp = new VersePointer(chapterPointer, verseNumber.Verse);
                             
                             if (OneNoteProxy.Instance.ProcessedVerses.Contains(vp))  // если мы обрабатывали этот стих
                             {
-                                if (RelinkBiblePageNote(bibleSectionId, biblePageId, biblePageName, textElement, verseNumber))
+                                if (RelinkBiblePageNote(bibleSectionId, biblePageId, biblePageName, textElement, verseNumber.Verse))
                                     wasModified = true;
                             }
                         }
