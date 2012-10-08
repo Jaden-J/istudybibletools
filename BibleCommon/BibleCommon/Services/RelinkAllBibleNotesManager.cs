@@ -57,7 +57,6 @@ namespace BibleCommon.Services
                         }
                     }
                 }
-
             }
 
             if (wasModified)

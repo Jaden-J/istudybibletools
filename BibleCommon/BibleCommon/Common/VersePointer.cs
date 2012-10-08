@@ -195,7 +195,7 @@ namespace BibleCommon.Common
         }
 
         public SimpleVersePointer(SimpleVersePointer verse)
-            : this(verse.BookIndex, verse.Chapter, verse.VerseNumber)
+            : this(verse.BookIndex, verse.Chapter, new VerseNumber(verse.Verse, verse.TopVerse))
         {
 
         }
@@ -263,19 +263,12 @@ namespace BibleCommon.Common
         {
             var result = new List<SimpleVersePointer>();
 
-            var firstVerse = (SimpleVersePointer)this.Clone();
-            firstVerse.VerseNumber.TopVerse = null;
-            result.Add(firstVerse);
-
-            if (IsMultiVerse)
+            result.AddRange(this.VerseNumber.GetAllVerses().ConvertAll(v =>
             {
-                result.AddRange(this.VerseNumber.GetAllVerses().ConvertAll(v =>
-                {
-                    var verse = (SimpleVersePointer)this.Clone();
-                    verse.VerseNumber = new VerseNumber(v);
-                    return verse;
-                }));
-            }
+                var verse = (SimpleVersePointer)this.Clone();
+                verse.VerseNumber = new VerseNumber(v);
+                return verse;
+            }));
 
             return result;
         }
