@@ -82,7 +82,7 @@ namespace BibleCommon.Services
        
 
         internal bool IsExcludedCurrentNotePage { get; set; }
-        private Dictionary<NotePageProcessedVerseId, HashSet<VersePointer>> _notePageProcessedVerses = new Dictionary<NotePageProcessedVerseId, HashSet<VersePointer>>();  
+        private Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>> _notePageProcessedVerses = new Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>>();  
 
         private Application _oneNoteApp;
         public NoteLinkManager(Application oneNoteApp)
@@ -696,11 +696,11 @@ namespace BibleCommon.Services
                         && searchResult.ResultType != VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString);
         }
 
-        internal static string GetDefaultNotesPageName(VerseNumber verseNumber)
+        internal static string GetDefaultNotesPageName(VerseNumber? verseNumber)
         {
-            if (verseNumber != null && SettingsManager.Instance.UseDifferentPagesForEachVerse)
+            if (verseNumber.HasValue && SettingsManager.Instance.UseDifferentPagesForEachVerse)
                 return string.Format("{1} {2}", SettingsManager.Instance.PageName_Notes, verseNumber, 
-                    verseNumber.IsMultiVerse ? BibleCommon.Resources.Constants.Verses : BibleCommon.Resources.Constants.Verse);
+                    verseNumber.Value.IsMultiVerse ? BibleCommon.Resources.Constants.Verses : BibleCommon.Resources.Constants.Verse);
 
             return SettingsManager.Instance.PageName_Notes;
         }
@@ -944,12 +944,12 @@ namespace BibleCommon.Services
                         versePageDocument.WasModified = true;
                         OneNoteProxy.Instance.AddProcessedBiblePages(verseHierarchyObjectInfo.SectionId, verseHierarchyObjectInfo.PageId, biblePageName, vp.GetChapterPointer());
 
-                        OneNoteProxy.Instance.AddProcessedVerse(vp);  // добавляем только стихи, отмеченные на "Сводной заметок"
+                        OneNoteProxy.Instance.AddProcessedVerse(vp, verseHierarchyObjectInfo.VerseNumber);  // добавляем только стихи, отмеченные на "Сводной заметок"
                     }                    
                 }
 
                 var key = new NotePageProcessedVerseId() { NotePageId = notePageId.PageId, NotesPageName = notesPageName };
-                AddNotePageProcessedVerse(key, vp);                
+                AddNotePageProcessedVerse(key, vp, verseHierarchyObjectInfo.VerseNumber);                
             }
         }
 
@@ -1039,16 +1039,20 @@ namespace BibleCommon.Services
 
         #region helper methods
 
-        public void AddNotePageProcessedVerse(NotePageProcessedVerseId verseId, VersePointer vp)
+        public void AddNotePageProcessedVerse(NotePageProcessedVerseId verseId, VersePointer vp, VerseNumber? verseNumber)
         {
             if (!_notePageProcessedVerses.ContainsKey(verseId))
             {
-                _notePageProcessedVerses.Add(verseId, new HashSet<VersePointer>());
+                _notePageProcessedVerses.Add(verseId, new HashSet<SimpleVersePointer>());
             }
 
-            if (!_notePageProcessedVerses[verseId].Contains(vp))   // отслеживаем обработанные стихи для каждой из страниц сводной заметок
+            var svp = vp.ToSimpleVersePointer();
+            if (verseNumber.HasValue)
+                svp.VerseNumber = verseNumber;            
+
+            if (!_notePageProcessedVerses[verseId].Contains(svp))   // отслеживаем обработанные стихи для каждой из страниц сводной заметок
             {
-                _notePageProcessedVerses[verseId].Add(vp);
+                svp.GetAllVerses().ForEach(v => _notePageProcessedVerses[verseId].Add(v));
             }
         }
 
@@ -1056,10 +1060,10 @@ namespace BibleCommon.Services
         {
             if (!_notePageProcessedVerses.ContainsKey(verseId))
             {
-                _notePageProcessedVerses.Add(verseId, new HashSet<VersePointer>());
+                _notePageProcessedVerses.Add(verseId, new HashSet<SimpleVersePointer>());
             }
 
-            return _notePageProcessedVerses[verseId].Contains(vp);
+            return _notePageProcessedVerses[verseId].Contains(vp.ToSimpleVersePointer());
         }
       
         #endregion

@@ -170,7 +170,7 @@ namespace BibleCommon.Services
         private Dictionary<CommentPageId, string> _commentPagesIdsCache = new Dictionary<CommentPageId, string>();
         private Dictionary<string, OneNoteProxy.BiblePageId> _processedBiblePages = new Dictionary<string, BiblePageId>();
         private Dictionary<LinkId, string> _linksCache = new Dictionary<LinkId, string>();        
-        private HashSet<VersePointer> _processedVerses = new HashSet<VersePointer>();
+        private HashSet<SimpleVersePointer> _processedVerses = new HashSet<SimpleVersePointer>();
         private List<SortPageInfo> _sortVerseLinkPagesInfo = new List<SortPageInfo>();
         //private Dictionary<VersePointer, HierarchySearchManager.HierarchySearchResult> _bibleVersesLinks = null;
 
@@ -233,17 +233,24 @@ namespace BibleCommon.Services
             }
         }
 
-        public HashSet<VersePointer> ProcessedVerses
+        public HashSet<SimpleVersePointer> ProcessedVerses
         {
             get
             {
                 return _processedVerses;
             }
         }
-        public void AddProcessedVerse(VersePointer vp)
+        public void AddProcessedVerse(VersePointer vp, VerseNumber? verseNumber)
         {
-            if (!_processedVerses.Contains(vp))
-                _processedVerses.Add(vp);
+            var svp = vp.ToSimpleVersePointer();
+            if (verseNumber.HasValue)
+                svp.VerseNumber = verseNumber;
+
+            svp.GetAllVerses().ForEach(v =>
+            {
+                if (!_processedVerses.Contains(v))
+                    _processedVerses.Add(v);
+            });
         }      
 
         public void AddProcessedBiblePages(string bibleSectionId, string biblePageId, string biblePageName, VersePointer chapterPointer)

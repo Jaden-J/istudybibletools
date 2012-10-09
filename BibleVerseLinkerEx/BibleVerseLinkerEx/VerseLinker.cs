@@ -40,7 +40,7 @@ namespace BibleVerseLinkerEx
         /// </summary>
         /// <returns></returns>
         private XElement FindSelectedText(string pageId, out XDocument document,
-            out VerseNumber verseNumber, out string currentObjectId, out XmlNamespaceManager xnm)
+            out VerseNumber? verseNumber, out string currentObjectId, out XmlNamespaceManager xnm)
         {
             verseNumber = null;
             currentObjectId = null;
@@ -94,7 +94,7 @@ namespace BibleVerseLinkerEx
 
                 XDocument currentPageDocument;
                 XmlNamespaceManager xnm;
-                VerseNumber verseNumber;
+                VerseNumber? verseNumber;
                 string currentObjectId;
                 XElement selectedElement = FindSelectedText(currentPageId, out currentPageDocument, out verseNumber, out currentObjectId, out xnm);
                 string selectedHtml = selectedElement != null ? ShellText(selectedElement.Value) : string.Empty;                
@@ -173,7 +173,7 @@ namespace BibleVerseLinkerEx
             OneNoteProxy.Instance.CommitAllModifiedHierarchy(_oneNoteApp, null, null);
         }
 
-        private string GetNewObjectContent(string currentPageId, string currentObjectId, string pointerValueString, VerseNumber verseNumber)
+        private string GetNewObjectContent(string currentPageId, string currentObjectId, string pointerValueString, VerseNumber? verseNumber)
         {
             string newContent;
 
@@ -200,7 +200,7 @@ namespace BibleVerseLinkerEx
         /// <param name="pageId"></param>
         /// <param name="pointerValueString"></param>
         /// <returns></returns>
-        public string UpdateDescriptionPage(string pageId, string pointerValueString, VerseNumber verseNumber)
+        public string UpdateDescriptionPage(string pageId, string pointerValueString, VerseNumber? verseNumber)
         {
             string pageContentXml;
             XDocument pageDocument;
@@ -221,7 +221,7 @@ namespace BibleVerseLinkerEx
 
             XElement prevComment = null;                    
 
-            if (verseNumber != null)
+            if (verseNumber.HasValue)
             {
                 string searchPattern = ">:";
                 foreach (XElement commentElement in pageDocument.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:T", xnm))
@@ -233,7 +233,7 @@ namespace BibleVerseLinkerEx
 
                         if (number.HasValue)
                         {
-                            if (number > verseNumber.Verse)
+                            if (number > verseNumber.Value.Verse)
                                 break;
                             prevComment = commentElement.Parent.Parent.Parent;
                         }

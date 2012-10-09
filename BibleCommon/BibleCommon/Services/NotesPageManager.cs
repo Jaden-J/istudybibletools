@@ -201,7 +201,7 @@ namespace BibleCommon.Services
             return multiVerseString;
         }
 
-        internal static string GetNotesRowObjectId(Application oneNoteApp, string notesPageId, VerseNumber verseNumber, bool isChapter)
+        internal static string GetNotesRowObjectId(Application oneNoteApp, string notesPageId, VerseNumber? verseNumber, bool isChapter)
         {
             string result = string.Empty;
             OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
@@ -253,7 +253,7 @@ namespace BibleCommon.Services
             return rowElement;
         }
 
-        private static XElement GetNotesRow(XElement tableElement, VerseNumber verseNumber, bool isChapter, XmlNamespaceManager xnm)
+        private static XElement GetNotesRow(XElement tableElement, VerseNumber? verseNumber, bool isChapter, XmlNamespaceManager xnm)
         {
 
             XElement result = !isChapter ?

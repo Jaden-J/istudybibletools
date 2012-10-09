@@ -43,13 +43,13 @@ namespace BibleCommon.Services
                     {
                         XElement bibleVerseElement = textElement.Parent.Parent.Parent.Parent.XPathSelectElement("one:Cell[1]/one:OEChildren/one:OE/one:T", biblePageDocument.Xnm);
                         OneNoteUtils.NormalizeTextElement(bibleVerseElement);
-                        VerseNumber verseNumber = VerseNumber.GetFromVerseText(bibleVerseElement.Value);
+                        var verseNumber = VerseNumber.GetFromVerseText(bibleVerseElement.Value);
 
-                        if (verseNumber != null)
+                        if (verseNumber.HasValue)
                         {
-                            VersePointer vp = new VersePointer(chapterPointer, verseNumber.Verse);
+                            VersePointer vp = new VersePointer(chapterPointer, verseNumber.Value.Verse);
                             
-                            if (OneNoteProxy.Instance.ProcessedVerses.Contains(vp))  // если мы обрабатывали этот стих
+                            if (OneNoteProxy.Instance.ProcessedVerses.Contains(vp.ToSimpleVersePointer()))  // если мы обрабатывали этот стих
                             {
                                 if (RelinkBiblePageNote(bibleSectionId, biblePageId, biblePageName, textElement, verseNumber))
                                     wasModified = true;
@@ -63,11 +63,11 @@ namespace BibleCommon.Services
                 biblePageDocument.WasModified = true;
         }
 
-        private bool RelinkBiblePageNote(string bibleSectionId, string biblePageId, string biblePageName, XElement textElement, VerseNumber verseNumber)
+        private bool RelinkBiblePageNote(string bibleSectionId, string biblePageId, string biblePageName, XElement textElement, VerseNumber? verseNumber)
         {
             string notesPageName = NoteLinkManager.GetDefaultNotesPageName(verseNumber);
             string notesPageId = OneNoteProxy.Instance.GetNotesPageId(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName);
-            string notesRowObjectId = NotesPageManager.GetNotesRowObjectId(_oneNoteApp, notesPageId, verseNumber, verseNumber == null);
+            string notesRowObjectId = NotesPageManager.GetNotesRowObjectId(_oneNoteApp, notesPageId, verseNumber, !verseNumber.HasValue);
 
             if (!string.IsNullOrEmpty(notesRowObjectId))
             {

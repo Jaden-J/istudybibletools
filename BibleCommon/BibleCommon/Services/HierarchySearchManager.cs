@@ -25,7 +25,7 @@ namespace BibleCommon.Services
         public class VerseObjectInfo
         {            
             public string ContentObjectId { get; set; }
-            public VerseNumber VerseNumber { get; set; } // Мы, например, искали Быт 4:4 (модуль IBS). А нам вернули Быт 4:3. Здесь будем хранить "3-4".
+            public VerseNumber? VerseNumber { get; set; } // Мы, например, искали Быт 4:4 (модуль IBS). А нам вернули Быт 4:3. Здесь будем хранить "3-4".
 
             public bool IsVerse { get { return VerseNumber != null; } }
         }
@@ -44,7 +44,7 @@ namespace BibleCommon.Services
                 return result;
             }
 
-            public VerseNumber VerseNumber
+            public VerseNumber? VerseNumber
             {
                 get
                 {
@@ -123,7 +123,7 @@ namespace BibleCommon.Services
                     result.HierarchyStage = HierarchyStage.Page;
 
                     var pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, result.HierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);
-                    VerseNumber verseNumber;
+                    VerseNumber? verseNumber;
                     string verseTextWithoutNumber;
                     XElement targetVerseEl = FindVerse(pageContent.Content, vp.IsChapter, vp.Verse.Value, pageContent.Xnm, out verseNumber, out verseTextWithoutNumber);
 
@@ -143,7 +143,7 @@ namespace BibleCommon.Services
                                 foreach (var additionalVerse in vp.GetAllIncludedVersesExceptFirst(null,
                                                                     new GetAllIncludedVersesExceptFirstArgs() { SearchOnlyForFirstChapter = true }))
                                 {
-                                    VerseNumber additionalVerseNumber;
+                                    VerseNumber? additionalVerseNumber;
                                     string additionalVerseTextWithoutNumber;
                                     var additionalVeseEl = FindVerse(pageContent.Content, vp.IsChapter, additionalVerse.Verse.Value, pageContent.Xnm, 
                                         out additionalVerseNumber, out additionalVerseTextWithoutNumber);
@@ -180,7 +180,7 @@ namespace BibleCommon.Services
             return null;
         }        
 
-        internal static XElement FindVerse(XDocument pageContent, bool isChapter, int verse, XmlNamespaceManager xnm, out VerseNumber verseNumber, out string verseTextWithoutNumber)
+        internal static XElement FindVerse(XDocument pageContent, bool isChapter, int verse, XmlNamespaceManager xnm, out VerseNumber? verseNumber, out string verseTextWithoutNumber)
         {
             XElement pointerElement = null;
             verseNumber = null;
@@ -214,7 +214,7 @@ namespace BibleCommon.Services
                 if (pointerElement != null)                
                     verseNumber = VerseNumber.GetFromVerseText(pointerElement.Value, out verseTextWithoutNumber);                
 
-                if (pointerElement == null || verseNumber == null || !verseNumber.IsVerseBelongs(verse))
+                if (pointerElement == null || verseNumber == null || !verseNumber.Value.IsVerseBelongs(verse))
                     pointerElement = FindVerseWithIterate(pageContent, verse, xnm, out verseNumber, out verseTextWithoutNumber);                
             }
             else               // тогда возвращаем хотя бы ссылку на заголовок
@@ -226,7 +226,7 @@ namespace BibleCommon.Services
         }
 
         private static XElement FindVerseWithIterate(XDocument pageContent, int verse, XmlNamespaceManager xnm, 
-            out VerseNumber verseNumber, out string verseTextWithoutNumber)
+            out VerseNumber? verseNumber, out string verseTextWithoutNumber)
         {
             verseNumber = null;
             verseTextWithoutNumber = null;
@@ -235,7 +235,7 @@ namespace BibleCommon.Services
                 .Union(pageContent.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:T", xnm)))
             {
                 verseNumber = VerseNumber.GetFromVerseText(textEl.Value, out verseTextWithoutNumber);
-                if (verseNumber != null && verseNumber.IsVerseBelongs(verse))
+                if (verseNumber.HasValue && verseNumber.Value.IsVerseBelongs(verse))
                     return textEl;
             }
 

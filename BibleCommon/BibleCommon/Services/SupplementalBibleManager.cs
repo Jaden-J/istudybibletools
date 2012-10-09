@@ -369,7 +369,7 @@ namespace BibleCommon.Services
                 || primaryBibleObjectsSearchResult.HierarchyStage != HierarchySearchManager.HierarchyStage.ContentPlaceholder)
                 throw new ParallelVerseNotFoundException(parallelVerse, BaseVersePointerException.Severity.Error);
 
-            VerseNumber baseVerseNumber;
+            VerseNumber? baseVerseNumber;
             string verseTextWithoutNumber;
             var baseVerseEl = OneNoteUtils.NormalizeTextElement(
                                     HierarchySearchManager.FindVerse(bibleIteratorArgs.ChapterDocument, false, baseVersePointer.Verse, xnm,
@@ -430,7 +430,7 @@ namespace BibleCommon.Services
         }
 
         private static void LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(Application oneNoteApp, 
-            SimpleVersePointer baseVersePointer, XElement baseVerseEl, VerseNumber baseVerseNumber, string verseTextWithoutNumber,
+            SimpleVersePointer baseVersePointer, XElement baseVerseEl, VerseNumber? baseVerseNumber, string verseTextWithoutNumber,
             HierarchySearchManager.HierarchySearchResult primaryBibleObjectsSearchResult, 
             bool isStrong, int strongStyleIndex, Dictionary<string, string> strongTermLinksCache, string alphabet, List<Exception> result, XNamespace nms)
         {
