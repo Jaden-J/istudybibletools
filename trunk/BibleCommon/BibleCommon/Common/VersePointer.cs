@@ -11,10 +11,10 @@ using BibleCommon.Contracts;
 
 namespace BibleCommon.Common
 {
-    public class VerseNumber
+    public struct VerseNumber
     {
-        public int Verse { get; set; }
-        public int? TopVerse { get; set; }
+        public int Verse;
+        public int? TopVerse;
         public bool IsMultiVerse { get { return TopVerse.HasValue; } }
 
         public bool IsVerseBelongs(int verse)
@@ -25,16 +25,19 @@ namespace BibleCommon.Common
                 return Verse <= verse && verse <= TopVerse.Value; 
         }
 
-        public VerseNumber(int verse)
-            : this(verse, null)
+        public VerseNumber(int verse)            
         {
+            Verse = verse;
+            TopVerse = null;
         }
 
         public VerseNumber(int verse, int? topVerse)
         {
-            this.Verse = verse;
-            if (topVerse.GetValueOrDefault(-1) > this.Verse)
-                this.TopVerse = topVerse;
+            Verse = verse;
+            if (topVerse.GetValueOrDefault(-1) > Verse)
+                TopVerse = topVerse;
+            else
+                TopVerse = null;
         }
 
         public List<int> GetAllVerses()
@@ -64,13 +67,13 @@ namespace BibleCommon.Common
                 throw new NotSupportedException(s);
         }
 
-        public static VerseNumber GetFromVerseText(string verseText)
+        public static VerseNumber? GetFromVerseText(string verseText)
         {
             string temp;
             return GetFromVerseText(verseText, out temp);
         }
 
-        public static VerseNumber GetFromVerseText(string verseText, out string verseTextWithoutNumber)
+        public static VerseNumber? GetFromVerseText(string verseText, out string verseTextWithoutNumber)
         {
             verseText = verseText.Trim();
             verseTextWithoutNumber = null;
@@ -150,7 +153,7 @@ namespace BibleCommon.Common
     {
         public int BookIndex { get; set; }
         public int Chapter { get; set; }
-        public VerseNumber VerseNumber { get; set; }        
+        public VerseNumber? VerseNumber { get; set; }        
         public int? PartIndex { get; set; }        
         public bool IsEmpty { get; set; }
         public bool IsApocrypha { get; set; }
@@ -160,7 +163,7 @@ namespace BibleCommon.Common
         {
             get
             {
-                return VerseNumber != null && VerseNumber.IsMultiVerse;
+                return VerseNumber.HasValue && VerseNumber.Value.IsMultiVerse;
             }
         }        
 
@@ -168,8 +171,8 @@ namespace BibleCommon.Common
         {
             get
             {
-                if (VerseNumber != null)
-                    return VerseNumber.Verse;
+                if (VerseNumber.HasValue)
+                    return VerseNumber.Value.Verse;
 
                 return default(int);
             }
@@ -179,8 +182,8 @@ namespace BibleCommon.Common
         {
             get
             {
-                if (VerseNumber != null)
-                    return VerseNumber.TopVerse;
+                if (VerseNumber.HasValue)
+                    return VerseNumber.Value.TopVerse;
 
                 return null;
             }
@@ -204,7 +207,7 @@ namespace BibleCommon.Common
             : this(bookIndex, chapter, null)
         { }
 
-        public SimpleVersePointer(int bookIndex, int chapter, VerseNumber verse)
+        public SimpleVersePointer(int bookIndex, int chapter, VerseNumber? verse)
         {
             this.BookIndex = bookIndex;
             this.Chapter = chapter;
@@ -263,12 +266,15 @@ namespace BibleCommon.Common
         {
             var result = new List<SimpleVersePointer>();
 
-            result.AddRange(this.VerseNumber.GetAllVerses().ConvertAll(v =>
+            if (this.VerseNumber.HasValue)
             {
-                var verse = (SimpleVersePointer)this.Clone();
-                verse.VerseNumber = new VerseNumber(v);
-                return verse;
-            }));
+                result.AddRange(this.VerseNumber.Value.GetAllVerses().ConvertAll(v =>
+                {
+                    var verse = (SimpleVersePointer)this.Clone();
+                    verse.VerseNumber = new VerseNumber(v);
+                    return verse;
+                }));
+            }
 
             return result;
         }

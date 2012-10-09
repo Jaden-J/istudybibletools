@@ -103,11 +103,11 @@ namespace TestProject
 
         private static void TestVerseNumber()
         {
-            VerseNumber vs1 = null;
-            VerseNumber vs2 = null;
+            VerseNumber? vs1 = null;
+            VerseNumber? vs2 = null;
             
             
-            Console.WriteLine(vs2 != vs1);
+            Console.WriteLine(vs1.HasValue);
         }
 
         private static void SearchInNotebook()
