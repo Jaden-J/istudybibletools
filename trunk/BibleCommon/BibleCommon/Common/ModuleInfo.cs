@@ -588,7 +588,10 @@ namespace BibleCommon.Common
 
                 if (vn.TopVerse.GetValueOrDefault(-2) > topVerse.GetValueOrDefault(-1))
                     topVerse = vn.TopVerse;
-            }            
+            }
+
+            if (!topVerse.HasValue && verses.Count > 1)
+                topVerse = verses.Last().Verse;            
 
             return string.Join(" ", contents.ToArray());
         }
