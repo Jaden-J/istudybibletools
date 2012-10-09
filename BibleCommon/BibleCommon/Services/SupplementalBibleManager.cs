@@ -45,7 +45,7 @@ namespace BibleCommon.Services
             SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
             SettingsManager.Instance.Save();
             
-            for (int i = 0; i < moduleInfo.BibleStructure.BibleBooks.Count; i++)
+            for (int i = 0; i < 1 /*moduleInfo.BibleStructure.BibleBooks.Count*/; i++)
             {
                 var bibleBookInfo = moduleInfo.BibleStructure.BibleBooks[i];
 
@@ -465,7 +465,7 @@ namespace BibleCommon.Services
                 foreach (var parallelVerseElementId in baseBibleObjectsSearchResult.HierarchyObjectInfo.GetAllObjectsIds())
                 {                    
                     var bibleCell = parallelChapterPageDoc.Content.Root
-                                    .XPathSelectElement(string.Format("//one:OE[@objectID='{0}']", parallelVerseElementId), xnm).Parent.Parent;
+                                    .XPathSelectElement(string.Format("//one:OE[@objectID='{0}']", parallelVerseElementId.ContentObjectId), xnm).Parent.Parent;
                     var row = bibleCell.Parent;
                     XElement sCell = null;
                     if (row.Elements().Count() == 3)
