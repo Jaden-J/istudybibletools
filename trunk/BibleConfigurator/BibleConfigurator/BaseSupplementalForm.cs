@@ -112,10 +112,10 @@ namespace BibleConfigurator
             if (!supplementalNotebookIsInUse)
                 ClearSupplementalModulesInSettingsStorage(); // на всякий пожарный
 
-            chkUseSupplementalBible.Checked = supplementalNotebookIsInUse;
-            
-
-            //chkUseSupplementalBible_CheckedChanged(this, null);
+            if (chkUseSupplementalBible.Checked != supplementalNotebookIsInUse)
+                chkUseSupplementalBible.Checked = supplementalNotebookIsInUse;
+            else
+                chkUseSupplementalBible_CheckedChanged(this, null);
 
             WasLoaded = true;
         }
@@ -201,8 +201,10 @@ namespace BibleConfigurator
 
                 if (errors.Count > 0)
                 {
-                    var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(errors);
-                    errorsForm.ShowDialog();
+                    using (var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(errors))
+                    {
+                        errorsForm.ShowDialog();
+                    }
                 }
             }
             catch (ProcessAbortedByUserException)

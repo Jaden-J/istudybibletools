@@ -199,8 +199,10 @@ namespace TestProject
 
             converter.Convert();
 
-            var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message));
-            form.ShowDialog();           
+            using (var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message)))
+            {
+                form.ShowDialog();
+            }
         }
 
         private static void GenerateDictionary()
@@ -213,8 +215,10 @@ namespace TestProject
 
             converter.Convert();
 
-            var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message));
-            form.ShowDialog();        
+            using (var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message)))
+            {
+                form.ShowDialog();
+            }
         }
 
         //private static void GenerateBookDifferencesFile()
@@ -239,8 +243,10 @@ namespace TestProject
 
             Console.WriteLine("Successfully! Elapsed time - {0} seconds", elapsed.TotalSeconds);
 
-            var form = new ErrorsForm(result.Errors.ConvertAll(er => er.Message));
-            form.ShowDialog();           
+            using (var form = new ErrorsForm(result.Errors.ConvertAll(er => er.Message)))
+            {
+                form.ShowDialog();
+            }
         }
 
         private static void GenerateParallelBible()
@@ -258,8 +264,10 @@ namespace TestProject
 
             Console.WriteLine("Successfully! Elapsed time - {0} seconds", elapsed.TotalSeconds);
 
-            var form = new ErrorsForm(result.Errors.ConvertAll(er => er.Message));
-            form.ShowDialog();           
+            using (var form = new ErrorsForm(result.Errors.ConvertAll(er => er.Message)))
+            {
+                form.ShowDialog();
+            }
         }
 
         private static void ConvertRussianModule()
@@ -276,8 +284,10 @@ namespace TestProject
 
             converter.Convert();
 
-            var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message));
-            form.ShowDialog();           
+            using (var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message)))
+            {
+                form.ShowDialog();
+            }
         }
 
         private static void ConvertEnglishModule()
@@ -291,8 +301,10 @@ namespace TestProject
 
             converter.Convert();
 
-            var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message));
-            form.ShowDialog();
+            using (var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message)))
+            {
+                form.ShowDialog();
+            }
         }
 
         private static void ConvertRomanModule()
@@ -306,8 +318,10 @@ namespace TestProject
 
             converter.Convert();
 
-            var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message));
-            form.ShowDialog();           
+            using (var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message)))
+            {
+                form.ShowDialog();
+            }
         }       
 
         private static void SearchForEnText()

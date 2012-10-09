@@ -534,19 +534,26 @@ namespace BibleCommon.Common
             this.Chapters = new List<BibleChapterContent>();
         }
 
-        public string GetVerseContent(SimpleVersePointer versPointer)
+        public string GetVerseContent(SimpleVersePointer versPointer, out VerseNumber verseNumber, out bool isEmpty)
         {
+            isEmpty = false;
+
             if (this.Chapters.Count < versPointer.Chapter)
                 throw new ParallelChapterNotFoundException(versPointer, BaseVersePointerException.Severity.Warning);
 
             var chapter = this.Chapters[versPointer.Chapter - 1];
 
-            var verseContent = chapter.GetVerse(versPointer.Verse);
+            var verseContent = chapter.GetVerse(versPointer.Verse);            
             if (verseContent == null)
                 throw new ParallelVerseNotFoundException(versPointer, BaseVersePointerException.Severity.Warning);
 
+            verseNumber = verseContent.VerseNumber;
+
             if (verseContent.IsEmpty)
+            {
+                isEmpty = true;
                 return string.Empty;
+            }
 
             string result = null;
 
@@ -564,14 +571,24 @@ namespace BibleCommon.Common
             return result;
         }
 
-        public string GetVersesContent(List<SimpleVersePointer> verses)
+        public string GetVersesContent(List<SimpleVersePointer> verses, out int? topVerse, out bool isEmpty)
         {
             var contents = new List<string>();
 
+            topVerse = verses.First().TopVerse;
+
+            isEmpty = true;            
+
             foreach (var verse in verses)
             {
-                contents.Add(GetVerseContent(verse));
-            }
+                bool localIsEmpty;
+                VerseNumber vn;
+                contents.Add(GetVerseContent(verse, out vn, out localIsEmpty));
+                isEmpty = isEmpty && localIsEmpty;
+
+                if (vn.TopVerse.GetValueOrDefault(-2) > topVerse.GetValueOrDefault(-1))
+                    topVerse = vn.TopVerse;
+            }            
 
             return string.Join(" ", contents.ToArray());
         }
