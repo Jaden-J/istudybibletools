@@ -161,10 +161,12 @@ namespace BibleConfigurator
         {
             string result = null;
 
-            RenameSectionGroupsForm form = new RenameSectionGroupsForm(sectionGroupName);
-            if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            using (RenameSectionGroupsForm form = new RenameSectionGroupsForm(sectionGroupName))
             {
-                result = form.SectionGroupName;
+                if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    result = form.SectionGroupName;
+                }
             }
 
             return result;

@@ -157,7 +157,6 @@ namespace BibleCommon.Services
                 || SettingsManager.Instance.SupplementalBibleModules.Count == 0)
                 throw new NotConfiguredException();
 
-
             SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
             SettingsManager.Instance.Save();
             

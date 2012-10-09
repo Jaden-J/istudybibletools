@@ -591,11 +591,12 @@ namespace BibleConfigurator
                 }
             }
         }
-      
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             _loadForm = new LoadForm();
-            _loadForm.Show();            
+
+            _loadForm.Show();
         }
 
         private void LoadParameters(ModuleInfo module, bool? needToSaveSettings)
@@ -961,6 +962,12 @@ namespace BibleConfigurator
         {
             BibleCommon.Services.Logger.Done();
             _oneNoteApp = null;
+
+            if (_notebookParametersForm != null)
+                _notebookParametersForm.Dispose();
+
+            if (_loadForm != null)
+                _loadForm.Dispose();
         }
 
         private void btnRelinkComments_Click(object sender, EventArgs e)
@@ -1039,12 +1046,14 @@ namespace BibleConfigurator
 
         private void btnResizeBibleTables_Click(object sender, EventArgs e)
         {
-            SetWidthForm form = new SetWidthForm();
-            if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            using (SetWidthForm form = new SetWidthForm())
             {
-                using (ResizeBibleManager manager = new ResizeBibleManager(_oneNoteApp, this))
+                if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    manager.ResizeBiblePages(form.BiblePagesWidth);
+                    using (ResizeBibleManager manager = new ResizeBibleManager(_oneNoteApp, this))
+                    {
+                        manager.ResizeBiblePages(form.BiblePagesWidth);
+                    }
                 }
             }
         }
@@ -1375,8 +1384,10 @@ namespace BibleConfigurator
             }
             else
             {
-                AboutModuleForm f = new AboutModuleForm(moduleInfo.ShortName, false);
-                f.ShowDialog();
+                using (AboutModuleForm f = new AboutModuleForm(moduleInfo.ShortName, false))
+                {
+                    f.ShowDialog();
+                }
             }
         }
 
@@ -1462,8 +1473,10 @@ namespace BibleConfigurator
 
         private void ShowSupplementalBibleManagementForm()
         {
-            var form = new SupplementalBibleForm(_oneNoteApp, this);
-            form.ShowDialog();
+            using (var form = new SupplementalBibleForm(_oneNoteApp, this))
+            {
+                form.ShowDialog();
+            }
         }
 
         private void btnDictionariesManagement_Click(object sender, EventArgs e)
@@ -1473,8 +1486,10 @@ namespace BibleConfigurator
 
         private void ShowDictionariesManagementForm()
         {
-            var form = new DictionaryModulesForm(_oneNoteApp, this);
-            form.ShowDialog();
-        }                  
+            using (var form = new DictionaryModulesForm(_oneNoteApp, this))
+            {
+                form.ShowDialog();
+            }
+        }                          
     }
 }

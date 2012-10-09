@@ -46,9 +46,11 @@ namespace BibleConfigurator
             var result = manager.IterateBaseBible(null, false, true, null);
             if (result.Errors.Count > 0)
             {
-                var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(result.Errors.ConvertAll(ex => ex.Message));
-                errorsForm.ErrorsDecription = string.Format("{0} -> {1}", baseModule, parallelModule);
-                errorsForm.ShowDialog();
+                using (var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(result.Errors.ConvertAll(ex => ex.Message)))
+                {
+                    errorsForm.ErrorsDecription = string.Format("{0} -> {1}", baseModule, parallelModule);
+                    errorsForm.ShowDialog();
+                }
             }
             else
                 MessageBox.Show("There is no errors");
