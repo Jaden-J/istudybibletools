@@ -29,7 +29,14 @@ namespace BibleConfigurator
 
         private void SetWidthForm_Load(object sender, EventArgs e)
         {
-            tbBiblePageWidth.Text = SettingsManager.Instance.PageWidth_Bible.ToString();
+            try
+            {
+                tbBiblePageWidth.Text = SettingsManager.Instance.PageWidth_Bible.ToString();
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
         }
 
         private void btnOk_Click(object sender, EventArgs e)

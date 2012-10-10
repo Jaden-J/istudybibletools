@@ -81,6 +81,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SearchInDictionariesForm";
+            this.TopMost = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SearchInDictionariesForm_FormClosed);
             this.Load += new System.EventHandler(this.SearchInDictionariesForm_Load);
             this.Shown += new System.EventHandler(this.SearchInDictionariesForm_Shown);

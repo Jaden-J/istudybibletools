@@ -102,7 +102,7 @@ namespace BibleConfigurator
             MainForm.PrepareForExternalProcessing(strongTermsCount, 1, BibleCommon.Resources.Constants.IndexStrongDictionaryStart);
             Logger.Preffix = string.Format("{0} {1}/{2}: {3}: ", BibleCommon.Resources.Constants.Stage, stage, stagesCount, BibleCommon.Resources.Constants.IndexStrongDictionary);
             BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
-            return SupplementalBibleManager.IndexStrongDictionary(OneNoteApp, moduleInfo, Logger);
+            return DictionaryTermsCacheManager.IndexDictionary(OneNoteApp, moduleInfo, Logger);
         }
 
         protected override bool CanModuleBeDeleted(int index)

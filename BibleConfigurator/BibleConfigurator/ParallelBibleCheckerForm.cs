@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using BibleCommon.Services;
+using BibleCommon.Common;
 
 namespace BibleConfigurator
 {
@@ -24,13 +25,20 @@ namespace BibleConfigurator
 
         private void ParallelBibleChecker_Load(object sender, EventArgs e)
         {
-            SetDataSource(cbBaseModule);  
-            SetDataSource(cbParallelModule);            
+            try
+            {
+                SetDataSource(cbBaseModule);
+                SetDataSource(cbParallelModule);
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
         }
 
         private void SetDataSource(ComboBox cb)
         {
-            cb.DataSource = ModulesManager.GetModules(); // приходится каждый раз загружать, чтобы разные были дата сорсы - иначе они вместе меняются
+            cb.DataSource = ModulesManager.GetModules().Where(m => m.Type == ModuleType.Bible || m.Type == ModuleType.Strong).ToList(); // приходится каждый раз загружать, чтобы разные были дата сорсы - иначе они вместе меняются
             cb.DisplayMember = "ShortName";
             cb.ValueMember = "ShortName";
         }

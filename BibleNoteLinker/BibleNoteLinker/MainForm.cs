@@ -71,8 +71,7 @@ namespace BibleNoteLinker
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, BibleCommon.Resources.Constants.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Logger.LogError(ex);
+                FormLogger.LogError(ex);                
             }
 
             pbMain.Value = pbMain.Maximum = 1;
@@ -140,19 +139,26 @@ namespace BibleNoteLinker
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            if (BibleNoteLinker.Properties.Settings.Default.AllPages)
-                rbAnalyzeAllPages.Checked = true;
-            else if (BibleNoteLinker.Properties.Settings.Default.Changed)
-                rbAnalyzeChangedPages.Checked = true;
+            try
+            {
+                if (BibleNoteLinker.Properties.Settings.Default.AllPages)
+                    rbAnalyzeAllPages.Checked = true;
+                else if (BibleNoteLinker.Properties.Settings.Default.Changed)
+                    rbAnalyzeChangedPages.Checked = true;
 
-            if (BibleNoteLinker.Properties.Settings.Default.Force)
-                chkForce.Checked = true;
+                if (BibleNoteLinker.Properties.Settings.Default.Force)
+                    chkForce.Checked = true;
 
-            lblInfo.Visible = false;
-            _originalFormHeight = this.Height;
-            this.Height = FirstFormHeight;
+                lblInfo.Visible = false;
+                _originalFormHeight = this.Height;
+                this.Height = FirstFormHeight;
 
-            new Thread(CheckForNewerVersion).Start();
+                new Thread(CheckForNewerVersion).Start();
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
         }
 
         public void CheckForNewerVersion()

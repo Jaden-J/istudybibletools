@@ -45,7 +45,7 @@ namespace BibleCommon.Services
             SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
             SettingsManager.Instance.Save();
             
-            for (int i = 0; i < 1 /*moduleInfo.BibleStructure.BibleBooks.Count*/; i++)
+            for (int i = 0; i < moduleInfo.BibleStructure.BibleBooks.Count; i++)
             {
                 var bibleBookInfo = moduleInfo.BibleStructure.BibleBooks[i];
 
@@ -267,31 +267,7 @@ namespace BibleCommon.Services
 
                 return RemoveResult.RemoveModule;
             }
-        }
-
-        public static Dictionary<string, string> IndexStrongDictionary(Application oneNoteApp, ModuleInfo strongModuleInfo, ICustomLogger logger)
-        {
-            var result = new Dictionary<string, string>();            
-            var dictionaryModuleInfo = SettingsManager.Instance.DictionariesModules.FirstOrDefault(m => m.ModuleName == strongModuleInfo.ShortName);
-            if (dictionaryModuleInfo != null)
-            {
-                XmlNamespaceManager xnm;
-                var sectionGroupDoc = OneNoteUtils.GetHierarchyElement(oneNoteApp, dictionaryModuleInfo.SectionId, HierarchyScope.hsPages, out xnm);
-
-                var sectionsEl = sectionGroupDoc.Root.XPathSelectElements("one:Section", xnm);
-                if (sectionsEl.Count() > 0)
-                {
-                    foreach (var sectionEl in sectionsEl)
-                    {
-                        IndexStrongSection(oneNoteApp, sectionEl, result, logger, xnm);
-                    }
-                }
-                else
-                    IndexStrongSection(oneNoteApp, sectionGroupDoc.Root, result, logger, xnm); 
-            }
-
-            return result;
-        }
+        }       
 
         // перед обновлением страницы Библии со стронгом нужно обязательно вызывать этот метод, иначе все ссылки станут синими
         public static void UpdatePageXmlForStrongDictionary(XDocument pageDoc)
@@ -329,31 +305,7 @@ namespace BibleCommon.Services
                     }
                 }
             }
-        }
-
-        private static void IndexStrongSection(Application oneNoteApp, XElement sectionEl, Dictionary<string, string> result, ICustomLogger logger, XmlNamespaceManager xnm)
-        {
-            string sectionName = (string)sectionEl.Attribute("name");
-
-            foreach (var pageEl in sectionEl.XPathSelectElements("one:Page", xnm))
-            {
-                var pageId = (string)pageEl.Attribute("ID");
-                var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, pageId, out xnm);
-
-                var tableEl = NotebookGenerator.GetPageTable(pageDoc, xnm);
-
-                foreach (var termTextEl in tableEl.XPathSelectElements("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
-                {
-                    var termName = StringUtils.GetText(termTextEl.Value);
-                    termName = termName.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0];
-                    var termTextElementId = (string)termTextEl.Parent.Attribute("objectID");
-                    result.Add(termName, OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, termTextElementId));
-
-                    if (logger != null)
-                        logger.LogMessage(termName);
-                }
-            }
-        }
+        }      
 
         private static List<Exception> LinkdMainBibleAndSupplementalVerses(Application oneNoteApp, SimpleVersePointer baseVersePointer,
             SimpleVerse parallelVerse, BibleIteratorArgs bibleIteratorArgs, bool isStrong, Dictionary<string, string> strongTermLinksCache, 

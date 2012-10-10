@@ -26,24 +26,30 @@ namespace BibleCommon.UI.Forms
 
         private void Errors_Load(object sender, EventArgs e)
         {
-            if (Errors.Count == 0)
-                Close();
-
-            FormExtensions.SetFocus(this);
-
-            if (!string.IsNullOrEmpty(ErrorsDecription))
-                lbErrors.Items.Add(ErrorsDecription);
-
-            int index = 1;
-            foreach(string error in Errors)
+            try
             {
-                lbErrors.Items.Add(string.Format("{0}. {1}", index++, error));
+                if (Errors.Count == 0)
+                    Close();
 
-                int width = Convert.ToInt32(error.Length * 5.75);
-                if (width > lbErrors.HorizontalExtent)
-                    lbErrors.HorizontalExtent = width;          
-            }           
-            
+                FormExtensions.SetFocus(this);
+
+                if (!string.IsNullOrEmpty(ErrorsDecription))
+                    lbErrors.Items.Add(ErrorsDecription);
+
+                int index = 1;
+                foreach (string error in Errors)
+                {
+                    lbErrors.Items.Add(string.Format("{0}. {1}", index++, error));
+
+                    int width = Convert.ToInt32(error.Length * 5.75);
+                    if (width > lbErrors.HorizontalExtent)
+                        lbErrors.HorizontalExtent = width;
+                }
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
         }
 
         private void btnSaveToFile_Click(object sender, EventArgs e)

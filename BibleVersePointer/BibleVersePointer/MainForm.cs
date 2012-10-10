@@ -135,7 +135,14 @@ namespace BibleVersePointer
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            tbVerse.Text = (string)Properties.Settings.Default.LastVerse;                           
+            try
+            {
+                tbVerse.Text = (string)Properties.Settings.Default.LastVerse;
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
         }
 
         private bool _wasShown = false;

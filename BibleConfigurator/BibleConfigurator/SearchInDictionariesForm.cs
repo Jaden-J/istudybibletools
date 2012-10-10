@@ -96,16 +96,23 @@ namespace BibleConfigurator
 
         private void SearchInDictionariesForm_Load(object sender, EventArgs e)
         {
-            if (LoadData())
+            try
             {
-                LoadDictionary(null);
+                if (LoadData())
+                {
+                    LoadDictionary(null);
 
-                cbDictionaries.Items.Add(BibleCommon.Resources.Constants.AllDictionaries);
-                foreach (var dName in Modules.Keys)
-                    cbDictionaries.Items.Add(dName);
-                cbDictionaries.SelectedIndex = 0;
+                    cbDictionaries.Items.Add(BibleCommon.Resources.Constants.AllDictionaries);
+                    foreach (var dName in Modules.Keys)
+                        cbDictionaries.Items.Add(dName);
+                    cbDictionaries.SelectedIndex = 0;
 
-                cbTerms.Select();
+                    cbTerms.Select();
+                }
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
             }
         }        
 

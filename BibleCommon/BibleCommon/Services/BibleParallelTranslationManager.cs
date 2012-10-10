@@ -160,7 +160,7 @@ namespace BibleCommon.Services
 
             var result = new BibleParallelTranslationConnectionResult();
 
-            foreach (var baseBookContent in BaseBibleInfo.Content.Books.Take(1))
+            foreach (var baseBookContent in BaseBibleInfo.Content.Books)
             {
                 var baseBookInfo = BaseModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBookContent.Index);
                 if (baseBookInfo == null)
@@ -287,18 +287,19 @@ namespace BibleCommon.Services
                     var comparisonTable = bookVersePointersComparisonTable.ContainsKey(verse)
                                                         ? bookVersePointersComparisonTable[verse]
                                                         : new ComparisonVersesInfo { verse };
-                    comparisonTable.ForEach(parallelVerse => parallelVersePointers.Add(parallelVerse));
+                    comparisonTable.ForEach(pVerse => parallelVersePointers.Add(pVerse));
                 });
                     
 
                 if (parallelVersePointers.Count == 0)
                     throw new GetParallelVerseException("parallelVersePointers.Count == 0", baseVersePointer, BaseVersePointerException.Severity.Error);
+                
+                var parallelVerse = GetParallelVerses(baseVersePointer, parallelVersePointers, parallelBookContent);
+                
+                if (!parallelVerse.IsEmpty)
+                    CheckVerseForWarnings(baseVersePointer, parallelBookContent, parallelVersePointers.First(), lastProcessedChapter, lastProcessedVerse);  
 
-                firstParallelVerse = parallelVersePointers.First();
-
-                CheckVerseForWarnings(baseVersePointer, parallelBookContent, firstParallelVerse, lastProcessedChapter, lastProcessedVerse);
-
-                return GetParallelVerses(baseVersePointer, parallelVersePointers, parallelBookContent);
+                return parallelVerse;
             }
             catch (BaseVersePointerException ex)
             {

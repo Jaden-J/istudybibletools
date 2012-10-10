@@ -97,9 +97,8 @@ namespace BibleConfigurator
                 chkUseSupplementalBible.Text = GetChkUseText();
             }
             catch (Exception ex)
-            {
-                BibleCommon.Services.Logger.LogError(ex);
-                FormLogger.LogError(ex.Message);
+            {                
+                FormLogger.LogError(ex);
             }
         }
 

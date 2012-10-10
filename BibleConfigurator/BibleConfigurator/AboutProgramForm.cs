@@ -25,14 +25,21 @@ namespace BibleConfigurator
 
         private void AboutProgramForm_Load(object sender, EventArgs e)
         {
-            hlSite.Text = Constants.WebSiteUrl;            
-            lblAuthor.Text = Constants.Author;
+            try
+            {
+                hlSite.Text = Constants.WebSiteUrl;
+                lblAuthor.Text = Constants.Author;
 
-            string versionMessage = string.Format(" v{0}", SettingsManager.Instance.CurrentVersion);
-            this.Text += versionMessage;
-            lblTitle.Text += versionMessage;
+                string versionMessage = string.Format(" v{0}", SettingsManager.Instance.CurrentVersion);
+                this.Text += versionMessage;
+                lblTitle.Text += versionMessage;
 
-            new Thread(CheckForNewerVersion).Start();
+                new Thread(CheckForNewerVersion).Start();
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
         }
 
         public void CheckForNewerVersion()

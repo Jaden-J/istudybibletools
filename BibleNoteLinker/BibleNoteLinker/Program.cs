@@ -47,7 +47,7 @@ namespace BibleNoteLinker
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    FormLogger.LogError(ex);
                 }
             }
             else

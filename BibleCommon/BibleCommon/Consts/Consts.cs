@@ -21,6 +21,7 @@ namespace BibleCommon.Consts
         public static readonly string DictionaryInfoFileName = "dictionary.xml";
         public static readonly string FileExtensionIsbt = ".isbt";        
         public static readonly string TempDirectory = "Temp";
+        public static readonly string CacheDirectory = "Cache";
         public static readonly string DefaultPartVersesAlphabet = "abcdefghijklmnopqrstuvwxyz";
         public static char DictionarySearchFrameSymbol = '·';
         

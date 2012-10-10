@@ -51,6 +51,7 @@
     <Compile Include="Common\ArgsClasses.cs" />
     <Compile Include="Common\BibleTranslationDifferencesEx.cs" />
     <Compile Include="Common\BibleTranslationDifferencesFormula.cs" />
+    <Compile Include="Common\CacheClasses.cs" />
     <Compile Include="Common\CustomExceptions.cs" />
     <Compile Include="Common\ModuleInfo.cs" />
     <Compile Include="Common\ProcessAbortedByUserException.cs" />
@@ -78,6 +79,8 @@
     <Compile Include="Services\BibleParallelTranslationManager.cs" />
     <Compile Include="Services\BibleVersesLinksCacheManager.cs" />
     <Compile Include="Services\DictionaryManager.cs" />
+    <Compile Include="Services\DictionaryTermsCacheManager.cs" />
+    <Compile Include="Services\FormLogger.cs" />
     <Compile Include="Services\LanguageManager.cs" />
     <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\ModulesManager.cs" />

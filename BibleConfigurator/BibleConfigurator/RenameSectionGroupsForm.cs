@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using BibleCommon.Services;
 
 namespace BibleConfigurator
 {
@@ -36,7 +37,14 @@ namespace BibleConfigurator
 
         private void RenameSectionGroupsForm_Load(object sender, EventArgs e)
         {
-            tbSectionGroupName.Text = SectionGroupName;
+            try
+            {
+                tbSectionGroupName.Text = SectionGroupName;
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
         }
     }
 }
