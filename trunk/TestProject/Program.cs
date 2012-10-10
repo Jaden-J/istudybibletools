@@ -272,13 +272,13 @@ namespace TestProject
 
         private static void ConvertRussianModule()
         {
-            string moduleShortName = "ibs";
+            string moduleShortName = "rst77";
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), "ru",
-                PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst),  // вот эти тоже часто надо менять                
+                PredefinedNotebooksInfo.Russian77, PredefinedBookIndexes.RST77, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst77),  // вот эти тоже часто надо менять                
                 "{0} глава. {1}",
                 PredefinedSectionsInfo.None, false, null, null,
                 //PredefinedSectionsInfo.RSTStrong, true, "Стронга", 14700,   // параметры для стронга
-                "2.0", true, 
+                "2.0", false, 
                 BibleQuotaConverter.ReadParameters.None);  // и про эту не забыть
 
             converter.Convert();
