@@ -78,9 +78,8 @@ namespace BibleConfigurator
                 CommitChanges(true);
             }
             catch (Exception ex)
-            {
-                //todo: log it
-                MessageBox.Show(ex.Message);
+            {                
+                FormLogger.LogError(ex);
             }
         }
 
@@ -96,9 +95,8 @@ namespace BibleConfigurator
                 CommitChanges(false);
             }
             catch (Exception ex)
-            {
-                //todo: log it
-                MessageBox.Show(ex.Message);
+            {                
+                FormLogger.LogError(ex);
             }
         }    
 
@@ -169,7 +167,7 @@ namespace BibleConfigurator
             }
             catch (SaveParametersException ex)
             {
-                FormLogger.LogError(ex.Message);
+                FormLogger.LogError(ex);
                 if (ex.NeedToReload)
                     LoadParameters(module, null);
 
@@ -1152,7 +1150,7 @@ namespace BibleConfigurator
                 }
                 catch (InvalidModuleException ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    FormLogger.LogError(ex);                    
                     Thread.Sleep(500);
 
                     if (module != null)

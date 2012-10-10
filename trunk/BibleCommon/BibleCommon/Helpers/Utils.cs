@@ -28,6 +28,15 @@ namespace BibleCommon.Helpers
             return s;
         }
 
+        public static string GetCacheFolderPath()
+        {
+            string s = Path.Combine(GetProgramDirectory(), Constants.CacheDirectory);
+            if (!Directory.Exists(s))
+                Directory.CreateDirectory(s);
+
+            return s;
+        }
+
         public static string GetProgramDirectory()
         {
             string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Consts.Constants.ToolsName);

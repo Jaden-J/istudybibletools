@@ -25,8 +25,8 @@ namespace TestProject
 {    
     class Program
     {
-        private const string ForGeneratingFolderPath = @"G:\Dropbox\Holy Bible\ForGenerating\";
-        private const string TempFolderPath = @"C:\temp\";
+        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\Holy Bible\ForGenerating\";
+        private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp\";
 
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
         private static Microsoft.Office.Interop.OneNote.Application OneNoteApp
@@ -272,13 +272,13 @@ namespace TestProject
 
         private static void ConvertRussianModule()
         {
-            string moduleShortName = "stern";
+            string moduleShortName = "ibs";
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), "ru",
                 PredefinedNotebooksInfo.Russian, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst),  // вот эти тоже часто надо менять                
                 "{0} глава. {1}",
                 PredefinedSectionsInfo.None, false, null, null,
                 //PredefinedSectionsInfo.RSTStrong, true, "Стронга", 14700,   // параметры для стронга
-                "2.0", false, 
+                "2.0", true, 
                 BibleQuotaConverter.ReadParameters.None);  // и про эту не забыть
 
             converter.Convert();

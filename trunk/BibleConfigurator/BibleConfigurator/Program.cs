@@ -52,8 +52,7 @@ namespace BibleConfigurator
             }
             catch (Exception ex)
             {
-                BibleCommon.Services.Logger.LogError(ex);
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormLogger.LogError(ex);
             }
         }             
 
@@ -157,7 +156,7 @@ namespace BibleConfigurator
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormLogger.LogError(ex);
             }
 
             if (_oneNoteApp != null)
@@ -166,8 +165,33 @@ namespace BibleConfigurator
             return result;
         }
 
+        private static bool _firstLoad = true;
+        //public static void RunFromAnotherAppNotDialog(params string[] args)
+        //{
+        //    if (_firstLoad)
+        //    {
+        //        Application.EnableVisualStyles();
+        //        Application.SetCompatibleTextRenderingDefault(false);
+        //        _firstLoad = false;
+        //    }
+
+        //    Form form = PrepareForRunning(args);            
+
+        //    if (form != null)
+        //    {
+        //        Application.Run(form);
+        //    }
+        //}
+
         public static void RunFromAnotherApp(params string[] args)
         {
+            if (_firstLoad)
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                _firstLoad = false;
+            }
+
             Form form = PrepareForRunning(args);
 
             if (form != null)

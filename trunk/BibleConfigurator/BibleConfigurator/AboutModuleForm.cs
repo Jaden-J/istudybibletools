@@ -34,31 +34,38 @@ namespace BibleConfigurator
 
         private void AboutModule_Load(object sender, EventArgs e)
         {
-            ModuleInfo module = ModulesManager.GetModuleInfo(ModuleName);
-
-            this.Text = lblTitle.Text = string.Format("{0} ({1} {2})", module.Name, module.BibleStructure.BibleBooks.Count, BibleCommon.Resources.Constants.Books);
-            lblLocation.Text = ModulesManager.GetModuleDirectory(ModuleName);
-
-            int top = 5;
-
-            foreach (var book in module.BibleStructure.BibleBooks)
+            try
             {
-                var lblBook = new Label();
-                lblBook.Top = top;
-                lblBook.Left = 0;
-                lblBook.Text = string.Format("{0}:", book.Name);
-                lblBook.Font = new System.Drawing.Font("Microsoft Sans Serif", (float)8.25, FontStyle.Bold);
-                lblBook.Width = GetLabelWidth(lblBook);
-                pnBooks.Controls.Add(lblBook);                
+                ModuleInfo module = ModulesManager.GetModuleInfo(ModuleName);
 
-                var lblAbbr = new Label();
-                lblAbbr.Top = top;
-                lblAbbr.Left = lblBook.Width + 5;
-                lblAbbr.Text = string.Join("  ", book.Abbreviations.Select(abbr => abbr.Value).ToArray());
-                lblAbbr.Width = GetLabelWidth(lblAbbr);
-                pnBooks.Controls.Add(lblAbbr);  
+                this.Text = lblTitle.Text = string.Format("{0} ({1} {2})", module.Name, module.BibleStructure.BibleBooks.Count, BibleCommon.Resources.Constants.Books);
+                lblLocation.Text = ModulesManager.GetModuleDirectory(ModuleName);
 
-                top += 25;
+                int top = 5;
+
+                foreach (var book in module.BibleStructure.BibleBooks)
+                {
+                    var lblBook = new Label();
+                    lblBook.Top = top;
+                    lblBook.Left = 0;
+                    lblBook.Text = string.Format("{0}:", book.Name);
+                    lblBook.Font = new System.Drawing.Font("Microsoft Sans Serif", (float)8.25, FontStyle.Bold);
+                    lblBook.Width = GetLabelWidth(lblBook);
+                    pnBooks.Controls.Add(lblBook);
+
+                    var lblAbbr = new Label();
+                    lblAbbr.Top = top;
+                    lblAbbr.Left = lblBook.Width + 5;
+                    lblAbbr.Text = string.Join("  ", book.Abbreviations.Select(abbr => abbr.Value).ToArray());
+                    lblAbbr.Width = GetLabelWidth(lblAbbr);
+                    pnBooks.Controls.Add(lblAbbr);
+
+                    top += 25;
+                }
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
             }
         }
 

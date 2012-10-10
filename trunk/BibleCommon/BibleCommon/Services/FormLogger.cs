@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace BibleConfigurator
+namespace BibleCommon.Services
 {
     public static class FormLogger
     {
@@ -13,6 +13,13 @@ namespace BibleConfigurator
         public static void Initialize()
         {
             WasErrorLogged = false;
+        }
+
+        public static void LogError(Exception ex)
+        {
+            BibleCommon.Services.Logger.LogError(ex);
+            MessageBox.Show(ex.Message, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            WasErrorLogged = true;
         }
 
         public static void LogError(string message)

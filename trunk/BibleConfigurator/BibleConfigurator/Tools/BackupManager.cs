@@ -192,8 +192,7 @@ namespace BibleConfigurator.Tools
             }
             catch (Exception ex)
             {
-                FormLogger.LogError(ex.Message);
-                BibleCommon.Services.Logger.LogError(ex);              
+                FormLogger.LogError(ex);                
             }
         }
 
