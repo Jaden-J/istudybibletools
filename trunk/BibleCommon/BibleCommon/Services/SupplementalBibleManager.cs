@@ -11,6 +11,7 @@ using System.Xml;
 using BibleCommon.Common;
 using System.Xml.XPath;
 using BibleCommon.Contracts;
+using BibleCommon.Scheme;
 
 namespace BibleCommon.Services
 {
@@ -28,7 +29,7 @@ namespace BibleCommon.Services
             var moduleInfo = ModulesManager.GetModuleInfo(moduleShortName);
             var bibleInfo = ModulesManager.GetModuleBibleInfo(moduleShortName);
 
-            if (moduleInfo.Type == ModuleType.Strong)
+            if (moduleInfo.Type == Common.ModuleType.Strong)
             {
                 DictionaryManager.AddDictionary(oneNoteApp, moduleShortName, notebookDirectory);
             }
@@ -56,7 +57,7 @@ namespace BibleCommon.Services
 
                 var bookSectionId = NotebookGenerator.AddSection(oneNoteApp, currentSectionGroupId, bibleBookInfo.SectionName);
 
-                var bibleBook = bibleInfo.Content.Books.FirstOrDefault(book => book.Index == bibleBookInfo.Index);
+                var bibleBook = bibleInfo.Books.FirstOrDefault(book => book.Index == bibleBookInfo.Index);
                 if (bibleBook == null)
                     throw new Exception("Manifest.xml has Bible books that do not exist in bible.xml");
 
@@ -117,7 +118,7 @@ namespace BibleCommon.Services
                             supplementalModuleShortName, SettingsManager.Instance.ModuleName,
                             SettingsManager.Instance.NotebookId_SupplementalBible))
             {
-                if (bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong)
+                if (bibleTranslationManager.BaseModuleInfo.Type == Common.ModuleType.Strong)
                     if (strongTermLinksCache == null)
                         throw new ArgumentNullException("strongTermLinksCache");                
 
@@ -138,7 +139,7 @@ namespace BibleCommon.Services
                     {                        
                         linkResult.AddRange(
                             LinkdMainBibleAndSupplementalVerses(oneNoteApp, baseVersePointer, parallelVerse, bibleIteratorArgs, 
-                                        bibleTranslationManager.BaseModuleInfo.Type == ModuleType.Strong, strongTermLinksCache, 
+                                        bibleTranslationManager.BaseModuleInfo.Type == Common.ModuleType.Strong, strongTermLinksCache, 
                                         bibleTranslationManager.BaseModuleInfo.BibleStructure.Alphabet, xnm, nms));                       
                     });
 
@@ -169,7 +170,7 @@ namespace BibleCommon.Services
                 SettingsManager.Instance.SupplementalBibleModules.First(), moduleShortName,
                 SettingsManager.Instance.NotebookId_SupplementalBible))
             {
-                if (bibleTranslationManager.ParallelModuleInfo.Type == ModuleType.Strong)
+                if (bibleTranslationManager.ParallelModuleInfo.Type == Common.ModuleType.Strong)
                 {
                     DictionaryManager.AddDictionary(oneNoteApp, moduleShortName, notebookDirectory);                    
                 }
@@ -181,7 +182,7 @@ namespace BibleCommon.Services
                         var tableEl = NotebookGenerator.GetPageTable(chapterPageDoc, xnm);
                         var bibleIndex = NotebookGenerator.AddColumnToTable(tableEl, SettingsManager.Instance.PageWidth_Bible, xnm);
                         NotebookGenerator.AddParallelBibleTitle(chapterPageDoc, tableEl, 
-                            bibleTranslationManager.ParallelModuleInfo.Name, bibleIndex, bibleTranslationManager.ParallelBibleInfo.Content.Locale, xnm);
+                            bibleTranslationManager.ParallelModuleInfo.Name, bibleIndex, bibleTranslationManager.ParallelModuleInfo.Locale, xnm);
 
                         int styleIndex = QuickStyleManager.AddQuickStyleDef(chapterPageDoc, QuickStyleManager.StyleForStrongName, QuickStyleManager.PredefinedStyles.GrayHyperlink, xnm);
 
@@ -190,16 +191,16 @@ namespace BibleCommon.Services
                     true, true,
                     (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
                     {                        
-                        if (bibleTranslationManager.ParallelModuleInfo.Type == ModuleType.Strong)
+                        if (bibleTranslationManager.ParallelModuleInfo.Type == Common.ModuleType.Strong)
                         {
                             parallelVerse.VerseContent = ProcessStrongVerse(parallelVerse.VerseContent, strongTermLinksCache, 
                                 bibleTranslationManager.ParallelModuleInfo.BibleStructure.Alphabet, linkResult);
                         }
 
                         var cell = NotebookGenerator.AddParallelVerseRowToBibleTable(bibleIteratorArgs.TableElement, parallelVerse,
-                            bibleIteratorArgs.BibleIndex, baseVersePointer, bibleTranslationManager.ParallelBibleInfo.Content.Locale, xnm);
+                            bibleIteratorArgs.BibleIndex, baseVersePointer, bibleTranslationManager.ParallelModuleInfo.Locale, xnm);
 
-                        if (bibleTranslationManager.ParallelModuleInfo.Type == ModuleType.Strong)
+                        if (bibleTranslationManager.ParallelModuleInfo.Type == Common.ModuleType.Strong)
                         {
                             QuickStyleManager.SetQuickStyleDefForCell(cell, bibleIteratorArgs.StrongStyleIndex, xnm);                            
                         }
@@ -219,7 +220,7 @@ namespace BibleCommon.Services
             {
                 BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(parallelModuleName);
                 var moduleInfo = ModulesManager.GetModuleInfo(parallelModuleName);
-                if (moduleInfo.Type == ModuleType.Strong)
+                if (moduleInfo.Type == Common.ModuleType.Strong)
                 {
                     DictionaryManager.RemoveDictionary(oneNoteApp, parallelModuleName);
                 }
@@ -249,7 +250,7 @@ namespace BibleCommon.Services
                     throw new ArgumentException(string.Format("Module '{0}' can not be found in Supplemental Bible", moduleShortName));
 
                 var moduleInfo = ModulesManager.GetModuleInfo(moduleShortName);
-                if (moduleInfo.Type == ModuleType.Strong)
+                if (moduleInfo.Type == Common.ModuleType.Strong)
                     DictionaryManager.RemoveDictionary(oneNoteApp, moduleShortName);
 
                 BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(moduleShortName);
@@ -447,24 +448,24 @@ namespace BibleCommon.Services
             parallelChapterPageDoc.WasModified = true;
 
             return parallelChapterPageDoc;
-        }               
-     
+        }
 
-        private static void GenerateChapterPage(Application oneNoteApp, BibleChapterContent chapter, string bookSectionId,
-           ModuleInfo moduleInfo, BibleBookInfo bibleBookInfo, ModuleBibleInfo bibleInfo)
+
+        private static void GenerateChapterPage(Application oneNoteApp, CHAPTER chapter, string bookSectionId,
+           ModuleInfo moduleInfo, BibleBookInfo bibleBookInfo, XMLBIBLE bibleInfo)
         {
             string chapterPageName = string.Format(moduleInfo.BibleStructure.ChapterSectionNameTemplate, chapter.Index, bibleBookInfo.Name);
 
             XmlNamespaceManager xnm;
-            var currentChapterDoc = NotebookGenerator.AddPage(oneNoteApp, bookSectionId, chapterPageName, 1, bibleInfo.Content.Locale, out xnm);
+            var currentChapterDoc = NotebookGenerator.AddPage(oneNoteApp, bookSectionId, chapterPageName, 1, moduleInfo.Locale, out xnm);
 
             var currentTableElement = NotebookGenerator.AddTableToPage(currentChapterDoc, false, xnm, new CellInfo(SettingsManager.Instance.PageWidth_Bible));
 
-            NotebookGenerator.AddParallelBibleTitle(currentChapterDoc, currentTableElement, moduleInfo.Name, 0, bibleInfo.Content.Locale, xnm);
+            NotebookGenerator.AddParallelBibleTitle(currentChapterDoc, currentTableElement, moduleInfo.Name, 0, moduleInfo.Locale, xnm);
 
             foreach (var verse in chapter.Verses)
             {
-                NotebookGenerator.AddVerseRowToTable(currentTableElement, BibleBookContent.GetFullVerseString(verse.Index, verse.TopIndex, verse.Value), 0, bibleInfo.Content.Locale);
+                NotebookGenerator.AddVerseRowToTable(currentTableElement, BIBLEBOOK.GetFullVerseString(verse.Index, verse.TopIndex, verse.Value), 0, moduleInfo.Locale);
             }
 
             UpdateChapterPage(oneNoteApp, currentChapterDoc, chapter.Index, bibleBookInfo);

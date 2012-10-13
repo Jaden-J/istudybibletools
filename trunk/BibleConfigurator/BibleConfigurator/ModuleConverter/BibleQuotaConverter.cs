@@ -11,6 +11,7 @@ using System.Xml.XPath;
 using System.Globalization;
 using BibleCommon.Common;
 using System.Xml.Serialization;
+using BibleCommon.Scheme;
 
 namespace BibleConfigurator.ModuleConverter
 {
@@ -69,10 +70,10 @@ namespace BibleConfigurator.ModuleConverter
             string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, BibleTranslationDifferences translationDifferences, 
             string chapterSectionNameTemplate, List<SectionInfo> sectionsInfo,
             bool isStrong, string dictionarySectionGroupName, int? strongNumbersCount,
-            string version, bool generateXmlOnly, params ReadParameters[] readParameters)
+            string version, bool generateNotebooks, params ReadParameters[] readParameters)
             : base(moduleShortName, manifestFilesFolderPath, locale, notebooksInfo, bookIndexes,
                         translationDifferences, chapterSectionNameTemplate, sectionsInfo, isStrong, dictionarySectionGroupName, 
-                        strongNumbersCount, version, generateXmlOnly)
+                        strongNumbersCount, version, generateNotebooks, true)
         {
             this.ModuleFolder = bqModuleFolder;
             this.AdditionalReadParameters = readParameters;
@@ -222,7 +223,7 @@ namespace BibleConfigurator.ModuleConverter
 
         private void ProcessVerse(string lineText, XElement currentTableElement, string alphabet)
         {
-            if (currentTableElement == null && !GenerateXmlOnly)
+            if (currentTableElement == null && GenerateNotebooks)
                 throw new Exception("currentTableElement is null");
 
             int? verseNumber;
@@ -233,24 +234,57 @@ namespace BibleConfigurator.ModuleConverter
 
                 if (!verseNumber.HasValue)
                 {
-                    var currentBook = BibleInfo.Content.Books.Last();
+                    var currentBook = BibleInfo.Books.Last();
                     var currentChapter = currentBook.Chapters.Last();
                     throw new VerseReadException("{0} {1}: Verse has no number: {2}", currentBook.Index, currentChapter.Index, lineText);
                 }
 
+                 вот здесь. надо сконвертить ZEFANIA XML модуль со стронгом. и так же научиться его считывать (создавать спр Библию), учитывая перфиксы (что их теперь надо подставлять во время создания спр Библии) и т.д.
+                List<object> verseItems = null;
                 if (IsStrong || AdditionalReadParameters.Contains(ReadParameters.RemoveStrongs))
                 {
-                    verseText = ProcessStrongVerse(verseText, alphabet);
-                }
+                    verseItems = ProcessStrongVerse(verseText, alphabet);
+                    if (!AdditionalReadParameters.Contains(ReadParameters.RemoveStrongs))
+                    {
+                        var resultVerseItems = new List<object>();
+                        foreach (var verseItem in verseItems)
+                        {
+                            var prev = resultVerseItems.LastOrDefault();
 
-                AddVerseRowToTable(currentTableElement, verseNumber.Value, topVerseNumber, verseText);
+                            if (prev != null)
+                            {
+                                if (verseItem is string)
+                                {
+                                    if (prev is GRAM && ((GRAM)prev).Items == null)
+                                        ((GRAM)prev).Items = new object[] { verseItem };
+                                    else
+                                        resultVerseItems.Add(verseItem);
+                                }
+                                else if (verseItem is GRAM)
+                                {
+                                    if (prev is GRAM)
+                                        ((GRAM)prev).str += " " + ((GRAM)verseItem).str;
+                                    else
+                                        resultVerseItems.Add(verseItem);
+                                }
+                            }
+                            else
+                                resultVerseItems.Add(verseItem);
+                        }
+                        verseItems = resultVerseItems;
+                    }
+                }
+                else
+                    verseItems = new List<object>() { verseText };
+
+                AddVerseRowToTable(currentTableElement, verseNumber.Value, topVerseNumber, verseItems.ToArray());
             }
         }
 
-        private string ProcessStrongVerse(string verseText, string alphabet)
+        private List<object> ProcessStrongVerse(string verseText, string alphabet)
         {
-            int currentBookNumber = BibleInfo.Content.Books.Count;
-            var prefix = currentBookNumber <= OldTestamentBooksCount ? "H" : "G";
+            var result = new List<object>();
+            int currentBookNumber = BibleInfo.Books.Count;            
 
             int cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, null);
             if (cursorPosition > -1)
@@ -260,23 +294,20 @@ namespace BibleConfigurator.ModuleConverter
                                                                     out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
                 if (!string.IsNullOrEmpty(strongNumber))
                 {
-                    string changedText;
+                    var text = verseText.Substring(0, cursorPosition);
+                    if (!string.IsNullOrEmpty(text))
+                        result.Add(text);
 
                     if (AdditionalReadParameters.Contains(ReadParameters.RemoveStrongs))
-                    {
-                        changedText = string.Empty;
-                        cursorPosition -= 1;  // чтобы удалить пробел перед номером стронга
-                    }
-                    else
-                        changedText = prefix + strongNumber;                    
-                        
-                    verseText = string.Concat(verseText.Substring(0, cursorPosition), changedText, ProcessStrongVerse(verseText.Substring(htmlBreakIndex), alphabet));
+                        cursorPosition -= 1;  // чтобы удалить пробел перед номером стронга                    
+                    else                    
+                        result.Add(new GRAM() { str = strongNumber });
+
+                    result.AddRange(ProcessStrongVerse(verseText.Substring(htmlBreakIndex), alphabet));                    
                 }
-            }
+            }            
 
-            //verseText = verseText.Replace("  ", " ");
-
-            return verseText;
+            return result;
         }
 
         private string GetVerseTextWithoutNumber(string lineText, out int? verseNumber, out int? topVerseNumber)

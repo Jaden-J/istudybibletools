@@ -72,10 +72,12 @@ namespace BibleConfigurator
                     result = new ParallelBibleCheckerForm();
                 else if (args.Contains(Consts.ShowSearchInDictionaries))
                     result = new SearchInDictionariesForm();
-                else if (strongProtocolHandler.IsProtocolCommand(args))                
-                    strongProtocolHandler.ExecuteCommand(args);                
-                else if (args.Contains(Consts.ShowManual))                
-                    OpenManual();                
+                else if (args.Contains(Consts.ZefaniaXmlConverter))
+                    result = new ZefaniaXmlConverterForm();
+                else if (strongProtocolHandler.IsProtocolCommand(args))
+                    strongProtocolHandler.ExecuteCommand(args);
+                else if (args.Contains(Consts.ShowManual))
+                    OpenManual();
                 else if (args.Contains(Consts.RunOnOneNoteStarts))
                 {
                     if (SettingsManager.Instance.IsConfigured(OneNoteApp))

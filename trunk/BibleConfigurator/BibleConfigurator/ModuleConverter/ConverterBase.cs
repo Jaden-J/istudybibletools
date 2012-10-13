@@ -12,6 +12,7 @@ using System.Xml.XPath;
 using BibleCommon.Common;
 using System.IO;
 using System.Xml.Serialization;
+using BibleCommon.Scheme;
 
 namespace BibleConfigurator.ModuleConverter
 {
@@ -44,8 +45,8 @@ namespace BibleConfigurator.ModuleConverter
         public List<ConverterExceptionBase> Errors { get; set; }
 
         protected abstract ExternalModuleInfo ReadExternalModuleInfo();
-        protected abstract void ProcessBibleBooks(ExternalModuleInfo externalModuleInfo);        
-
+        protected abstract void ProcessBibleBooks(ExternalModuleInfo externalModuleInfo);
+        
         protected Application OneNoteApp { get; set; }
         protected bool IsStrong { get; set; }
         protected string ModuleShortName { get; set; }
@@ -53,7 +54,7 @@ namespace BibleConfigurator.ModuleConverter
         protected string ManifestFilesFolderPath { get; set; }                
         protected string Locale { get; set; }
         protected List<NotebookInfo> NotebooksInfo { get; set; }
-        protected ModuleBibleInfo BibleInfo { get; set; }
+        protected XMLBIBLE BibleInfo { get; set; }
         protected BibleTranslationDifferences TranslationDifferences { get; set; }
         protected List<int> BookIndexes { get; set; }  // массив индексов книг. Для KJV - упорядоченный массив цифр от 1 до 66.                 
         protected string ChapterSectionNameTemplate { get; set; }
@@ -62,7 +63,8 @@ namespace BibleConfigurator.ModuleConverter
         public int? StrongNumbersCount { get; set; }
         protected string Version { get; set; }
         protected int OldTestamentBooksCount { get; set; }
-        protected bool GenerateXmlOnly { get; set; }        
+        protected bool GenerateBibleXml { get; set; }        
+        protected bool GenerateNotebooks { get; set; }        
 
         /// <summary>
         /// 
@@ -79,19 +81,19 @@ namespace BibleConfigurator.ModuleConverter
             string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, 
             BibleTranslationDifferences translationDifferences, string chapterSectionNameTemplate, List<SectionInfo> sectionsInfo,
             bool isStrong, string dictionarySectionGroupName, int? strongNumbersCount, 
-            string version, bool generateXmlOnly)
+            string version, bool generateNotebooks, bool generateBibleXml)
         {
             OneNoteApp = new Application();
             this.IsStrong = isStrong;
             this.ModuleShortName = moduleShortName;            
-            this.GenerateXmlOnly = generateXmlOnly;            
-            this.NotebookId = !GenerateXmlOnly ? NotebookGenerator.CreateNotebook(OneNoteApp, ModuleShortName) : null;
+            this.GenerateNotebooks = generateNotebooks;
+            this.GenerateBibleXml = generateBibleXml;
+            this.NotebookId = GenerateNotebooks ? NotebookGenerator.CreateNotebook(OneNoteApp, ModuleShortName) : null;
             this.ManifestFilesFolderPath = manifestFilesFolderPath;            
             this.Locale = locale;
             this.NotebooksInfo = notebooksInfo;
-            this.BibleInfo = new ModuleBibleInfo();
-            this.TranslationDifferences = translationDifferences;
-            this.BibleInfo.Content.Locale = locale;
+            this.BibleInfo = new XMLBIBLE();
+            this.TranslationDifferences = translationDifferences;            
             this.BookIndexes = bookIndexes;
             this.ChapterSectionNameTemplate = chapterSectionNameTemplate;
             this.SectionsInfo = sectionsInfo;
@@ -127,14 +129,29 @@ namespace BibleConfigurator.ModuleConverter
 
             ProcessBibleBooks(externalModuleInfo);
 
-            GenerateManifest(externalModuleInfo);
-
-            GenerateBibleInfo();
+            var moduleInfo = GenerateManifest(externalModuleInfo);
+            
+            GenerateBibleInfo(moduleInfo);
         }
 
-        protected virtual void GenerateBibleInfo()
+        protected virtual void GenerateBibleInfo(ModuleInfo moduleInfo)
         {
-            SaveToXmlFile(BibleInfo, Constants.BibleInfoFileName);
+            if (GenerateBibleXml)
+            {
+                SaveToXmlFile(BibleInfo, Constants.BibleInfoFileName);
+
+                var booksInfo = new BibleBooksInfo() { Descr = this.ModuleShortName, Alphabet = moduleInfo.BibleStructure.Alphabet };
+                foreach (var book in moduleInfo.BibleStructure.BibleBooks)
+                {
+                    booksInfo.Books.Add(new BookInfo() 
+                                        { 
+                                            Index = book.Index, 
+                                            Name = book.Name, 
+                                            ShortNamesXMLString = string.Join(";", book.Abbreviations.ConvertAll(a => a.Value).ToArray()) 
+                                        });
+                }
+                SaveToXmlFile(booksInfo, "BibleBooksInfo.xml");
+            }
         }
 
         protected virtual string GetBookSectionName(string bookName, int bookIndex)
@@ -144,7 +161,7 @@ namespace BibleConfigurator.ModuleConverter
 
         protected virtual void UpdateNotebookProperties(ExternalModuleInfo externalModuleInfo)
         {
-            if (GenerateXmlOnly)
+            if (!GenerateNotebooks)
                 return;
             
             XmlNamespaceManager xnm;
@@ -160,7 +177,7 @@ namespace BibleConfigurator.ModuleConverter
 
         protected virtual string AddTestamentSectionGroup(string testamentName)
         {
-            if (GenerateXmlOnly)
+            if (!GenerateNotebooks)
                 return null;
 
             return (string)NotebookGenerator.AddRootSectionGroupToNotebook(OneNoteApp, NotebookId, testamentName).Attribute("ID");            
@@ -168,9 +185,10 @@ namespace BibleConfigurator.ModuleConverter
 
         protected virtual string AddBookSection(string sectionGroupId, string sectionName, string bookName)
         {
-            var sectionId = !GenerateXmlOnly ? NotebookGenerator.AddSection(OneNoteApp, sectionGroupId, sectionName) : null;
+            var sectionId = GenerateNotebooks ? NotebookGenerator.AddSection(OneNoteApp, sectionGroupId, sectionName) : null;
 
-            AddNewBookContent();
+            if (GenerateBibleXml)
+                AddNewBookContent();
 
             XmlNamespaceManager xnm;
             AddPage(sectionId, bookName, 1, out xnm);               
@@ -180,20 +198,20 @@ namespace BibleConfigurator.ModuleConverter
 
         private void AddNewBookContent()
         {
-            int currentBookNumber = BibleInfo.Content.Books.Count;
+            int currentBookNumber = BibleInfo.Books.Count;
 
             if (currentBookNumber > BookIndexes.Count - 1)
-                throw new Exception(string.Format("Invalid book indexes: there is no information about book index for book number {0}", currentBookNumber));
+                throw new Exception(string.Format("Invalid book indexes: there is no information about book index for book number {0}", currentBookNumber));            
 
-            BibleInfo.Content.Books.Add(new BibleBookContent()
+            BibleInfo.BIBLEBOOK = BibleInfo.BIBLEBOOK.Add(new BIBLEBOOK()
             {
-                Index = BookIndexes[currentBookNumber]
-            });
+                bnumber = BookIndexes[currentBookNumber].ToString()                
+            }).ToArray();
         }
 
         protected virtual void UpdateChapterPage(XDocument chapterPageDoc)
         {            
-            if (!GenerateXmlOnly)
+            if (GenerateNotebooks)
                 OneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);                                 
         }
 
@@ -201,7 +219,7 @@ namespace BibleConfigurator.ModuleConverter
         {
             xnm = null;
 
-            if (GenerateXmlOnly)           
+            if (!GenerateNotebooks)           
                 return null;            
 
             return NotebookGenerator.AddPage(OneNoteApp, bookSectionId, pageTitle, pageLevel, Locale, out xnm);    
@@ -211,47 +229,51 @@ namespace BibleConfigurator.ModuleConverter
         {
             var pageDoc = AddPage(bookSectionId, pageTitle, pageLevel, out xnm);
 
-            AddNewChapterContent();                                     
+            if (GenerateBibleXml)
+                AddNewChapterContent();                                     
 
             return pageDoc;
         }
 
         private void AddNewChapterContent()
         {
-            var currentBook = BibleInfo.Content.Books.Last();
+            var currentBook = BibleInfo.Books.Last();
             int currentChapterIndex = currentBook.Chapters.Count + 1;
-            currentBook.Chapters.Add(new BibleChapterContent()
+            currentBook.Items = currentBook.Items.Add(new CHAPTER()
             {
-                Index = currentChapterIndex
-            });
+                cnumber = currentChapterIndex.ToString()
+            }).ToArray();
         }
 
         protected virtual XElement AddTableToChapterPage(XDocument chapterDoc, XmlNamespaceManager xnm)
         {
-            if (GenerateXmlOnly)
+            if (!GenerateNotebooks)
                 return null;
 
             return NotebookGenerator.AddTableToPage(chapterDoc, false, xnm, new CellInfo(SettingsManager.Instance.PageWidth_Bible), new CellInfo(NotebookGenerator.MinimalCellWidth));
         }
 
-        protected virtual void AddVerseRowToTable(XElement tableElement, int verseNumber, int? topVerseNumber, string verseText)
+        protected virtual void AddVerseRowToTable(XElement tableElement, int verseNumber, int? topVerseNumber, object[] verseItems)
         {
-            if (!GenerateXmlOnly)
-                NotebookGenerator.AddVerseRowToTable(tableElement, BibleBookContent.GetFullVerseString(verseNumber, topVerseNumber, verseText), 1, Locale);
+            if (GenerateNotebooks)
+                NotebookGenerator.AddVerseRowToTable(tableElement, BIBLEBOOK.GetFullVerseString(verseNumber, topVerseNumber, string.Concat(verseItems)), 1, Locale);
 
-            try
+            if (GenerateBibleXml)
             {
-                AddNewVerseContent(verseNumber, topVerseNumber, verseText);
-            }
-            catch (ConverterExceptionBase ex)
-            {
-                Errors.Add(ex);
+                try
+                {
+                    AddNewVerseContent(verseNumber, topVerseNumber, verseItems);
+                }
+                catch (ConverterExceptionBase ex)
+                {
+                    Errors.Add(ex);
+                }
             }
         }
 
-        private void AddNewVerseContent(int verseNumber, int? topVerseNumber, string verseText)
+        private void AddNewVerseContent(int verseNumber, int? topVerseNumber, object[] verseItems)
         {
-            var currentBook = BibleInfo.Content.Books.Last();
+            var currentBook = BibleInfo.Books.Last();
             var currentChapter = currentBook.Chapters.Last();
             var lastVerse = currentChapter.Verses.LastOrDefault();
             int currentVerseIndex = lastVerse != null ? lastVerse.Index + 1 : currentChapter.Verses.Count + 1;            
@@ -263,22 +285,22 @@ namespace BibleConfigurator.ModuleConverter
             {
                 for (int i = currentVerseIndex; i <= verseNumber; i++)
                 {
-                    currentChapter.Verses.Add(new BibleVerseContent()
+                    currentChapter.Items = currentChapter.Items.Add(new VERS()
                     {
-                        Index = i,
-                        Value = string.Empty
-                    });
+                        vnumber = i.ToString(),
+                        Items = new object[] { }                        
+                    }).ToArray();
                 }
 
                 throwException = true;                
             }
 
-            currentChapter.Verses.Add(new BibleVerseContent()
+            currentChapter.Items = currentChapter.Items.Add(new VERS()
             {
-                Index = verseNumber,
-                TopIndex = topVerseNumber,
-                Value = verseText                
-            });
+                vnumber = verseNumber.ToString(),
+                e = topVerseNumber.ToString(),                
+                Items = verseItems
+            }).ToArray();
 
             if (throwException)
                 throw new VerseReadException("{0} {1}: expectedVerseIndex != verseIndex: {2} != {3}",
@@ -290,7 +312,7 @@ namespace BibleConfigurator.ModuleConverter
             Utils.SaveToXmlFile(data, Path.Combine(ManifestFilesFolderPath, fileName));
         }
 
-        protected virtual void GenerateManifest(ExternalModuleInfo externalModuleInfo)
+        protected virtual ModuleInfo GenerateManifest(ExternalModuleInfo externalModuleInfo)
         {
             var extModuleInfo = (BibleQuotaModuleInfo)externalModuleInfo;
 
@@ -299,8 +321,9 @@ namespace BibleConfigurator.ModuleConverter
                 ShortName = ModuleShortName,
                 Name = extModuleInfo.Name, 
                 Version = this.Version, 
-                Notebooks = NotebooksInfo, 
-                Type = IsStrong ? ModuleType.Strong: ModuleType.Bible 
+                Locale = this.Locale,
+                Notebooks = NotebooksInfo,
+                Type = IsStrong ? BibleCommon.Common.ModuleType.Strong : BibleCommon.Common.ModuleType.Bible 
             };
             module.BibleTranslationDifferences = this.TranslationDifferences;
             module.BibleStructure = new BibleStructureInfo()
@@ -326,6 +349,8 @@ namespace BibleConfigurator.ModuleConverter
             }
 
             SaveToXmlFile(module, Constants.ManifestFileName);
+
+            return module;
         }
 
         public void Dispose()
