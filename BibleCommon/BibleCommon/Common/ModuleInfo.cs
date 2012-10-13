@@ -56,6 +56,9 @@ namespace BibleCommon.Common
         public string Name { get; set; }
 
         [XmlAttribute]
+        public string Locale { get; set; }
+
+        [XmlAttribute]
         public string Description { get; set; }
 
         /// <summary>
@@ -68,7 +71,33 @@ namespace BibleCommon.Common
         public string DictionarySectionGroupName { get; set; }
 
         [XmlIgnore]
-        public int? StrongNumbersCount { get; set; }
+        public int? DictionaryPagesCount { get; set; }
+
+        [XmlAttribute]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public int XmlDictionaryPagesCount
+        {
+            get
+            {
+                return DictionaryPagesCount.Value;
+            }
+            set
+            {
+                DictionaryPagesCount = value;
+            }
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public bool XmlDictionaryPagesCountSpecified
+        {
+            get
+            {
+                return DictionaryPagesCount.HasValue;
+            }
+        }
+
+        [XmlIgnore]
+        public int? StrongNumbersCount { get; set; }        
 
         [XmlAttribute]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -240,6 +269,10 @@ namespace BibleCommon.Common
         [DefaultValue(false)]
         public bool SkipCheck { get; set; }
 
+        [XmlAttribute()]
+        [DefaultValue("")]
+        public string StrongPrefix { get; set; }
+
         [XmlAttribute]
         [DefaultValue(false)]
         public bool CheckSectionGroupsCount { get; set; }
@@ -402,20 +435,7 @@ namespace BibleCommon.Common
     {
         [XmlElement(typeof(string), ElementName = "Term")]
         public List<string> Terms { get; set; }
-    }
-
-    [Serializable]
-    [XmlRoot(ElementName = "IStudyBibleTools_Bible")]
-    public class ModuleBibleInfo
-    {
-        [XmlElement]
-        public BibleContent Content { get; set; }
-
-        public ModuleBibleInfo()
-        {
-            this.Content = new BibleContent();
-        }
-    }
+    }  
 
     [Serializable]
     public class BibleTranslationDifferences
@@ -503,212 +523,5 @@ namespace BibleCommon.Common
         //    this.BaseVerses = baseVerses;
         //    this.ParallelVerses = parallelVerses;
         //}
-    }
-
-    [Serializable]
-    public class BibleContent
-    {
-        [XmlAttribute]
-        public string Locale { get; set; }
-
-        [XmlElement(typeof(BibleBookContent), ElementName = "Book")]
-        public List<BibleBookContent> Books { get; set; }
-
-        public BibleContent()
-        {
-            this.Books = new List<BibleBookContent>();
-        }
-    }
-
-    [Serializable]
-    public class BibleBookContent
-    {
-        [XmlAttribute]
-        public int Index { get; set; }
-
-        [XmlElement(typeof(BibleChapterContent), ElementName = "Chapter")]
-        public List<BibleChapterContent> Chapters { get; set; }
-
-        public BibleBookContent()
-        {
-            this.Chapters = new List<BibleChapterContent>();
-        }
-
-        public string GetVerseContent(SimpleVersePointer versPointer, out VerseNumber verseNumber, out bool isEmpty)
-        {
-            isEmpty = false;
-
-            if (this.Chapters.Count < versPointer.Chapter)
-                throw new ParallelChapterNotFoundException(versPointer, BaseVersePointerException.Severity.Warning);
-
-            var chapter = this.Chapters[versPointer.Chapter - 1];
-
-            var verseContent = chapter.GetVerse(versPointer.Verse);            
-            if (verseContent == null)
-                throw new ParallelVerseNotFoundException(versPointer, BaseVersePointerException.Severity.Warning);
-
-            verseNumber = verseContent.VerseNumber;
-
-            if (verseContent.IsEmpty)
-            {
-                isEmpty = true;
-                return string.Empty;
-            }
-
-            string result = null;
-
-            if (versPointer.PartIndex.HasValue)
-            {
-                var versesParts = verseContent.Value.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-                if (versesParts.Length > versPointer.PartIndex.Value)
-                    result = versesParts[versPointer.PartIndex.Value].Trim();
-            }
-            else
-                result = verseContent.Value;
-
-            result = ShellVerseText(result);            
-
-            return result;
-        }
-
-        public string GetVersesContent(List<SimpleVersePointer> verses, out int? topVerse, out bool isEmpty)
-        {
-            var contents = new List<string>();
-
-            topVerse = verses.First().TopVerse;
-
-            isEmpty = true;            
-
-            foreach (var verse in verses)
-            {
-                bool localIsEmpty;
-                VerseNumber vn;
-                contents.Add(GetVerseContent(verse, out vn, out localIsEmpty));
-                isEmpty = isEmpty && localIsEmpty;
-
-                if (vn.TopVerse.GetValueOrDefault(-2) > topVerse.GetValueOrDefault(-1))
-                    topVerse = vn.TopVerse;
-            }
-
-            if (!topVerse.HasValue && verses.Count > 1)
-                topVerse = verses.Last().Verse;            
-
-            return string.Join(" ", contents.ToArray());
-        }
-
-        public static string GetFullVerseString(int verseNumber, int? topVerseNumber, string verseText)
-        {
-            string verseNumberString = topVerseNumber.HasValue ? string.Format("{0}-{1}", verseNumber, topVerseNumber) : verseNumber.ToString();
-            return string.Format("{0}<span> </span>{1}", verseNumberString, ShellVerseText(verseText));
-        }
-
-        private static string ShellVerseText(string verseText)
-        {
-            if (!string.IsNullOrEmpty(verseText))
-                verseText = verseText.Replace("|", string.Empty);
-
-            return verseText;
-        }
-    }
-
-    [Serializable]
-    public class BibleChapterContent
-    {
-        [XmlAttribute]
-        public int Index { get; set; }
-
-        [XmlElement(typeof(BibleVerseContent), ElementName = "Verse")]
-        public List<BibleVerseContent> Verses { get; set; }
-
-        private Dictionary<int, BibleVerseContent> _versesDictionary;
-        public BibleVerseContent GetVerse(int verseNumber)
-        {
-            if (_versesDictionary == null)            
-                LoadVersesDictionary();
-
-            if (_versesDictionary.ContainsKey(verseNumber))
-                return _versesDictionary[verseNumber];
-            else if (Verses.Any(v => v.IsMultiVerse && (v.Index <= verseNumber && verseNumber <= v.TopIndex)))
-                return BibleVerseContent.Empty;
-
-            return null;
-        }
-
-        private void LoadVersesDictionary()
-        {
-            _versesDictionary = new Dictionary<int,BibleVerseContent>();
-            foreach (var verse in Verses)
-                _versesDictionary.Add(verse.Index, verse);            
-        }
-
-        public BibleChapterContent()
-        {
-            this.Verses = new List<BibleVerseContent>();
-        }
-    }
-
-    [Serializable]
-    public class BibleVerseContent
-    {
-        [XmlAttribute]
-        public int Index { get; set; }
-
-        [XmlIgnore]
-        public int? TopIndex { get; set; }
-
-        [XmlIgnore]
-        public bool IsMultiVerse { get { return TopIndex.HasValue; } }
-
-        [XmlIgnore]
-        public VerseNumber VerseNumber
-        {
-            get
-            {
-                return new VerseNumber(Index, TopIndex);
-            }
-        }
-
-        [XmlText]
-        public string Value { get; set; }
-
-        public static BibleVerseContent Empty
-        {
-            get
-            {
-                return new BibleVerseContent();
-            }
-        }
-
-        [XmlIgnore]
-        public bool IsEmpty
-        {
-            get
-            {
-                return Index == default(int);
-            }
-        }
-
-        [XmlAttribute]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public int XmlTopIndex
-        {
-            get
-            {
-                return TopIndex.Value;
-            }
-            set
-            {
-                TopIndex = value;
-            }
-        }
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public bool XmlTopIndexSpecified
-        {
-            get
-            {
-                return TopIndex.HasValue;
-            }
-        }
-    }
+    }    
 }

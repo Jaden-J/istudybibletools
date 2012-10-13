@@ -20,7 +20,7 @@ namespace BibleConfigurator.ModuleConverter
                         Type = ContainerType.Bible, 
                         Name = "Библия.onepkg", 
                         SkipCheck = true,
-                        SectionGroups = RussianNotebookBibleSectionGroups
+                        SectionGroups = RussianStrongNotebookBibleSectionGroups
                     }
                 };
             }
@@ -111,6 +111,32 @@ namespace BibleConfigurator.ModuleConverter
                                 CheckSectionsCount = true, 
                                 SectionsCount = 27, 
                                 Type = ContainerType.NewTestament 
+                            }
+                        };
+            }
+        }
+
+        private static List<SectionGroupInfo> RussianStrongNotebookBibleSectionGroups
+        {
+            get
+            {
+                return new List<SectionGroupInfo>() 
+                        {        
+                            new SectionGroupInfo() 
+                            { 
+                                Name = "Ветхий Завет", 
+                                CheckSectionsCount = true, 
+                                SectionsCount = 39, 
+                                Type = ContainerType.OldTestament,
+                                StrongPrefix = "H"
+                            },
+                            new SectionGroupInfo() 
+                            { 
+                                Name = "Новый Завет", 
+                                CheckSectionsCount = true, 
+                                SectionsCount = 27, 
+                                Type = ContainerType.NewTestament,
+                                StrongPrefix = "G"
                             }
                         };
             }

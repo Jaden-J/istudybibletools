@@ -62,6 +62,7 @@
     <Compile Include="Contracts\IProtocolHandler.cs" />
     <Compile Include="Handlers\FindVersesWithStrongNumberHandler.cs" />
     <Compile Include="Helpers\BinarySerializerHelper.cs" />
+    <Compile Include="Helpers\CollectionHelper.cs" />
     <Compile Include="Helpers\FormExtensions.cs" />
     <Compile Include="Helpers\StringUtils.cs" />
     <Compile Include="Helpers\Utils.cs" />
@@ -75,6 +76,10 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Scheme\zef2005.cs">
+      <DependentUpon>zef2005.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Scheme\zef2005.ext.cs" />
     <Compile Include="Services\BibleParallelTranslationConnectorManager.cs" />
     <Compile Include="Services\BibleParallelTranslationManager.cs" />
     <Compile Include="Services\BibleVersesLinksCacheManager.cs" />
@@ -140,6 +145,17 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Scheme\zef2005.xsc">
+      <DependentUpon>zef2005.xsd</DependentUpon>
+    </None>
+    <None Include="Scheme\zef2005.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Scheme\zef2005.xss">
+      <DependentUpon>zef2005.xsd</DependentUpon>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

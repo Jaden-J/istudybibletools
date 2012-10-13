@@ -1,0 +1,264 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+using BibleCommon.Helpers;
+using System.Xml.Linq;
+using BibleCommon.Consts;
+using System.Xml;
+using System.Xml.XPath;
+using System.Globalization;
+using BibleCommon.Common;
+using System.Xml.Serialization;
+using BibleCommon.Scheme;
+
+namespace BibleConfigurator.ModuleConverter
+{
+    public class ZefaniaXmlConverter: ConverterBase
+    {
+        public enum ReadParameters
+        {
+            None,
+            RemoveHyperlinks,
+            RemoveStrongs
+        }
+
+        protected XMLBIBLE ZefaniaXmlBibleInfo { get; set; }
+        protected BibleBooksInfo BooksInfo { get; set; }
+        protected string ZefaniaXmlFilePath { get; set; }
+        protected string ModuleName { get; set; }
+
+        protected ReadParameters[] AdditionalReadParameters { get; set; }
+
+        public Func<BIBLEBOOK, string, string> ConvertChapterNameFunc { get; set; }        
+        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emptyNotebookName"></param>
+        /// <param name="bqModuleFolder"></param>
+        /// <param name="manifestFilePathToSave"></param>
+        /// <param name="fileEncoding"></param>
+        /// <param name="oldTestamentName"></param>
+        /// <param name="newTestamentName"></param>
+        /// <param name="oldTestamentBooksCount"></param>
+        /// <param name="newTestamentBooksCount"></param>
+        /// <param name="locale">can be not specified</param>
+        /// <param name="notebooksInfo"></param>
+        public ZefaniaXmlConverter(string moduleShortName, string moduleName, string zefaniaXMLFilePath, BibleBooksInfo booksInfo, string manifestFilesFolderPath, 
+            string locale, List<NotebookInfo> notebooksInfo, BibleTranslationDifferences translationDifferences, 
+            string chapterSectionNameTemplate, 
+            List<SectionInfo> sectionsInfo, bool isStrong, string dictionarySectionGroupName, int? strongNumbersCount,
+            string version, bool generateXmlOnly, params ReadParameters[] readParameters)
+            : base(moduleShortName, manifestFilesFolderPath, locale, notebooksInfo, null,
+                        translationDifferences, chapterSectionNameTemplate, sectionsInfo, isStrong, dictionarySectionGroupName, 
+                        strongNumbersCount, version, generateXmlOnly, false)
+        {
+            this.ModuleName = moduleName;
+            this.ZefaniaXmlFilePath = zefaniaXMLFilePath;
+            this.BooksInfo = booksInfo;
+            this.BookIndexes = BooksInfo.Books.ConvertAll(b => b.Index);
+
+            this.AdditionalReadParameters = readParameters;            
+
+            if (this.AdditionalReadParameters == null)
+                this.AdditionalReadParameters = new ReadParameters[] { };                
+        }
+
+        protected override ExternalModuleInfo ReadExternalModuleInfo()
+        {
+            return null;
+        }
+
+        protected override void GenerateBibleInfo(ModuleInfo moduleInfo)
+        {
+            File.Copy(ZefaniaXmlFilePath, Path.Combine(ManifestFilesFolderPath, Constants.BibleInfoFileName));
+        }
+
+        protected override void ProcessBibleBooks(ExternalModuleInfo externalModuleInfo)
+        {
+            ZefaniaXmlBibleInfo = Utils.LoadFromXmlFile<XMLBIBLE>(ZefaniaXmlFilePath);                
+
+            XDocument currentChapterDoc = null;
+            XElement currentTableElement = null;            
+            string currentSectionGroupId = null;
+
+            string oldTestamentName = null;
+            int? oldTestamentSectionsCount = null;
+            string newTestamentName = null;
+            int? newTestamentSectionsCount = null;
+
+            GetTestamentInfo(ContainerType.OldTestament, out oldTestamentName, out oldTestamentSectionsCount);
+            GetTestamentInfo(ContainerType.NewTestament, out newTestamentName, out newTestamentSectionsCount);
+
+            this.OldTestamentBooksCount = (oldTestamentSectionsCount ?? newTestamentSectionsCount).Value;
+
+            for (int i = 0; i < BooksInfo.Books.Count; i++)             
+            {
+                var bookInfo = BooksInfo.Books[i];
+                var bibleBookContent = ZefaniaXmlBibleInfo.Books.First(book => book.Index == bookInfo.Index);
+                var sectionName = GetBookSectionName(bookInfo.Name, bookInfo.Index - 1);
+
+                if (string.IsNullOrEmpty(currentSectionGroupId))
+                    currentSectionGroupId = AddTestamentSectionGroup(oldTestamentName ?? newTestamentName);
+                else if (i == OldTestamentBooksCount)
+                    currentSectionGroupId = AddTestamentSectionGroup(newTestamentName);
+
+                var bookSectionId = AddBookSection(currentSectionGroupId, sectionName, bookInfo.Name);
+
+                foreach (var chapter in bibleBookContent.Chapters)
+                {
+                    string chapterPageName;
+                    if (ConvertChapterNameFunc != null)
+                        chapterPageName = ConvertChapterNameFunc(bibleBookContent, chapter.cnumber);
+                    else
+                        chapterPageName = ConvertChapterName(bookInfo, chapter.cnumber);
+
+                    XmlNamespaceManager xnm;
+                    currentChapterDoc = AddChapterPage(bookSectionId, chapterPageName, 2, out xnm);
+                    currentTableElement = AddTableToChapterPage(currentChapterDoc, xnm);
+
+                    foreach (var verse in chapter.Verses)
+                    {
+                        try
+                        {
+                            ProcessVerse(verse, currentTableElement, BooksInfo.Alphabet);
+                        }
+                        catch (ConverterExceptionBase ex)
+                        {
+                            Errors.Add(ex);
+                        }
+                    }
+                    
+                    UpdateChapterPage(currentChapterDoc);
+                }                             
+            }           
+        }
+
+        protected override ModuleInfo GenerateManifest(ExternalModuleInfo externalModuleInfo)
+        {
+            var module = new ModuleInfo()
+            {
+                ShortName = ModuleShortName,
+                Name =  ModuleName,
+                Version = this.Version,
+                Locale = this.Locale,
+                Notebooks = NotebooksInfo,
+                Type = IsStrong ? BibleCommon.Common.ModuleType.Strong : BibleCommon.Common.ModuleType.Bible
+            };
+            module.BibleTranslationDifferences = this.TranslationDifferences;
+            module.BibleStructure = new BibleStructureInfo()
+            {
+                Alphabet = BooksInfo.Alphabet,
+                ChapterSectionNameTemplate = ChapterSectionNameTemplate
+            };
+            module.Sections = this.SectionsInfo;
+            module.DictionarySectionGroupName = this.DictionarySectionGroupName;
+            module.StrongNumbersCount = this.StrongNumbersCount;
+            
+            foreach (var bibleBookInfo in BooksInfo.Books)
+            {
+                module.BibleStructure.BibleBooks.Add(
+                    new BibleBookInfo()
+                    {
+                        Index = bibleBookInfo.Index,
+                        Name = bibleBookInfo.Name,
+                        SectionName = GetBookSectionName(bibleBookInfo.Name, bibleBookInfo.Index),
+                        Abbreviations = bibleBookInfo.ShortNamesXMLString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(s => new Abbreviation(s)).ToList()
+                    });
+            }
+
+            SaveToXmlFile(module, Constants.ManifestFileName);
+
+            return module;
+        }
+
+        private string ConvertChapterName(BookInfo bookInfo, string lineText)
+        {
+            int? chapterIndex = StringUtils.GetStringLastNumber(lineText);
+            if (!chapterIndex.HasValue)
+                chapterIndex = 1;
+
+            return string.Format(this.ChapterSectionNameTemplate, chapterIndex, bookInfo.Name);            
+        }
+
+        private void GetTestamentInfo(ContainerType type, out string testamentName, out int? testamentSectionsCount)
+        {
+            testamentName = null;
+            testamentSectionsCount = null;
+
+            var testamentSectionGroup = this.NotebooksInfo.FirstOrDefault(n => n.Type == ContainerType.Bible).SectionGroups.FirstOrDefault(s => s.Type == type);
+            if (testamentSectionGroup != null)
+            {
+                testamentName = testamentSectionGroup.Name;
+                testamentSectionsCount = testamentSectionGroup.SectionsCount;
+            }
+        }
+
+        private void ProcessVerse(VERS verse, XElement currentTableElement, string alphabet)
+        {
+            if (currentTableElement == null && GenerateNotebooks)
+                throw new Exception("currentTableElement is null");
+
+            //var verseText = ShellText(verse.Value);
+
+            //if (IsStrong || AdditionalReadParameters.Contains(ReadParameters.RemoveStrongs))
+            //{
+            //    verseText = ProcessStrongVerse(verseText, alphabet);
+            //}            
+
+            AddVerseRowToTable(currentTableElement, verse.Index, verse.TopIndex, verse.Items);
+        }
+
+        private string ProcessStrongVerse(string verseText, string alphabet)
+        {
+            throw new NotImplementedException();
+            int currentBookNumber = BibleInfo.Books.Count;
+            var prefix = currentBookNumber <= OldTestamentBooksCount ? "H" : "G";
+
+            int cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, null);
+            if (cursorPosition > -1)
+            {
+                int textBreakIndex, htmlBreakIndex = -1;
+                string strongNumber = StringUtils.GetNextString(verseText, cursorPosition - 1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
+                                                                    out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
+                if (!string.IsNullOrEmpty(strongNumber))
+                {
+                    string changedText;
+
+                    if (AdditionalReadParameters.Contains(ReadParameters.RemoveStrongs))
+                    {
+                        changedText = string.Empty;
+                        cursorPosition -= 1;  // чтобы удалить пробел перед номером стронга
+                    }
+                    else
+                        changedText = prefix + strongNumber;                    
+                        
+                    verseText = string.Concat(verseText.Substring(0, cursorPosition), changedText, ProcessStrongVerse(verseText.Substring(htmlBreakIndex), alphabet));
+                }
+            }
+
+            //verseText = verseText.Replace("  ", " ");
+
+            return verseText;
+        }        
+
+        private string ShellText(string line)
+        {
+            var result = line;
+
+            if (AdditionalReadParameters.Contains(ReadParameters.RemoveHyperlinks))
+            {
+                result = StringUtils.RemoveTags(result, "<a>", "</a>");
+                result = StringUtils.RemoveTags(result, "<a ", "</a>");
+                result = result.Replace("  ", " ");
+            }            
+
+            //result = StringUtils.GetText(result, moduleInfo.Alphabet).Trim();            
+
+            return result;
+        }
+    }
+}

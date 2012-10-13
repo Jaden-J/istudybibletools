@@ -10,6 +10,7 @@ using System.Xml;
 using BibleCommon.Consts;
 using System.Xml.XPath;
 using BibleCommon.Contracts;
+using BibleCommon.Scheme;
 
 namespace BibleCommon.Services
 {
@@ -44,8 +45,8 @@ namespace BibleCommon.Services
         public ModuleInfo BaseModuleInfo { get; set; }
         public ModuleInfo ParallelModuleInfo { get; set; }
 
-        public ModuleBibleInfo BaseBibleInfo { get; set; }
-        public ModuleBibleInfo ParallelBibleInfo { get; set; }
+        public XMLBIBLE BaseBibleInfo { get; set; }
+        public XMLBIBLE ParallelBibleInfo { get; set; }
 
         public ICustomLogger Logger { get; set; }
 
@@ -160,13 +161,13 @@ namespace BibleCommon.Services
 
             var result = new BibleParallelTranslationConnectionResult();
 
-            foreach (var baseBookContent in BaseBibleInfo.Content.Books)
+            foreach (var baseBookContent in BaseBibleInfo.Books)
             {
                 var baseBookInfo = BaseModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBookContent.Index);
                 if (baseBookInfo == null)
                     throw new InvalidModuleException(string.Format("Book with index {0} is not found in module manifest", baseBookContent.Index));                
 
-                var parallelBookContent = ParallelBibleInfo.Content.Books.FirstOrDefault(b => b.Index == baseBookContent.Index);
+                var parallelBookContent = ParallelBibleInfo.Books.FirstOrDefault(b => b.Index == baseBookContent.Index);
                 if (parallelBookContent != null)
                 {
                     XElement sectionEl = ForCheckOnly ? null : HierarchySearchManager.FindBibleBookSection(_oneNoteApp, BibleNotebookId, baseBookInfo.SectionName);
@@ -194,7 +195,7 @@ namespace BibleCommon.Services
         }      
 
         private void ProcessBibleBook(XElement bibleBookSectionEl, BibleBookInfo baseBookInfo,
-            BibleBookContent baseBookContent, BibleBookContent parallelBookContent, 
+            BIBLEBOOK baseBookContent, BIBLEBOOK parallelBookContent, 
             SimpleVersePointersComparisonTable bookVersePointersComparisonTable,
             Func<XDocument, SimpleVersePointer, BibleIteratorArgs> chapterAction, bool needToUpdateChapter,
             bool iterateVerses, Action<SimpleVersePointer, SimpleVerse, BibleIteratorArgs> verseAction)
@@ -271,9 +272,9 @@ namespace BibleCommon.Services
                     _oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
                 }
             }            
-        }       
+        }
 
-        private SimpleVerse GetParallelVerse(SimpleVersePointer baseVersePointer, BibleBookContent parallelBookContent, 
+        private SimpleVerse GetParallelVerse(SimpleVersePointer baseVersePointer, BIBLEBOOK parallelBookContent, 
             SimpleVersePointersComparisonTable bookVersePointersComparisonTable, int lastProcessedChapter, int lastProcessedVerse)
         {
             ComparisonVersesInfo parallelVersePointers = new ComparisonVersesInfo();;
@@ -311,7 +312,7 @@ namespace BibleCommon.Services
             }
         }
 
-        private void CheckVerseForWarnings(SimpleVersePointer baseVersePointer, BibleBookContent parallelBookContent,
+        private void CheckVerseForWarnings(SimpleVersePointer baseVersePointer, BIBLEBOOK parallelBookContent,
             SimpleVersePointer firstParallelVerse, int lastProcessedChapter, int lastProcessedVerse)
         {
             try
@@ -349,7 +350,7 @@ namespace BibleCommon.Services
         }
 
         private SimpleVerse GetParallelVerses(SimpleVersePointer baseVersePointer,
-            ComparisonVersesInfo parallelVersePointers, BibleBookContent parallelBookContent)
+            ComparisonVersesInfo parallelVersePointers, BIBLEBOOK parallelBookContent)
         {
             string verseContent = string.Empty;
             string verseNumberContent = string.Empty;

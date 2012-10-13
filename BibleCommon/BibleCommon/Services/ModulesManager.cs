@@ -8,6 +8,7 @@ using System.IO;
 using BibleCommon.Consts;
 using BibleCommon.Helpers;
 using System.Threading;
+using BibleCommon.Scheme;
 
 namespace BibleCommon.Services
 {
@@ -19,7 +20,7 @@ namespace BibleCommon.Services
         {
             _serializers = new Dictionary<Type, XmlSerializer>();
             _serializers.Add(typeof(ModuleInfo), new XmlSerializer(typeof(ModuleInfo)));
-            _serializers.Add(typeof(ModuleBibleInfo), new XmlSerializer(typeof(ModuleBibleInfo)));
+            _serializers.Add(typeof(XMLBIBLE), new XmlSerializer(typeof(XMLBIBLE)));
             _serializers.Add(typeof(ModuleDictionaryInfo), new XmlSerializer(typeof(ModuleDictionaryInfo)));
         }
 
@@ -52,12 +53,12 @@ namespace BibleCommon.Services
 
         public static int GetBibleChaptersCount(string moduleShortName)
         {
-            ModuleBibleInfo bibleInfo = null;
+            XMLBIBLE bibleInfo = null;
             int result;
             try
             {
                 bibleInfo = GetModuleBibleInfo(moduleShortName);
-                result = bibleInfo.Content.Books.Sum(b => b.Chapters.Count);
+                result = bibleInfo.Books.Sum(b => b.Chapters.Count);
             }
             catch (InvalidModuleException)
             {
@@ -72,9 +73,9 @@ namespace BibleCommon.Services
             return GetModuleFile<ModuleDictionaryInfo>(moduleShortName, Consts.Constants.DictionaryInfoFileName);
         }
 
-        public static ModuleBibleInfo GetModuleBibleInfo(string moduleShortName)
-        {            
-            return GetModuleFile<ModuleBibleInfo>(moduleShortName, Consts.Constants.BibleInfoFileName);
+        public static XMLBIBLE GetModuleBibleInfo(string moduleShortName)
+        {
+            return GetModuleFile<XMLBIBLE>(moduleShortName, Consts.Constants.BibleInfoFileName);
         }
 
         private static string GetModuleFilePath(string moduleShortName, string fileRelativePath)
@@ -145,7 +146,7 @@ namespace BibleCommon.Services
             return result;
         }        
 
-        public static bool ModuleIsCorrect(string moduleName, ModuleType? moduleType = null)
+        public static bool ModuleIsCorrect(string moduleName, Common.ModuleType? moduleType = null)
         {
             try
             {
@@ -159,14 +160,14 @@ namespace BibleCommon.Services
             return true;
         }
 
-        public static void CheckModule(string moduleDirectoryName, ModuleType? moduleType = null)
+        public static void CheckModule(string moduleDirectoryName, Common.ModuleType? moduleType = null)
         {
             ModuleInfo module = GetModuleInfo(moduleDirectoryName);
             
             CheckModule(module, moduleType);
-        }        
+        }
 
-        public static void CheckModule(ModuleInfo module, ModuleType? moduleType = null)
+        public static void CheckModule(ModuleInfo module, Common.ModuleType? moduleType = null)
         {
             string moduleDirectory = GetModuleDirectory(module.ShortName);
 
@@ -174,7 +175,7 @@ namespace BibleCommon.Services
                 if (module.Type != moduleType.Value)
                     throw new InvalidModuleException(string.Format("Invalid module type: expected '{0}', actual '{1}'", moduleType, module.Type));
 
-            if (module.Type == ModuleType.Bible)
+            if (module.Type == Common.ModuleType.Bible)
             {
                 var bibleModulePartTypes = new ContainerType[] { ContainerType.Bible, ContainerType.BibleStudy, ContainerType.BibleComments, ContainerType.BibleNotesPages };
 

@@ -88,11 +88,25 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ModuleConverter\BibleQuotaConverter.cs" />
-    <Compile Include="ModuleConverter\BibleQuotaDictionaryConverter.cs" />
-    <Compile Include="ModuleConverter\ConverterBase.cs" />
-    <Compile Include="ModuleConverter\DefaultRusModuleGenerator.cs" />
-    <Compile Include="ModuleConverter\PredefinedInfo.cs" />
+    <Compile Include="ModuleConverter\BibleBooksInfo.cs" />
+    <Compile Include="ModuleConverter\BibleQuotaConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ModuleConverter\BibleQuotaDictionaryConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ModuleConverter\ConverterBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ModuleConverter\DefaultRusModuleGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ModuleConverter\PredefinedInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ModuleConverter\ZefaniaXmlConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="NotebookChecker.cs" />
     <Compile Include="NotebookParametersForm.cs">
       <SubType>Form</SubType>
@@ -134,6 +148,12 @@
     <Compile Include="Tools\DeleteNotesPagesManager.cs" />
     <Compile Include="Tools\NotebookIteratorHelper.cs" />
     <Compile Include="Tools\RelinkAllBibleCommentsManager.cs" />
+    <Compile Include="ZefaniaXmlConverterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ZefaniaXmlConverterForm.Designer.cs">
+      <DependentUpon>ZefaniaXmlConverterForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AboutModuleForm.resx">
       <DependentUpon>AboutModuleForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -201,6 +221,9 @@
     <EmbeddedResource Include="SetWidthForm.ru.resx">
       <DependentUpon>SetWidthForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ZefaniaXmlConverterForm.resx">
+      <DependentUpon>ZefaniaXmlConverterForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
@@ -241,9 +264,21 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\aboutModuleFormIcon.ico" />
+    <Content Include="Resources\aboutProgramFormIcon.ico" />
     <Content Include="Resources\apply.png" />
+    <Content Include="Resources\BibleBooskInfo\rst.xml" />
+    <Content Include="Resources\dictionary.ico" />
+    <Content Include="Resources\formIcon.ico" />
     <Content Include="Resources\plus.png" />
+    <Content Include="Resources\BibleTranslationDifferences\rst77.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Resources\BibleTranslationDifferences\rst.xml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

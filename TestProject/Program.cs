@@ -19,14 +19,15 @@ using Microsoft.Office.Interop.OneNote;
 using BibleCommon.UI.Forms;
 using BibleCommon.Handlers;
 using System.Xml.Serialization;
+using BibleCommon.Scheme;
 
 
 namespace TestProject
 {    
     class Program
     {
-        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\Holy Bible\ForGenerating\";
-        private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp\";
+        private const string ForGeneratingFolderPath = @"G:\Dropbox\Holy Bible\ForGenerating\";
+        private const string TempFolderPath = @"C:\temp\";
 
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
         private static Microsoft.Office.Interop.OneNote.Application OneNoteApp
@@ -48,7 +49,7 @@ namespace TestProject
             sw.Start();
 
             try
-            {
+            {                
                 //TestVerseNumber();
 
                 //SearchInNotebook();
@@ -272,13 +273,13 @@ namespace TestProject
 
         private static void ConvertRussianModule()
         {
-            string moduleShortName = "rst77";
+            string moduleShortName = "rststrong";
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(ForGeneratingFolderPath, moduleShortName), Path.Combine(TempFolderPath, moduleShortName), "ru",
-                PredefinedNotebooksInfo.Russian77, PredefinedBookIndexes.RST77, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst77),  // вот эти тоже часто надо менять                
+                PredefinedNotebooksInfo.RussianStrong, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst),  // вот эти тоже часто надо менять                
                 "{0} глава. {1}",
-                PredefinedSectionsInfo.None, false, null, null,
-                //PredefinedSectionsInfo.RSTStrong, true, "Стронга", 14700,   // параметры для стронга
-                "2.0", false, 
+                //PredefinedSectionsInfo.None, false, null, null,
+                PredefinedSectionsInfo.RSTStrong, true, "Стронга", 14700,   // параметры для стронга
+                "2.0", true, 
                 BibleQuotaConverter.ReadParameters.None);  // и про эту не забыть
 
             converter.Convert();
