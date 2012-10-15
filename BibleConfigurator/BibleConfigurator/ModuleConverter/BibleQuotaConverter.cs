@@ -239,7 +239,7 @@ namespace BibleConfigurator.ModuleConverter
                     throw new VerseReadException("{0} {1}: Verse has no number: {2}", currentBook.Index, currentChapter.Index, lineText);
                 }
 
-                 //вот здесь. надо сконвертить ZEFANIA XML модуль со стронгом. и так же научиться его считывать (создавать спр Библию), учитывая перфиксы (что их теперь надо подставлять во время создания спр Библии) и т.д.
+                 вот здесь. надо сконвертить ZEFANIA XML модуль со стронгом. и так же научиться его считывать (создавать спр Библию), учитывая перфиксы (что их теперь надо подставлять во время создания спр Библии) и т.д.
 
                 List<object> verseItems = null;
                 if (IsStrong || AdditionalReadParameters.Contains(ReadParameters.RemoveStrongs))
@@ -288,15 +288,7 @@ namespace BibleConfigurator.ModuleConverter
                         result.Add(verseItem);
                 }
                 verseItems = result;
-            }
-            //else
-            //{
-            //    foreach (var item in verseItems)
-            //    {
-            //        if (item is string && (string)item != " ")
-            //            result.Add(item);
-            //    }
-            //}
+            }           
 
             return result;
         }
