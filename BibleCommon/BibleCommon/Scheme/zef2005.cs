@@ -22,9 +22,9 @@ using System.ComponentModel;
     // The schema description is available at http://bgfdb.de/zefaniaxml/bml/index.html
     // was changed:
     //  -added [DefaultValue("")] to VERS.e
-    //  -removed VERS.Text property
-    //  -added [XmlText(typeof(string))] to VERS.Items property
-    //  -added [System.Xml.Serialization.XmlElementAttribute("gr", typeof(gr))] to VERS.Items property
+    //  -removed VERS.Text, STYLE.Text, GRAM.Text, SUP.Text properties
+    //  -added [XmlText(typeof(string))] to VERS.Items, STYLE.Text, GRAM.Text, SUP.Text properties
+    //  -added [System.Xml.Serialization.XmlElementAttribute("gr", typeof(gr))] to VERS.Items, STYLE.Text, GRAM.Text, SUP.Text properties
 
 
     /// <remarks/>
@@ -596,16 +596,15 @@ using System.ComponentModel;
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class GRAM
     {
-
-        private object[] itemsField;
-
-        private string[] textField;
+        private object[] itemsField;        
 
         private string strField;
 
         private string rmacField;
 
         /// <remarks/>
+        [XmlText(typeof(string))]
+        [System.Xml.Serialization.XmlElementAttribute("gr", typeof(gr))]
         [System.Xml.Serialization.XmlElementAttribute("BR", typeof(BR))]        
         [System.Xml.Serialization.XmlElementAttribute("GRAM", typeof(GRAM))]
         [System.Xml.Serialization.XmlElementAttribute("STYLE", typeof(STYLE))]
@@ -620,21 +619,7 @@ using System.ComponentModel;
             {
                 this.itemsField = value;
             }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text
-        {
-            get
-            {
-                return this.textField;
-            }
-            set
-            {
-                this.textField = value;
-            }
-        }
+        }       
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -674,10 +659,7 @@ using System.ComponentModel;
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class STYLE
     {
-
-        private object[] itemsField;
-
-        private string[] textField;
+        private object[] itemsField;        
 
         private string cssField;
 
@@ -687,10 +669,12 @@ using System.ComponentModel;
 
         private bool fsFieldSpecified;
 
-        /// <remarks/>
+        /// <remarks/>        
+        [XmlText(typeof(string))]
+        [System.Xml.Serialization.XmlElementAttribute("gr", typeof(gr))]
         [System.Xml.Serialization.XmlElementAttribute("GRAM", typeof(GRAM))]
         [System.Xml.Serialization.XmlElementAttribute("STYLE", typeof(STYLE))]
-        [System.Xml.Serialization.XmlElementAttribute("SUP", typeof(SUP))]
+        [System.Xml.Serialization.XmlElementAttribute("SUP", typeof(SUP))]        
         public object[] Items
         {
             get
@@ -701,21 +685,7 @@ using System.ComponentModel;
             {
                 this.itemsField = value;
             }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text
-        {
-            get
-            {
-                return this.textField;
-            }
-            set
-            {
-                this.textField = value;
-            }
-        }
+        }        
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
@@ -783,14 +753,13 @@ using System.ComponentModel;
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
     public partial class SUP
     {
-
-        private object[] itemsField;
-
-        private string[] textField;
+        private object[] itemsField;        
 
         private SupType artField;
 
         /// <remarks/>
+        [XmlText(typeof(string))]
+        [System.Xml.Serialization.XmlElementAttribute("gr", typeof(gr))]
         [System.Xml.Serialization.XmlElementAttribute("GRAM", typeof(GRAM))]
         [System.Xml.Serialization.XmlElementAttribute("STYLE", typeof(STYLE))]
         public object[] Items
@@ -803,21 +772,7 @@ using System.ComponentModel;
             {
                 this.itemsField = value;
             }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text
-        {
-            get
-            {
-                return this.textField;
-            }
-            set
-            {
-                this.textField = value;
-            }
-        }
+        }     
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]

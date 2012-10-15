@@ -58,6 +58,7 @@ namespace BibleConfigurator.ModuleConverter
         public string UserNotesString { get; set; }
         public string FindAllVersesString { get; set; }
         public List<string> Terms { get; set; }
+        public int PagesCount { get; set; }
 
         /// <summary>
         /// 
@@ -162,6 +163,9 @@ namespace BibleConfigurator.ModuleConverter
             var styleIndex = QuickStyleManager.AddQuickStyleDef(pageDoc, QuickStyleManager.StyleNameH3, QuickStyleManager.PredefinedStyles.H3, xnm);
             if (!string.IsNullOrEmpty(pageDisplayName))
                 AddPageTitle(pageDoc, pageDisplayName, xnm);
+
+            PagesCount++;
+
             return new TermPageInfo() { PageDocument = pageDoc, TableElement = tableEl, StyleIndex = styleIndex };
         }
 
@@ -350,7 +354,8 @@ namespace BibleConfigurator.ModuleConverter
                 Name = DictionaryName,
                 Description = DictionaryDescription,
                 Version = this.Version,                
-                Type = ModuleType.Dictionary
+                Type = ModuleType.Dictionary,
+                DictionaryPagesCount = PagesCount
             };
             module.Sections = this.DictionaryFiles.ConvertAll(df => new SectionInfo() { Name = df.SectionName });
             module.DictionarySectionGroupName = this.DictionarySectionGroupName;

@@ -16,6 +16,6 @@ namespace BibleConfigurator
         internal const string UnlockBibleSection = "-unlockBibleSection";
         internal const string ShowParallelBibleChecker = "-parallelBibleCheck";
         internal const string ShowSearchInDictionaries = "-searchInDictionaries";
-        internal const string ZefaniaXmlConverter = "-ZefaniaXmlConverter";        
+        internal const string ZefaniaXmlConverter = "-zefaniaXmlConverter";        
     }
 }

@@ -138,19 +138,7 @@ namespace BibleConfigurator.ModuleConverter
         {
             if (GenerateBibleXml)
             {
-                SaveToXmlFile(BibleInfo, Constants.BibleInfoFileName);
-
-                var booksInfo = new BibleBooksInfo() { Descr = this.ModuleShortName, Alphabet = moduleInfo.BibleStructure.Alphabet };
-                foreach (var book in moduleInfo.BibleStructure.BibleBooks)
-                {
-                    booksInfo.Books.Add(new BookInfo() 
-                                        { 
-                                            Index = book.Index, 
-                                            Name = book.Name, 
-                                            ShortNamesXMLString = string.Join(";", book.Abbreviations.ConvertAll(a => a.Value).ToArray()) 
-                                        });
-                }
-                SaveToXmlFile(booksInfo, "BibleBooksInfo.xml");
+                SaveToXmlFile(BibleInfo, Constants.BibleInfoFileName);             
             }
         }
 
@@ -256,7 +244,7 @@ namespace BibleConfigurator.ModuleConverter
         protected virtual void AddVerseRowToTable(XElement tableElement, int verseNumber, int? topVerseNumber, object[] verseItems)
         {
             if (GenerateNotebooks)
-                NotebookGenerator.AddVerseRowToTable(tableElement, BIBLEBOOK.GetFullVerseString(verseNumber, topVerseNumber, string.Concat(verseItems)), 1, Locale);
+                NotebookGenerator.AddVerseRowToTable(tableElement, BIBLEBOOK.GetFullVerseString(verseNumber, topVerseNumber, VERS.GetVerseText(verseItems)), 1, Locale);
 
             if (GenerateBibleXml)
             {
@@ -269,7 +257,7 @@ namespace BibleConfigurator.ModuleConverter
                     Errors.Add(ex);
                 }
             }
-        }
+        }        
 
         private void AddNewVerseContent(int verseNumber, int? topVerseNumber, object[] verseItems)
         {
