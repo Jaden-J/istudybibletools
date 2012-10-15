@@ -54,7 +54,7 @@ namespace BibleConfigurator.ModuleConverter
             string version, bool generateXmlOnly, params ReadParameters[] readParameters)
             : base(moduleShortName, manifestFilesFolderPath, locale, notebooksInfo, null,
                         translationDifferences, chapterSectionNameTemplate, sectionsInfo, isStrong, dictionarySectionGroupName, 
-                        strongNumbersCount, version, generateXmlOnly, false)
+                        strongNumbersCount, version, generateXmlOnly, true)
         {
             this.ModuleName = moduleName;
             this.ZefaniaXmlFilePath = zefaniaXMLFilePath;
@@ -70,12 +70,7 @@ namespace BibleConfigurator.ModuleConverter
         protected override ExternalModuleInfo ReadExternalModuleInfo()
         {
             return null;
-        }
-
-        protected override void GenerateBibleInfo(ModuleInfo moduleInfo)
-        {
-            File.Copy(ZefaniaXmlFilePath, Path.Combine(ManifestFilesFolderPath, Constants.BibleInfoFileName));
-        }
+        }        
 
         protected override void ProcessBibleBooks(ExternalModuleInfo externalModuleInfo)
         {
@@ -202,63 +197,12 @@ namespace BibleConfigurator.ModuleConverter
             if (currentTableElement == null && GenerateNotebooks)
                 throw new Exception("currentTableElement is null");
 
-            //var verseText = ShellText(verse.Value);
+            var verseItems = verse.Items;
 
-            //if (IsStrong || AdditionalReadParameters.Contains(ReadParameters.RemoveStrongs))
-            //{
-            //    verseText = ProcessStrongVerse(verseText, alphabet);
-            //}            
+            if (AdditionalReadParameters.Contains(ReadParameters.RemoveStrongs))            
+                verseItems = new object[] { verse.Value };            
 
-            AddVerseRowToTable(currentTableElement, verse.Index, verse.TopIndex, verse.Items);
-        }
-
-        private string ProcessStrongVerse(string verseText, string alphabet)
-        {
-            throw new NotImplementedException();
-            int currentBookNumber = BibleInfo.Books.Count;
-            var prefix = currentBookNumber <= OldTestamentBooksCount ? "H" : "G";
-
-            int cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, null);
-            if (cursorPosition > -1)
-            {
-                int textBreakIndex, htmlBreakIndex = -1;
-                string strongNumber = StringUtils.GetNextString(verseText, cursorPosition - 1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
-                                                                    out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
-                if (!string.IsNullOrEmpty(strongNumber))
-                {
-                    string changedText;
-
-                    if (AdditionalReadParameters.Contains(ReadParameters.RemoveStrongs))
-                    {
-                        changedText = string.Empty;
-                        cursorPosition -= 1;  // чтобы удалить пробел перед номером стронга
-                    }
-                    else
-                        changedText = prefix + strongNumber;                    
-                        
-                    verseText = string.Concat(verseText.Substring(0, cursorPosition), changedText, ProcessStrongVerse(verseText.Substring(htmlBreakIndex), alphabet));
-                }
-            }
-
-            //verseText = verseText.Replace("  ", " ");
-
-            return verseText;
-        }        
-
-        private string ShellText(string line)
-        {
-            var result = line;
-
-            if (AdditionalReadParameters.Contains(ReadParameters.RemoveHyperlinks))
-            {
-                result = StringUtils.RemoveTags(result, "<a>", "</a>");
-                result = StringUtils.RemoveTags(result, "<a ", "</a>");
-                result = result.Replace("  ", " ");
-            }            
-
-            //result = StringUtils.GetText(result, moduleInfo.Alphabet).Trim();            
-
-            return result;
-        }
+            AddVerseRowToTable(currentTableElement, verse.Index, verse.TopIndex, verseItems);
+        }       
     }
 }

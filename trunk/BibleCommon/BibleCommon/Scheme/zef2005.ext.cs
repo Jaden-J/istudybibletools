@@ -227,14 +227,21 @@ namespace BibleCommon.Scheme
         public string Value
         {
             get
-            {   
-                return string.Concat(this.Items.Where(
-                    item => 
-                        item is GRAM
-                     || item is STYLE
-                     || item is SUP
-                     || item is string).ToArray());
+            {
+                return GetVerseText(this.Items);                
             }
+        }
+
+        public static string GetVerseText(object[] items)
+        {
+            return string.Concat(items.Where(
+                                    item =>
+                                        item is GRAM
+                                     || item is STYLE
+                                     || item is SUP
+                                     || item is string).ToArray())
+                    .Trim()
+                    .Replace("  ", " ");
         }
     }
 
@@ -246,10 +253,10 @@ namespace BibleCommon.Scheme
     {
         public override string ToString()
         {
-            if (Text != null)
-                return string.Concat(Text);
+            if (Items != null)
+                return string.Concat(Items);
 
-            return null;
+            return string.Empty;
         }
     }
 
@@ -257,10 +264,10 @@ namespace BibleCommon.Scheme
     {
         public override string ToString()
         {
-            if (Text != null)
-                return string.Concat(Text);
+            if (Items != null)
+                return string.Concat(Items);            
 
-            return null;
+            return string.Empty;
         }
     }
 
@@ -268,10 +275,10 @@ namespace BibleCommon.Scheme
     {
         public override string ToString()
         {
-            if (Text != null)
-                return string.Concat(Text);
+            if (Items != null)
+                return string.Concat(Items);            
 
-            return null;
+            return string.Empty;
         }
     } 
 }
