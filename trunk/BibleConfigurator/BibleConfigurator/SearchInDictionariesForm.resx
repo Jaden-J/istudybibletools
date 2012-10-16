@@ -138,7 +138,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;cbDictionaries.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>5</value>
   </data>
   <data name="cbTerms.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 40</value>
@@ -159,10 +159,10 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;cbTerms.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>4</value>
   </data>
   <data name="btnOk.Location" type="System.Drawing.Point, System.Drawing">
-    <value>156, 222</value>
+    <value>156, 264</value>
   </data>
   <data name="btnOk.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 23</value>
@@ -183,10 +183,10 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnOk.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>3</value>
   </data>
   <data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>237, 222</value>
+    <value>237, 264</value>
   </data>
   <data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 23</value>
@@ -207,13 +207,61 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnCancel.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="lblFoundInDictionaries.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblFoundInDictionaries.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 219</value>
+  </data>
+  <data name="lblFoundInDictionaries.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 13</value>
+  </data>
+  <data name="lblFoundInDictionaries.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="lblFoundInDictionaries.Text" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="&gt;&gt;lblFoundInDictionaries.Name" xml:space="preserve">
+    <value>lblFoundInDictionaries</value>
+  </data>
+  <data name="&gt;&gt;lblFoundInDictionaries.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblFoundInDictionaries.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;lblFoundInDictionaries.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="cbFoundInDictionaries.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 235</value>
+  </data>
+  <data name="cbFoundInDictionaries.Size" type="System.Drawing.Size, System.Drawing">
+    <value>300, 21</value>
+  </data>
+  <data name="cbFoundInDictionaries.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;cbFoundInDictionaries.Name" xml:space="preserve">
+    <value>cbFoundInDictionaries</value>
+  </data>
+  <data name="&gt;&gt;cbFoundInDictionaries.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbFoundInDictionaries.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;cbFoundInDictionaries.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>324, 259</value>
+    <value>324, 299</value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

@@ -198,11 +198,11 @@ namespace TestProject
 
         private static void GenerateDictionary()
         {
-            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "goetze", "Библейский словарь Б.Геце", "Библейский словарь Б.Геце", @"{0}",
+            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза", @"{0}",
               new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Goetze\goetze.htm"), SectionName = "Геце.one", DictionaryPageDescription="Библейский словарь Б.Геце" }                    
-                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, null,
-                Path.Combine(TempFolderPath, "goetze"), "<h4>", "Пользовательские заметки", null, "ru", "2.0");
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
+                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
+                Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", "2.0");
 
             converter.Convert();
 

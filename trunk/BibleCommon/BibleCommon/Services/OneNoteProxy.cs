@@ -173,11 +173,26 @@ namespace BibleCommon.Services
         private HashSet<SimpleVersePointer> _processedVerses = new HashSet<SimpleVersePointer>();
         private List<SortPageInfo> _sortVerseLinkPagesInfo = new List<SortPageInfo>();
         //private Dictionary<VersePointer, HierarchySearchManager.HierarchySearchResult> _bibleVersesLinks = null;
+        private Dictionary<string, ModuleDictionaryInfo> _moduleDictionaries = new Dictionary<string, ModuleDictionaryInfo>();
 
 
         protected OneNoteProxy()
         {
 
+        }
+
+        public ModuleDictionaryInfo GetModuleDictionary(string moduleShortName)
+        {
+            ModuleDictionaryInfo result = null;
+            if (!_moduleDictionaries.ContainsKey(moduleShortName))
+            {
+                result = ModulesManager.GetModuleDictionaryInfo(moduleShortName);
+                _moduleDictionaries.Add(moduleShortName, result);
+            }
+            else
+                result = _moduleDictionaries[moduleShortName];
+
+            return result;
         }
 
         public List<SortPageInfo> SortVerseLinkPagesInfo
@@ -240,6 +255,7 @@ namespace BibleCommon.Services
                 return _processedVerses;
             }
         }
+
         public void AddProcessedVerse(VersePointer vp, VerseNumber? verseNumber)
         {
             var svp = vp.ToSimpleVersePointer();

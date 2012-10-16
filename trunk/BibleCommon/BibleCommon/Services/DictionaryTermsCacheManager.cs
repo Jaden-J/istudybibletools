@@ -60,17 +60,17 @@ namespace BibleCommon.Services
                 {
                     foreach (var sectionEl in sectionsEl.Take(2))  //change
                     {
-                        IndexDictionarySection(oneNoteApp, sectionEl, result, logger, xnm);
+                        IndexDictionarySection(oneNoteApp, sectionEl, result, moduleInfo.Type == ModuleType.Strong, logger, xnm);
                     }
                 }
                 else
-                    IndexDictionarySection(oneNoteApp, sectionGroupDoc.Root, result, logger, xnm);
+                    IndexDictionarySection(oneNoteApp, sectionGroupDoc.Root, result, moduleInfo.Type == ModuleType.Strong, logger, xnm);
             }
 
             return result;
         }
 
-        private static void IndexDictionarySection(Application oneNoteApp, XElement sectionEl, DictionaryCachedTermSet result, ICustomLogger logger, XmlNamespaceManager xnm)
+        private static void IndexDictionarySection(Application oneNoteApp, XElement sectionEl, DictionaryCachedTermSet result, bool isStrong, ICustomLogger logger, XmlNamespaceManager xnm)
         {
             string sectionName = (string)sectionEl.Attribute("name");
 
@@ -84,7 +84,7 @@ namespace BibleCommon.Services
                 foreach (var termTextEl in tableEl.XPathSelectElements("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
                 {
                     var termName = StringUtils.GetText(termTextEl.Value);
-                    termName = termName.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    termName = isStrong ? termName.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0] : termName;
                     var termTextElementId = (string)termTextEl.Parent.Attribute("objectID");
                     result.Add(termName, OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, termTextElementId));
 

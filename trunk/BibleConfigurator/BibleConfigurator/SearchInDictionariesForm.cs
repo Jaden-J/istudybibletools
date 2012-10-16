@@ -18,6 +18,7 @@ namespace BibleConfigurator
 
         private Dictionary<string, ModuleDictionaryInfo> _modulesTermSets;
         private Dictionary<string, ModuleInfo> _modules;
+        private Dictionary<string, List<string>> _termsInModules;
 
         protected string DictionariesNotebookId { get; set; }
 
@@ -71,11 +72,21 @@ namespace BibleConfigurator
                 {
                     if (module.Type == ModuleType.Dictionary)
                     {
-                        var dictionaryModuleInfo = ModulesManager.GetModuleDictionaryInfo(module.ShortName);
+                        var dictionaryModuleInfo = OneNoteProxy.Instance.GetModuleDictionary(module.ShortName);
                         _modulesTermSets.Add(module.ShortName, dictionaryModuleInfo);
                         _modules.Add(module.Name, module);
+
+                        _termsInModules = new Dictionary<string, List<string>>();
+
+                        foreach (var term in dictionaryModuleInfo.TermSet.Terms)
+                        {
+                            if (!_termsInModules.ContainsKey(term))
+                                _termsInModules.Add(term, new List<string>());
+
+                            _termsInModules[term].Add(module.ShortName);
+                        }
                     }
-                }
+                }                
 
                 return true;
             }
@@ -201,6 +212,11 @@ namespace BibleConfigurator
         private void DoubleClicked()
         {            
             btnOk_Click(this, null);
+        }
+
+        private void cbTerms_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            здесь: надо запускать асинхронный процесс поиска и обновлять lbl и cb в другом потоке. Либо делать это всё синхронно, просто по таймеру.
         } 
     }
 }
