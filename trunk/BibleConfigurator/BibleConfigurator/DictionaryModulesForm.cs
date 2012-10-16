@@ -48,7 +48,12 @@ namespace BibleConfigurator
 
         protected override List<string> CommitChanges(BibleCommon.Common.ModuleInfo selectedModuleInfo)
         {
-            DictionaryManager.AddDictionary(OneNoteApp, selectedModuleInfo.ShortName, FolderBrowserDialog.SelectedPath);
+            MainForm.PrepareForExternalProcessing(selectedModuleInfo.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
+            DictionaryManager.AddDictionary(OneNoteApp, selectedModuleInfo.ShortName, FolderBrowserDialog.SelectedPath, true);
+            Logger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexDictionary);
+            DictionaryTermsCacheManager.GenerateCache(OneNoteApp, selectedModuleInfo, Logger);
+            MainForm.ExternalProcessingDone(BibleCommon.Resources.Constants.AddDictionaryFinishMessage);
+
             return new List<string>();
         }
 

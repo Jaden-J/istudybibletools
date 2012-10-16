@@ -55,18 +55,19 @@ namespace BibleConfigurator
             {
                 int stagesCount = selectedModuleInfo.Type == ModuleType.Strong ? 2 : 1;
 
-                Dictionary<string, string> strongTermLinksCache = null;
-                if (selectedModuleInfo.Type == ModuleType.Strong)
-                {
-                    strongTermLinksCache = RunIndexStrong(selectedModuleInfo, 1, stagesCount);
-                }
+                Dictionary<string, string> strongTermLinksCache = null;                
 
                 int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.SupplementalBibleModules.First());
                 MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.AddParallelBibleTranslationStart);
                 string stagesString = stagesCount == 1 ? string.Empty : string.Format("{0} {1}/{1}: ", BibleCommon.Resources.Constants.Stage, stagesCount);
                 Logger.Preffix = string.Format("{0}{1}: ", stagesString, BibleCommon.Resources.Constants.AddParallelBibleTranslation); 
                 BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
-                result = SupplementalBibleManager.AddParallelBible(OneNoteApp, selectedModuleInfo.ShortName, FolderBrowserDialog.SelectedPath, strongTermLinksCache, Logger);
+                result = SupplementalBibleManager.AddParallelBible(OneNoteApp, selectedModuleInfo.ShortName, FolderBrowserDialog.SelectedPath, strongTermLinksCache, Logger,
+                    moduleInfo =>
+                    {
+                        strongTermLinksCache = RunIndexStrong(moduleInfo, 1, stagesCount);
+                    });
+
                 MainForm.ExternalProcessingDone(BibleCommon.Resources.Constants.AddParallelBibleTranslationFinishMessage);
             }
             else
@@ -98,7 +99,7 @@ namespace BibleConfigurator
 
         private Dictionary<string, string> RunIndexStrong(ModuleInfo moduleInfo, int stage, int stagesCount)
         {
-            int strongTermsCount = moduleInfo.StrongNumbersCount.GetValueOrDefault(14700);
+            int strongTermsCount = moduleInfo.DictionaryTermsCount.GetValueOrDefault(14700);
             MainForm.PrepareForExternalProcessing(strongTermsCount, 1, BibleCommon.Resources.Constants.IndexStrongDictionaryStart);
             Logger.Preffix = string.Format("{0} {1}/{2}: {3}: ", BibleCommon.Resources.Constants.Stage, stage, stagesCount, BibleCommon.Resources.Constants.IndexStrongDictionary);
             BibleCommon.Services.Logger.LogMessage(Logger.Preffix);

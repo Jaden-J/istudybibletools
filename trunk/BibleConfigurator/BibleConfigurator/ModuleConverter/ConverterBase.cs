@@ -321,7 +321,7 @@ namespace BibleConfigurator.ModuleConverter
             };
             module.Sections = this.SectionsInfo;
             module.DictionarySectionGroupName = this.DictionarySectionGroupName;
-            module.StrongNumbersCount = this.StrongNumbersCount;
+            module.DictionaryTermsCount = this.StrongNumbersCount;
 
             int index = 0;
             foreach (var bibleBookInfo in extModuleInfo.BibleBooksInfo)

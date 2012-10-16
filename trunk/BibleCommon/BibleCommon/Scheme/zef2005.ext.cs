@@ -70,12 +70,12 @@ namespace BibleCommon.Scheme
 
             if (versPointer.PartIndex.HasValue)
             {
-                var versesParts = verseContent.Value.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                var versesParts = verseContent.GetValue(true).Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
                 if (versesParts.Length > versPointer.PartIndex.Value)
                     result = versesParts[versPointer.PartIndex.Value].Trim();
             }
             else
-                result = verseContent.Value;
+                result = verseContent.GetValue(true);
 
             result = ShellVerseText(result);
 
@@ -223,23 +223,36 @@ namespace BibleCommon.Scheme
             }
         }
 
+        public string GetValue(bool includeStrongNumbers, string strongPrefix = null)
+        {
+            return GetVerseText(this.Items, includeStrongNumbers, strongPrefix);
+        }
+
         [XmlIgnore]
         public string Value
         {
             get
             {
-                return GetVerseText(this.Items);                
+                return GetValue(false);
             }
         }
 
-        public static string GetVerseText(object[] items)
+        public static string GetVerseText(object[] items, bool includeStrongNumbers = false, string strongPrefix = null)
         {
             return string.Concat(items.Where(
                                     item =>
                                         item is GRAM
                                      || item is STYLE
                                      || item is SUP
-                                     || item is string).ToArray())
+                                     || item is string)
+                                 .Select(
+                                    item =>
+                                    {
+                                        if (item is GRAM && includeStrongNumbers)                                        
+                                            return string.Format("{0} {1}", item.ToString(), ((GRAM)item).GetStrongNumbersString(strongPrefix));                                        
+                                        else
+                                            return item;
+                                    }).ToArray())
                     .Trim()
                     .Replace("  ", " ");
         }
@@ -257,6 +270,18 @@ namespace BibleCommon.Scheme
                 return string.Concat(Items);
 
             return string.Empty;
+        }
+
+        public string GetStrongNumbersString(string strongPrefix)
+        {
+            if (string.IsNullOrEmpty(strongPrefix))
+                return str;
+
+            var strongNumbers = str.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            return string.Join(" ", strongNumbers.Select(sn => 
+                string.Concat(strongPrefix, 
+                                int.Parse(sn).ToString("0000"))
+                ).ToArray());
         }
     }
 

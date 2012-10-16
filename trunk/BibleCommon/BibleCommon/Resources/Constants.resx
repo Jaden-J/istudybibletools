@@ -630,4 +630,16 @@
   <data name="Verses" xml:space="preserve">
     <value>verses</value>
   </data>
+  <data name="AddDictionaryFinishMessage" xml:space="preserve">
+    <value>Dictionary was added successfully</value>
+  </data>
+  <data name="AddDictionaryStart" xml:space="preserve">
+    <value>Adding Dictionary start</value>
+  </data>
+  <data name="IndexDictionary" xml:space="preserve">
+    <value>Indexing Dictionary</value>
+  </data>
+  <data name="IndexDictionaryStart" xml:space="preserve">
+    <value>Indexing Dictionary start</value>
+  </data>
 </root>

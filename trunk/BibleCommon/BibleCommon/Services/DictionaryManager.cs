@@ -9,12 +9,13 @@ using System.IO;
 using BibleCommon.Common;
 using System.Xml;
 using System.Threading;
+using System.Xml.XPath;
 
 namespace BibleCommon.Services
 {
     public static class DictionaryManager
     {
-        public static void AddDictionary(Application oneNoteApp, string moduleName, string notebookDirectory)
+        public static void AddDictionary(Application oneNoteApp, string moduleName, string notebookDirectory, bool waitForFinish)
         {
             if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidDictionariesNotebookId(oneNoteApp, true)))
             {
@@ -56,6 +57,7 @@ namespace BibleCommon.Services
                 while (!Directory.Exists(dictionarySectionPath))
                 {
                     Thread.Sleep(1000);
+                    System.Windows.Forms.Application.DoEvents();
                 }
 
                 foreach(var sectionInfo in moduleInfo.Sections)
@@ -73,6 +75,27 @@ namespace BibleCommon.Services
 
                 SettingsManager.Instance.DictionariesModules.Add(new DictionaryModuleInfo(moduleName, dictionarySectionId));
                 SettingsManager.Instance.Save();
+
+                if (waitForFinish)                
+                    WaitWhileDictionaryIsCreating(oneNoteApp, dictionarySectionId, moduleInfo.DictionaryPagesCount, 0);                
+            }
+        }
+
+        private static void WaitWhileDictionaryIsCreating(Application oneNoteApp, string dictionarySectionId, int? dictionaryPagesCount, int attemptsCount)
+        {
+            if (dictionaryPagesCount.HasValue)
+            {
+                if (attemptsCount < 1000)
+                {
+                    XmlNamespaceManager xnm;
+                    var xDoc = OneNoteUtils.GetHierarchyElement(oneNoteApp, dictionarySectionId, HierarchyScope.hsPages, out xnm);
+                    int pagesCount = xDoc.Root.XPathSelectElements("//one:Page", xnm).Count();
+                    if (pagesCount < dictionaryPagesCount)
+                    {
+                        Thread.Sleep(3000);
+                        WaitWhileDictionaryIsCreating(oneNoteApp, dictionarySectionId, dictionaryPagesCount, attemptsCount + 1);
+                    }
+                }
             }
         }
 
