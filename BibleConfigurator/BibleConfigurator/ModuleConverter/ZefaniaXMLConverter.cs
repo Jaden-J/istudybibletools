@@ -151,7 +151,7 @@ namespace BibleConfigurator.ModuleConverter
             };
             module.Sections = this.SectionsInfo;
             module.DictionarySectionGroupName = this.DictionarySectionGroupName;
-            module.StrongNumbersCount = this.StrongNumbersCount;
+            module.DictionaryTermsCount = this.StrongNumbersCount;
             
             foreach (var bibleBookInfo in BooksInfo.Books)
             {

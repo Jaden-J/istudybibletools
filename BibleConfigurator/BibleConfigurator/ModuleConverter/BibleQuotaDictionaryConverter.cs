@@ -58,7 +58,7 @@ namespace BibleConfigurator.ModuleConverter
         public string UserNotesString { get; set; }
         public string FindAllVersesString { get; set; }
         public List<string> Terms { get; set; }
-        public int PagesCount { get; set; }
+        public int PagesCount { get; set; }        
 
         /// <summary>
         /// 
@@ -204,13 +204,13 @@ namespace BibleConfigurator.ModuleConverter
                 termCellText = string.Format("<b>{0}</b> <a href='{1}'><span style='font-size:8.0pt'>{2}</span></a>", termName, commandUrl, FindAllVersesString);
             }
             else
-                termCellText = string.Format("<b>{0}{1}{0}</b>", BibleCommon.Consts.Constants.DictionarySearchFrameSymbol, termName);
+                termCellText = string.Format("<b>{0}</b>", termName);
 
             NotebookGenerator.AddRowToTable(pageInfo.TableElement,
                                 NotebookGenerator.GetCell(termCellText, Locale, nms),
                                 NotebookGenerator.GetCell(termTable, Locale, nms));
 
-            Terms.Add(termName);
+            Terms.Add(termName);            
 
             if (Type == StructureType.Strong)
             {
@@ -355,7 +355,8 @@ namespace BibleConfigurator.ModuleConverter
                 Description = DictionaryDescription,
                 Version = this.Version,                
                 Type = ModuleType.Dictionary,
-                DictionaryPagesCount = PagesCount
+                DictionaryPagesCount = PagesCount,
+                DictionaryTermsCount = Terms.Count
             };
             module.Sections = this.DictionaryFiles.ConvertAll(df => new SectionInfo() { Name = df.SectionName });
             module.DictionarySectionGroupName = this.DictionarySectionGroupName;

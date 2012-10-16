@@ -627,4 +627,16 @@
   <data name="Verses" xml:space="preserve">
     <value>стихи</value>
   </data>
+  <data name="AddDictionaryFinishMessage" xml:space="preserve">
+    <value>Словарь был успешно добавлен</value>
+  </data>
+  <data name="AddDictionaryStart" xml:space="preserve">
+    <value>Старт добавления словаря</value>
+  </data>
+  <data name="IndexDictionary" xml:space="preserve">
+    <value>Индексирование словаря</value>
+  </data>
+  <data name="IndexDictionaryStart" xml:space="preserve">
+    <value>Старт индексирования словаря</value>
+  </data>
 </root>

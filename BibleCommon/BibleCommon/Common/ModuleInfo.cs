@@ -97,28 +97,28 @@ namespace BibleCommon.Common
         }
 
         [XmlIgnore]
-        public int? StrongNumbersCount { get; set; }        
+        public int? DictionaryTermsCount { get; set; }        
 
         [XmlAttribute]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public int XmlStrongNumbersCount
+        public int XmlDictionaryTermsCount
         {
             get
             {
-                return StrongNumbersCount.Value;
+                return DictionaryTermsCount.Value;
             }
             set
             {
-                StrongNumbersCount = value;
+                DictionaryTermsCount = value;
             }
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public bool XmlStrongNumbersCountSpecified
+        public bool XmlDictionaryTermsCountSpecified
         {
             get
             {
-                return StrongNumbersCount.HasValue;
+                return DictionaryTermsCount.HasValue;
             }
         }
 

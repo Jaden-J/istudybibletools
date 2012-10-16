@@ -134,6 +134,7 @@ namespace BibleConfigurator
             var term = (string)cbTerms.SelectedItem;
             if (!string.IsNullOrEmpty(term))
             {
+                btnOk.Enabled = false;
                 StartTermSearhing(term);
                 Close();
             }
@@ -161,7 +162,7 @@ namespace BibleConfigurator
         private void StartTermSearhing(string term)
         {
             string xml;
-            _oneNoteApp.FindPages(DictionariesNotebookId, string.Format("{0}{1}{0}", BibleCommon.Consts.Constants.DictionarySearchFrameSymbol, term), out xml, true, true);
+            _oneNoteApp.FindPages(DictionariesNotebookId, term, out xml, true, true);
         }
       
 

@@ -50,9 +50,7 @@ namespace TestProject
             sw.Start();
 
             try
-            {                
-                //TestVerseNumber();
-
+            {
                 //SearchInNotebook();
 
                 //TestModule();
@@ -65,9 +63,9 @@ namespace TestProject
 
                 //AddColorLink();
 
-                //GenerateDictionary();
+                GenerateDictionary();
 
-                GenerateStrongDictionary();
+                //GenerateStrongDictionary();
                 
                 //SearchForEnText();
 
@@ -101,16 +99,7 @@ namespace TestProject
 
             Console.WriteLine("Finish. Elapsed time: {0}", sw.Elapsed);
             Console.ReadKey();
-        }     
-
-        private static void TestVerseNumber()
-        {
-            VerseNumber? vs1 = null;
-            VerseNumber? vs2 = null;
-            
-            
-            Console.WriteLine(vs1.HasValue);
-        }
+        }             
 
         private static void SearchInNotebook()
         {
@@ -209,11 +198,11 @@ namespace TestProject
 
         private static void GenerateDictionary()
         {
-            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза", @"'{0}' (Словарь Брокгауза)",
+            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "goetze", "Библейский словарь Б.Геце", "Библейский словарь Б.Геце", @"{0}",
               new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), SectionName = "Брокгауза.one", DictionaryPageDescription="Библейский словарь Брокгауза" }                    
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Goetze\goetze.htm"), SectionName = "Геце.one", DictionaryPageDescription="Библейский словарь Б.Геце" }                    
                 }, BibleQuotaDictionaryConverter.StructureType.Dictionary, null,
-                Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", "2.0");
+                Path.Combine(TempFolderPath, "goetze"), "<h4>", "Пользовательские заметки", null, "ru", "2.0");
 
             converter.Convert();
 

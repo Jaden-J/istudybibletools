@@ -58,7 +58,7 @@ namespace BibleCommon.Services
                 var sectionsEl = sectionGroupDoc.Root.XPathSelectElements("one:Section", xnm);
                 if (sectionsEl.Count() > 0)
                 {
-                    foreach (var sectionEl in sectionsEl)
+                    foreach (var sectionEl in sectionsEl.Take(2))  //change
                     {
                         IndexDictionarySection(oneNoteApp, sectionEl, result, logger, xnm);
                     }
