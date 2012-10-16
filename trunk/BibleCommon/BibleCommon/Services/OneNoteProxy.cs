@@ -174,11 +174,29 @@ namespace BibleCommon.Services
         private List<SortPageInfo> _sortVerseLinkPagesInfo = new List<SortPageInfo>();
         //private Dictionary<VersePointer, HierarchySearchManager.HierarchySearchResult> _bibleVersesLinks = null;
         private Dictionary<string, ModuleDictionaryInfo> _moduleDictionaries = new Dictionary<string, ModuleDictionaryInfo>();
+        private Dictionary<string, DictionaryCachedTermSet> _dictionariesTermsLinks = new Dictionary<string, DictionaryCachedTermSet>();
 
 
         protected OneNoteProxy()
         {
 
+        }
+
+        public DictionaryTermLink GetDictionaryTermLink(string term, string dictionaryModuleShortName)
+        {
+            DictionaryCachedTermSet cachedLinks = null;
+            if (!_dictionariesTermsLinks.ContainsKey(dictionaryModuleShortName))
+            {
+                cachedLinks = DictionaryTermsCacheManager.LoadCachedDictionary(dictionaryModuleShortName);
+                _dictionariesTermsLinks.Add(dictionaryModuleShortName, cachedLinks);
+            }
+            else
+                cachedLinks = _dictionariesTermsLinks[dictionaryModuleShortName];
+
+            if (!cachedLinks.ContainsKey(term))
+                throw new ArgumentException(string.Format("Can not find term '{0}' in DictionaryCachedTermSet '{1}' ", term, dictionaryModuleShortName));
+
+            return cachedLinks[term];
         }
 
         public ModuleDictionaryInfo GetModuleDictionary(string moduleShortName)

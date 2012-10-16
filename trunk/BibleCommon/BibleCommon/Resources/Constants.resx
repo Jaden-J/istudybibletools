@@ -642,4 +642,10 @@
   <data name="IndexDictionaryStart" xml:space="preserve">
     <value>Indexing Dictionary start</value>
   </data>
+  <data name="FoundInOneDictionary" xml:space="preserve">
+    <value>Found in one dictionary</value>
+  </data>
+  <data name="FoundInSeveralDictionaries" xml:space="preserve">
+    <value>Found in several dictionaries</value>
+  </data>
 </root>

@@ -114,8 +114,8 @@ namespace BibleCommon.Services
             }
         }
 
-        public static BibleParallelTranslationConnectionResult LinkSupplementalBibleWithMainBible(Application oneNoteApp, int supplementalModuleIndex, 
-            Dictionary<string, string> strongTermLinksCache, ICustomLogger logger)
+        public static BibleParallelTranslationConnectionResult LinkSupplementalBibleWithMainBible(Application oneNoteApp, int supplementalModuleIndex,
+            Dictionary<string, DictionaryTermLink> strongTermLinksCache, ICustomLogger logger)
         {
             if (supplementalModuleIndex != 0)
                 throw new NotSupportedException("supplementalModuleIndex != 0");            
@@ -171,8 +171,8 @@ namespace BibleCommon.Services
             return result;
         }
 
-        public static BibleParallelTranslationConnectionResult AddParallelBible(Application oneNoteApp, string moduleShortName, string notebookDirectory, 
-            Dictionary<string, string> strongTermLinksCache, ICustomLogger logger, Action<ModuleInfo> onStrongDictionaryCreated = null)
+        public static BibleParallelTranslationConnectionResult AddParallelBible(Application oneNoteApp, string moduleShortName, string notebookDirectory,
+             ICustomLogger logger, Func<ModuleInfo, Dictionary<string, DictionaryTermLink>> onStrongDictionaryCreated = null)
         {
             if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(oneNoteApp, true))
                 || SettingsManager.Instance.SupplementalBibleModules.Count == 0)
@@ -190,11 +190,13 @@ namespace BibleCommon.Services
                 SettingsManager.Instance.SupplementalBibleModules.First(), moduleShortName,
                 SettingsManager.Instance.NotebookId_SupplementalBible))
             {
+                Dictionary<string, DictionaryTermLink> strongTermLinksCache = null;
+
                 if (bibleTranslationManager.ParallelModuleInfo.Type == Common.ModuleType.Strong)
                 {
                     DictionaryManager.AddDictionary(oneNoteApp, moduleShortName, notebookDirectory, true);
                     if (onStrongDictionaryCreated != null)
-                        onStrongDictionaryCreated(bibleTranslationManager.ParallelModuleInfo);
+                        strongTermLinksCache = onStrongDictionaryCreated(bibleTranslationManager.ParallelModuleInfo);
                 }
 
                 UnlockSupplementalBible(oneNoteApp);
@@ -333,7 +335,7 @@ namespace BibleCommon.Services
         }      
 
         private static List<Exception> LinkdMainBibleAndSupplementalVerses(Application oneNoteApp, SimpleVersePointer baseVersePointer,
-            SimpleVerse parallelVerse, BibleIteratorArgs bibleIteratorArgs, bool isStrong, Dictionary<string, string> strongTermLinksCache, 
+            SimpleVerse parallelVerse, BibleIteratorArgs bibleIteratorArgs, bool isStrong, Dictionary<string, DictionaryTermLink> strongTermLinksCache, 
             string alphabet, XmlNamespaceManager xnm, XNamespace nms)
         {
             var result = new List<Exception>();
@@ -359,9 +361,9 @@ namespace BibleCommon.Services
                 isStrong, bibleIteratorArgs.StrongStyleIndex, strongTermLinksCache, alphabet, result, nms);                        
 
             return result;
-        }        
+        }
 
-        private static string ProcessStrongVerse(string verseText, Dictionary<string, string> strongTermLinksCache, string alphabet, List<Exception> errors)
+        private static string ProcessStrongVerse(string verseText, Dictionary<string, DictionaryTermLink> strongTermLinksCache, string alphabet, List<Exception> errors)
         {
             int cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, null);
             int temp, htmlBreakIndex = -1;
@@ -388,7 +390,7 @@ namespace BibleCommon.Services
                         if (strongTermLinksCache.ContainsKey(strongTerm))
                         {
                             string link = string.Format("<a href=\"{0}\"><span style='vertical-align:super;'>{1}</span></a>",
-                                strongTermLinksCache[strongTerm], strongTerm);
+                                strongTermLinksCache[strongTerm].Href, strongTerm);
 
                             verseText = string.Concat(verseText.Substring(0, cursorPosition - 1), link, verseText.Substring(htmlBreakIndex));
 
@@ -407,8 +409,8 @@ namespace BibleCommon.Services
 
         private static void LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(Application oneNoteApp, 
             SimpleVersePointer baseVersePointer, XElement baseVerseEl, VerseNumber? baseVerseNumber, string verseTextWithoutNumber,
-            HierarchySearchManager.HierarchySearchResult primaryBibleObjectsSearchResult, 
-            bool isStrong, int strongStyleIndex, Dictionary<string, string> strongTermLinksCache, string alphabet, List<Exception> result, XNamespace nms)
+            HierarchySearchManager.HierarchySearchResult primaryBibleObjectsSearchResult,
+            bool isStrong, int strongStyleIndex, Dictionary<string, DictionaryTermLink> strongTermLinksCache, string alphabet, List<Exception> result, XNamespace nms)
         {
             if (baseVersePointer.VerseNumber != baseVerseNumber)            
                 result.Add(

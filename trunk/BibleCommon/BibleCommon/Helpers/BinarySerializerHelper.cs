@@ -88,8 +88,7 @@ namespace BibleCommon.Helpers
             object deserializedObject = null;
 
             using(Stream memoryStream = new MemoryStream())
-            {                                                
-
+            {            
                 memoryStream.Write(binaryData, 0, binaryData.Length);
                 memoryStream.Position = 0;
                 deserializedObject = _formatter.Deserialize(memoryStream);

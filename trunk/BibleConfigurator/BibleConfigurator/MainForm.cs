@@ -49,8 +49,8 @@ namespace BibleConfigurator
         private bool _wasSearchedSectionGroupsInSingleNotebook = false;       
         
 
-        private const int LoadParametersAttemptsCount = 40;         // количество попыток загрузки параметров после команды создания записных книжек из шаблона
-        private const int LoadParametersPauseBetweenAttempts = 10;             // количество секунд ожидания между попытками загрузки параметров
+        private const int LoadParametersAttemptsCount = 80;         // количество попыток загрузки параметров после команды создания записных книжек из шаблона
+        private const int LoadParametersPauseBetweenAttempts = 5;             // количество секунд ожидания между попытками загрузки параметров
         private const string LoadParametersImageFileName = "loader.gif";
 
         protected CustomFormLogger LongProcessLogger { get; set; }
