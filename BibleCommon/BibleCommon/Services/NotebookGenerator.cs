@@ -313,7 +313,13 @@ namespace BibleCommon.Services
                                 new XAttribute("name", notebookName),
                                 new XAttribute("path", newNotebookPath));
             var notebooksEl = OneNoteUtils.GetHierarchyElement(oneNoteApp, null, HierarchyScope.hsNotebooks, out xnm);
-            notebooksEl.Root.Elements().Last().AddBeforeSelf(notebookEl);
+
+            var lastNotebook = notebooksEl.Root.XPathSelectElements("one:Notebook", xnm).LastOrDefault();
+            if (lastNotebook != null)
+                lastNotebook.AddAfterSelf(notebookEl);
+            else
+                notebooksEl.Root.AddFirst(notebookEl);
+
             oneNoteApp.UpdateHierarchy(notebooksEl.ToString(), Constants.CurrentOneNoteSchema);
 
             return OneNoteUtils.GetNotebookIdByName(oneNoteApp, notebookName, true);

@@ -33,6 +33,8 @@
             this.cbTerms = new System.Windows.Forms.ComboBox();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.lblFoundInDictionaries = new System.Windows.Forms.Label();
+            this.cbFoundInDictionaries = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // cbDictionaries
@@ -49,6 +51,7 @@
             this.cbTerms.FormattingEnabled = true;
             resources.ApplyResources(this.cbTerms, "cbTerms");
             this.cbTerms.Name = "cbTerms";
+            this.cbTerms.SelectedIndexChanged += new System.EventHandler(this.cbTerms_SelectedIndexChanged);
             this.cbTerms.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cbTerms_MouseClick);
             // 
             // btnOk
@@ -66,12 +69,26 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // lblFoundInDictionaries
+            // 
+            resources.ApplyResources(this.lblFoundInDictionaries, "lblFoundInDictionaries");
+            this.lblFoundInDictionaries.Name = "lblFoundInDictionaries";
+            // 
+            // cbFoundInDictionaries
+            // 
+            this.cbFoundInDictionaries.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbFoundInDictionaries.FormattingEnabled = true;
+            resources.ApplyResources(this.cbFoundInDictionaries, "cbFoundInDictionaries");
+            this.cbFoundInDictionaries.Name = "cbFoundInDictionaries";
+            // 
             // SearchInDictionariesForm
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.btnCancel;
             resources.ApplyResources(this, "$this");
+            this.Controls.Add(this.cbFoundInDictionaries);
+            this.Controls.Add(this.lblFoundInDictionaries);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.cbTerms);
@@ -87,6 +104,7 @@
             this.Shown += new System.EventHandler(this.SearchInDictionariesForm_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SearchInDictionariesForm_KeyDown);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -96,5 +114,7 @@
         private System.Windows.Forms.ComboBox cbTerms;
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Label lblFoundInDictionaries;
+        private System.Windows.Forms.ComboBox cbFoundInDictionaries;
     }
 }

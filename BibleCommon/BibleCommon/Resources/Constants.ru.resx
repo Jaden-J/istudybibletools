@@ -628,7 +628,7 @@
     <value>стихи</value>
   </data>
   <data name="AddDictionaryFinishMessage" xml:space="preserve">
-    <value>Словарь был успешно добавлен</value>
+    <value>Словарь успешно добавлен</value>
   </data>
   <data name="AddDictionaryStart" xml:space="preserve">
     <value>Старт добавления словаря</value>
