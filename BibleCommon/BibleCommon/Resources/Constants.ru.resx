@@ -639,4 +639,10 @@
   <data name="IndexDictionaryStart" xml:space="preserve">
     <value>Старт индексирования словаря</value>
   </data>
+  <data name="FoundInOneDictionary" xml:space="preserve">
+    <value>Найдено в одном словаре</value>
+  </data>
+  <data name="FoundInSeveralDictionaries" xml:space="preserve">
+    <value>Найдено в нескольких словарях</value>
+  </data>
 </root>

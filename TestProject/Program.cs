@@ -27,8 +27,8 @@ namespace TestProject
 {    
     class Program
     {
-        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\Holy Bible\ForGenerating\";
-        private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp";
+        private const string ForGeneratingFolderPath = @"G:\Dropbox\Holy Bible\ForGenerating\";
+        private const string TempFolderPath = @"C:\temp";
 
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
         private static Microsoft.Office.Interop.OneNote.Application OneNoteApp
@@ -181,7 +181,7 @@ namespace TestProject
 
         private static void GenerateStrongDictionary()
         {
-            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "Strong", "Словарь Стронга", "Еврейский и Греческий лексикон Стронга (с) Bob Jones University", "{0}",
+            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "Strong", "Словарь Стронга", "Еврейский и Греческий лексикон Стронга (с) Bob Jones University",
                 new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs\HEBREW.HTM"), SectionName = "Ветхий Завет.one", DictionaryPageDescription="Еврейский лексикон Стронга (с) Bob Jones University", TermPrefix = "H" },
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs\GREEK.HTM"), SectionName = "Новый Завет.one", DictionaryPageDescription="Греческий лексикон Стронга (с) Bob Jones University", TermPrefix= "G" }
@@ -198,11 +198,11 @@ namespace TestProject
 
         private static void GenerateDictionary()
         {
-            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза", @"{0}",
+            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "goetze", "Библейский словарь Б.Геце", "Библейский словарь Б.Геце", 
               new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
-                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
-                Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", "2.0");
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Goetze\goetze.htm"), DictionaryPageDescription="Библейский словарь Б.Геце" }                    
+                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Геце",
+                Path.Combine(TempFolderPath, "goetze"), "<h4>", "Пользовательские заметки", null, "ru", "2.0");
 
             converter.Convert();
 
@@ -247,7 +247,7 @@ namespace TestProject
             string defaultNotebookFolderPath;
             OneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
 
-            var result = SupplementalBibleManager.AddParallelBible(OneNoteApp, "rst", defaultNotebookFolderPath, new Dictionary<string,string>(), null);
+            var result = SupplementalBibleManager.AddParallelBible(OneNoteApp, "rst", defaultNotebookFolderPath, null);
 
             DateTime dtEnd = DateTime.Now;
 

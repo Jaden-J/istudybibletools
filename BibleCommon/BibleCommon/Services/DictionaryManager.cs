@@ -10,6 +10,7 @@ using BibleCommon.Common;
 using System.Xml;
 using System.Threading;
 using System.Xml.XPath;
+using System.Runtime.InteropServices;
 
 namespace BibleCommon.Services
 {
@@ -111,7 +112,15 @@ namespace BibleCommon.Services
                 var dictionaryModuleInfo = SettingsManager.Instance.DictionariesModules.FirstOrDefault(m => m.ModuleName == moduleName);
                 if (dictionaryModuleInfo != null)
                 {
-                    oneNoteApp.DeleteHierarchy(dictionaryModuleInfo.SectionId);
+                    try
+                    {
+                        oneNoteApp.DeleteHierarchy(dictionaryModuleInfo.SectionId);
+                    }
+                    catch (COMException ex)
+                    {
+                        if (!ex.Message.Contains("0x80042014"))   // The object does not exist.
+                            throw;
+                    }
                     SettingsManager.Instance.DictionariesModules.Remove(dictionaryModuleInfo);
                     SettingsManager.Instance.Save();
                 }

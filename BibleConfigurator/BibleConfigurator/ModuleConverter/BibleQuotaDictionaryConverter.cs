@@ -51,8 +51,7 @@ namespace BibleConfigurator.ModuleConverter
         public string TermStartString { get; set; }
         public string DictionaryModuleName { get; set; }
         public string DictionaryName { get; set; }
-        public string DictionaryDescription { get; set; }
-        public string PageTitleFormat { get; set; }
+        public string DictionaryDescription { get; set; }        
         public string DictionarySectionGroupName { get; set; }
         public List<Exception> Errors { get; set; }
         public string UserNotesString { get; set; }
@@ -73,15 +72,14 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="bqDictionaryFolder">Только один словарь может быть в папке.</param>
         /// <param name="type"></param>
         /// <param name="manifestFilesFolder"></param>
-        public BibleQuotaDictionaryConverter(Application oneNoteApp, string notebookName, string dictionaryModuleName, string dictionaryName, string dictionaryDescription, string pageTitleFormat,
+        public BibleQuotaDictionaryConverter(Application oneNoteApp, string notebookName, string dictionaryModuleName, string dictionaryName, string dictionaryDescription, 
             List<DictionaryFile> dictionaryFiles, StructureType type, string dictionarySectionGroupName, string manifestFilesFolder, string termStartString, string userNotesString, string findAllVersesString,
             string locale, string version)
         {
             this.Type = type;
             this.DictionaryModuleName = dictionaryModuleName;
             this.DictionaryName = dictionaryName;
-            this.DictionaryDescription = dictionaryDescription;
-            this.PageTitleFormat = pageTitleFormat;
+            this.DictionaryDescription = dictionaryDescription;            
             this.DictionarySectionGroupName = dictionarySectionGroupName;
             this.OneNoteApp = oneNoteApp;
             this.ManifestFilesFolder = manifestFilesFolder;
@@ -165,8 +163,6 @@ namespace BibleConfigurator.ModuleConverter
 
         private TermPageInfo AddTermsPage(string pageName, string pageDisplayName)
         {
-            pageName = string.Format(this.PageTitleFormat, pageName);
-
             XmlNamespaceManager xnm;
             var firstColumnWidthK = Type == StructureType.Strong ? 1 : 2;
             var pageDoc = NotebookGenerator.AddPage(OneNoteApp, SectionId, pageName, 1, Locale, out xnm);
@@ -196,7 +192,9 @@ namespace BibleConfigurator.ModuleConverter
                 
                 string sectionName = GetFirstTermValueChar(termName);
                 SectionId = NotebookGenerator.AddSection(OneNoteApp, SectionGroupId, sectionName);
-                DictionarySections.Add(new SectionInfo() { Name = sectionName + ".one" });
+                sectionName += ".one";
+                if (!DictionarySections.Any(s => s.Name == sectionName))
+                    DictionarySections.Add(new SectionInfo() { Name = sectionName});
 
                 pageInfo = AddTermsPage(string.Format("{0:000}-", 1), file.DictionaryPageDescription);
                 pageInfoWasChanged = true;

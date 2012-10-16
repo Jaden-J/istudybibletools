@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using BibleCommon.Common;
 using BibleCommon.Services;
 using BibleCommon.Helpers;
+using System.Threading;
 
 namespace BibleConfigurator
 {
@@ -19,6 +20,9 @@ namespace BibleConfigurator
         private Dictionary<string, ModuleDictionaryInfo> _modulesTermSets;
         private Dictionary<string, ModuleInfo> _modules;
         private Dictionary<string, List<string>> _termsInModules;
+
+
+        private static string _lastSearchedTerm = string.Empty;
 
         protected string DictionariesNotebookId { get; set; }
 
@@ -67,26 +71,24 @@ namespace BibleConfigurator
 
                 _modulesTermSets = new Dictionary<string, ModuleDictionaryInfo>();
                 _modules = new Dictionary<string, ModuleInfo>();
+                _termsInModules = new Dictionary<string, List<string>>();
 
-                foreach (var module in ModulesManager.GetModules())
+                foreach (var module in SettingsManager.Instance.DictionariesModules)
                 {
-                    if (module.Type == ModuleType.Dictionary)
+                    var moduleInfo = ModulesManager.GetModuleInfo(module.ModuleName);
+
+                    var dictionaryModuleInfo = OneNoteProxy.Instance.GetModuleDictionary(moduleInfo.ShortName);
+                    _modulesTermSets.Add(moduleInfo.ShortName, dictionaryModuleInfo);
+                    _modules.Add(moduleInfo.Name, moduleInfo);                    
+
+                    foreach (var term in dictionaryModuleInfo.TermSet.Terms)
                     {
-                        var dictionaryModuleInfo = OneNoteProxy.Instance.GetModuleDictionary(module.ShortName);
-                        _modulesTermSets.Add(module.ShortName, dictionaryModuleInfo);
-                        _modules.Add(module.Name, module);
+                        if (!_termsInModules.ContainsKey(term))
+                            _termsInModules.Add(term, new List<string>());
 
-                        _termsInModules = new Dictionary<string, List<string>>();
-
-                        foreach (var term in dictionaryModuleInfo.TermSet.Terms)
-                        {
-                            if (!_termsInModules.ContainsKey(term))
-                                _termsInModules.Add(term, new List<string>());
-
-                            _termsInModules[term].Add(module.ShortName);
-                        }
+                        _termsInModules[term].Add(moduleInfo.Name);
                     }
-                }                
+                }             
 
                 return true;
             }
@@ -109,6 +111,7 @@ namespace BibleConfigurator
         {
             try
             {
+                lblFoundInDictionaries.Text = string.Empty;
                 if (LoadData())
                 {
                     LoadDictionary(null);
@@ -117,6 +120,9 @@ namespace BibleConfigurator
                     foreach (var dName in Modules.Keys)
                         cbDictionaries.Items.Add(dName);
                     cbDictionaries.SelectedIndex = 0;
+
+                    if (!string.IsNullOrEmpty(_lastSearchedTerm))
+                        cbTerms.SelectedItem = _lastSearchedTerm;
 
                     cbTerms.Select();
                 }
@@ -143,10 +149,17 @@ namespace BibleConfigurator
         private void btnOk_Click(object sender, EventArgs e)
         {
             var term = (string)cbTerms.SelectedItem;
+
+            if (string.IsNullOrEmpty(term))
+            {
+                if (cbTerms.Items.Contains(cbTerms.Text))
+                    term = cbTerms.Text;
+            }
+
             if (!string.IsNullOrEmpty(term))
             {
                 btnOk.Enabled = false;
-                StartTermSearhing(term);
+                StartTermSearhing(term, (string)cbFoundInDictionaries.SelectedItem);
                 Close();
             }
             else
@@ -170,20 +183,32 @@ namespace BibleConfigurator
             }
         }
 
-        private void StartTermSearhing(string term)
+        private void StartTermSearhing(string term, string dictionaryName)
         {
-            string xml;
-            _oneNoteApp.FindPages(DictionariesNotebookId, term, out xml, true, true);
+            _lastSearchedTerm = term;
+            var moduleShortName = _modules[dictionaryName].ShortName;
+            var link = OneNoteProxy.Instance.GetDictionaryTermLink(term.ToLower(), moduleShortName);
+            _oneNoteApp.NavigateTo(link.PageId, link.ObjectId);
         }
-      
 
+
+        bool _firstTimeEnterWasPressed = false;
         private void SearchInDictionariesForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
-                btnOk_Click(this, null);
+            {
+                if (_firstTimeEnterWasPressed)
+                {
+                    btnOk_Click(this, null);
+                    _firstTimeEnterWasPressed = false;
+                }
+                else
+                    _firstTimeEnterWasPressed = true;
+            }
             else if (e.KeyCode == Keys.Escape)
                 Close();
         }
+      
 
         private bool _wasShown = false;
         private void SearchInDictionariesForm_Shown(object sender, EventArgs e)
@@ -216,7 +241,30 @@ namespace BibleConfigurator
 
         private void cbTerms_SelectedIndexChanged(object sender, EventArgs e)
         {
-            здесь: надо запускать асинхронный процесс поиска и обновлять lbl и cb в другом потоке. Либо делать это всё синхронно, просто по таймеру.
-        } 
+            var term = (string)cbTerms.SelectedItem;
+            if (!string.IsNullOrEmpty(term))
+            {
+                cbFoundInDictionaries.Items.Clear();
+                foreach(var name in _termsInModules[term])
+                {
+                    if (cbDictionaries.SelectedIndex == 0 || (string)cbDictionaries.SelectedItem == name)
+                        cbFoundInDictionaries.Items.Add(_modules[name].Name);
+                }
+
+                if (cbFoundInDictionaries.Items.Count == 1)
+                {
+                    lblFoundInDictionaries.Text = BibleCommon.Resources.Constants.FoundInOneDictionary;
+                    //cbFoundInDictionaries.Enabled = false;
+                }
+                else
+                {
+                    lblFoundInDictionaries.Text = BibleCommon.Resources.Constants.FoundInSeveralDictionaries;
+                    //cbFoundInDictionaries.Enabled = true;
+                }
+
+                if (cbFoundInDictionaries.Items.Count > 0)
+                    cbFoundInDictionaries.SelectedIndex = 0;
+            }
+        }            
     }
 }

@@ -216,13 +216,13 @@
     <value>12, 219</value>
   </data>
   <data name="lblFoundInDictionaries.Size" type="System.Drawing.Size, System.Drawing">
-    <value>35, 13</value>
+    <value>140, 13</value>
   </data>
   <data name="lblFoundInDictionaries.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
   </data>
   <data name="lblFoundInDictionaries.Text" xml:space="preserve">
-    <value>label1</value>
+    <value>Найдено в одном словаре</value>
   </data>
   <data name="&gt;&gt;lblFoundInDictionaries.Name" xml:space="preserve">
     <value>lblFoundInDictionaries</value>
@@ -243,7 +243,7 @@
     <value>300, 21</value>
   </data>
   <data name="cbFoundInDictionaries.TabIndex" type="System.Int32, mscorlib">
-    <value>8</value>
+    <value>3</value>
   </data>
   <data name="&gt;&gt;cbFoundInDictionaries.Name" xml:space="preserve">
     <value>cbFoundInDictionaries</value>
