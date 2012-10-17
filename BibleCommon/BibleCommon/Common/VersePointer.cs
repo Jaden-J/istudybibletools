@@ -122,6 +122,9 @@ namespace BibleCommon.Common
             if (obj == null)
                 return false;
 
+            if (!(obj is VerseNumber))
+                return false;
+
             var anotherObj = (VerseNumber)obj;
 
             return this.Verse == anotherObj.Verse 
@@ -197,6 +200,16 @@ namespace BibleCommon.Common
             }
         }
 
+        public SimpleVersePointer(string s)
+        {
+            var parts = s.Split(new char[] { ' ', ':' });
+
+        }
+
+        public SimpleVersePointer()
+        {
+        }
+
         public SimpleVersePointer(SimpleVersePointer verse)
             : this(verse.BookIndex, verse.Chapter, new VerseNumber(verse.Verse, verse.TopVerse))
         {
@@ -217,6 +230,9 @@ namespace BibleCommon.Common
         public override bool Equals(object obj)
         {
             if (obj == null)
+                return false;
+
+            if (!(obj is SimpleVersePointer))
                 return false;
 
             SimpleVersePointer other = (SimpleVersePointer)obj;            

@@ -540,13 +540,14 @@ namespace BibleCommon.Services
                 }                
             }
 
-            if (_bibleVersesLinks.ContainsKey(vp))
-                return _bibleVersesLinks[vp];
+            var vpString = vp.ToString();
+            if (_bibleVersesLinks.ContainsKey(vpString))
+                return _bibleVersesLinks[vpString];
             else
             {
-                var chapterPointer = vp.GetChapterPointer();
-                if (_bibleVersesLinks.ContainsKey(chapterPointer))
-                    return _bibleVersesLinks[chapterPointer];
+                var chapterPointerString = vp.GetChapterPointer().ToString();
+                if (_bibleVersesLinks.ContainsKey(chapterPointerString))
+                    return _bibleVersesLinks[chapterPointerString];
             }
 
             return null;

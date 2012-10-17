@@ -25,6 +25,7 @@ namespace RibbonButtons
 
         private const string BibleConfiguratorPath = "tools\\BibleConfigurator\\BibleConfigurator.exe";
         private const string BibleCommonPath = "tools\\BibleConfigurator\\BibleCommon.dll";
+        private const string SharpSerializerPath = "tools\\BibleConfigurator\\Polenter.SharpSerializer.dll";
         private const string BibleNoteLinkerPath = "tools\\BibleNoteLinker\\BibleNoteLinker.exe";
         private const string BibleVerseLinkerPath = "tools\\BibleVerseLinker\\BibleVerseLinkerEx.exe";
         private const string BibleVersePointerPath = "tools\\BibleVersePointer\\BibleVersePointer.exe";
@@ -65,6 +66,8 @@ namespace RibbonButtons
             {
                 if (args.Name == string.Format("BibleCommon, Version={0}, Culture=neutral, PublicKeyToken=null", BibleCommonVersion))
                     return AssemblyLoader.LoadAssembly(Path.Combine(Utils.GetCurrentDirectory(), BibleCommonPath));
+                else if (args.Name.Contains("Polenter.SharpSerializer,"))
+                    return AssemblyLoader.LoadAssembly(Path.Combine(Utils.GetCurrentDirectory(), SharpSerializerPath));
             }
             catch (Exception ex)
             {
