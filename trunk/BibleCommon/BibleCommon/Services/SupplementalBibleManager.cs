@@ -12,6 +12,7 @@ using BibleCommon.Common;
 using System.Xml.XPath;
 using BibleCommon.Contracts;
 using BibleCommon.Scheme;
+using BibleCommon.Handlers;
 
 namespace BibleCommon.Services
 {
@@ -185,7 +186,8 @@ namespace BibleCommon.Services
 
             BibleParallelTranslationConnectionResult result = null;
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
-            var linkResult = new List<Exception>();
+            var linkResult = new List<Exception>();            
+
             using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
                 SettingsManager.Instance.SupplementalBibleModules.First(), moduleShortName,
                 SettingsManager.Instance.NotebookId_SupplementalBible))
@@ -219,8 +221,8 @@ namespace BibleCommon.Services
                     {                        
                         if (bibleTranslationManager.ParallelModuleInfo.Type == Common.ModuleType.Strong)
                         {
-                            parallelVerse.VerseContent = ProcessStrongVerse(parallelVerse.VerseContent, strongTermLinksCache, 
-                                bibleTranslationManager.ParallelModuleInfo.BibleStructure.Alphabet, linkResult);
+                            parallelVerse.VerseContent = ProcessStrongVerse(parallelVerse.VerseContent, strongTermLinksCache,
+                                bibleTranslationManager.ParallelModuleInfo.BibleStructure.Alphabet, ref linkResult);
                         }
 
                         var cell = NotebookGenerator.AddParallelVerseRowToBibleTable(bibleIteratorArgs.TableElement, parallelVerse,
@@ -354,16 +356,17 @@ namespace BibleCommon.Services
                                     out baseVerseNumber, out verseTextWithoutNumber));            
                 
             var baseChapterPageId = (string)bibleIteratorArgs.ChapterDocument.Root.Attribute("ID");
-            var baseVerseElementId = (string)baseVerseEl.Parent.Attribute("objectID");
+            var baseVerseElementId = (string)baseVerseEl.Parent.Attribute("objectID");            
 
             LinkMainBibleVersesToSupplementalBibleVerse(oneNoteApp, baseChapterPageId, baseVerseElementId, parallelVerse, primaryBibleObjectsSearchResult, xnm, nms);
             LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(oneNoteApp, baseVersePointer, baseVerseEl, baseVerseNumber, verseTextWithoutNumber, primaryBibleObjectsSearchResult, 
-                isStrong, bibleIteratorArgs.StrongStyleIndex, strongTermLinksCache, alphabet, result, nms);                        
+                isStrong, bibleIteratorArgs.StrongStyleIndex, strongTermLinksCache, alphabet, ref result, nms);
 
             return result;
         }
 
-        private static string ProcessStrongVerse(string verseText, Dictionary<string, DictionaryTermLink> strongTermLinksCache, string alphabet, List<Exception> errors)
+        private static string ProcessStrongVerse(string verseText, Dictionary<string, DictionaryTermLink> strongTermLinksCache, 
+            string alphabet, ref List<Exception> errors)
         {
             int cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, null);
             int temp, htmlBreakIndex = -1;
@@ -389,8 +392,13 @@ namespace BibleCommon.Services
                         string strongTerm = string.Format("{0}{1:0000}", prefix, int.Parse(strongNumber));
                         if (strongTermLinksCache.ContainsKey(strongTerm))
                         {
+                            var termLink = strongTermLinksCache[strongTerm];
+
                             string link = string.Format("<a href=\"{0}\"><span style='vertical-align:super;'>{1}</span></a>",
-                                strongTermLinksCache[strongTerm].Href, strongTerm);
+                                SettingsManager.Instance.UseMiddleLinks
+                                    ? OneNoteProxy.GetNavigateToOneNoteCommandUrl(termLink.PageId, termLink.ObjectId)
+                                    : termLink.Href,
+                                strongTerm);
 
                             verseText = string.Concat(verseText.Substring(0, cursorPosition - 1), link, verseText.Substring(htmlBreakIndex));
 
@@ -410,7 +418,8 @@ namespace BibleCommon.Services
         private static void LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(Application oneNoteApp, 
             SimpleVersePointer baseVersePointer, XElement baseVerseEl, VerseNumber? baseVerseNumber, string verseTextWithoutNumber,
             HierarchySearchManager.HierarchySearchResult primaryBibleObjectsSearchResult,
-            bool isStrong, int strongStyleIndex, Dictionary<string, DictionaryTermLink> strongTermLinksCache, string alphabet, List<Exception> result, XNamespace nms)
+            bool isStrong, int strongStyleIndex, Dictionary<string, DictionaryTermLink> strongTermLinksCache, string alphabet, 
+            ref List<Exception> result, XNamespace nms)
         {
             if (baseVersePointer.VerseNumber != baseVerseNumber)            
                 result.Add(
@@ -425,7 +434,7 @@ namespace BibleCommon.Services
             if (isStrong)
             {                
                 baseVerseEl.Parent.SetAttributeValue("quickStyleIndex", strongStyleIndex);
-                versePart = ProcessStrongVerse(versePart, strongTermLinksCache, alphabet, result);
+                versePart = ProcessStrongVerse(versePart, strongTermLinksCache, alphabet, ref result);
             }
 
             baseVerseEl.Value = string.Format("{0}<span> </span>{1}", linkToParallelVerse, versePart);

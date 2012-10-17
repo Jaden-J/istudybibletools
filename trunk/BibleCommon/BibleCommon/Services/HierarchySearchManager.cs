@@ -89,7 +89,25 @@ namespace BibleCommon.Services
             public HierarchySearchResult()
             {
                 HierarchyObjectInfo = new HierarchyObjectInfo();
-            }          
+            }
+
+            public HierarchySearchResult(SimpleVersePointer simpleVersePointer, VersePointerLink versePointerLink)
+                : this()
+            {                
+                this.ResultType = simpleVersePointer.IsChapter == versePointerLink.IsChapter ? HierarchySearchResultType.Successfully : HierarchySearchResultType.PartlyFound;
+                this.HierarchyStage = versePointerLink.IsChapter ? HierarchySearchManager.HierarchyStage.Page : HierarchySearchManager.HierarchyStage.ContentPlaceholder;
+                this.HierarchyObjectInfo = new HierarchyObjectInfo()
+                {
+                    SectionId = versePointerLink.SectionId,
+                    PageId = versePointerLink.PageId,
+                    VerseInfo = new VerseObjectInfo()
+                    {
+                        ContentObjectId = versePointerLink.ObjectId,
+                        VerseNumber = versePointerLink.VerseNumber
+                    }
+                    //, AdditionalObjectsIds = здесь надо проходить по simpleVersePointer.GetAllVerses() (кроме первого) и для них доставать из OneNoteProxy.Instance.GetVersePointerLink
+                };
+            }
         }
 
         public static HierarchySearchResult GetHierarchyObject(Application oneNoteApp, string bibleNotebookId, VersePointer vp)
@@ -98,15 +116,20 @@ namespace BibleCommon.Services
         }
 
         public static HierarchySearchResult GetHierarchyObject(Application oneNoteApp, string bibleNotebookId, VersePointer vp, bool findAllVerseObjects)
-        {
+        {   
             HierarchySearchResult result = new HierarchySearchResult();
             result.ResultType = HierarchySearchResultType.NotFound;
 
             if (!vp.IsValid)
                 throw new ArgumentException("versePointer is not valid");
 
-            //if (OneNoteProxy.Instance.IsBibleVersesLinksCacheActive())
-            //    return OneNoteProxy.Instance.GetBibleVerseLink(vp);
+            if (OneNoteProxy.Instance.IsBibleVersesLinksCacheActive())
+            {
+                var simpleVersePointer = vp.ToSimpleVersePointer();
+                var versePointerLink = OneNoteProxy.Instance.GetVersePointerLink(simpleVersePointer);
+                if (versePointerLink != null)
+                    return new HierarchySearchResult(simpleVersePointer, versePointerLink);
+            }
 
             XElement targetSection = FindBibleBookSection(oneNoteApp, bibleNotebookId, vp.Book.SectionName);
             if (targetSection != null)

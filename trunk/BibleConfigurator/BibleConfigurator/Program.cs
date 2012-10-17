@@ -62,7 +62,7 @@ namespace BibleConfigurator
 
             try
             {
-                var strongProtocolHandler = new FindVersesWithStrongNumberHandler();
+                var strongProtocolHandler = new FindVersesWithStrongNumberHandler();                
 
                 if (args.Contains(Consts.ShowModuleInfo) && SettingsManager.Instance.IsConfigured(OneNoteApp))
                     result = new AboutModuleForm(SettingsManager.Instance.ModuleName, true);
@@ -73,7 +73,7 @@ namespace BibleConfigurator
                 else if (args.Contains(Consts.ShowSearchInDictionaries))
                     result = new SearchInDictionariesForm();
                 else if (args.Contains(Consts.ZefaniaXmlConverter))
-                    result = new ZefaniaXmlConverterForm();
+                    result = new ZefaniaXmlConverterForm();                
                 else if (strongProtocolHandler.IsProtocolCommand(args))
                     strongProtocolHandler.ExecuteCommand(args);
                 else if (args.Contains(Consts.ShowManual))

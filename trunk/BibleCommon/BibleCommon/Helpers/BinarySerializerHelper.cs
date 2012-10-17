@@ -4,6 +4,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Text;
 using System.Runtime.Serialization;
+using System.Reflection;
 
 namespace BibleCommon.Helpers
 {    
@@ -25,7 +26,21 @@ namespace BibleCommon.Helpers
         /// <summary>
         /// Singleton object of BinaryFormatter
         /// </summary>
-        private static BinaryFormatter _formatter = new BinaryFormatter(); 
+        private static BinaryFormatter _formatter;
+
+        public static BinaryFormatter Formatter
+        {
+            get
+            {
+                if (_formatter == null)
+                {
+                    _formatter = new BinaryFormatter();
+                    _formatter.Binder = new AllowAllAssemblyVersionsDeserializationBinder();
+                }
+
+                return _formatter;
+            }
+        }
         
         #endregion
 
@@ -48,7 +63,7 @@ namespace BibleCommon.Helpers
                     CATEGORY, "Serialize,Cannot Serialize object, Filename Is Null"));
 
             using(Stream fileStream = new FileStream(filename, FileMode.Create))
-                _formatter.Serialize(fileStream, currentObject);
+                Formatter.Serialize(fileStream, currentObject);
 
         }
         /// <summary>
@@ -66,7 +81,7 @@ namespace BibleCommon.Helpers
             
             using(Stream memoryStream = new MemoryStream())            
             {
-                _formatter.Serialize(memoryStream, currentObject);        
+                Formatter.Serialize(memoryStream, currentObject);        
                 memoryStream.Position = 0;
                 binaryData = new byte[memoryStream.Length];
                 memoryStream.Read(binaryData, 0, Convert.ToInt32(memoryStream.Length));
@@ -91,7 +106,7 @@ namespace BibleCommon.Helpers
             {            
                 memoryStream.Write(binaryData, 0, binaryData.Length);
                 memoryStream.Position = 0;
-                deserializedObject = _formatter.Deserialize(memoryStream);
+                deserializedObject = Formatter.Deserialize(memoryStream);
             }
 
             return deserializedObject;
@@ -111,10 +126,30 @@ namespace BibleCommon.Helpers
             object deserializedObject = null;
 
             using (MemoryStream ms = new MemoryStream(File.ReadAllBytes(filename)))            
-                deserializedObject = _formatter.Deserialize(ms);
+                deserializedObject = Formatter.Deserialize(ms);            
+            
 
             return deserializedObject;
         } 
         #endregion
+    }
+
+    sealed class AllowAllAssemblyVersionsDeserializationBinder : System.Runtime.Serialization.SerializationBinder
+    {
+        public override Type BindToType(string assemblyName, string typeName)
+        {
+            Type typeToDeserialize = null;
+
+            String currentAssembly = Assembly.GetExecutingAssembly().FullName;
+
+            // In this case we are always using the current assembly
+            assemblyName = currentAssembly;
+
+            // Get the type using the typeName and assemblyName
+            typeToDeserialize = Type.GetType(String.Format("{0}, {1}",
+                typeName, assemblyName));
+
+            return typeToDeserialize;
+        }
     }
 }

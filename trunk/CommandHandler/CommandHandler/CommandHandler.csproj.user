@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <StartArguments>isbtOpen:%7b36E89397-3263-4638-890F-A043A647C787%7d%7b1%7d%7bB0%7d;%7b5650569D-0CA1-4773-8FBB-3302EAD2B2C3%7d%7b30%7d%7bB0%7d</StartArguments>
+  </PropertyGroup>
+</Project>

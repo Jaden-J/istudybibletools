@@ -21,7 +21,7 @@ namespace BibleCommon.Services
             if (dictionaryModuleInfo == null)
                 throw new ArgumentException("The dictionary '{0}' is not installed", moduleShortName);
 
-            return Path.Combine(Utils.GetCacheFolderPath(), dictionaryModuleInfo.ToString()) + ".cache";
+            return Path.Combine(Utils.GetCacheFolderPath(), dictionaryModuleInfo.ToString()) + "_terms.cache";
         }
 
         public static bool CacheIsActive(string moduleShortName)
@@ -87,7 +87,9 @@ namespace BibleCommon.Services
                     termName = isStrong ? termName.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0] : termName.ToLower();
                     var termTextElementId = (string)termTextEl.Parent.Attribute("objectID");
 
-                    var href = isStrong ? OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, termTextElementId) : null;                    
+                    var href = (isStrong && !SettingsManager.Instance.UseMiddleLinks) 
+                                    ? OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, termTextElementId) 
+                                    : null;                    
 
                     if (!result.ContainsKey(termName))
                         result.Add(termName, new DictionaryTermLink() { PageId = pageId, ObjectId = termTextElementId, Href = href });

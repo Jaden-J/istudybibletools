@@ -24,7 +24,7 @@ namespace BibleCommon.Services
     {
         private static string GetCacheFilePath(string notebookId)
         {            
-            return Path.Combine(Utils.GetProgramDirectory(), notebookId) + ".cache";
+            return Path.Combine(Utils.GetCacheFolderPath(), notebookId) + "_verses.cache";
         }
 
         public static bool CacheIsActive(string notebookId)
@@ -32,13 +32,13 @@ namespace BibleCommon.Services
             return File.Exists(GetCacheFilePath(notebookId));
         }
 
-        public static Dictionary<VersePointer, HierarchySearchManager.HierarchySearchResult> LoadBibleVersesLinks(string notebookId)
+        public static VersePointersCachedLinks LoadBibleVersesLinks(string notebookId)
         {
             string filePath = GetCacheFilePath(notebookId);
             if (!File.Exists(filePath))
                 throw new NotConfiguredException(string.Format("The file with Bible verses links does not exist: '{0}'", filePath));
-
-            return (Dictionary<VersePointer, HierarchySearchManager.HierarchySearchResult>)BinarySerializerHelper.Deserialize(filePath);
+            
+            return (VersePointersCachedLinks)BinarySerializerHelper.Deserialize(filePath);
         }
 
         public static void GenerateBibleVersesLinks(Application oneNoteApp, string notebookId, string sectionGroupId, ICustomLogger logger)
@@ -48,20 +48,20 @@ namespace BibleCommon.Services
                 throw new InvalidOperationException(string.Format("The file with Bible verses links already exists: '{0}'", filePath));
 
             var xnm = OneNoteUtils.GetOneNoteXNM();
-            var result = new Dictionary<VersePointer, HierarchySearchManager.HierarchySearchResult>();
+            var result = new VersePointersCachedLinks();
 
             using (NotebookIterator iterator = new NotebookIterator(oneNoteApp))
             {
                 BibleCommon.Services.NotebookIterator.NotebookInfo notebook = iterator.GetNotebookPages(notebookId, sectionGroupId, null);
 
-                IterateContainer(oneNoteApp, notebook.RootSectionGroup, result, xnm, logger);
+                IterateContainer(oneNoteApp, notebook.RootSectionGroup, ref result, xnm, logger);
             }
 
             BinarySerializerHelper.Serialize(result, filePath);
         }
 
         private static void IterateContainer(Application oneNoteApp, NotebookIterator.SectionGroupInfo sectionGroup,
-            Dictionary<VersePointer, HierarchySearchManager.HierarchySearchResult> result, XmlNamespaceManager xnm, ICustomLogger logger)
+            ref VersePointersCachedLinks result, XmlNamespaceManager xnm, ICustomLogger logger)
         {
             foreach (NotebookIterator.SectionInfo section in sectionGroup.Sections)
             {
@@ -73,18 +73,18 @@ namespace BibleCommon.Services
 
                     BibleCommon.Services.Logger.LogMessage("page: " + page.Title);
 
-                    ProcessPage(oneNoteApp, page, section, result);
+                    ProcessPage(oneNoteApp, page, section, ref result);
                 }
             }
 
             foreach (NotebookIterator.SectionGroupInfo subSectionGroup in sectionGroup.SectionGroups)
             {
-                IterateContainer(oneNoteApp, subSectionGroup, result, xnm, logger);
+                IterateContainer(oneNoteApp, subSectionGroup, ref result, xnm, logger);
             }
         }
 
-        private static void ProcessPage(Application oneNoteApp, NotebookIterator.PageInfo page, NotebookIterator.SectionInfo section, 
-            Dictionary<VersePointer, HierarchySearchManager.HierarchySearchResult> result)
+        private static void ProcessPage(Application oneNoteApp, NotebookIterator.PageInfo page, NotebookIterator.SectionInfo section,
+            ref VersePointersCachedLinks result)
         {
             int? chapterNumber = StringUtils.GetStringFirstNumber(page.Title);
             if (!chapterNumber.HasValue)
@@ -98,46 +98,61 @@ namespace BibleCommon.Services
             if (tableEl == null)
                 return;
 
-            AddChapterPointer(oneNoteApp, pageDoc, pageId, chapterNumber, section, result, xnm);          
-
-            int temp;
+            AddChapterPointer(oneNoteApp, section, pageDoc, pageId, chapterNumber, ref result, xnm);          
+            
             foreach (var cellTextEl in tableEl.XPathSelectElements("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
             {
-                string verseNumber = StringUtils.GetNextString(cellTextEl.Value, -1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound),
-                    out temp, out temp, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
-
-                if (!string.IsNullOrEmpty(verseNumber))
-                {
-                    VersePointer versePointer = new VersePointer(section.Title, chapterNumber.Value, int.Parse(verseNumber));
-                    if (!versePointer.IsValid)
-                        versePointer = new VersePointer(section.Title.Substring(4), chapterNumber.Value, int.Parse(verseNumber));  // иначе не понимает такие строки как "09. 1-я Царств 1:1"
-
-                    if (versePointer.IsValid)
-                    {
-                        if (!result.ContainsKey(versePointer))
-                        {
-                            string textElId = (string)cellTextEl.Parent.Attribute("objectID");
-                            var verseLink = OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, textElId);
-
-                            result.Add(versePointer, new HierarchySearchManager.HierarchySearchResult()
-                            {
-                                ResultType = HierarchySearchManager.HierarchySearchResultType.Successfully,
-                                HierarchyStage = HierarchySearchManager.HierarchyStage.ContentPlaceholder,
-                                HierarchyObjectInfo = new HierarchySearchManager.HierarchyObjectInfo()
-                                    {
-                                        VerseInfo = new HierarchySearchManager.VerseObjectInfo() { ContentObjectId = textElId },
-                                        PageId = pageId,
-                                        SectionId = section.Id,
-                                    }
-                            });
-                        }                       
-                    }                  
-                }               
+                AddVersePointer(oneNoteApp, section, pageDoc, pageId, chapterNumber, cellTextEl, ref result, xnm);          
             }
         }
 
-        private static void AddChapterPointer(Application oneNoteApp, XDocument pageDoc, string pageId, int? chapterNumber, 
-            NotebookIterator.SectionInfo section, Dictionary<VersePointer, HierarchySearchManager.HierarchySearchResult> result, XmlNamespaceManager xnm)
+        private static void AddItemToResult(Application oneNoteApp, VersePointer versePointer, NotebookIterator.SectionInfo section,
+            string pageId, XElement objectEl, bool isChapter, ref VersePointersCachedLinks result)
+        {
+            if (versePointer.IsValid)
+            {
+                var commonKey = versePointer.ToSimpleVersePointer();
+
+                foreach(var key in commonKey.GetAllVerses())
+                {
+                    if (!result.ContainsKey(key))
+                    {
+                        string textElId = (string)objectEl.Parent.Attribute("objectID");
+                        string verseLink = SettingsManager.Instance.UseMiddleLinks ? null : OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, textElId);
+
+                        result.Add(key, new VersePointerLink()
+                        {
+                            SectionId = section.Id,
+                            PageId = pageId,
+                            ObjectId = textElId,
+                            Href = verseLink,
+                            VerseNumber = commonKey.VerseNumber,
+                            IsChapter = isChapter
+                        });
+                    }
+                }                
+            }       
+        }
+
+        private static void AddVersePointer(Application oneNoteApp, NotebookIterator.SectionInfo section, 
+            XDocument pageDoc, string pageId, int? chapterNumber, XElement cellTextEl,
+            ref VersePointersCachedLinks result, XmlNamespaceManager xnm)
+        {
+            var verseNumber = VerseNumber.GetFromVerseText(cellTextEl.Value);                
+
+            if (verseNumber.HasValue)
+            {
+                VersePointer versePointer = new VersePointer(section.Title, chapterNumber.Value, verseNumber.Value.Verse, verseNumber.Value.TopVerse);
+                if (!versePointer.IsValid)
+                    versePointer = new VersePointer(section.Title.Substring(4), chapterNumber.Value, verseNumber.Value.Verse, verseNumber.Value.TopVerse);  // иначе не понимает такие строки как "09. 1-я Царств 1:1"
+
+                AddItemToResult(oneNoteApp, versePointer, section, pageId, cellTextEl, false, ref result);
+            }      
+        }
+
+        private static void AddChapterPointer(Application oneNoteApp, NotebookIterator.SectionInfo section, 
+            XDocument pageDoc, string pageId, int? chapterNumber,
+            ref VersePointersCachedLinks result, XmlNamespaceManager xnm)
         {
             var pageTitleEl = NotebookGenerator.GetPageTitle(pageDoc, xnm);
             if (pageTitleEl != null)
@@ -146,26 +161,7 @@ namespace BibleCommon.Services
                 if (!chapterPointer.IsValid)
                     chapterPointer = new VersePointer(section.Title.Substring(4), chapterNumber.Value);
 
-                if (chapterPointer.IsValid)
-                {
-                    if (!result.ContainsKey(chapterPointer))
-                    {
-                        var pageTitleId = (string)pageTitleEl.Parent.Attribute("objectID");
-                        var chapterLink = OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, pageTitleId);
-
-                        result.Add(chapterPointer, new HierarchySearchManager.HierarchySearchResult()
-                        {
-                            ResultType = HierarchySearchManager.HierarchySearchResultType.Successfully,
-                            HierarchyStage = HierarchySearchManager.HierarchyStage.Page,
-                            HierarchyObjectInfo = new HierarchySearchManager.HierarchyObjectInfo()
-                            {
-                                VerseInfo = new HierarchySearchManager.VerseObjectInfo() { ContentObjectId = pageTitleId },
-                                PageId = pageId,
-                                SectionId = section.Id,
-                            }
-                        });
-                    }                  
-                }
+                AddItemToResult(oneNoteApp, chapterPointer, section, pageId, pageTitleEl, true, ref result);                
             }
         }
     }

@@ -11,6 +11,7 @@ using BibleCommon.Contracts;
 
 namespace BibleCommon.Common
 {
+    [Serializable]
     public struct VerseNumber
     {
         public int Verse;
@@ -145,7 +146,6 @@ namespace BibleCommon.Common
         {
             return !(vn1 == vn2);
         }        
-
     }
 
     [Serializable]
@@ -262,6 +262,11 @@ namespace BibleCommon.Common
             verse.SkipCheck = this.SkipCheck;
         }
 
+        public SimpleVersePointer GetChapterPointer()
+        {
+            return new SimpleVersePointer(this.BookIndex, this.Chapter);
+        }
+
         public List<SimpleVersePointer> GetAllVerses()
         {
             var result = new List<SimpleVersePointer>();
@@ -275,6 +280,8 @@ namespace BibleCommon.Common
                     return verse;
                 }));
             }
+            else
+                result.Add(this);
 
             return result;
         }
