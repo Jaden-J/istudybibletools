@@ -39,7 +39,7 @@ namespace BibleCommon.Common
     }
 
     [Serializable]
-    public class VersePointersCachedLinks : Dictionary<SimpleVersePointer, VersePointerLink>
+    public class VersePointersCachedLinks : Dictionary<string, VersePointerLink>
     {
         public VersePointersCachedLinks()
         {

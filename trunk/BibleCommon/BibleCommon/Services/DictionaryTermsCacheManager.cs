@@ -10,6 +10,7 @@ using Microsoft.Office.Interop.OneNote;
 using BibleCommon.Contracts;
 using System.Xml.XPath;
 using System.Xml.Linq;
+using Polenter.Serialization;
 
 namespace BibleCommon.Services
 {
@@ -35,7 +36,8 @@ namespace BibleCommon.Services
             if (!File.Exists(filePath))
                 throw new NotConfiguredException(string.Format("The cache file of '{0}' does not exist: '{1}'", moduleShortName, filePath));
 
-            return (DictionaryCachedTermSet)BinarySerializerHelper.Deserialize(filePath);
+            var serializer = new SharpSerializer();
+            return (DictionaryCachedTermSet)serializer.Deserialize(filePath);            
         }
 
         public static void GenerateCache(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger)
@@ -43,7 +45,8 @@ namespace BibleCommon.Services
             var cacheData = IndexDictionary(oneNoteApp, moduleInfo, logger);
             var filePath = GetCacheFilePath(moduleInfo.ShortName);
 
-            BinarySerializerHelper.Serialize(cacheData, filePath);
+            var serializer = new SharpSerializer();
+            serializer.Serialize(cacheData, filePath);
         }
 
         public static DictionaryCachedTermSet IndexDictionary(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger)

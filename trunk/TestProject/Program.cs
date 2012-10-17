@@ -142,8 +142,10 @@ namespace TestProject
         {   
             //BibleVersesLinksCacheManager.GenerateBibleVersesLinks(OneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, new ConsoleLogger());            
 
-            
-            var result = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
+            for (int i = 0; i <= 10; i++)
+            {
+                var result = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
+            }
         }
 
         private static void SearchStrongTerm(string[] args)

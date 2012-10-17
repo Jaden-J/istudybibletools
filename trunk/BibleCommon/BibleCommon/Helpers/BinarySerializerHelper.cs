@@ -125,7 +125,7 @@ namespace BibleCommon.Helpers
 
             object deserializedObject = null;
 
-            using (MemoryStream ms = new MemoryStream(File.ReadAllBytes(filename)))            
+            using (MemoryStream ms = new MemoryStream(File.ReadAllBytes(filename)))                        
                 deserializedObject = Formatter.Deserialize(ms);            
             
 

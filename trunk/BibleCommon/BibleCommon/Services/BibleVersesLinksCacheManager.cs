@@ -10,6 +10,7 @@ using BibleCommon.Common;
 using System.Xml.XPath;
 using System.Xml;
 using System.Xml.Linq;
+using Polenter.Serialization;
 
 namespace BibleCommon.Services
 {
@@ -37,8 +38,9 @@ namespace BibleCommon.Services
             string filePath = GetCacheFilePath(notebookId);
             if (!File.Exists(filePath))
                 throw new NotConfiguredException(string.Format("The file with Bible verses links does not exist: '{0}'", filePath));
-            
-            return (VersePointersCachedLinks)BinarySerializerHelper.Deserialize(filePath);
+
+            var serializer = new SharpSerializer(true);
+            return (VersePointersCachedLinks)serializer.Deserialize(filePath);
         }
 
         public static void GenerateBibleVersesLinks(Application oneNoteApp, string notebookId, string sectionGroupId, ICustomLogger logger)
@@ -57,7 +59,8 @@ namespace BibleCommon.Services
                 IterateContainer(oneNoteApp, notebook.RootSectionGroup, ref result, xnm, logger);
             }
 
-            BinarySerializerHelper.Serialize(result, filePath);
+            var serializer = new SharpSerializer(true);
+            serializer.Serialize(result, filePath);
         }
 
         private static void IterateContainer(Application oneNoteApp, NotebookIterator.SectionGroupInfo sectionGroup,
@@ -76,7 +79,7 @@ namespace BibleCommon.Services
                     ProcessPage(oneNoteApp, page, section, ref result);
                 }
             }
-
+            
             foreach (NotebookIterator.SectionGroupInfo subSectionGroup in sectionGroup.SectionGroups)
             {
                 IterateContainer(oneNoteApp, subSectionGroup, ref result, xnm, logger);
@@ -115,12 +118,13 @@ namespace BibleCommon.Services
 
                 foreach(var key in commonKey.GetAllVerses())
                 {
-                    if (!result.ContainsKey(key))
+                    var keyString = key.ToString();
+                    if (!result.ContainsKey(keyString))
                     {
                         string textElId = (string)objectEl.Parent.Attribute("objectID");
                         string verseLink = SettingsManager.Instance.UseMiddleLinks ? null : OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, textElId);
 
-                        result.Add(key, new VersePointerLink()
+                        result.Add(keyString, new VersePointerLink()
                         {
                             SectionId = section.Id,
                             PageId = pageId,
