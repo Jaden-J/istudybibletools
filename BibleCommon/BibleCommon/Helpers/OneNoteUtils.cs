@@ -173,7 +173,7 @@ namespace BibleCommon.Helpers
                 if (ex.ErrorCode == -2147213304)
                     throw new Exception(Resources.Constants.Error_UpdateError_InksOnPages);
 
-                if (ex.Message.Contains("0x80010100"))  // "System.Runtime.InteropServices.COMException (0x80010100): System call failed. (Exception from HRESULT: 0x80010100 (RPC_E_SYS_CALL_FAILED))"
+                if (ex.Message.EndsWith("0x80010100"))  // "System.Runtime.InteropServices.COMException (0x80010100): System call failed. (Exception from HRESULT: 0x80010100 (RPC_E_SYS_CALL_FAILED))"
                 {
                     Logger.LogMessage("Trace {0}: {1}", attemptCount, ex.Message);
                     if (attemptCount <= 10)

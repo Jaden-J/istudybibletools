@@ -112,7 +112,11 @@ namespace BibleCommon.Services
         public List<string> SupplementalBibleModules { get; set; }
         public string SupplementalBibleLinkName { get; set; }        
         public List<DictionaryModuleInfo> DictionariesModules { get; set; }
-        
+
+        /// <summary>
+        /// Использовать ли промежуточные ссылки, которые открываются комманд-хэндлером OpenVerseHandler
+        /// </summary>
+        public bool UseMiddleLinks { get; set; }
 
         
 
@@ -208,7 +212,7 @@ namespace BibleCommon.Services
                 && !string.IsNullOrEmpty(this.ModuleName)
                 && ModulesManager.ModuleIsCorrect(this.ModuleName, ModuleType.Bible)
                 && _useDefaultSettingsNodeExists
-                //&& BibleVersesLinksCacheManager.CacheIsActive(this.NotebookId_Bible)
+                && BibleVersesLinksCacheManager.CacheIsActive(this.NotebookId_Bible)
                 ;
 
             if (result)
@@ -356,8 +360,9 @@ namespace BibleCommon.Services
             this.PageName_RubbishNotes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameRubbishNotes,
                                                         GetResourceString(Consts.Constants.ResourceName_DefaultPageName_RubbishNotes));
             this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
-            this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, true);
-            this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);            
+            this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking);
+            this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking);
+            this.UseMiddleLinks = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseMiddleLinks, Consts.Constants.DefaultUseMiddleLinks);            
         }
 
         private void LoadGeneralSettings(XDocument xdoc)
@@ -428,7 +433,8 @@ namespace BibleCommon.Services
             this.RubbishPage_Use = Consts.Constants.DefaultRubbishPage_Use;            
             this.PageWidth_RubbishNotes = Consts.Constants.DefaultPageWidth_RubbishNotes;
             this.RubbishPage_ExpandMultiVersesLinking = Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking;
-            this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;            
+            this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
+            this.UseMiddleLinks = Consts.Constants.DefaultUseMiddleLinks;
 
             LoadDefaultLocalazibleSettings();
         }
@@ -496,7 +502,8 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_PageWidthBible, this.PageWidth_Bible),
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleModules, string.Join(";", this.SupplementalBibleModules.ToArray())),
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleLinkName, this.SupplementalBibleLinkName),                                  
-                                  new XElement(Consts.Constants.ParameterName_DictionariesModules, string.Join(";", this.DictionariesModules.ConvertAll(dm => dm.ToString()).ToArray()))
+                                  new XElement(Consts.Constants.ParameterName_DictionariesModules, string.Join(";", this.DictionariesModules.ConvertAll(dm => dm.ToString()).ToArray())),
+                                  new XElement(Consts.Constants.ParameterName_UseMiddleLinks, UseMiddleLinks)
                                   );
 
                     xDoc.Save(sw);

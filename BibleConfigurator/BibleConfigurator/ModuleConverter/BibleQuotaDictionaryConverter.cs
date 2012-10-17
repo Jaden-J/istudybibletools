@@ -64,6 +64,7 @@ namespace BibleConfigurator.ModuleConverter
         private string SectionId  { get; set; }
         private Dictionary<string, int> LetterTermsCount { get; set; }
         private List<SectionInfo> DictionarySections { get; set; }
+        private FindVersesWithStrongNumberHandler ProtocolHandler { get; set; }
 
         /// <summary>
         /// 
@@ -100,6 +101,7 @@ namespace BibleConfigurator.ModuleConverter
 
             LetterTermsCount = new Dictionary<string, int>();
             DictionarySections = new List<SectionInfo>();
+            ProtocolHandler = new FindVersesWithStrongNumberHandler();
         }        
 
         public void Convert()
@@ -214,9 +216,8 @@ namespace BibleConfigurator.ModuleConverter
 
             string termCellText;
             if (Type == StructureType.Strong)
-            {
-                var protocolHandler = new FindVersesWithStrongNumberHandler();
-                var commandUrl = protocolHandler.GetCommandUrl(termName);
+            {                
+                var commandUrl = ProtocolHandler.GetCommandUrl(termName);
                 termCellText = string.Format("<b>{0}</b> <a href='{1}'><span style='font-size:8.0pt'>{2}</span></a>", termName, commandUrl, FindAllVersesString);
             }
             else

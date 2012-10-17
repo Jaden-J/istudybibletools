@@ -57,13 +57,13 @@ namespace TestProject
 
                 //CheckHTML();
 
-                //GenerateBibleVersesLinks();
+                GenerateBibleVersesLinks();
 
                 //SearchStrongTerm(args);
 
                 //AddColorLink();
 
-                GenerateDictionary();
+                //GenerateDictionary();
 
                 //GenerateStrongDictionary();
                 
@@ -139,17 +139,11 @@ namespace TestProject
         }
 
         private static void GenerateBibleVersesLinks()
-        {
-            Stopwatch sw = new Stopwatch();
-            //sw.Start();
-            //BibleVersesLinksCacheManager.GenerateBibleVersesLinks(OneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, null);
-            //sw.Stop();
-            //Console.WriteLine(sw.Elapsed.TotalSeconds);
+        {   
+            //BibleVersesLinksCacheManager.GenerateBibleVersesLinks(OneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, new ConsoleLogger());            
 
-            sw.Start();
+            
             var result = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
-            sw.Stop();
-            Console.WriteLine(sw.Elapsed.TotalSeconds);
         }
 
         private static void SearchStrongTerm(string[] args)

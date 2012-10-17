@@ -180,8 +180,7 @@ namespace BibleVerseLinkerEx
             if (verseNumber != null)
             {
                 bool pointerValueIsVerseNumber = verseNumber.ToString() == pointerValueString;
-                string linkToCurrentObject;
-                OneNoteApp.GetHyperlinkToObject(currentPageId, currentObjectId, out linkToCurrentObject);
+                string linkToCurrentObject = OneNoteProxy.Instance.GenerateHref(OneNoteApp, currentPageId, currentObjectId);
                 newContent = string.Format("<a href=\"{0}\">:{1}</a>{2}<b>{3}</b>", linkToCurrentObject, verseNumber,
                     !pointerValueIsVerseNumber ? "&nbsp" : string.Empty,
                     !pointerValueIsVerseNumber ? pointerValueString : string.Empty);

@@ -12,6 +12,8 @@ using System.Runtime.InteropServices;
 using BibleCommon.Contracts;
 using System.Xml.XPath;
 using System.IO;
+using BibleCommon.Handlers;
+
 
 namespace BibleCommon.Services
 {
@@ -172,7 +174,7 @@ namespace BibleCommon.Services
         private Dictionary<LinkId, string> _linksCache = new Dictionary<LinkId, string>();        
         private HashSet<SimpleVersePointer> _processedVerses = new HashSet<SimpleVersePointer>();
         private List<SortPageInfo> _sortVerseLinkPagesInfo = new List<SortPageInfo>();
-        //private Dictionary<VersePointer, HierarchySearchManager.HierarchySearchResult> _bibleVersesLinks = null;
+        private VersePointersCachedLinks _bibleVersesLinks = null;
         private Dictionary<string, ModuleDictionaryInfo> _moduleDictionaries = new Dictionary<string, ModuleDictionaryInfo>();
         private Dictionary<string, DictionaryCachedTermSet> _dictionariesTermsLinks = new Dictionary<string, DictionaryCachedTermSet>();
 
@@ -231,6 +233,11 @@ namespace BibleCommon.Services
                 PageLevel = pageLevel
             });
         }
+
+        public static string GetNavigateToOneNoteCommandUrl(string pageId, string objectId)
+        {
+            return string.Format("isbtOpen:{0};{1}", pageId, objectId);
+        }
       
         public string GenerateHref(Application oneNoteApp, string pageId, string objectId)
         {
@@ -248,7 +255,11 @@ namespace BibleCommon.Services
                 //lock (_locker)
                 {
                     string link;
-                    oneNoteApp.GetHyperlinkToObject(pageId, objectId, out link);
+
+                    if (SettingsManager.Instance.UseMiddleLinks)
+                        link = GetNavigateToOneNoteCommandUrl(pageId, objectId);
+                    else
+                        oneNoteApp.GetHyperlinkToObject(pageId, objectId, out link);
                     
                     //if (!_linksCache.ContainsKey(key))   // пока в этом нет смысла
                         _linksCache.Add(key, link);
@@ -509,22 +520,36 @@ namespace BibleCommon.Services
         //    GetPageContent(oneNoteApp, pageId, true);
         //}
 
-        //public bool IsBibleVersesLinksCacheActive()
-        //{
-        //    return BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible);
-        //}
+        public bool IsBibleVersesLinksCacheActive()
+        {
+            return BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible);
+        }
 
-        //public HierarchySearchManager.HierarchySearchResult GetBibleVerseLink(VersePointer vp)
-        //{
-        //    if (_bibleVersesLinks == null)
-        //    {
-        //        _bibleVersesLinks = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);  
-        //    }
+        public VersePointerLink GetVersePointerLink(SimpleVersePointer vp)
+        {
+            if (_bibleVersesLinks == null)
+            {
+                try
+                {
+                    _bibleVersesLinks = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
+                }
+                catch (Exception ex)
+                {
+                    BibleCommon.Services.Logger.LogError(ex);
+                    throw;
+                }                
+            }
 
-        //    if (_bibleVersesLinks.ContainsKey(vp))
-        //        return _bibleVersesLinks[vp];
+            if (_bibleVersesLinks.ContainsKey(vp))
+                return _bibleVersesLinks[vp];
+            else
+            {
+                var chapterPointer = vp.GetChapterPointer();
+                if (_bibleVersesLinks.ContainsKey(chapterPointer))
+                    return _bibleVersesLinks[chapterPointer];
+            }
 
-        //    throw new ArgumentException(string.Format("Can not find verse element: '{0}'", vp));
-        //}       
+            return null;
+        }       
     }
 }

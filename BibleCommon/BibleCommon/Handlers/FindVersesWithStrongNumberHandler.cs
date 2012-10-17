@@ -47,6 +47,10 @@ namespace BibleCommon.Handlers
                         throw new Exception(BibleCommon.Resources.Constants.SearchQueryIsInvalid);
                     }
                 }
+                finally
+                {
+                    oneNoteApp = null;
+                }
             }
         }        
     }
