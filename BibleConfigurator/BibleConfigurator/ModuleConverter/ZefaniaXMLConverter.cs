@@ -51,10 +51,10 @@ namespace BibleConfigurator.ModuleConverter
             string locale, List<NotebookInfo> notebooksInfo, BibleTranslationDifferences translationDifferences, 
             string chapterSectionNameTemplate, 
             List<SectionInfo> sectionsInfo, bool isStrong, string dictionarySectionGroupName, int? strongNumbersCount,
-            string version, bool generateXmlOnly, params ReadParameters[] readParameters)
+            string version, bool generateNotebooks, params ReadParameters[] readParameters)
             : base(moduleShortName, manifestFilesFolderPath, locale, notebooksInfo, null,
                         translationDifferences, chapterSectionNameTemplate, sectionsInfo, isStrong, dictionarySectionGroupName, 
-                        strongNumbersCount, version, generateXmlOnly, true)
+                        strongNumbersCount, version, generateNotebooks, true)
         {
             this.ModuleName = moduleName;
             this.ZefaniaXmlFilePath = zefaniaXMLFilePath;

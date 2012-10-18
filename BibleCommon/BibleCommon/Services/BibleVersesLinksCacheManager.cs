@@ -33,14 +33,13 @@ namespace BibleCommon.Services
             return File.Exists(GetCacheFilePath(notebookId));
         }
 
-        public static VersePointersCachedLinks LoadBibleVersesLinks(string notebookId)
+        public static Dictionary<string, string> LoadBibleVersesLinks(string notebookId)
         {
             string filePath = GetCacheFilePath(notebookId);
             if (!File.Exists(filePath))
                 throw new NotConfiguredException(string.Format("The file with Bible verses links does not exist: '{0}'", filePath));
 
-            var serializer = new SharpSerializer(true);
-            return (VersePointersCachedLinks)serializer.Deserialize(filePath);
+            return SharpSerializationHelper.Deserialize<Dictionary<string, string>>(filePath);
         }
 
         public static void GenerateBibleVersesLinks(Application oneNoteApp, string notebookId, string sectionGroupId, ICustomLogger logger)
@@ -50,7 +49,7 @@ namespace BibleCommon.Services
                 throw new InvalidOperationException(string.Format("The file with Bible verses links already exists: '{0}'", filePath));
 
             var xnm = OneNoteUtils.GetOneNoteXNM();
-            var result = new VersePointersCachedLinks();
+            var result = new Dictionary<string, string>();
 
             using (NotebookIterator iterator = new NotebookIterator(oneNoteApp))
             {
@@ -59,12 +58,11 @@ namespace BibleCommon.Services
                 IterateContainer(oneNoteApp, notebook.RootSectionGroup, ref result, xnm, logger);
             }
 
-            var serializer = new SharpSerializer(true);
-            serializer.Serialize(result, filePath);
+            SharpSerializationHelper.Serialize(result, filePath);
         }
 
         private static void IterateContainer(Application oneNoteApp, NotebookIterator.SectionGroupInfo sectionGroup,
-            ref VersePointersCachedLinks result, XmlNamespaceManager xnm, ICustomLogger logger)
+            ref Dictionary<string, string> result, XmlNamespaceManager xnm, ICustomLogger logger)
         {
             foreach (NotebookIterator.SectionInfo section in sectionGroup.Sections)
             {
@@ -87,7 +85,7 @@ namespace BibleCommon.Services
         }
 
         private static void ProcessPage(Application oneNoteApp, NotebookIterator.PageInfo page, NotebookIterator.SectionInfo section,
-            ref VersePointersCachedLinks result)
+            ref Dictionary<string, string> result)
         {
             int? chapterNumber = StringUtils.GetStringFirstNumber(page.Title);
             if (!chapterNumber.HasValue)
@@ -110,7 +108,7 @@ namespace BibleCommon.Services
         }
 
         private static void AddItemToResult(Application oneNoteApp, VersePointer versePointer, NotebookIterator.SectionInfo section,
-            string pageId, XElement objectEl, bool isChapter, ref VersePointersCachedLinks result)
+            string pageId, XElement objectEl, bool isChapter, ref Dictionary<string, string> result)
         {
             if (versePointer.IsValid)
             {
@@ -132,7 +130,7 @@ namespace BibleCommon.Services
                             Href = verseLink,
                             VerseNumber = commonKey.VerseNumber,
                             IsChapter = isChapter
-                        });
+                        }.ToString());
                     }
                 }                
             }       
@@ -140,7 +138,7 @@ namespace BibleCommon.Services
 
         private static void AddVersePointer(Application oneNoteApp, NotebookIterator.SectionInfo section, 
             XDocument pageDoc, string pageId, int? chapterNumber, XElement cellTextEl,
-            ref VersePointersCachedLinks result, XmlNamespaceManager xnm)
+            ref Dictionary<string, string> result, XmlNamespaceManager xnm)
         {
             var verseNumber = VerseNumber.GetFromVerseText(cellTextEl.Value);                
 
@@ -156,7 +154,7 @@ namespace BibleCommon.Services
 
         private static void AddChapterPointer(Application oneNoteApp, NotebookIterator.SectionInfo section, 
             XDocument pageDoc, string pageId, int? chapterNumber,
-            ref VersePointersCachedLinks result, XmlNamespaceManager xnm)
+            ref Dictionary<string, string> result, XmlNamespaceManager xnm)
         {
             var pageTitleEl = NotebookGenerator.GetPageTitle(pageDoc, xnm);
             if (pageTitleEl != null)

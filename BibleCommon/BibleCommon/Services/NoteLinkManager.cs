@@ -618,7 +618,7 @@ namespace BibleCommon.Services
                                 textToChange = searchResult.VersePointer.OriginalVerseName;
 
                             hierarchySearchResult = localHierarchySearchResult;
-                            string link = OneNoteUtils.GenerateHref(oneNoteApp, textToChange,
+                            string link = OneNoteUtils.GetOrGenerateHref(oneNoteApp, textToChange, localHierarchySearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref,
                                 localHierarchySearchResult.HierarchyObjectInfo.PageId, localHierarchySearchResult.HierarchyObjectInfo.VerseContentObjectId);
 
                             link = string.Format("<span style='font-weight:normal'>{0}</span>", link);
@@ -648,7 +648,11 @@ namespace BibleCommon.Services
 
                 if (SettingsManager.Instance.UseDifferentPagesForEachVerse && !vp.IsChapter)  // для каждого стиха своя страница
                 {
-                    string notesPageName = GetDefaultNotesPageName(hierarchySearchResult.HierarchyObjectInfo.VerseNumber);
+                    var key = vp.ToSimpleVersePointer();
+                    string notesPageName = GetDefaultNotesPageName(
+                                hierarchySearchResult.HierarchyObjectInfo.AdditionalObjectsIds.ContainsKey(key)
+                                    ? (VerseNumber?)hierarchySearchResult.HierarchyObjectInfo.AdditionalObjectsIds[key].VerseNumber
+                                    : hierarchySearchResult.HierarchyObjectInfo.VerseNumber);
                     TryLinkVerseToNotesPage(oneNoteApp, vp, searchResult.ResultType,
                         notePageId, notePageContentObjectId, linkDepth,
                         true, SettingsManager.Instance.ExcludedVersesLinking,

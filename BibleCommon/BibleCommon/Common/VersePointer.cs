@@ -217,7 +217,7 @@ namespace BibleCommon.Common
         }
 
         public SimpleVersePointer(int bookIndex, int chapter)
-            : this(bookIndex, chapter, null)
+            : this(bookIndex, chapter, new VerseNumber())
         { }
 
         public SimpleVersePointer(int bookIndex, int chapter, VerseNumber? verse)
@@ -238,12 +238,12 @@ namespace BibleCommon.Common
             SimpleVersePointer other = (SimpleVersePointer)obj;            
             return this.BookIndex == other.BookIndex
                 && this.Chapter == other.Chapter
-                && this.VerseNumber == other.VerseNumber;
+                && this.Verse == other.Verse;
         }
 
         public override int GetHashCode()
         {
-            return this.BookIndex.GetHashCode() ^ this.Chapter.GetHashCode() ^ this.VerseNumber.GetHashCode();
+            return this.BookIndex.GetHashCode() ^ this.Chapter.GetHashCode() ^ this.Verse.GetHashCode();
         }
 
         public override string ToString()
@@ -260,7 +260,12 @@ namespace BibleCommon.Common
                 result += "(A)";
 
             return result;
-        }        
+        }
+
+        public string ToFirstVerseString()
+        {
+            return string.Format("{0} {1}:{2}", BookIndex, Chapter, VerseNumber.HasValue ? VerseNumber.Value.Verse : 0);
+        }
 
         public virtual object Clone()
         {

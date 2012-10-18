@@ -27,8 +27,8 @@ namespace TestProject
 {    
     class Program
     {
-        private const string ForGeneratingFolderPath = @"G:\Dropbox\Holy Bible\ForGenerating\";
-        private const string TempFolderPath = @"C:\temp";
+        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\Holy Bible\ForGenerating\old";
+        private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp";
 
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
         private static Microsoft.Office.Interop.OneNote.Application OneNoteApp
@@ -57,7 +57,7 @@ namespace TestProject
 
                 //CheckHTML();
 
-                GenerateBibleVersesLinks();
+                //GenerateBibleVersesLinks();
 
                 //SearchStrongTerm(args);
 
@@ -73,7 +73,7 @@ namespace TestProject
 
                 //TryToUpdateInkNodes();                
 
-                //ConvertRussianModule();
+                ConvertRussianModule();
 
                 //ConvertEnglishModule();
 
@@ -139,13 +139,13 @@ namespace TestProject
         }
 
         private static void GenerateBibleVersesLinks()
-        {   
-            //BibleVersesLinksCacheManager.GenerateBibleVersesLinks(OneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, new ConsoleLogger());            
+        {
+            BibleVersesLinksCacheManager.GenerateBibleVersesLinks(OneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, new ConsoleLogger());            
 
-            for (int i = 0; i <= 10; i++)
-            {
-                var result = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
-            }
+
+            //var result = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
+
+            //var verse = OneNoteProxy.Instance.GetVersePointerLink(new SimpleVersePointer(1, 1, new VerseNumber(100)));
         }
 
         private static void SearchStrongTerm(string[] args)
@@ -243,7 +243,7 @@ namespace TestProject
             string defaultNotebookFolderPath;
             OneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
 
-            var result = SupplementalBibleManager.AddParallelBible(OneNoteApp, "rst", defaultNotebookFolderPath, null);
+            var result = SupplementalBibleManager.AddParallelBible(OneNoteApp, "rst", null, null);
 
             DateTime dtEnd = DateTime.Now;
 

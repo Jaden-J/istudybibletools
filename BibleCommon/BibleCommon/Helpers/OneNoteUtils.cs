@@ -130,11 +130,21 @@ namespace BibleCommon.Helpers
         }
 
 
+        public static string GetOrGenerateHref(Application oneNoteApp, string title, string objectHref, string pageId, string objectId)
+        {
+            string link;
+
+            if (SettingsManager.Instance.UseMiddleLinks && !string.IsNullOrEmpty(objectHref))
+                link = objectHref;
+            else
+                link = OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, objectId);            
+
+            return string.Format("<a href=\"{0}\">{1}</a>", link, title);            
+        }
+
         public static string GenerateHref(Application oneNoteApp, string title, string pageId, string objectId)        
         {
-            string link = OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, objectId);            
-
-            return string.Format("<a href=\"{0}\">{1}</a>", link, title);
+            return GetOrGenerateHref(oneNoteApp, title, null, pageId, objectId);
         }
 
         public static XElement NormalizeTextElement(XElement textElement)  // must be one:T element

@@ -255,7 +255,6 @@ namespace BibleCommon.Services
 
         private static XElement GetNotesRow(XElement tableElement, VerseNumber? verseNumber, bool isChapter, XmlNamespaceManager xnm)
         {
-
             XElement result = !isChapter ?
                                 tableElement
                                    .XPathSelectElement(string.Format("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>:{0}<')]", verseNumber), xnm)
@@ -279,7 +278,8 @@ namespace BibleCommon.Services
                                                 new XElement(nms + "T",
                                                     new XCData(
                                                         !isChapter ?
-                                                            OneNoteUtils.GenerateHref(oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseNumber),
+                                                            OneNoteUtils.GetOrGenerateHref(oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseNumber),
+                                                                verseHierarchyObjectInfo.VerseInfo.ObjectHref,
                                                                 verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.VerseContentObjectId)
                                                             :
                                                             string.Empty
