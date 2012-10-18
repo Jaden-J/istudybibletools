@@ -43,9 +43,9 @@ namespace BibleCommon.Scheme
 
                 return new List<CHAPTER>();
             }
-        }     
+        }
 
-        public string GetVerseContent(SimpleVersePointer versPointer, out VerseNumber verseNumber, out bool isEmpty)
+        public string GetVerseContent(SimpleVersePointer versPointer, string strongPrefix, out VerseNumber verseNumber, out bool isEmpty)
         {
             isEmpty = false;
 
@@ -70,19 +70,19 @@ namespace BibleCommon.Scheme
 
             if (versPointer.PartIndex.HasValue)
             {
-                var versesParts = verseContent.GetValue(true).Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                var versesParts = verseContent.GetValue(true, strongPrefix).Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
                 if (versesParts.Length > versPointer.PartIndex.Value)
                     result = versesParts[versPointer.PartIndex.Value].Trim();
             }
             else
-                result = verseContent.GetValue(true);
+                result = verseContent.GetValue(true, strongPrefix);
 
             result = ShellVerseText(result);
 
             return result;
         }
 
-        public string GetVersesContent(List<SimpleVersePointer> verses, out int? topVerse, out bool isEmpty)
+        public string GetVersesContent(List<SimpleVersePointer> verses, string strongPrefix, out int? topVerse, out bool isEmpty)
         {
             var contents = new List<string>();
 
@@ -94,7 +94,7 @@ namespace BibleCommon.Scheme
             {
                 bool localIsEmpty;
                 VerseNumber vn;
-                contents.Add(GetVerseContent(verse, out vn, out localIsEmpty));
+                contents.Add(GetVerseContent(verse, strongPrefix, out vn, out localIsEmpty));
                 isEmpty = isEmpty && localIsEmpty;
 
                 if (vn.TopVerse.GetValueOrDefault(-2) > topVerse.GetValueOrDefault(-1))

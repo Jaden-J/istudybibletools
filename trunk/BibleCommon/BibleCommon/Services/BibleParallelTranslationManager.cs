@@ -30,6 +30,7 @@ namespace BibleCommon.Services
         public XElement TableElement { get; set; }
         public int BibleIndex { get; set; }
         public int StrongStyleIndex { get; set; }
+        public string StrongPrefix { get; set; }
     }
 
     public class BibleParallelTranslationManager : IDisposable
@@ -242,7 +243,8 @@ namespace BibleCommon.Services
                         //if (originalVersePointer != null && originalVersePointer.IsEmpty)
                         //    continue;                            
 
-                        var parallelVerse = GetParallelVerse(baseVersePointer, parallelBookContent, bookVersePointersComparisonTable, lastProcessedChapter, lastProcessedVerse);
+                        var parallelVerse = GetParallelVerse(baseVersePointer, parallelBookContent, bookVersePointersComparisonTable, bibleIteratorArgs.StrongPrefix,
+                            lastProcessedChapter, lastProcessedVerse);
 
                         if (verseAction != null)
                         {
@@ -275,7 +277,7 @@ namespace BibleCommon.Services
         }
 
         private SimpleVerse GetParallelVerse(SimpleVersePointer baseVersePointer, BIBLEBOOK parallelBookContent, 
-            SimpleVersePointersComparisonTable bookVersePointersComparisonTable, int lastProcessedChapter, int lastProcessedVerse)
+            SimpleVersePointersComparisonTable bookVersePointersComparisonTable, string strongPrefix, int lastProcessedChapter, int lastProcessedVerse)
         {
             ComparisonVersesInfo parallelVersePointers = new ComparisonVersesInfo();;
             SimpleVersePointer firstParallelVerse = null;
@@ -295,7 +297,7 @@ namespace BibleCommon.Services
                 if (parallelVersePointers.Count == 0)
                     throw new GetParallelVerseException("parallelVersePointers.Count == 0", baseVersePointer, BaseVersePointerException.Severity.Error);
                 
-                var parallelVerse = GetParallelVerses(baseVersePointer, parallelVersePointers, parallelBookContent);
+                var parallelVerse = GetParallelVerses(baseVersePointer, parallelVersePointers, parallelBookContent, strongPrefix);
                 
                 if (!parallelVerse.IsEmpty)
                     CheckVerseForWarnings(baseVersePointer, parallelBookContent, parallelVersePointers.First(), lastProcessedChapter, lastProcessedVerse);  
@@ -350,7 +352,7 @@ namespace BibleCommon.Services
         }
 
         private SimpleVerse GetParallelVerses(SimpleVersePointer baseVersePointer,
-            ComparisonVersesInfo parallelVersePointers, BIBLEBOOK parallelBookContent)
+            ComparisonVersesInfo parallelVersePointers, BIBLEBOOK parallelBookContent, string strongPrefix)
         {
             string verseContent = string.Empty;
             string verseNumberContent = string.Empty;
@@ -361,7 +363,7 @@ namespace BibleCommon.Services
 
             if (!firstParallelVerse.IsEmpty)
             {                
-                verseContent = parallelBookContent.GetVersesContent(parallelVersePointers, out topLastVerse, out isEmpty);
+                verseContent = parallelBookContent.GetVersesContent(parallelVersePointers, strongPrefix, out topLastVerse, out isEmpty);
                 if (!isEmpty)
                 {
                     verseNumberContent = GetVersesNumberString(baseVersePointer, parallelVersePointers, topLastVerse);

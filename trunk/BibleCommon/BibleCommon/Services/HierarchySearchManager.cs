@@ -24,8 +24,20 @@ namespace BibleCommon.Services
 
         public class VerseObjectInfo
         {            
-            public string ContentObjectId { get; set; }
+            public string ObjectId { get; set; }
             public VerseNumber? VerseNumber { get; set; } // Мы, например, искали Быт 4:4 (модуль IBS). А нам вернули Быт 4:3. Здесь будем хранить "3-4".
+            public string ObjectHref { get; set; }
+
+            public VerseObjectInfo()
+            {
+            }
+
+            public VerseObjectInfo(VersePointerLink link)
+            {
+                this.ObjectId = link.ObjectId;
+                this.VerseNumber = link.VerseNumber;
+                this.ObjectHref = link.Href;
+            }
 
             public bool IsVerse { get { return VerseNumber != null; } }
         }
@@ -36,11 +48,11 @@ namespace BibleCommon.Services
             public string SectionId { get; set; }
             public string PageId { get; set; }
             public VerseObjectInfo VerseInfo { get; set; }
-            public List<VerseObjectInfo> AdditionalObjectsIds { get; set; }
+            public Dictionary<SimpleVersePointer, VerseObjectInfo> AdditionalObjectsIds { get; set; }                        
             public List<VerseObjectInfo> GetAllObjectsIds()
             {
                 var result = new List<VerseObjectInfo>() { VerseInfo };
-                result.AddRange(AdditionalObjectsIds);
+                result.AddRange(AdditionalObjectsIds.Values);
                 return result;
             }
 
@@ -60,7 +72,7 @@ namespace BibleCommon.Services
                 get
                 {
                     if (VerseInfo != null)
-                        return VerseInfo.ContentObjectId;
+                        return VerseInfo.ObjectId;
 
                     return null;
                 }
@@ -68,7 +80,7 @@ namespace BibleCommon.Services
 
             public HierarchyObjectInfo()
             {
-                this.AdditionalObjectsIds = new List<VerseObjectInfo>();
+                this.AdditionalObjectsIds = new Dictionary<SimpleVersePointer, VerseObjectInfo>();
             }
         }
 
@@ -97,16 +109,18 @@ namespace BibleCommon.Services
                 this.ResultType = simpleVersePointer.IsChapter == versePointerLink.IsChapter ? HierarchySearchResultType.Successfully : HierarchySearchResultType.PartlyFound;
                 this.HierarchyStage = versePointerLink.IsChapter ? HierarchySearchManager.HierarchyStage.Page : HierarchySearchManager.HierarchyStage.ContentPlaceholder;
                 this.HierarchyObjectInfo = new HierarchyObjectInfo()
-                {
+                {                    
                     SectionId = versePointerLink.SectionId,
                     PageId = versePointerLink.PageId,
-                    VerseInfo = new VerseObjectInfo()
-                    {
-                        ContentObjectId = versePointerLink.ObjectId,
-                        VerseNumber = versePointerLink.VerseNumber
-                    }
-                    //, AdditionalObjectsIds = здесь надо проходить по simpleVersePointer.GetAllVerses() (кроме первого) и для них доставать из OneNoteProxy.Instance.GetVersePointerLink
+                    VerseInfo = new VerseObjectInfo(versePointerLink)                    
                 };
+
+                foreach (var subVp in simpleVersePointer.GetAllVerses().Skip(1))
+                {
+                    var subLink = OneNoteProxy.Instance.GetVersePointerLink(subVp);
+                    if (subLink != null)
+                        this.HierarchyObjectInfo.AdditionalObjectsIds.Add(subVp, new VerseObjectInfo(subLink));
+                }
             }
         }
 
@@ -123,13 +137,10 @@ namespace BibleCommon.Services
             if (!vp.IsValid)
                 throw new ArgumentException("versePointer is not valid");
 
-            if (OneNoteProxy.Instance.IsBibleVersesLinksCacheActive())
-            {
-                var simpleVersePointer = vp.ToSimpleVersePointer();
-                var versePointerLink = OneNoteProxy.Instance.GetVersePointerLink(simpleVersePointer);
-                if (versePointerLink != null)
-                    return new HierarchySearchResult(simpleVersePointer, versePointerLink);
-            }
+            var simpleVersePointer = vp.ToSimpleVersePointer();
+            var versePointerLink = OneNoteProxy.Instance.GetVersePointerLink(simpleVersePointer);
+            if (versePointerLink != null)
+                return new HierarchySearchResult(simpleVersePointer, versePointerLink);            
 
             XElement targetSection = FindBibleBookSection(oneNoteApp, bibleNotebookId, vp.Book.SectionName);
             if (targetSection != null)
@@ -154,7 +165,7 @@ namespace BibleCommon.Services
                     {
                         result.HierarchyObjectInfo.VerseInfo = new VerseObjectInfo()
                                                                         {
-                                                                            ContentObjectId = (string)targetVerseEl.Parent.Attribute("objectID"),
+                                                                            ObjectId = (string)targetVerseEl.Parent.Attribute("objectID"),
                                                                             VerseNumber = verseNumber
                                                                         };
                         if (!vp.IsChapter)
@@ -171,9 +182,10 @@ namespace BibleCommon.Services
                                     var additionalVeseEl = FindVerse(pageContent.Content, vp.IsChapter, additionalVerse.Verse.Value, pageContent.Xnm, 
                                         out additionalVerseNumber, out additionalVerseTextWithoutNumber);
                                     if (additionalVeseEl != null)
-                                        result.HierarchyObjectInfo.AdditionalObjectsIds.Add(new VerseObjectInfo()
+                                        result.HierarchyObjectInfo.AdditionalObjectsIds.Add(additionalVerse.ToSimpleVersePointer(),
+                                                                                            new VerseObjectInfo()
                                                                                                 {
-                                                                                                    ContentObjectId = (string)additionalVeseEl.Parent.Attribute("objectID"),
+                                                                                                    ObjectId = (string)additionalVeseEl.Parent.Attribute("objectID"),
                                                                                                     VerseNumber = additionalVerseNumber
                                                                                                 });
                                     else

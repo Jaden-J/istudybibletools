@@ -66,6 +66,7 @@
     <Compile Include="Handlers\FindVersesWithStrongNumberHandler.cs" />
     <Compile Include="Helpers\CollectionHelper.cs" />
     <Compile Include="Helpers\FormExtensions.cs" />
+    <Compile Include="Helpers\SharpSerializationHelper.cs" />
     <Compile Include="Helpers\StringUtils.cs" />
     <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Resources\Constants.ru.Designer.cs">

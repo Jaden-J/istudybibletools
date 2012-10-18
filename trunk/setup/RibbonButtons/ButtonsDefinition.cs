@@ -64,9 +64,9 @@ namespace RibbonButtons
         {
             try
             {
-                if (args.Name == string.Format("BibleCommon, Version={0}, Culture=neutral, PublicKeyToken=null", BibleCommonVersion))
+                if (args.Name.Contains("BibleCommon, Version="))
                     return AssemblyLoader.LoadAssembly(Path.Combine(Utils.GetCurrentDirectory(), BibleCommonPath));
-                else if (args.Name.Contains("Polenter.SharpSerializer,"))
+                else if (args.Name.Contains("Polenter.SharpSerializer, Version="))
                     return AssemblyLoader.LoadAssembly(Path.Combine(Utils.GetCurrentDirectory(), SharpSerializerPath));
             }
             catch (Exception ex)
@@ -75,29 +75,7 @@ namespace RibbonButtons
             }
 
             return null;
-        }
-
-        private Version _bibleCommonVersion;
-        private Version BibleCommonVersion
-        {
-            get
-            {
-                try
-                {
-                    if (_bibleCommonVersion == null)
-                    {
-                        var assembly = AssemblyLoader.LoadAssembly(Path.Combine(Utils.GetCurrentDirectory(), BibleCommonPath));
-                        _bibleCommonVersion = assembly.GetName().Version;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-
-                return _bibleCommonVersion;
-            }
-        }
+        }  
 
 		public void OnDisconnection(Extensibility.ext_DisconnectMode disconnectMode, ref System.Array custom)
 		{

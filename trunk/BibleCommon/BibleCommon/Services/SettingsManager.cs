@@ -460,7 +460,8 @@ namespace BibleCommon.Services
                 && this.RubbishPage_Use == Consts.Constants.DefaultRubbishPage_Use                
                 && this.PageWidth_RubbishNotes == Consts.Constants.DefaultPageWidth_RubbishNotes
                 && this.RubbishPage_ExpandMultiVersesLinking == Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking
-                && this.RubbishPage_ExcludedVersesLinking == Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
+                && this.RubbishPage_ExcludedVersesLinking == Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking
+                && this.UseMiddleLinks == Consts.Constants.DefaultUseMiddleLinks;
         }
 
         public void Save()

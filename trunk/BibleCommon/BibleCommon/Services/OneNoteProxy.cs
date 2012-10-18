@@ -174,9 +174,9 @@ namespace BibleCommon.Services
         private Dictionary<LinkId, string> _linksCache = new Dictionary<LinkId, string>();        
         private HashSet<SimpleVersePointer> _processedVerses = new HashSet<SimpleVersePointer>();
         private List<SortPageInfo> _sortVerseLinkPagesInfo = new List<SortPageInfo>();
-        private VersePointersCachedLinks _bibleVersesLinks = null;
+        private Dictionary<string, string> _bibleVersesLinks = null;
         private Dictionary<string, ModuleDictionaryInfo> _moduleDictionaries = new Dictionary<string, ModuleDictionaryInfo>();
-        private Dictionary<string, DictionaryCachedTermSet> _dictionariesTermsLinks = new Dictionary<string, DictionaryCachedTermSet>();
+        private Dictionary<string, Dictionary<string, string>> _dictionariesTermsLinks = new Dictionary<string, Dictionary<string, string>>();
 
 
         protected OneNoteProxy()
@@ -186,7 +186,7 @@ namespace BibleCommon.Services
 
         public DictionaryTermLink GetDictionaryTermLink(string term, string dictionaryModuleShortName)
         {
-            DictionaryCachedTermSet cachedLinks = null;
+            Dictionary<string, string> cachedLinks = null;
             if (!_dictionariesTermsLinks.ContainsKey(dictionaryModuleShortName))
             {
                 cachedLinks = DictionaryTermsCacheManager.LoadCachedDictionary(dictionaryModuleShortName);
@@ -198,7 +198,7 @@ namespace BibleCommon.Services
             if (!cachedLinks.ContainsKey(term))
                 throw new ArgumentException(string.Format("Can not find term '{0}' in DictionaryCachedTermSet '{1}' ", term, dictionaryModuleShortName));
 
-            return cachedLinks[term];
+            return new DictionaryTermLink(cachedLinks[term]);
         }
 
         public ModuleDictionaryInfo GetModuleDictionary(string moduleShortName)
@@ -520,10 +520,10 @@ namespace BibleCommon.Services
         //    GetPageContent(oneNoteApp, pageId, true);
         //}
 
-        public bool IsBibleVersesLinksCacheActive()
-        {
-            return BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible);
-        }
+        //public bool IsBibleVersesLinksCacheActive()
+        //{
+        //    return BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible);
+        //}
 
         public VersePointerLink GetVersePointerLink(SimpleVersePointer vp)
         {
@@ -540,14 +540,14 @@ namespace BibleCommon.Services
                 }                
             }
 
-            var vpString = vp.ToString();
+            var vpString = vp.ToFirstVerseString();
             if (_bibleVersesLinks.ContainsKey(vpString))
-                return _bibleVersesLinks[vpString];
+                return new VersePointerLink(_bibleVersesLinks[vpString]);
             else
             {
-                var chapterPointerString = vp.GetChapterPointer().ToString();
+                var chapterPointerString = vp.GetChapterPointer().ToFirstVerseString();
                 if (_bibleVersesLinks.ContainsKey(chapterPointerString))
-                    return _bibleVersesLinks[chapterPointerString];
+                    return new VersePointerLink(_bibleVersesLinks[chapterPointerString]);
             }
 
             return null;

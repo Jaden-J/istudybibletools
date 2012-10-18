@@ -30,14 +30,13 @@ namespace BibleCommon.Services
             return File.Exists(GetCacheFilePath(moduleShortName));
         }
 
-        public static DictionaryCachedTermSet LoadCachedDictionary(string moduleShortName)
+        public static Dictionary<string, string> LoadCachedDictionary(string moduleShortName)
         {
             string filePath = GetCacheFilePath(moduleShortName);
             if (!File.Exists(filePath))
                 throw new NotConfiguredException(string.Format("The cache file of '{0}' does not exist: '{1}'", moduleShortName, filePath));
 
-            var serializer = new SharpSerializer();
-            return (DictionaryCachedTermSet)serializer.Deserialize(filePath);            
+            return SharpSerializationHelper.Deserialize<Dictionary<string, string>>(filePath);
         }
 
         public static void GenerateCache(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger)
@@ -45,13 +44,12 @@ namespace BibleCommon.Services
             var cacheData = IndexDictionary(oneNoteApp, moduleInfo, logger);
             var filePath = GetCacheFilePath(moduleInfo.ShortName);
 
-            var serializer = new SharpSerializer();
-            serializer.Serialize(cacheData, filePath);
+            SharpSerializationHelper.Serialize(cacheData, filePath);
         }
 
-        public static DictionaryCachedTermSet IndexDictionary(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger)
+        public static Dictionary<string, string> IndexDictionary(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger)
         {
-            var result = new DictionaryCachedTermSet();
+            var result = new Dictionary<string, string>();
             var dictionaryModuleInfo = SettingsManager.Instance.DictionariesModules.FirstOrDefault(m => m.ModuleName == moduleInfo.ShortName);
             if (dictionaryModuleInfo != null)
             {
@@ -63,17 +61,17 @@ namespace BibleCommon.Services
                 {
                     foreach (var sectionEl in sectionsEl)
                     {
-                        IndexDictionarySection(oneNoteApp, sectionEl, result, moduleInfo.Type == ModuleType.Strong, logger, xnm);
+                        IndexDictionarySection(oneNoteApp, sectionEl, ref result, moduleInfo.Type == ModuleType.Strong, logger, xnm);
                     }
                 }
                 else
-                    IndexDictionarySection(oneNoteApp, sectionGroupDoc.Root, result, moduleInfo.Type == ModuleType.Strong, logger, xnm);
+                    IndexDictionarySection(oneNoteApp, sectionGroupDoc.Root, ref result, moduleInfo.Type == ModuleType.Strong, logger, xnm);
             }
 
             return result;
         }
 
-        private static void IndexDictionarySection(Application oneNoteApp, XElement sectionEl, DictionaryCachedTermSet result, bool isStrong, ICustomLogger logger, XmlNamespaceManager xnm)
+        private static void IndexDictionarySection(Application oneNoteApp, XElement sectionEl, ref Dictionary<string, string> result, bool isStrong, ICustomLogger logger, XmlNamespaceManager xnm)
         {
             string sectionName = (string)sectionEl.Attribute("name");
 
@@ -95,7 +93,7 @@ namespace BibleCommon.Services
                                     : null;                    
 
                     if (!result.ContainsKey(termName))
-                        result.Add(termName, new DictionaryTermLink() { PageId = pageId, ObjectId = termTextElementId, Href = href });
+                        result.Add(termName, new DictionaryTermLink() { PageId = pageId, ObjectId = termTextElementId, Href = href }.ToString());
 
                     if (logger != null)
                         logger.LogMessage(termName);
