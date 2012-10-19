@@ -269,7 +269,7 @@ namespace BibleCommon.Services
 
                 if (needToUpdateChapter && chapterAction != null && chapterWasModified.GetValueOrDefault(true) == true && !ForCheckOnly)
                 {
-                    SupplementalBibleManager.UpdatePageXmlForStrongDictionary(chapterPageDoc);
+                    SupplementalBibleManager.UpdatePageXmlForStrongBible(chapterPageDoc);
 
                     _oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
                 }

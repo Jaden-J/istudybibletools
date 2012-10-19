@@ -1118,8 +1118,25 @@ namespace BibleConfigurator
             bool canContinue = true;
             if (File.Exists(destFilePath))
             {
-                if (MessageBox.Show(BibleCommon.Resources.Constants.ModuleWithSameNameAlreadyExists, BibleCommon.Resources.Constants.Warning,
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.No)
+                var needToAsk = false;
+
+                ModuleInfo existingModule = null;
+
+                try
+                {
+                    existingModule = ModulesManager.GetModuleInfo(moduleName);
+                    if (existingModule.Version.CompareTo(preModuleInfo.Version) > 0) 
+                        needToAsk = true;
+                }
+                catch (InvalidModuleException)
+                { }                   
+
+                
+                if (needToAsk 
+                    && existingModule != null 
+                    && MessageBox.Show(string.Format(BibleCommon.Resources.Constants.ModuleWithSameNameAlreadyExists, existingModule.Version, preModuleInfo.Version),
+                                                BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, 
+                                                MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.No)
                 {
                     canContinue = false;
                     moduleWasAdded = false;
@@ -1145,6 +1162,8 @@ namespace BibleConfigurator
                     }
                     
                     ReLoadModulesInfo();
+
+                    FormLogger.LogMessage(BibleCommon.Resources.Constants.ModuleSuccessfullyUploaded);
 
                     return needToReload;                    
                 }
@@ -1222,15 +1241,16 @@ namespace BibleConfigurator
                 }
 
                 top += 30;
-            }             
+            }
 
-            if (modules.Count() > 0)
-            {
-                if (top > MaxPnModulesHeight)
-                    top = MaxPnModulesHeight;
+            if (top > MaxPnModulesHeight)
+                top = MaxPnModulesHeight;
 
-                pnModules.Height = top;
-                btnUploadModule.Top = top + 50;
+            pnModules.Height = top;
+            btnUploadModule.Top = top + 50;
+
+            if (modules.Where(m => m.Type == ModuleType.Bible).Count() > 0)
+            {                
                 btnUploadModule.Left = 31 + pnModules.Left;
 
                 btnSupplementalBibleManagement.Top = btnUploadModule.Top;
@@ -1246,9 +1266,13 @@ namespace BibleConfigurator
             }
             else
             {
-                btnUploadModule.Top = lblMustUploadModule.Top + 20;
-                btnUploadModule.Left = (this.Width - btnUploadModule.Width) / 2;
-                
+                if (modules.Count == 0)
+                    btnUploadModule.Top = 125;
+
+                lblMustUploadModule.Top = btnUploadModule.Top - 20;                
+
+                btnUploadModule.Left = (this.Width - btnUploadModule.Width) / 2;                
+
                 lblMustUploadModule.Visible = true;
                 lblMustSelectModule.Visible = false;
                 btnSupplementalBibleManagement.Visible = false;
@@ -1290,8 +1314,12 @@ namespace BibleConfigurator
 
         private void LoadModuleToUI(ModuleInfo moduleInfo, int top)
         {   
+            var maximumModuleNameLength = 45;
             Label lblName = new Label();
-            lblName.Text = moduleInfo.Name;
+            if (moduleInfo.Name.Length > maximumModuleNameLength)
+                lblName.Text = moduleInfo.Name.Substring(0, maximumModuleNameLength) + "...";
+            else
+                lblName.Text = moduleInfo.Name;
             lblName.Top = top + 5;
             lblName.Left = 15;
             lblName.Width = 310;
@@ -1442,7 +1470,12 @@ namespace BibleConfigurator
             var btn = (Button)sender;
             var moduleName = (string)btn.Tag;
 
-            DeleteModuleWithConfirm(moduleName);
+            if (SettingsManager.Instance.SupplementalBibleModules.Contains(moduleName))
+                FormLogger.LogError(BibleCommon.Resources.Constants.ModuleCannotBeDeleted_SupplementalBibleModule);
+            else if (SettingsManager.Instance.DictionariesModules.Any(m => m.ModuleName == moduleName))
+                FormLogger.LogError(BibleCommon.Resources.Constants.ModuleCannotBeDeleted_DictionaryModule);
+            else
+                DeleteModuleWithConfirm(moduleName);
         }
 
         private bool DeleteModuleWithConfirm(string moduleName)

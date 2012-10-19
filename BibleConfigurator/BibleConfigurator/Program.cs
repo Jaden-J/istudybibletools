@@ -145,6 +145,7 @@ namespace BibleConfigurator
                             {
                                 ((MainForm)result).ShowModulesTabAtStartUp = true;
                                 ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
+                                FormLogger.LogMessage(BibleCommon.Resources.Constants.ModuleSuccessfullyUploaded);
                             }
                             else
                                 result = null;

@@ -259,7 +259,7 @@
     <value>При загрузке модуля '{0}' произошла ошибка: {1}</value>
   </data>
   <data name="ModuleWithSameNameAlreadyExists" xml:space="preserve">
-    <value>Модуль с таким именем уже существует. Существующий модуль будет заменён загружаемым. Продолжить?</value>
+    <value>Модуль с таким именем уже существует. Версия существующего модуля - {0}. Версия загружаемого модуля - {1}. Существующий модуль будет заменён загружаемым. Продолжить?</value>
   </data>
   <data name="NotebookIteratorCanNotFindSectionGroup" xml:space="preserve">
     <value>Не удаётся найти группу секций</value>
@@ -553,7 +553,7 @@
     <value>Старт индексирования Библии</value>
   </data>
   <data name="UseSupplementalBible" xml:space="preserve">
-    <value>Использовать справочную Библию</value>
+    <value>Использовать записную книжку "Справочная Библия"</value>
   </data>
   <data name="PagesCountLessThanMin" xml:space="preserve">
     <value>Количество страниц в '{0}' не соответствует ожиданиям: ожидалось минимум {1}, найдено {2}.</value>
@@ -598,16 +598,16 @@
     <value>Закрыть записную книжку словарей?</value>
   </data>
   <data name="DeleteThisModuleFromDictionariesNotebookQuestion" xml:space="preserve">
-    <value>Удалить данный модуль из записной книжки словарей?</value>
+    <value>Удалить данный модуль из записной книжки "Cловари"?</value>
   </data>
   <data name="DeleteThisModuleFromSupplementalBibleQuestion" xml:space="preserve">
-    <value>Удалить данный модуль из Справочной Библии?</value>
+    <value>Удалить данный модуль из записной книжки "Справочная Библия"?</value>
   </data>
   <data name="SupportedModulesNotFound" xml:space="preserve">
     <value>Не найдено ни одного поддерживаемого модуля. Пожалуйста, добавьте необходимые модули в программу.</value>
   </data>
   <data name="UseDictionaries" xml:space="preserve">
-    <value>Использовать словари</value>
+    <value>Использовать записную книжку "Словари"</value>
   </data>
   <data name="AdditionalModules" xml:space="preserve">
     <value>Дополнительные модули</value>
@@ -644,5 +644,17 @@
   </data>
   <data name="FoundInSeveralDictionaries" xml:space="preserve">
     <value>Найдено в нескольких словарях</value>
+  </data>
+  <data name="DictionaryNotebookCannotBeClosed" xml:space="preserve">
+    <value>Записная книжка "Словари" не может быть закрыта, если установлен словарь Стронга. Для начала необходимо удалить модуль со словарём Стронга из справочной Библии с помощью формы управления справочной Библией.</value>
+  </data>
+  <data name="ModuleCannotBeDeleted_DictionaryModule" xml:space="preserve">
+    <value>Данный модуль не может быть удалён, так как он используется в записной книжке "Словари".</value>
+  </data>
+  <data name="ModuleCannotBeDeleted_SupplementalBibleModule" xml:space="preserve">
+    <value>Данный модуль не может быть удалён, так как он используется в записной книжке "Справочная Библия".</value>
+  </data>
+  <data name="ModuleSuccessfullyUploaded" xml:space="preserve">
+    <value>Модуль успешно загружен</value>
   </data>
 </root>

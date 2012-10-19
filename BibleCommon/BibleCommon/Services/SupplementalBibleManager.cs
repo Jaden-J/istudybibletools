@@ -299,7 +299,7 @@ namespace BibleCommon.Services
         }       
 
         // перед обновлением страницы Библии со стронгом нужно обязательно вызывать этот метод, иначе все ссылки станут синими
-        public static void UpdatePageXmlForStrongDictionary(XDocument pageDoc)
+        public static void UpdatePageXmlForStrongBible(XDocument pageDoc)
         {
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
             var styleEl = pageDoc.Root.XPathSelectElement(string.Format("one:QuickStyleDef[@name='{0}']", QuickStyleManager.StyleForStrongName), xnm);

@@ -17,7 +17,7 @@ namespace BibleConfigurator
     {
         protected Microsoft.Office.Interop.OneNote.Application OneNoteApp { get; set; }
         protected MainForm MainForm { get; set; }
-        protected List<ModuleInfo> Modules { get; set; }
+        protected List<ModuleInfo> Modules { get; set; }        
         protected Button BtnAddNewModule { get; set; }
         protected int TopControlsPosition { get; set; }
         protected ComboBox CbModule { get; set; }
@@ -30,20 +30,22 @@ namespace BibleConfigurator
 
         protected abstract string GetFormText();
         protected abstract string GetChkUseText();
-        protected abstract string GetValidSupplementalNotebookId();
-        protected abstract void ClearSupplementalModulesInSettingsStorage();
+        protected abstract string GetValidSupplementalNotebookId();        
         protected abstract int GetSupplementalModulesCount();
         protected abstract bool SupplementalModuleAlreadyAdded(string moduleShortName);
         protected abstract string FormDescription { get; }
         protected abstract List<string> CommitChanges(ModuleInfo selectedModuleInfo);
         protected abstract string GetSupplementalModuleName(int index);
-        protected abstract bool CanModuleBeDeleted(int index);
+        protected abstract bool CanModuleBeDeleted(ModuleInfo moduleInfo, int index);
+        protected abstract bool CanModuleBeAdded(ModuleInfo moduleInfo);
         protected abstract void DeleteModule(string moduleShortName);
         protected abstract string CloseSupplementalNotebookQuestionText { get; }
         protected abstract void CloseSupplementalNotebook();
         protected abstract bool IsModuleSupported(ModuleInfo moduleInfo);
         protected abstract bool IsBaseModuleSupported();
         protected abstract string DeleteModuleQuestionText { get; }
+        protected abstract bool CanNotebookBeClosed();
+        protected abstract string NotebookCannotBeClosedText { get; }
 
         protected FolderBrowserDialog FolderBrowserDialog
         {
@@ -106,10 +108,7 @@ namespace BibleConfigurator
         {
             WasLoaded = false;  
 
-            bool supplementalNotebookIsInUse = !string.IsNullOrEmpty(GetValidSupplementalNotebookId());
-
-            if (!supplementalNotebookIsInUse)
-                ClearSupplementalModulesInSettingsStorage(); // на всякий пожарный
+            bool supplementalNotebookIsInUse = !string.IsNullOrEmpty(GetValidSupplementalNotebookId());            
 
             if (chkUseSupplementalBible.Checked != supplementalNotebookIsInUse)
                 chkUseSupplementalBible.Checked = supplementalNotebookIsInUse;
@@ -259,7 +258,7 @@ namespace BibleConfigurator
 
             Button btnDel = new Button();
             btnDel.Image = BibleConfigurator.Properties.Resources.del;
-            btnDel.Enabled = CanModuleBeDeleted(index);
+            btnDel.Enabled = CanModuleBeDeleted(moduleInfo, index);
             FormExtensions.SetToolTip(btnDel, BibleCommon.Resources.Constants.DeleteThisModule);
             btnDel.Tag = moduleInfo.ShortName;
             btnDel.Top = top;
@@ -329,7 +328,7 @@ namespace BibleConfigurator
             {
                 if (!string.IsNullOrEmpty(sbNotebookId))
                 {
-                    if (MessageBox.Show(CloseSupplementalNotebookQuestionText,
+                    if (CanNotebookBeClosed() && MessageBox.Show(CloseSupplementalNotebookQuestionText,
                         BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                         == System.Windows.Forms.DialogResult.Yes)
                     {
@@ -339,6 +338,9 @@ namespace BibleConfigurator
                     {
                         chkUseSupplementalBible.Checked = !chkUseSupplementalBible.Checked;
                         needToUpdate = false;
+
+                        if (!CanNotebookBeClosed())
+                            FormLogger.LogError(NotebookCannotBeClosedText);
                     }
                 }
             }
@@ -383,7 +385,7 @@ namespace BibleConfigurator
 
             foreach (var moduleInfo in Modules)
             {
-                if (IsModuleSupported(moduleInfo) && !SupplementalModuleAlreadyAdded(moduleInfo.ShortName))
+                if (IsModuleSupported(moduleInfo) && !SupplementalModuleAlreadyAdded(moduleInfo.ShortName) && CanModuleBeAdded(moduleInfo))
                     CbModule.Items.Add(moduleInfo);
             }
 

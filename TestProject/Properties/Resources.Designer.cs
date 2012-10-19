@@ -62,6 +62,23 @@ namespace TestProject.Properties {
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на &lt;?xml version=&quot;1.0&quot;?&gt;
+        ///&lt;ID descr=&quot;rst&quot; alphabet=&quot;АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя&quot;&gt;
+        ///  &lt;BOOK bnumber=&quot;1&quot; bshort=&quot;быт;бт;бытие&quot;&gt;Бытие&lt;/BOOK&gt;
+        ///  &lt;BOOK bnumber=&quot;2&quot; bshort=&quot;исх;исход&quot;&gt;Исход&lt;/BOOK&gt;
+        ///  &lt;BOOK bnumber=&quot;3&quot; bshort=&quot;лев;лв;левит&quot;&gt;Левит&lt;/BOOK&gt;
+        ///  &lt;BOOK bnumber=&quot;4&quot; bshort=&quot;чис;чс;числ;числа&quot;&gt;Числа&lt;/BOOK&gt;
+        ///  &lt;BOOK bnumber=&quot;5&quot; bshort=&quot;втор;вт;втрзк;второзаконие&quot;&gt;Второзаконие&lt;/BOOK&gt;
+        ///  &lt;BOOK bnumber=&quot;6&quot; bshort=&quot;нав;иисус;навин&quot;&gt;Иисус Навин&lt;/BOOK&gt;
+        ///  &lt;BOOK bnumber=&quot;7&quot; bshor [остаток строки не уместился]&quot;;.
+        /// </summary>
+        internal static string BibleBooskInfo_rst {
+            get {
+                return ResourceManager.GetString("BibleBooskInfo_rst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на &lt;?xml version=&quot;1.0&quot;?&gt;
         ///&lt;BibleTranslationDifferences xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; PartVersesAlphabet=&quot;абвгд&quot;&gt;
         ///  &lt;BookDifferences BookIndex=&quot;3&quot;&gt;
         ///    &lt;Difference BaseVerses=&quot;14:55-56&quot; ParallelVerses=&quot;14:55&quot; /&gt;

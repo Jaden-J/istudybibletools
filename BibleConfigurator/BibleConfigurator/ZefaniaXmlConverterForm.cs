@@ -26,7 +26,7 @@ namespace BibleConfigurator
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            var converter = new ZefaniaXmlConverter("Современный перевод (Всемирный Библейский Переводческий Центр)", "ibs", 
+            var converter = new ZefaniaXmlConverter("ibs", "Современный перевод (Всемирный Библейский Переводческий Центр)", 
                 @"C:\Users\lux_demko\Desktop\temp\Dropbox\Holy Bible\ForGenerating\ibs\bible.xml",
                 Utils.LoadFromXmlString<BibleBooksInfo>(Properties.Resources.BibleBooskInfo_rst), @"c:\temp\ibsZefania", "ru",
                 PredefinedNotebooksInfo.Russian, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.BibleTranslationDifferences_rst),  // вот эти тоже часто надо менять                

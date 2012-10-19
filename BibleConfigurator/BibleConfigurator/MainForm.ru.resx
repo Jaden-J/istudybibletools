@@ -366,19 +366,19 @@
     <value>Скачать дополнительные модули на сайте</value>
   </data>
   <data name="lblMustSelectModule.Size" type="System.Drawing.Size, System.Drawing">
-    <value>234, 13</value>
+    <value>285, 13</value>
   </data>
   <data name="lblMustSelectModule.Text" xml:space="preserve">
-    <value>Необходимо выбрать используемый модуль</value>
+    <value>Необходимо выбрать используемый основной модуль</value>
   </data>
   <data name="lblMustUploadModule.Location" type="System.Drawing.Point, System.Drawing">
-    <value>221, 105</value>
+    <value>197, 105</value>
   </data>
   <data name="lblMustUploadModule.Size" type="System.Drawing.Size, System.Drawing">
-    <value>229, 13</value>
+    <value>280, 13</value>
   </data>
   <data name="lblMustUploadModule.Text" xml:space="preserve">
-    <value>Необходимо добавить хотя бы один модуль</value>
+    <value>Необходимо добавить хотя бы один основной модуль</value>
   </data>
   <data name="btnUploadModule.Location" type="System.Drawing.Point, System.Drawing">
     <value>46, 131</value>
