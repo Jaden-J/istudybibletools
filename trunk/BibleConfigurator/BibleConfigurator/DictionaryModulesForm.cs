@@ -16,12 +16,7 @@ namespace BibleConfigurator
         protected override string GetValidSupplementalNotebookId()
         {
             return SettingsManager.Instance.GetValidDictionariesNotebookId(OneNoteApp, true);
-        }
-
-        protected override void ClearSupplementalModulesInSettingsStorage()
-        {
-            SettingsManager.Instance.DictionariesModules.Clear();
-        }
+        }        
 
         protected override int GetSupplementalModulesCount()
         {
@@ -62,9 +57,9 @@ namespace BibleConfigurator
             return SettingsManager.Instance.DictionariesModules[index].ModuleName;
         }
 
-        protected override bool CanModuleBeDeleted(int index)
+        protected override bool CanModuleBeDeleted(ModuleInfo moduleInfo, int index)
         {
-            return true;
+            return moduleInfo.Type == ModuleType.Dictionary;
         }
 
         protected override void DeleteModule(string moduleShortName)
@@ -85,7 +80,7 @@ namespace BibleConfigurator
         protected override bool IsModuleSupported(BibleCommon.Common.ModuleInfo moduleInfo)
         {
             return BibleParallelTranslationManager.IsModuleSupported(moduleInfo) 
-                && moduleInfo.Type == ModuleType.Dictionary;
+                && (moduleInfo.Type == ModuleType.Dictionary || moduleInfo.Type == ModuleType.Strong);
         }
 
         protected override string GetFormText()
@@ -106,6 +101,21 @@ namespace BibleConfigurator
         protected override string DeleteModuleQuestionText
         {
             get { return BibleCommon.Resources.Constants.DeleteThisModuleFromDictionariesNotebookQuestion; }
+        }
+
+        protected override bool CanModuleBeAdded(ModuleInfo moduleInfo)
+        {
+            return moduleInfo.Type == ModuleType.Dictionary;
+        }
+
+        protected override bool CanNotebookBeClosed()
+        {
+            return !SettingsManager.Instance.DictionariesModules.Any(dm => Modules.First(m => m.ShortName == dm.ModuleName).Type == ModuleType.Strong);
+        }
+
+        protected override string NotebookCannotBeClosedText
+        {
+            get { return BibleCommon.Resources.Constants.DictionaryNotebookCannotBeClosed; }
         }
     }
 }

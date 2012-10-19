@@ -16,7 +16,7 @@ using System.ComponentModel;
 
 namespace BibleCommon.Services
 {
-    public class DictionaryModuleInfo
+    public class DictionaryInfo
     {
         public string ModuleName { get; set; }
         
@@ -25,13 +25,13 @@ namespace BibleCommon.Services
         /// </summary>
         public string SectionId { get; set; }
 
-        public DictionaryModuleInfo(string moduleName, string sectionId)
+        public DictionaryInfo(string moduleName, string sectionId)
         {
             this.ModuleName = moduleName;
             this.SectionId = sectionId;
         }
 
-        internal DictionaryModuleInfo(string xmlString)
+        internal DictionaryInfo(string xmlString)
         {
             var s = xmlString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             if (s.Length != 2)
@@ -111,13 +111,12 @@ namespace BibleCommon.Services
         public int PageWidth_Bible { get; set; }        
         public List<string> SupplementalBibleModules { get; set; }
         public string SupplementalBibleLinkName { get; set; }        
-        public List<DictionaryModuleInfo> DictionariesModules { get; set; }
+        public List<DictionaryInfo> DictionariesModules { get; set; }
 
         /// <summary>
         /// Использовать ли промежуточные ссылки, которые открываются комманд-хэндлером OpenVerseHandler
         /// </summary>
         public bool UseMiddleLinks { get; set; }
-
         
 
         /// <summary>
@@ -181,7 +180,10 @@ namespace BibleCommon.Services
         {
             if (!string.IsNullOrEmpty(NotebookId_SupplementalBible))
                 if (!OneNoteUtils.NotebookExists(oneNoteApp, NotebookId_SupplementalBible, refreshCache))
+                {
+                    this.SupplementalBibleModules.Clear();
                     return null;
+                }
 
             return NotebookId_SupplementalBible;
         }
@@ -190,7 +192,10 @@ namespace BibleCommon.Services
         {
             if (!string.IsNullOrEmpty(NotebookId_Dictionaries))
                 if (!OneNoteUtils.NotebookExists(oneNoteApp, NotebookId_Dictionaries, refreshCache))
+                {
+                    this.DictionariesModules.Clear();
                     return null;
+                }
 
             return NotebookId_Dictionaries;
         }
@@ -275,7 +280,7 @@ namespace BibleCommon.Services
         private void SetDefaultSettings()
         {
             SupplementalBibleModules = new List<string>();
-            DictionariesModules = new List<DictionaryModuleInfo>();
+            DictionariesModules = new List<DictionaryInfo>();
         }
 
         private void LoadSettingsFromFile()
@@ -383,8 +388,8 @@ namespace BibleCommon.Services
                                                   Consts.Constants.DefaultSupplementalBibleLinkName);
 
             this.NotebookId_Dictionaries = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdDictionaries);
-            this.DictionariesModules = GetParameterValue<List<DictionaryModuleInfo>>(xdoc, Consts.Constants.ParameterName_DictionariesModules, new List<DictionaryModuleInfo>(), 
-                                                s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(xmlString => new DictionaryModuleInfo(xmlString)));
+            this.DictionariesModules = GetParameterValue<List<DictionaryInfo>>(xdoc, Consts.Constants.ParameterName_DictionariesModules, new List<DictionaryInfo>(), 
+                                                s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(xmlString => new DictionaryInfo(xmlString)));
         }
 
         private T GetParameterValue<T>(XDocument xdoc, string parameterName, object defaultValue = null, Func<string, T> convertFunc = null)

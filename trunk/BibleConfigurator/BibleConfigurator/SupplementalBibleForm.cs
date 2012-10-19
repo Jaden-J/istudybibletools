@@ -16,12 +16,7 @@ namespace BibleConfigurator
         protected override string GetValidSupplementalNotebookId()
         {
             return SettingsManager.Instance.GetValidSupplementalBibleNotebookId(OneNoteApp, true);
-        }
-
-        protected override void ClearSupplementalModulesInSettingsStorage()
-        {
-            SettingsManager.Instance.SupplementalBibleModules.Clear(); 
-        }
+        }        
 
         protected override int GetSupplementalModulesCount()
         {
@@ -108,7 +103,7 @@ namespace BibleConfigurator
             return DictionaryTermsCacheManager.IndexDictionary(OneNoteApp, moduleInfo, Logger);
         }
 
-        protected override bool CanModuleBeDeleted(int index)
+        protected override bool CanModuleBeDeleted(ModuleInfo moduleInfo, int index)
         {
             return index != 0 || index == GetSupplementalModulesCount() - 1;
         }
@@ -163,6 +158,21 @@ namespace BibleConfigurator
         protected override string DeleteModuleQuestionText
         {
             get { return BibleCommon.Resources.Constants.DeleteThisModuleFromSupplementalBibleQuestion; }
+        }
+
+        protected override bool CanModuleBeAdded(ModuleInfo moduleInfo)
+        {
+            return true;
+        }
+
+        protected override bool CanNotebookBeClosed()
+        {
+            return true;
+        }
+
+        protected override string NotebookCannotBeClosedText
+        {
+            get { return string.Empty; }
         }
     }
 }

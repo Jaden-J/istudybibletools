@@ -32,7 +32,7 @@ namespace CommandHandler
         }
 
         public void ExecuteCommand(string[] args)
-        {   
+        {
             if (args.Length == 0)
                 throw new ArgumentNullException("args");
 
@@ -42,7 +42,7 @@ namespace CommandHandler
             var pageId = verseArgs[0];
             var objectId = verseArgs[1];
 
-            Application oneNoteApp = new Application();
+            Microsoft.Office.Interop.OneNote.Application oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
             try
             {
                 oneNoteApp.NavigateTo(pageId, objectId);
@@ -50,7 +50,7 @@ namespace CommandHandler
             finally
             {
                 oneNoteApp = null;
-            }            
+            }
         }
     }
 }

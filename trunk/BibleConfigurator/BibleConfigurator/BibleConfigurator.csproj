@@ -182,6 +182,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.ru.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="NotebookParametersForm.resx">
       <DependentUpon>NotebookParametersForm.cs</DependentUpon>

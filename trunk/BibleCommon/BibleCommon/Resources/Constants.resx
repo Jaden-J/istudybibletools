@@ -400,7 +400,7 @@
     <value>Error on module '{0}' loading: {1}</value>
   </data>
   <data name="ModuleWithSameNameAlreadyExists" xml:space="preserve">
-    <value>The module with the same name already exists. The current module will be replaced. Continue?</value>
+    <value>The module with the same name already exists. Version of existiong module is {0}. Version of uploading module is {1}. The current module will be replaced. Continue?</value>
   </data>
   <data name="SelectFileWithExtension" xml:space="preserve">
     <value>Select file with the extension '{0}'.</value>
@@ -556,7 +556,7 @@
     <value>Indexing Bible start</value>
   </data>
   <data name="UseSupplementalBible" xml:space="preserve">
-    <value>Use Supplemental Bible</value>
+    <value>Use notebook "Supplemental Bible"</value>
   </data>
   <data name="PagesCountLessThanMin" xml:space="preserve">
     <value>Pages count in '{0}' is not as expected: expected min {1}, found {2}.</value>
@@ -604,13 +604,13 @@
     <value>Remove this module from Dictionaries Notebook?</value>
   </data>
   <data name="DeleteThisModuleFromSupplementalBibleQuestion" xml:space="preserve">
-    <value>Remove this module from Supplemental Bible?</value>
+    <value>Remove this module from Supplemental Bible Notebook?</value>
   </data>
   <data name="SupportedModulesNotFound" xml:space="preserve">
     <value>Supported modules not found. Please add necessary modules to the program.</value>
   </data>
   <data name="UseDictionaries" xml:space="preserve">
-    <value>Use Dictionaries</value>
+    <value>Use notebook "Dictionaries"</value>
   </data>
   <data name="AdditionalModules" xml:space="preserve">
     <value>Additional modules</value>
@@ -647,5 +647,17 @@
   </data>
   <data name="FoundInSeveralDictionaries" xml:space="preserve">
     <value>Found in several dictionaries</value>
+  </data>
+  <data name="DictionaryNotebookCannotBeClosed" xml:space="preserve">
+    <value>Notebook "Dictionaries" cannot be closed if Strong dictionary is installed. First delete module with Strong dictionary from Supplemental Bible on Supplemental Bible management form.</value>
+  </data>
+  <data name="ModuleCannotBeDeleted_DictionaryModule" xml:space="preserve">
+    <value>This module can not be deleted because it is used in "Dictionaries" notebook.</value>
+  </data>
+  <data name="ModuleCannotBeDeleted_SupplementalBibleModule" xml:space="preserve">
+    <value>This module can not be deleted because it is used in "Supplemental Bible" notebook.</value>
+  </data>
+  <data name="ModuleSuccessfullyUploaded" xml:space="preserve">
+    <value>Module uploaded successfully</value>
   </data>
 </root>

@@ -74,7 +74,7 @@ namespace BibleCommon.Services
 
                 oneNoteApp.SyncHierarchy(dictionarySectionId);
 
-                SettingsManager.Instance.DictionariesModules.Add(new DictionaryModuleInfo(moduleName, dictionarySectionId));
+                SettingsManager.Instance.DictionariesModules.Add(new DictionaryInfo(moduleName, dictionarySectionId));
                 SettingsManager.Instance.Save();
 
                 if (waitForFinish)                

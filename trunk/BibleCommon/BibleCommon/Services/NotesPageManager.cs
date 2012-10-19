@@ -49,12 +49,23 @@ namespace BibleCommon.Services
             XElement notesCellElement = rowElement.XPathSelectElement("one:Cell[2]/one:OEChildren", xnm);
 
             string link = OneNoteUtils.GenerateHref(oneNoteApp, noteTitle, notePageId.PageId, notePageContentObjectId);
+            string pageId;
             int pageIdStringIndex = link.IndexOf("page-id={");
+            if (pageIdStringIndex == -1)
+                pageIdStringIndex = link.IndexOf("{");
+
             if (pageIdStringIndex != -1)
             {
-                string pageId = link.Substring(pageIdStringIndex, link.IndexOf('}', pageIdStringIndex) - pageIdStringIndex + 1);
+                pageId = link.Substring(pageIdStringIndex, link.IndexOf('}', pageIdStringIndex) - pageIdStringIndex + 1);
                 suchNoteLink = rowElement.XPathSelectElement(string.Format(
-                   "one:Cell[2]/one:OEChildren/one:OE/one:T[contains(.,'{0}')]", pageId), xnm);
+                       "one:Cell[2]/one:OEChildren/one:OE/one:T[contains(.,'{0}')]", pageId), xnm);
+
+                if (suchNoteLink == null)
+                {
+                    pageId = Uri.EscapeDataString(pageId);
+                    suchNoteLink = rowElement.XPathSelectElement(string.Format(
+                           "one:Cell[2]/one:OEChildren/one:OE/one:T[contains(translate(.,'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ'),'{0}')]", pageId.ToUpper()), xnm);
+                }
             }
 
             if (suchNoteLink != null)

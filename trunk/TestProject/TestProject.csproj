@@ -89,6 +89,7 @@
     <None Include="Resources\rst.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\BibleBooskInfo\rst.xml" />
     <Content Include="Resources\rst77.xml">
       <SubType>Designer</SubType>
     </Content>

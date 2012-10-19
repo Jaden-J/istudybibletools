@@ -1636,13 +1636,13 @@
     <value>9, 7</value>
   </data>
   <data name="lblMustSelectModule.Size" type="System.Drawing.Size, System.Drawing">
-    <value>148, 13</value>
+    <value>174, 13</value>
   </data>
   <data name="lblMustSelectModule.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
   <data name="lblMustSelectModule.Text" xml:space="preserve">
-    <value>Need to select module for use</value>
+    <value>Need to select base module for use</value>
   </data>
   <data name="&gt;&gt;lblMustSelectModule.Name" xml:space="preserve">
     <value>lblMustSelectModule</value>
@@ -1660,16 +1660,16 @@
     <value>True</value>
   </data>
   <data name="lblMustUploadModule.Location" type="System.Drawing.Point, System.Drawing">
-    <value>282, 101</value>
+    <value>271, 101</value>
   </data>
   <data name="lblMustUploadModule.Size" type="System.Drawing.Size, System.Drawing">
-    <value>103, 13</value>
+    <value>129, 13</value>
   </data>
   <data name="lblMustUploadModule.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
   <data name="lblMustUploadModule.Text" xml:space="preserve">
-    <value>Need to add module</value>
+    <value>Need to add base module</value>
   </data>
   <data name="&gt;&gt;lblMustUploadModule.Name" xml:space="preserve">
     <value>lblMustUploadModule</value>
