@@ -93,7 +93,13 @@ namespace BibleConfigurator.ModuleConverter
             for (int i = 0; i < BooksInfo.Books.Count; i++)             
             {
                 var bookInfo = BooksInfo.Books[i];
-                var bibleBookContent = ZefaniaXmlBibleInfo.Books.First(book => book.Index == bookInfo.Index);
+                var bibleBookContent = ZefaniaXmlBibleInfo.Books.FirstOrDefault(book => book.Index == bookInfo.Index);
+                if (bibleBookContent == null)
+                {
+                    Errors.Add(new ConverterExceptionBase("BibleBook with index '{0}' was not found in ZefaniaXML", bookInfo.Index));
+                    continue;
+                }
+
                 var sectionName = GetBookSectionName(bookInfo.Name, bookInfo.Index - 1);
 
                 if (string.IsNullOrEmpty(currentSectionGroupId))
@@ -161,7 +167,8 @@ namespace BibleConfigurator.ModuleConverter
                         Index = bibleBookInfo.Index,
                         Name = bibleBookInfo.Name,
                         SectionName = GetBookSectionName(bibleBookInfo.Name, bibleBookInfo.Index),
-                        Abbreviations = bibleBookInfo.ShortNamesXMLString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(s => new Abbreviation(s)).ToList()
+                        Abbreviations = bibleBookInfo.ShortNamesXMLString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(s => new Abbreviation(s.Trim(new char[] { '\'' })) { IsFullBookName = s.StartsWith("'") }).ToList()
                     });
             }
 

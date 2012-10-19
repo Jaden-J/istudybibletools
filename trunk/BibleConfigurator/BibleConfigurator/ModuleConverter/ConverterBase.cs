@@ -24,7 +24,7 @@ namespace BibleConfigurator.ModuleConverter
         public int BooksCount { get; set; }        
     }
 
-    public abstract class ConverterExceptionBase : Exception
+    public class ConverterExceptionBase : Exception
     {
         public ConverterExceptionBase(string message, params object[] args)
             :base(string.Format(message, args))
