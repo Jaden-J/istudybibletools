@@ -13,7 +13,7 @@ namespace BibleCommon.Handlers
     {
         public string ProtocolName
         {
-            get { return "isbtTermUsage"; }
+            get { return "isbtStrongUsage"; }
         }
 
         public string GetCommandUrl(string strongNumber)

@@ -4,27 +4,24 @@ using System.Linq;
 using System.Text;
 using Microsoft.Office.Interop.OneNote;
 using System.Diagnostics;
+using BibleCommon.Contracts;
+using BibleCommon.Services;
 
-namespace CommandHandler
+namespace BibleCommon.Handlers
 {
-    public class NavigateToOneNoteHandler
+    public class NavigateToStrongHandler : IProtocolHandler
     {
-        private static string _protocolName = "isbtOpen";
+        private static string _protocolName = "isbtStrongOpen";
 
         public string ProtocolName
         {
             get { return _protocolName; }
         }
 
-        public static string GetCommandUrl(string pageId, string objectId)
+        public static string GetCommandUrlStatic(string strongNumber, string moduleShortName)
         {
-            return string.Format("{0}:{1};{2}", _protocolName, pageId, objectId);
-        }
-
-        public string GetCommandUrl(string args)
-        {
-            return string.Format("{0}:{1}", ProtocolName, args);
-        }
+            return string.Format("{0}:{1};{2}", _protocolName, strongNumber, moduleShortName);
+        }      
 
         public bool IsProtocolCommand(string[] args)
         {
@@ -39,18 +36,25 @@ namespace CommandHandler
             var verseArgs = Uri.UnescapeDataString(args[0]
                                 .Split(new char[] { ':' })[1])
                                 .Split(new char[] { ';' });
-            var pageId = verseArgs[0];
-            var objectId = verseArgs[1];
 
-            Microsoft.Office.Interop.OneNote.Application oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            var strongNumber = verseArgs[0];
+            var moduleShortName = verseArgs[1];
+            var strongTermLink = OneNoteProxy.Instance.GetDictionaryTermLink(strongNumber, moduleShortName);
+
+            Application oneNoteApp = new Application();
             try
             {
-                oneNoteApp.NavigateTo(pageId, objectId);
+                oneNoteApp.NavigateTo(strongTermLink.PageId, strongTermLink.ObjectId);
             }
             finally
             {
                 oneNoteApp = null;
             }
         }
+
+        string IProtocolHandler.GetCommandUrl(string args)
+        {
+            return string.Format("{0}:{1}", ProtocolName, args);
+        }      
     }
 }

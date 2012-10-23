@@ -58,7 +58,7 @@ namespace BibleConfigurator
                     strongTermLinksCache = RunIndexStrong(selectedModuleInfo, 1, stagesCount);
                 }
 
-                int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.SupplementalBibleModules.First());
+                int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.SupplementalBibleModules.First(), false);
                 MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.AddParallelBibleTranslationStart);
                 string stagesString = stagesCount == 1 ? string.Empty : string.Format("{0} {1}/{1}: ", BibleCommon.Resources.Constants.Stage, stagesCount);
                 Logger.Preffix = string.Format("{0}{1}: ", stagesString, BibleCommon.Resources.Constants.AddParallelBibleTranslation); 
@@ -71,7 +71,7 @@ namespace BibleConfigurator
             {
                 int stagesCount = selectedModuleInfo.Type == ModuleType.Strong ? 3 : 2;
 
-                int chaptersCount = ModulesManager.GetBibleChaptersCount(selectedModuleInfo.ShortName);
+                int chaptersCount = ModulesManager.GetBibleChaptersCount(selectedModuleInfo.ShortName, false);
                 MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.CreateSupplementalBibleStart);
                 Logger.Preffix = string.Format("{0} 1/{1}: {2}: ", BibleCommon.Resources.Constants.Stage, stagesCount, BibleCommon.Resources.Constants.CreateSupplementalBible);
                 BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
@@ -100,7 +100,11 @@ namespace BibleConfigurator
             MainForm.PrepareForExternalProcessing(strongTermsCount, 1, BibleCommon.Resources.Constants.IndexStrongDictionaryStart);
             Logger.Preffix = string.Format("{0} {1}/{2}: {3}: ", BibleCommon.Resources.Constants.Stage, stage, stagesCount, BibleCommon.Resources.Constants.IndexStrongDictionary);
             BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
-            return DictionaryTermsCacheManager.IndexDictionary(OneNoteApp, moduleInfo, Logger);
+
+            if (DictionaryTermsCacheManager.CacheIsActive(moduleInfo.ShortName))
+                return DictionaryTermsCacheManager.LoadCachedDictionary(moduleInfo.ShortName);
+            else
+                return DictionaryTermsCacheManager.GenerateCache(OneNoteApp, moduleInfo, Logger);
         }
 
         protected override bool CanModuleBeDeleted(ModuleInfo moduleInfo, int index)
@@ -110,7 +114,7 @@ namespace BibleConfigurator
 
         protected override void DeleteModule(string moduleShortName)
         {
-            int chaptersCount = ModulesManager.GetBibleChaptersCount(moduleShortName);
+            int chaptersCount = ModulesManager.GetBibleChaptersCount(moduleShortName, false);
             MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.RemoveParallelBibleTranslation);
             var removeResult = SupplementalBibleManager.RemoveSupplementalBibleModule(OneNoteApp, moduleShortName, Logger);
             MainForm.ExternalProcessingDone(

@@ -137,10 +137,13 @@ namespace BibleCommon.Services
             if (!vp.IsValid)
                 throw new ArgumentException("versePointer is not valid");
 
-            var simpleVersePointer = vp.ToSimpleVersePointer();
-            var versePointerLink = OneNoteProxy.Instance.GetVersePointerLink(simpleVersePointer);
-            if (versePointerLink != null)
-                return new HierarchySearchResult(simpleVersePointer, versePointerLink);            
+            if (OneNoteProxy.Instance.IsBibleVersesLinksCacheActive)
+            {
+                var simpleVersePointer = vp.ToSimpleVersePointer();
+                var versePointerLink = OneNoteProxy.Instance.GetVersePointerLink(simpleVersePointer);
+                if (versePointerLink != null)
+                    return new HierarchySearchResult(simpleVersePointer, versePointerLink);
+            }
 
             XElement targetSection = FindBibleBookSection(oneNoteApp, bibleNotebookId, vp.Book.SectionName);
             if (targetSection != null)

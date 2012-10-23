@@ -105,10 +105,13 @@ namespace BibleCommon.Services
 
             return httpRequest;
         }
-
+        
         private static WebProxy GetProxy()
         {
+#pragma warning disable 0618
             var proxy = WebProxy.GetDefaultProxy();
+#pragma warning restore 0618
+
             if (proxy.Address != null)
             {
                 proxy.Credentials = CredentialCache.DefaultNetworkCredentials;

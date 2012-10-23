@@ -111,8 +111,8 @@ namespace BibleCommon.Common
         public override int GetHashCode()
         {
             var result = Verse.GetHashCode();
-            if (TopVerse.HasValue)
-                result = result ^ TopVerse.Value.GetHashCode();
+            //if (TopVerse.HasValue)
+            //    result = result ^ TopVerse.Value.GetHashCode();
 
             return result;
         }
@@ -128,7 +128,8 @@ namespace BibleCommon.Common
             var anotherObj = (VerseNumber)obj;
 
             return this.Verse == anotherObj.Verse 
-                && this.TopVerse == anotherObj.TopVerse;
+                //&& this.TopVerse == anotherObj.TopVerse
+                ;
         }
 
         public static bool operator ==(VerseNumber vn1, VerseNumber vn2)
@@ -156,7 +157,7 @@ namespace BibleCommon.Common
     {
         public int BookIndex { get; set; }
         public int Chapter { get; set; }
-        public VerseNumber? VerseNumber { get; set; }        
+        public VerseNumber VerseNumber { get; set; }        
         public int? PartIndex { get; set; }        
         public bool IsEmpty { get; set; }
         public bool IsApocrypha { get; set; }
@@ -166,29 +167,23 @@ namespace BibleCommon.Common
         {
             get
             {
-                return VerseNumber.HasValue && VerseNumber.Value.IsMultiVerse;
+                return VerseNumber.IsMultiVerse;
             }
         }        
 
         public int Verse
         {
             get
-            {
-                if (VerseNumber.HasValue)
-                    return VerseNumber.Value.Verse;
-
-                return default(int);
+            {   
+                return VerseNumber.Verse;             
             }
         }
 
         public int? TopVerse
         {
             get
-            {
-                if (VerseNumber.HasValue)
-                    return VerseNumber.Value.TopVerse;
-
-                return null;
+            {   
+                return VerseNumber.TopVerse;
             }
         }
 
@@ -196,7 +191,7 @@ namespace BibleCommon.Common
         {
             get
             {
-                return this.VerseNumber == null;
+                return this.VerseNumber.Verse == 0;
             }
         }
 
@@ -220,7 +215,7 @@ namespace BibleCommon.Common
             : this(bookIndex, chapter, new VerseNumber())
         { }
 
-        public SimpleVersePointer(int bookIndex, int chapter, VerseNumber? verse)
+        public SimpleVersePointer(int bookIndex, int chapter, VerseNumber verse)
         {
             this.BookIndex = bookIndex;
             this.Chapter = chapter;
@@ -264,7 +259,7 @@ namespace BibleCommon.Common
 
         public string ToFirstVerseString()
         {
-            return string.Format("{0} {1}:{2}", BookIndex, Chapter, VerseNumber.HasValue ? VerseNumber.Value.Verse : 0);
+            return string.Format("{0} {1}:{2}", BookIndex, Chapter, VerseNumber.Verse);
         }
 
         public virtual object Clone()
@@ -292,17 +287,12 @@ namespace BibleCommon.Common
         {
             var result = new List<SimpleVersePointer>();
 
-            if (this.VerseNumber.HasValue)
+            result.AddRange(this.VerseNumber.GetAllVerses().ConvertAll(v =>
             {
-                result.AddRange(this.VerseNumber.Value.GetAllVerses().ConvertAll(v =>
-                {
-                    var verse = (SimpleVersePointer)this.Clone();
-                    verse.VerseNumber = new VerseNumber(v);
-                    return verse;
-                }));
-            }
-            else
-                result.Add(this);
+                var verse = (SimpleVersePointer)this.Clone();
+                verse.VerseNumber = new VerseNumber(v);
+                return verse;
+            }));
 
             return result;
         }
@@ -359,13 +349,13 @@ namespace BibleCommon.Common
         /// </summary>
         /// <param name="versePointer"></param>
         /// <param name="verseContent"></param>
-        public SimpleVerse(SimpleVersePointer versePointer, string verseNumber, string verseContent)
+        public SimpleVerse(SimpleVersePointer versePointer, string verseNumberString, string verseContent)
             : base(versePointer.BookIndex, versePointer.Chapter, versePointer.VerseNumber)
         {
             this.VerseContent = verseContent;
 
-            if (!string.IsNullOrEmpty(verseNumber))
-                this.VerseNumberString = verseNumber;
+            if (!string.IsNullOrEmpty(verseNumberString))
+                this.VerseNumberString = verseNumberString;
             else
                 this.VerseNumberString = versePointer.Verse.ToString();            
         }

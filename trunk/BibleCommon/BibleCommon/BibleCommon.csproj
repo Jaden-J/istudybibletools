@@ -64,6 +64,7 @@
     <Compile Include="Contracts\ICustomLogger.cs" />
     <Compile Include="Contracts\IProtocolHandler.cs" />
     <Compile Include="Handlers\FindVersesWithStrongNumberHandler.cs" />
+    <Compile Include="Handlers\NavigateToStrongHandler.cs" />
     <Compile Include="Helpers\CollectionHelper.cs" />
     <Compile Include="Helpers\FormExtensions.cs" />
     <Compile Include="Helpers\SharpSerializationHelper.cs" />

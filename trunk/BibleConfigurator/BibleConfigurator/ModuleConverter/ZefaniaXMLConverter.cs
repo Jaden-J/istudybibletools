@@ -59,7 +59,8 @@ namespace BibleConfigurator.ModuleConverter
             this.ModuleName = moduleName;
             this.ZefaniaXmlFilePath = zefaniaXMLFilePath;
             this.BooksInfo = booksInfo;
-            this.BookIndexes = BooksInfo.Books.ConvertAll(b => b.Index);
+            this.ZefaniaXmlBibleInfo = Utils.LoadFromXmlFile<XMLBIBLE>(ZefaniaXmlFilePath);                
+            this.BookIndexes = BooksInfo.Books.Where(bi => ZefaniaXmlBibleInfo.Books.Any(zb => zb.Index == bi.Index)).Select(b => b.Index).ToList();
 
             this.AdditionalReadParameters = readParameters;            
 
@@ -74,8 +75,6 @@ namespace BibleConfigurator.ModuleConverter
 
         protected override void ProcessBibleBooks(ExternalModuleInfo externalModuleInfo)
         {
-            ZefaniaXmlBibleInfo = Utils.LoadFromXmlFile<XMLBIBLE>(ZefaniaXmlFilePath);                
-
             XDocument currentChapterDoc = null;
             XElement currentTableElement = null;            
             string currentSectionGroupId = null;
@@ -161,15 +160,18 @@ namespace BibleConfigurator.ModuleConverter
             
             foreach (var bibleBookInfo in BooksInfo.Books)
             {
-                module.BibleStructure.BibleBooks.Add(
-                    new BibleBookInfo()
-                    {
-                        Index = bibleBookInfo.Index,
-                        Name = bibleBookInfo.Name,
-                        SectionName = GetBookSectionName(bibleBookInfo.Name, bibleBookInfo.Index),
-                        Abbreviations = bibleBookInfo.ShortNamesXMLString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(s => new Abbreviation(s.Trim(new char[] { '\'' })) { IsFullBookName = s.StartsWith("'") }).ToList()
-                    });
+                if (BibleInfo.Books.Any(b => b.Index == bibleBookInfo.Index))
+                {
+                    module.BibleStructure.BibleBooks.Add(
+                        new BibleBookInfo()
+                        {
+                            Index = bibleBookInfo.Index,
+                            Name = bibleBookInfo.Name,
+                            SectionName = GetBookSectionName(bibleBookInfo.Name, bibleBookInfo.Index),
+                            Abbreviations = bibleBookInfo.ShortNamesXMLString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(s => new Abbreviation(s.Trim(new char[] { '\'' })) { IsFullBookName = s.StartsWith("'") }).ToList()
+                        });
+                }
             }
 
             SaveToXmlFile(module, Constants.ManifestFileName);

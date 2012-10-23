@@ -134,7 +134,7 @@ namespace BibleCommon.Helpers
         {
             string link;
 
-            if (SettingsManager.Instance.UseMiddleLinks && !string.IsNullOrEmpty(objectHref))
+            if (!string.IsNullOrEmpty(objectHref))
                 link = objectHref;
             else
                 link = OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, objectId);            

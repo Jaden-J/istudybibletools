@@ -51,7 +51,7 @@ namespace BibleCommon.Services
             return module;
         }
 
-        public static int GetBibleChaptersCount(string moduleShortName)
+        public static int GetBibleChaptersCount(string moduleShortName, bool addBooksCount)
         {
             XMLBIBLE bibleInfo = null;
             int result;
@@ -59,6 +59,8 @@ namespace BibleCommon.Services
             {
                 bibleInfo = GetModuleBibleInfo(moduleShortName);
                 result = bibleInfo.Books.Sum(b => b.Chapters.Count);
+                if (addBooksCount)
+                    result += bibleInfo.Books.Count;
             }
             catch (InvalidModuleException)
             {
