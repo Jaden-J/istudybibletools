@@ -243,7 +243,8 @@ namespace BibleCommon.Services
                         //if (originalVersePointer != null && originalVersePointer.IsEmpty)
                         //    continue;                            
 
-                        var parallelVerse = GetParallelVerse(baseVersePointer, parallelBookContent, bookVersePointersComparisonTable, bibleIteratorArgs.StrongPrefix,
+                        var parallelVerse = GetParallelVerse(baseVersePointer, parallelBookContent, bookVersePointersComparisonTable, 
+                            bibleIteratorArgs != null ? bibleIteratorArgs.StrongPrefix : null,
                             lastProcessedChapter, lastProcessedVerse);
 
                         if (verseAction != null)

@@ -660,4 +660,7 @@
   <data name="ModuleSuccessfullyUploaded" xml:space="preserve">
     <value>Module uploaded successfully</value>
   </data>
+  <data name="IndexBibleFinish" xml:space="preserve">
+    <value>Bible was indexed successfully.</value>
+  </data>
 </root>

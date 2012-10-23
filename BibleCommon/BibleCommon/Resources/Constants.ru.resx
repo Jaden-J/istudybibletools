@@ -657,4 +657,7 @@
   <data name="ModuleSuccessfullyUploaded" xml:space="preserve">
     <value>Модуль успешно загружен</value>
   </data>
+  <data name="IndexBibleFinish" xml:space="preserve">
+    <value>Библия успешно проиндексирована.</value>
+  </data>
 </root>

@@ -1062,7 +1062,7 @@ namespace BibleCommon.Services
 
             var svp = vp.ToSimpleVersePointer();
             if (verseNumber.HasValue)
-                svp.VerseNumber = verseNumber;            
+                svp.VerseNumber = verseNumber.Value;            
 
             if (!_notePageProcessedVerses[verseId].Contains(svp))   // отслеживаем обработанные стихи для каждой из страниц сводной заметок
             {

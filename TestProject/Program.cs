@@ -73,9 +73,9 @@ namespace TestProject
 
                 //TryToUpdateInkNodes();                
 
-                //ConvertRussianModuleZefaniaXml();
+                ConvertRussianModuleZefaniaXml();
 
-                ConvertRussianModule();
+                //ConvertRussianModule();
 
                 //ConvertEnglishModule();
 
@@ -105,15 +105,15 @@ namespace TestProject
 
         private static void ConvertRussianModuleZefaniaXml()
         {
-           var converter = new ZefaniaXmlConverter("ibs", "Современный перевод (Всемирный Библейский Переводческий Центр)", 
-               @"C:\Users\lux_demko\Desktop\temp\Dropbox\Holy Bible\ForGenerating\ibs\bible.xml",
-           Utils.LoadFromXmlString<BibleBooksInfo>(Properties.Resources.BibleBooskInfo_rst), @"c:\temp\ibsZefania", "ru",
+            var converter = new ZefaniaXmlConverter("rst", "Русский синодальный перевод",
+               @"G:\Dropbox\Holy Bible\ForGenerating\RSTStrong\bible.xml",
+           Utils.LoadFromXmlString<BibleBooksInfo>(Properties.Resources.BibleBooskInfo_rst), @"c:\temp\rst", "ru",
            PredefinedNotebooksInfo.Russian, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst),  // вот эти тоже часто надо менять                
            "{0} глава. {1}",
            PredefinedSectionsInfo.None, false, null, null,
                 //PredefinedSectionsInfo.RSTStrong, true, "Стронга", 14700,   // параметры для стронга
-           "2.0", true,
-           ZefaniaXmlConverter.ReadParameters.None);  // и про эту не забыть
+           "2.0", false,
+           ZefaniaXmlConverter.ReadParameters.RemoveStrongs);  // и про эту не забыть
 
             converter.Convert();
         }             

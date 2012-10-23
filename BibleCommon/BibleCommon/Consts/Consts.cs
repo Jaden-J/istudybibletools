@@ -34,7 +34,7 @@ namespace BibleCommon.Consts
         public static readonly bool DefaultRubbishPage_ExpandMultiVersesLinking = true;
         public static readonly bool DefaultRubbishPage_ExcludedVersesLinking = true;
         public static readonly string DefaultSupplementalBibleLinkName = "S";
-        public static readonly bool DefaultUseMiddleLinks = true;
+        public static readonly bool DefaultUseMiddleStrongLinks = true;
 
         public static readonly string ResourceName_DefaultPageNameDefaultBookOverview = "DefaultPageNameDefaultBookOverview";
         public static readonly string ResourceName_DefaultPageNameDefaultComments = "DefaultPageNameDefaultComments";
@@ -75,7 +75,7 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_RubbishPageExpandMultiVersesLinking = "RubbishPage_ExpandMultiVersesLinking";
         public static readonly string ParameterName_RubbishPageExcludedVersesLinking = "RubbishPage_ExcludedVersesLinking";
 
-        public static readonly string ParameterName_UseMiddleLinks = "UseMiddleLinks";
+        public static readonly string ParameterName_UseMiddleStrongLinks = "UseMiddleStrongLinks";
 
         public static readonly string ParameterName_UseDefaultSettings = "UseDefaultSettings";        
 

@@ -39,12 +39,14 @@ namespace BibleCommon.Services
             return SharpSerializationHelper.Deserialize<Dictionary<string, string>>(filePath);
         }
 
-        public static void GenerateCache(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger)
+        public static Dictionary<string, string> GenerateCache(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger)
         {
             var cacheData = IndexDictionary(oneNoteApp, moduleInfo, logger);
             var filePath = GetCacheFilePath(moduleInfo.ShortName);
 
             SharpSerializationHelper.Serialize(cacheData, filePath);
+
+            return cacheData;
         }
 
         public static Dictionary<string, string> IndexDictionary(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger)
@@ -88,7 +90,7 @@ namespace BibleCommon.Services
                     termName = isStrong ? termName.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0] : termName.ToLower();
                     var termTextElementId = (string)termTextEl.Parent.Attribute("objectID");
 
-                    var href = (isStrong && !SettingsManager.Instance.UseMiddleLinks) 
+                    var href = (isStrong && !SettingsManager.Instance.UseMiddleStrongLinks) 
                                     ? OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, termTextElementId) 
                                     : null;                    
 

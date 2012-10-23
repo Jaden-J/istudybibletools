@@ -116,7 +116,7 @@ namespace BibleCommon.Services
         /// <summary>
         /// Использовать ли промежуточные ссылки, которые открываются комманд-хэндлером OpenVerseHandler
         /// </summary>
-        public bool UseMiddleLinks { get; set; }
+        public bool UseMiddleStrongLinks { get; set; }
         
 
         /// <summary>
@@ -367,7 +367,7 @@ namespace BibleCommon.Services
             this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
             this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking);
             this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking);
-            this.UseMiddleLinks = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseMiddleLinks, Consts.Constants.DefaultUseMiddleLinks);            
+            this.UseMiddleStrongLinks = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseMiddleStrongLinks, Consts.Constants.DefaultUseMiddleStrongLinks);            
         }
 
         private void LoadGeneralSettings(XDocument xdoc)
@@ -439,7 +439,7 @@ namespace BibleCommon.Services
             this.PageWidth_RubbishNotes = Consts.Constants.DefaultPageWidth_RubbishNotes;
             this.RubbishPage_ExpandMultiVersesLinking = Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking;
             this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
-            this.UseMiddleLinks = Consts.Constants.DefaultUseMiddleLinks;
+            this.UseMiddleStrongLinks = Consts.Constants.DefaultUseMiddleStrongLinks;
 
             LoadDefaultLocalazibleSettings();
         }
@@ -466,7 +466,7 @@ namespace BibleCommon.Services
                 && this.PageWidth_RubbishNotes == Consts.Constants.DefaultPageWidth_RubbishNotes
                 && this.RubbishPage_ExpandMultiVersesLinking == Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking
                 && this.RubbishPage_ExcludedVersesLinking == Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking
-                && this.UseMiddleLinks == Consts.Constants.DefaultUseMiddleLinks;
+                && this.UseMiddleStrongLinks == Consts.Constants.DefaultUseMiddleStrongLinks;
         }
 
         public void Save()
@@ -509,7 +509,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleModules, string.Join(";", this.SupplementalBibleModules.ToArray())),
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleLinkName, this.SupplementalBibleLinkName),                                  
                                   new XElement(Consts.Constants.ParameterName_DictionariesModules, string.Join(";", this.DictionariesModules.ConvertAll(dm => dm.ToString()).ToArray())),
-                                  new XElement(Consts.Constants.ParameterName_UseMiddleLinks, UseMiddleLinks)
+                                  new XElement(Consts.Constants.ParameterName_UseMiddleStrongLinks, UseMiddleStrongLinks)
                                   );
 
                     xDoc.Save(sw);

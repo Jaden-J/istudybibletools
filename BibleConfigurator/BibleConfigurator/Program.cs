@@ -62,7 +62,8 @@ namespace BibleConfigurator
 
             try
             {
-                var strongProtocolHandler = new FindVersesWithStrongNumberHandler();                
+                var strongProtocolHandler = new FindVersesWithStrongNumberHandler();
+                var openVerseHandler = new NavigateToStrongHandler();
 
                 if (args.Contains(Consts.ShowModuleInfo) && SettingsManager.Instance.IsConfigured(OneNoteApp))
                     result = new AboutModuleForm(SettingsManager.Instance.ModuleName, true);
@@ -76,6 +77,8 @@ namespace BibleConfigurator
                     result = new ZefaniaXmlConverterForm();                
                 else if (strongProtocolHandler.IsProtocolCommand(args))
                     strongProtocolHandler.ExecuteCommand(args);
+                else if (openVerseHandler.IsProtocolCommand(args))
+                    openVerseHandler.ExecuteCommand(args);
                 else if (args.Contains(Consts.ShowManual))
                     OpenManual();
                 else if (args.Contains(Consts.RunOnOneNoteStarts))
@@ -144,8 +147,7 @@ namespace BibleConfigurator
                             if (moduleWasAdded)
                             {
                                 ((MainForm)result).ShowModulesTabAtStartUp = true;
-                                ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
-                                FormLogger.LogMessage(BibleCommon.Resources.Constants.ModuleSuccessfullyUploaded);
+                                ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;                                
                             }
                             else
                                 result = null;

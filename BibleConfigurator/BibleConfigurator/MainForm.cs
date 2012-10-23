@@ -185,11 +185,12 @@ namespace BibleConfigurator
 
         private void IndexBible()
         {
-            int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleName);
+            int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleName, true);
             PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.IndexBibleStart);
             LongProcessLogger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexBible);
             BibleVersesLinksCacheManager.GenerateBibleVersesLinks(_oneNoteApp,
                 SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, LongProcessLogger);
+            ExternalProcessingDone(BibleCommon.Resources.Constants.IndexBibleFinish);
         }
 
         private void SaveMultiNotebookParameters(ModuleInfo module, ContainerType notebookType,
