@@ -103,7 +103,7 @@ namespace BibleConfigurator.ModuleConverter
 
                 if (string.IsNullOrEmpty(currentSectionGroupId))
                     currentSectionGroupId = AddTestamentSectionGroup(oldTestamentName ?? newTestamentName);
-                else if (i == OldTestamentBooksCount)
+                else if (BibleInfo.Books.Count == OldTestamentBooksCount)
                     currentSectionGroupId = AddTestamentSectionGroup(newTestamentName);
 
                 var bookSectionId = AddBookSection(currentSectionGroupId, sectionName, bookInfo.Name);
