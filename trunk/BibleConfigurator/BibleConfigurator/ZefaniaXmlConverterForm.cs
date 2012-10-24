@@ -49,17 +49,17 @@ namespace BibleConfigurator
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            //var converter = new ZefaniaXmlConverter("ibs", "Современный перевод (Всемирный Библейский Переводческий Центр)", 
-            //    @"C:\Users\lux_demko\Desktop\temp\Dropbox\Holy Bible\ForGenerating\ibs\bible.xml",
-            //    Utils.LoadFromXmlString<BibleBooksInfo>(Properties.Resources.BibleBooskInfo_rst), @"c:\temp\ibsZefania", "ru",
-            //    PredefinedNotebooksInfo.Russian, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.BibleTranslationDifferences_rst),  // вот эти тоже часто надо менять                
-            //    "{0} глава. {1}",
-            //    PredefinedSectionsInfo.None, false, null, null,
-            //    //PredefinedSectionsInfo.RSTStrong, true, "Стронга", 14700,   // параметры для стронга
-            //    "2.0", true,
-            //    ZefaniaXmlConverter.ReadParameters.None);  // и про эту не забыть
+            var converter = new ZefaniaXmlConverter("ibs", "Современный перевод (Всемирный Библейский Переводческий Центр)",
+                @"C:\Users\lux_demko\Desktop\temp\Dropbox\Holy Bible\ForGenerating\ibs\bible.xml",
+                Utils.LoadFromXmlString<BibleBooksInfo>(Properties.Resources.BibleBooskInfo_rst), @"c:\temp\ibsZefania", "ru",
+                PredefinedNotebooksInfo.Russian, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.BibleTranslationDifferences_rst),  // вот эти тоже часто надо менять                
+                "{0} глава. {1}",
+                PredefinedSectionsInfo.None, false, null, null,
+                //PredefinedSectionsInfo.RSTStrong, true, "Стронга", 14700,   // параметры для стронга
+                new Version(2, 0), true,
+                ZefaniaXmlConverter.ReadParameters.None);  // и про эту не забыть
 
-            //converter.Convert();
-        }      
+            converter.Convert();
+        }           
     }
 }

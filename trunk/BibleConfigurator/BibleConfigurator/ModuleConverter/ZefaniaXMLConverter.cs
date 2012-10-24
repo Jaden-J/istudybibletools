@@ -157,21 +157,22 @@ namespace BibleConfigurator.ModuleConverter
             module.Sections = this.SectionsInfo;
             module.DictionarySectionGroupName = this.DictionarySectionGroupName;
             module.DictionaryTermsCount = this.StrongNumbersCount;
-            
-            foreach (var bibleBookInfo in BooksInfo.Books)
+
+            var index = 0;
+            foreach (var bookInfo in BibleInfo.Books)
             {
-                if (BibleInfo.Books.Any(b => b.Index == bibleBookInfo.Index))
-                {
-                    module.BibleStructure.BibleBooks.Add(
-                        new BibleBookInfo()
-                        {
-                            Index = bibleBookInfo.Index,
-                            Name = bibleBookInfo.Name,
-                            SectionName = GetBookSectionName(bibleBookInfo.Name, bibleBookInfo.Index),
-                            Abbreviations = bibleBookInfo.ShortNamesXMLString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-                            .Select(s => new Abbreviation(s.Trim(new char[] { '\'' })) { IsFullBookName = s.StartsWith("'") }).ToList()
-                        });
-                }
+                var bibleBookInfo = BooksInfo.Books.First(b => b.Index == bookInfo.Index);
+
+                module.BibleStructure.BibleBooks.Add(
+                    new BibleBookInfo()
+                    {
+                        Index = bibleBookInfo.Index,
+                        Name = bibleBookInfo.Name,
+                        SectionName = GetBookSectionName(bibleBookInfo.Name, index++),
+                        Abbreviations = bibleBookInfo.ShortNamesXMLString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(s => new Abbreviation(s.Trim(new char[] { '\'' })) { IsFullBookName = s.StartsWith("'") }).ToList()
+                    });
+
             }
 
             SaveToXmlFile(module, Constants.ManifestFileName);
