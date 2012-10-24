@@ -27,8 +27,8 @@ namespace TestProject
 {    
     class Program
     {
-        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\Holy Bible\ForGenerating";
-        private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp";
+        private const string ForGeneratingFolderPath = @"G:\Dropbox\Holy Bible\ForGenerating";
+        private const string TempFolderPath = @"c:\temp";
 
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
         private static Microsoft.Office.Interop.OneNote.Application OneNoteApp
@@ -107,18 +107,18 @@ namespace TestProject
 
         private static void ConvertRussianModuleZefaniaXml()
         {
-            string moduleName = "rst77";
+            string moduleName = "rststrong";
 
             var converter = new ZefaniaXmlConverter(moduleName,
-                                                    "Русский синодальный перевод (77 книг, включая второканонические)", 
+                                                    "Русский синодальный перевод", 
                 Path.Combine(Path.Combine(ForGeneratingFolderPath, moduleName), BibleCommon.Consts.Constants.BibleInfoFileName),               
                 Utils.LoadFromXmlString<BibleBooksInfo>(Properties.Resources.BibleBooskInfo_rst), Path.Combine(TempFolderPath, moduleName + "_zefaniaXml"), "ru",
-                                                    PredefinedNotebooksInfo.Russian77, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst77),  // вот эти тоже часто надо менять                
+                                                    PredefinedNotebooksInfo.Russian, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst),  // вот эти тоже часто надо менять                
                 "{0} глава. {1}",
                                                     PredefinedSectionsInfo.None, false, null, null,
                                                     //PredefinedSectionsInfo.RSTStrong, true, "Стронга", 14700,   // параметры для стронга
-                new Version(2, 0), true,
-                                                    ZefaniaXmlConverter.ReadParameters.None);  // и про эту не забыть
+                new Version(2, 0), false,
+                                                    ZefaniaXmlConverter.ReadParameters.RemoveStrongs);  // и про эту не забыть
 
             converter.Convert();
         }             
