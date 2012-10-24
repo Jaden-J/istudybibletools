@@ -99,7 +99,7 @@ namespace BibleConfigurator.ModuleConverter
                     continue;
                 }
 
-                var sectionName = GetBookSectionName(bookInfo.Name, bookInfo.Index - 1);
+                var sectionName = GetBookSectionName(bookInfo.Name, BibleInfo.Books.Count);
 
                 if (string.IsNullOrEmpty(currentSectionGroupId))
                     currentSectionGroupId = AddTestamentSectionGroup(oldTestamentName ?? newTestamentName);
