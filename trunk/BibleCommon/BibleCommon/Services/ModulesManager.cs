@@ -177,6 +177,13 @@ namespace BibleCommon.Services
                 if (module.Type != moduleType.Value)
                     throw new InvalidModuleException(string.Format("Invalid module type: expected '{0}', actual '{1}'", moduleType, module.Type));
 
+            if (module.MinProgramVersion != null)
+            {
+                var programVersion = Utils.GetProgramVersion();
+                if (module.MinProgramVersion > programVersion)
+                    throw new InvalidModuleException(string.Format(BibleCommon.Resources.Constants.ModuleIsNotSupported, module.MinProgramVersion, programVersion));
+            }
+
             if (module.Type == Common.ModuleType.Bible)
             {
                 var bibleModulePartTypes = new ContainerType[] { ContainerType.Bible, ContainerType.BibleStudy, ContainerType.BibleComments, ContainerType.BibleNotesPages };

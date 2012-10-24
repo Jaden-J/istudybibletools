@@ -59,6 +59,8 @@ namespace BibleConfigurator
         
         public bool ShowModulesTabAtStartUp { get; set; }
         public bool NeedToSaveChangesAfterLoadingModuleAtStartUp { get; set; }
+        public bool ToIndexBible { get; set; }
+        public bool CommitChangesAfterLoad { get; set; }
 
         public MainForm(params string[] args)
         {
@@ -100,7 +102,7 @@ namespace BibleConfigurator
             }
         }    
 
-        private void CommitChanges(bool closeForm)
+        internal void CommitChanges(bool closeForm)
         {
             ModuleInfo module = null;
 
@@ -112,6 +114,13 @@ namespace BibleConfigurator
             {
                 FormLogger.LogMessage(ex.Message);
                 return;
+            }
+
+            if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible) && !ToIndexBible)
+            {
+                if (MessageBox.Show(BibleCommon.Resources.Constants.IndexBibleQuestion, BibleCommon.Resources.Constants.Warning,
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    ToIndexBible = true;
             }
 
             btnOK.Enabled = false;
@@ -149,10 +158,10 @@ namespace BibleConfigurator
                         chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, BibleNotesPagesNotebookFromTemplatePath);                    
                 }
 
-                if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible))
-                {
-                    IndexBible();                    
-                }
+                this.TopMost = false;  // нам не нужен уже топ мост, потому что раньше он нам нужен был из-за того, что OneNote постоянно перекрывал программу когда создавались новые записные книжки
+
+                if (ToIndexBible)                
+                    IndexBible();                                    
 
                 if (!FormLogger.WasErrorLogged)
                 {
@@ -588,6 +597,9 @@ namespace BibleConfigurator
                 {
                     _loadForm.Hide();
                 }
+
+                if (CommitChangesAfterLoad)
+                    btnOK_Click(this, null);
             }
         }
 
@@ -1126,7 +1138,7 @@ namespace BibleConfigurator
                 try
                 {
                     existingModule = ModulesManager.GetModuleInfo(moduleName);
-                    if (existingModule.Version.CompareTo(preModuleInfo.Version) > 0) 
+                    if (existingModule.Version > preModuleInfo.Version) 
                         needToAsk = true;
                 }
                 catch (InvalidModuleException)
@@ -1328,7 +1340,7 @@ namespace BibleConfigurator
             pnModules.Controls.Add(lblName);
 
             Label lblVersion = new Label();
-            lblVersion.Text = moduleInfo.Version;
+            lblVersion.Text = moduleInfo.Version.ToString();
             lblVersion.Top = top + 5;
             lblVersion.Left = 330;
             lblVersion.Width = 25;

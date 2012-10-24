@@ -327,7 +327,17 @@ namespace BibleConfigurator.ModuleConverter
             get
             {
                 var _rst = new List<int>(GetRange(1, 39));
-                _rst.AddRange(GetRange(67, 77));
+                _rst.Add(80);
+                _rst.Add(69);
+                _rst.Add(67);
+                _rst.Add(201);
+                _rst.Add(70);
+                _rst.Add(79);
+                _rst.Add(71);
+                _rst.Add(72);
+                _rst.Add(73);
+                _rst.Add(77);
+                _rst.Add(81);                
                 _rst.AddRange(GetRange(40, 44));
                 _rst.AddRange(GetRange(59, 65));
                 _rst.AddRange(GetRange(45, 58));

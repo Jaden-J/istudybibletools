@@ -61,7 +61,7 @@ namespace BibleConfigurator.ModuleConverter
         protected List<SectionInfo> SectionsInfo { get; set; }
         protected string DictionarySectionGroupName { get; set; }
         public int? StrongNumbersCount { get; set; }
-        protected string Version { get; set; }
+        protected Version Version { get; set; }
         protected int OldTestamentBooksCount { get; set; }
         protected bool GenerateBibleXml { get; set; }        
         protected bool GenerateNotebooks { get; set; }        
@@ -81,7 +81,7 @@ namespace BibleConfigurator.ModuleConverter
             string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, 
             BibleTranslationDifferences translationDifferences, string chapterSectionNameTemplate, List<SectionInfo> sectionsInfo,
             bool isStrong, string dictionarySectionGroupName, int? strongNumbersCount, 
-            string version, bool generateNotebooks, bool generateBibleXml)
+            Version version, bool generateNotebooks, bool generateBibleXml)
         {
             OneNoteApp = new Application();
             this.IsStrong = isStrong;

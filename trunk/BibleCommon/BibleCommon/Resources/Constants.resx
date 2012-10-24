@@ -663,4 +663,16 @@
   <data name="IndexBibleFinish" xml:space="preserve">
     <value>Bible was indexed successfully.</value>
   </data>
+  <data name="ErrorWhilePageProcessing" xml:space="preserve">
+    <value>Error while page '{0}' processing</value>
+  </data>
+  <data name="IndexBibleQuestion" xml:space="preserve">
+    <value>It is recommended to index the Bible for performance optimization. This operation takes about 30 minutes. Start indexing the Bible now?</value>
+  </data>
+  <data name="IndexBibleQuestionAtStartUp" xml:space="preserve">
+    <value>The Bible is not indexed. It is recommended to index the Bible for performance optimization. This operation takes about 30 minutes. Start indexing the Bible now?</value>
+  </data>
+  <data name="ModuleIsNotSupported" xml:space="preserve">
+    <value>Version of this module is not supported. You should upgrade the program up to version '{0}'. The current version of the program is '{1}'.</value>
+  </data>
 </root>

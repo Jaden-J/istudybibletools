@@ -14,7 +14,7 @@ namespace BibleConfigurator.ModuleConverter
         {
             ModuleInfo module = new ModuleInfo()
             {
-                Version = "1.0",
+                Version = new Version(1, 0),
                 Name = "Синодальный перевод (Русский язык)",
                 Notebooks = new List<NotebookInfo>() 
                 {                    

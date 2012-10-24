@@ -12,6 +12,12 @@ namespace BibleCommon.Helpers
 {
     public static class Utils
     {
+        public static Version GetProgramVersion()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            return assembly.GetName().Version;
+        }
+
         public static string GetCurrentDirectory()
         {
             var assembly = Assembly.GetExecutingAssembly().CodeBase;

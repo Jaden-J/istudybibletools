@@ -28,6 +28,18 @@ namespace BibleCommon.Handlers
 
         public void ExecuteCommand(string[] args)
         {
+            try
+            {
+                TryExecuteCommand(args);             
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
+        }
+
+        private void TryExecuteCommand(string[] args)
+        {
             if (args.Length == 0)
                 throw new ArgumentNullException("args");
 

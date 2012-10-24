@@ -165,8 +165,15 @@ namespace BibleNoteLinker
                 {
                     LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
 
-                    relinkNotesManager.RelinkBiblePageNotes(processedBiblePageId.SectionId, processedBiblePageId.PageId,
-                        processedBiblePageId.PageName, processedBiblePageId.ChapterPointer);
+                    try
+                    {
+                        relinkNotesManager.RelinkBiblePageNotes(processedBiblePageId.SectionId, processedBiblePageId.PageId,
+                            processedBiblePageId.PageName, processedBiblePageId.ChapterPointer);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(string.Format(BibleCommon.Resources.Constants.ErrorWhilePageProcessing, processedBiblePageId.PageName), ex);
+                    }
 
                     PerformProcessStep();                                        
                 }

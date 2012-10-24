@@ -51,7 +51,7 @@ namespace BibleConfigurator.ModuleConverter
             string locale, List<NotebookInfo> notebooksInfo, BibleTranslationDifferences translationDifferences, 
             string chapterSectionNameTemplate, 
             List<SectionInfo> sectionsInfo, bool isStrong, string dictionarySectionGroupName, int? strongNumbersCount,
-            string version, bool generateNotebooks, params ReadParameters[] readParameters)
+            Version version, bool generateNotebooks, params ReadParameters[] readParameters)
             : base(moduleShortName, manifestFilesFolderPath, locale, notebooksInfo, null,
                         translationDifferences, chapterSectionNameTemplate, sectionsInfo, isStrong, dictionarySectionGroupName, 
                         strongNumbersCount, version, generateNotebooks, true)

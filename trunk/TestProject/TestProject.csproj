@@ -86,7 +86,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\rst.xml" />
+    <None Include="Resources\rst.xml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\BibleBooskInfo\rst.xml" />

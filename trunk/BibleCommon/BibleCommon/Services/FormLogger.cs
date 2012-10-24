@@ -33,6 +33,6 @@ namespace BibleCommon.Services
         {
             BibleCommon.Services.Logger.LogMessage(message);
             MessageBox.Show(message, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);            
-        }
+        }        
     }
 }
