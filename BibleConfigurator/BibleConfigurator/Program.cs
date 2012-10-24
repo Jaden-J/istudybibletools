@@ -17,6 +17,7 @@ using System.Xml;
 using System.Xml.Linq;
 using BibleCommon.Consts;
 using BibleCommon.Handlers;
+using BibleCommon.UI.Forms;
 
 
 namespace BibleConfigurator
@@ -54,51 +55,39 @@ namespace BibleConfigurator
             {
                 FormLogger.LogError(ex);
             }
-        }             
+            finally
+            {
+                if (_oneNoteApp != null)
+                    _oneNoteApp = null;
+            }
+        }
 
         private static Form PrepareForRunning(params string[] args)
         {
             Form result = null;
 
-            try
-            {
-                var strongProtocolHandler = new FindVersesWithStrongNumberHandler();
-                var openVerseHandler = new NavigateToStrongHandler();
+            var strongProtocolHandler = new FindVersesWithStrongNumberHandler();
+            var openVerseHandler = new NavigateToStrongHandler();
 
-                if (args.Contains(Consts.ShowModuleInfo) && SettingsManager.Instance.IsConfigured(OneNoteApp))
-                    result = new AboutModuleForm(SettingsManager.Instance.ModuleName, true);
-                else if (args.Contains(Consts.ShowAboutProgram))
-                    result = new AboutProgramForm();
-                else if (args.Contains(Consts.ShowParallelBibleChecker))
-                    result = new ParallelBibleCheckerForm();
-                else if (args.Contains(Consts.ShowSearchInDictionaries))
-                    result = new SearchInDictionariesForm();
-                else if (args.Contains(Consts.ZefaniaXmlConverter))
-                    result = new ZefaniaXmlConverterForm();                
-                else if (strongProtocolHandler.IsProtocolCommand(args))
-                    strongProtocolHandler.ExecuteCommand(args);
-                else if (openVerseHandler.IsProtocolCommand(args))
-                    openVerseHandler.ExecuteCommand(args);
-                else if (args.Contains(Consts.ShowManual))
-                    OpenManual();
-                else if (args.Contains(Consts.RunOnOneNoteStarts))
-                {
-                    if (SettingsManager.Instance.IsConfigured(OneNoteApp))
-                    {
-                        try
-                        {
-                            OneNoteLocker.LockBible(OneNoteApp);
-                            OneNoteLocker.LockSupplementalBible(OneNoteApp);
-                        }
-                        catch (NotSupportedException)
-                        {
-                            //todo: log it
-                        }
-                    }
-                    else
-                        result = new MainForm(args);
-                }
-                else if (args.Contains(Consts.LockAllBible))
+            if (args.Contains(Consts.ShowModuleInfo) && SettingsManager.Instance.IsConfigured(OneNoteApp))
+                result = new AboutModuleForm(SettingsManager.Instance.ModuleName, true);
+            else if (args.Contains(Consts.ShowAboutProgram))
+                result = new AboutProgramForm();
+            else if (args.Contains(Consts.ShowParallelBibleChecker))
+                result = new ParallelBibleCheckerForm();
+            else if (args.Contains(Consts.ShowSearchInDictionaries))
+                result = new SearchInDictionariesForm();
+            else if (args.Contains(Consts.ZefaniaXmlConverter))
+                result = new ZefaniaXmlConverterForm();
+            else if (strongProtocolHandler.IsProtocolCommand(args))
+                strongProtocolHandler.ExecuteCommand(args);
+            else if (openVerseHandler.IsProtocolCommand(args))
+                openVerseHandler.ExecuteCommand(args);
+            else if (args.Contains(Consts.ShowManual))
+                OpenManual();
+            else if (args.Contains(Consts.RunOnOneNoteStarts))
+            {
+                if (SettingsManager.Instance.IsConfigured(OneNoteApp))
                 {
                     try
                     {
@@ -107,50 +96,20 @@ namespace BibleConfigurator
                     }
                     catch (NotSupportedException)
                     {
-                        MessageBox.Show(BibleCommon.Resources.Constants.SkyDriveBibleIsNotSupportedForLock);
+                        //todo: log it
                     }
-                }
-                else if (args.Contains(Consts.UnlockAllBible))
-                {
-                    try
-                    {
-                        OneNoteLocker.UnlockBible(OneNoteApp);
-                        OneNoteLocker.UnlockSupplementalBible(OneNoteApp);
-                    }
-                    catch (NotSupportedException)
-                    {
-                        MessageBox.Show(BibleCommon.Resources.Constants.SkyDriveBibleIsNotSupportedForLock);
-                    }
-                }
-                else if (args.Contains(Consts.UnlockBibleSection))
-                {
-                    try
-                    {
-                        OneNoteLocker.UnlockCurrentSection(OneNoteApp);
-                    }
-                    catch (NotSupportedException)
-                    {
-                        MessageBox.Show(BibleCommon.Resources.Constants.SkyDriveBibleIsNotSupportedForLock);
-                    }
-                }
-                else if (args.Length == 1)
-                {
-                    result = new MainForm(args);
 
-                    if (!string.IsNullOrEmpty(args[0]))
-                    {
-                        string moduleFilePath = args[0];
-                        if (File.Exists(moduleFilePath))
+                    if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible))
+                    {                        
+                        using (var form = new MessageForm(BibleCommon.Resources.Constants.IndexBibleQuestionAtStartUp, BibleCommon.Resources.Constants.Warning,
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                         {
-                            bool moduleWasAdded;
-                            bool needToReload = ((MainForm)result).AddNewModule(moduleFilePath, out moduleWasAdded);
-                            if (moduleWasAdded)
+                            if (form.ShowDialog() == DialogResult.Yes)
                             {
-                                ((MainForm)result).ShowModulesTabAtStartUp = true;
-                                ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;                                
+                                result = new MainForm(args);
+                                ((MainForm)result).ToIndexBible = true;
+                                ((MainForm)result).CommitChangesAfterLoad = true;
                             }
-                            else
-                                result = null;
                         }
                     }
                 }
@@ -159,13 +118,66 @@ namespace BibleConfigurator
                     result = new MainForm(args);
                 }
             }
-            catch (Exception ex)
+            else if (args.Contains(Consts.LockAllBible))
             {
-                FormLogger.LogError(ex);
+                try
+                {
+                    OneNoteLocker.LockBible(OneNoteApp);
+                    OneNoteLocker.LockSupplementalBible(OneNoteApp);
+                }
+                catch (NotSupportedException)
+                {
+                    ShowMessage(BibleCommon.Resources.Constants.SkyDriveBibleIsNotSupportedForLock);
+                }
             }
+            else if (args.Contains(Consts.UnlockAllBible))
+            {
+                try
+                {
+                    OneNoteLocker.UnlockBible(OneNoteApp);
+                    OneNoteLocker.UnlockSupplementalBible(OneNoteApp);
+                }
+                catch (NotSupportedException)
+                {
+                    ShowMessage(BibleCommon.Resources.Constants.SkyDriveBibleIsNotSupportedForLock);
+                }
+            }
+            else if (args.Contains(Consts.UnlockBibleSection))
+            {
+                try
+                {
+                    OneNoteLocker.UnlockCurrentSection(OneNoteApp);
+                }
+                catch (NotSupportedException)
+                {
+                    ShowMessage(BibleCommon.Resources.Constants.SkyDriveBibleIsNotSupportedForLock);
+                }
+            }
+            else if (args.Length == 1)
+            {
+                result = new MainForm(args);
 
-            if (_oneNoteApp != null)
-                _oneNoteApp = null;
+                if (!string.IsNullOrEmpty(args[0]))
+                {
+                    string moduleFilePath = args[0];
+                    if (File.Exists(moduleFilePath))
+                    {
+                        bool moduleWasAdded;
+                        bool needToReload = ((MainForm)result).AddNewModule(moduleFilePath, out moduleWasAdded);
+                        if (moduleWasAdded)
+                        {
+                            ((MainForm)result).ShowModulesTabAtStartUp = true;
+                            ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
+                        }
+                        else
+                            result = null;
+                    }
+                }
+            }
+            else
+            {
+                result = new MainForm(args);
+            }
 
             return result;
         }
@@ -190,19 +202,31 @@ namespace BibleConfigurator
 
         public static void RunFromAnotherApp(params string[] args)
         {
-            if (_firstLoad)
+            try
             {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                _firstLoad = false;
+                if (_firstLoad)
+                {
+                    Application.EnableVisualStyles();
+                    Application.SetCompatibleTextRenderingDefault(false);
+                    _firstLoad = false;
+                }
+
+                Form form = PrepareForRunning(args);
+
+                if (form != null)
+                {
+                    form.ShowDialog();
+                    form.Dispose();
+                }
+            }             
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
             }
-
-            Form form = PrepareForRunning(args);
-
-            if (form != null)
+            finally
             {
-                form.ShowDialog();
-                form.Dispose();
+                if (_oneNoteApp != null)
+                    _oneNoteApp = null;
             }
         }
 
@@ -217,9 +241,6 @@ namespace BibleConfigurator
                 return _oneNoteApp;
             }
         }
-
-  
-
 
         private static bool OpenManual()
         {
@@ -238,11 +259,12 @@ namespace BibleConfigurator
             return false;
         }
 
-
-       
-
-
-
-  
+        private static void ShowMessage(string message)
+        {
+            using (var form = new MessageForm(message))
+            {
+                form.ShowDialog();                
+            }
+        }
     }
 }

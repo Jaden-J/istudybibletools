@@ -120,6 +120,12 @@
     <Compile Include="UI\Forms\ErrorsForm.Designer.cs">
       <DependentUpon>ErrorsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Forms\MessageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\MessageForm.Designer.cs">
+      <DependentUpon>MessageForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Constants.ru.resx">
@@ -137,6 +143,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Forms\ErrorsForm.ru.resx">
       <DependentUpon>ErrorsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\MessageForm.resx">
+      <DependentUpon>MessageForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +169,9 @@
     <None Include="Scheme\zef2005.xss">
       <DependentUpon>zef2005.xsd</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\MessageForm.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

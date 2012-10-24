@@ -19,7 +19,7 @@ namespace BibleConfigurator
 
         private Dictionary<string, ModuleDictionaryInfo> _modulesTermSets;
         private Dictionary<string, ModuleInfo> _modules;
-        private Dictionary<string, List<string>> _termsInModules;
+        private Dictionary<string, TermInModules> _termsInModules;
 
 
         private static string _lastSearchedTerm = string.Empty;
@@ -48,6 +48,22 @@ namespace BibleConfigurator
             }
         }
 
+        public Dictionary<string, TermInModules> TermsInModules
+        {
+            get
+            {
+                if (_termsInModules == null)
+                    LoadData();
+
+                return _termsInModules;
+            }
+        }
+
+        public class TermInModules : List<string>
+        {
+            public string Term { get; set; }
+        }
+
         private bool LoadData()
         {
             try
@@ -71,7 +87,7 @@ namespace BibleConfigurator
 
                 _modulesTermSets = new Dictionary<string, ModuleDictionaryInfo>();
                 _modules = new Dictionary<string, ModuleInfo>();
-                _termsInModules = new Dictionary<string, List<string>>();
+                _termsInModules = new Dictionary<string, TermInModules>(StringComparer.InvariantCultureIgnoreCase);
 
                 foreach (var module in SettingsManager.Instance.DictionariesModules)
                 {
@@ -82,9 +98,9 @@ namespace BibleConfigurator
                     _modules.Add(moduleInfo.Name, moduleInfo);                    
 
                     foreach (var term in dictionaryModuleInfo.TermSet.Terms)
-                    {
+                    {                        
                         if (!_termsInModules.ContainsKey(term))
-                            _termsInModules.Add(term, new List<string>());
+                            _termsInModules.Add(term, new TermInModules() { Term = term });
 
                         _termsInModules[term].Add(moduleInfo.Name);
                     }
@@ -114,7 +130,7 @@ namespace BibleConfigurator
                 lblFoundInDictionaries.Text = string.Empty;
                 if (LoadData())
                 {
-                    LoadDictionary(null);
+                    LoadTerms(null);
 
                     cbDictionaries.Items.Add(BibleCommon.Resources.Constants.AllDictionaries);
                     foreach (var dName in Modules.Keys)
@@ -133,12 +149,21 @@ namespace BibleConfigurator
             }
         }        
 
-        private void LoadDictionary(string moduleShortName)
+        private void LoadTerms(string moduleShortName)
         {            
             var terms = !string.IsNullOrEmpty(moduleShortName) 
                 ? ModulesTermSets[moduleShortName].TermSet.Terms 
-                : ModulesTermSets.Values.SelectMany(md => md.TermSet.Terms).Distinct();
-            cbTerms.DataSource = terms.OrderBy(t => t).ToArray();
+                : TermsInModules.Keys.ToList();
+
+            var source = terms.OrderBy(t => t).ToArray();
+
+            cbTerms.DataSource = source;
+
+            //var autoCompleteSource = new AutoCompleteStringCollection();
+            //autoCompleteSource.AddRange(source);
+            //cbTerms.AutoCompleteCustomSource = autoCompleteSource;
+            //cbTerms.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            //cbTerms.AutoCompleteMode = AutoCompleteMode.Suggest;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -176,10 +201,10 @@ namespace BibleConfigurator
             var selectedDictionary = (string)cbDictionaries.SelectedItem;
 
             if (selectedDictionary == BibleCommon.Resources.Constants.AllDictionaries)
-                LoadDictionary(null);
+                LoadTerms(null);
             else
             {
-                LoadDictionary(Modules[selectedDictionary].ShortName);   
+                LoadTerms(Modules[selectedDictionary].ShortName);   
             }
         }
 

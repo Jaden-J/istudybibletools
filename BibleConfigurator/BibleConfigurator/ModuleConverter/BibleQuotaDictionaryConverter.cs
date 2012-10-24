@@ -47,7 +47,7 @@ namespace BibleConfigurator.ModuleConverter
         public string ManifestFilesFolder { get; set; }
         List<DictionaryFile> DictionaryFiles { get; set; }        
         public string Locale { get; set; }
-        public string Version { get; set; }
+        public Version Version { get; set; }
         public string TermStartString { get; set; }
         public string DictionaryModuleName { get; set; }
         public string DictionaryName { get; set; }
@@ -75,7 +75,7 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="manifestFilesFolder"></param>
         public BibleQuotaDictionaryConverter(Application oneNoteApp, string notebookName, string dictionaryModuleName, string dictionaryName, string dictionaryDescription, 
             List<DictionaryFile> dictionaryFiles, StructureType type, string dictionarySectionGroupName, string manifestFilesFolder, string termStartString, string userNotesString, string findAllVersesString,
-            string locale, string version)
+            string locale, Version version)
         {
             this.Type = type;
             this.DictionaryModuleName = dictionaryModuleName;
@@ -299,13 +299,7 @@ namespace BibleConfigurator.ModuleConverter
             {
                 var number = int.Parse(result);
                 result = string.Format("{0}{1:0000}", file.TermPrefix, number);
-            }
-            else
-            {
-                result = result.ToLower();
-                var firstChar = char.ToUpper(result[0]);
-                result = firstChar + result.Substring(1);
-            }
+            }           
 
             return result;
         }
@@ -334,9 +328,9 @@ namespace BibleConfigurator.ModuleConverter
                             .Replace("<br>", Environment.NewLine)
                             .Replace("<p>", Environment.NewLine + "<span>")
                             .Replace("</p>", "</span>")
-                            .Replace("<h6>", "<b>")
+                            .Replace("<h6>", Environment.NewLine + "<b>")
                             .Replace("</h6>", "</b>")
-                            .Replace("<h5>", "<b>")
+                            .Replace("<h5>", Environment.NewLine + "<b>")
                             .Replace("</h5>", "</b>");                            
                                 
 

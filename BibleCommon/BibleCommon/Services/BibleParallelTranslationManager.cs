@@ -35,7 +35,7 @@ namespace BibleCommon.Services
 
     public class BibleParallelTranslationManager : IDisposable
     {
-        public const string SupportedModuleMinVersion = "2.0";
+        public static readonly Version SupportedModuleMinVersion = new Version(2, 0);
 
         private Application _oneNoteApp;
 
@@ -75,7 +75,7 @@ namespace BibleCommon.Services
 
         public static bool IsModuleSupported(ModuleInfo moduleInfo)
         {
-            return moduleInfo.Version.CompareTo(SupportedModuleMinVersion) >= 0;
+            return moduleInfo.Version >= SupportedModuleMinVersion;
         }
 
         private void CheckModules()

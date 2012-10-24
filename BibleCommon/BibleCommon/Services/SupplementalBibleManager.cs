@@ -392,12 +392,13 @@ namespace BibleCommon.Services
                     if (!string.IsNullOrEmpty(prefix) && prefix.Length == 1 && StringUtils.IsCharAlphabetical(prefix[0], alphabet))
                     {
                         string strongTerm = string.Format("{0}{1:0000}", prefix, int.Parse(strongNumber));
-                        if (strongTermLinksCache == null || strongTermLinksCache.ContainsKey(strongTerm))
+                        if (strongTermLinksCache.ContainsKey(strongTerm))
                         {
+                            var termLink = new DictionaryTermLink(strongTermLinksCache[strongTerm]).Href;
                             string link = string.Format("<a href=\"{0}\"><span style='vertical-align:super;'>{1}</span></a>",
-                                SettingsManager.Instance.UseMiddleStrongLinks
+                                SettingsManager.Instance.UseMiddleStrongLinks || string.IsNullOrEmpty(termLink)
                                     ? NavigateToStrongHandler.GetCommandUrlStatic(strongTerm, strongModuleShortName)
-                                    : new DictionaryTermLink(strongTermLinksCache[strongTerm]).Href,
+                                    : termLink,
                                 strongTerm);
 
                             verseText = string.Concat(verseText.Substring(0, cursorPosition - 1), link, verseText.Substring(htmlBreakIndex));

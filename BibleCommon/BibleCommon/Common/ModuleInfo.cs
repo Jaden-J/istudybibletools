@@ -25,7 +25,7 @@ namespace BibleCommon.Common
         Bible = 0,
         Strong = 1,
         Dictionary = 2        
-    }
+    } 
 
     [Serializable]
     [XmlRoot(ElementName = "IStudyBibleTools_Module")]
@@ -35,8 +35,51 @@ namespace BibleCommon.Common
         [DefaultValue((int)ModuleType.Bible)]
         public ModuleType Type { get; set; }
 
-        [XmlAttribute]
-        public string Version { get; set; }
+        [XmlAttribute("Version")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public string XmlVersion { get; set; }
+
+        [XmlIgnore]
+        public Version Version
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(XmlVersion))
+                    throw new ArgumentNullException("Version");
+
+                return new Version(XmlVersion);
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("Version");
+
+                XmlVersion = value.ToString();
+            }
+        }
+
+        [XmlAttribute("MinProgramVersion")]
+        [DefaultValue("")]
+        public string XmlMinProgramVersion { get; set; }
+
+        [XmlIgnore]
+        public Version MinProgramVersion
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(XmlMinProgramVersion))
+                    return null;
+
+                return new Version(XmlMinProgramVersion);
+            }
+            set
+            {
+                if (value == null)
+                    XmlMinProgramVersion = string.Empty;
+                else
+                    XmlMinProgramVersion = value.ToString();
+            }
+        }
 
         private string _moduleShortName;
         [XmlAttribute]
@@ -201,7 +244,7 @@ namespace BibleCommon.Common
         /// </summary>
         public void CorrectModuleAfterDeserialization()
         {
-            if (Version.CompareTo("2.0") < 0)
+            if (Version < new Version(1, 9))    
             {
                 var bibleNotebook = Notebooks.FirstOrDefault(n => n.Type == ContainerType.Bible);
                 if (bibleNotebook != null)

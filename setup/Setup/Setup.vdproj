@@ -63,12 +63,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_64AC72AB4685491CA83EE7F85E0918E7"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_6EB90D269F004B0D8591B6DB745A2157"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -377,12 +371,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_6EB90D269F004B0D8591B6DB745A2157"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_64AC72AB4685491CA83EE7F85E0918E7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -877,7 +865,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=2.3.41.550, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=2.3.43.550, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_FC6527971F32780710FA9C904D1890AE"
@@ -985,17 +973,6 @@
                                 {
                                 }
                             }
-                            "{9EF0B969-E518-4E46-987F-47570745A589}:_6185E0464A5840659899BEBA63B3E45B"
-                            {
-                            "Name" = "8:CommandHandler"
-                            "AlwaysCreate" = "11:FALSE"
-                            "Condition" = "8:"
-                            "Transitive" = "11:FALSE"
-                            "Property" = "8:_14B832E9EDBB4D3CB8569023327408F1"
-                                "Folders"
-                                {
-                                }
-                            }
                             "{9EF0B969-E518-4E46-987F-47570745A589}:_6B6F3FD25E6048F18D747FA6C8B01535"
                             {
                             "Name" = "8:BibleConfigurator"
@@ -1060,15 +1037,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OneNote IStudyBibleTools"
-        "ProductCode" = "8:{1345CEDF-D66B-497F-9F04-308BDA269C8A}"
-        "PackageCode" = "8:{B7CA87B8-ED42-48D8-A713-3B1371E7151A}"
+        "ProductCode" = "8:{E82EAE27-3B1B-4AFC-BA68-FC97F59F6B6C}"
+        "PackageCode" = "8:{D815B106-A387-4DE0-B339-0965DA900846}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.3.41"
+        "ProductVersion" = "8:2.3.43"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://IStudyBibleTools.com"
@@ -1515,7 +1492,7 @@
                     }
                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_5AE88EE57BFF4665BC59A5A23F177176"
                     {
-                    "Name" = "8:isbtOpen"
+                    "Name" = "8:isbtStrongOpen"
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:FALSE"
                     "DeleteAtUninstall" = "11:FALSE"
@@ -1572,7 +1549,7 @@
                                                     "Condition" = "8:"
                                                     "Transitive" = "11:FALSE"
                                                     "ValueTypes" = "3:1"
-                                                    "Value" = "8:\"[TARGETDIR]tools\\CommandHandler\\CommandHandler.exe\" \"%1\""
+                                                    "Value" = "8:\"[TARGETDIR]tools\\BibleConfigurator\\BibleConfigurator.exe\" \"%1\""
                                                     }
                                                 }
                                             }
@@ -1609,7 +1586,7 @@
                     }
                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_C565DD3B169C4B1F9C6E4D8EA2EBBAD7"
                     {
-                    "Name" = "8:isbtTermUsage"
+                    "Name" = "8:isbtStrongUsage"
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:FALSE"
                     "DeleteAtUninstall" = "11:FALSE"
@@ -2319,34 +2296,6 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{72CEED21-AD36-4E0C-886C-8DA80EA5D785}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_64AC72AB4685491CA83EE7F85E0918E7"
-            {
-            "SourcePath" = "8:..\\..\\CommandHandler\\CommandHandler\\obj\\x86\\Debug\\CommandHandler.exe"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_6185E0464A5840659899BEBA63B3E45B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{CB1DA082-750E-43C4-A727-E08FCC022915}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
