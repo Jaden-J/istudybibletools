@@ -19,11 +19,7 @@ namespace BibleCommon.Common
                 int indexOfColon = originalFormula.IndexOf(":");
 
                 if (indexOfColon == -1)
-                    throw new NotSupportedException(string.Format("Unknown formula: '{0}'", originalFormula));
-
-                if (indexOfColon != originalFormula.LastIndexOf(":"))
-                    throw new NotSupportedException(
-                        string.Format("The verses formula with two colons (':') is not supported yet: '{0}'", originalFormula));
+                    throw new NotSupportedException(string.Format("Unknown formula: '{0}'", originalFormula));              
             }
         }
     }
@@ -85,6 +81,11 @@ namespace BibleCommon.Common
             {
                 if (parallelVersesFormula.IndexOfAny(new char[] { 'X', '+' }) != -1)
                     throw new NotSupportedException("For empty base verse must be defined concrete parallel verse.");
+
+                int indexOfColon = OriginalFormula.IndexOf(":");                
+                if (indexOfColon != OriginalFormula.LastIndexOf(":"))
+                    throw new NotSupportedException(
+                        string.Format("The verses formula with two colons (':') is not supported yet: '{0}'", OriginalFormula));
                 
                 Initialize(parallelVersesFormula);
                 IsEmpty = true;
@@ -346,6 +347,9 @@ namespace BibleCommon.Common
         protected BibleTranslationDifferencesBaseVersesFormula BaseVersesFormula { get; set; }
         protected ParallelChapterFormulaPart ChapterFormulaPart { get; set; }
         protected ParallelVersesFormulaPart VersesFormulaPart { get; set; }
+
+        protected BibleTranslationDifferencesParallelVersesFormula SecondFormula { get; set; }  // для случаев <Difference BaseVerses="20:42" ParallelVerses="20:42,21:1" />
+
         protected bool IsEmpty { get; set; }
         protected BibleBookDifference.CorrespondenceVerseType CorrespondenceType { get; set; }
         protected int? ValueVersesCount { get; set; }
@@ -363,13 +367,28 @@ namespace BibleCommon.Common
 
             this.BaseVersesFormula = baseVersesFormula;            
             this.CorrespondenceType = correspondenceType;
-            this.ValueVersesCount = valueVersesCount;            
+            this.ValueVersesCount = valueVersesCount;
 
-            if (!string.IsNullOrEmpty(parallelVersesFormula))
-            {                
-                int indexOfColon = parallelVersesFormula.IndexOf(":");
-                ChapterFormulaPart = new ParallelChapterFormulaPart(parallelVersesFormula.Substring(0, indexOfColon), this);
-                VersesFormulaPart = new ParallelVersesFormulaPart(parallelVersesFormula.Substring(indexOfColon + 1), this, correspondenceType);
+            if (!string.IsNullOrEmpty(OriginalFormula))
+            {
+                int indexOfColon = OriginalFormula.IndexOf(":");
+
+                if (indexOfColon != OriginalFormula.LastIndexOf(":"))
+                {
+                    var indexOfComma = OriginalFormula.IndexOf(",");
+                    if (indexOfComma == -1)
+                        throw new NotSupportedException(string.Format("Two colons must be devided by comma", OriginalFormula));
+
+                    if (indexOfComma != OriginalFormula.LastIndexOf(","))
+                        throw new NotSupportedException(string.Format("Only one comma is supported", OriginalFormula));
+
+                    var parts = OriginalFormula.Split(new char[] { ',' });
+                    this.OriginalFormula = parts[0];
+                    SecondFormula = new BibleTranslationDifferencesParallelVersesFormula(parts[1], this.BaseVersesFormula, this.CorrespondenceType, this.ValueVersesCount, this.SkipCheck);
+                }
+
+                ChapterFormulaPart = new ParallelChapterFormulaPart(OriginalFormula.Substring(0, indexOfColon), this);
+                VersesFormulaPart = new ParallelVersesFormulaPart(OriginalFormula.Substring(indexOfColon + 1), this, correspondenceType);                
             }
             else
             {
@@ -377,7 +396,7 @@ namespace BibleCommon.Common
             }
 
             this.SkipCheck = skipCheck;
-        }
+        }        
 
         public List<SimpleVersePointer> GetParallelVerses(SimpleVersePointer baseVerse, SimpleVersePointer prevVerse)
         {
@@ -419,6 +438,9 @@ namespace BibleCommon.Common
 
             if (this.SkipCheck)
                 result.ForEach(v => v.SkipCheck = SkipCheck);
+
+            if (SecondFormula != null)
+                result.AddRange(SecondFormula.GetParallelVerses(baseVerse, prevVerse));
 
             return result;
         }
