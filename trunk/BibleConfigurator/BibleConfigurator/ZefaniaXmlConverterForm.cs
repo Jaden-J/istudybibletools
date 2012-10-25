@@ -9,18 +9,14 @@ using System.Windows.Forms;
 using BibleConfigurator.ModuleConverter;
 using BibleCommon.Helpers;
 using BibleCommon.Common;
+using System.IO;
 
 namespace BibleConfigurator
 {
     public partial class ZefaniaXmlConverterForm : Form
-    {
-        public struct LanguageInfo
-        {
-            public string Locale { get; set; }
-            public string BibleBooksInfo_String { get; set; }
-        }
+    {   
 
-        private Dictionary<string, LanguageInfo> LanguageParameters { get; set; }
+     
 
         public ZefaniaXmlConverterForm()
         {
@@ -29,17 +25,16 @@ namespace BibleConfigurator
 
         private void ZefaniaXmlConverterForm_Load(object sender, EventArgs e)
         {
-            LanguageParameters = new Dictionary<string, LanguageInfo>();
-            LanguageParameters.Add("Russian", new LanguageInfo() { Locale = "ru", BibleBooksInfo_String = Properties.Resources.BibleBooskInfo_rst });
+     
+
+
 
             BindControls();            
         }
 
         private void BindControls()
         {
-            cbLanguages.DataSource = LanguageParameters;
-            cbLanguages.ValueMember = "Key";
-            cbLanguages.DisplayMember = "Key";
+        
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -60,6 +55,44 @@ namespace BibleConfigurator
                 ZefaniaXmlConverter.ReadParameters.None);  // и про эту не забыть
 
             converter.Convert();
-        }           
+        }        
+
+        private void chkNotebookBibleGenerate_CheckedChanged(object sender, EventArgs e)
+        {
+            cbNotebookBible.Enabled = !((CheckBox)sender).Checked;
+            tbNotebookBibleName.Enabled = ((CheckBox)sender).Checked;
+        }
+
+        private void chkNotebookBibleCommentsGenerate_CheckedChanged(object sender, EventArgs e)
+        {
+            cbNotebookBibleComments.Enabled = !((CheckBox)sender).Checked;
+            tbNotebookBibleCommentsName.Enabled = ((CheckBox)sender).Checked;
+        }
+
+        private void chkNotebookSummaryOfNotesGenerate_CheckedChanged(object sender, EventArgs e)
+        {
+            cbNotebookSummaryOfNotes.Enabled = !((CheckBox)sender).Checked;
+            tbNotebookSummaryOfNotesName.Enabled = ((CheckBox)sender).Checked;
+        }
+
+
+        private void cbNotebookBibleStudyUseFromFile_CheckedChanged(object sender, EventArgs e)
+        {
+            cbNotebookBibleStudy.Enabled = !((CheckBox)sender).Checked; 
+            tbNotebookBibleStudyFilePath.Enabled = ((CheckBox)sender).Checked;
+            btnNotebookBibleStudyFilePath.Enabled = ((CheckBox)sender).Checked;
+        }   
+
+        private void btnZefaniaXmlFilePath_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                tbZefaniaXmlFilePath.Text = openFileDialog.FileName;
+
+                tbVersion.Text = "2.0";
+                tbLocale.Text = Path.GetFileName(Path.GetDirectoryName(openFileDialog.FileName)).ToLower();
+
+            }
+        }       
     }
 }

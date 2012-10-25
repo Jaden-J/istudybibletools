@@ -85,7 +85,7 @@ namespace BibleConfigurator.ModuleConverter
         {
             OneNoteApp = new Application();
             this.IsStrong = isStrong;
-            this.ModuleShortName = moduleShortName;            
+            this.ModuleShortName = moduleShortName.ToLower();            
             this.GenerateNotebooks = generateNotebooks;
             this.GenerateBibleXml = generateBibleXml;
             this.NotebookId = GenerateNotebooks ? NotebookGenerator.CreateNotebook(OneNoteApp, ModuleShortName) : null;

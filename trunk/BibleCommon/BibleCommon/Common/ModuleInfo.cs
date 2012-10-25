@@ -25,7 +25,18 @@ namespace BibleCommon.Common
         Bible = 0,
         Strong = 1,
         Dictionary = 2        
-    } 
+    }
+
+    [Serializable]
+    [XmlRoot(ElementName = "IStudyBibleTools_NotebooksStructure")]
+    public class ModuleBibleStructure  вот здесь (доформировать файлы ..structurte.xml)
+    {
+        [XmlElement(typeof(NotebookInfo), ElementName = "Notebook")]
+        public List<NotebookInfo> Notebooks { get; set; }
+
+        [XmlElement(typeof(SectionInfo), ElementName = "Section")]
+        public List<SectionInfo> Sections { get; set; } 
+    }
 
     [Serializable]
     [XmlRoot(ElementName = "IStudyBibleTools_Module")]

@@ -20,7 +20,7 @@ namespace BibleConfigurator.ModuleConverter
         public enum ReadParameters
         {
             None,
-            RemoveHyperlinks,
+            //RemoveHyperlinks,
             RemoveStrongs
         }
 
@@ -88,6 +88,13 @@ namespace BibleConfigurator.ModuleConverter
             GetTestamentInfo(ContainerType.NewTestament, out newTestamentName, out newTestamentSectionsCount);
 
             this.OldTestamentBooksCount = (oldTestamentSectionsCount ?? newTestamentSectionsCount).Value;
+
+
+            ZefaniaXmlBibleInfo.Books.ForEach(book =>
+            {
+                if (!BooksInfo.Books.Any(bi => bi.Index == book.Index))
+                    throw new ConverterExceptionBase("There is no book with index {0} in BooksInfo file", book.Index);
+            });
 
             for (int i = 0; i < BooksInfo.Books.Count; i++)             
             {

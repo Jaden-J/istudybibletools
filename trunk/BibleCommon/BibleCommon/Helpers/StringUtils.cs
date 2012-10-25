@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BibleCommon.Services;
+using System.Text.RegularExpressions;
 
 namespace BibleCommon.Helpers
 {
@@ -44,9 +45,11 @@ namespace BibleCommon.Helpers
 
     public static class StringUtils
     {
+        private static readonly Regex htmlPattern = new Regex(@"<(.|\n)*?>", RegexOptions.Compiled);      
+
         public static string GetText(string htmlString)
         {
-            return GetText(htmlString, null);
+            return htmlPattern.Replace(htmlString, string.Empty);
         }
 
         public static string GetText(string htmlString, string alphabet)

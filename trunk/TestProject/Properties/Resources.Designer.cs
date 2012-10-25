@@ -62,6 +62,21 @@ namespace TestProject.Properties {
         
         /// <summary>
         ///   Ищет локализованную строку, похожую на &lt;?xml version=&quot;1.0&quot;?&gt;
+        ///&lt;ID xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; descr=&quot;kjv&quot; alphabet=&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&quot;&gt;
+        ///  &lt;BOOK bnumber=&quot;1&quot; bshort=&quot;ge;gen;gn;genesis&quot;&gt;Genesis&lt;/BOOK&gt;
+        ///  &lt;BOOK bnumber=&quot;2&quot; bshort=&quot;ex;exo;exod;exodus&quot;&gt;Exodus&lt;/BOOK&gt;
+        ///  &lt;BOOK bnumber=&quot;3&quot; bshort=&quot;lev;le;lv;levit;leviticus&quot;&gt;Leviticus&lt;/BOOK&gt;
+        ///  &lt;BOOK bnumber=&quot;4&quot; bshort=&quot;nu;num;nm;numb;numbers&quot;&gt;Numbers&lt;/BOOK&gt;
+        ///  &lt;BOOK bnumber=&quot;5&quot; bshort=&quot;de;deut;deu;d [остаток строки не уместился]&quot;;.
+        /// </summary>
+        internal static string BibleBooskInfo_kjv {
+            get {
+                return ResourceManager.GetString("BibleBooskInfo_kjv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на &lt;?xml version=&quot;1.0&quot;?&gt;
         ///&lt;ID descr=&quot;rst&quot; alphabet=&quot;АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя&quot;&gt;
         ///  &lt;BOOK bnumber=&quot;1&quot; bshort=&quot;быт;бт;бытие&quot;&gt;Бытие&lt;/BOOK&gt;
         ///  &lt;BOOK bnumber=&quot;2&quot; bshort=&quot;исх;исход&quot;&gt;Исход&lt;/BOOK&gt;
