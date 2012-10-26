@@ -363,19 +363,34 @@ namespace BibleCommon.Services
             bool isEmpty = false;
 
             if (!firstParallelVerse.IsEmpty)
-            {                
-                verseContent = parallelBookContent.GetVersesContent(parallelVersePointers, strongPrefix, out topLastVerse, out isEmpty);
+            {
+                List<SimpleVersePointer> notFoundVerses;
+                verseContent = parallelBookContent.GetVersesContent(parallelVersePointers, strongPrefix, out topLastVerse, out isEmpty, out notFoundVerses);                
                 if (!isEmpty)
                 {
-                    verseNumberContent = GetVersesNumberString(baseVersePointer, parallelVersePointers, topLastVerse);
+                    verseNumberContent = GetVersesNumberString(baseVersePointer, parallelVersePointers, topLastVerse);                  
 
-                    if (verseContent == null)  // значит нет такого стиха, либо такой по счёту части стиха                                    
-                        throw new GetParallelVerseException(
+                    if (verseContent == null)
+                    {
+                        throw new GetParallelVerseException(                                // значит нет такого стиха, либо такой по счёту части стиха      
                             string.Format("Can not find verseContent{0}",
                                             firstParallelVerse.PartIndex.HasValue
                                                 ? string.Format(" (versePart = {0})", firstParallelVerse.PartIndex + 1)
                                                 : string.Empty),
                                             baseVersePointer, BaseVersePointerException.Severity.Warning);
+                    }
+                    else  
+                    {
+                        foreach (var notFoundVerse in notFoundVerses)
+                        {
+                            Errors.Add(new GetParallelVerseException(                        // значит один из нескольких не удалось найти
+                                string.Format("Can not find verseContent{0}",
+                                                notFoundVerse.PartIndex.HasValue
+                                                    ? string.Format(" (versePart = {0})", notFoundVerse.PartIndex + 1)
+                                                    : string.Empty),
+                                                baseVersePointer, BaseVersePointerException.Severity.Warning));
+                        }
+                    }
                 }                
             }
 
