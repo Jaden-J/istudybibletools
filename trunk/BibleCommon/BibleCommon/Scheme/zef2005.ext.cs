@@ -70,7 +70,7 @@ namespace BibleCommon.Scheme
 
             if (versPointer.PartIndex.HasValue)
             {
-                var versesParts = verseContent.GetValue(true, strongPrefix).Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                var versesParts = verseContent.GetValue(true, strongPrefix).Split(new char[] { '|' });
                 if (versesParts.Length > versPointer.PartIndex.Value)
                     result = versesParts[versPointer.PartIndex.Value].Trim();
             }
@@ -104,7 +104,10 @@ namespace BibleCommon.Scheme
             if (!topVerse.HasValue && verses.Count > 1)
                 topVerse = verses.Last().Verse;
 
-            return string.Join(" ", contents.ToArray());
+            if (contents.All(c => c == null))
+                return null;
+            else
+                return string.Join(" ", contents.ToArray());
         }
 
         public static string GetFullVerseString(int verseNumber, int? topVerseNumber, string verseText)
