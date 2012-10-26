@@ -369,7 +369,7 @@ namespace BibleCommon.Services
                 {
                     verseNumberContent = GetVersesNumberString(baseVersePointer, parallelVersePointers, topLastVerse);
 
-                    if (string.IsNullOrEmpty(verseContent))  // значит нет такого стиха, либо такой по счёту части стиха                                    
+                    if (verseContent == null)  // значит нет такого стиха, либо такой по счёту части стиха                                    
                         throw new GetParallelVerseException(
                             string.Format("Can not find verseContent{0}",
                                             firstParallelVerse.PartIndex.HasValue

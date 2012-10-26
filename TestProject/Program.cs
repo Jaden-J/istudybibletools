@@ -54,32 +54,7 @@ namespace TestProject
 
 
             try
-            {
-
-                var s = @"<table border='0' width='100%' height='26' bgcolor='#6186AF' align='center'>
-  <tr>
-    <td class='centernav' align='center'>
-      <a href='http://www.winblog.ru/'>главная</a> &nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;
-      <a href='http://www.winblog.ru/softall/'>софт</a> &nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;
-      <a href='http://www.winblog.ru/rss.html'>RSS-ленты</a> &nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;
-      <a href='http://www.winblog.ru/reklama.html'>реклама</a> &nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;
-      <a href='http://www.winblog.ru/index.php?action=mobile'>PDA-Версия</a> &nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;
-      <a href='http://www.winblog.ru/widget.html'><font color='yellow'>Наш Widget</font></a> &nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;
-      <a href='http://www.winblog.ru/index.php?do=feedback'>Контакты</a>
-    </td>
-  </tr>
-</table>";
-
-
-                for (int i = 0; i < 100; i++)
-                {
-                    
-
-
-                    Console.WriteLine(StringUtils.GetText(s));
-                }
-
-
+            {             
                 //SearchInNotebook();
 
                 //TestModule();
@@ -94,7 +69,7 @@ namespace TestProject
 
                 //GenerateDictionary();
 
-                //GenerateStrongDictionary();
+                GenerateStrongDictionary();
                 
                 //SearchForEnText();
 
