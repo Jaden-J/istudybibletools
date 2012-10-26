@@ -82,9 +82,10 @@ namespace BibleCommon.Scheme
             return result;
         }
 
-        public string GetVersesContent(List<SimpleVersePointer> verses, string strongPrefix, out int? topVerse, out bool isEmpty)
+        public string GetVersesContent(List<SimpleVersePointer> verses, string strongPrefix, out int? topVerse, out bool isEmpty, out List<SimpleVersePointer> notFoundVerses)
         {
             var contents = new List<string>();
+            notFoundVerses = new List<SimpleVersePointer>();
 
             topVerse = verses.First().TopVerse;
 
@@ -94,8 +95,12 @@ namespace BibleCommon.Scheme
             {
                 bool localIsEmpty;
                 VerseNumber vn;
-                contents.Add(GetVerseContent(verse, strongPrefix, out vn, out localIsEmpty));
+                var verseContent = GetVerseContent(verse, strongPrefix, out vn, out localIsEmpty);
+                contents.Add(verseContent);
                 isEmpty = isEmpty && localIsEmpty;
+
+                if (!localIsEmpty && verseContent == null)
+                    notFoundVerses.Add(verse);
 
                 if (vn.TopVerse.GetValueOrDefault(-2) > topVerse.GetValueOrDefault(-1))
                     topVerse = vn.TopVerse;
