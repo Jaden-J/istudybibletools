@@ -18,13 +18,14 @@ using System.Xml.Linq;
 
 namespace RibbonButtons
 {
-    [GuidAttribute("61139959-A5E4-4261-977A-6262429033E1"), ProgId("RibbonButtons.ButtonsDefinition")]
+    [GuidAttribute("61139959-A5E4-4261-977A-6262429033E1"), ProgId("IStudyBibleTools.ButtonsDefinition")]
 	public class ButtonsDefinition : IDTExtensibility2, IRibbonExtensibility
     {
         #region consts
 
         private const string BibleConfiguratorPath = "tools\\BibleConfigurator\\BibleConfigurator.exe";
         private const string BibleCommonPath = "tools\\BibleConfigurator\\BibleCommon.dll";
+        private const string SharpSerializerPath = "tools\\BibleConfigurator\\Polenter.SharpSerializer.dll";
         private const string BibleNoteLinkerPath = "tools\\BibleNoteLinker\\BibleNoteLinker.exe";
         private const string BibleVerseLinkerPath = "tools\\BibleVerseLinker\\BibleVerseLinkerEx.exe";
         private const string BibleVersePointerPath = "tools\\BibleVersePointer\\BibleVersePointer.exe";
@@ -63,8 +64,10 @@ namespace RibbonButtons
         {
             try
             {
-                if (args.Name == string.Format("BibleCommon, Version={0}, Culture=neutral, PublicKeyToken=null", BibleCommonVersion))
+                if (args.Name.Contains("BibleCommon, Version="))
                     return AssemblyLoader.LoadAssembly(Path.Combine(Utils.GetCurrentDirectory(), BibleCommonPath));
+                else if (args.Name.Contains("Polenter.SharpSerializer, Version="))
+                    return AssemblyLoader.LoadAssembly(Path.Combine(Utils.GetCurrentDirectory(), SharpSerializerPath));
             }
             catch (Exception ex)
             {
@@ -72,29 +75,7 @@ namespace RibbonButtons
             }
 
             return null;
-        }
-
-        private Version _bibleCommonVersion;
-        private Version BibleCommonVersion
-        {
-            get
-            {
-                try
-                {
-                    if (_bibleCommonVersion == null)
-                    {
-                        var assembly = AssemblyLoader.LoadAssembly(Path.Combine(Utils.GetCurrentDirectory(), BibleCommonPath));
-                        _bibleCommonVersion = assembly.GetName().Version;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-
-                return _bibleCommonVersion;
-            }
-        }
+        }  
 
 		public void OnDisconnection(Extensibility.ext_DisconnectMode disconnectMode, ref System.Array custom)
 		{
@@ -197,6 +178,12 @@ namespace RibbonButtons
                         programClassName = BibleConfiguratorProgramClassName;
                         //loadInSameProcess = true;
                         break;
+                    case "SearchInDictionaries":
+                        path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);
+                        programClassName = BibleConfiguratorProgramClassName;
+                        args = "-searchInDictionaries";
+                        loadInSameProcess = true;
+                        break;
                 }
 
                 RunProgram(path, programClassName, args, loadInSameProcess);
@@ -275,6 +262,9 @@ namespace RibbonButtons
                         break;
                     case "UnlockFolder.png":
                         Properties.Resources.UnlockFolder.Save(mem, ImageFormat.Png);
+                        break;
+                    case "Dictionary.png":
+                        Properties.Resources.Dictionary.Save(mem, ImageFormat.Png);
                         break;
                 }
 

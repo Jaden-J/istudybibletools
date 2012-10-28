@@ -61,8 +61,18 @@
     <Compile Include="AboutProgramForm.Designer.cs">
       <DependentUpon>AboutProgramForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="BaseSupplementalForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BaseSupplementalForm.Designer.cs">
+      <DependentUpon>BaseSupplementalForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Common.cs" />
     <Compile Include="Consts.cs" />
+    <Compile Include="CustomFormLogger.cs" />
+    <Compile Include="DictionaryModulesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Installer.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -72,23 +82,43 @@
     <Compile Include="LoadForm.Designer.cs">
       <DependentUpon>LoadForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Logger.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ModuleConverter\BibleQuotaConverter.cs" />
-    <Compile Include="ModuleConverter\ConverterBase.cs" />
-    <Compile Include="ModuleConverter\DefaultRusModuleGenerator.cs" />
-    <Compile Include="ModuleConverter\NotebookGenerator.cs" />
+    <Compile Include="ModuleConverter\BibleBooksInfo.cs" />
+    <Compile Include="ModuleConverter\BibleQuotaConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ModuleConverter\BibleQuotaDictionaryConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ModuleConverter\ConverterBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ModuleConverter\DefaultRusModuleGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ModuleConverter\PredefinedInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ModuleConverter\ZefaniaXmlConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="NotebookChecker.cs" />
     <Compile Include="NotebookParametersForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="NotebookParametersForm.Designer.cs">
       <DependentUpon>NotebookParametersForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ParallelBibleCheckerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ParallelBibleCheckerForm.Designer.cs">
+      <DependentUpon>ParallelBibleCheckerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -98,17 +128,32 @@
     <Compile Include="RenameSectionGroupsForm.Designer.cs">
       <DependentUpon>RenameSectionGroupsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="SearchInDictionariesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SearchInDictionariesForm.Designer.cs">
+      <DependentUpon>SearchInDictionariesForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SetWidthForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SetWidthForm.Designer.cs">
       <DependentUpon>SetWidthForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="SupplementalBibleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Tools\BackupManager.cs" />
     <Compile Include="Tools\ResizeBibleManager.cs" />
     <Compile Include="Tools\DeleteNotesPagesManager.cs" />
     <Compile Include="Tools\NotebookIteratorHelper.cs" />
     <Compile Include="Tools\RelinkAllBibleCommentsManager.cs" />
+    <Compile Include="ZefaniaXmlConverterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ZefaniaXmlConverterForm.Designer.cs">
+      <DependentUpon>ZefaniaXmlConverterForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AboutModuleForm.resx">
       <DependentUpon>AboutModuleForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -122,6 +167,12 @@
     <EmbeddedResource Include="AboutProgramForm.ru.resx">
       <DependentUpon>AboutProgramForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="BaseSupplementalForm.resx">
+      <DependentUpon>BaseSupplementalForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BaseSupplementalForm.ru.resx">
+      <DependentUpon>BaseSupplementalForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LoadForm.resx">
       <DependentUpon>LoadForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -131,6 +182,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.ru.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="NotebookParametersForm.resx">
       <DependentUpon>NotebookParametersForm.cs</DependentUpon>
@@ -138,6 +190,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NotebookParametersForm.ru.resx">
       <DependentUpon>NotebookParametersForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ParallelBibleCheckerForm.resx">
+      <DependentUpon>ParallelBibleCheckerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -155,11 +210,20 @@
     <EmbeddedResource Include="RenameSectionGroupsForm.ru.resx">
       <DependentUpon>RenameSectionGroupsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SearchInDictionariesForm.resx">
+      <DependentUpon>SearchInDictionariesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SearchInDictionariesForm.ru.resx">
+      <DependentUpon>SearchInDictionariesForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SetWidthForm.resx">
       <DependentUpon>SetWidthForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SetWidthForm.ru.resx">
       <DependentUpon>SetWidthForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ZefaniaXmlConverterForm.resx">
+      <DependentUpon>ZefaniaXmlConverterForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config">
       <SubType>Designer</SubType>
@@ -200,6 +264,30 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\aboutModuleFormIcon.ico" />
+    <Content Include="Resources\aboutProgramFormIcon.ico" />
+    <Content Include="Resources\apply.png" />
+    <Content Include="Resources\BibleBooskInfo\other.xml" />
+    <Content Include="Resources\BibleBooskInfo\kjv.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\BibleBooskInfo\rst.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\dictionary.ico" />
+    <Content Include="Resources\formIcon.ico" />
+    <Content Include="Resources\plus.png" />
+    <Content Include="Resources\BibleTranslationDifferences\rst77.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Resources\BibleTranslationDifferences\rst.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

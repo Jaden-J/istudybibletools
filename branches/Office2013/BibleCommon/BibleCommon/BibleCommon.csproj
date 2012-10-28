@@ -37,6 +37,9 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\..\ThirdParty\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="Polenter.SharpSerializer">
+      <HintPath>..\..\ThirdParty\Polenter.SharpSerializer.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -49,13 +52,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ArgsClasses.cs" />
+    <Compile Include="Common\BibleTranslationDifferencesEx.cs" />
+    <Compile Include="Common\BibleTranslationDifferencesFormula.cs" />
+    <Compile Include="Common\CacheClasses.cs" />
     <Compile Include="Common\CustomExceptions.cs" />
     <Compile Include="Common\ModuleInfo.cs" />
     <Compile Include="Common\ProcessAbortedByUserException.cs" />
     <Compile Include="Common\ResultClasses.cs" />
     <Compile Include="Common\VersePointerSearchResult.cs" />
     <Compile Include="Consts\Consts.cs" />
+    <Compile Include="Contracts\ICustomLogger.cs" />
+    <Compile Include="Contracts\IProtocolHandler.cs" />
+    <Compile Include="Handlers\FindVersesWithStrongNumberHandler.cs" />
+    <Compile Include="Handlers\NavigateToStrongHandler.cs" />
+    <Compile Include="Helpers\CollectionHelper.cs" />
     <Compile Include="Helpers\FormExtensions.cs" />
+    <Compile Include="Helpers\SharpSerializationHelper.cs" />
     <Compile Include="Helpers\StringUtils.cs" />
     <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Resources\Constants.ru.Designer.cs">
@@ -68,9 +80,20 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Scheme\zef2005.cs">
+      <DependentUpon>zef2005.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Scheme\zef2005.ext.cs" />
+    <Compile Include="Services\BibleParallelTranslationConnectorManager.cs" />
+    <Compile Include="Services\BibleParallelTranslationManager.cs" />
+    <Compile Include="Services\BibleVersesLinksCacheManager.cs" />
+    <Compile Include="Services\DictionaryManager.cs" />
+    <Compile Include="Services\DictionaryTermsCacheManager.cs" />
+    <Compile Include="Services\FormLogger.cs" />
     <Compile Include="Services\LanguageManager.cs" />
     <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\ModulesManager.cs" />
+    <Compile Include="Services\NotebookGenerator.cs" />
     <Compile Include="Services\NotebookIterator.cs" />
     <Compile Include="Services\NoteLinkManager.cs" />
     <Compile Include="Services\NotesPageManager.cs" />
@@ -79,8 +102,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\HierarchySearchManager.cs" />
     <Compile Include="Helpers\OneNoteUtils.cs" />
+    <Compile Include="Services\QuickStyleManager.cs" />
     <Compile Include="Services\RelinkAllBibleNotesManager.cs" />
     <Compile Include="Services\SettingsManager.cs" />
+    <Compile Include="Services\SupplementalBibleManager.cs" />
     <Compile Include="Services\VerseLinkManager.cs" />
     <Compile Include="Common\VersePointer.cs" />
     <Compile Include="..\..\VersionInfo.cs">
@@ -89,6 +114,18 @@
     <Compile Include="Services\VerseRecognitionManager.cs" />
     <Compile Include="Services\VersionOnServerManager.cs" />
     <Compile Include="Helpers\ZipLibHelper.cs" />
+    <Compile Include="UI\Forms\ErrorsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\ErrorsForm.Designer.cs">
+      <DependentUpon>ErrorsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Forms\MessageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\MessageForm.Designer.cs">
+      <DependentUpon>MessageForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Constants.ru.resx">
@@ -101,6 +138,15 @@
       <LastGenOutput>Constants.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\ErrorsForm.resx">
+      <DependentUpon>ErrorsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\ErrorsForm.ru.resx">
+      <DependentUpon>ErrorsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\MessageForm.resx">
+      <DependentUpon>MessageForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Interop.OneNote">
@@ -112,6 +158,20 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Scheme\zef2005.xsc">
+      <DependentUpon>zef2005.xsd</DependentUpon>
+    </None>
+    <None Include="Scheme\zef2005.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Scheme\zef2005.xss">
+      <DependentUpon>zef2005.xsd</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\MessageForm.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

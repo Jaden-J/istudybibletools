@@ -12,9 +12,40 @@ using System.Threading;
 using BibleCommon.Common;
 using System.Resources;
 using System.Globalization;
+using System.ComponentModel;
 
 namespace BibleCommon.Services
 {
+    public class DictionaryInfo
+    {
+        public string ModuleName { get; set; }
+        
+        /// <summary>
+        /// Section or SectionGroup ID
+        /// </summary>
+        public string SectionId { get; set; }
+
+        public DictionaryInfo(string moduleName, string sectionId)
+        {
+            this.ModuleName = moduleName;
+            this.SectionId = sectionId;
+        }
+
+        internal DictionaryInfo(string xmlString)
+        {
+            var s = xmlString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            if (s.Length != 2)
+                throw new NotSupportedException(string.Format("Invalid DictionaryModuleInfo: '{0}'", xmlString));
+            this.ModuleName = s[0];
+            this.SectionId = s[1];
+        }
+
+        public override string ToString()
+        {
+            return string.Join(",", new string[] { this.ModuleName, this.SectionId });
+        }
+    }
+
     public class SettingsManager
     {
         #region Properties
@@ -46,7 +77,9 @@ namespace BibleCommon.Services
         public string NotebookId_Bible { get; set; }
         public string NotebookId_BibleComments { get; set; }
         public string NotebookId_BibleNotesPages { get; set; }        
-        public string NotebookId_BibleStudy { get; set; }        
+        public string NotebookId_BibleStudy { get; set; }
+        public string NotebookId_SupplementalBible { get; set; }
+        public string NotebookId_Dictionaries { get; set; }        
         public string SectionGroupId_Bible { get; set; }
         public string SectionGroupId_BibleStudy { get; set; }
         public string SectionGroupId_BibleComments { get; set; }        
@@ -55,14 +88,36 @@ namespace BibleCommon.Services
         public string SectionName_DefaultBookOverview { get; set; }
         public string PageName_Notes { get; set; }
 
-        public string ModuleName { get; set; }
+        private string _moduleName { get; set; }
+        public string ModuleName 
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_moduleName))
+                    return _moduleName.ToLower();
+
+                return _moduleName;
+            }
+            set
+            {
+                _moduleName = value;
+            }
+        }
 
         public Version NewVersionOnServer { get; set; }
         public DateTime? NewVersionOnServerLatestCheckTime { get; set; }
-
         public int PageWidth_Notes { get; set; }
-
         public int Language { get; set; }
+        public int PageWidth_Bible { get; set; }        
+        public List<string> SupplementalBibleModules { get; set; }
+        public string SupplementalBibleLinkName { get; set; }        
+        public List<DictionaryInfo> DictionariesModules { get; set; }
+
+        /// <summary>
+        /// Использовать ли промежуточные ссылки, которые открываются комманд-хэндлером OpenVerseHandler
+        /// </summary>
+        public bool UseMiddleStrongLinks { get; set; }
+        
 
         /// <summary>
         /// Необходимо ли линковать каждый стих, входящий в MultiVerse
@@ -70,10 +125,9 @@ namespace BibleCommon.Services
         public bool ExpandMultiVersesLinking { get; set; }
 
         /// <summary>
-        /// необходимо ли линковать даже стихи, входящие в главу, помечанную в заголовке с []
+        /// необходимо ли линковать даже стихи, входящие в главу, помеченную в заголовке с []
         /// </summary>
         public bool ExcludedVersesLinking { get; set; }
-
 
         public bool UseDifferentPagesForEachVerse { get; set; }
 
@@ -122,9 +176,33 @@ namespace BibleCommon.Services
 
         #endregion
 
+        public string GetValidSupplementalBibleNotebookId(Application oneNoteApp, bool refreshCache = false)
+        {
+            if (!string.IsNullOrEmpty(NotebookId_SupplementalBible))
+                if (!OneNoteUtils.NotebookExists(oneNoteApp, NotebookId_SupplementalBible, refreshCache))
+                {
+                    this.SupplementalBibleModules.Clear();
+                    return null;
+                }
+
+            return NotebookId_SupplementalBible;
+        }
+
+        public string GetValidDictionariesNotebookId(Application oneNoteApp, bool refreshCache = false)
+        {
+            if (!string.IsNullOrEmpty(NotebookId_Dictionaries))
+                if (!OneNoteUtils.NotebookExists(oneNoteApp, NotebookId_Dictionaries, refreshCache))
+                {
+                    this.DictionariesModules.Clear();
+                    return null;
+                }
+
+            return NotebookId_Dictionaries;
+        }
+
         public bool CurrentModuleIsCorrect()
         {
-            return !string.IsNullOrEmpty(ModuleName) && ModulesManager.ModuleIsCorrect(ModuleName);
+            return !string.IsNullOrEmpty(ModuleName) && ModulesManager.ModuleIsCorrect(ModuleName, ModuleType.Bible);
         }
 
         public bool IsConfigured(Application oneNoteApp)
@@ -137,7 +215,7 @@ namespace BibleCommon.Services
                 && !string.IsNullOrEmpty(this.PageName_DefaultComments)
                 && !string.IsNullOrEmpty(this.PageName_Notes)
                 && !string.IsNullOrEmpty(this.ModuleName)
-                && ModulesManager.ModuleIsCorrect(this.ModuleName)
+                && ModulesManager.ModuleIsCorrect(this.ModuleName, ModuleType.Bible)
                 && _useDefaultSettingsNodeExists;
 
             if (result)
@@ -190,9 +268,17 @@ namespace BibleCommon.Services
 
         protected SettingsManager()
         {
+            SetDefaultSettings();
+
             _filePath = Path.Combine(Utils.GetProgramDirectory(), Consts.Constants.ConfigFileName);
 
             ReLoadSettings();
+        }
+
+        private void SetDefaultSettings()
+        {
+            SupplementalBibleModules = new List<string>();
+            DictionariesModules = new List<DictionaryInfo>();
         }
 
         private void LoadSettingsFromFile()
@@ -233,7 +319,7 @@ namespace BibleCommon.Services
             this.NewVersionOnServer = GetParameterValue<Version>(xdoc, Consts.Constants.ParameterName_NewVersionOnServer, null, value => new Version(value));
             this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, null, value => DateTime.Parse(value));            
             this.Language = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_Language, Thread.CurrentThread.CurrentUICulture.LCID);
-            this.ModuleName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ModuleName, string.Empty);                
+            this.ModuleName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ModuleName, string.Empty);            
         }
 
         private CultureInfo _currentCultureInfo = null;
@@ -269,6 +355,7 @@ namespace BibleCommon.Services
             this.PageName_DefaultComments = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameDefaultComments);
             this.PageName_Notes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameNotes);
             this.PageWidth_Notes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthNotes, 500);
+            this.PageWidth_Bible = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthBible, 500);
             this.ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_ExpandMultiVersesLinking);
             this.ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_ExcludedVersesLinking);
             this.UseDifferentPagesForEachVerse = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseDifferentPagesForEachVerse);
@@ -276,8 +363,9 @@ namespace BibleCommon.Services
             this.PageName_RubbishNotes = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_PageNameRubbishNotes,
                                                         GetResourceString(Consts.Constants.ResourceName_DefaultPageName_RubbishNotes));
             this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
-            this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, true);
-            this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, true);
+            this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking);
+            this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking);
+            this.UseMiddleStrongLinks = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseMiddleStrongLinks, Consts.Constants.DefaultUseMiddleStrongLinks);            
         }
 
         private void LoadGeneralSettings(XDocument xdoc)
@@ -285,11 +373,21 @@ namespace BibleCommon.Services
             this.NotebookId_Bible = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdBible);
             this.NotebookId_BibleComments = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdBibleComments);
             this.NotebookId_BibleNotesPages = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdBibleNotesPages);
-            this.NotebookId_BibleStudy = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdBibleStudy);
+            this.NotebookId_BibleStudy = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdBibleStudy);            
             this.SectionGroupId_Bible = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionGroupIdBible);
             this.SectionGroupId_BibleStudy = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionGroupIdBibleStudy);
             this.SectionGroupId_BibleComments = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionGroupIdBibleComments);
             this.SectionGroupId_BibleNotesPages = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionGroupIdBibleNotesPages);
+
+            this.NotebookId_SupplementalBible = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdSupplementalBible);
+            this.SupplementalBibleModules = GetParameterValue<List<string>>(xdoc, Consts.Constants.ParameterName_SupplementalBibleModules, new List<string>(), 
+                                                s => new List<string>(s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)));
+            this.SupplementalBibleLinkName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SupplementalBibleLinkName,
+                                                  Consts.Constants.DefaultSupplementalBibleLinkName);
+
+            this.NotebookId_Dictionaries = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdDictionaries);
+            this.DictionariesModules = GetParameterValue<List<DictionaryInfo>>(xdoc, Consts.Constants.ParameterName_DictionariesModules, new List<DictionaryInfo>(), 
+                                                s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(xmlString => new DictionaryInfo(xmlString)));
         }
 
         private T GetParameterValue<T>(XDocument xdoc, string parameterName, object defaultValue = null, Func<string, T> convertFunc = null)
@@ -322,18 +420,24 @@ namespace BibleCommon.Services
             return (T)Convert.ChangeType(value, typeParameterType);
         }
 
+
+        /// <summary>
+        /// Загружает настройки по умолчанию, если стоит галочка "Использовать настройки по умолчанию"
+        /// </summary>
         public void LoadDefaultSettings()
         {
             this.UseDefaultSettings = true;      
             
             this.PageWidth_Notes = Consts.Constants.DefaultPageWidth_Notes;
+            this.PageWidth_Bible = Consts.Constants.DefaultPageWidth_Bible;
             this.ExpandMultiVersesLinking = Consts.Constants.DefaultExpandMultiVersesLinking;            
             this.ExcludedVersesLinking = Consts.Constants.DefaultExcludedVersesLinking;
             this.UseDifferentPagesForEachVerse = Consts.Constants.DefaultUseDifferentPagesForEachVerse;
             this.RubbishPage_Use = Consts.Constants.DefaultRubbishPage_Use;            
             this.PageWidth_RubbishNotes = Consts.Constants.DefaultPageWidth_RubbishNotes;
             this.RubbishPage_ExpandMultiVersesLinking = Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking;
-            this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;            
+            this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
+            this.UseMiddleStrongLinks = Consts.Constants.DefaultUseMiddleStrongLinks;
 
             LoadDefaultLocalazibleSettings();
         }
@@ -359,7 +463,8 @@ namespace BibleCommon.Services
                 && this.RubbishPage_Use == Consts.Constants.DefaultRubbishPage_Use                
                 && this.PageWidth_RubbishNotes == Consts.Constants.DefaultPageWidth_RubbishNotes
                 && this.RubbishPage_ExpandMultiVersesLinking == Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking
-                && this.RubbishPage_ExcludedVersesLinking == Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
+                && this.RubbishPage_ExcludedVersesLinking == Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking
+                && this.UseMiddleStrongLinks == Consts.Constants.DefaultUseMiddleStrongLinks;
         }
 
         public void Save()
@@ -374,6 +479,8 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_NotebookIdBibleComments, this.NotebookId_BibleComments),
                                   new XElement(Consts.Constants.ParameterName_NotebookIdBibleNotesPages, this.NotebookId_BibleNotesPages),
                                   new XElement(Consts.Constants.ParameterName_NotebookIdBibleStudy, this.NotebookId_BibleStudy),                                  
+                                  new XElement(Consts.Constants.ParameterName_NotebookIdSupplementalBible, this.NotebookId_SupplementalBible),
+                                  new XElement(Consts.Constants.ParameterName_NotebookIdDictionaries, this.NotebookId_Dictionaries),
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBible, this.SectionGroupId_Bible),                                                                    
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBibleComments, this.SectionGroupId_BibleComments),
                                   new XElement(Consts.Constants.ParameterName_SectionGroupIdBibleNotesPages, this.SectionGroupId_BibleNotesPages),
@@ -395,7 +502,12 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, this.RubbishPage_ExcludedVersesLinking),
                                   new XElement(Consts.Constants.ParameterName_Language, this.Language),
                                   new XElement(Consts.Constants.ParameterName_ModuleName, this.ModuleName),
-                                  new XElement(Consts.Constants.ParameterName_UseDefaultSettings, this.UseDefaultSettings.Value)
+                                  new XElement(Consts.Constants.ParameterName_UseDefaultSettings, this.UseDefaultSettings.Value),
+                                  new XElement(Consts.Constants.ParameterName_PageWidthBible, this.PageWidth_Bible),
+                                  new XElement(Consts.Constants.ParameterName_SupplementalBibleModules, string.Join(";", this.SupplementalBibleModules.ToArray())),
+                                  new XElement(Consts.Constants.ParameterName_SupplementalBibleLinkName, this.SupplementalBibleLinkName),                                  
+                                  new XElement(Consts.Constants.ParameterName_DictionariesModules, string.Join(";", this.DictionariesModules.ConvertAll(dm => dm.ToString()).ToArray())),
+                                  new XElement(Consts.Constants.ParameterName_UseMiddleStrongLinks, UseMiddleStrongLinks)
                                   );
 
                     xDoc.Save(sw);

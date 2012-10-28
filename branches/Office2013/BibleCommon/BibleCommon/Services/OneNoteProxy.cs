@@ -9,6 +9,11 @@ using System.Xml;
 using BibleCommon.Common;
 using BibleCommon.Consts;
 using System.Runtime.InteropServices;
+using BibleCommon.Contracts;
+using System.Xml.XPath;
+using System.IO;
+using BibleCommon.Handlers;
+
 
 namespace BibleCommon.Services
 {
@@ -167,13 +172,47 @@ namespace BibleCommon.Services
         private Dictionary<CommentPageId, string> _commentPagesIdsCache = new Dictionary<CommentPageId, string>();
         private Dictionary<string, OneNoteProxy.BiblePageId> _processedBiblePages = new Dictionary<string, BiblePageId>();
         private Dictionary<LinkId, string> _linksCache = new Dictionary<LinkId, string>();        
-        private HashSet<VersePointer> _processedVerses = new HashSet<VersePointer>();
+        private HashSet<SimpleVersePointer> _processedVerses = new HashSet<SimpleVersePointer>();
         private List<SortPageInfo> _sortVerseLinkPagesInfo = new List<SortPageInfo>();
-
+        private Dictionary<string, string> _bibleVersesLinks = null;
+        private Dictionary<string, ModuleDictionaryInfo> _moduleDictionaries = new Dictionary<string, ModuleDictionaryInfo>();
+        private Dictionary<string, Dictionary<string, string>> _dictionariesTermsLinks = new Dictionary<string, Dictionary<string, string>>();
+        private bool? _isBibleVersesLinksCacheActive;
 
         protected OneNoteProxy()
         {
 
+        }
+
+        public DictionaryTermLink GetDictionaryTermLink(string term, string dictionaryModuleShortName)
+        {
+            Dictionary<string, string> cachedLinks = null;
+            if (!_dictionariesTermsLinks.ContainsKey(dictionaryModuleShortName))
+            {
+                cachedLinks = DictionaryTermsCacheManager.LoadCachedDictionary(dictionaryModuleShortName);
+                _dictionariesTermsLinks.Add(dictionaryModuleShortName, cachedLinks);
+            }
+            else
+                cachedLinks = _dictionariesTermsLinks[dictionaryModuleShortName];
+
+            if (!cachedLinks.ContainsKey(term))
+                throw new ArgumentException(string.Format("Can not find term '{0}' in DictionaryCachedTermSet '{1}' ", term, dictionaryModuleShortName));
+
+            return new DictionaryTermLink(cachedLinks[term]);
+        }
+
+        public ModuleDictionaryInfo GetModuleDictionary(string moduleShortName)
+        {
+            ModuleDictionaryInfo result = null;
+            if (!_moduleDictionaries.ContainsKey(moduleShortName))
+            {
+                result = ModulesManager.GetModuleDictionaryInfo(moduleShortName);
+                _moduleDictionaries.Add(moduleShortName, result);
+            }
+            else
+                result = _moduleDictionaries[moduleShortName];
+
+            return result;
         }
 
         public List<SortPageInfo> SortVerseLinkPagesInfo
@@ -193,10 +232,13 @@ namespace BibleCommon.Services
                 ParentPageId = verseLinkParentPageId,
                 PageLevel = pageLevel
             });
-        }
-
+        }     
+      
         public string GenerateHref(Application oneNoteApp, string pageId, string objectId)
         {
+            if (string.IsNullOrEmpty(pageId))
+                throw new ArgumentNullException("pageId");
+
             LinkId key = new LinkId()
             {                
                 PageId = pageId,
@@ -208,6 +250,7 @@ namespace BibleCommon.Services
                 //lock (_locker)
                 {
                     string link;
+                    
                     oneNoteApp.GetHyperlinkToObject(pageId, objectId, out link);
                     
                     //if (!_linksCache.ContainsKey(key))   // пока в этом нет смысла
@@ -226,17 +269,25 @@ namespace BibleCommon.Services
             }
         }
 
-        public HashSet<VersePointer> ProcessedVerses
+        public HashSet<SimpleVersePointer> ProcessedVerses
         {
             get
             {
                 return _processedVerses;
             }
         }
-        public void AddProcessedVerse(VersePointer vp)
+
+        public void AddProcessedVerse(VersePointer vp, VerseNumber? verseNumber)
         {
-            if (!_processedVerses.Contains(vp))
-                _processedVerses.Add(vp);
+            var svp = vp.ToSimpleVersePointer();
+            if (verseNumber.HasValue)
+                svp.VerseNumber = verseNumber.Value;
+
+            svp.GetAllVerses().ForEach(v =>
+            {
+                if (!_processedVerses.Contains(v))
+                    _processedVerses.Add(v);
+            });
         }      
 
         public void AddProcessedBiblePages(string bibleSectionId, string biblePageId, string biblePageName, VersePointer chapterPointer)
@@ -396,6 +447,11 @@ namespace BibleCommon.Services
             GetHierarchy(oneNoteApp, hierarchyId, scope, true);
         }
 
+        public void RefreshHierarchyCache()
+        {            
+            _hierarchyContentCache.Clear();
+        }
+
         public void CommitAllModifiedPages(Application oneNoteApp, Func<PageContent, bool> filter, 
             Action<int> onAllPagesToCommitFound, Action<PageContent> onPageProcessed)
         {   
@@ -455,5 +511,44 @@ namespace BibleCommon.Services
         //{
         //    GetPageContent(oneNoteApp, pageId, true);
         //}
+        
+        public bool IsBibleVersesLinksCacheActive
+        {
+            get
+            {
+                if (!_isBibleVersesLinksCacheActive.HasValue)
+                    _isBibleVersesLinksCacheActive = BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible);
+
+                return _isBibleVersesLinksCacheActive.Value;
+            }            
+        }
+
+        public VersePointerLink GetVersePointerLink(SimpleVersePointer vp)
+        {
+            if (_bibleVersesLinks == null)
+            {
+                try
+                {
+                    _bibleVersesLinks = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
+                }
+                catch (Exception ex)
+                {
+                    BibleCommon.Services.Logger.LogError(ex);
+                    throw;
+                }                
+            }
+
+            var vpString = vp.ToFirstVerseString();
+            if (_bibleVersesLinks.ContainsKey(vpString))
+                return new VersePointerLink(_bibleVersesLinks[vpString]);
+            else
+            {
+                var chapterPointerString = vp.GetChapterPointer().ToFirstVerseString();
+                if (_bibleVersesLinks.ContainsKey(chapterPointerString))
+                    return new VersePointerLink(_bibleVersesLinks[chapterPointerString]);
+            }
+
+            return null;
+        }       
     }
 }

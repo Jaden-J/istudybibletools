@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BibleCommon.Services;
+using System.Text.RegularExpressions;
 
 namespace BibleCommon.Helpers
 {
@@ -44,9 +45,11 @@ namespace BibleCommon.Helpers
 
     public static class StringUtils
     {
+        private static readonly Regex htmlPattern = new Regex(@"<(.|\n)*?>", RegexOptions.Compiled);      
+
         public static string GetText(string htmlString)
         {
-            return GetText(htmlString, null);
+            return htmlPattern.Replace(htmlString, string.Empty);
         }
 
         public static string GetText(string htmlString, string alphabet)
@@ -151,7 +154,7 @@ namespace BibleCommon.Helpers
 
         public static bool IsDigit(char c)
         {
-            return (c >= '0' && c <= '9');
+            return char.IsDigit(c);            
         }
 
         public static bool IsCharAlphabetical(char c)
@@ -159,14 +162,20 @@ namespace BibleCommon.Helpers
             return IsCharAlphabetical(c, null);
         }
 
-        public static bool IsCharAlphabetical(char c, string alphabet)
+        public static bool IsCharAlphabetical(char c, string alphabet, bool strict = false)
         {
             if (string.IsNullOrEmpty(alphabet))
-                alphabet = SettingsManager.Instance.CurrentModule.BibleStructure.Alphabet;
+            {
+                if (!string.IsNullOrEmpty(SettingsManager.Instance.ModuleName))
+                    alphabet = SettingsManager.Instance.CurrentModule.BibleStructure.Alphabet;
+            }
 
-            return alphabet.Contains(c)
-                 || (c >= 'a' && c <= 'z')
-                 || (c >= 'A' && c <= 'Z');
+            if (!string.IsNullOrEmpty(alphabet))
+                return alphabet.Contains(c)
+                        || (!strict && (c >= 'a' && c <= 'z'))
+                        || (!strict && (c >= 'A' && c <= 'Z'));
+            else
+                return char.IsLetter(c);
         }
 
         public static int GetEntranceCount(string s, string searchString)
@@ -186,6 +195,7 @@ namespace BibleCommon.Helpers
 
         /// <summary>
         /// возвращает номер, находящийся в начале строки: например вернёт 12 для строки "12 глава"
+        /// ограничение: поддерживает максимум трёхзначные числа
         /// </summary>
         /// <param name="pointerElement"></param>
         /// <returns></returns>
@@ -247,7 +257,7 @@ namespace BibleCommon.Helpers
         public static string GetDigit(string s, int index)
         {
             int d;
-            if (index > 0 && index < s.Length)
+            if (index > -1 && index < s.Length)
                 if (int.TryParse(s[index].ToString(), out d))
                     return d.ToString();
 
@@ -299,6 +309,11 @@ namespace BibleCommon.Helpers
         }
 
 
+        public static string GetPrevString(string s, int index, SearchMissInfo missInfo, out int textBreakIndex, out int htmlBreakIndex,
+           StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
+        {
+            return GetPrevString(s, index, missInfo, null, out textBreakIndex, out htmlBreakIndex, ignoreSpaces, searchMode);
+        }
 
         /// <summary>
         /// 
@@ -310,7 +325,7 @@ namespace BibleCommon.Helpers
         /// <param name="ignoreSpaces">Правила игнорирования проблелов. Но если режим searchMode установлен в SearchFirstValueChar, то данный параметр игнорируется, так как пробел тоже считается разделителем</param>
         /// <param name="searchMode">что ищем</param>
         /// <returns></returns>
-        public static string GetPrevString(string s, int index, SearchMissInfo missInfo, out int textBreakIndex, out int htmlBreakIndex,
+        public static string GetPrevString(string s, int index, SearchMissInfo missInfo, string alphabet, out int textBreakIndex, out int htmlBreakIndex,
             StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
         {
             if (searchMode == StringSearchMode.SearchFirstValueChar || searchMode == StringSearchMode.SearchFirstChar)
@@ -385,7 +400,7 @@ namespace BibleCommon.Helpers
                         }
                     }
                 }
-                else if (IsCharAlphabetical(c))
+                else if (IsCharAlphabetical(c, alphabet))
                 {
                     foundValidChars = true;
 
@@ -627,6 +642,25 @@ namespace BibleCommon.Helpers
             return result;
         }
 
+        public static int GetNextIndexOfDigit(string s, int? index)
+        {
+            if (s.Length >= index.GetValueOrDefault(0) + 2)
+            {
+                index = s
+                    .IndexOfAny(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '<' }, index.HasValue ? index.Value + 1 : 0);
+
+                if (index != -1 && s[index.Value] == '<')
+                {
+                    index = s.IndexOf('>', index.Value + 1);
+                    return GetNextIndexOfDigit(s, index);
+                }
+            }
+            else
+                index = -1;
+
+            return index.Value;
+        }
+
         //public static string GetNextCloseTag(string s, int index)
         //{
         //    int startIndex = s.IndexOf("<", index + 1);
@@ -651,5 +685,46 @@ namespace BibleCommon.Helpers
 
         //    return s;
         //}
+
+        public static string RemoveTags(string s, string startString, string endString)
+        {
+            if (!string.IsNullOrEmpty(s))
+            {
+                int startIndex = s.IndexOf(startString);
+                if (startIndex != -1)
+                {
+                    int endIndex = s.IndexOf(endString, startIndex);
+                    if (startIndex != -1)
+                        s = s.Substring(0, startIndex) + RemoveTags(s.Substring(endIndex + endString.Length), startString, endString);
+                }
+            }
+
+            return s;
+        }
+
+        public static string RemoveIllegalTagStartAndEndSymbols(string s, int startIndex = 0)
+        {
+            startIndex = s.IndexOfAny(new char[] { '<', '>' }, startIndex);
+            if (startIndex != -1)
+            {
+                if (s[startIndex] == '>')
+                    return RemoveIllegalTagStartAndEndSymbols(s.Remove(startIndex, 1));
+                else if (s.Length == startIndex + 1)
+                    return s.Remove(startIndex, 1);
+                else
+                {
+                    var nextChar = char.ToLower(s[startIndex + 1]);
+                    if (!((nextChar >= 'a' && nextChar <= 'z') || nextChar == '/'))
+                        return RemoveIllegalTagStartAndEndSymbols(s.Remove(startIndex, 1));
+                    else
+                        startIndex = s.IndexOf('>', startIndex + 1);
+                }
+
+                if (startIndex != -1)
+                    return RemoveIllegalTagStartAndEndSymbols(s, startIndex + 1);
+            }
+
+            return s;
+        }
     }
 }

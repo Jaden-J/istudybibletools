@@ -23,7 +23,7 @@ namespace BibleNoteLinker
 
             try
             {
-                OneNoteLocker.UnlockAllBible(_oneNoteApp);
+                OneNoteLocker.UnlockBible(_oneNoteApp);
             }
             catch (NotSupportedException)
             {
@@ -165,8 +165,15 @@ namespace BibleNoteLinker
                 {
                     LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
 
-                    relinkNotesManager.RelinkBiblePageNotes(processedBiblePageId.SectionId, processedBiblePageId.PageId,
-                        processedBiblePageId.PageName, processedBiblePageId.ChapterPointer);
+                    try
+                    {
+                        relinkNotesManager.RelinkBiblePageNotes(processedBiblePageId.SectionId, processedBiblePageId.PageId,
+                            processedBiblePageId.PageName, processedBiblePageId.ChapterPointer);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(string.Format(BibleCommon.Resources.Constants.ErrorWhilePageProcessing, processedBiblePageId.PageName), ex);
+                    }
 
                     PerformProcessStep();                                        
                 }
@@ -224,7 +231,7 @@ namespace BibleNoteLinker
                 message = message.Substring(0, maxCount) + "...";
 
             if (stage.HasValue)
-                message = string.Format("{0} {1}/{2}: {3}", BibleCommon.Resources.Constants.NoteLinkerStage, stage, maxStageCount, message);
+                message = string.Format("{0} {1}/{2}: {3}", BibleCommon.Resources.Constants.Stage, stage, maxStageCount, message);
 
             _highLevelMessage = message;
             lblProgress.Text = message;

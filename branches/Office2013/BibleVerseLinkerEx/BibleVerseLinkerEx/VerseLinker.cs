@@ -12,6 +12,7 @@ using BibleCommon.Helpers;
 using BibleCommon.Consts;
 using BibleCommon.Services;
 using System.Runtime.InteropServices;
+using BibleCommon.Common;
 
 namespace BibleVerseLinkerEx
 {
@@ -39,7 +40,7 @@ namespace BibleVerseLinkerEx
         /// </summary>
         /// <returns></returns>
         private XElement FindSelectedText(string pageId, out XDocument document,
-            out int? verseNumber, out string currentObjectId, out XmlNamespaceManager xnm)
+            out VerseNumber? verseNumber, out string currentObjectId, out XmlNamespaceManager xnm)
         {
             verseNumber = null;
             currentObjectId = null;
@@ -53,7 +54,7 @@ namespace BibleVerseLinkerEx
             if (pointerElement != null)
             {
                 OneNoteUtils.NormalizeTextElement(pointerElement);
-                verseNumber = Utils.GetVerseNumber(pointerElement.Parent.Value);
+                verseNumber = VerseNumber.GetFromVerseText(pointerElement.Parent.Value);
                 currentObjectId = (string)pointerElement.Parent.Attribute("objectID");                
 
                 return pointerElement;
@@ -64,6 +65,8 @@ namespace BibleVerseLinkerEx
 
         private XElement GetLastPageObject(string pageId, int? position)
         {
+            _oneNoteApp.SyncHierarchy(pageId);
+
             string pageContentXml;
             OneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
 
@@ -91,11 +94,11 @@ namespace BibleVerseLinkerEx
 
                 XDocument currentPageDocument;
                 XmlNamespaceManager xnm;
-                int? verseNumber;
+                VerseNumber? verseNumber;
                 string currentObjectId;
                 XElement selectedElement = FindSelectedText(currentPageId, out currentPageDocument, out verseNumber, out currentObjectId, out xnm);
-                string selectedHtml = selectedElement != null ? selectedElement.Value.Trim(new char[] { ' ', '.', ';', ',', ':' }) : string.Empty;                
-                string selectedText = StringUtils.GetText(selectedHtml, SettingsManager.Instance.CurrentModule.BibleStructure.Alphabet);
+                string selectedHtml = selectedElement != null ? ShellText(selectedElement.Value) : string.Empty;                
+                string selectedText = ShellText(StringUtils.GetText(selectedHtml, SettingsManager.Instance.CurrentModule.BibleStructure.Alphabet));
                 bool selectedTextFound = !string.IsNullOrEmpty(selectedText);
 
                 if (selectedTextFound)
@@ -136,7 +139,6 @@ namespace BibleVerseLinkerEx
                     {
                         string href = OneNoteUtils.GenerateHref(OneNoteApp, selectedHtml, verseLinkPageId, objectId);
 
-
                         string selectedValue = selectedElement.Value;
                         selectedElement.Value = string.Empty;
                         selectedElement.Add(new XCData(selectedValue.Replace(selectedHtml, href)));
@@ -151,6 +153,14 @@ namespace BibleVerseLinkerEx
                 Logger.LogError(BibleCommon.Resources.Constants.VerseLinkerOneNoteNotStarted);
         }
 
+        private string ShellText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+
+            return text.Trim(new char[] { ' ', '.', ';', ',', ':' });
+        }
+
         public void SortCommentsPages()
         {
             //Сортировка страниц 'Сводные заметок'
@@ -163,16 +173,17 @@ namespace BibleVerseLinkerEx
             OneNoteProxy.Instance.CommitAllModifiedHierarchy(_oneNoteApp, null, null);
         }
 
-        private string GetNewObjectContent(string currentPageId, string currentObjectId, string pointerValueString, int? verseNumber)
+        private string GetNewObjectContent(string currentPageId, string currentObjectId, string pointerValueString, VerseNumber? verseNumber)
         {
             string newContent;
 
-            if (verseNumber.HasValue)
+            if (verseNumber != null)
             {
-                string linkToCurrentObject;
-                OneNoteApp.GetHyperlinkToObject(currentPageId, currentObjectId, out linkToCurrentObject);
-                newContent = string.Format("<a href=\"{0}\">:{1}</a>&nbsp;&nbsp;<b>{2}</b>", linkToCurrentObject, verseNumber,
-                    verseNumber.ToString() != pointerValueString.Trim() ? pointerValueString : string.Empty);
+                bool pointerValueIsVerseNumber = verseNumber.ToString() == pointerValueString;
+                string linkToCurrentObject = OneNoteProxy.Instance.GenerateHref(OneNoteApp, currentPageId, currentObjectId);
+                newContent = string.Format("<a href=\"{0}\">:{1}</a>{2}<b>{3}</b>", linkToCurrentObject, verseNumber,
+                    !pointerValueIsVerseNumber ? "&nbsp" : string.Empty,
+                    !pointerValueIsVerseNumber ? pointerValueString : string.Empty);
             }
             else
                 newContent = string.Format("<b>{0}</b>", pointerValueString);
@@ -188,7 +199,7 @@ namespace BibleVerseLinkerEx
         /// <param name="pageId"></param>
         /// <param name="pointerValueString"></param>
         /// <returns></returns>
-        public string UpdateDescriptionPage(string pageId, string pointerValueString, int? verseNumber)
+        public string UpdateDescriptionPage(string pageId, string pointerValueString, VerseNumber? verseNumber)
         {
             string pageContentXml;
             XDocument pageDocument;
@@ -221,7 +232,7 @@ namespace BibleVerseLinkerEx
 
                         if (number.HasValue)
                         {
-                            if (number > verseNumber)
+                            if (number > verseNumber.Value.Verse)
                                 break;
                             prevComment = commentElement.Parent.Parent.Parent;
                         }
@@ -284,7 +295,7 @@ namespace BibleVerseLinkerEx
             if (position == null)
                 commentElement.AddFirst(new XElement(nms + "Position", new XAttribute("x", 36), new XAttribute("y", commentPosition), new XAttribute("z", 0)));
             else
-                position.Attribute("y").Value = commentPosition.ToString();
+                position.SetAttributeValue("y", commentPosition);
 
             return commentPosition;
         }
@@ -303,7 +314,7 @@ namespace BibleVerseLinkerEx
         {
             if (attribute != null)
             {
-                string s = attribute.Value;
+                string s = (string)attribute;
 
                 if (!string.IsNullOrEmpty(s))
                 {

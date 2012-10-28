@@ -86,7 +86,14 @@ namespace BibleVerseLinkerEx
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            tbPageName.Text = Properties.Settings.Default.LastPageName;            
+            try
+            {
+                tbPageName.Text = Properties.Settings.Default.LastPageName;
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
         }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)

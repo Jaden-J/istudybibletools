@@ -28,7 +28,7 @@ namespace BibleConfigurator.Tools
         {
             if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
             {
-                Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
+                FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
                 return;
             }   
 
@@ -38,14 +38,15 @@ namespace BibleConfigurator.Tools
 
                 try
                 {
-                    OneNoteLocker.UnlockAllBible(_oneNoteApp);
+                    OneNoteLocker.UnlockBible(_oneNoteApp);
                 }
                 catch (NotSupportedException)
                 {
                     //todo: log it
                 }
 
-                _form.PrepareForExternalProcessing(1255, 1, BibleCommon.Resources.Constants.ResizeBibleTableManagerStartMessage);
+                int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleName, true);
+                _form.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.ResizeBibleTableManagerStartMessage);
 
                 NotebookIteratorHelper.Iterate(_oneNoteApp,
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
@@ -56,7 +57,7 @@ namespace BibleConfigurator.Tools
                             }
                             catch (Exception ex)
                             {
-                                Logger.LogError(ex.ToString());
+                                FormLogger.LogError(ex.ToString());
                             }
 
                             if (_form.StopExternalProcess)
@@ -113,7 +114,7 @@ namespace BibleConfigurator.Tools
 
         private static void SetWidthAttribute(XElement column, int width)
         {
-            column.Attribute("width").Value = width.ToString();
+            column.SetAttributeValue("width", width);
         }
 
         public void Dispose()

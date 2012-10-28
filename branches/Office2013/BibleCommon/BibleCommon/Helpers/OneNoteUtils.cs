@@ -17,11 +17,17 @@ namespace BibleCommon.Helpers
 {
     public static class OneNoteUtils
     {
-        public static bool NotebookExists(Application oneNoteApp, string notebookId)
+        public static bool NotebookExists(Application oneNoteApp, string notebookId, bool refreshCache = false)
         {
-            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, null, HierarchyScope.hsNotebooks);
+            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, null, HierarchyScope.hsNotebooks, refreshCache);
             XElement bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@ID='{0}']", notebookId), hierarchy.Xnm);
             return bibleNotebook != null;            
+        }
+
+        public static void CloseNotebookSafe(Application oneNoteApp, string notebookId)
+        {
+            if (NotebookExists(oneNoteApp, notebookId, true))
+                oneNoteApp.CloseNotebook(notebookId);
         }
 
         public static bool RootSectionGroupExists(Application oneNoteApp, string notebookId, string sectionGroupId)
@@ -51,11 +57,18 @@ namespace BibleCommon.Helpers
             return (string)doc.Content.Root.Attribute("name");
         }
 
+        public static XmlNamespaceManager GetOneNoteXNM()
+        {
+            var xnm = new XmlNamespaceManager(new NameTable());
+            xnm.AddNamespace("one", Constants.OneNoteXmlNs);
+
+            return xnm;
+        }
+
         public static XDocument GetXDocument(string xml, out XmlNamespaceManager xnm)
         {
             XDocument xd = XDocument.Parse(xml);
-            xnm = new XmlNamespaceManager(new NameTable());
-            xnm.AddNamespace("one", Constants.OneNoteXmlNs);
+            xnm = GetOneNoteXNM();
             return xd;
         }
 
@@ -69,8 +82,13 @@ namespace BibleCommon.Helpers
 
         public static XDocument GetPageContent(Application oneNoteApp, string pageId, out XmlNamespaceManager xnm)
         {
+            return GetPageContent(oneNoteApp, pageId, PageInfo.piBasic, out xnm);
+        }
+
+        public static XDocument GetPageContent(Application oneNoteApp, string pageId, PageInfo pageInfo, out XmlNamespaceManager xnm)
+        {
             string xml;
-            oneNoteApp.GetPageContent(pageId, out xml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);            
+            oneNoteApp.GetPageContent(pageId, out xml, pageInfo, Constants.CurrentOneNoteSchema);            
             return OneNoteUtils.GetXDocument(xml, out xnm);
         }
 
@@ -105,21 +123,31 @@ namespace BibleCommon.Helpers
         {
             if (el.Attribute(attributeName) != null)
             {
-                return (string)el.Attribute(attributeName).Value;                
+                return (string)el.Attribute(attributeName);                
             }
 
             return defaultValue;
         }
 
 
-        public static string GenerateHref(Application oneNoteApp, string title, string pageId, string objectId)        
+        public static string GetOrGenerateHref(Application oneNoteApp, string title, string objectHref, string pageId, string objectId)
         {
-            string link = OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, objectId);            
+            string link;
 
-            return string.Format("<a href=\"{0}\">{1}</a>", link, title);
+            if (!string.IsNullOrEmpty(objectHref))
+                link = objectHref;
+            else
+                link = OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, objectId);            
+
+            return string.Format("<a href=\"{0}\">{1}</a>", link, title);            
         }
 
-        public static void NormalizeTextElement(XElement textElement)  // must be one:T element
+        public static string GenerateHref(Application oneNoteApp, string title, string pageId, string objectId)        
+        {
+            return GetOrGenerateHref(oneNoteApp, title, null, pageId, objectId);
+        }
+
+        public static XElement NormalizeTextElement(XElement textElement)  // must be one:T element
         {
             if (textElement != null)
             {
@@ -128,6 +156,8 @@ namespace BibleCommon.Helpers
                     textElement.Value = textElement.Value.Replace("\n", " ").Replace("&nbsp;", " ");
                 }
             }
+
+            return textElement;
         }
 
 
@@ -153,7 +183,7 @@ namespace BibleCommon.Helpers
                 if (ex.ErrorCode == -2147213304)
                     throw new Exception(Resources.Constants.Error_UpdateError_InksOnPages);
 
-                if (ex.Message.Contains("0x80010100"))  // "System.Runtime.InteropServices.COMException (0x80010100): System call failed. (Exception from HRESULT: 0x80010100 (RPC_E_SYS_CALL_FAILED))"
+                if (ex.Message.EndsWith("0x80010100"))  // "System.Runtime.InteropServices.COMException (0x80010100): System call failed. (Exception from HRESULT: 0x80010100 (RPC_E_SYS_CALL_FAILED))"
                 {
                     Logger.LogMessage("Trace {0}: {1}", attemptCount, ex.Message);
                     if (attemptCount <= 10)
@@ -201,11 +231,11 @@ namespace BibleCommon.Helpers
             var metaElement = pageContent.XPathSelectElement(string.Format("one:Meta[@name='{0}']", key), xnm);
             if (metaElement != null)
             {
-                return metaElement.Attribute("content").Value;
+                return (string)metaElement.Attribute("content");
             }
 
             return string.Empty;
-        }
+        }    
 
         public static NotebookIterator.PageInfo GetCurrentPageInfo(Application oneNoteApp)
         {
@@ -226,28 +256,6 @@ namespace BibleCommon.Helpers
                 SectionId = currentSectionId,
                 Id = currentPageId
             };
-        }
-
-        public static XElement AddRootSectionGroupToNotebook(Application oneNoteApp, string notebookId, string sectionGroupName)
-        {
-            XmlNamespaceManager xnm;
-            var notebook = OneNoteUtils.GetHierarchyElement(oneNoteApp, notebookId, HierarchyScope.hsChildren, out xnm);
-
-            AddSectionGroup(oneNoteApp, notebook.Root, sectionGroupName);
-
-            notebook = OneNoteUtils.GetHierarchyElement(oneNoteApp, notebookId, HierarchyScope.hsChildren, out xnm);
-            var newSectionGroup = notebook.Root.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", sectionGroupName), xnm);
-            return newSectionGroup;
-        }
-
-        public static void AddSectionGroup(Application oneNoteApp, XElement parentElement, string sectionGroupName)
-        {
-            XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
-            XElement newSectionGroup = new XElement(nms + "SectionGroup",
-                                    new XAttribute("name", sectionGroupName));
-
-            parentElement.Add(newSectionGroup);
-            oneNoteApp.UpdateHierarchy(parentElement.ToString(), Constants.CurrentOneNoteSchema);           
-        }
+        }        
     }
 }

@@ -29,7 +29,7 @@ namespace BibleCommon.Services
             XElement chapterNotesPageLink = NoteLinkManager.GetChapterNotesPageLink(biblePageDocument.Content, biblePageDocument.Xnm);
 
             if (chapterNotesPageLink != null)
-                if (RelinkBiblePageNote(bibleSectionId, biblePageId, biblePageName, chapterNotesPageLink, 0))
+                if (RelinkBiblePageNote(bibleSectionId, biblePageId, biblePageName, chapterNotesPageLink, null))
                     wasModified = true;
 
             foreach (XElement textElement in biblePageDocument.Content.Root
@@ -43,13 +43,13 @@ namespace BibleCommon.Services
                     {
                         XElement bibleVerseElement = textElement.Parent.Parent.Parent.Parent.XPathSelectElement("one:Cell[1]/one:OEChildren/one:OE/one:T", biblePageDocument.Xnm);
                         OneNoteUtils.NormalizeTextElement(bibleVerseElement);
-                        int? verseNumber = Utils.GetVerseNumber(bibleVerseElement.Value);
+                        var verseNumber = VerseNumber.GetFromVerseText(bibleVerseElement.Value);
 
-                        if (verseNumber.GetValueOrDefault(0) > 0)
+                        if (verseNumber.HasValue)
                         {
-                            VersePointer vp = new VersePointer(chapterPointer, verseNumber.Value);
+                            VersePointer vp = new VersePointer(chapterPointer, verseNumber.Value.Verse);
                             
-                            if (OneNoteProxy.Instance.ProcessedVerses.Contains(vp))  // если мы обрабатывали этот стих
+                            if (OneNoteProxy.Instance.ProcessedVerses.Contains(vp.ToSimpleVersePointer()))  // если мы обрабатывали этот стих
                             {
                                 if (RelinkBiblePageNote(bibleSectionId, biblePageId, biblePageName, textElement, verseNumber))
                                     wasModified = true;
@@ -57,18 +57,17 @@ namespace BibleCommon.Services
                         }
                     }
                 }
-
             }
 
             if (wasModified)
                 biblePageDocument.WasModified = true;
         }
 
-        private bool RelinkBiblePageNote(string bibleSectionId, string biblePageId, string biblePageName, XElement textElement, int? verseNumber)
+        private bool RelinkBiblePageNote(string bibleSectionId, string biblePageId, string biblePageName, XElement textElement, VerseNumber? verseNumber)
         {
             string notesPageName = NoteLinkManager.GetDefaultNotesPageName(verseNumber);
             string notesPageId = OneNoteProxy.Instance.GetNotesPageId(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName);
-            string notesRowObjectId = NotesPageManager.GetNotesRowObjectId(_oneNoteApp, notesPageId, verseNumber, VersePointer.IsVerseChapter(verseNumber));
+            string notesRowObjectId = NotesPageManager.GetNotesRowObjectId(_oneNoteApp, notesPageId, verseNumber, !verseNumber.HasValue);
 
             if (!string.IsNullOrEmpty(notesRowObjectId))
             {

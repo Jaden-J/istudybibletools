@@ -9,7 +9,7 @@ namespace BibleCommon.Services
 {
     public static class ZipLibHelper
     {
-        public static void ExtractZipFile(byte[] fileData, string directoryPath)
+        public static void ExtractZipFile(byte[] fileData, string directoryPath, string[] relativeFilePathsToExtract = null)
         {
             if (!Directory.Exists(directoryPath))
                 Directory.CreateDirectory(directoryPath);
@@ -37,9 +37,12 @@ namespace BibleCommon.Services
 
                         if (relativeFileName != String.Empty)
                         {
-                            using (FileStream streamWriter = File.Create(fileName))
+                            if (relativeFilePathsToExtract == null || relativeFilePathsToExtract.Contains(relativeFileName))
                             {
-                                ZipLibHelper.CopyZipEntryToStream(s, streamWriter);
+                                using (FileStream streamWriter = File.Create(fileName))
+                                {
+                                    ZipLibHelper.CopyZipEntryToStream(s, streamWriter);
+                                }
                             }
                         }
                     }

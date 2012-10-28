@@ -14,14 +14,15 @@ namespace BibleConfigurator.ModuleConverter
         {
             ModuleInfo module = new ModuleInfo()
             {
-                Version = "1.0",
+                Version = new Version(1, 0),
                 Name = "Синодальный перевод (Русский язык)",
                 Notebooks = new List<NotebookInfo>() 
                 {                    
-                    new NotebookInfo() { Type = NotebookType.Bible, Name = "Библия.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleStudy, Name = "Изучение Библии.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleComments, Name = "Комментарии к Библии.onepkg" },
-                    new NotebookInfo() { Type = NotebookType.BibleNotesPages, Name = "Сводные заметок.onepkg" }
+                    new NotebookInfo() { Type = ContainerType.Bible, Name = "Библия.onepkg" },
+                    new NotebookInfo() { Type = ContainerType.BibleStudy, Name = "Изучение Библии.onepkg" },
+                    new NotebookInfo() { Type = ContainerType.BibleComments, Name = "Комментарии к Библии.onepkg" }
+                    //,
+                    //new NotebookInfo() { Type = ContainerType.BibleNotesPages, Name = "Сводные заметок.onepkg" }
                 },
                 BibleStructure = new BibleStructureInfo()
                 {
@@ -30,6 +31,7 @@ namespace BibleConfigurator.ModuleConverter
                     OldTestamentBooksCount = 39,
                     NewTestamentBooksCount = 27,
                     Alphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя",
+                    ChapterSectionNameTemplate = "{0} глава. {1}",
                     BibleBooks = new List<BibleBookInfo>()
                     {
                         new BibleBookInfo() { Name = "Бытие", SectionName = "01. Бытие", Abbreviations = new List<Abbreviation>() { "быт", "бт", "бытие" } },
@@ -105,13 +107,13 @@ namespace BibleConfigurator.ModuleConverter
             if (addSingleNotebook)
                 module.Notebooks.Add(new NotebookInfo()
                 {
-                    Type = NotebookType.Single,
+                    Type = ContainerType.Single,
                     Name = "Holy Bible.onepkg",
                     SectionGroups = new List<BibleCommon.Common.SectionGroupInfo>()
                     {
-                        new BibleCommon.Common.SectionGroupInfo() { Type = SectionGroupType.Bible, Name="Библия" },
-                        new BibleCommon.Common.SectionGroupInfo() { Type = SectionGroupType.BibleStudy, Name="Изучение Библии" },
-                        new BibleCommon.Common.SectionGroupInfo() { Type = SectionGroupType.BibleComments, Name="Комментарии к Библии" }                        
+                        new BibleCommon.Common.SectionGroupInfo() { Type = ContainerType.Bible, Name="Библия" },
+                        new BibleCommon.Common.SectionGroupInfo() { Type = ContainerType.BibleStudy, Name="Изучение Библии" },
+                        new BibleCommon.Common.SectionGroupInfo() { Type = ContainerType.BibleComments, Name="Комментарии к Библии" }                        
                     }
                 });
 

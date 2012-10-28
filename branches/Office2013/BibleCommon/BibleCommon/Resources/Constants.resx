@@ -279,7 +279,7 @@
   <data name="NoteLinkerShowDetails" xml:space="preserve">
     <value>Show details</value>
   </data>
-  <data name="NoteLinkerStage" xml:space="preserve">
+  <data name="Stage" xml:space="preserve">
     <value>Stage</value>
   </data>
   <data name="NoteLinkManagerChapterProcessing" xml:space="preserve">
@@ -373,7 +373,7 @@
     <value>books</value>
   </data>
   <data name="ChangeModuleWarning" xml:space="preserve">
-    <value>This module contains another text of the Bible and other versions of abbreviations of books. For correct program work    the follow notebooks must be re-created: Bible, Comments to the Bible, Summary of Notes. Continue?</value>
+    <value>This module contains another text of the Bible and other versions of abbreviations of books. For correct program work the follow notebooks must be re-created: Bible, Comments to the Bible, Summary of Notes. Continue?</value>
   </data>
   <data name="DefineNotebookDirectory" xml:space="preserve">
     <value>Specify notebook folder</value>
@@ -400,7 +400,7 @@
     <value>Error on module '{0}' loading: {1}</value>
   </data>
   <data name="ModuleWithSameNameAlreadyExists" xml:space="preserve">
-    <value>The module with the same name already exists. The current module will be replaced. Continue?</value>
+    <value>The module with the same name already exists. Version of existiong module is {0}. Version of uploading module is {1}. The current module will be replaced. Continue?</value>
   </data>
   <data name="SelectFileWithExtension" xml:space="preserve">
     <value>Select file with the extension '{0}'.</value>
@@ -461,5 +461,218 @@
   </data>
   <data name="BibleVersePointerTitle" xml:space="preserve">
     <value>Open a verse</value>
+  </data>
+  <data name="SupplementalBibleName" xml:space="preserve">
+    <value>Supplemental Bible</value>
+  </data>
+  <data name="AddSupplementalModule" xml:space="preserve">
+    <value>Add new module</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="ModuleDisplayName" xml:space="preserve">
+    <value>Display Name</value>
+  </data>
+  <data name="ModuleIsActive" xml:space="preserve">
+    <value>Is Active</value>
+  </data>
+  <data name="ModuleVersion" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="ProcessBook" xml:space="preserve">
+    <value>Processing the book</value>
+  </data>
+  <data name="AddParallelBibleTranslationStart" xml:space="preserve">
+    <value>Adding parallel Bible translation start</value>
+  </data>
+  <data name="AddParallelBibleTranslationFinishMessage" xml:space="preserve">
+    <value>Parallel Bible translation was added successfully</value>
+  </data>
+  <data name="CreateSupplementalBibleStart" xml:space="preserve">
+    <value>Creating Supplemental Bible start</value>
+  </data>
+  <data name="CreateSupplementalBibleFinish" xml:space="preserve">
+    <value>Supplemental Bible was created successfully</value>
+  </data>
+  <data name="LinkSupplementalBibleStart" xml:space="preserve">
+    <value>Linking Supplemental Bible start</value>
+  </data>
+  <data name="LinkSupplementalBibleFinish" xml:space="preserve">
+    <value>Supplimental Bible was linked successfully</value>
+  </data>
+  <data name="ErrorOccurred" xml:space="preserve">
+    <value>Error occurred</value>
+  </data>
+  <data name="DeleteSupplementalBibleQuestion" xml:space="preserve">
+    <value>Close the Supplemental Bible Notebook?</value>
+  </data>
+  <data name="RemoveParallelBibleTranslation" xml:space="preserve">
+    <value>Removing parallel Bible translation start</value>
+  </data>
+  <data name="RemoveParallelBibleTranslationFinishMessage" xml:space="preserve">
+    <value>Parallel Bible translation was removed successfully</value>
+  </data>
+  <data name="RemoveSupplementalBibleFinishMessage" xml:space="preserve">
+    <value>Supplemental Bible was closed successfully</value>
+  </data>
+  <data name="AbortTheOperation" xml:space="preserve">
+    <value>Abort the operation?</value>
+  </data>
+  <data name="CreateSupplementalBible" xml:space="preserve">
+    <value>Creating Supplemental Bible</value>
+  </data>
+  <data name="LinkSupplementalBible" xml:space="preserve">
+    <value>Linking Supplemental Bible</value>
+  </data>
+  <data name="BaseModuleIsNotSupported" xml:space="preserve">
+    <value>Version of primary Bible module is {0}. Only {1} and greater is supported.</value>
+  </data>
+  <data name="DictionariesNotebookName" xml:space="preserve">
+    <value>Dictionaries</value>
+  </data>
+  <data name="IndexStrongDictionary" xml:space="preserve">
+    <value>Indexing Strong Dictionary</value>
+  </data>
+  <data name="IndexStrongDictionaryStart" xml:space="preserve">
+    <value>Indexing Strong Dictionary start</value>
+  </data>
+  <data name="DictionariesManagement" xml:space="preserve">
+    <value>Dictionaries Management</value>
+  </data>
+  <data name="Error_SectionFileNotFound" xml:space="preserve">
+    <value>Section file not found: '{0}'.</value>
+  </data>
+  <data name="SearchQueryIsInvalid" xml:space="preserve">
+    <value>The query is invalid or Microsoft Search 3.0 or 4.0 is not installed on your computer</value>
+  </data>
+  <data name="SupplementalBibleManagement" xml:space="preserve">
+    <value>Supplemental Bible Management</value>
+  </data>
+  <data name="IndexBible" xml:space="preserve">
+    <value>Indexing Bible</value>
+  </data>
+  <data name="IndexBibleStart" xml:space="preserve">
+    <value>Indexing Bible start</value>
+  </data>
+  <data name="UseSupplementalBible" xml:space="preserve">
+    <value>Use notebook "Supplemental Bible"</value>
+  </data>
+  <data name="PagesCountLessThanMin" xml:space="preserve">
+    <value>Pages count in '{0}' is not as expected: expected min {1}, found {2}.</value>
+  </data>
+  <data name="PagesCountMoreThanMax" xml:space="preserve">
+    <value>Pages count in '{0}' is not as expected: expected max {1}, found {2}.</value>
+  </data>
+  <data name="PagesCountNotEqual" xml:space="preserve">
+    <value>Pages count in '{0}' is not as expected: expected {1}, found {2}.</value>
+  </data>
+  <data name="SectionGroupNotFoundInContainer" xml:space="preserve">
+    <value>Section group '{0}' not found in '{1}'.</value>
+  </data>
+  <data name="SectionGroupsCountLessThanMin" xml:space="preserve">
+    <value>Section groups count in '{0}' is not as expected: expected min {1}, found {2}.</value>
+  </data>
+  <data name="SectionGroupsCountMoreThanMax" xml:space="preserve">
+    <value>Section groups count in '{0}' is not as expected: expected max {1}, found {2}.</value>
+  </data>
+  <data name="SectionGroupsCountNotEqual" xml:space="preserve">
+    <value>Section groups count in '{0}' is not as expected: expected {1}, found {2}.</value>
+  </data>
+  <data name="SectionNotFound" xml:space="preserve">
+    <value>Section '{0}' not found.</value>
+  </data>
+  <data name="SectionNotFoundInContainer" xml:space="preserve">
+    <value>Section '{0}' not found in '{1}'.</value>
+  </data>
+  <data name="SectionsCountLessThanMin" xml:space="preserve">
+    <value>Sections count in '{0}' is not as expected: expected min {1}, found {2}.</value>
+  </data>
+  <data name="SectionsCountMoreThanMax" xml:space="preserve">
+    <value>Sections count in '{0}' is not as expected: expected max {1}, found {2}.</value>
+  </data>
+  <data name="SectionsCountNotEqual" xml:space="preserve">
+    <value>Sections count in '{0}' is not as expected: expected {1}, found {2}.</value>
+  </data>
+  <data name="AddParallelBibleTranslation" xml:space="preserve">
+    <value>Adding parallel Bible translation</value>
+  </data>
+  <data name="DeleteDictionariesNotebookQuestion" xml:space="preserve">
+    <value>Close the Dictionaries Notebook?</value>
+  </data>
+  <data name="DeleteThisModuleFromDictionariesNotebookQuestion" xml:space="preserve">
+    <value>Remove this module from Dictionaries Notebook?</value>
+  </data>
+  <data name="DeleteThisModuleFromSupplementalBibleQuestion" xml:space="preserve">
+    <value>Remove this module from Supplemental Bible Notebook?</value>
+  </data>
+  <data name="SupportedModulesNotFound" xml:space="preserve">
+    <value>Supported modules not found. Please add necessary modules to the program.</value>
+  </data>
+  <data name="UseDictionaries" xml:space="preserve">
+    <value>Use notebook "Dictionaries"</value>
+  </data>
+  <data name="AdditionalModules" xml:space="preserve">
+    <value>Additional modules</value>
+  </data>
+  <data name="BaseModules" xml:space="preserve">
+    <value>Base modules</value>
+  </data>
+  <data name="AllDictionaries" xml:space="preserve">
+    <value>All Dictionaries</value>
+  </data>
+  <data name="DictionariesNotInstalled" xml:space="preserve">
+    <value>Dictionaries are not installed. Please use Dictionaries Management Form available on Parameters Form to install dictionaries.</value>
+  </data>
+  <data name="SelectWord" xml:space="preserve">
+    <value>Please select term to search</value>
+  </data>
+  <data name="Verses" xml:space="preserve">
+    <value>verses</value>
+  </data>
+  <data name="AddDictionaryFinishMessage" xml:space="preserve">
+    <value>Dictionary was added successfully</value>
+  </data>
+  <data name="AddDictionaryStart" xml:space="preserve">
+    <value>Adding Dictionary start</value>
+  </data>
+  <data name="IndexDictionary" xml:space="preserve">
+    <value>Indexing Dictionary</value>
+  </data>
+  <data name="IndexDictionaryStart" xml:space="preserve">
+    <value>Indexing Dictionary start</value>
+  </data>
+  <data name="FoundInOneDictionary" xml:space="preserve">
+    <value>Found in one dictionary</value>
+  </data>
+  <data name="FoundInSeveralDictionaries" xml:space="preserve">
+    <value>Found in several dictionaries</value>
+  </data>
+  <data name="DictionaryNotebookCannotBeClosed" xml:space="preserve">
+    <value>Notebook "Dictionaries" cannot be closed if Strong dictionary is installed. First delete module with Strong dictionary from Supplemental Bible on Supplemental Bible management form.</value>
+  </data>
+  <data name="ModuleCannotBeDeleted_DictionaryModule" xml:space="preserve">
+    <value>This module can not be deleted because it is used in "Dictionaries" notebook.</value>
+  </data>
+  <data name="ModuleCannotBeDeleted_SupplementalBibleModule" xml:space="preserve">
+    <value>This module can not be deleted because it is used in "Supplemental Bible" notebook.</value>
+  </data>
+  <data name="ModuleSuccessfullyUploaded" xml:space="preserve">
+    <value>Module uploaded successfully</value>
+  </data>
+  <data name="IndexBibleFinish" xml:space="preserve">
+    <value>Bible was indexed successfully.</value>
+  </data>
+  <data name="ErrorWhilePageProcessing" xml:space="preserve">
+    <value>Error while page '{0}' processing</value>
+  </data>
+  <data name="IndexBibleQuestion" xml:space="preserve">
+    <value>It is recommended to index the Bible for performance optimization. This operation takes about 30 minutes. Start indexing the Bible now?</value>
+  </data>
+  <data name="IndexBibleQuestionAtStartUp" xml:space="preserve">
+    <value>The Bible is not indexed. It is recommended to index the Bible for performance optimization. This operation takes about 30 minutes. Start indexing the Bible now?</value>
+  </data>
+  <data name="ModuleIsNotSupported" xml:space="preserve">
+    <value>Version of this module is not supported. You should upgrade the program up to version '{0}'. The current version of the program is '{1}'.</value>
   </data>
 </root>

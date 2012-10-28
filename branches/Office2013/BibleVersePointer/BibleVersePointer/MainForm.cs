@@ -58,73 +58,80 @@ namespace BibleVersePointer
         private void btnOk_Click(object sender, EventArgs e)
         {
             Logger.Initialize();
+            BibleCommon.Services.Logger.Init("BibleVersePointer");
 
-            if (!SettingsManager.Instance.IsConfigured(OneNoteApp))
+            try
             {
-                SettingsManager.Instance.ReLoadSettings();  // так как программа кэшируется в пуле OneNote, то проверим - может уже сконфигурили всё.
-
                 if (!SettingsManager.Instance.IsConfigured(OneNoteApp))
                 {
-                    Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
+                    SettingsManager.Instance.ReLoadSettings();  // так как программа кэшируется в пуле OneNote, то проверим - может уже сконфигурили всё.
+
+                    if (!SettingsManager.Instance.IsConfigured(OneNoteApp))
+                    {
+                        Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
+                    }
                 }
-                
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(tbVerse.Text))
+                else
                 {
-                    btnOk.Enabled = false;
-                    System.Windows.Forms.Application.DoEvents();
-
-                    try
+                    if (!string.IsNullOrEmpty(tbVerse.Text))
                     {
-                        VersePointer vp = new VersePointer(tbVerse.Text);                        
+                        btnOk.Enabled = false;
+                        System.Windows.Forms.Application.DoEvents();
 
-                        if (!vp.IsValid)
-                            vp = new VersePointer(tbVerse.Text + " 1:0");  // может только название книги
-
-                        if (vp.IsValid)
+                        try
                         {
-                            if (OneNoteApp.Windows.CurrentWindow == null)
-                                OneNoteApp.NavigateTo(string.Empty);
+                            VersePointer vp = new VersePointer(tbVerse.Text);
 
-                            if (GoToVerse(vp))
+                            if (!vp.IsValid)
+                                vp = new VersePointer(tbVerse.Text + " 1:0");  // может только название книги
+
+                            if (vp.IsValid)
                             {
-                                this.Visible = false;
-                                Properties.Settings.Default.LastVerse = tbVerse.Text;
-                                Properties.Settings.Default.Save();
+                                if (OneNoteApp.Windows.CurrentWindow == null)
+                                    OneNoteApp.NavigateTo(string.Empty);
+
+                                if (GoToVerse(vp))
+                                {
+                                    this.Visible = false;
+                                    Properties.Settings.Default.LastVerse = tbVerse.Text;
+                                    Properties.Settings.Default.Save();
+                                }
                             }
+                            else
+                                throw new Exception(BibleCommon.Resources.Constants.BibleVersePointerCanNotParseString);
                         }
-                        else
-                            throw new Exception(BibleCommon.Resources.Constants.BibleVersePointerCanNotParseString);
+                        catch (Exception ex)
+                        {
+                            Logger.LogError(ex.Message);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError(ex.Message);
-                    }
+
+                    btnOk.Enabled = true;
                 }
 
-                btnOk.Enabled = true;
+                if (!Logger.WasLogged)
+                {
+                    if (OneNoteApp.Windows.CurrentWindow != null)
+                        SetForegroundWindow(new IntPtr((long)OneNoteApp.Windows.CurrentWindow.WindowHandle));
+                    this.Close();
+                }
             }
-
-            if (!Logger.WasLogged)
+            finally
             {
-                if (OneNoteApp.Windows.CurrentWindow != null)                
-                    SetForegroundWindow(new IntPtr((long)OneNoteApp.Windows.CurrentWindow.WindowHandle));
-                this.Close();
+                BibleCommon.Services.Logger.Done();
             }
         }
 
         private bool GoToVerse(VersePointer vp)
-        {            
-            HierarchySearchManager.HierarchySearchResult result = HierarchySearchManager.GetHierarchyObject(OneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp);
+        {   
+            HierarchySearchManager.HierarchySearchResult result = HierarchySearchManager.GetHierarchyObject(OneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, false);            
 
             if (result.ResultType != HierarchySearchManager.HierarchySearchResultType.NotFound)
             {
                 string hierarchyObjectId = !string.IsNullOrEmpty(result.HierarchyObjectInfo.PageId)
                     ? result.HierarchyObjectInfo.PageId : result.HierarchyObjectInfo.SectionId;
 
-                OneNoteApp.NavigateTo(hierarchyObjectId, result.HierarchyObjectInfo.ContentObjectId);
+                NavigateTo(OneNoteApp, hierarchyObjectId, result.HierarchyObjectInfo.GetAllObjectsIds().ToArray());
                 return true;
             }
             else
@@ -135,7 +142,14 @@ namespace BibleVersePointer
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            tbVerse.Text = (string)Properties.Settings.Default.LastVerse;                           
+            try
+            {
+                tbVerse.Text = (string)Properties.Settings.Default.LastVerse;
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
         }
 
         private bool _wasShown = false;
@@ -151,6 +165,28 @@ namespace BibleVersePointer
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             _onenoteApp = null;
-        }         
+        }
+
+
+        private static void NavigateTo(Microsoft.Office.Interop.OneNote.Application oneNoteApp, string pageId, params HierarchySearchManager.VerseObjectInfo[] objectsIds)
+        {
+            oneNoteApp.NavigateTo(pageId, objectsIds.Length > 0 ? objectsIds[0].ObjectId : null);            
+
+            if (objectsIds.Length > 1)
+            {   
+                XmlNamespaceManager xnm;                
+                var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, pageId, PageInfo.piSelection, out xnm);
+                OneNoteLocker.UnlockCurrentSection(oneNoteApp);
+                
+                foreach (var objectId in objectsIds.Skip(1))
+                {
+                    var el = pageDoc.Root.XPathSelectElement(string.Format("//one:OE[@objectID='{0}']/one:T", objectId), xnm);
+                    if (el != null)
+                        el.SetAttributeValue("selected", "all");
+                }
+                
+                OneNoteUtils.UpdatePageContentSafe(oneNoteApp, pageDoc, xnm);
+            }
+        }      
     }
 }

@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibleVersePointer", "BibleV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibleNoteLinker", "BibleNoteLinker\BibleNoteLinker\BibleNoteLinker.csproj", "{8CF73E04-14AA-4510-B3E0-44934DDC5726}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{0EB175AE-A168-43E7-A5EF-CDF285108C21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,16 @@ Global
 		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Release|Mixed Platforms.Build.0 = Release|x86
 		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Release|x86.ActiveCfg = Release|x86
 		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Release|x86.Build.0 = Release|x86
+		{0EB175AE-A168-43E7-A5EF-CDF285108C21}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{0EB175AE-A168-43E7-A5EF-CDF285108C21}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{0EB175AE-A168-43E7-A5EF-CDF285108C21}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{0EB175AE-A168-43E7-A5EF-CDF285108C21}.Debug|x86.ActiveCfg = Debug|x86
+		{0EB175AE-A168-43E7-A5EF-CDF285108C21}.Debug|x86.Build.0 = Debug|x86
+		{0EB175AE-A168-43E7-A5EF-CDF285108C21}.Release|Any CPU.ActiveCfg = Release|x86
+		{0EB175AE-A168-43E7-A5EF-CDF285108C21}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{0EB175AE-A168-43E7-A5EF-CDF285108C21}.Release|Mixed Platforms.Build.0 = Release|x86
+		{0EB175AE-A168-43E7-A5EF-CDF285108C21}.Release|x86.ActiveCfg = Release|x86
+		{0EB175AE-A168-43E7-A5EF-CDF285108C21}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

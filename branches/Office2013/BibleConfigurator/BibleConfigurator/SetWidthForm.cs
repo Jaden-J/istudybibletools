@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using BibleConfigurator.Properties;
+using BibleCommon.Services;
 
 namespace BibleConfigurator
 {
@@ -28,15 +29,22 @@ namespace BibleConfigurator
 
         private void SetWidthForm_Load(object sender, EventArgs e)
         {
-            tbBiblePageWidth.Text = Settings.Default.BiblePagesWidth.ToString();
+            try
+            {
+                tbBiblePageWidth.Text = SettingsManager.Instance.PageWidth_Bible.ToString();
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
         }
 
         private void btnOk_Click(object sender, EventArgs e)
         {
             if (int.TryParse(tbBiblePageWidth.Text, out _biblePagesWidth))
             {
-                Settings.Default.BiblePagesWidth = _biblePagesWidth;
-                Settings.Default.Save();
+                SettingsManager.Instance.PageWidth_Bible = _biblePagesWidth;
+                SettingsManager.Instance.Save();
 
                 this.DialogResult = System.Windows.Forms.DialogResult.OK;
                 this.Close();

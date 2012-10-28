@@ -25,18 +25,24 @@ namespace BibleNoteLinker
 
         private void SelectNoteBooks_Load(object sender, EventArgs e)
         {
-            Dictionary<string, string> allNotebooks = GetAllNotebooks();
-
-            int i = 0;
-            foreach (string id in allNotebooks.Keys)
+            try
             {
-                RenderSelectRow(id, allNotebooks[id], i++);
+                Dictionary<string, string> allNotebooks = GetAllNotebooks();
+
+                int i = 0;
+                foreach (string id in allNotebooks.Keys)
+                {
+                    RenderSelectRow(id, allNotebooks[id], i++);
+                }
+
+                SetElementsAttributes(i);
+
+                LoadSelectedNotebooks();
             }
-
-            SetElementsAttributes(i);
-
-            LoadSelectedNotebooks();        
-                
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }   
         }
 
         private void LoadSelectedNotebooks()

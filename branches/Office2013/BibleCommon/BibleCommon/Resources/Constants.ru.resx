@@ -259,7 +259,7 @@
     <value>При загрузке модуля '{0}' произошла ошибка: {1}</value>
   </data>
   <data name="ModuleWithSameNameAlreadyExists" xml:space="preserve">
-    <value>Модуль с таким именем уже существует. Существующий модуль будет полностью заменён загружаемым. Продолжить?</value>
+    <value>Модуль с таким именем уже существует. Версия существующего модуля - {0}. Версия загружаемого модуля - {1}. Существующий модуль будет заменён загружаемым. Продолжить?</value>
   </data>
   <data name="NotebookIteratorCanNotFindSectionGroup" xml:space="preserve">
     <value>Не удаётся найти группу секций</value>
@@ -315,7 +315,7 @@
   <data name="NoteLinkerShowDetails" xml:space="preserve">
     <value>Показать детали</value>
   </data>
-  <data name="NoteLinkerStage" xml:space="preserve">
+  <data name="Stage" xml:space="preserve">
     <value>Этап</value>
   </data>
   <data name="NoteLinkManagerChapterProcessing" xml:space="preserve">
@@ -458,5 +458,218 @@
   </data>
   <data name="BibleVersePointerTitle" xml:space="preserve">
     <value>Открыть стих</value>
+  </data>
+  <data name="SupplementalBibleName" xml:space="preserve">
+    <value>Справочная Библия</value>
+  </data>
+  <data name="AddSupplementalModule" xml:space="preserve">
+    <value>Добавить новый модуль</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="ModuleDisplayName" xml:space="preserve">
+    <value>Название модуля</value>
+  </data>
+  <data name="ModuleIsActive" xml:space="preserve">
+    <value>Текущий ли модуль</value>
+  </data>
+  <data name="ModuleVersion" xml:space="preserve">
+    <value>Версия модуля</value>
+  </data>
+  <data name="ProcessBook" xml:space="preserve">
+    <value>Обработка книги</value>
+  </data>
+  <data name="AddParallelBibleTranslationStart" xml:space="preserve">
+    <value>Старт добавления параллельного перевода</value>
+  </data>
+  <data name="AddParallelBibleTranslationFinishMessage" xml:space="preserve">
+    <value>Параллельный перевод Библии успешно добавлен</value>
+  </data>
+  <data name="CreateSupplementalBibleStart" xml:space="preserve">
+    <value>Старт создания справочной Библии</value>
+  </data>
+  <data name="CreateSupplementalBibleFinish" xml:space="preserve">
+    <value>Справочная Библия успешно создана</value>
+  </data>
+  <data name="LinkSupplementalBibleStart" xml:space="preserve">
+    <value>Старт привязки справочной Библии</value>
+  </data>
+  <data name="LinkSupplementalBibleFinish" xml:space="preserve">
+    <value>Привязка справочной Библии успешно завершена</value>
+  </data>
+  <data name="ErrorOccurred" xml:space="preserve">
+    <value>Произошла ошибка</value>
+  </data>
+  <data name="DeleteSupplementalBibleQuestion" xml:space="preserve">
+    <value>Закрыть записную книжку справочной Библии?</value>
+  </data>
+  <data name="RemoveParallelBibleTranslation" xml:space="preserve">
+    <value>Старт удаления параллельного перевода</value>
+  </data>
+  <data name="RemoveParallelBibleTranslationFinishMessage" xml:space="preserve">
+    <value>Параллельный перевод Библии успешно удалён</value>
+  </data>
+  <data name="RemoveSupplementalBibleFinishMessage" xml:space="preserve">
+    <value>Справочная Библия была закрыта</value>
+  </data>
+  <data name="AbortTheOperation" xml:space="preserve">
+    <value>Прервать операцию?</value>
+  </data>
+  <data name="CreateSupplementalBible" xml:space="preserve">
+    <value>Создание справочной Библии</value>
+  </data>
+  <data name="LinkSupplementalBible" xml:space="preserve">
+    <value>Привязка справочной Библии</value>
+  </data>
+  <data name="BaseModuleIsNotSupported" xml:space="preserve">
+    <value>Версия модуля основной Библии - {0}. Поддерживаются модули только начиная с версии {1}.</value>
+  </data>
+  <data name="DictionariesNotebookName" xml:space="preserve">
+    <value>Словари</value>
+  </data>
+  <data name="IndexStrongDictionary" xml:space="preserve">
+    <value>Индексирование словаря Стронга</value>
+  </data>
+  <data name="IndexStrongDictionaryStart" xml:space="preserve">
+    <value>Старт индексирования словаря Стронга</value>
+  </data>
+  <data name="DictionariesManagement" xml:space="preserve">
+    <value>Управление словарями</value>
+  </data>
+  <data name="Error_SectionFileNotFound" xml:space="preserve">
+    <value>Не найден файл раздела '{0}.</value>
+  </data>
+  <data name="SearchQueryIsInvalid" xml:space="preserve">
+    <value>Неверный поисковый запрос или на компьютере не установлен компонент Microsoft Search 3.0 или 4.0</value>
+  </data>
+  <data name="SupplementalBibleManagement" xml:space="preserve">
+    <value>Управление справочной Библией</value>
+  </data>
+  <data name="IndexBible" xml:space="preserve">
+    <value>Индексирование Библии</value>
+  </data>
+  <data name="IndexBibleStart" xml:space="preserve">
+    <value>Старт индексирования Библии</value>
+  </data>
+  <data name="UseSupplementalBible" xml:space="preserve">
+    <value>Использовать записную книжку "Справочная Библия"</value>
+  </data>
+  <data name="PagesCountLessThanMin" xml:space="preserve">
+    <value>Количество страниц в '{0}' не соответствует ожиданиям: ожидалось минимум {1}, найдено {2}.</value>
+  </data>
+  <data name="PagesCountMoreThanMax" xml:space="preserve">
+    <value>Количество страниц в '{0}' не соответствует ожиданиям: ожидалось максимум {1}, найдено {2}.</value>
+  </data>
+  <data name="PagesCountNotEqual" xml:space="preserve">
+    <value>Количество страниц в '{0}' не соответствует ожиданиям: ожидалось {1}, найдено {2}.</value>
+  </data>
+  <data name="SectionGroupNotFoundInContainer" xml:space="preserve">
+    <value>Не найдена группа разделов '{0}' в '{1}'.</value>
+  </data>
+  <data name="SectionGroupsCountLessThanMin" xml:space="preserve">
+    <value>Количество групп разделов в '{0}' не соответствует ожиданиям: ожидалось минимум {1}, найдено {2}.</value>
+  </data>
+  <data name="SectionGroupsCountMoreThanMax" xml:space="preserve">
+    <value>Количество групп разделов в '{0}' не соответствует ожиданиям: ожидалось максимум {1}, найдено {2}.</value>
+  </data>
+  <data name="SectionGroupsCountNotEqual" xml:space="preserve">
+    <value>Количество групп разделов в '{0}' не соответствует ожиданиям: ожидалось {1}, найдено {2}.</value>
+  </data>
+  <data name="SectionNotFound" xml:space="preserve">
+    <value>Не найден раздел '{0}'.</value>
+  </data>
+  <data name="SectionNotFoundInContainer" xml:space="preserve">
+    <value>Не найден раздел '{0}' в '{1}'.</value>
+  </data>
+  <data name="SectionsCountLessThanMin" xml:space="preserve">
+    <value>Количество разделов в '{0}' не соответствует ожиданиям: ожидалось минимум {1}, найдено {2}.</value>
+  </data>
+  <data name="SectionsCountMoreThanMax" xml:space="preserve">
+    <value>Количество разделов в '{0}' не соответствует ожиданиям: ожидалось максимум {1}, найдено {2}.</value>
+  </data>
+  <data name="SectionsCountNotEqual" xml:space="preserve">
+    <value>Количество разделов в '{0}' не соответствует ожиданиям: ожидалось {1}, найдено {2}.</value>
+  </data>
+  <data name="AddParallelBibleTranslation" xml:space="preserve">
+    <value>Добавление параллельного перевода</value>
+  </data>
+  <data name="DeleteDictionariesNotebookQuestion" xml:space="preserve">
+    <value>Закрыть записную книжку словарей?</value>
+  </data>
+  <data name="DeleteThisModuleFromDictionariesNotebookQuestion" xml:space="preserve">
+    <value>Удалить данный модуль из записной книжки "Cловари"?</value>
+  </data>
+  <data name="DeleteThisModuleFromSupplementalBibleQuestion" xml:space="preserve">
+    <value>Удалить данный модуль из записной книжки "Справочная Библия"?</value>
+  </data>
+  <data name="SupportedModulesNotFound" xml:space="preserve">
+    <value>Не найдено ни одного поддерживаемого модуля. Пожалуйста, добавьте необходимые модули в программу.</value>
+  </data>
+  <data name="UseDictionaries" xml:space="preserve">
+    <value>Использовать записную книжку "Словари"</value>
+  </data>
+  <data name="AdditionalModules" xml:space="preserve">
+    <value>Дополнительные модули</value>
+  </data>
+  <data name="BaseModules" xml:space="preserve">
+    <value>Основные модули</value>
+  </data>
+  <data name="AllDictionaries" xml:space="preserve">
+    <value>Все словари</value>
+  </data>
+  <data name="DictionariesNotInstalled" xml:space="preserve">
+    <value>Словари не установлены. Пожалуйста, воспользуйтесь формой управления словарями, доступной на форме Параметров программы, чтобы установить словари.</value>
+  </data>
+  <data name="SelectWord" xml:space="preserve">
+    <value>Пожалуйста, выберите термин для поиска</value>
+  </data>
+  <data name="Verses" xml:space="preserve">
+    <value>стихи</value>
+  </data>
+  <data name="AddDictionaryFinishMessage" xml:space="preserve">
+    <value>Словарь успешно добавлен</value>
+  </data>
+  <data name="AddDictionaryStart" xml:space="preserve">
+    <value>Старт добавления словаря</value>
+  </data>
+  <data name="IndexDictionary" xml:space="preserve">
+    <value>Индексирование словаря</value>
+  </data>
+  <data name="IndexDictionaryStart" xml:space="preserve">
+    <value>Старт индексирования словаря</value>
+  </data>
+  <data name="FoundInOneDictionary" xml:space="preserve">
+    <value>Найдено в одном словаре</value>
+  </data>
+  <data name="FoundInSeveralDictionaries" xml:space="preserve">
+    <value>Найдено в нескольких словарях</value>
+  </data>
+  <data name="DictionaryNotebookCannotBeClosed" xml:space="preserve">
+    <value>Записная книжка "Словари" не может быть закрыта, если установлен словарь Стронга. Для начала необходимо удалить модуль со словарём Стронга из справочной Библии с помощью формы управления справочной Библией.</value>
+  </data>
+  <data name="ModuleCannotBeDeleted_DictionaryModule" xml:space="preserve">
+    <value>Данный модуль не может быть удалён, так как он используется в записной книжке "Словари".</value>
+  </data>
+  <data name="ModuleCannotBeDeleted_SupplementalBibleModule" xml:space="preserve">
+    <value>Данный модуль не может быть удалён, так как он используется в записной книжке "Справочная Библия".</value>
+  </data>
+  <data name="ModuleSuccessfullyUploaded" xml:space="preserve">
+    <value>Модуль успешно загружен</value>
+  </data>
+  <data name="IndexBibleFinish" xml:space="preserve">
+    <value>Библия успешно проиндексирована.</value>
+  </data>
+  <data name="ErrorWhilePageProcessing" xml:space="preserve">
+    <value>Ошибка при обработке страницы '{0}'</value>
+  </data>
+  <data name="IndexBibleQuestion" xml:space="preserve">
+    <value>Рекомендуется проиндексировать Библию для оптимизации производительности. Данная операция займёт около 30 минут. Проиндексировать Библию сейчас?</value>
+  </data>
+  <data name="IndexBibleQuestionAtStartUp" xml:space="preserve">
+    <value>Библия не проиндексирована. Рекомендуется проиндексировать Библию для оптимизации производительности. Данная операция займёт около 30 минут. Проиндексировать Библию сейчас?</value>
+  </data>
+  <data name="ModuleIsNotSupported" xml:space="preserve">
+    <value>Версия данного модуля не поддерживается. Необходимо обновить программу до версии '{0}'. Текущая версия программы: '{1}'.</value>
   </data>
 </root>

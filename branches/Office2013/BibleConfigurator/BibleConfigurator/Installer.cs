@@ -89,7 +89,7 @@ namespace BibleConfigurator
         private static string GenerateDefaultModule(string oneNoteTemplatesFolder)
         {
             string defaultModuleName = "RST";
-            string moduleFileName = defaultModuleName + Constants.IsbtFileExtension;
+            string moduleFileName = defaultModuleName + Constants.FileExtensionIsbt;
             string tempFolderPath = Path.Combine(Utils.GetTempFolderPath(), "ModuleGenerator");
             if (!Directory.Exists(tempFolderPath))
                 Directory.CreateDirectory(tempFolderPath);

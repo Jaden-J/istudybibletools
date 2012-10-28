@@ -7,9 +7,369 @@ using BibleCommon.Consts;
 using BibleCommon.Helpers;
 using BibleCommon.Services;
 using Microsoft.Office.Interop.OneNote;
+using BibleCommon.Contracts;
 
 namespace BibleCommon.Common
 {
+    [Serializable]
+    public struct VerseNumber
+    {
+        public int Verse;
+        public int? TopVerse;
+        public bool IsMultiVerse { get { return TopVerse.HasValue; } }
+
+        public bool IsVerseBelongs(int verse)
+        {
+            if (!IsMultiVerse)
+                return Verse == verse;
+            else
+                return Verse <= verse && verse <= TopVerse.Value; 
+        }
+
+        public VerseNumber(int verse)            
+        {
+            Verse = verse;
+            TopVerse = null;
+        }
+
+        public VerseNumber(int verse, int? topVerse)
+        {
+            Verse = verse;
+            if (topVerse.GetValueOrDefault(-1) > Verse)
+                TopVerse = topVerse;
+            else
+                TopVerse = null;
+        }
+
+        public List<int> GetAllVerses()
+        {
+            var result = new List<int>();
+
+            result.Add(Verse);
+
+            if (IsMultiVerse)
+            {
+                for (int i = Verse + 1; i <= TopVerse; i++)
+                    result.Add(i);
+            }
+
+            return result;
+        }
+
+        public static VerseNumber Parse(string s)
+        {
+            s = s.Trim();
+            var parts = s.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 1)
+                return new VerseNumber(int.Parse(s));
+            else if (parts.Length == 2)
+                return new VerseNumber(int.Parse(parts[0]), int.Parse(parts[1]));
+            else
+                throw new NotSupportedException(s);
+        }
+
+        public static VerseNumber? GetFromVerseText(string verseText)
+        {
+            string temp;
+            return GetFromVerseText(verseText, out temp);
+        }
+
+        public static VerseNumber? GetFromVerseText(string verseText, out string verseTextWithoutNumber)
+        {
+            verseText = verseText.Trim();
+            verseTextWithoutNumber = null;
+            int textBreakIndex, htmlBreakIndex;
+            var verseIndex = StringUtils.GetNextString(verseText, -1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound),
+                                                        out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
+            if (!string.IsNullOrEmpty(verseIndex))
+            {
+                int? topVerse = null;
+                if (StringUtils.GetChar(verseText, htmlBreakIndex) == '-')
+                {
+                    var topVerseString = StringUtils.GetNextString(verseText, htmlBreakIndex, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound),
+                                                        out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
+                    if (!string.IsNullOrEmpty(topVerseString))
+                        topVerse = int.Parse(topVerseString);
+                }                
+
+                verseTextWithoutNumber = verseText.Substring(htmlBreakIndex + 1);
+
+                return new VerseNumber(int.Parse(verseIndex), topVerse);
+            }
+
+            return null;
+        }
+
+        public override string ToString()
+        {
+            if (IsMultiVerse)
+                return string.Format("{0}-{1}", Verse, TopVerse);
+            else
+                return Verse.ToString();
+        }
+
+        public override int GetHashCode()
+        {
+            var result = Verse.GetHashCode();
+            //if (TopVerse.HasValue)
+            //    result = result ^ TopVerse.Value.GetHashCode();
+
+            return result;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            if (!(obj is VerseNumber))
+                return false;
+
+            var anotherObj = (VerseNumber)obj;
+
+            return this.Verse == anotherObj.Verse 
+                //&& this.TopVerse == anotherObj.TopVerse
+                ;
+        }
+
+        public static bool operator ==(VerseNumber vn1, VerseNumber vn2)
+        {
+            if (((object)vn1) == null && ((object)vn2) == null)
+                return true;
+
+            if (((object)vn1) == null)
+                return false;
+
+            if (((object)vn2) == null)
+                return false;
+
+            return vn1.Equals(vn2);
+        }
+
+        public static bool operator !=(VerseNumber vn1, VerseNumber vn2)
+        {
+            return !(vn1 == vn2);
+        }        
+    }
+
+    [Serializable]
+    public class SimpleVersePointer: ICloneable
+    {
+        public int BookIndex { get; set; }
+        public int Chapter { get; set; }
+        public VerseNumber VerseNumber { get; set; }        
+        public int? PartIndex { get; set; }        
+        public bool IsEmpty { get; set; }
+        public bool IsApocrypha { get; set; }
+        public bool SkipCheck { get; set; }
+
+        public bool IsMultiVerse
+        {
+            get
+            {
+                return VerseNumber.IsMultiVerse;
+            }
+        }        
+
+        public int Verse
+        {
+            get
+            {   
+                return VerseNumber.Verse;             
+            }
+        }
+
+        public int? TopVerse
+        {
+            get
+            {   
+                return VerseNumber.TopVerse;
+            }
+        }
+
+        public bool IsChapter
+        {
+            get
+            {
+                return this.VerseNumber.Verse == 0;
+            }
+        }
+
+        public SimpleVersePointer(string s)
+        {
+            var parts = s.Split(new char[] { ' ', ':' });
+
+        }
+
+        public SimpleVersePointer()
+        {
+        }
+
+        public SimpleVersePointer(SimpleVersePointer verse)
+            : this(verse.BookIndex, verse.Chapter, new VerseNumber(verse.Verse, verse.TopVerse))
+        {
+
+        }
+
+        public SimpleVersePointer(int bookIndex, int chapter)
+            : this(bookIndex, chapter, new VerseNumber())
+        { }
+
+        public SimpleVersePointer(int bookIndex, int chapter, VerseNumber verse)
+        {
+            this.BookIndex = bookIndex;
+            this.Chapter = chapter;
+            this.VerseNumber = verse;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            if (!(obj is SimpleVersePointer))
+                return false;
+
+            SimpleVersePointer other = (SimpleVersePointer)obj;            
+            return this.BookIndex == other.BookIndex
+                && this.Chapter == other.Chapter
+                && this.Verse == other.Verse;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.BookIndex.GetHashCode() ^ this.Chapter.GetHashCode() ^ this.Verse.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            var result = string.Format("{0} {1}:{2}", BookIndex, Chapter, VerseNumber);
+
+            if (PartIndex.HasValue)
+                result += string.Format("({0})", PartIndex);
+
+            if (IsEmpty)
+                result += "(empty)";
+
+            if (IsApocrypha)
+                result += "(A)";
+
+            return result;
+        }
+
+        public string ToFirstVerseString()
+        {
+            return string.Format("{0} {1}:{2}", BookIndex, Chapter, VerseNumber.Verse);
+        }
+
+        public virtual object Clone()
+        {
+            var result = new SimpleVersePointer(this);
+            CopyProperties(result);
+
+            return result;
+        }
+
+        protected void CopyProperties(SimpleVersePointer verse)
+        {
+            verse.IsApocrypha = this.IsApocrypha;
+            verse.IsEmpty = this.IsEmpty;
+            verse.PartIndex = this.PartIndex;            
+            verse.SkipCheck = this.SkipCheck;
+        }
+
+        public SimpleVersePointer GetChapterPointer()
+        {
+            return new SimpleVersePointer(this.BookIndex, this.Chapter);
+        }
+
+        public List<SimpleVersePointer> GetAllVerses()
+        {
+            var result = new List<SimpleVersePointer>();
+
+            result.AddRange(this.VerseNumber.GetAllVerses().ConvertAll(v =>
+            {
+                var verse = (SimpleVersePointer)this.Clone();
+                verse.VerseNumber = new VerseNumber(v);
+                return verse;
+            }));
+
+            return result;
+        }
+
+        public VersePointer ToVersePointer(ModuleInfo moduleInfo)
+        {
+            var bookInfo = moduleInfo.BibleStructure.BibleBooks.FirstOrDefault(book => book.Index == this.BookIndex);
+            if (bookInfo == null)
+                throw new ArgumentException(string.Format("Book with index {0} was not found in module {1}", this.BookIndex, moduleInfo.ShortName));
+
+            return new VersePointer(bookInfo.Name, this.Chapter, this.Verse, this.TopVerse);
+        }        
+    }
+
+    public class SimpleVerse : SimpleVersePointer
+    {
+
+        /// <summary>
+        /// Строка, соответствующая номерам/номеру стиха. Может быть: "5", "5-6", "6:5-6"
+        /// </summary>
+        public string VerseNumberString { get; set; }
+
+        /// <summary>
+        /// Ссылка, ведующая с номера стиха
+        /// </summary>
+        public string VerseLink { get; set; }
+
+        /// <summary>
+        /// Текст стиха без номера
+        /// </summary>
+        public string VerseContent { get; set; }
+
+        public string GetVerseFullString()
+        {
+            if (this.IsApocrypha || this.IsEmpty)
+                return string.Empty;
+
+            string verseNumber = string.IsNullOrEmpty(VerseLink) 
+                                    ? this.VerseNumberString
+                                    : string.Format("<a href='{0}'>{1}</a>", VerseLink, VerseNumberString);
+
+            return string.Format("{0}{1}{2}",
+                            verseNumber,
+                            string.IsNullOrEmpty(VerseContent) ? string.Empty : "<span> </span>",
+                            VerseContent);
+        }
+
+        public SimpleVerse(SimpleVersePointer versePointer, string verseContent)
+            : this(versePointer, null, verseContent)
+        { }
+     
+        /// <summary>
+        /// string.IsNullOrEmpty(verseContent) - это не то же самое, что this.IsEmpty
+        /// </summary>
+        /// <param name="versePointer"></param>
+        /// <param name="verseContent"></param>
+        public SimpleVerse(SimpleVersePointer versePointer, string verseNumberString, string verseContent)
+            : base(versePointer.BookIndex, versePointer.Chapter, versePointer.VerseNumber)
+        {
+            this.VerseContent = verseContent;
+
+            if (!string.IsNullOrEmpty(verseNumberString))
+                this.VerseNumberString = verseNumberString;
+            else
+                this.VerseNumberString = versePointer.Verse.ToString();            
+        }
+
+        public override object Clone()
+        {
+            var result = new SimpleVerse(this, this.VerseNumberString, this.VerseContent);
+            CopyProperties(result);
+
+            return result;            
+        }
+    }
+
+    [Serializable]
     public class VersePointer
     {      
         public BibleBookInfo Book { get; set; }
@@ -19,6 +379,14 @@ namespace BibleCommon.Common
         public string OriginalBookName { get; set; }
 
         public VersePointer ParentVersePointer { get; set; } // родительская ссылка. Например если мы имеем дело со стихом диапазона, то здесь хранится стих, являющийся диапазоном
+
+        public VerseNumber VerseNumber
+        {
+            get
+            {
+                return new VerseNumber(this.Verse.GetValueOrDefault(), this.TopVerse);
+            }
+        }
 
         public override string ToString()
         {
@@ -60,8 +428,20 @@ namespace BibleCommon.Common
 
         }
 
+        public VersePointer(string bookName, int chapter)
+            : this(bookName, chapter, 0)
+        {
+
+        }
+
         public VersePointer(string bookName, int chapter, int verse)
-            : this(string.Format("{0} {1}:{2}", bookName, chapter, verse))
+            : this(bookName, chapter, verse, null)
+        {
+
+        }
+
+        public VersePointer(string bookName, int chapter, int verse, int? topVerse)
+            : this(string.Format("{0} {1}:{2}{3}{4}", bookName, chapter, verse, topVerse.HasValue ? "-" : string.Empty, topVerse))
         {
 
         }
@@ -119,8 +499,45 @@ namespace BibleCommon.Common
                 }
 
                 bool endsWithDot;
+                string moduleName;
                 OriginalBookName = TrimBookName(s, out endsWithDot);
-                Book = GetBibleBook(OriginalBookName, endsWithDot);
+                Book = GetBibleBook(OriginalBookName, endsWithDot, out moduleName);
+
+                if (!string.IsNullOrEmpty(moduleName))   // значит ссылка дана для модуля, отличного от установленного                
+                    ConvertToBaseVerse(moduleName);                
+            }
+        }       
+
+        public SimpleVersePointer ToSimpleVersePointer()
+        {
+            return new SimpleVersePointer(Book.Index, Chapter.GetValueOrDefault(0), new VerseNumber(Verse.GetValueOrDefault(0), this.TopVerse));
+        }
+
+        private void ConvertToBaseVerse(string moduleName)
+        {
+            if (IsValid)
+            {
+                var parallelVersePointer = BibleParallelTranslationConnectorManager.GetParallelVersePointer(
+                                                ToSimpleVersePointer(), moduleName, SettingsManager.Instance.ModuleName);
+
+                this.OriginalBookName = this.Book.Name;
+                this.Chapter = parallelVersePointer.Chapter;
+                this.Verse = parallelVersePointer.Verse;
+
+                if (IsMultiVerse)
+                {
+                    parallelVersePointer = BibleParallelTranslationConnectorManager.GetParallelVersePointer(
+                                                new SimpleVersePointer(
+                                                                    this.Book.Index, 
+                                                                    this.TopChapter.GetValueOrDefault(this.Chapter.Value), 
+                                                                    new VerseNumber(this.TopVerse.GetValueOrDefault(this.Verse.Value))), 
+                                                moduleName, SettingsManager.Instance.ModuleName);
+
+                    if (TopChapter.HasValue)
+                        _topChapter = parallelVersePointer.Chapter;
+                    if (TopVerse.HasValue)
+                        _topVerse = parallelVersePointer.Verse;
+                }
             }
         }
 
@@ -250,26 +667,27 @@ namespace BibleCommon.Common
             }
         }
 
-        private static BibleBookInfo GetBibleBook(string s, bool endsWithDot)
-        {
-            return SettingsManager.Instance.CurrentModule.GetBibleBook(s, endsWithDot);
+        private static BibleBookInfo GetBibleBook(string s, bool endsWithDot, out string moduleName)
+        {   
+            return SettingsManager.Instance.CurrentModule.GetBibleBook(s, endsWithDot, out moduleName);
         }
 
         public VersePointer GetChapterPointer()
         {
             return new VersePointer(this.OriginalBookName, this.Chapter.Value, 0);
         }
+        
 
         /// <summary>
         /// возвращает список всех вложенных стихов (за исключением первого) если Multiverse. 
         /// </summary>
         /// <returns></returns>
-        public List<VersePointer> GetAllIncludedVersesExceptFirst(Application oneNoteApp, string bibleNotebookId)
+        public List<VersePointer> GetAllIncludedVersesExceptFirst(Application oneNoteApp, GetAllIncludedVersesExceptFirstArgs args)
         {
             List<VersePointer> result = new List<VersePointer>();
-            if (IsValid && IsMultiVerse)
+            if ((IsValid || args.Force) && IsMultiVerse)
             {
-                if (TopChapter != null && TopVerse != null)
+                if (TopChapter != null && TopVerse != null && !args.SearchOnlyForFirstChapter)
                 {
                     for (int chapterIndex = Chapter.Value; chapterIndex <= TopChapter; chapterIndex++)
                     {
@@ -278,7 +696,7 @@ namespace BibleCommon.Common
                             topVerse = TopVerse.Value;
                         else
                             topVerse = HierarchySearchManager.GetChapterVersesCount(
-                                            oneNoteApp, bibleNotebookId, 
+                                            oneNoteApp, args.BibleNotebookId, 
                                             VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex))
                                             .GetValueOrDefault(0);
 
@@ -329,7 +747,7 @@ namespace BibleCommon.Common
 
         public override int GetHashCode()
         {
-            var result =  this.Chapter.GetHashCode() ^ this.Verse.GetHashCode();
+            var result =  this.Chapter.GetValueOrDefault(0).GetHashCode() ^ this.Verse.GetValueOrDefault(0).GetHashCode();
             if (this.Book != null)
                 result = result ^ this.Book.Name.GetHashCode();
 
@@ -352,16 +770,7 @@ namespace BibleCommon.Common
 
         public static bool operator !=(VersePointer vp1, VersePointer vp2)
         {
-            if (((object)vp1) == null && ((object)vp2) == null)
-                return false;
-
-            if (((object)vp1) == null)
-                return true;
-
-            if (((object)vp2) == null)
-                return true;
-
-            return !vp1.Equals(vp2);
-        }
+            return !(vp1 == vp2);
+        }        
     }
 }

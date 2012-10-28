@@ -54,8 +54,8 @@
             // 
             // SelectNoteBooksForm
             // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.lblError);
             this.Controls.Add(this.pnMain);
             this.Controls.Add(this.btnOk);

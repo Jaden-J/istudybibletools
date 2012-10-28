@@ -49,15 +49,18 @@ namespace BibleConfigurator
         private bool _wasSearchedSectionGroupsInSingleNotebook = false;       
         
 
-        private const int LoadParametersAttemptsCount = 40;         // количество попыток загрузки параметров после команды создания записных книжек из шаблона
-        private const int LoadParametersPauseBetweenAttempts = 10;             // количество секунд ожидания между попытками загрузки параметров
+        private const int LoadParametersAttemptsCount = 80;         // количество попыток загрузки параметров после команды создания записных книжек из шаблона
+        private const int LoadParametersPauseBetweenAttempts = 5;             // количество секунд ожидания между попытками загрузки параметров
         private const string LoadParametersImageFileName = "loader.gif";
 
+        protected CustomFormLogger LongProcessLogger { get; set; }
 
         private NotebookParametersForm _notebookParametersForm = null;
         
         public bool ShowModulesTabAtStartUp { get; set; }
         public bool NeedToSaveChangesAfterLoadingModuleAtStartUp { get; set; }
+        public bool ToIndexBible { get; set; }
+        public bool CommitChangesAfterLoad { get; set; }
 
         public MainForm(params string[] args)
         {
@@ -65,27 +68,41 @@ namespace BibleConfigurator
 
             InitializeComponent();
             BibleCommon.Services.Logger.Init("BibleConfigurator");
+            LongProcessLogger = new CustomFormLogger(this);
         }
 
-        public bool StopExternalProcess { get; set; }
-
-        private ToolTip _toolTip = null;
-        private void SetToolTip(Control c, string toolTip)
-        {
-            if (_toolTip == null)
-            {
-                _toolTip = new ToolTip();
-
-                _toolTip.AutoPopDelay = 5000;
-                _toolTip.InitialDelay = 1000;
-                _toolTip.ReshowDelay = 500;
-                _toolTip.ShowAlways = true;
-            }
-            
-            _toolTip.SetToolTip(c, toolTip);   
-        }
+        public bool StopExternalProcess { get; set; }        
 
         private void btnOK_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                CommitChanges(true);
+            }
+            catch (Exception ex)
+            {                
+                FormLogger.LogError(ex);
+            }
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void btnApply_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                CommitChanges(false);
+            }
+            catch (Exception ex)
+            {                
+                FormLogger.LogError(ex);
+            }
+        }    
+
+        internal void CommitChanges(bool closeForm)
         {
             ModuleInfo module = null;
 
@@ -95,17 +112,27 @@ namespace BibleConfigurator
             }
             catch (InvalidModuleException ex)
             {
-                Logger.LogMessage(ex.Message);
+                FormLogger.LogMessage(ex.Message);
                 return;
             }
 
+            if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible) && !ToIndexBible)
+            {
+                if (MessageBox.Show(BibleCommon.Resources.Constants.IndexBibleQuestion, BibleCommon.Resources.Constants.Warning,
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    ToIndexBible = true;
+            }
+
             btnOK.Enabled = false;
+            btnClose.Enabled = false;
+            btnApply.Enabled = false;
             bool lblWarningVisibilityBefore = lblWarning.Visible;
-            lblWarning.Visible = false;                                    
+            lblWarning.Visible = false;
+            this.TopMost = true;
 
             try
             {
-                Logger.Initialize();
+                FormLogger.Initialize();
 
                 if (rbSingleNotebook.Checked && module.UseSingleNotebook())
                 {
@@ -118,30 +145,38 @@ namespace BibleConfigurator
                     SettingsManager.Instance.SectionGroupId_BibleComments = string.Empty;
                     SettingsManager.Instance.SectionGroupId_BibleNotesPages = string.Empty;
 
-                    SaveMultiNotebookParameters(module, NotebookType.Bible,
+                    SaveMultiNotebookParameters(module, ContainerType.Bible,
                         chkCreateBibleNotebookFromTemplate, cbBibleNotebook, BibleNotebookFromTemplatePath);
 
-                    SaveMultiNotebookParameters(module, NotebookType.BibleStudy,
+                    SaveMultiNotebookParameters(module, ContainerType.BibleStudy,
                         chkCreateBibleStudyNotebookFromTemplate, cbBibleStudyNotebook, BibleStudyNotebookFromTemplatePath);
 
-                    SaveMultiNotebookParameters(module, NotebookType.BibleComments,
+                    SaveMultiNotebookParameters(module, ContainerType.BibleComments,
                         chkCreateBibleCommentsNotebookFromTemplate, cbBibleCommentsNotebook, BibleCommentsNotebookFromTemplatePath);
 
-                    SaveMultiNotebookParameters(module, NotebookType.BibleNotesPages,
-                        chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, BibleNotesPagesNotebookFromTemplatePath);
+                    SaveMultiNotebookParameters(module, ContainerType.BibleNotesPages,
+                        chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, BibleNotesPagesNotebookFromTemplatePath);                    
                 }
 
-                if (!Logger.WasErrorLogged)
+                this.TopMost = false;  // нам не нужен уже топ мост, потому что раньше он нам нужен был из-за того, что OneNote постоянно перекрывал программу когда создавались новые записные книжки
+
+                if (ToIndexBible)                
+                    IndexBible();                                    
+
+                if (!FormLogger.WasErrorLogged)
                 {
                     SetProgramParameters();
 
                     SettingsManager.Instance.Save();
-                    Close();
+                    if (closeForm)
+                        Close();
+                    else
+                        ReLoadParameters(false);
                 }
             }
             catch (SaveParametersException ex)
             {
-                Logger.LogError(ex.Message);
+                FormLogger.LogError(ex);
                 if (ex.NeedToReload)
                     LoadParameters(module, null);
 
@@ -151,11 +186,23 @@ namespace BibleConfigurator
             finally
             {
                 btnOK.Enabled = true;
-                
+                btnClose.Enabled = true;
+                btnApply.Enabled = true;
+                this.TopMost = false;
             }
         }
 
-        private void SaveMultiNotebookParameters(ModuleInfo module, NotebookType notebookType,
+        private void IndexBible()
+        {
+            int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleName, true);
+            PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.IndexBibleStart);
+            LongProcessLogger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexBible);
+            BibleVersesLinksCacheManager.GenerateBibleVersesLinks(_oneNoteApp,
+                SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, LongProcessLogger);
+            ExternalProcessingDone(BibleCommon.Resources.Constants.IndexBibleFinish);
+        }
+
+        private void SaveMultiNotebookParameters(ModuleInfo module, ContainerType notebookType,
             CheckBox createFromTemplateControl, ComboBox selectedNotebookNameControl, string notebookFromTemplatePath)
         {
             if (createFromTemplateControl.Checked)
@@ -184,18 +231,18 @@ namespace BibleConfigurator
 
             if (chkCreateSingleNotebookFromTemplate.Checked)
             {
-                string notebookTemplateFileName = module.GetNotebook(NotebookType.Single).Name;
+                string notebookTemplateFileName = module.GetNotebook(ContainerType.Single).Name;
                 notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, SingleNotebookFromTemplatePath);
                 if (!string.IsNullOrEmpty(notebookName))
                 {
-                    WaitAndLoadParameters(NotebookType.Single, notebookName);
+                    WaitAndLoadParameters(ContainerType.Single, notebookName);
                     SearchForCorrespondenceSectionGroups(module, SettingsManager.Instance.NotebookId_Bible);
                 }
             }
             else
             {
                 notebookName = (string)cbSingleNotebook.SelectedItem;
-                if (TryToLoadNotebookParameters(NotebookType.Single, notebookName, false, out notebookId))
+                if (TryToLoadNotebookParameters(ContainerType.Single, notebookName, false, out notebookId))
                 {
                     if (_notebookParametersForm != null && _notebookParametersForm.RenamedSectionGroups.Count > 0)
                         RenameSectionGroupsForm(notebookId, _notebookParametersForm.RenamedSectionGroups);
@@ -208,7 +255,7 @@ namespace BibleConfigurator
                         }
                         catch (InvalidNotebookException)
                         {
-                            Logger.LogError(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected);
+                            FormLogger.LogError(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected);
                         }
                     }
                 }
@@ -336,7 +383,7 @@ namespace BibleConfigurator
 
         }
 
-        private void WaitAndLoadParameters(NotebookType notebookType, string notebookName)
+        private void WaitAndLoadParameters(ContainerType notebookType, string notebookName)
         {   
             PrepareForExternalProcessing(100, 1, string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ConfiguratorNotebookCreation, notebookName));
             
@@ -368,7 +415,7 @@ namespace BibleConfigurator
                 throw new SaveParametersException(BibleCommon.Resources.Constants.ConfiguratorCanNotRequestDataFromOneNote, true);
         }
 
-        private bool TryToLoadNotebookParameters(NotebookType notebookType, string notebookName, bool silientMode, out string notebookId)
+        private bool TryToLoadNotebookParameters(ContainerType notebookType, string notebookName, bool silientMode, out string notebookId)
         {
             notebookId = string.Empty;
 
@@ -382,22 +429,22 @@ namespace BibleConfigurator
                 {
                     switch (notebookType)
                     {
-                        case NotebookType.Single:
+                        case ContainerType.Single:
                             SettingsManager.Instance.NotebookId_Bible = notebookId;
                             SettingsManager.Instance.NotebookId_BibleComments = notebookId;
                             SettingsManager.Instance.NotebookId_BibleNotesPages = notebookId;
                             SettingsManager.Instance.NotebookId_BibleStudy = notebookId;
                             break;
-                        case NotebookType.Bible:
+                        case ContainerType.Bible:
                             SettingsManager.Instance.NotebookId_Bible = notebookId;
                             break;
-                        case NotebookType.BibleComments:
+                        case ContainerType.BibleComments:
                             SettingsManager.Instance.NotebookId_BibleComments = notebookId;
                             break;
-                        case NotebookType.BibleNotesPages:
+                        case ContainerType.BibleNotesPages:
                             SettingsManager.Instance.NotebookId_BibleNotesPages = notebookId;
                             break;
-                        case NotebookType.BibleStudy:
+                        case ContainerType.BibleStudy:
                             SettingsManager.Instance.NotebookId_BibleStudy = notebookId;
                             break;
                     }
@@ -429,27 +476,27 @@ namespace BibleConfigurator
         {
             OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, notebookId, HierarchyScope.hsSections, true);
 
-            List<SectionGroupType> sectionGroups = new List<SectionGroupType>();
+            List<ContainerType> sectionGroups = new List<ContainerType>();
 
             foreach (XElement sectionGroup in notebook.Content.Root.XPathSelectElements("one:SectionGroup", notebook.Xnm).Where(sg => !OneNoteUtils.IsRecycleBin(sg)))
             {
                 string id = (string)sectionGroup.Attribute("ID");
 
-                if (NotebookChecker.ElementIsBible(module, sectionGroup, notebook.Xnm) && !sectionGroups.Contains(SectionGroupType.Bible))
+                if (NotebookChecker.ElementIsBible(module, sectionGroup, notebook.Xnm) && !sectionGroups.Contains(ContainerType.Bible))
                 {
                     SettingsManager.Instance.SectionGroupId_Bible = id;
-                    sectionGroups.Add(SectionGroupType.Bible);
+                    sectionGroups.Add(ContainerType.Bible);
                 }
-                else if (NotebookChecker.ElementIsBibleComments(module, sectionGroup, notebook.Xnm) && !sectionGroups.Contains(SectionGroupType.BibleComments))
+                else if (NotebookChecker.ElementIsBibleComments(module, sectionGroup, notebook.Xnm) && !sectionGroups.Contains(ContainerType.BibleComments))
                 {
                     SettingsManager.Instance.SectionGroupId_BibleComments = id;
                     SettingsManager.Instance.SectionGroupId_BibleNotesPages = id;
-                    sectionGroups.Add(SectionGroupType.BibleComments);
+                    sectionGroups.Add(ContainerType.BibleComments);
                 }
-                else if (!sectionGroups.Contains(SectionGroupType.BibleStudy))
+                else if (!sectionGroups.Contains(ContainerType.BibleStudy))
                 {
                     SettingsManager.Instance.SectionGroupId_BibleStudy = id;
-                    sectionGroups.Add(SectionGroupType.BibleStudy);
+                    sectionGroups.Add(ContainerType.BibleStudy);
                 }              
                 else
                     throw new InvalidNotebookException();
@@ -472,7 +519,7 @@ namespace BibleConfigurator
                     sectionGroup.SetAttributeValue("name", renamedSectionGroups[sectionGroupId]);
                 }
                 else
-                    Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorSectionGroupNotFound, sectionGroupId));
+                    FormLogger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorSectionGroupNotFound, sectionGroupId));
             }
 
             _oneNoteApp.UpdateHierarchy(notebook.Content.ToString(), Constants.CurrentOneNoteSchema);
@@ -489,42 +536,28 @@ namespace BibleConfigurator
             {
                 string folderPath = Path.Combine(notebookFromTemplatePath, Path.GetFileNameWithoutExtension(notebookTemplateFileName));                
 
-                folderPath = GetNewDirectoryPath(folderPath);
+                folderPath = Utils.GetNewDirectoryPath(folderPath);
 
-                if (!string.IsNullOrEmpty(folderPath))
-                {
+                //if (!string.IsNullOrEmpty(folderPath))
+                //{
                     _oneNoteApp.OpenPackage(packageFilePath, folderPath, out s);
 
                     string[] files = Directory.GetFiles(s, "*.onetoc2", SearchOption.TopDirectoryOnly);
                     if (files.Length > 0)
                         Process.Start(files[0]);
                     else
-                        Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorErrorWhileNotebookOpenning, notebookTemplateFileName));
+                        FormLogger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorErrorWhileNotebookOpenning, notebookTemplateFileName));
 
                     return Path.GetFileNameWithoutExtension(folderPath);
-                }
-                else
-                    Logger.LogError(BibleCommon.Resources.Constants.ConfiguratorSelectAnotherFolder);
+                //}
+                //else
+                //    Logger.LogError(BibleCommon.Resources.Constants.ConfiguratorSelectAnotherFolder);
             }
             else
-                Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorNotebookTemplateNotFound, packageFilePath));
+                FormLogger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorNotebookTemplateNotFound, packageFilePath));
 
             return string.Empty;
-        }
-
-        private string GetNewDirectoryPath(string folderPath)
-        {
-            string result = folderPath;
-            for (int i = 0; i < 100; i++)
-            {
-                result = folderPath + (i > 0 ? " (" + i.ToString() + ")" : string.Empty);
-
-                if (!Directory.Exists(result))
-                    return result;
-            }
-
-            return string.Empty;
-        }
+        }       
 
         private LoadForm _loadForm;
         private bool _firstShown = true;
@@ -564,13 +597,17 @@ namespace BibleConfigurator
                 {
                     _loadForm.Hide();
                 }
+
+                if (CommitChangesAfterLoad)
+                    btnOK_Click(this, null);
             }
         }
-      
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             _loadForm = new LoadForm();
-            _loadForm.Show();            
+
+            _loadForm.Show();
         }
 
         private void LoadParameters(ModuleInfo module, bool? needToSaveSettings)
@@ -579,11 +616,11 @@ namespace BibleConfigurator
                 lblWarning.Visible = true;
 
             Dictionary<string, string> notebooks = GetNotebooks();
-            string singleNotebookId = module.UseSingleNotebook() ? SearchForNotebook(module, notebooks.Keys, NotebookType.Single) : string.Empty;
-            string bibleNotebookId = SearchForNotebook(module, notebooks.Keys, NotebookType.Bible);
-            string bibleCommentsNotebookId = SearchForNotebook(module, notebooks.Keys, NotebookType.BibleComments);
-            string bibleStudyNotebookId = SearchForNotebook(module, notebooks.Keys, NotebookType.BibleStudy);
-            string bibleNotesPagesNotebookId = SearchForNotebook(module, notebooks.Keys.ToList().Where(s => s != bibleCommentsNotebookId), NotebookType.BibleNotesPages);
+            string singleNotebookId = module.UseSingleNotebook() ? SearchForNotebook(module, notebooks.Keys, ContainerType.Single) : string.Empty;
+            string bibleNotebookId = SearchForNotebook(module, notebooks.Keys, ContainerType.Bible);
+            string bibleCommentsNotebookId = SearchForNotebook(module, notebooks.Keys, ContainerType.BibleComments);
+            string bibleStudyNotebookId = SearchForNotebook(module, notebooks.Keys, ContainerType.BibleStudy);
+            string bibleNotesPagesNotebookId = SearchForNotebook(module, notebooks.Keys.ToList().Where(s => s != bibleCommentsNotebookId), ContainerType.BibleNotesPages);
             if (string.IsNullOrEmpty(bibleNotesPagesNotebookId))
                 bibleNotesPagesNotebookId = bibleCommentsNotebookId;
 
@@ -614,25 +651,25 @@ namespace BibleConfigurator
             if (module.UseSingleNotebook())
             {
                 SetNotebookParameters(rbSingleNotebook.Checked, !string.IsNullOrEmpty(singleNotebookId) ? notebooks[singleNotebookId] :
-                    Path.GetFileNameWithoutExtension(module.GetNotebook(NotebookType.Single).Name),
+                    Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.Single).Name),
                     notebooks, SettingsManager.Instance.NotebookId_Bible, cbSingleNotebook, chkCreateSingleNotebookFromTemplate);
             }
             
 
             SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotebookId) ? notebooks[bibleNotebookId] :
-                Path.GetFileNameWithoutExtension(module.GetNotebook(NotebookType.Bible).Name), 
+                Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.Bible).Name), 
                 notebooks, SettingsManager.Instance.NotebookId_Bible, cbBibleNotebook, chkCreateBibleNotebookFromTemplate);
 
             SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleStudyNotebookId) ? notebooks[bibleStudyNotebookId] :
-                Path.GetFileNameWithoutExtension(module.GetNotebook(NotebookType.BibleStudy).Name),
+                Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.BibleStudy).Name),
                 notebooks, SettingsManager.Instance.NotebookId_BibleStudy, cbBibleStudyNotebook, chkCreateBibleStudyNotebookFromTemplate);
 
             SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleCommentsNotebookId) ? notebooks[bibleCommentsNotebookId] :
-                Path.GetFileNameWithoutExtension(module.GetNotebook(NotebookType.BibleComments).Name), 
+                Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.BibleComments).Name), 
                 notebooks, SettingsManager.Instance.NotebookId_BibleComments, cbBibleCommentsNotebook, chkCreateBibleCommentsNotebookFromTemplate);
 
             SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotesPagesNotebookId) ? notebooks[bibleNotesPagesNotebookId] :
-                Path.GetFileNameWithoutExtension(module.GetNotebook(NotebookType.BibleNotesPages).Name), 
+                Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.BibleNotesPages).Name), 
                 notebooks, SettingsManager.Instance.NotebookId_BibleNotesPages, cbBibleNotesPagesNotebook, chkCreateBibleNotesPagesNotebookFromTemplate);            
 
             tbBookOverviewName.Text = SettingsManager.Instance.SectionName_DefaultBookOverview;
@@ -663,6 +700,7 @@ namespace BibleConfigurator
 
             var currentLanguage = LanguageManager.UserLanguage;
 
+            cbLanguage.Items.Clear();
             foreach (var pair in languages)
             {
                 cbLanguage.Items.Add(new ComboBoxItem() { Key = pair.Key, Value = pair.Value });
@@ -672,7 +710,7 @@ namespace BibleConfigurator
             }
         }
 
-        private string SearchForNotebook(ModuleInfo module, IEnumerable<string> notebooksIds, NotebookType notebookType)
+        private string SearchForNotebook(ModuleInfo module, IEnumerable<string> notebooksIds, ContainerType notebookType)
         {
             foreach (string notebookId in notebooksIds)
             {
@@ -719,22 +757,19 @@ namespace BibleConfigurator
 
         private void PrepareFolderBrowser()
         {
-            string myDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string[] directories = Directory.GetDirectories(myDocumentsPath, "*OneNote*", SearchOption.TopDirectoryOnly);
-            if (directories.Length > 0)
-                folderBrowserDialog.SelectedPath = directories[0];
-            else
-                folderBrowserDialog.SelectedPath = myDocumentsPath;            
-
+            string defaultNotebookFolderPath;
+            _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);            
+            
+            folderBrowserDialog.SelectedPath = defaultNotebookFolderPath;
             folderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetNotebookFolder;
             folderBrowserDialog.ShowNewFolderButton = true;
 
             string toolTipMessage = BibleCommon.Resources.Constants.DefineNotebookDirectory;
-            SetToolTip(btnSingleNotebookSetPath, toolTipMessage);
-            SetToolTip(btnBibleNotebookSetPath, toolTipMessage);
-            SetToolTip(btnBibleStudyNotebookSetPath, toolTipMessage);
-            SetToolTip(btnBibleCommentsNotebookSetPath, toolTipMessage);
-            SetToolTip(btnBibleNotesPagesNotebookSetPath, toolTipMessage);
+            FormExtensions.SetToolTip(btnSingleNotebookSetPath, toolTipMessage);
+            FormExtensions.SetToolTip(btnBibleNotebookSetPath, toolTipMessage);
+            FormExtensions.SetToolTip(btnBibleStudyNotebookSetPath, toolTipMessage);
+            FormExtensions.SetToolTip(btnBibleCommentsNotebookSetPath, toolTipMessage);
+            FormExtensions.SetToolTip(btnBibleNotesPagesNotebookSetPath, toolTipMessage);
         }
 
         public Dictionary<string, string> GetNotebooks()
@@ -829,29 +864,29 @@ namespace BibleConfigurator
                 string notebookId = OneNoteUtils.GetNotebookIdByName(_oneNoteApp, notebookName, true);
                 var module = ModulesManager.GetCurrentModuleInfo();
                 string errorText;
-                if (NotebookChecker.CheckNotebook(_oneNoteApp, module, notebookId, NotebookType.Single, out errorText))
+                if (NotebookChecker.CheckNotebook(_oneNoteApp, module, notebookId, ContainerType.Single, out errorText))
                 {
                     if (_notebookParametersForm == null)
                         _notebookParametersForm = new NotebookParametersForm(_oneNoteApp, notebookId);
 
                     if (_notebookParametersForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {   
-                        SettingsManager.Instance.SectionGroupId_Bible = _notebookParametersForm.GroupedSectionGroups[SectionGroupType.Bible];
-                        SettingsManager.Instance.SectionGroupId_BibleStudy = _notebookParametersForm.GroupedSectionGroups[SectionGroupType.BibleStudy];
-                        SettingsManager.Instance.SectionGroupId_BibleComments = _notebookParametersForm.GroupedSectionGroups[SectionGroupType.BibleComments];
-                        SettingsManager.Instance.SectionGroupId_BibleNotesPages = _notebookParametersForm.GroupedSectionGroups[SectionGroupType.BibleComments];
+                        SettingsManager.Instance.SectionGroupId_Bible = _notebookParametersForm.GroupedSectionGroups[ContainerType.Bible];
+                        SettingsManager.Instance.SectionGroupId_BibleStudy = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleStudy];
+                        SettingsManager.Instance.SectionGroupId_BibleComments = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleComments];
+                        SettingsManager.Instance.SectionGroupId_BibleNotesPages = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleComments];
 
                         _wasSearchedSectionGroupsInSingleNotebook = true;  // нашли необходимые группы секций. 
                     }
                 }
                 else
                 {
-                    Logger.LogError(string.Format(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected + "\n" + errorText, notebookName, NotebookType.Single));
+                    FormLogger.LogError(string.Format(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected + "\n" + errorText, notebookName, ContainerType.Single));
                 }
             }
             else
             {
-                Logger.LogMessage(BibleCommon.Resources.Constants.ConfiguratorNotebookNotDefined);
+                FormLogger.LogMessage(BibleCommon.Resources.Constants.ConfiguratorNotebookNotDefined);
             }
         }
 
@@ -930,13 +965,20 @@ namespace BibleConfigurator
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            StopExternalProcess = true;            
+            StopExternalProcess = true;
+            LongProcessLogger.AbortedByUsers = true;
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             BibleCommon.Services.Logger.Done();
             _oneNoteApp = null;
+
+            if (_notebookParametersForm != null)
+                _notebookParametersForm.Dispose();
+
+            if (_loadForm != null)
+                _loadForm.Dispose();
         }
 
         private void btnRelinkComments_Click(object sender, EventArgs e)
@@ -958,6 +1000,9 @@ namespace BibleConfigurator
             lblProgressInfo.Text = infoText;
 
             btnOK.Enabled = false;
+            btnClose.Enabled = false;
+            btnApply.Enabled = false;
+            System.Windows.Forms.Application.DoEvents();
         }
 
         public void ExternalProcessingDone(string infoText)
@@ -968,7 +1013,11 @@ namespace BibleConfigurator
             FormExtensions.SetControlPropertyThreadSafe(pbMain, "Visible", false);
             FormExtensions.SetControlPropertyThreadSafe(tbcMain, "Enabled", true);
             FormExtensions.SetControlPropertyThreadSafe(lblProgressInfo, "Text", infoText);
-            FormExtensions.SetControlPropertyThreadSafe(btnOK, "Enabled", true);         
+            FormExtensions.SetControlPropertyThreadSafe(btnOK, "Enabled", true);
+            FormExtensions.SetControlPropertyThreadSafe(btnClose, "Enabled", true);
+            FormExtensions.SetControlPropertyThreadSafe(btnApply, "Enabled", true);
+
+            System.Windows.Forms.Application.DoEvents();
         }
 
         public void PerformProgressStep(string infoText)
@@ -1008,12 +1057,14 @@ namespace BibleConfigurator
 
         private void btnResizeBibleTables_Click(object sender, EventArgs e)
         {
-            SetWidthForm form = new SetWidthForm();
-            if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            using (SetWidthForm form = new SetWidthForm())
             {
-                using (ResizeBibleManager manager = new ResizeBibleManager(_oneNoteApp, this))
+                if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    manager.ResizeBiblePages(form.BiblePagesWidth);
+                    using (ResizeBibleManager manager = new ResizeBibleManager(_oneNoteApp, this))
+                    {
+                        manager.ResizeBiblePages(form.BiblePagesWidth);
+                    }
                 }
             }
         }
@@ -1039,13 +1090,21 @@ namespace BibleConfigurator
 
         private void btnUploadModule_Click(object sender, EventArgs e)
         {
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            try
             {
-                bool moduleWasAdded;
-                bool needToReload = AddNewModule(openFileDialog.FileName, out moduleWasAdded);
-                if (needToReload)
-                    ReLoadParameters(true);
-            }            
+                btnUploadModule.Enabled = false;
+                if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    bool moduleWasAdded;
+                    bool needToReload = AddNewModule(openFileDialog.FileName, out moduleWasAdded);
+                    if (needToReload)
+                        ReLoadParameters(true);
+                }
+            }
+            finally
+            {
+                btnUploadModule.Enabled = true;
+            }
         }
 
         private void ReLoadModulesInfo()
@@ -1063,16 +1122,34 @@ namespace BibleConfigurator
         /// <returns>true если новый модуль стал основным</returns>
         public bool AddNewModule(string filePath, out bool moduleWasAdded)
         {
+            var preModuleInfo = ModulesManager.ReadModuleInfo(filePath);
+            string moduleName = preModuleInfo.ShortName;            
+            
+            string destFilePath = Path.Combine(ModulesManager.GetModulesPackagesDirectory(), moduleName + Constants.FileExtensionIsbt);
+
             moduleWasAdded = true;
-            string moduleName = Path.GetFileNameWithoutExtension(filePath);
-            string destFilePath = Path.Combine(ModulesManager.GetModulesPackagesDirectory(), Path.GetFileName(filePath));
-
             bool canContinue = true;
-
             if (File.Exists(destFilePath))
             {
-                if (MessageBox.Show(BibleCommon.Resources.Constants.ModuleWithSameNameAlreadyExists, BibleCommon.Resources.Constants.Warning,
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.No)
+                var needToAsk = false;
+
+                ModuleInfo existingModule = null;
+
+                try
+                {
+                    existingModule = ModulesManager.GetModuleInfo(moduleName);
+                    if (existingModule.Version > preModuleInfo.Version) 
+                        needToAsk = true;
+                }
+                catch (InvalidModuleException)
+                { }                   
+
+                
+                if (needToAsk 
+                    && existingModule != null 
+                    && MessageBox.Show(string.Format(BibleCommon.Resources.Constants.ModuleWithSameNameAlreadyExists, existingModule.Version, preModuleInfo.Version),
+                                                BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, 
+                                                MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.No)
                 {
                     canContinue = false;
                     moduleWasAdded = false;
@@ -1081,29 +1158,38 @@ namespace BibleConfigurator
 
             if (canContinue)
             {
+                ModuleInfo module = null;
+
                 try
                 {
                     bool currentModuleIsCorrect = SettingsManager.Instance.CurrentModuleIsCorrect();  // а то может быть, что мы загрузили модуль, и он стал корретным, но UI не обновилось
 
-                    ModulesManager.UploadModule(filePath, destFilePath, moduleName);
+                    module = ModulesManager.UploadModule(filePath, destFilePath, moduleName);
 
                     bool needToReload = false;
 
-                    if (!currentModuleIsCorrect)
+                    if (!currentModuleIsCorrect && module.Type == ModuleType.Bible)
                     {
-                        SettingsManager.Instance.ModuleName = moduleName;
+                        SettingsManager.Instance.ModuleName = module.ShortName;
                         needToReload = true;
                     }
                     
                     ReLoadModulesInfo();
 
+                    FormLogger.LogMessage(BibleCommon.Resources.Constants.ModuleSuccessfullyUploaded);
+
                     return needToReload;                    
                 }
                 catch (InvalidModuleException ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    FormLogger.LogError(ex);                    
                     Thread.Sleep(500);
-                    ModulesManager.DeleteModule(moduleName);
+
+                    if (module != null)
+                        ModulesManager.DeleteModule(module.ShortName);
+                    else
+                        ModulesManager.DeleteModule(moduleName);
+
                     moduleWasAdded = false;
                 }
             }
@@ -1119,139 +1205,268 @@ namespace BibleConfigurator
             if (!_wasLoadedModulesInfo)
             {
                 LoadModulesInfo();
-            }            
+            }
+
+            btnSupplementalBibleManagement.Text = BibleCommon.Resources.Constants.SupplementalBibleManagement;
+            btnDictionariesManagement.Text = BibleCommon.Resources.Constants.DictionariesManagement;
         }
 
-        private void LoadModulesInfo()
+        private static int GetModuleTypeWeight(ModuleType type)
         {
-            string modulesDirectory = ModulesManager.GetModulesDirectory();
+            switch (type)
+            {
+                case ModuleType.Bible:
+                    return 0;
+                default:
+                    return 1;
+            }
+        }
+
+
+        private bool _lblModulesBibleTitleWasAdded = false;
+        private bool _lblModulesDictionariesTitleWasAdded = false;
+
+
+        private const int MaxPnModulesHeight = 265;
+        private void LoadModulesInfo()
+        {            
 
             int top = 10;
-            var modules = Directory.GetDirectories(modulesDirectory, "*", SearchOption.TopDirectoryOnly);
-            foreach (var moduleDirectory in modules)
+            _lblModulesBibleTitleWasAdded = false;
+            _lblModulesDictionariesTitleWasAdded = false;
+            var modules = ModulesManager.GetModules();
+            foreach (var module in modules.OrderBy(m => GetModuleTypeWeight(m.Type)).ThenBy(m => m.Name))
             {
-                string moduleName = Path.GetFileNameWithoutExtension(moduleDirectory);                
-
                 try
                 {
-                    ModulesManager.CheckModule(moduleName);
-                    
-                    LoadModuleToUI(moduleName, top);                    
+                    ModulesManager.CheckModule(module);
+
+                    top = SetModulesGroupTitle(module, top);
+
+                    LoadModuleToUI(module, top);                    
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogMessage(string.Format(BibleCommon.Resources.Constants.ModuleUploadError, moduleDirectory, ex.Message));
-                    if (DeleteModuleWithConfirm(moduleName))
+                    string moduleDirectory = ModulesManager.GetModuleDirectory(module.ShortName);
+                    FormLogger.LogMessage(string.Format(BibleCommon.Resources.Constants.ModuleUploadError, moduleDirectory, ex.Message));
+                    if (DeleteModuleWithConfirm(module.ShortName))
                         return;
                 }
 
                 top += 30;
-            }             
+            }
 
-            if (modules.Count() > 0)
-            {
-                pnModules.Height = top;
-                btnUploadModule.Top = top + 50;
-                btnUploadModule.Left = 415 + pnModules.Left;
+            if (top > MaxPnModulesHeight)
+                top = MaxPnModulesHeight;
+
+            pnModules.Height = top;
+            btnUploadModule.Top = top + 50;
+
+            if (modules.Where(m => m.Type == ModuleType.Bible).Count() > 0)
+            {                
+                btnUploadModule.Left = 31 + pnModules.Left;
+
+                btnSupplementalBibleManagement.Top = btnUploadModule.Top;
+                btnSupplementalBibleManagement.Left = btnUploadModule.Right + 6;
+                btnSupplementalBibleManagement.Visible = true;
+
+                btnDictionariesManagement.Top = btnUploadModule.Top;
+                btnDictionariesManagement.Left = btnSupplementalBibleManagement.Right + 6;
+                btnDictionariesManagement.Visible = true;
 
                 lblMustUploadModule.Visible = false;
                 lblMustSelectModule.Visible = !SettingsManager.Instance.CurrentModuleIsCorrect();
             }
             else
             {
+                if (modules.Count == 0)
+                    btnUploadModule.Top = 125;
+
+                lblMustUploadModule.Top = btnUploadModule.Top - 20;                
+
+                btnUploadModule.Left = (this.Width - btnUploadModule.Width) / 2;                
+
                 lblMustUploadModule.Visible = true;
                 lblMustSelectModule.Visible = false;
+                btnSupplementalBibleManagement.Visible = false;
+                btnDictionariesManagement.Visible = false;
             }
             
             _wasLoadedModulesInfo = true;
         }
 
-        private void LoadModuleToUI(string moduleName, int top)
+        private int SetModulesGroupTitle(ModuleInfo module, int top)
+        {
+            Label lblTitle = null;
+            if (module.Type == ModuleType.Bible)
+            {
+                if (!_lblModulesBibleTitleWasAdded)
+                {
+                    lblTitle = new Label() { Text = BibleCommon.Resources.Constants.BaseModules, Top = top + 10, Width = 600 };
+                    _lblModulesBibleTitleWasAdded = true;
+                }
+            }
+            else
+            {
+                if (!_lblModulesDictionariesTitleWasAdded)
+                {
+                    lblTitle = new Label() { Text = BibleCommon.Resources.Constants.AdditionalModules, Top = top + 10, Width = 600 };
+                    _lblModulesDictionariesTitleWasAdded = true;
+                }
+            }
+
+            if (lblTitle != null)
+            {
+                lblTitle.Font = new Font(lblTitle.Font, FontStyle.Bold);
+                pnModules.Controls.Add(lblTitle);
+                top += 35;
+            }
+
+            return top;
+        }
+
+        private void LoadModuleToUI(ModuleInfo moduleInfo, int top)
         {   
-            string moduleDisplayName = ModulesManager.GetModuleInfo(moduleName).Name;
+            var maximumModuleNameLength = 45;
+            Label lblName = new Label();
+            if (moduleInfo.Name.Length > maximumModuleNameLength)
+                lblName.Text = moduleInfo.Name.Substring(0, maximumModuleNameLength) + "...";
+            else
+                lblName.Text = moduleInfo.Name;
+            lblName.Top = top + 5;
+            lblName.Left = 15;
+            lblName.Width = 310;
+            FormExtensions.SetToolTip(lblName, BibleCommon.Resources.Constants.ModuleDisplayName);
+            pnModules.Controls.Add(lblName);
 
-            Label l = new Label();
-            l.Text = moduleDisplayName;
-            l.Top = top + 5;
-            l.Left = 0;
-            l.Width = 365;
-            pnModules.Controls.Add(l);
+            Label lblVersion = new Label();
+            lblVersion.Text = moduleInfo.Version.ToString();
+            lblVersion.Top = top + 5;
+            lblVersion.Left = 330;
+            lblVersion.Width = 25;
+            FormExtensions.SetToolTip(lblVersion, BibleCommon.Resources.Constants.ModuleVersion);
+            pnModules.Controls.Add(lblVersion);
 
-            CheckBox cb = new CheckBox();
-            cb.AutoCheck = false;
-            cb.Checked = SettingsManager.Instance.ModuleName == moduleName;
-            cb.Top = top;
-            cb.Left = 370;
-            cb.Width = 20;
-            pnModules.Controls.Add(cb);
+            if (moduleInfo.Type == ModuleType.Bible)
+            {
+                CheckBox cbIsActive = new CheckBox();
+                cbIsActive.AutoCheck = false;
+                cbIsActive.Checked = SettingsManager.Instance.ModuleName == moduleInfo.ShortName;
+                cbIsActive.Top = top;
+                cbIsActive.Left = 355;
+                cbIsActive.Width = 20;
+                FormExtensions.SetToolTip(cbIsActive, BibleCommon.Resources.Constants.ModuleIsActive);
+                pnModules.Controls.Add(cbIsActive);
+            }
 
-            Button bInfo = new Button();
-            bInfo.Text = "?";
-            SetToolTip(bInfo, BibleCommon.Resources.Constants.ModuleInformation);
-            bInfo.Tag = moduleName;
-            bInfo.Top = top;
-            bInfo.Left = 390;
-            bInfo.Width = 20;
-            bInfo.Click += new EventHandler(btnModuleInfo_Click);
-            pnModules.Controls.Add(bInfo);            
-
-            Button b = new Button();
-            b.Text = BibleCommon.Resources.Constants.UseThisModule;      
-            b.Enabled = SettingsManager.Instance.ModuleName != moduleName;
-            b.Tag = moduleName;
-            b.Top = top;
-            b.Left = 415;
-            b.Width = 180;
-            b.Click += new EventHandler(btnUseThisModule_Click);
-            pnModules.Controls.Add(b);
-
-            Button bDel = new Button();
-            bDel.Image = BibleConfigurator.Properties.Resources.del;
-            bDel.Enabled = SettingsManager.Instance.ModuleName != moduleName;
-            SetToolTip(bDel, BibleCommon.Resources.Constants.DeleteThisModule);
-            bDel.Tag = moduleName;
-            bDel.Top = top;            
-            bDel.Left = 600;
-            bDel.Width = bDel.Height;
-            bDel.Click += new EventHandler(btnDeleteModule_Click);
-            pnModules.Controls.Add(bDel);
             
+            Button btnInfo = new Button();
+            btnInfo.Text = "?";
+            btnInfo.Tag = moduleInfo;
+            btnInfo.Top = top;
+            btnInfo.Left = 375;
+            btnInfo.Width = 20;
+            btnInfo.Click += new EventHandler(btnModuleInfo_Click);
+            FormExtensions.SetToolTip(btnInfo, BibleCommon.Resources.Constants.ModuleInformation);
+            pnModules.Controls.Add(btnInfo);
+            
+
+            if (moduleInfo.Type == ModuleType.Bible)
+            {
+                Button btnUseThisModule = new Button();
+                btnUseThisModule.Text = GetBtnModuleManagementText(moduleInfo.Type);
+                btnUseThisModule.Enabled = moduleInfo.Type == ModuleType.Bible ? SettingsManager.Instance.ModuleName != moduleInfo.ShortName : true;
+                btnUseThisModule.Tag = moduleInfo;
+                btnUseThisModule.Top = top;
+                btnUseThisModule.Left = 400;
+                btnUseThisModule.Width = 185;
+                btnUseThisModule.Click += new EventHandler(btnUseThisModule_Click);
+                pnModules.Controls.Add(btnUseThisModule);
+            }
+
+            Button btnDel = new Button();
+            btnDel.Image = BibleConfigurator.Properties.Resources.del;
+            btnDel.Enabled = SettingsManager.Instance.ModuleName != moduleInfo.ShortName;            
+            btnDel.Tag = moduleInfo.ShortName;
+            btnDel.Top = top;            
+            btnDel.Left = 590;
+            btnDel.Width = btnDel.Height;
+            btnDel.Click += new EventHandler(btnDeleteModule_Click);
+            FormExtensions.SetToolTip(btnDel, BibleCommon.Resources.Constants.DeleteThisModule);
+            pnModules.Controls.Add(btnDel);            
+        }       
+
+        private string GetBtnModuleManagementText(ModuleType moduleType)
+        {
+            switch (moduleType)
+            {
+                case ModuleType.Bible: 
+                    return BibleCommon.Resources.Constants.UseThisModule; 
+                case ModuleType.Strong:
+                    return BibleCommon.Resources.Constants.SupplementalBibleManagement; 
+                case ModuleType.Dictionary:
+                    return BibleCommon.Resources.Constants.DictionariesManagement;
+                default: 
+                    throw new NotSupportedException(moduleType.ToString());
+            }
         }
 
         void btnModuleInfo_Click(object sender, EventArgs e)
         {
             var btn = (Button)sender;
-            var moduleName = (string)btn.Tag;
+            var moduleInfo = (ModuleInfo)btn.Tag;
 
-            AboutModuleForm f = new AboutModuleForm(moduleName, false);
-            f.ShowDialog();                
+            if (moduleInfo.Type == ModuleType.Dictionary)
+            {
+                MessageBox.Show(!string.IsNullOrEmpty(moduleInfo.Description) ? moduleInfo.Description : moduleInfo.Name, 
+                    BibleCommon.Resources.Constants.ModuleInformation, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                using (AboutModuleForm f = new AboutModuleForm(moduleInfo.ShortName, false))
+                {
+                    f.ShowDialog();
+                }
+            }
         }
 
         void btnUseThisModule_Click(object sender, EventArgs e)
         {
             var btn = (Button)sender;
-            var moduleName = (string)btn.Tag;
+            var moduleInfo = (ModuleInfo)btn.Tag;
 
-            bool canContinue = true;
-
-            if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible) && OneNoteUtils.NotebookExists(_oneNoteApp, SettingsManager.Instance.NotebookId_Bible)
-                && SettingsManager.Instance.CurrentModuleIsCorrect())
+            switch (moduleInfo.Type)
             {
-                if (MessageBox.Show(BibleCommon.Resources.Constants.ChangeModuleWarning, BibleCommon.Resources.Constants.Warning,       
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)       
-                    canContinue = false;
-            }
+                case ModuleType.Bible:
+                    bool canContinue = true;
 
-            if (canContinue)
-            {
-                SettingsManager.Instance.ModuleName = moduleName;
-                ReLoadModulesInfo();
-                ReLoadParameters(true);
+                    if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible) && OneNoteUtils.NotebookExists(_oneNoteApp, SettingsManager.Instance.NotebookId_Bible, true)
+                        && SettingsManager.Instance.CurrentModuleIsCorrect())
+                    {
+                        if (MessageBox.Show(BibleCommon.Resources.Constants.ChangeModuleWarning, BibleCommon.Resources.Constants.Warning,
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)
+                            canContinue = false;
+                    }
+
+                    if (canContinue)
+                    {                        
+                        SettingsManager.Instance.ModuleName = moduleInfo.ShortName;
+                        ReLoadModulesInfo();
+                        ReLoadParameters(true);
+                    }
+                    break;
+                case ModuleType.Strong:
+                    ShowSupplementalBibleManagementForm();
+                    break;
+                case ModuleType.Dictionary:
+                    ShowDictionariesManagementForm();
+                    break;
             }
         }        
 
         private void ReLoadParameters(bool needToSaveSettings)
         {
+            _loadForm.SetDesktopLocation(this.Left - 5, this.Top - 5);
             _loadForm.Show();
             try
             {
@@ -1268,7 +1483,12 @@ namespace BibleConfigurator
             var btn = (Button)sender;
             var moduleName = (string)btn.Tag;
 
-            DeleteModuleWithConfirm(moduleName);
+            if (SettingsManager.Instance.SupplementalBibleModules.Contains(moduleName))
+                FormLogger.LogError(BibleCommon.Resources.Constants.ModuleCannotBeDeleted_SupplementalBibleModule);
+            else if (SettingsManager.Instance.DictionariesModules.Any(m => m.ModuleName == moduleName))
+                FormLogger.LogError(BibleCommon.Resources.Constants.ModuleCannotBeDeleted_DictionaryModule);
+            else
+                DeleteModuleWithConfirm(moduleName);
         }
 
         private bool DeleteModuleWithConfirm(string moduleName)
@@ -1288,6 +1508,32 @@ namespace BibleConfigurator
         private void hlModules_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start(BibleCommon.Resources.Constants.WebSiteUrl + "/modules.htm");
-        }        
+        }
+
+        private void btnSupplementalBibleManagement_Click(object sender, EventArgs e)
+        {
+            ShowSupplementalBibleManagementForm();
+        }
+
+        private void ShowSupplementalBibleManagementForm()
+        {
+            using (var form = new SupplementalBibleForm(_oneNoteApp, this))
+            {
+                form.ShowDialog();
+            }
+        }
+
+        private void btnDictionariesManagement_Click(object sender, EventArgs e)
+        {
+            ShowDictionariesManagementForm();
+        }
+
+        private void ShowDictionariesManagementForm()
+        {
+            using (var form = new DictionaryModulesForm(_oneNoteApp, this))
+            {
+                form.ShowDialog();
+            }
+        }                          
     }
 }
