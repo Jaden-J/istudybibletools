@@ -114,14 +114,7 @@ namespace BibleConfigurator
             {
                 FormLogger.LogMessage(ex.Message);
                 return;
-            }
-
-            if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible) && !ToIndexBible)
-            {
-                if (MessageBox.Show(BibleCommon.Resources.Constants.IndexBibleQuestion, BibleCommon.Resources.Constants.Warning,
-                                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                    ToIndexBible = true;
-            }
+            }           
 
             btnOK.Enabled = false;
             btnClose.Enabled = false;
@@ -159,6 +152,16 @@ namespace BibleConfigurator
                 }
 
                 this.TopMost = false;  // нам не нужен уже топ мост, потому что раньше он нам нужен был из-за того, что OneNote постоянно перекрывал программу когда создавались новые записные книжки
+
+                if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible))
+                {
+                    if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible) && !ToIndexBible)
+                    {
+                        if (MessageBox.Show(BibleCommon.Resources.Constants.IndexBibleQuestion, BibleCommon.Resources.Constants.Warning,
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            ToIndexBible = true;
+                    }
+                }                
 
                 if (ToIndexBible)                
                     IndexBible();                                    
@@ -577,6 +580,12 @@ namespace BibleConfigurator
                         if (NeedToSaveChangesAfterLoadingModuleAtStartUp)
                             needSaveSettings = true;
                     }
+                    else if (string.IsNullOrEmpty(SettingsManager.Instance.ModuleName))
+                    {
+                        var modules = ModulesManager.GetModules(true);
+                        if (modules.Count == 1)                        
+                            SettingsManager.Instance.ModuleName = modules[0].ShortName;                        
+                    }
                     
                     PrepareFolderBrowser();
                     SetNotebooksDefaultPaths();
@@ -613,7 +622,7 @@ namespace BibleConfigurator
         private void LoadParameters(ModuleInfo module, bool? needToSaveSettings)
         {
             if (!SettingsManager.Instance.IsConfigured(_oneNoteApp) || needToSaveSettings.GetValueOrDefault(false))
-                lblWarning.Visible = true;
+                lblWarning.Visible = true;        
 
             Dictionary<string, string> notebooks = GetNotebooks();
             string singleNotebookId = module.UseSingleNotebook() ? SearchForNotebook(module, notebooks.Keys, ContainerType.Single) : string.Empty;
@@ -691,7 +700,7 @@ namespace BibleConfigurator
             InitLanguagesMenu();
 
             if (!rbSingleNotebook.Checked)
-                rbSingleNotebook.Enabled = false;
+                rbSingleNotebook.Enabled = false;            
         }
 
         private void InitLanguagesMenu()
@@ -1084,7 +1093,7 @@ namespace BibleConfigurator
 
         private void tabPage1_Enter(object sender, EventArgs e)
         {
-            if (!SettingsManager.Instance.CurrentModuleIsCorrect())            
+            if (!_firstShown && !SettingsManager.Instance.CurrentModuleIsCorrect())            
                 tbcMain.SelectedTab = tbcMain.TabPages[tabPage4.Name];
         }
 
@@ -1234,8 +1243,9 @@ namespace BibleConfigurator
             int top = 10;
             _lblModulesBibleTitleWasAdded = false;
             _lblModulesDictionariesTitleWasAdded = false;
-            var modules = ModulesManager.GetModules();
-            foreach (var module in modules.OrderBy(m => GetModuleTypeWeight(m.Type)).ThenBy(m => m.Name))
+            var allModules = ModulesManager.GetModules(false);
+            var modules = new List<ModuleInfo>();
+            foreach (var module in allModules.OrderBy(m => GetModuleTypeWeight(m.Type)).ThenBy(m => m.Name))
             {
                 try
                 {
@@ -1243,14 +1253,28 @@ namespace BibleConfigurator
 
                     top = SetModulesGroupTitle(module, top);
 
-                    LoadModuleToUI(module, top);                    
+                    LoadModuleToUI(module, top);
+                    modules.Add(module);
                 }
                 catch (Exception ex)
                 {
+                    var loadFormTopMost = _loadForm.TopMost;
+                    var formTopMost = this.TopMost;
+
                     string moduleDirectory = ModulesManager.GetModuleDirectory(module.ShortName);
-                    FormLogger.LogMessage(string.Format(BibleCommon.Resources.Constants.ModuleUploadError, moduleDirectory, ex.Message));
-                    if (DeleteModuleWithConfirm(module.ShortName))
-                        return;
+                    _loadForm.TopMost = false;
+                    this.TopMost = false;
+                    try
+                    {
+                        FormLogger.LogMessage(string.Format(BibleCommon.Resources.Constants.ModuleUploadError, moduleDirectory, ex.Message));
+                        if (DeleteModuleWithConfirm(module.ShortName))
+                            return;
+                    }
+                    finally
+                    {
+                        _loadForm.TopMost = loadFormTopMost;
+                        this.TopMost = formTopMost;
+                    }
                 }
 
                 top += 30;
@@ -1496,8 +1520,7 @@ namespace BibleConfigurator
             if (MessageBox.Show(BibleCommon.Resources.Constants.DeleteThisModuleQuestion, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)  
                == System.Windows.Forms.DialogResult.Yes)
             {
-                ModulesManager.DeleteModule(moduleName);
-
+                ModulesManager.DeleteModule(moduleName);                
                 ReLoadModulesInfo();
                 return true;
             }
@@ -1534,6 +1557,6 @@ namespace BibleConfigurator
             {
                 form.ShowDialog();
             }
-        }                          
+        }                                     
     }
 }

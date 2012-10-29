@@ -102,6 +102,7 @@
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -538,7 +539,7 @@
             this.tabPage4.Controls.Add(this.lblMustUploadModule);
             this.tabPage4.Controls.Add(this.btnUploadModule);
             resources.ApplyResources(this.tabPage4, "tabPage4");
-            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Name = "tabPage4";      
             this.tabPage4.Enter += new System.EventHandler(this.tabPage4_Enter);
             // 
             // btnDictionariesManagement
@@ -650,6 +651,7 @@
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.tbcMain.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
