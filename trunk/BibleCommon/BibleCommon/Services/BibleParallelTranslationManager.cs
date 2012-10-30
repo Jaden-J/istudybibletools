@@ -360,15 +360,16 @@ namespace BibleCommon.Services
 
             var firstParallelVerse = parallelVersePointers.First();
             int? topLastVerse = null;
-            bool isEmpty = false;
+            bool isEmpty = false;            
 
             if (!firstParallelVerse.IsEmpty)
             {
+                bool isFullVerses;
                 List<SimpleVersePointer> notFoundVerses;
-                verseContent = parallelBookContent.GetVersesContent(parallelVersePointers, strongPrefix, out topLastVerse, out isEmpty, out notFoundVerses);                
+                verseContent = parallelBookContent.GetVersesContent(parallelVersePointers, strongPrefix, out topLastVerse, out isEmpty, out isFullVerses, out notFoundVerses);                
                 if (!isEmpty)
-                {
-                    verseNumberContent = GetVersesNumberString(baseVersePointer, parallelVersePointers, topLastVerse);                  
+                {                    
+                    verseNumberContent = GetVersesNumberString(baseVersePointer, parallelVersePointers, topLastVerse, isFullVerses);                  
 
                     if (verseContent == null)
                     {
@@ -383,7 +384,7 @@ namespace BibleCommon.Services
                     {
                         foreach (var notFoundVerse in notFoundVerses)
                         {
-                            Errors.Add(new GetParallelVerseException(                        // значит один из нескольких не удалось найти
+                            Errors.Add(new GetParallelVerseException(                        // значит один из нескольких стихов не удалось найти
                                 string.Format("Can not find verseContent{0}",
                                                 notFoundVerse.PartIndex.HasValue
                                                     ? string.Format(" (versePart = {0})", notFoundVerse.PartIndex + 1)
@@ -401,33 +402,33 @@ namespace BibleCommon.Services
             };
         }
 
-        private string GetVersesNumberString(SimpleVersePointer baseVersePointer, ComparisonVersesInfo parallelVersePointers, int? topVerse)
+        private string GetVersesNumberString(SimpleVersePointer baseVersePointer, ComparisonVersesInfo parallelVersePointers, int? topVerse, bool isFullVerses)
         {
             string result = string.Empty;
             var firstParallelVerse = parallelVersePointers.First();
 
             if (!firstParallelVerse.IsEmpty)
             {
-                result = GetVerseNumberString(firstParallelVerse, null);
-
-                if (parallelVersePointers[0].Chapter != baseVersePointer.Chapter)
-                    result = string.Format("{0}:{1}", firstParallelVerse.Chapter, result);
+                result = GetVerseNumberString(firstParallelVerse, null, baseVersePointer.Chapter, isFullVerses);                
 
                 if (parallelVersePointers.Count > 1 || topVerse.HasValue)
                 {
                     var lastVerse = parallelVersePointers.Last();
 
-                    result += string.Format("-{0}", GetVerseNumberString(lastVerse, topVerse));
+                    result += string.Format("-{0}", GetVerseNumberString(lastVerse, topVerse, baseVersePointer.Chapter, isFullVerses));
                 }
             }
 
             return result;
         }
 
-        private string GetVerseNumberString(SimpleVersePointer versePointer, int? topVerse)
+        private string GetVerseNumberString(SimpleVersePointer versePointer, int? topVerse, int baseChapter, bool isFullVerses)
         {
             var result = topVerse.HasValue ? topVerse.ToString() : versePointer.VerseNumber.ToString();
-            if (versePointer.PartIndex.HasValue)
+            if (baseChapter != versePointer.Chapter)
+                result = string.Format("{0}:{1}", versePointer.Chapter, result);
+
+            if (versePointer.PartIndex.HasValue && !isFullVerses)
             {
                 var partVersesAlphabet = ParallelModuleInfo.BibleTranslationDifferences.PartVersesAlphabet;
                 if (string.IsNullOrEmpty(partVersesAlphabet) || partVersesAlphabet.Length <= versePointer.PartIndex.Value)
@@ -435,6 +436,7 @@ namespace BibleCommon.Services
 
                 result += string.Format("({0})", partVersesAlphabet[versePointer.PartIndex.Value]);
             }
+
             return result;
         }
 

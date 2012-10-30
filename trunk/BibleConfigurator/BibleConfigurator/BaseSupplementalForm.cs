@@ -59,7 +59,7 @@ namespace BibleConfigurator
         {
             OneNoteApp = oneNoteApp;
             MainForm = form;
-            Modules = ModulesManager.GetModules();
+            Modules = ModulesManager.GetModules(true);
             TopControlsPosition = 10;
             Logger = new CustomFormLogger(MainForm);
 

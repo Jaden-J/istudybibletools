@@ -541,7 +541,7 @@ namespace BibleCommon.Common
         {
             All = 0,
             First = 1,
-            Last = 2
+            Last = 2            
         }
 
         [XmlAttribute]
@@ -562,7 +562,7 @@ namespace BibleCommon.Common
         public CorrespondenceVerseType CorrespondenceType { get; set; }
 
         /// <summary>
-        /// Количество стихов, соответствующих версии KJV. По умолчанию - все стихи соответствуют KJV (если Strict = true), либо только один стих (если Strict = false)
+        /// Количество стихов, соответствующих версии KJV. По умолчанию - все стихи соответствуют KJV (если CorrespondenceType = All), либо только один стих (в обратном случае)
         /// </summary>
         [XmlAttribute]
         public string ValueVersesCount { get; set; }

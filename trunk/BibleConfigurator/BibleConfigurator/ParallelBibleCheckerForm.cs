@@ -38,7 +38,7 @@ namespace BibleConfigurator
 
         private void SetDataSource(ComboBox cb)
         {
-            cb.DataSource = ModulesManager.GetModules().Where(m => m.Type == ModuleType.Bible || m.Type == ModuleType.Strong).ToList(); // приходится каждый раз загружать, чтобы разные были дата сорсы - иначе они вместе меняются
+            cb.DataSource = ModulesManager.GetModules(true).Where(m => m.Type == ModuleType.Bible || m.Type == ModuleType.Strong).ToList(); // приходится каждый раз загружать, чтобы разные были дата сорсы - иначе они вместе меняются
             cb.DisplayMember = "ShortName";
             cb.ValueMember = "ShortName";
         }
