@@ -136,13 +136,21 @@ namespace BibleCommon.Services
             return modulesDirectory;
         }
 
-        public static List<ModuleInfo> GetModules()
+        public static List<ModuleInfo> GetModules(bool correctOnly)
         {
             var result = new List<ModuleInfo>();
 
             foreach (string moduleName in Directory.GetDirectories(GetModulesDirectory(), "*", SearchOption.TopDirectoryOnly))
             {
-                result.Add(GetModuleInfo(Path.GetFileName(moduleName)));
+                try
+                {
+                    result.Add(GetModuleInfo(Path.GetFileName(moduleName)));
+                }
+                catch
+                {
+                    if (!correctOnly)
+                        throw;
+                }
             }
 
             return result;

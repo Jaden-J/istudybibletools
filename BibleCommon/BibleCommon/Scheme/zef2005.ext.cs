@@ -45,22 +45,24 @@ namespace BibleCommon.Scheme
             }
         }
 
-        public string GetVerseContent(SimpleVersePointer versPointer, string strongPrefix, out VerseNumber verseNumber, out bool isEmpty)
+        public string GetVerseContent(SimpleVersePointer versPointer, string strongPrefix, 
+            out VerseNumber verseNumber, out bool isEmpty, out bool isFullVerse)
         {
             isEmpty = false;
+            isFullVerse = true;
 
             if (this.Chapters.Count < versPointer.Chapter)
                 throw new ParallelChapterNotFoundException(versPointer, BaseVersePointerException.Severity.Warning);
 
             var chapter = this.Chapters[versPointer.Chapter - 1];
 
-            var verseContent = chapter.GetVerse(versPointer.Verse);
-            if (verseContent == null)
+            var verse = chapter.GetVerse(versPointer.Verse);
+            if (verse == null)
                 throw new ParallelVerseNotFoundException(versPointer, BaseVersePointerException.Severity.Warning);
 
-            verseNumber = verseContent.VerseNumber;
+            verseNumber = verse.VerseNumber;
 
-            if (verseContent.IsEmpty)
+            if (verse.IsEmpty)
             {
                 isEmpty = true;
                 return string.Empty;
@@ -68,21 +70,37 @@ namespace BibleCommon.Scheme
 
             string result = null;
 
+            var verseContent = verse.GetValue(true, strongPrefix);
+            var shelledVerseContent = ShellVerseText(verseContent);
+
             if (versPointer.PartIndex.HasValue)
             {
-                var versesParts = verseContent.GetValue(true, strongPrefix).Split(new char[] { '|' });
+                var versesParts = verseContent.Split(new char[] { '|' });
                 if (versesParts.Length > versPointer.PartIndex.Value)
                     result = versesParts[versPointer.PartIndex.Value].Trim();
-            }
-            else
-                result = verseContent.GetValue(true, strongPrefix);
 
-            result = ShellVerseText(result);
+                result = ShellVerseText(result);
+                if (result != shelledVerseContent)
+                    isFullVerse = false;
+            }
+            else            
+                result = shelledVerseContent;
 
             return result;
         }
 
-        public string GetVersesContent(List<SimpleVersePointer> verses, string strongPrefix, out int? topVerse, out bool isEmpty, out List<SimpleVersePointer> notFoundVerses)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="verses"></param>
+        /// <param name="strongPrefix"></param>
+        /// <param name="topVerse"></param>
+        /// <param name="isEmpty"></param>
+        /// <param name="isFullVerses">Запрашиваемые стихи являются полными. А то стих может быть "Текст стиха|". То есть вроде как две части стиха, но первая часть равна всему стиху.</param>
+        /// <param name="notFoundVerses"></param>
+        /// <returns></returns>
+        public string GetVersesContent(List<SimpleVersePointer> verses, string strongPrefix, 
+            out int? topVerse, out bool isEmpty, out bool isFullVerses, out List<SimpleVersePointer> notFoundVerses)
         {
             var contents = new List<string>();
             notFoundVerses = new List<SimpleVersePointer>();
@@ -90,17 +108,25 @@ namespace BibleCommon.Scheme
             topVerse = verses.First().TopVerse;
 
             isEmpty = true;
+            isFullVerses = true;
 
             foreach (var verse in verses)
             {
-                bool localIsEmpty;
+                bool localIsEmpty, localIsFullVerse;
                 VerseNumber vn;
-                var verseContent = GetVerseContent(verse, strongPrefix, out vn, out localIsEmpty);
+                var verseContent = GetVerseContent(verse, strongPrefix, out vn, out localIsEmpty, out localIsFullVerse);
                 contents.Add(verseContent);
-                isEmpty = isEmpty && localIsEmpty;
 
-                if (!localIsEmpty && verseContent == null)
-                    notFoundVerses.Add(verse);
+                if (!localIsEmpty)
+                {
+                    if (verseContent == null)
+                        notFoundVerses.Add(verse);
+                    else if (verseContent == string.Empty)
+                        localIsEmpty = true;
+                }
+
+                isEmpty = isEmpty && localIsEmpty;
+                isFullVerses = isFullVerses && localIsFullVerse;
 
                 if (vn.TopVerse.GetValueOrDefault(-2) > topVerse.GetValueOrDefault(-1))
                     topVerse = vn.TopVerse;
