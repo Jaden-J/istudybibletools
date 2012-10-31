@@ -672,4 +672,7 @@
   <data name="ModuleIsNotSupported" xml:space="preserve">
     <value>Версия данного модуля не поддерживается. Необходимо обновить программу до версии '{0}'. Текущая версия программы: '{1}'.</value>
   </data>
+  <data name="DefaultSupplementalBibleLinkName" xml:space="preserve">
+    <value>СБ</value>
+  </data>
 </root>

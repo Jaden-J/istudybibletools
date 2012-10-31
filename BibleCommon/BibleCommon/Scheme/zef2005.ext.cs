@@ -97,18 +97,21 @@ namespace BibleCommon.Scheme
         /// <param name="topVerse"></param>
         /// <param name="isEmpty"></param>
         /// <param name="isFullVerses">Запрашиваемые стихи являются полными. А то стих может быть "Текст стиха|". То есть вроде как две части стиха, но первая часть равна всему стиху.</param>
+        /// <param name="isDiscontinuous">Прерывистые стихи. Например 8,22. </param>
         /// <param name="notFoundVerses"></param>
         /// <returns></returns>
         public string GetVersesContent(List<SimpleVersePointer> verses, string strongPrefix, 
-            out int? topVerse, out bool isEmpty, out bool isFullVerses, out List<SimpleVersePointer> notFoundVerses)
+            out int? topVerse, out bool isEmpty, out bool isFullVerses, out bool isDiscontinuous, out List<SimpleVersePointer> notFoundVerses)
         {
             var contents = new List<string>();
             notFoundVerses = new List<SimpleVersePointer>();
 
-            topVerse = verses.First().TopVerse;
+            var firstVerse = verses.First();
+            topVerse = firstVerse.TopVerse.GetValueOrDefault(firstVerse.Verse);
 
             isEmpty = true;
             isFullVerses = true;
+            isDiscontinuous = false;                        
 
             foreach (var verse in verses)
             {
@@ -128,12 +131,15 @@ namespace BibleCommon.Scheme
                 isEmpty = isEmpty && localIsEmpty;
                 isFullVerses = isFullVerses && localIsFullVerse;
 
-                if (vn.TopVerse.GetValueOrDefault(-2) > topVerse.GetValueOrDefault(-1))
-                    topVerse = vn.TopVerse;
+                if (vn.Verse > topVerse + 1)
+                    isDiscontinuous = true;
+
+                if (vn.TopVerse.GetValueOrDefault(vn.Verse) > topVerse)
+                    topVerse = vn.TopVerse.GetValueOrDefault(vn.Verse);                                
             }
 
-            if (!topVerse.HasValue && verses.Count > 1)
-                topVerse = verses.Last().Verse;
+            if (topVerse == firstVerse.Verse)
+                topVerse = null;
 
             if (contents.All(c => c == null))
                 return null;

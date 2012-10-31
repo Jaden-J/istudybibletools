@@ -28,8 +28,8 @@ namespace BibleCommon.Common
     }
 
     [Serializable]
-    [XmlRoot(ElementName = "IStudyBibleTools_NotebooksStructure")]
-    public class ModuleBibleStructure // вот здесь (доформировать файлы ..structurte.xml)
+    [XmlRoot(ElementName = "NotebooksStructure")]
+    public class ModuleBibleStructure         
     {
         [XmlElement(typeof(NotebookInfo), ElementName = "Notebook")]
         public List<NotebookInfo> Notebooks { get; set; }
