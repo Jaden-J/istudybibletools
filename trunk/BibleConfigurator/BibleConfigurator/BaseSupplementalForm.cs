@@ -226,8 +226,7 @@ namespace BibleConfigurator
         {
             pnModules.Enabled = enabled;            
             chkUseSupplementalBible.Enabled = enabled;
-            btnOk.Enabled = enabled;
-            btnCancel.Enabled = enabled;
+            btnOk.Enabled = enabled;            
             btnSBFolder.Enabled = enabled;            
         }
 

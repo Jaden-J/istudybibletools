@@ -116,8 +116,7 @@ namespace BibleConfigurator
                 return;
             }           
 
-            btnOK.Enabled = false;
-            btnClose.Enabled = false;
+            btnOK.Enabled = false;            
             btnApply.Enabled = false;
             bool lblWarningVisibilityBefore = lblWarning.Visible;
             lblWarning.Visible = false;
@@ -188,8 +187,7 @@ namespace BibleConfigurator
             }
             finally
             {
-                btnOK.Enabled = true;
-                btnClose.Enabled = true;
+                btnOK.Enabled = true;                
                 btnApply.Enabled = true;
                 this.TopMost = false;
             }
@@ -1008,8 +1006,7 @@ namespace BibleConfigurator
             tbcMain.Enabled = false;
             lblProgressInfo.Text = infoText;
 
-            btnOK.Enabled = false;
-            btnClose.Enabled = false;
+            btnOK.Enabled = false;            
             btnApply.Enabled = false;
             System.Windows.Forms.Application.DoEvents();
         }
@@ -1022,8 +1019,7 @@ namespace BibleConfigurator
             FormExtensions.SetControlPropertyThreadSafe(pbMain, "Visible", false);
             FormExtensions.SetControlPropertyThreadSafe(tbcMain, "Enabled", true);
             FormExtensions.SetControlPropertyThreadSafe(lblProgressInfo, "Text", infoText);
-            FormExtensions.SetControlPropertyThreadSafe(btnOK, "Enabled", true);
-            FormExtensions.SetControlPropertyThreadSafe(btnClose, "Enabled", true);
+            FormExtensions.SetControlPropertyThreadSafe(btnOK, "Enabled", true);            
             FormExtensions.SetControlPropertyThreadSafe(btnApply, "Enabled", true);
 
             System.Windows.Forms.Application.DoEvents();

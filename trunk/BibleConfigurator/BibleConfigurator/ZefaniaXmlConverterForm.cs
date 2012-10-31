@@ -10,13 +10,25 @@ using BibleConfigurator.ModuleConverter;
 using BibleCommon.Helpers;
 using BibleCommon.Common;
 using System.IO;
+using BibleCommon.Scheme;
 
 namespace BibleConfigurator
 {
     public partial class ZefaniaXmlConverterForm : Form
-    {   
+    {
+        public const string LocaleStructureFilePath = "structure.xml";
+        public const string LocaleBooksInfoFilePath = "books.xml";
+        public const string StructureFileSuffix = ".structure.xml";
+        public const string BookDifferencesFileSuffix = ".diff.xml";
 
-     
+
+        protected string ZefaniaXmlFilePath { get; set; }
+        protected string ModuleShortName { get; set; }
+        protected string ModuleDisplayName { get; set; }
+        protected ModuleBibleStructure BibleStructure { get; set; }
+        protected BibleBookDifferences BibleBookDifferences { get; set; }
+        protected BibleBooksInfo BibleBooksInfo { get; set; }
+        protected XMLBIBLE BibleContent { get; set; }
 
         public ZefaniaXmlConverterForm()
         {
@@ -25,12 +37,21 @@ namespace BibleConfigurator
 
         private void ZefaniaXmlConverterForm_Load(object sender, EventArgs e)
         {
-     
-
-
+            EnableAll(false, this.Controls, btnZefaniaXmlFilePath);
 
             BindControls();            
         }
+
+        private void EnableAll(bool enabled, Control.ControlCollection controls, params Control[] except)
+        {   
+            foreach (Control control in controls)
+            {
+                EnableAll(enabled, control.Controls, except);
+
+                if (!except.Contains(control))
+                    control.Enabled = enabled;
+            }
+        }      
 
         private void BindControls()
         {
@@ -87,12 +108,29 @@ namespace BibleConfigurator
         {
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                tbZefaniaXmlFilePath.Text = openFileDialog.FileName;
+                this.ZefaniaXmlFilePath = openFileDialog.FileName;
+                this.ModuleShortName = Path.GetFileNameWithoutExtension(this.ZefaniaXmlFilePath);
+                LoadFiles();
 
-                tbVersion.Text = "2.0";
-                tbLocale.Text = Path.GetFileName(Path.GetDirectoryName(openFileDialog.FileName)).ToLower();
+                EnableAll(true, this.Controls);
 
+                ChangeControlsStatus();                
             }
+        }
+
+        private void LoadFiles()
+        {
+            var moduleFolder = Path.GetDirectoryName(this.ZefaniaXmlFilePath);
+            var localeFolder = Path.GetDirectoryName(moduleFolder);                        
+
+            if (File.Exists(Path.Combine(moduleFolder, this.ModuleShortName + StructureFileSuffix))
+        }
+
+        private void ChangeControlsStatus()
+        {
+            tbZefaniaXmlFilePath.Text = this.ZefaniaXmlFilePath;
+            tbVersion.Text = "2.0";
+            tbLocale.Text = Path.GetFileName(Path.GetDirectoryName(openFileDialog.FileName)).ToLower();
         }       
     }
 }

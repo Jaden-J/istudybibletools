@@ -364,12 +364,14 @@ namespace BibleCommon.Services
 
             if (!firstParallelVerse.IsEmpty)
             {
-                bool isFullVerses;
+                bool isFullVerses, isDiscontinuous;                
                 List<SimpleVersePointer> notFoundVerses;
-                verseContent = parallelBookContent.GetVersesContent(parallelVersePointers, strongPrefix, out topLastVerse, out isEmpty, out isFullVerses, out notFoundVerses);                
+                verseContent = parallelBookContent.GetVersesContent(parallelVersePointers, strongPrefix,
+                                            out topLastVerse, out isEmpty, out isFullVerses, out isDiscontinuous, out notFoundVerses);                 
+
                 if (!isEmpty)
-                {                    
-                    verseNumberContent = GetVersesNumberString(baseVersePointer, parallelVersePointers, topLastVerse, isFullVerses);                  
+                {
+                    verseNumberContent = GetVersesNumberString(baseVersePointer, parallelVersePointers, topLastVerse, isFullVerses, isDiscontinuous);
 
                     if (verseContent == null)
                     {
@@ -402,7 +404,7 @@ namespace BibleCommon.Services
             };
         }
 
-        private string GetVersesNumberString(SimpleVersePointer baseVersePointer, ComparisonVersesInfo parallelVersePointers, int? topVerse, bool isFullVerses)
+        private string GetVersesNumberString(SimpleVersePointer baseVersePointer, ComparisonVersesInfo parallelVersePointers, int? topVerse, bool isFullVerses, bool isDiscontinuous)
         {
             string result = string.Empty;
             var firstParallelVerse = parallelVersePointers.First();
@@ -413,14 +415,18 @@ namespace BibleCommon.Services
 
                 if (parallelVersePointers.Count > 1 || topVerse.HasValue)
                 {
-                    var lastVerse = parallelVersePointers.Last();
+                    var lastVerse = parallelVersePointers.Last();                    
 
-                    result += string.Format("-{0}", GetVerseNumberString(lastVerse, topVerse, baseVersePointer.Chapter, isFullVerses));
+                    result += string.Format("{0}{1}", 
+                                                isDiscontinuous ? ',' : '-',
+                                                GetVerseNumberString(lastVerse, topVerse, firstParallelVerse.Chapter, isFullVerses));
                 }
             }
 
             return result;
         }
+
+
 
         private string GetVerseNumberString(SimpleVersePointer versePointer, int? topVerse, int baseChapter, bool isFullVerses)
         {

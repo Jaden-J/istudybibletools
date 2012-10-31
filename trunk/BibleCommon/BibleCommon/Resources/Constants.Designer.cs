@@ -466,6 +466,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на SB.
+        /// </summary>
+        public static string DefaultSupplementalBibleLinkName {
+            get {
+                return ResourceManager.GetString("DefaultSupplementalBibleLinkName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Specify notebook folder.
         /// </summary>
         public static string DefineNotebookDirectory {
