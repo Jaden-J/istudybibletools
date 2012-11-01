@@ -382,21 +382,24 @@ namespace BibleConfigurator.ModuleConverter
         }
 
         private void GenerateManifest()
-        {     
+        {
             var module = new ModuleInfo()
             {
                 ShortName = DictionaryModuleName,
                 Name = DictionaryName,
                 Description = DictionaryDescription,
-                Version = this.Version,                
+                Version = this.Version,
                 Type = ModuleType.Dictionary,
-                DictionaryPagesCount = PagesCount,
-                DictionaryTermsCount = Terms.Count
+                NotebooksStructure = new NotebooksStructure()
+                {
+                    DictionaryPagesCount = PagesCount,
+                    DictionaryTermsCount = Terms.Count
+                }
             };
-            module.Sections = Type == StructureType.Strong 
+            module.NotebooksStructure.Sections = Type == StructureType.Strong 
                 ? this.DictionaryFiles.ConvertAll(df => new SectionInfo() { Name = df.SectionName })
                 : DictionarySections;
-            module.DictionarySectionGroupName = this.DictionarySectionGroupName;
+            module.NotebooksStructure.DictionarySectionGroupName = this.DictionarySectionGroupName;
 
             Utils.SaveToXmlFile(
                 module, 

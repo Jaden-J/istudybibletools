@@ -15,6 +15,9 @@ namespace BibleConfigurator.ModuleConverter
         [XmlAttribute("alphabet")]
         public string Alphabet { get; set; }
 
+        [XmlAttribute]
+        public string ChapterString { get; set; }
+
         [XmlElement(typeof(BookInfo), ElementName = "BOOK")]
         public List<BookInfo> Books { get; set; }
 

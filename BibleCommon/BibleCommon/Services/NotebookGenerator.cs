@@ -11,6 +11,7 @@ using BibleCommon.Consts;
 using System.Globalization;
 using BibleCommon.Common;
 using System.IO;
+using BibleCommon.Scheme;
 
 namespace BibleCommon.Services
 {
@@ -273,25 +274,25 @@ namespace BibleCommon.Services
             return cell;
         }
 
-        public static void GenerateSummaryOfNotesNotebook(Application oneNoteApp, string bibleNotebookName, string targetEmptyNotebookName)
+        public static string GenerateBibleCommentsNotebook(Application oneNoteApp, string notebookName, 
+            BibleStructureInfo bibleStructure, NotebooksStructure notebooksStructure, bool generateBookSectionGroups)
         {
-            string bibleNotebookId = OneNoteUtils.GetNotebookIdByName(oneNoteApp, bibleNotebookName, false);
-            XmlNamespaceManager xnm;
-            var bibleNotebookDoc = OneNoteUtils.GetHierarchyElement(oneNoteApp, bibleNotebookId, HierarchyScope.hsSections, out xnm);
+            string targetNotebookId = NotebookGenerator.CreateNotebook(oneNoteApp, notebookName);
 
-            string targetNotebookId = OneNoteUtils.GetNotebookIdByName(oneNoteApp, targetEmptyNotebookName, false);                        
-
-            foreach (var testamentSectionGroup in bibleNotebookDoc.Root.XPathSelectElements("one:SectionGroup", xnm))
+            foreach (var testament in notebooksStructure.Notebooks.First(n => n.Type == ContainerType.Bible).SectionGroups)
             {
-                string testamentSectionGroupName = (string)testamentSectionGroup.Attribute("name");
-                XElement testamentSectionGroupEl =  AddRootSectionGroupToNotebook(oneNoteApp, targetNotebookId, testamentSectionGroupName);                
+                XElement testamentSectionGroupEl = AddRootSectionGroupToNotebook(oneNoteApp, targetNotebookId, testament.Name);
 
-                foreach (var bibleBookSection in testamentSectionGroup.XPathSelectElements("one:Section", xnm))
+                if (generateBookSectionGroups)
                 {
-                    string bibleBookSectionName = (string)bibleBookSection.Attribute("name");
-                    AddSectionGroup(oneNoteApp, testamentSectionGroupEl, bibleBookSectionName);
+                    for (int i = 0; i < testament.SectionsCount; i++)
+                    {
+                        AddSectionGroup(oneNoteApp, testamentSectionGroupEl, bibleStructure.BibleBooks[i].SectionName);
+                    }
                 }
             }
+
+            return targetNotebookId;
         }
 
         public static string CreateNotebook(Application oneNoteApp, string notebookName)
