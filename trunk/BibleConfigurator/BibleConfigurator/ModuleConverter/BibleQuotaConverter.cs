@@ -66,14 +66,14 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="newTestamentBooksCount"></param>
         /// <param name="locale">can be not specified</param>
         /// <param name="notebooksInfo"></param>
-        public BibleQuotaConverter(string moduleShortName, string bqModuleFolder, string manifestFilesFolderPath, 
-            string locale, List<NotebookInfo> notebooksInfo, List<int> bookIndexes, BibleTranslationDifferences translationDifferences, 
-            string chapterSectionNameTemplate, List<SectionInfo> sectionsInfo,
-            bool isStrong, string dictionarySectionGroupName, int? strongNumbersCount,
+        public BibleQuotaConverter(string moduleShortName, string bqModuleFolder, string manifestFilesFolderPath,
+            string locale, NotebooksStructure notebooksStructure, List<int> bookIndexes, BibleTranslationDifferences translationDifferences, 
+            string chapterSectionNameTemplate, 
+            bool isStrong, 
             Version version, bool generateNotebooks, params ReadParameters[] readParameters)
-            : base(moduleShortName, manifestFilesFolderPath, locale, notebooksInfo, bookIndexes,
-                        translationDifferences, chapterSectionNameTemplate, sectionsInfo, isStrong, dictionarySectionGroupName, 
-                        strongNumbersCount, version, generateNotebooks, true)
+            : base(moduleShortName, manifestFilesFolderPath, locale, notebooksStructure, bookIndexes,
+                        translationDifferences, chapterSectionNameTemplate, isStrong,  
+                        version, generateNotebooks, true)
         {
             this.ModuleFolder = bqModuleFolder;
             this.AdditionalReadParameters = readParameters;
@@ -213,7 +213,7 @@ namespace BibleConfigurator.ModuleConverter
             testamentName = null;
             testamentSectionsCount = null;
 
-            var testamentSectionGroup = this.NotebooksInfo.FirstOrDefault(n => n.Type == ContainerType.Bible).SectionGroups.FirstOrDefault(s => s.Type == type);
+            var testamentSectionGroup = this.NotebooksStructure.Notebooks.FirstOrDefault(n => n.Type == ContainerType.Bible).SectionGroups.FirstOrDefault(s => s.Type == type);
             if (testamentSectionGroup != null)
             {
                 testamentName = testamentSectionGroup.Name;
@@ -291,12 +291,12 @@ namespace BibleConfigurator.ModuleConverter
             return result;
         }
 
-        protected override void GenerateBibleInfo(ModuleInfo moduleInfo)
+        protected override void GenerateBibleInfo()
         {
-            base.GenerateBibleInfo(moduleInfo);
+            base.GenerateBibleInfo();
 
-            var booksInfo = new BibleBooksInfo() { Descr = this.ModuleShortName, Alphabet = moduleInfo.BibleStructure.Alphabet };
-            foreach (var book in moduleInfo.BibleStructure.BibleBooks)
+            var booksInfo = new BibleBooksInfo() { Descr = this.ModuleShortName, Alphabet = ModuleInfo.BibleStructure.Alphabet };
+            foreach (var book in ModuleInfo.BibleStructure.BibleBooks)
             {
                 booksInfo.Books.Add(new BookInfo()
                 {

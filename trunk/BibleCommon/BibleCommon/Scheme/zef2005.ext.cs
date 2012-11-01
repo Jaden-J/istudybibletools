@@ -45,20 +45,27 @@ namespace BibleCommon.Scheme
             }
         }
 
-        public string GetVerseContent(SimpleVersePointer versPointer, string strongPrefix, 
+        public string GetVerseContent(SimpleVersePointer versePointer, string strongPrefix, 
             out VerseNumber verseNumber, out bool isEmpty, out bool isFullVerse)
         {
-            isEmpty = false;
             isFullVerse = true;
+            isEmpty = false;            
 
-            if (this.Chapters.Count < versPointer.Chapter)
-                throw new ParallelChapterNotFoundException(versPointer, BaseVersePointerException.Severity.Warning);
+            if (versePointer.IsEmpty)
+            {
+                isEmpty = true;
+                verseNumber = versePointer.VerseNumber;
+                return null;
+            }
 
-            var chapter = this.Chapters[versPointer.Chapter - 1];
+            if (this.Chapters.Count < versePointer.Chapter)
+                throw new ParallelChapterNotFoundException(versePointer, BaseVersePointerException.Severity.Warning);
 
-            var verse = chapter.GetVerse(versPointer.Verse);
+            var chapter = this.Chapters[versePointer.Chapter - 1];
+
+            var verse = chapter.GetVerse(versePointer.Verse);
             if (verse == null)
-                throw new ParallelVerseNotFoundException(versPointer, BaseVersePointerException.Severity.Warning);
+                throw new ParallelVerseNotFoundException(versePointer, BaseVersePointerException.Severity.Warning);
 
             verseNumber = verse.VerseNumber;
 
@@ -73,11 +80,11 @@ namespace BibleCommon.Scheme
             var verseContent = verse.GetValue(true, strongPrefix);
             var shelledVerseContent = ShellVerseText(verseContent);
 
-            if (versPointer.PartIndex.HasValue)
+            if (versePointer.PartIndex.HasValue)
             {
                 var versesParts = verseContent.Split(new char[] { '|' });
-                if (versesParts.Length > versPointer.PartIndex.Value)
-                    result = versesParts[versPointer.PartIndex.Value].Trim();
+                if (versesParts.Length > versePointer.PartIndex.Value)
+                    result = versesParts[versePointer.PartIndex.Value].Trim();
 
                 result = ShellVerseText(result);
                 if (result != shelledVerseContent)

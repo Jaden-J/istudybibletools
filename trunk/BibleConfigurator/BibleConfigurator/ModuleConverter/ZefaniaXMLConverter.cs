@@ -47,19 +47,18 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="newTestamentBooksCount"></param>
         /// <param name="locale">can be not specified</param>
         /// <param name="notebooksInfo"></param>
-        public ZefaniaXmlConverter(string moduleShortName, string moduleName, string zefaniaXMLFilePath, BibleBooksInfo booksInfo, string manifestFilesFolderPath, 
-            string locale, List<NotebookInfo> notebooksInfo, BibleTranslationDifferences translationDifferences, 
+        public ZefaniaXmlConverter(string moduleShortName, string moduleName, XMLBIBLE bibleContent, BibleBooksInfo booksInfo, string manifestFilesFolderPath,
+            string locale, NotebooksStructure notebooksStructure, BibleTranslationDifferences translationDifferences, 
             string chapterSectionNameTemplate, 
-            List<SectionInfo> sectionsInfo, bool isStrong, string dictionarySectionGroupName, int? strongNumbersCount,
+            bool isStrong, 
             Version version, bool generateNotebooks, params ReadParameters[] readParameters)
-            : base(moduleShortName, manifestFilesFolderPath, locale, notebooksInfo, null,
-                        translationDifferences, chapterSectionNameTemplate, sectionsInfo, isStrong, dictionarySectionGroupName, 
-                        strongNumbersCount, version, generateNotebooks, true)
+            : base(moduleShortName, manifestFilesFolderPath, locale, notebooksStructure, null,
+                        translationDifferences, chapterSectionNameTemplate, isStrong, 
+                        version, generateNotebooks, true)
         {
-            this.ModuleName = moduleName;
-            this.ZefaniaXmlFilePath = zefaniaXMLFilePath;
+            this.ModuleName = moduleName;            
             this.BooksInfo = booksInfo;
-            this.ZefaniaXmlBibleInfo = Utils.LoadFromXmlFile<XMLBIBLE>(ZefaniaXmlFilePath);                
+            this.ZefaniaXmlBibleInfo = bibleContent;
             this.BookIndexes = BooksInfo.Books.Where(bi => ZefaniaXmlBibleInfo.Books.Any(zb => zb.Index == bi.Index)).Select(b => b.Index).ToList();
 
             this.AdditionalReadParameters = readParameters;            
@@ -144,33 +143,30 @@ namespace BibleConfigurator.ModuleConverter
             }           
         }
 
-        protected override ModuleInfo GenerateManifest(ExternalModuleInfo externalModuleInfo)
+        protected override void GenerateManifest(ExternalModuleInfo externalModuleInfo)
         {
-            var module = new ModuleInfo()
+            ModuleInfo = new ModuleInfo()
             {
                 ShortName = ModuleShortName,
-                Name =  ModuleName,
+                Name = ModuleName,
                 Version = this.Version,
                 Locale = this.Locale,
-                Notebooks = NotebooksInfo,
+                NotebooksStructure = this.NotebooksStructure,
                 Type = IsStrong ? BibleCommon.Common.ModuleType.Strong : BibleCommon.Common.ModuleType.Bible
             };
-            module.BibleTranslationDifferences = this.TranslationDifferences;
-            module.BibleStructure = new BibleStructureInfo()
+            ModuleInfo.BibleTranslationDifferences = this.TranslationDifferences;
+            ModuleInfo.BibleStructure = new BibleStructureInfo()
             {
                 Alphabet = BooksInfo.Alphabet,
                 ChapterSectionNameTemplate = ChapterSectionNameTemplate
-            };
-            module.Sections = this.SectionsInfo;
-            module.DictionarySectionGroupName = this.DictionarySectionGroupName;
-            module.DictionaryTermsCount = this.StrongNumbersCount;
+            };            
 
             var index = 0;
             foreach (var bookInfo in BibleInfo.Books)
             {
                 var bibleBookInfo = BooksInfo.Books.First(b => b.Index == bookInfo.Index);
 
-                module.BibleStructure.BibleBooks.Add(
+                ModuleInfo.BibleStructure.BibleBooks.Add(
                     new BibleBookInfo()
                     {
                         Index = bibleBookInfo.Index,
@@ -182,9 +178,7 @@ namespace BibleConfigurator.ModuleConverter
 
             }
 
-            SaveToXmlFile(module, Constants.ManifestFileName);
-
-            return module;
+            SaveToXmlFile(ModuleInfo, Constants.ManifestFileName);            
         }
 
         private string ConvertChapterName(BookInfo bookInfo, string lineText)
@@ -201,7 +195,7 @@ namespace BibleConfigurator.ModuleConverter
             testamentName = null;
             testamentSectionsCount = null;
 
-            var testamentSectionGroup = this.NotebooksInfo.FirstOrDefault(n => n.Type == ContainerType.Bible).SectionGroups.FirstOrDefault(s => s.Type == type);
+            var testamentSectionGroup = this.NotebooksStructure.Notebooks.FirstOrDefault(n => n.Type == ContainerType.Bible).SectionGroups.FirstOrDefault(s => s.Type == type);
             if (testamentSectionGroup != null)
             {
                 testamentName = testamentSectionGroup.Name;

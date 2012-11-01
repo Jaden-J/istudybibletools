@@ -35,15 +35,15 @@ namespace BibleCommon.Services
 
                 var moduleInfo = ModulesManager.GetModuleInfo(moduleName);
 
-                if (moduleInfo.Sections == null || moduleInfo.Sections.Count == 0)
+                if (moduleInfo.NotebooksStructure.Sections == null || moduleInfo.NotebooksStructure.Sections.Count == 0)
                     throw new InvalidModuleException("There is no information about dictionary sections.");
 
-                if (string.IsNullOrEmpty(moduleInfo.DictionarySectionGroupName) && moduleInfo.Sections.Count > 1)
-                    moduleInfo.DictionarySectionGroupName = moduleInfo.Name;
+                if (string.IsNullOrEmpty(moduleInfo.NotebooksStructure.DictionarySectionGroupName) && moduleInfo.NotebooksStructure.Sections.Count > 1)
+                    moduleInfo.NotebooksStructure.DictionarySectionGroupName = moduleInfo.Name;
 
-                if (!string.IsNullOrEmpty(moduleInfo.DictionarySectionGroupName))
+                if (!string.IsNullOrEmpty(moduleInfo.NotebooksStructure.DictionarySectionGroupName))
                 {
-                    dictionarySectionEl = NotebookGenerator.AddRootSectionGroupToNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries, moduleInfo.DictionarySectionGroupName);                                        
+                    dictionarySectionEl = NotebookGenerator.AddRootSectionGroupToNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries, moduleInfo.NotebooksStructure.DictionarySectionGroupName);                                        
                 }
                 else
                 {
@@ -61,7 +61,7 @@ namespace BibleCommon.Services
                     System.Windows.Forms.Application.DoEvents();
                 }
 
-                foreach(var sectionInfo in moduleInfo.Sections)
+                foreach (var sectionInfo in moduleInfo.NotebooksStructure.Sections)
                 {
                     string sectionElId;                    
 
@@ -78,7 +78,7 @@ namespace BibleCommon.Services
                 SettingsManager.Instance.Save();
 
                 if (waitForFinish)                
-                    WaitWhileDictionaryIsCreating(oneNoteApp, dictionarySectionId, moduleInfo.DictionaryPagesCount, 0);                
+                    WaitWhileDictionaryIsCreating(oneNoteApp, dictionarySectionId, moduleInfo.NotebooksStructure.DictionaryPagesCount, 0);                
             }
         }
 

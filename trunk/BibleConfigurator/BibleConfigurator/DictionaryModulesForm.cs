@@ -43,7 +43,7 @@ namespace BibleConfigurator
 
         protected override List<string> CommitChanges(BibleCommon.Common.ModuleInfo selectedModuleInfo)
         {
-            MainForm.PrepareForExternalProcessing(selectedModuleInfo.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
+            MainForm.PrepareForExternalProcessing(selectedModuleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
             DictionaryManager.AddDictionary(OneNoteApp, selectedModuleInfo.ShortName, FolderBrowserDialog.SelectedPath, true);
             Logger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexDictionary);
             DictionaryTermsCacheManager.GenerateCache(OneNoteApp, selectedModuleInfo, Logger);

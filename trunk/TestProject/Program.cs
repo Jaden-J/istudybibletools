@@ -77,7 +77,7 @@ namespace TestProject
 
                 //TryToUpdateInkNodes();                
 
-                ConvertRussianModuleZefaniaXml();
+                //ConvertRussianModuleZefaniaXml();
 
                 //ConvertEnglishModuleZefaniaXml();
 
@@ -109,41 +109,41 @@ namespace TestProject
             Console.ReadKey();
         }
 
-        private static void ConvertEnglishModuleZefaniaXml()
-        {
-            string moduleName = "kjv";
+        //private static void ConvertEnglishModuleZefaniaXml()
+        //{
+        //    string moduleName = "kjv";
 
-            var converter = new ZefaniaXmlConverter(moduleName,
-                                                    "King James Version",
-                Path.Combine(Path.Combine(ForGeneratingFolderPath, moduleName), BibleCommon.Consts.Constants.BibleInfoFileName),
-                Utils.LoadFromXmlString<BibleBooksInfo>(Properties.Resources.BibleBooskInfo_kjv), Path.Combine(TempFolderPath, moduleName + "_zefaniaXml"), "en",
-                                                    PredefinedNotebooksInfo.English, new BibleTranslationDifferences(),  // вот эти тоже часто надо менять                
-                "{0} chapter. {1}",
-                                                    PredefinedSectionsInfo.None, false, null, null,
-                //PredefinedSectionsInfo.RSTStrong, true, "Стронга", 14700,   // параметры для стронга
-                new Version(2, 0), false,
-                                                    ZefaniaXmlConverter.ReadParameters.None);  // и про эту не забыть
+        //    var converter = new ZefaniaXmlConverter(moduleName,
+        //                                            "King James Version",
+        //        Path.Combine(Path.Combine(ForGeneratingFolderPath, moduleName), BibleCommon.Consts.Constants.BibleInfoFileName),
+        //        Utils.LoadFromXmlString<BibleBooksInfo>(Properties.Resources.BibleBooskInfo_kjv), Path.Combine(TempFolderPath, moduleName + "_zefaniaXml"), "en",
+        //                                            PredefinedNotebooksInfo.English, new BibleTranslationDifferences(),  // вот эти тоже часто надо менять                
+        //        "{0} chapter. {1}",
+        //                                            PredefinedSectionsInfo.None, false, null, null,
+        //        //PredefinedSectionsInfo.RSTStrong, true, "Стронга", 14700,   // параметры для стронга
+        //        new Version(2, 0), false,
+        //                                            ZefaniaXmlConverter.ReadParameters.None);  // и про эту не забыть
 
-            converter.Convert();
-        }
+        //    converter.Convert();
+        //}
 
-        private static void ConvertRussianModuleZefaniaXml()
-        {
-            string moduleName = "rststrong";
+        //private static void ConvertRussianModuleZefaniaXml()
+        //{
+        //    string moduleName = "rststrong";
 
-            var converter = new ZefaniaXmlConverter(moduleName,
-                                                    "Русский синодальный перевод", 
-                Path.Combine(Path.Combine(ForGeneratingFolderPath, moduleName), BibleCommon.Consts.Constants.BibleInfoFileName),               
-                Utils.LoadFromXmlString<BibleBooksInfo>(Properties.Resources.BibleBooskInfo_rst), Path.Combine(TempFolderPath, moduleName + "_zefaniaXml"), "ru",
-                                                    PredefinedNotebooksInfo.Russian, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst),  // вот эти тоже часто надо менять                
-                "{0} глава. {1}",
-                                                    PredefinedSectionsInfo.None, false, null, null,
-                                                    //PredefinedSectionsInfo.RSTStrong, true, "Стронга", 14700,   // параметры для стронга
-                new Version(2, 0), false,
-                                                    ZefaniaXmlConverter.ReadParameters.RemoveStrongs);  // и про эту не забыть
+        //    var converter = new ZefaniaXmlConverter(moduleName,
+        //                                            "Русский синодальный перевод", 
+        //        Path.Combine(Path.Combine(ForGeneratingFolderPath, moduleName), BibleCommon.Consts.Constants.BibleInfoFileName),               
+        //        Utils.LoadFromXmlString<BibleBooksInfo>(Properties.Resources.BibleBooskInfo_rst), Path.Combine(TempFolderPath, moduleName + "_zefaniaXml"), "ru",
+        //                                            PredefinedNotebooksInfo.Russian, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst),  // вот эти тоже часто надо менять                
+        //        "{0} глава. {1}",
+        //                                            PredefinedSectionsInfo.None, false, null, null,
+        //                                            //PredefinedSectionsInfo.RSTStrong, true, "Стронга", 14700,   // параметры для стронга
+        //        new Version(2, 0), false,
+        //                                            ZefaniaXmlConverter.ReadParameters.RemoveStrongs);  // и про эту не забыть
 
-            converter.Convert();
-        }             
+        //    converter.Convert();
+        //}             
 
         private static void SearchInNotebook()
         {
@@ -311,12 +311,16 @@ namespace TestProject
         private static void ConvertRussianModule()
         {
             string moduleShortName = "rst77";
+            var notebooksStructure = new NotebooksStructure() { Notebooks = PredefinedNotebooksInfo.Russian77 };  // это тоже часто меняется
+            //notebooksStructure.DictionarySectionGroupName = "Стронга";  // параметры для стронга
+            //notebooksStructure.DictionaryTermsCount = 14700;
+
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName), "ru",
-                PredefinedNotebooksInfo.Russian77, PredefinedBookIndexes.RST77, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst77),  // вот эти тоже часто надо менять                
+                notebooksStructure, PredefinedBookIndexes.RST77, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst77),  // вот эти тоже часто надо менять                
                 "{0} глава. {1}",
-                PredefinedSectionsInfo.None, false, null, null,
+                false,
                 //PredefinedSectionsInfo.RSTStrong, true, "Стронга", 14700,   // параметры для стронга
-                new Version(2, 0), false, 
+                new Version(2, 0), false,
                 BibleQuotaConverter.ReadParameters.None);  // и про эту не забыть
 
             converter.Convert();
@@ -331,9 +335,9 @@ namespace TestProject
         {
             string moduleShortName = "kjv";
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName),
-                "en", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
+                "en", new NotebooksStructure() { Notebooks = PredefinedNotebooksInfo.English }, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
                 "{0} chapter. {1}",
-                null, false, null, null, // параметры для стронга
+                false, 
                 new Version(2, 0), false);
 
             converter.Convert();
@@ -347,10 +351,10 @@ namespace TestProject
         private static void ConvertRomanModule()
         {
             string moduleShortName = "rccv";
-            var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName), 
-                "ro", PredefinedNotebooksInfo.English, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
+            var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName),
+                "ro", new NotebooksStructure() { Notebooks = PredefinedNotebooksInfo.English }, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
                 "{0} capitolul. {1}",
-                null, false, null, null,
+                false,
                 new Version(2, 0), false);            
 
             converter.Convert();
@@ -397,12 +401,7 @@ namespace TestProject
             pageXml = pageXml.Replace("en-US", locale);
 
             oneNoteApp.UpdatePageContent(pageXml, DateTime.MinValue, Constants.CurrentOneNoteSchema);
-        }
-
-        private static void GenerateSummaryOfNotesNotebook()
-        {
-            NotebookGenerator.GenerateSummaryOfNotesNotebook(OneNoteApp, "Biblia", "Rezumatul de note");
-        }
+        }        
 
         private static void TryToUpdateInkNodes()
         {

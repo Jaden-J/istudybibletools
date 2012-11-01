@@ -56,7 +56,7 @@ namespace BibleCommon.Services
 
                 if (moduleInfo.Type == Common.ModuleType.Strong)
                 {
-                    currentStrongPrefix = GetStrongPrefix(i, (oldTestamentSectionsCount ?? newTestamentSectionsCount).Value, oldTestamentStrongPrefix, newTestamentStrongPrefix);
+                    currentStrongPrefix = GetStrongPrefix(i + 1, (oldTestamentSectionsCount ?? newTestamentSectionsCount).Value, oldTestamentStrongPrefix, newTestamentStrongPrefix);
                 }
 
                 var bookSectionId = NotebookGenerator.AddSection(oneNoteApp, currentSectionGroupId, bibleBookInfo.SectionName);
@@ -79,7 +79,7 @@ namespace BibleCommon.Services
 
         private static string GetStrongPrefix(int bookIndex, int oldTestamentBooksCount, string oldTestamentStrongPrefix, string newTestamentStrongPrefix)
         {
-            return bookIndex + 1 > oldTestamentBooksCount ? newTestamentStrongPrefix : (oldTestamentStrongPrefix ?? newTestamentStrongPrefix);
+            return bookIndex > oldTestamentBooksCount ? newTestamentStrongPrefix : (oldTestamentStrongPrefix ?? newTestamentStrongPrefix);
         }
 
         private static void GetTestamentInfo(ModuleInfo moduleInfo, ContainerType type, out string testamentName, out int? testamentSectionsCount, out string strongPrefix)
@@ -152,12 +152,15 @@ namespace BibleCommon.Services
                         return new BibleIteratorArgs() { ChapterDocument = chapterPageDoc, StrongStyleIndex = styleIndex };
                     }, true, true,
                     (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
-                    {                        
-                        linkResult.AddRange(
-                            LinkdMainBibleAndSupplementalVerses(oneNoteApp, baseVersePointer, parallelVerse, bibleIteratorArgs, 
-                                        bibleTranslationManager.BaseModuleInfo.Type == Common.ModuleType.Strong, strongTermLinksCache, 
-                                        bibleTranslationManager.BaseModuleInfo.ShortName,
-                                        bibleTranslationManager.BaseModuleInfo.BibleStructure.Alphabet, xnm, nms));                       
+                    {
+                        if (!parallelVerse.IsEmpty)
+                        {
+                            linkResult.AddRange(
+                                LinkdMainBibleAndSupplementalVerses(oneNoteApp, baseVersePointer, parallelVerse, bibleIteratorArgs,
+                                            bibleTranslationManager.BaseModuleInfo.Type == Common.ModuleType.Strong, strongTermLinksCache,
+                                            bibleTranslationManager.BaseModuleInfo.ShortName,
+                                            bibleTranslationManager.BaseModuleInfo.BibleStructure.Alphabet, xnm, nms));
+                        }
                     });
 
                 result.Errors.AddRange(linkResult);
@@ -219,20 +222,23 @@ namespace BibleCommon.Services
                     },               
                     true, true,
                     (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
-                    {                        
-                        if (bibleTranslationManager.ParallelModuleInfo.Type == Common.ModuleType.Strong)
-                        {   
-                            parallelVerse.VerseContent = ProcessStrongVerse(parallelVerse.VerseContent, strongTermLinksCache,
-                                bibleTranslationManager.ParallelModuleShortName,
-                                bibleTranslationManager.ParallelModuleInfo.BibleStructure.Alphabet, ref linkResult);
-                        }
-
-                        var cell = NotebookGenerator.AddParallelVerseRowToBibleTable(bibleIteratorArgs.TableElement, parallelVerse,
-                            bibleIteratorArgs.BibleIndex, baseVersePointer, bibleTranslationManager.ParallelModuleInfo.Locale, xnm);
-
-                        if (bibleTranslationManager.ParallelModuleInfo.Type == Common.ModuleType.Strong)
+                    {
+                        if (!parallelVerse.IsEmpty)
                         {
-                            QuickStyleManager.SetQuickStyleDefForCell(cell, bibleIteratorArgs.StrongStyleIndex, xnm);                            
+                            if (bibleTranslationManager.ParallelModuleInfo.Type == Common.ModuleType.Strong)
+                            {
+                                parallelVerse.VerseContent = ProcessStrongVerse(parallelVerse.VerseContent, strongTermLinksCache,
+                                    bibleTranslationManager.ParallelModuleShortName,
+                                    bibleTranslationManager.ParallelModuleInfo.BibleStructure.Alphabet, ref linkResult);
+                            }
+
+                            var cell = NotebookGenerator.AddParallelVerseRowToBibleTable(bibleIteratorArgs.TableElement, parallelVerse,
+                                bibleIteratorArgs.BibleIndex, baseVersePointer, bibleTranslationManager.ParallelModuleInfo.Locale, xnm);
+
+                            if (bibleTranslationManager.ParallelModuleInfo.Type == Common.ModuleType.Strong)
+                            {
+                                QuickStyleManager.SetQuickStyleDefForCell(cell, bibleIteratorArgs.StrongStyleIndex, xnm);
+                            }
                         }
                     });
             }
@@ -342,7 +348,7 @@ namespace BibleCommon.Services
             SimpleVerse parallelVerse, BibleIteratorArgs bibleIteratorArgs, bool isStrong, Dictionary<string, string> strongTermLinksCache, 
             string strongModuleShortName, string alphabet, XmlNamespaceManager xnm, XNamespace nms)
         {
-            var result = new List<Exception>();
+            var result = new List<Exception>();            
 
             var primaryBibleObjectsSearchResult = HierarchySearchManager.GetHierarchyObject(oneNoteApp,
                     SettingsManager.Instance.NotebookId_Bible, parallelVerse.ToVersePointer(SettingsManager.Instance.CurrentModule), true);
