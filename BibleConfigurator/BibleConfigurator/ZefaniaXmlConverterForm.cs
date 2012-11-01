@@ -335,7 +335,7 @@ namespace BibleConfigurator
                                                 item is GRAM || item is gr))));
         }
 
-        private void SetCbNotebooksValue(ComboBox cb, CheckBox chk, TextBox tb, ContainerType notebookType, bool? generateByDefault)
+        private static void SetCbNotebooksValue(ComboBox cb, CheckBox chk, TextBox tb, ContainerType notebookType, bool? generateByDefault)
         {
             if (cb.Items.Count > 0 || !generateByDefault.GetValueOrDefault(true))
             {
