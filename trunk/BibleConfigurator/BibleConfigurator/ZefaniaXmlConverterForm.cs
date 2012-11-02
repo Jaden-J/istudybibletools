@@ -12,17 +12,24 @@ using BibleCommon.Common;
 using System.IO;
 using BibleCommon.Scheme;
 using BibleCommon.Services;
+using System.Diagnostics;
+using Microsoft.Office.Interop.OneNote;
+using System.Xml;
+using System.Threading;
 
 namespace BibleConfigurator
 {
     public partial class ZefaniaXmlConverterForm : Form
     {
-        public const string Const_LocaleStructureFilePath = "structure.xml";
-        public const string Const_LocaleBooksInfoFilePath = "books.xml";
-        public const string Const_StructureFileSuffix = ".structure.xml";
-        public const string Const_BookDifferencesFileSuffix = ".diff.xml";
-        public const string Const_OutputDirectoryName = "Output";
+        private const string Const_LocaleStructureFilePath = "structure.xml";
+        private const string Const_LocaleBooksInfoFilePath = "books.xml";
+        private const string Const_StructureFileSuffix = ".structure.xml";
+        private const string Const_BookDifferencesFileSuffix = ".diff.xml";
+        private const string Const_OutputDirectoryName = "Output";
 
+
+        public bool NeedToCheckModule { get; set; }
+        public string ConvertedModuleShortName { get; set; }
 
         protected Microsoft.Office.Interop.OneNote.Application OneNoteApp { get; set; }
 
@@ -32,12 +39,17 @@ namespace BibleConfigurator
         protected string Locale { get; set; }
         protected bool BibleIsStrong { get; set; }
         protected string ChapterSectionNameTemplate { get; set; }
+        protected string NotebookBibleName { get; set; }
+        protected string NotebookBibleCommentsName { get; set; }
+        protected string NotebookSummaryOfNotesName { get; set; }
 
         protected string ModuleDirectory { get; set; }
         protected string LocaleDirectory { get; set; }
         protected string OutputLocaleDirectory { get; set; }
         protected string OutputModuleDirectory { get; set; }
         protected string RootDirectory { get; set; }
+        protected string InputDirectory { get; set; }
+        protected string MarkingWordsSectionFilePath { get; set; }        
         
         protected Dictionary<ContainerType, List<string>> ExistingNotebooks { get; set; }
 
@@ -47,33 +59,28 @@ namespace BibleConfigurator
         protected ModuleInfo ExistingOutputModule { get; set; }
         protected XMLBIBLE BibleContent { get; set; }
 
-        public ZefaniaXmlConverterForm()
+
+        private MainForm _mainForm;
+        private CustomFormLogger _formLogger;
+        private FileSystemWatcher _fileWatcher;
+        private DateTime _startTime;
+        private static object _locker = new object();
+        private volatile Dictionary<string, string> _notebookFilesToWatch = new Dictionary<string, string>();
+        private bool _allNotebooksPublished = false;
+
+        public ZefaniaXmlConverterForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm mainForm)
         {
-            InitializeComponent();            
+            InitializeComponent();
+            OneNoteApp = oneNoteApp;
+            _mainForm = mainForm;
+            _formLogger = new CustomFormLogger(_mainForm);
         }
 
         private void ZefaniaXmlConverterForm_Load(object sender, EventArgs e)
         {
-            EnableAll(false, Controls, tbZefaniaXmlFilePath, btnZefaniaXmlFilePath, btnClose);
-
-            BindControls();            
-        }
-
-        private void EnableAll(bool enabled, Control.ControlCollection controls, params Control[] except)
-        {   
-            foreach (Control control in controls)
-            {
-                EnableAll(enabled, control.Controls, except);
-
-                if (!except.Contains(control))
-                    control.Enabled = enabled;
-            }
-        }      
-
-        private void BindControls()
-        {
-        
-        }
+            FormExtensions.EnableAll(false, Controls, tbZefaniaXmlFilePath, btnZefaniaXmlFilePath, btnClose);
+            this.Top = this.Top - 13;
+        }              
 
         private void btnClose_Click(object sender, EventArgs e)
         {
@@ -84,69 +91,276 @@ namespace BibleConfigurator
         {
             try
             {
+                BibleCommon.Services.Logger.Init("ZefaniaXmlConverterForm");
+
+                _startTime = DateTime.Now;
+                BibleCommon.Services.Logger.LogMessage("{0}: {1}", BibleCommon.Resources.Constants.StartTime, _startTime.ToLongTimeString());
+
+
+                var initMessage = "Start converting";
+                _mainForm.PrepareForExternalProcessing(5 + (chkNotebookBibleGenerate.Checked
+                                                        ? ModulesManager.GetBibleChaptersCount(BibleContent, true)
+                                                        : 0),
+                                                    1, initMessage);
+
+                _formLogger.LogMessage(initMessage);
+                BibleCommon.Services.Logger.LogMessage(initMessage);
+                FormExtensions.EnableAll(false, this.Controls, btnClose);
+                System.Windows.Forms.Application.DoEvents();
+
+                
+
                 var converter = new ZefaniaXmlConverter(tbShortName.Text, tbDisplayName.Text, BibleContent, BibleBooksInfo,
                                                             tbResultDirectory.Text, tbLocale.Text, NotebooksStructure,
                                                             BibleBookDifferences, ChapterSectionNameTemplate,
                                                             BibleIsStrong && !chkRemoveStrongNumbers.Checked,
                                                             new Version(tbVersion.Text),
                                                             chkNotebookBibleGenerate.Checked,
+                                                            _formLogger,
                                                             chkRemoveStrongNumbers.Checked ? ZefaniaXmlConverter.ReadParameters.RemoveStrongs : ZefaniaXmlConverter.ReadParameters.None);
+
+                if (chkNotebookBibleGenerate.Checked)
+                    _formLogger.Preffix = "Creating the Bible: ";                
 
                 converter.Convert();
 
-                OneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+                _formLogger.Preffix = string.Empty;
+                _formLogger.LogMessage("Publishing notebooks");
 
-                if (chkNotebookBibleGenerate.Checked)
+                RemovePrevModuleFile();
+
+                CopyStrongSections();
+
+                PublishNotebooks(converter);
+
+                if (!NeedToWaitFileWatcher)
                 {
-                    OneNoteApp.Publish(converter.NotebookId, Path.Combine(tbResultDirectory.Text, tbNotebookBibleName.Text + BibleCommon.Consts.Constants.FileExtensionOnepkg));
+                    CreateZipFileAndFinish();
+                    CloseResources();
                 }
                 else
-                {
-                    CopyExistingNotebookFile(cbNotebookBible);
-                }
+                    _formLogger.LogMessage("Saving Notebooks files");
+            }
+            catch (ProcessAbortedByUserException)
+            {
+                BibleCommon.Services.Logger.LogMessage(BibleCommon.Resources.Constants.ProcessAbortedByUser);
+                _mainForm.ExternalProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
 
-                CopyExistingNotebookFile(cbNotebookBibleStudy);                
-
-                if (chkNotebookBibleCommentsGenerate.Checked)
-                {
-                    var notebookId = NotebookGenerator.GenerateBibleCommentsNotebook(OneNoteApp, tbNotebookBibleCommentsName.Text, converter.ModuleInfo.BibleStructure, NotebooksStructure, false);
-                    OneNoteApp.Publish(notebookId, Path.Combine(tbResultDirectory.Text, tbNotebookBibleCommentsName.Text + BibleCommon.Consts.Constants.FileExtensionOnepkg));
-                }
-                else
-                {
-                    CopyExistingNotebookFile(cbNotebookBibleComments);
-                }
-
-                if (chkNotebookSummaryOfNotesGenerate.Checked)
-                {
-                    var notebookId = NotebookGenerator.GenerateBibleCommentsNotebook(OneNoteApp, tbNotebookSummaryOfNotesName.Text, converter.ModuleInfo.BibleStructure, NotebooksStructure, true);
-                    OneNoteApp.Publish(notebookId, Path.Combine(tbResultDirectory.Text, tbNotebookSummaryOfNotesName.Text + BibleCommon.Consts.Constants.FileExtensionOnepkg));
-                }
-                else
-                {
-                    CopyExistingNotebookFile(cbNotebookSummaryOfNotes);
-                }
-
-                foreach(var sectionFile in Directory.GetFiles(ModuleDirectory, "*.one"))
-                {
-                    File.Copy(sectionFile, Path.Combine(tbResultDirectory.Text, Path.GetFileName(sectionFile)), true);
-                }
+                CloseResources();
             }
             catch (Exception ex)
             {
                 FormLogger.LogError(ex);
-            }
-            finally
+            }            
+        }
+
+        private void CreateZipFileAndFinish()
+        {
+            _formLogger.LogMessage("Creating module zip file");
+            var resultFilePath = CreateZipFile();
+
+            //FormLogger.LogMessage("Finished");
+
+            ConvertedModuleShortName = ModuleShortName;
+
+            string finalMessage = "Module was created";
+            _mainForm.ExternalProcessingDone(finalMessage);
+            BibleCommon.Services.Logger.LogMessage(finalMessage);
+
+            BibleCommon.Services.Logger.LogMessage(" {0}", DateTime.Now.Subtract(_startTime));
+            BibleCommon.Services.Logger.Done();       
+
+            if (chkCheckModule.Checked)
             {
-                OneNoteApp = null;
+                bool moduleWasAdded;
+                bool needToReload = _mainForm.AddNewModule(resultFilePath, out moduleWasAdded);
+                if (needToReload)
+                    _mainForm.ReLoadParameters(false);
+
+                if (moduleWasAdded)
+                    NeedToCheckModule = true;
             }
+            else
+                Process.Start("explorer.exe", "/select," + resultFilePath);
+
+            this.Invoke(Close);
+        }
+
+        private void RemovePrevModuleFile()
+        {
+            var files = Directory.GetFiles(tbResultDirectory.Text, "*" + BibleCommon.Consts.Constants.FileExtensionIsbt);
+            foreach (var file in files)
+            {
+                File.Delete(file);
+            }
+        }
+
+        private string CreateZipFile()
+        {
+            var resultFilePath = Path.Combine(tbResultDirectory.Text, ModuleShortName + BibleCommon.Consts.Constants.FileExtensionIsbt);
+            ZipLibHelper.PackfilesToZip(tbResultDirectory.Text, resultFilePath);
+
+            return resultFilePath;
+        }
+
+        private void CopyStrongSections()
+        {
+            if (BibleIsStrong && !chkRemoveStrongNumbers.Checked)
+            {
+                foreach (var sectionFile in Directory.GetFiles(ModuleDirectory, "*.one"))
+                {
+                    File.Copy(sectionFile, Path.Combine(tbResultDirectory.Text, Path.GetFileName(sectionFile)), true);
+                }
+            }
+        }
+
+        private void PublishNotebooks(ZefaniaXmlConverter converter)
+        {
+            if (chkNotebookBibleGenerate.Checked)
+            {
+                AddMarkingWordsSection(converter.BibleNotebookId);
+                PublishNotebook(converter.BibleNotebookId, Path.Combine(tbResultDirectory.Text, NotebookBibleName + BibleCommon.Consts.Constants.FileExtensionOnepkg), false);
+            }
+            else
+            {
+                CopyExistingNotebookFile(cbNotebookBible);
+            }
+
+            CopyExistingNotebookFile(cbNotebookBibleStudy);
+
+            if (chkNotebookBibleCommentsGenerate.Checked)
+            {
+                var notebookId = NotebookGenerator.GenerateBibleCommentsNotebook(OneNoteApp, NotebookBibleCommentsName, converter.ModuleInfo.BibleStructure, NotebooksStructure, false);
+                PublishNotebook(notebookId, Path.Combine(tbResultDirectory.Text, NotebookBibleCommentsName + BibleCommon.Consts.Constants.FileExtensionOnepkg), true);                
+            }
+            else
+            {
+                CopyExistingNotebookFile(cbNotebookBibleComments);
+            }
+
+            if (chkNotebookSummaryOfNotesGenerate.Checked)
+            {
+                var notebookId = NotebookGenerator.GenerateBibleCommentsNotebook(OneNoteApp, NotebookSummaryOfNotesName, converter.ModuleInfo.BibleStructure, NotebooksStructure, true);
+                PublishNotebook(notebookId, Path.Combine(tbResultDirectory.Text, NotebookSummaryOfNotesName + BibleCommon.Consts.Constants.FileExtensionOnepkg), true);                
+            }
+            else
+            {
+                CopyExistingNotebookFile(cbNotebookSummaryOfNotes);
+            }           
+
+            _allNotebooksPublished = true;
+        }
+
+        private void AddFileForWatching(string notebookFilePath, string notebookId)
+        {
+            if (_fileWatcher == null)
+            {
+                _fileWatcher = new FileSystemWatcher(tbResultDirectory.Text, "*" + BibleCommon.Consts.Constants.FileExtensionOnepkg);
+
+                _fileWatcher.Changed += new FileSystemEventHandler(_fileWatcher_Changed);
+                _fileWatcher.EnableRaisingEvents = true;
+            }
+
+            lock (_locker)
+            {
+                _notebookFilesToWatch.Add(notebookFilePath, notebookId);
+            }
+        }
+
+        private bool NeedToWaitFileWatcher
+        {
+            get
+            {
+                return _notebookFilesToWatch.Count > 0 || !_allNotebooksPublished;
+            }
+        }
+
+        private void _fileWatcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            try
+            {
+                if (_mainForm.StopExternalProcess)
+                    throw new ProcessAbortedByUserException();
+
+                if (new FileInfo(e.FullPath).Length > 0)
+                {
+                    if (_notebookFilesToWatch.ContainsKey(e.FullPath))
+                    {
+                        lock (_locker)
+                        {
+                            if (_notebookFilesToWatch.ContainsKey(e.FullPath))
+                            {
+                                var notebookId = _notebookFilesToWatch[e.FullPath];                                
+                                if (!string.IsNullOrEmpty(notebookId))                                    
+                                    OneNoteApp.CloseNotebook(notebookId);
+                                _notebookFilesToWatch.Remove(e.FullPath);                                
+
+                                if (!NeedToWaitFileWatcher)
+                                {
+                                    CreateZipFileAndFinish();
+                                    CloseResources();
+                                }                                
+                            }
+                        }
+                    }
+                }
+            }
+            catch (ProcessAbortedByUserException)
+            {
+                BibleCommon.Services.Logger.LogMessage("Process aborted by user");
+
+                CloseResources();
+            }
+        }
+
+        private void CloseResources()
+        {
+            if (_fileWatcher != null)
+            {
+                _fileWatcher.EnableRaisingEvents = false;
+                _fileWatcher.Dispose();
+            }                              
+        }
+
+
+        private void AddMarkingWordsSection(string notebookId)
+        {
+            if (string.IsNullOrEmpty(MarkingWordsSectionFilePath))
+                throw new Exception("Marking section file was not found");
+
+            XmlNamespaceManager xnm;
+            var notebookDoc = OneNoteUtils.GetHierarchyElement(OneNoteApp, notebookId, HierarchyScope.hsSelf, out xnm);
+            var notebookPath = (string)notebookDoc.Root.Attribute("path");
+            var markingWordsSectionName = Path.GetFileName(MarkingWordsSectionFilePath);
+
+            File.Copy(MarkingWordsSectionFilePath, Path.Combine(notebookPath, markingWordsSectionName), true);
+            string markingWordsSectionId;
+            OneNoteApp.OpenHierarchy(markingWordsSectionName, notebookId, out markingWordsSectionId, CreateFileType.cftSection);
+        }
+
+        private void PublishNotebook(string notebookId, string targetFilePath, bool closeNotebook)
+        {
+            if (File.Exists(targetFilePath))
+                File.Delete(targetFilePath);
+
+
+            AddFileForWatching(targetFilePath, closeNotebook ? notebookId : null);
+            OneNoteApp.Publish(notebookId, targetFilePath, PublishFormat.pfOneNotePackage);                        
         }
 
         private void CopyExistingNotebookFile(ComboBox cb)
         {
-            if (cb.Enabled && !string.IsNullOrEmpty(cb.SelectedText))
+            var selectedFilePath = (string)cb.SelectedItem;
+            if (!string.IsNullOrEmpty(selectedFilePath))
             {
-                File.Copy(Path.Combine(RootDirectory, cb.SelectedText), Path.Combine(tbResultDirectory.Text, Path.GetFileName(cb.SelectedText)), true);
+                if (selectedFilePath.StartsWith("\\"))
+                    selectedFilePath = selectedFilePath.Substring(1);
+
+                var sourceFilePath = Path.Combine(RootDirectory, selectedFilePath);
+                var targetFilePath = Path.Combine(tbResultDirectory.Text, Path.GetFileName(selectedFilePath));
+
+                if (!sourceFilePath.Equals(targetFilePath, StringComparison.InvariantCultureIgnoreCase))
+                    File.Copy(sourceFilePath, targetFilePath, true);
             }
         }
 
@@ -168,20 +382,17 @@ namespace BibleConfigurator
 
         private void chkNotebookBibleGenerate_CheckedChanged(object sender, EventArgs e)
         {
-            cbNotebookBible.Enabled = !((CheckBox)sender).Checked;
-            tbNotebookBibleName.Enabled = ((CheckBox)sender).Checked;
+            cbNotebookBible.Enabled = !((CheckBox)sender).Checked;            
         }
 
         private void chkNotebookBibleCommentsGenerate_CheckedChanged(object sender, EventArgs e)
         {
-            cbNotebookBibleComments.Enabled = !((CheckBox)sender).Checked;
-            tbNotebookBibleCommentsName.Enabled = ((CheckBox)sender).Checked;
+            cbNotebookBibleComments.Enabled = !((CheckBox)sender).Checked;            
         }
 
         private void chkNotebookSummaryOfNotesGenerate_CheckedChanged(object sender, EventArgs e)
         {
-            cbNotebookSummaryOfNotes.Enabled = !((CheckBox)sender).Checked;
-            tbNotebookSummaryOfNotesName.Enabled = ((CheckBox)sender).Checked;
+            cbNotebookSummaryOfNotes.Enabled = !((CheckBox)sender).Checked;            
         }           
 
         private void btnZefaniaXmlFilePath_Click(object sender, EventArgs e)
@@ -198,7 +409,7 @@ namespace BibleConfigurator
 
                     LoadAdditionalInfo();
 
-                    EnableAll(true, Controls);
+                    FormExtensions.EnableAll(true, Controls);
 
                     ChangeControlsState();                    
                 }
@@ -214,8 +425,9 @@ namespace BibleConfigurator
             ModuleShortName = Path.GetFileNameWithoutExtension(ZefaniaXmlFilePath).ToLower();            
 
             ModuleDirectory = Path.GetDirectoryName(ZefaniaXmlFilePath);
-            LocaleDirectory = Path.GetDirectoryName(ModuleDirectory);            
-            RootDirectory = Path.GetDirectoryName(LocaleDirectory);
+            LocaleDirectory = Path.GetDirectoryName(ModuleDirectory);
+            InputDirectory = Path.GetDirectoryName(LocaleDirectory);
+            RootDirectory = Path.GetDirectoryName(InputDirectory);
 
             Locale = Path.GetFileName(LocaleDirectory);
 
@@ -225,25 +437,27 @@ namespace BibleConfigurator
 
             OutputModuleDirectory = Path.Combine(OutputLocaleDirectory, ModuleShortName);
             if (!Directory.Exists(OutputModuleDirectory))
-                Directory.CreateDirectory(OutputModuleDirectory);
-
-            var invalidXmlFiles = Directory.GetFiles(ModuleDirectory, string.Format("*.xml", ModuleShortName))
-                                                .Where(f => 
-                                                    !Path.GetFileName(f).ToLower().StartsWith(ModuleShortName));
-
-            if (invalidXmlFiles.Count() > 0)
-                throw new Exception(string.Format("There are invalid .xml files in '{0}': {1}", ModuleDirectory, 
-                    string.Join(Environment.NewLine, invalidXmlFiles.Select(f => Path.GetFileName(f)).ToArray())));
+                Directory.CreateDirectory(OutputModuleDirectory);           
         }
 
         private void LoadFiles()
         {
             var structureFilePath = GetExistingFile(
                                         Path.Combine(ModuleDirectory, ModuleShortName + Const_StructureFileSuffix),
-                                        Path.Combine(LocaleDirectory, Const_LocaleStructureFilePath));
-            var booksFilePath = GetExistingFile(Path.Combine(LocaleDirectory, Const_LocaleBooksInfoFilePath));
+                                        Path.Combine(LocaleDirectory, Const_LocaleStructureFilePath),
+                                        Path.Combine(InputDirectory, Const_LocaleStructureFilePath));
+            var booksFilePath = GetExistingFile(
+                                        Path.Combine(LocaleDirectory, Const_LocaleBooksInfoFilePath),
+                                        Path.Combine(InputDirectory, Const_LocaleBooksInfoFilePath));
             var diffFilePath = Path.Combine(ModuleDirectory, ModuleShortName + Const_BookDifferencesFileSuffix);            
             var existingModuleFilePath = Path.Combine(OutputModuleDirectory, BibleCommon.Consts.Constants.ManifestFileName);
+
+            var invalidXmlFiles = Directory.GetFiles(ModuleDirectory, string.Format("*.xml", ModuleShortName))
+                                    .Where(f =>
+                                        !Path.GetFileName(f).ToLower().StartsWith(ModuleShortName));
+            if (invalidXmlFiles.Count() > 0)
+                throw new Exception(string.Format("There are invalid .xml files in '{0}': {1}", ModuleDirectory,
+                    string.Join(Environment.NewLine, invalidXmlFiles.Select(f => Path.GetFileName(f)).ToArray())));
             
 
             BibleContent = Utils.LoadFromXmlFile<XMLBIBLE>(ZefaniaXmlFilePath);
@@ -259,7 +473,25 @@ namespace BibleConfigurator
                                             : null;            
 
             LoadExistingNotebooks();
-            CheckAndCorrectSections();            
+            CheckAndCorrectSections();
+            LoadMarkingWordsSectionFilePath();
+        }
+        
+        private void LoadMarkingWordsSectionFilePath()
+        {
+            MarkingWordsSectionFilePath = LoadMarkingWordsSectionFilePath(LocaleDirectory);
+
+            if (string.IsNullOrEmpty(MarkingWordsSectionFilePath))
+                MarkingWordsSectionFilePath = LoadMarkingWordsSectionFilePath(InputDirectory);
+        }
+
+        private static string LoadMarkingWordsSectionFilePath(string directory)
+        {
+            var files = Directory.GetFiles(directory, "*.one").Where(file => file.EndsWith(".one")).ToArray();
+            if (files.Length > 0)
+                return files[0];
+
+            return null;
         }
 
         private static string GetExistingFile(params string[] filesPath)
@@ -281,7 +513,8 @@ namespace BibleConfigurator
                 throw new Exception("BibleBooksInfo.ChapterString is null");
 
             ChapterSectionNameTemplate = string.Format("{{0}} {0}. {{1}}", BibleBooksInfo.ChapterString.ToLower());
-        }
+            
+        }        
 
         private void ChangeControlsState()
         {
@@ -297,33 +530,34 @@ namespace BibleConfigurator
             tbResultDirectory.Text = OutputModuleDirectory;
             folderBrowserDialog.SelectedPath = OutputModuleDirectory;
 
-            SetNotebookParams(cbNotebookBible, chkNotebookBibleGenerate, tbNotebookBibleName, ContainerType.Bible, !BibleIsStrong);
-            SetNotebookParams(cbNotebookBibleStudy, null, null, ContainerType.BibleStudy, null);
-            SetNotebookParams(cbNotebookBibleComments, chkNotebookBibleCommentsGenerate, tbNotebookBibleCommentsName, ContainerType.BibleComments, true);
-            SetNotebookParams(cbNotebookSummaryOfNotes, chkNotebookSummaryOfNotesGenerate, tbNotebookSummaryOfNotesName, ContainerType.BibleNotesPages, true);
+            NotebookBibleName = SetNotebookParams(cbNotebookBible, chkNotebookBibleGenerate, ContainerType.Bible, !BibleIsStrong);
+            SetNotebookParams(cbNotebookBibleStudy, null, ContainerType.BibleStudy, null);
+            NotebookBibleCommentsName = SetNotebookParams(cbNotebookBibleComments, chkNotebookBibleCommentsGenerate, ContainerType.BibleComments, true);
+            NotebookSummaryOfNotesName = SetNotebookParams(cbNotebookSummaryOfNotes, chkNotebookSummaryOfNotesGenerate, ContainerType.BibleNotesPages, true);
 
             if (!BibleIsStrong)
                 chkRemoveStrongNumbers.Enabled = false;
         }
 
-        private void SetNotebookParams(ComboBox cb, CheckBox chk, TextBox tb, ContainerType notebookType, bool? generateByDefault)
+        private string SetNotebookParams(ComboBox cb, CheckBox chk, ContainerType notebookType, bool? generateByDefault)
         {
+            string result = null;
             var notebookInfo = NotebooksStructure.Notebooks.FirstOrDefault(n => n.Type == notebookType);
             if (notebookInfo != null)
             {
-                cb.DataSource = GetDictionaryValueOrDefault<ContainerType, List<string>>(ExistingNotebooks, notebookType, new List<string>());
-                SetCbNotebooksValue(cb, chk, tb, notebookType, generateByDefault);
-                if (tb != null)
-                    tb.Text = Path.GetFileNameWithoutExtension(notebookInfo.Name);
+                cb.DataSource = GetExistingNotebooks(ExistingNotebooks, notebookType, notebookInfo.Name);
+                SetCbNotebooksValue(cb, chk, notebookType, generateByDefault);
+
+                result = Path.GetFileNameWithoutExtension(notebookInfo.Name);
             }
             else
-            {
-                if (tb != null)
-                    tb.Enabled = false;
+            {   
                 if (chk != null)
                     chk.Enabled = false;
                 cb.Enabled = false;
             }
+
+            return result;
         }
 
         private static bool IsStrong(XMLBIBLE bibleContent)
@@ -335,14 +569,12 @@ namespace BibleConfigurator
                                                 item is GRAM || item is gr))));
         }
 
-        private static void SetCbNotebooksValue(ComboBox cb, CheckBox chk, TextBox tb, ContainerType notebookType, bool? generateByDefault)
+        private static void SetCbNotebooksValue(ComboBox cb, CheckBox chk, ContainerType notebookType, bool? generateByDefault)
         {
             if (cb.Items.Count > 0 || !generateByDefault.GetValueOrDefault(true))
             {
                 if (cb.Items.Count > 0)
-                    cb.SelectedIndex = 0;
-                if (tb != null)
-                    tb.Enabled = false;
+                    cb.SelectedIndex = 0;                
             }
             else if (chk != null)                
                 chk.Checked = true;
@@ -350,12 +582,13 @@ namespace BibleConfigurator
                 throw new Exception(string.Format("Notebook file for {0} was not found.", notebookType));
         }
 
-        private static TValue GetDictionaryValueOrDefault<TKey, TValue>(Dictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+        private static List<string> GetExistingNotebooks(Dictionary<ContainerType, List<string>> dictionary, ContainerType key, 
+                                            string notebookName)
         {
-            if (dictionary.ContainsKey(key))
-                return dictionary[key];
+            if (dictionary.ContainsKey(key))            
+                return dictionary[key].Where(n => Path.GetFileName(n).Equals(notebookName, StringComparison.InvariantCultureIgnoreCase)).ToList();
             else 
-                return defaultValue;
+                return new List<string>();
         }
 
         private void LoadExistingNotebooks()
@@ -363,10 +596,11 @@ namespace BibleConfigurator
             ExistingNotebooks = new Dictionary<ContainerType, List<string>>();
 
             if (ExistingOutputModule != null)            
-                LoadNotebookFiles(OutputModuleDirectory, 3, null, true);            
+                LoadNotebookFiles(OutputModuleDirectory, 4, null, true);            
 
-            LoadNotebookFiles(ModuleDirectory, 3, ContainerType.BibleStudy, false);
+            LoadNotebookFiles(ModuleDirectory, 4, ContainerType.BibleStudy, false);
             LoadNotebookFiles(LocaleDirectory, 3, ContainerType.BibleStudy, false);
+            LoadNotebookFiles(InputDirectory, 2, ContainerType.BibleStudy, false);
         }
 
         private void LoadNotebookFiles(string directory, int level, ContainerType? notebookType, bool loadFromExistingModule)
@@ -418,6 +652,18 @@ namespace BibleConfigurator
         {
             if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 tbResultDirectory.Text = folderBrowserDialog.SelectedPath;
-        }      
+        }
+
+        private void ZefaniaXmlConverterForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _formLogger.AbortedByUsers = true;
+        }
+
+        private void ZefaniaXmlConverterForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            OneNoteApp = null;
+            _mainForm = null;
+            _formLogger.Dispose();
+        }
     }
 }

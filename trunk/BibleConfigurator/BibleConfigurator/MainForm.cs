@@ -62,6 +62,8 @@ namespace BibleConfigurator
         public bool ToIndexBible { get; set; }
         public bool CommitChangesAfterLoad { get; set; }
 
+        public bool IsModerator { get; set; }
+
         public MainForm(params string[] args)
         {
             this.SetFormUICulture();
@@ -69,6 +71,8 @@ namespace BibleConfigurator
             InitializeComponent();
             BibleCommon.Services.Logger.Init("BibleConfigurator");
             LongProcessLogger = new CustomFormLogger(this);
+
+            IsModerator = args.Contains(Consts.ModeratorMode);
         }
 
         public bool StopExternalProcess { get; set; }        
@@ -596,6 +600,12 @@ namespace BibleConfigurator
                         LoadParameters(module, needSaveSettings);
                     }
 
+                    if (!IsModerator)
+                    {
+                        btnConverter.Visible = false;
+                        btnModuleChecker.Visible = false;
+                    }
+
                     this.Text += string.Format(" v{0}", SettingsManager.Instance.CurrentVersion);
                     this.SetFocus();
                     _firstShown = false;
@@ -617,9 +627,9 @@ namespace BibleConfigurator
             _loadForm.Show();
         }
 
-        private void LoadParameters(ModuleInfo module, bool? needToSaveSettings)
+        private void LoadParameters(ModuleInfo module, bool? forceNeedToSaveSettings)
         {
-            if (!SettingsManager.Instance.IsConfigured(_oneNoteApp) || needToSaveSettings.GetValueOrDefault(false))
+            if (!SettingsManager.Instance.IsConfigured(_oneNoteApp) || forceNeedToSaveSettings.GetValueOrDefault(false))
                 lblWarning.Visible = true;        
 
             Dictionary<string, string> notebooks = GetNotebooks();
@@ -1484,7 +1494,7 @@ namespace BibleConfigurator
             }
         }        
 
-        private void ReLoadParameters(bool needToSaveSettings)
+        internal void ReLoadParameters(bool needToSaveSettings)
         {
             _loadForm.SetDesktopLocation(this.Left - 5, this.Top - 5);
             _loadForm.Show();
@@ -1553,6 +1563,29 @@ namespace BibleConfigurator
             {
                 form.ShowDialog();
             }
+        }
+
+        private void btnConverter_Click(object sender, EventArgs e)
+        {
+            var form = new ZefaniaXmlConverterForm(_oneNoteApp, this);
+
+            form.ShowDialog();
+
+            if (form.NeedToCheckModule)
+            {
+                var moduleCheckForm = new ParallelBibleCheckerForm(this);
+                moduleCheckForm.ModuleToCheckName = form.ConvertedModuleShortName;
+                moduleCheckForm.AutoStart = true;
+
+                moduleCheckForm.ShowDialog();
+            }
+        }
+
+        private void btnModuleChecker_Click(object sender, EventArgs e)
+        {
+            var form = new ParallelBibleCheckerForm(this);
+
+            form.ShowDialog();
         }                                     
     }
 }

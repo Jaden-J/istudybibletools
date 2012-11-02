@@ -12,6 +12,7 @@ using System.Globalization;
 using BibleCommon.Common;
 using System.Xml.Serialization;
 using BibleCommon.Scheme;
+using BibleCommon.Contracts;
 
 namespace BibleConfigurator.ModuleConverter
 {
@@ -31,7 +32,8 @@ namespace BibleConfigurator.ModuleConverter
 
         protected ReadParameters[] AdditionalReadParameters { get; set; }
 
-        public Func<BIBLEBOOK, string, string> ConvertChapterNameFunc { get; set; }        
+        public Func<BIBLEBOOK, string, string> ConvertChapterNameFunc { get; set; }
+        protected ICustomLogger FormLogger { get; set; }
         
 
         /// <summary>
@@ -50,18 +52,21 @@ namespace BibleConfigurator.ModuleConverter
         public ZefaniaXmlConverter(string moduleShortName, string moduleName, XMLBIBLE bibleContent, BibleBooksInfo booksInfo, string manifestFilesFolderPath,
             string locale, NotebooksStructure notebooksStructure, BibleTranslationDifferences translationDifferences, 
             string chapterSectionNameTemplate, 
-            bool isStrong, 
-            Version version, bool generateNotebooks, params ReadParameters[] readParameters)
+            bool isStrong, Version version, bool generateBibleNotebook, 
+            ICustomLogger formLogger,
+            params ReadParameters[] readParameters)
             : base(moduleShortName, manifestFilesFolderPath, locale, notebooksStructure, null,
                         translationDifferences, chapterSectionNameTemplate, isStrong, 
-                        version, generateNotebooks, true)
+                        version, generateBibleNotebook, true)
         {
             this.ModuleName = moduleName;            
             this.BooksInfo = booksInfo;
             this.ZefaniaXmlBibleInfo = bibleContent;
             this.BookIndexes = BooksInfo.Books.Where(bi => ZefaniaXmlBibleInfo.Books.Any(zb => zb.Index == bi.Index)).Select(b => b.Index).ToList();
 
-            this.AdditionalReadParameters = readParameters;            
+            this.AdditionalReadParameters = readParameters;
+
+            this.FormLogger = formLogger;
 
             if (this.AdditionalReadParameters == null)
                 this.AdditionalReadParameters = new ReadParameters[] { };                
@@ -105,6 +110,9 @@ namespace BibleConfigurator.ModuleConverter
                     continue;
                 }
 
+                if (GenerateBibleNotebook)
+                    FormLogger.LogMessage(bookInfo.Name);
+
                 var sectionName = GetBookSectionName(bookInfo.Name, BibleInfo.Books.Count);
 
                 if (string.IsNullOrEmpty(currentSectionGroupId))
@@ -121,6 +129,9 @@ namespace BibleConfigurator.ModuleConverter
                         chapterPageName = ConvertChapterNameFunc(bibleBookContent, chapter.cnumber);
                     else
                         chapterPageName = ConvertChapterName(bookInfo, chapter.cnumber);
+
+                    if (GenerateBibleNotebook)
+                        FormLogger.LogMessage(string.Format("{0} {1}", bookInfo.Name, chapter.cnumber));
 
                     XmlNamespaceManager xnm;
                     currentChapterDoc = AddChapterPage(bookSectionId, chapterPageName, 2, out xnm);
@@ -205,7 +216,7 @@ namespace BibleConfigurator.ModuleConverter
 
         private void ProcessVerse(VERS verse, XElement currentTableElement, string alphabet)
         {
-            if (currentTableElement == null && GenerateNotebooks)
+            if (currentTableElement == null && GenerateBibleNotebook)
                 throw new Exception("currentTableElement is null");
 
             var verseItems = verse.Items;

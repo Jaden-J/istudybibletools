@@ -223,7 +223,7 @@ namespace BibleConfigurator.ModuleConverter
 
         private void ProcessVerse(string lineText, XElement currentTableElement, string alphabet)
         {
-            if (currentTableElement == null && GenerateNotebooks)
+            if (currentTableElement == null && GenerateBibleNotebook)
                 throw new Exception("currentTableElement is null");
 
             int? verseNumber;
