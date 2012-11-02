@@ -79,7 +79,7 @@ namespace BibleConfigurator
         private void ZefaniaXmlConverterForm_Load(object sender, EventArgs e)
         {
             FormExtensions.EnableAll(false, Controls, tbZefaniaXmlFilePath, btnZefaniaXmlFilePath, btnClose);
-            this.Top = this.Top - 13;
+            this.Top = this.Top - 15;
         }              
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -219,7 +219,7 @@ namespace BibleConfigurator
             if (chkNotebookBibleGenerate.Checked)
             {
                 AddMarkingWordsSection(converter.BibleNotebookId);
-                PublishNotebook(converter.BibleNotebookId, Path.Combine(tbResultDirectory.Text, NotebookBibleName + BibleCommon.Consts.Constants.FileExtensionOnepkg), false);
+                PublishNotebook(converter.BibleNotebookId, Path.Combine(tbResultDirectory.Text, NotebookBibleName + BibleCommon.Consts.Constants.FileExtensionOnepkg), true);
             }
             else
             {
@@ -297,6 +297,7 @@ namespace BibleConfigurator
 
                                 if (!NeedToWaitFileWatcher)
                                 {
+                                    Thread.Sleep(1000);
                                     CreateZipFileAndFinish();
                                     CloseResources();
                                 }                                
