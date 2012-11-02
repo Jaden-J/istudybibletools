@@ -279,6 +279,8 @@ namespace BibleCommon.Services
         {
             string targetNotebookId = NotebookGenerator.CreateNotebook(oneNoteApp, notebookName);
 
+            var bookIndex = 0;
+
             foreach (var testament in notebooksStructure.Notebooks.First(n => n.Type == ContainerType.Bible).SectionGroups)
             {
                 XElement testamentSectionGroupEl = AddRootSectionGroupToNotebook(oneNoteApp, targetNotebookId, testament.Name);
@@ -287,7 +289,7 @@ namespace BibleCommon.Services
                 {
                     for (int i = 0; i < testament.SectionsCount; i++)
                     {
-                        AddSectionGroup(oneNoteApp, testamentSectionGroupEl, bibleStructure.BibleBooks[i].SectionName);
+                        AddSectionGroup(oneNoteApp, testamentSectionGroupEl, bibleStructure.BibleBooks[bookIndex++].SectionName);
                     }
                 }
             }

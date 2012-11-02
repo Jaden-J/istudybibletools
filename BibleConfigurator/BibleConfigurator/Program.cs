@@ -73,12 +73,8 @@ namespace BibleConfigurator
                 result = new AboutModuleForm(SettingsManager.Instance.ModuleName, true);
             else if (args.Contains(Consts.ShowAboutProgram))
                 result = new AboutProgramForm();
-            else if (args.Contains(Consts.ShowParallelBibleChecker))
-                result = new ParallelBibleCheckerForm();
             else if (args.Contains(Consts.ShowSearchInDictionaries))
                 result = new SearchInDictionariesForm();
-            else if (args.Contains(Consts.ZefaniaXmlConverter))
-                result = new ZefaniaXmlConverterForm();
             else if (strongProtocolHandler.IsProtocolCommand(args))
                 strongProtocolHandler.ExecuteCommand(args);
             else if (openVerseHandler.IsProtocolCommand(args))
