@@ -280,8 +280,7 @@ namespace BibleCommon.Services
         private SimpleVerse GetParallelVerse(SimpleVersePointer baseVersePointer, BIBLEBOOK parallelBookContent, 
             SimpleVersePointersComparisonTable bookVersePointersComparisonTable, string strongPrefix, int lastProcessedChapter, int lastProcessedVerse)
         {
-            ComparisonVersesInfo parallelVersePointers = new ComparisonVersesInfo();;
-            SimpleVersePointer firstParallelVerse = null;
+            ComparisonVersesInfo parallelVersePointers = new ComparisonVersesInfo();;            
 
             try
             {
@@ -311,7 +310,7 @@ namespace BibleCommon.Services
                     throw;
 
                 Errors.Add(ex);
-                return new SimpleVerse(firstParallelVerse != null ? firstParallelVerse : baseVersePointer, string.Empty);
+                return new SimpleVerse(baseVersePointer, string.Empty);
             }
         }
 
@@ -362,73 +361,77 @@ namespace BibleCommon.Services
             int? topLastVerse = null;
             bool isEmpty = false;
 
-            if (!firstParallelVerse.IsEmpty)
-            {
-                List<SimpleVersePointer> notFoundVerses;
-                verseContent = parallelBookContent.GetVersesContent(parallelVersePointers, strongPrefix, out topLastVerse, out isEmpty, out notFoundVerses);                
-                if (!isEmpty)
-                {
-                    if (!string.IsNullOrEmpty(verseContent))
-                        verseNumberContent = GetVersesNumberString(baseVersePointer, parallelVersePointers, topLastVerse);                  
 
-                    if (verseContent == null)
+            bool isFullVerses, isDiscontinuous;
+            List<SimpleVersePointer> notFoundVerses;
+            verseContent = parallelBookContent.GetVersesContent(parallelVersePointers, strongPrefix,
+                                        out topLastVerse, out isEmpty, out isFullVerses, out isDiscontinuous, out notFoundVerses);
+
+            if (!isEmpty)
+            {
+                verseNumberContent = GetVersesNumberString(baseVersePointer, parallelVersePointers, topLastVerse, isFullVerses, isDiscontinuous);
+
+                if (verseContent == null)
+                {
+                    throw new GetParallelVerseException(                                // значит нет такого стиха, либо такой по счёту части стиха      
+                        string.Format("Can not find verseContent{0}",
+                                        firstParallelVerse.PartIndex.HasValue
+                                            ? string.Format(" (versePart = {0})", firstParallelVerse.PartIndex + 1)
+                                            : string.Empty),
+                                        baseVersePointer, BaseVersePointerException.Severity.Warning);
+                }
+                else
+                {
+                    foreach (var notFoundVerse in notFoundVerses)
                     {
-                        throw new GetParallelVerseException(                                // значит нет такого стиха, либо такой по счёту части стиха      
+                        Errors.Add(new GetParallelVerseException(                        // значит один из нескольких стихов не удалось найти
                             string.Format("Can not find verseContent{0}",
-                                            firstParallelVerse.PartIndex.HasValue
-                                                ? string.Format(" (versePart = {0})", firstParallelVerse.PartIndex + 1)
+                                            notFoundVerse.PartIndex.HasValue
+                                                ? string.Format(" (versePart = {0})", notFoundVerse.PartIndex + 1)
                                                 : string.Empty),
-                                            baseVersePointer, BaseVersePointerException.Severity.Warning);
+                                            baseVersePointer, BaseVersePointerException.Severity.Warning));
                     }
-                    else  
-                    {
-                        foreach (var notFoundVerse in notFoundVerses)
-                        {
-                            Errors.Add(new GetParallelVerseException(                        // значит один из нескольких не удалось найти
-                                string.Format("Can not find verseContent{0}",
-                                                notFoundVerse.PartIndex.HasValue
-                                                    ? string.Format(" (versePart = {0})", notFoundVerse.PartIndex + 1)
-                                                    : string.Empty),
-                                                baseVersePointer, BaseVersePointerException.Severity.Warning));
-                        }
-                    }
-                }                
+                }
             }
 
-            return new SimpleVerse(firstParallelVerse, verseNumberContent, verseContent) 
+            return new SimpleVerse(firstParallelVerse, verseNumberContent, verseContent)
             {
                 VerseNumber = new VerseNumber(firstParallelVerse.Verse, topLastVerse),
                 IsEmpty = firstParallelVerse.IsEmpty || isEmpty
             };
         }
 
-        private string GetVersesNumberString(SimpleVersePointer baseVersePointer, ComparisonVersesInfo parallelVersePointers, int? topVerse)
+        private string GetVersesNumberString(SimpleVersePointer baseVersePointer, ComparisonVersesInfo parallelVersePointers, int? topVerse, bool isFullVerses, bool isDiscontinuous)
         {
             string result = string.Empty;
             var firstParallelVerse = parallelVersePointers.First();
 
             if (!firstParallelVerse.IsEmpty)
             {
-                result = GetVerseNumberString(firstParallelVerse, null, baseVersePointer.Chapter);                
+                result = GetVerseNumberString(firstParallelVerse, null, baseVersePointer.Chapter, isFullVerses);                
 
                 if (parallelVersePointers.Count > 1 || topVerse.HasValue)
                 {
-                    var lastVerse = parallelVersePointers.Last();
+                    var lastVerse = parallelVersePointers.Last();                    
 
-                    result += string.Format("-{0}", GetVerseNumberString(lastVerse, topVerse, baseVersePointer.Chapter));
+                    result += string.Format("{0}{1}", 
+                                                isDiscontinuous ? ',' : '-',
+                                                GetVerseNumberString(lastVerse, topVerse, firstParallelVerse.Chapter, isFullVerses));
                 }
             }
 
             return result;
         }
 
-        private string GetVerseNumberString(SimpleVersePointer versePointer, int? topVerse, int baseChapter)
+
+
+        private string GetVerseNumberString(SimpleVersePointer versePointer, int? topVerse, int baseChapter, bool isFullVerses)
         {
             var result = topVerse.HasValue ? topVerse.ToString() : versePointer.VerseNumber.ToString();
             if (baseChapter != versePointer.Chapter)
                 result = string.Format("{0}:{1}", versePointer.Chapter, result);
 
-            if (versePointer.PartIndex.HasValue)
+            if (versePointer.PartIndex.HasValue && !isFullVerses)
             {
                 var partVersesAlphabet = ParallelModuleInfo.BibleTranslationDifferences.PartVersesAlphabet;
                 if (string.IsNullOrEmpty(partVersesAlphabet) || partVersesAlphabet.Length <= versePointer.PartIndex.Value)

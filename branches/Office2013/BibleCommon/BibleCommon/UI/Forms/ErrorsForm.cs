@@ -14,36 +14,66 @@ namespace BibleCommon.UI.Forms
 {
     public partial class ErrorsForm : Form
     {
-        public List<string> Errors { get; set; }
-        public string ErrorsDecription { get; set; }
+        public class ErrorsList : List<string>
+        {
+            public string ErrorsDecription { get; set; }
 
-        public ErrorsForm(List<string> errors)
-        {   
-            Errors = errors;            
+            public ErrorsList(IEnumerable<string> collection)
+                : base(collection)
+            {
+            }
+        }
+
+        public List<ErrorsList> AllErrors { get; set; }
+
+        public ErrorsForm()
+        {
+            AllErrors = new List<ErrorsList>();
 
             InitializeComponent();            
+        }
+
+        public ErrorsForm(List<string> errors)
+            : this()
+        {
+            AllErrors.Add(new ErrorsList(errors));
+        }
+
+        public void ClearErrors()
+        {
+            AllErrors.Clear();
+            lbErrors.Items.Clear();
         }
 
         private void Errors_Load(object sender, EventArgs e)
         {
             try
             {
-                if (Errors.Count == 0)
+                if (AllErrors.All(errors => errors.Count == 0))
                     Close();
 
                 FormExtensions.SetFocus(this);
 
-                if (!string.IsNullOrEmpty(ErrorsDecription))
-                    lbErrors.Items.Add(ErrorsDecription);
-
-                int index = 1;
-                foreach (string error in Errors)
+                using (Graphics g = lbErrors.CreateGraphics())
                 {
-                    lbErrors.Items.Add(string.Format("{0}. {1}", index++, error));
+                    foreach (var errors in AllErrors)
+                    {
+                        if (!string.IsNullOrEmpty(errors.ErrorsDecription))
+                            lbErrors.Items.Add(errors.ErrorsDecription);
 
-                    int width = Convert.ToInt32(error.Length * 5.75);
-                    if (width > lbErrors.HorizontalExtent)
-                        lbErrors.HorizontalExtent = width;
+                        int index = 1;
+
+                        foreach (string error in errors)
+                        {
+                            lbErrors.Items.Add(string.Format("{0}. {1}", index++, error));
+
+                            //int width = Convert.ToInt32(error.Length * 5.75);
+                            int width = (int)g.MeasureString(error, lbErrors.Font).Width;
+                            if (width > lbErrors.HorizontalExtent)
+                                lbErrors.HorizontalExtent = width;
+                        }
+                        lbErrors.Items.Add(string.Empty);
+                    }
                 }
             }
             catch (Exception ex)
@@ -60,13 +90,17 @@ namespace BibleCommon.UI.Forms
                 {
                     using (StreamWriter sw = new StreamWriter(fs))
                     {
-                        if (!string.IsNullOrEmpty(ErrorsDecription))
-                            sw.WriteLine(ErrorsDecription);
-
-                        int index = 1;
-                        foreach (var error in Errors)
+                        foreach (var errors in AllErrors)
                         {
-                            sw.WriteLine(string.Format("{0}. {1}", index++, error));
+                            if (!string.IsNullOrEmpty(errors.ErrorsDecription))
+                                sw.WriteLine(errors.ErrorsDecription);
+
+                            int index = 1;
+                            foreach (var error in errors)
+                            {
+                                sw.WriteLine(string.Format("{0}. {1}", index++, error));
+                            }
+                            sw.WriteLine(string.Empty);                            
                         }
                         sw.Flush();
                     }

@@ -28,14 +28,75 @@ namespace BibleCommon.Common
     }
 
     [Serializable]
-    [XmlRoot(ElementName = "IStudyBibleTools_NotebooksStructure")]
-    public class ModuleBibleStructure // вот здесь (доформировать файлы ..structurte.xml)
+    [XmlRoot(ElementName = "NotebooksStructure")]
+    public class NotebooksStructure
     {
+        /// <summary>
+        /// Должны быть соответствующие файлы .onepkg
+        /// </summary>
         [XmlElement(typeof(NotebookInfo), ElementName = "Notebook")]
         public List<NotebookInfo> Notebooks { get; set; }
 
+        /// <summary>
+        /// Должны быть соответствующие файлы .one
+        /// </summary>
         [XmlElement(typeof(SectionInfo), ElementName = "Section")]
         public List<SectionInfo> Sections { get; set; } 
+
+        [XmlAttribute]
+        public string DictionarySectionGroupName { get; set; }
+
+        [XmlIgnore]
+        public int? DictionaryPagesCount { get; set; }
+
+        [XmlAttribute]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public int XmlDictionaryPagesCount
+        {
+            get
+            {
+                return DictionaryPagesCount.Value;
+            }
+            set
+            {
+                DictionaryPagesCount = value;
+            }
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public bool XmlDictionaryPagesCountSpecified
+        {
+            get
+            {
+                return DictionaryPagesCount.HasValue;
+            }
+        }
+
+        [XmlIgnore]
+        public int? DictionaryTermsCount { get; set; }
+
+        [XmlAttribute]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public int XmlDictionaryTermsCount
+        {
+            get
+            {
+                return DictionaryTermsCount.Value;
+            }
+            set
+            {
+                DictionaryTermsCount = value;
+            }
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public bool XmlDictionaryTermsCountSpecified
+        {
+            get
+            {
+                return DictionaryTermsCount.HasValue;
+            }
+        }
     }
 
     [Serializable]
@@ -115,72 +176,15 @@ namespace BibleCommon.Common
         [XmlAttribute]
         public string Description { get; set; }
 
+        [XmlElement]
+        public NotebooksStructure NotebooksStructure { get; set; }
+
         /// <summary>
         /// Должны быть соответствующие файлы .onepkg
+        /// Deprecated
         /// </summary>
         [XmlElement(typeof(NotebookInfo), ElementName = "Notebook")]
-        public List<NotebookInfo> Notebooks { get; set; }
-
-        [XmlAttribute]
-        public string DictionarySectionGroupName { get; set; }
-
-        [XmlIgnore]
-        public int? DictionaryPagesCount { get; set; }
-
-        [XmlAttribute]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public int XmlDictionaryPagesCount
-        {
-            get
-            {
-                return DictionaryPagesCount.Value;
-            }
-            set
-            {
-                DictionaryPagesCount = value;
-            }
-        }
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public bool XmlDictionaryPagesCountSpecified
-        {
-            get
-            {
-                return DictionaryPagesCount.HasValue;
-            }
-        }
-
-        [XmlIgnore]
-        public int? DictionaryTermsCount { get; set; }        
-
-        [XmlAttribute]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public int XmlDictionaryTermsCount
-        {
-            get
-            {
-                return DictionaryTermsCount.Value;
-            }
-            set
-            {
-                DictionaryTermsCount = value;
-            }
-        }
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public bool XmlDictionaryTermsCountSpecified
-        {
-            get
-            {
-                return DictionaryTermsCount.HasValue;
-            }
-        }
-
-        /// <summary>
-        /// Должны быть соответствующие файлы .one
-        /// </summary>
-        [XmlElement(typeof(SectionInfo), ElementName = "Section")]
-        public List<SectionInfo> Sections { get; set; } 
+        public List<NotebookInfo> Notebooks { get; set; }              
 
         [XmlElement]
         public BibleTranslationDifferences BibleTranslationDifferences { get; set; }
@@ -195,12 +199,12 @@ namespace BibleCommon.Common
 
         public bool UseSingleNotebook()
         {
-            return Notebooks.Exists(n => n.Type == ContainerType.Single);
+            return NotebooksStructure.Notebooks.Exists(n => n.Type == ContainerType.Single);
         }
 
         public NotebookInfo GetNotebook(ContainerType notebookType)
         {
-            return Notebooks.First(n => n.Type == notebookType);
+            return NotebooksStructure.Notebooks.First(n => n.Type == notebookType);
         }
 
         /// <summary>
@@ -257,7 +261,9 @@ namespace BibleCommon.Common
         {
             if (Version < new Version(1, 9))    
             {
-                var bibleNotebook = Notebooks.FirstOrDefault(n => n.Type == ContainerType.Bible);
+                this.NotebooksStructure = new Common.NotebooksStructure() { Notebooks = this.Notebooks };                
+
+                var bibleNotebook = NotebooksStructure.Notebooks.FirstOrDefault(n => n.Type == ContainerType.Bible);
                 if (bibleNotebook != null)
                 {
                     bibleNotebook.SectionGroups = new List<SectionGroupInfo>() 
@@ -279,7 +285,7 @@ namespace BibleCommon.Common
                     };
                 }
 
-                var commentsNotebooks = Notebooks.Where(n => n.Type == ContainerType.BibleComments || n.Type == ContainerType.BibleNotesPages);
+                var commentsNotebooks = NotebooksStructure.Notebooks.Where(n => n.Type == ContainerType.BibleComments || n.Type == ContainerType.BibleNotesPages);
                 foreach (var commentsNotebook in commentsNotebooks)
                 {
                     commentsNotebook.SectionGroups = new List<SectionGroupInfo>()
@@ -541,7 +547,7 @@ namespace BibleCommon.Common
         {
             All = 0,
             First = 1,
-            Last = 2
+            Last = 2            
         }
 
         [XmlAttribute]
@@ -562,7 +568,7 @@ namespace BibleCommon.Common
         public CorrespondenceVerseType CorrespondenceType { get; set; }
 
         /// <summary>
-        /// Количество стихов, соответствующих версии KJV. По умолчанию - все стихи соответствуют KJV (если Strict = true), либо только один стих (если Strict = false)
+        /// Количество стихов, соответствующих версии KJV. По умолчанию - все стихи соответствуют KJV (если CorrespondenceType = All), либо только один стих (в обратном случае)
         /// </summary>
         [XmlAttribute]
         public string ValueVersesCount { get; set; }

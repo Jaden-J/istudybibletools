@@ -84,11 +84,11 @@ namespace BibleConfigurator.Tools
             catch (ProcessAbortedByUserException)
             {
                 BibleCommon.Services.Logger.LogMessage("Process aborted by user");
-                Finalize(false);
+                CloseResources(false);
             }            
         }
 
-        private void Finalize(bool successefully)
+        private void CloseResources(bool successefully)
         {
             _fileWatcher.EnableRaisingEvents = false;
             _fileWatcher.Dispose();           
@@ -148,7 +148,7 @@ namespace BibleConfigurator.Tools
                                 if (++_processedNotebooksCount >= _notebooksCount)
                                 {
                                     PackfilesToZip();
-                                    Finalize(true);
+                                    CloseResources(true);
                                 }
                             }
                         }
@@ -159,7 +159,7 @@ namespace BibleConfigurator.Tools
             {
                 BibleCommon.Services.Logger.LogMessage("Process aborted by user");
 
-                Finalize(false);
+                CloseResources(false);
             }
         }        
 

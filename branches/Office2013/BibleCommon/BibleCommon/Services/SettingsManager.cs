@@ -383,7 +383,7 @@ namespace BibleCommon.Services
             this.SupplementalBibleModules = GetParameterValue<List<string>>(xdoc, Consts.Constants.ParameterName_SupplementalBibleModules, new List<string>(), 
                                                 s => new List<string>(s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)));
             this.SupplementalBibleLinkName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SupplementalBibleLinkName,
-                                                  Consts.Constants.DefaultSupplementalBibleLinkName);
+                                                  GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName));
 
             this.NotebookId_Dictionaries = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdDictionaries);
             this.DictionariesModules = GetParameterValue<List<DictionaryInfo>>(xdoc, Consts.Constants.ParameterName_DictionariesModules, new List<DictionaryInfo>(), 

@@ -103,6 +103,8 @@
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.btnConverter = new System.Windows.Forms.Button();
+            this.btnModuleChecker = new System.Windows.Forms.Button();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -491,6 +493,8 @@
             // tabPage3
             // 
             this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage3.Controls.Add(this.btnModuleChecker);
+            this.tabPage3.Controls.Add(this.btnConverter);
             this.tabPage3.Controls.Add(this.btnBackup);
             this.tabPage3.Controls.Add(this.btnResizeBibleTables);
             this.tabPage3.Controls.Add(this.btnDeleteNotesPages);
@@ -635,6 +639,20 @@
             this.openFileDialog.DefaultExt = "isbt";
             resources.ApplyResources(this.openFileDialog, "openFileDialog");
             // 
+            // btnConverter
+            // 
+            resources.ApplyResources(this.btnConverter, "btnConverter");
+            this.btnConverter.Name = "btnConverter";
+            this.btnConverter.UseVisualStyleBackColor = true;
+            this.btnConverter.Click += new System.EventHandler(this.btnConverter_Click);
+            // 
+            // btnModuleChecker
+            // 
+            resources.ApplyResources(this.btnModuleChecker, "btnModuleChecker");
+            this.btnModuleChecker.Name = "btnModuleChecker";
+            this.btnModuleChecker.UseVisualStyleBackColor = true;
+            this.btnModuleChecker.Click += new System.EventHandler(this.btnModuleChecker_Click);
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnOK;
@@ -744,6 +762,8 @@
         private System.Windows.Forms.Button btnDictionariesManagement;
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Button btnModuleChecker;
+        private System.Windows.Forms.Button btnConverter;
 
     }
 }

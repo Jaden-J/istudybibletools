@@ -76,6 +76,18 @@ namespace BibleCommon.Helpers
             }
         }
 
+        public static void Invoke(this Control control, Action action)
+        {
+            if (control.InvokeRequired)
+            {
+                control.Invoke(new MethodInvoker(action), null);
+            }
+            else
+            {
+                action.Invoke();
+            }
+        }
+
         public static void RunSingleInstance(string messageIfSecondInstance, Action singleAction, bool silent = false)
         {
             string appGuid = ((GuidAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute), false).GetValue(0)).Value.ToString();
@@ -103,6 +115,17 @@ namespace BibleCommon.Helpers
             _toolTip.ShowAlways = true;
 
             _toolTip.SetToolTip(c, toolTip);
+        }
+
+        public static void EnableAll(bool enabled, Control.ControlCollection controls, params Control[] except)
+        {
+            foreach (Control control in controls)
+            {
+                EnableAll(enabled, control.Controls, except);
+
+                if (!except.Contains(control))
+                    control.Enabled = enabled;
+            }
         }
     }
 }

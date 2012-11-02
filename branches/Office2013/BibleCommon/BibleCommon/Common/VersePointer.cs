@@ -384,7 +384,7 @@ namespace BibleCommon.Common
         {
             get
             {
-                return new VerseNumber(this.Verse.GetValueOrDefault(), this.TopVerse);
+                return new VerseNumber(this.Verse.GetValueOrDefault(), this.TopChapter.HasValue ? null : this.TopVerse);
             }
         }
 
@@ -510,7 +510,7 @@ namespace BibleCommon.Common
 
         public SimpleVersePointer ToSimpleVersePointer()
         {
-            return new SimpleVersePointer(Book.Index, Chapter.GetValueOrDefault(0), new VerseNumber(Verse.GetValueOrDefault(0), this.TopVerse));
+            return new SimpleVersePointer(Book.Index, Chapter.GetValueOrDefault(0), VerseNumber);
         }
 
         private void ConvertToBaseVerse(string moduleName)

@@ -42,12 +42,6 @@
             this.tbVersion = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.btnNotebookBibleStudyFilePath = new System.Windows.Forms.Button();
-            this.tbNotebookBibleStudyFilePath = new System.Windows.Forms.TextBox();
-            this.cbNotebookBibleStudyUseFromFile = new System.Windows.Forms.CheckBox();
-            this.tbNotebookSummaryOfNotesName = new System.Windows.Forms.TextBox();
-            this.tbNotebookBibleCommentsName = new System.Windows.Forms.TextBox();
-            this.tbNotebookBibleName = new System.Windows.Forms.TextBox();
             this.chkNotebookSummaryOfNotesGenerate = new System.Windows.Forms.CheckBox();
             this.chkNotebookBibleCommentsGenerate = new System.Windows.Forms.CheckBox();
             this.chkNotebookBibleGenerate = new System.Windows.Forms.CheckBox();
@@ -59,27 +53,22 @@
             this.label11 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.cbNotebookBible = new System.Windows.Forms.ComboBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.nudStringsCount = new System.Windows.Forms.NumericUpDown();
-            this.label6 = new System.Windows.Forms.Label();
-            this.tbStrongDictionarySectionGroupName = new System.Windows.Forms.TextBox();
+            this.gbAdditionalParameters = new System.Windows.Forms.GroupBox();
+            this.chkCheckModule = new System.Windows.Forms.CheckBox();
             this.chkRemoveStrongNumbers = new System.Windows.Forms.CheckBox();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.tbLocale = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.tbResultFilePath = new System.Windows.Forms.TextBox();
+            this.tbResultDirectory = new System.Windows.Forms.TextBox();
             this.btnResultFilePath = new System.Windows.Forms.Button();
-            this.pbMain = new System.Windows.Forms.ProgressBar();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.groupBox1.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudStringsCount)).BeginInit();
+            this.gbAdditionalParameters.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnOk
             // 
-            this.btnOk.Location = new System.Drawing.Point(575, 337);
+            this.btnOk.Location = new System.Drawing.Point(575, 305);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 0;
@@ -89,7 +78,7 @@
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(656, 337);
+            this.btnClose.Location = new System.Drawing.Point(656, 305);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 1;
@@ -127,9 +116,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(13, 67);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(97, 13);
+            this.label3.Size = new System.Drawing.Size(136, 13);
             this.label3.TabIndex = 6;
-            this.label3.Text = "Название модуля";
+            this.label3.Text = "Полное название модуля";
             // 
             // tbDisplayName
             // 
@@ -151,9 +140,9 @@
             // 
             this.tbZefaniaXmlFilePath.Location = new System.Drawing.Point(234, 12);
             this.tbZefaniaXmlFilePath.Name = "tbZefaniaXmlFilePath";
-            this.tbZefaniaXmlFilePath.ReadOnly = true;
             this.tbZefaniaXmlFilePath.Size = new System.Drawing.Size(465, 20);
             this.tbZefaniaXmlFilePath.TabIndex = 9;
+            this.tbZefaniaXmlFilePath.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tbZefaniaXmlFilePath_MouseClick);
             // 
             // btnZefaniaXmlFilePath
             // 
@@ -191,12 +180,6 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.btnNotebookBibleStudyFilePath);
-            this.groupBox1.Controls.Add(this.tbNotebookBibleStudyFilePath);
-            this.groupBox1.Controls.Add(this.cbNotebookBibleStudyUseFromFile);
-            this.groupBox1.Controls.Add(this.tbNotebookSummaryOfNotesName);
-            this.groupBox1.Controls.Add(this.tbNotebookBibleCommentsName);
-            this.groupBox1.Controls.Add(this.tbNotebookBibleName);
             this.groupBox1.Controls.Add(this.chkNotebookSummaryOfNotesGenerate);
             this.groupBox1.Controls.Add(this.chkNotebookBibleCommentsGenerate);
             this.groupBox1.Controls.Add(this.chkNotebookBibleGenerate);
@@ -215,63 +198,10 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Параметры записных книжек";
             // 
-            // btnNotebookBibleStudyFilePath
-            // 
-            this.btnNotebookBibleStudyFilePath.Enabled = false;
-            this.btnNotebookBibleStudyFilePath.Location = new System.Drawing.Point(683, 47);
-            this.btnNotebookBibleStudyFilePath.Name = "btnNotebookBibleStudyFilePath";
-            this.btnNotebookBibleStudyFilePath.Size = new System.Drawing.Size(26, 23);
-            this.btnNotebookBibleStudyFilePath.TabIndex = 48;
-            this.btnNotebookBibleStudyFilePath.Text = "...";
-            this.btnNotebookBibleStudyFilePath.UseVisualStyleBackColor = true;
-            // 
-            // tbNotebookBibleStudyFilePath
-            // 
-            this.tbNotebookBibleStudyFilePath.Enabled = false;
-            this.tbNotebookBibleStudyFilePath.Location = new System.Drawing.Point(508, 49);
-            this.tbNotebookBibleStudyFilePath.Name = "tbNotebookBibleStudyFilePath";
-            this.tbNotebookBibleStudyFilePath.Size = new System.Drawing.Size(169, 20);
-            this.tbNotebookBibleStudyFilePath.TabIndex = 47;
-            // 
-            // cbNotebookBibleStudyUseFromFile
-            // 
-            this.cbNotebookBibleStudyUseFromFile.AutoSize = true;
-            this.cbNotebookBibleStudyUseFromFile.Location = new System.Drawing.Point(399, 51);
-            this.cbNotebookBibleStudyUseFromFile.Name = "cbNotebookBibleStudyUseFromFile";
-            this.cbNotebookBibleStudyUseFromFile.Size = new System.Drawing.Size(102, 17);
-            this.cbNotebookBibleStudyUseFromFile.TabIndex = 46;
-            this.cbNotebookBibleStudyUseFromFile.Text = "Использовать ";
-            this.cbNotebookBibleStudyUseFromFile.UseVisualStyleBackColor = true;
-            this.cbNotebookBibleStudyUseFromFile.CheckedChanged += new System.EventHandler(this.cbNotebookBibleStudyUseFromFile_CheckedChanged);
-            // 
-            // tbNotebookSummaryOfNotesName
-            // 
-            this.tbNotebookSummaryOfNotesName.Enabled = false;
-            this.tbNotebookSummaryOfNotesName.Location = new System.Drawing.Point(508, 103);
-            this.tbNotebookSummaryOfNotesName.Name = "tbNotebookSummaryOfNotesName";
-            this.tbNotebookSummaryOfNotesName.Size = new System.Drawing.Size(201, 20);
-            this.tbNotebookSummaryOfNotesName.TabIndex = 45;
-            // 
-            // tbNotebookBibleCommentsName
-            // 
-            this.tbNotebookBibleCommentsName.Enabled = false;
-            this.tbNotebookBibleCommentsName.Location = new System.Drawing.Point(508, 77);
-            this.tbNotebookBibleCommentsName.Name = "tbNotebookBibleCommentsName";
-            this.tbNotebookBibleCommentsName.Size = new System.Drawing.Size(201, 20);
-            this.tbNotebookBibleCommentsName.TabIndex = 44;
-            // 
-            // tbNotebookBibleName
-            // 
-            this.tbNotebookBibleName.Enabled = false;
-            this.tbNotebookBibleName.Location = new System.Drawing.Point(508, 23);
-            this.tbNotebookBibleName.Name = "tbNotebookBibleName";
-            this.tbNotebookBibleName.Size = new System.Drawing.Size(201, 20);
-            this.tbNotebookBibleName.TabIndex = 43;
-            // 
             // chkNotebookSummaryOfNotesGenerate
             // 
             this.chkNotebookSummaryOfNotesGenerate.AutoSize = true;
-            this.chkNotebookSummaryOfNotesGenerate.Location = new System.Drawing.Point(399, 105);
+            this.chkNotebookSummaryOfNotesGenerate.Location = new System.Drawing.Point(606, 105);
             this.chkNotebookSummaryOfNotesGenerate.Name = "chkNotebookSummaryOfNotesGenerate";
             this.chkNotebookSummaryOfNotesGenerate.Size = new System.Drawing.Size(103, 17);
             this.chkNotebookSummaryOfNotesGenerate.TabIndex = 42;
@@ -282,7 +212,7 @@
             // chkNotebookBibleCommentsGenerate
             // 
             this.chkNotebookBibleCommentsGenerate.AutoSize = true;
-            this.chkNotebookBibleCommentsGenerate.Location = new System.Drawing.Point(399, 78);
+            this.chkNotebookBibleCommentsGenerate.Location = new System.Drawing.Point(606, 78);
             this.chkNotebookBibleCommentsGenerate.Name = "chkNotebookBibleCommentsGenerate";
             this.chkNotebookBibleCommentsGenerate.Size = new System.Drawing.Size(103, 17);
             this.chkNotebookBibleCommentsGenerate.TabIndex = 41;
@@ -293,7 +223,7 @@
             // chkNotebookBibleGenerate
             // 
             this.chkNotebookBibleGenerate.AutoSize = true;
-            this.chkNotebookBibleGenerate.Location = new System.Drawing.Point(399, 24);
+            this.chkNotebookBibleGenerate.Location = new System.Drawing.Point(606, 24);
             this.chkNotebookBibleGenerate.Name = "chkNotebookBibleGenerate";
             this.chkNotebookBibleGenerate.Size = new System.Drawing.Size(103, 17);
             this.chkNotebookBibleGenerate.TabIndex = 40;
@@ -303,10 +233,11 @@
             // 
             // cbNotebookSummaryOfNotes
             // 
+            this.cbNotebookSummaryOfNotes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbNotebookSummaryOfNotes.FormattingEnabled = true;
             this.cbNotebookSummaryOfNotes.Location = new System.Drawing.Point(218, 103);
             this.cbNotebookSummaryOfNotes.Name = "cbNotebookSummaryOfNotes";
-            this.cbNotebookSummaryOfNotes.Size = new System.Drawing.Size(165, 21);
+            this.cbNotebookSummaryOfNotes.Size = new System.Drawing.Size(382, 21);
             this.cbNotebookSummaryOfNotes.TabIndex = 37;
             // 
             // label13
@@ -320,10 +251,11 @@
             // 
             // cbNotebookBibleComments
             // 
+            this.cbNotebookBibleComments.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbNotebookBibleComments.FormattingEnabled = true;
             this.cbNotebookBibleComments.Location = new System.Drawing.Point(218, 76);
             this.cbNotebookBibleComments.Name = "cbNotebookBibleComments";
-            this.cbNotebookBibleComments.Size = new System.Drawing.Size(165, 21);
+            this.cbNotebookBibleComments.Size = new System.Drawing.Size(382, 21);
             this.cbNotebookBibleComments.TabIndex = 35;
             // 
             // label12
@@ -337,10 +269,11 @@
             // 
             // cbNotebookBibleStudy
             // 
+            this.cbNotebookBibleStudy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbNotebookBibleStudy.FormattingEnabled = true;
             this.cbNotebookBibleStudy.Location = new System.Drawing.Point(218, 49);
             this.cbNotebookBibleStudy.Name = "cbNotebookBibleStudy";
-            this.cbNotebookBibleStudy.Size = new System.Drawing.Size(165, 21);
+            this.cbNotebookBibleStudy.Size = new System.Drawing.Size(382, 21);
             this.cbNotebookBibleStudy.TabIndex = 33;
             // 
             // label11
@@ -363,62 +296,40 @@
             // 
             // cbNotebookBible
             // 
+            this.cbNotebookBible.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbNotebookBible.FormattingEnabled = true;
             this.cbNotebookBible.Location = new System.Drawing.Point(218, 22);
             this.cbNotebookBible.Name = "cbNotebookBible";
-            this.cbNotebookBible.Size = new System.Drawing.Size(165, 21);
+            this.cbNotebookBible.Size = new System.Drawing.Size(382, 21);
             this.cbNotebookBible.TabIndex = 30;
             // 
-            // groupBox3
+            // gbAdditionalParameters
             // 
-            this.groupBox3.Controls.Add(this.label7);
-            this.groupBox3.Controls.Add(this.nudStringsCount);
-            this.groupBox3.Controls.Add(this.label6);
-            this.groupBox3.Controls.Add(this.tbStrongDictionarySectionGroupName);
-            this.groupBox3.Controls.Add(this.chkRemoveStrongNumbers);
-            this.groupBox3.Location = new System.Drawing.Point(16, 256);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(715, 76);
-            this.groupBox3.TabIndex = 32;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Параметры для Стронга";
+            this.gbAdditionalParameters.Controls.Add(this.chkCheckModule);
+            this.gbAdditionalParameters.Controls.Add(this.chkRemoveStrongNumbers);
+            this.gbAdditionalParameters.Location = new System.Drawing.Point(16, 256);
+            this.gbAdditionalParameters.Name = "gbAdditionalParameters";
+            this.gbAdditionalParameters.Size = new System.Drawing.Size(715, 44);
+            this.gbAdditionalParameters.TabIndex = 32;
+            this.gbAdditionalParameters.TabStop = false;
+            this.gbAdditionalParameters.Text = "Дополнительные параметры";
             // 
-            // label7
+            // chkCheckModule
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(396, 21);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(157, 13);
-            this.label7.TabIndex = 4;
-            this.label7.Text = "Количество номеров Стронга";
-            // 
-            // nudStringsCount
-            // 
-            this.nudStringsCount.Location = new System.Drawing.Point(589, 19);
-            this.nudStringsCount.Name = "nudStringsCount";
-            this.nudStringsCount.Size = new System.Drawing.Size(120, 20);
-            this.nudStringsCount.TabIndex = 3;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(63, 48);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(304, 13);
-            this.label6.TabIndex = 2;
-            this.label6.Text = "Название группы разделов в записной книжке \"Словари\"";
-            // 
-            // tbStrongDictionarySectionGroupName
-            // 
-            this.tbStrongDictionarySectionGroupName.Location = new System.Drawing.Point(399, 45);
-            this.tbStrongDictionarySectionGroupName.Name = "tbStrongDictionarySectionGroupName";
-            this.tbStrongDictionarySectionGroupName.Size = new System.Drawing.Size(310, 20);
-            this.tbStrongDictionarySectionGroupName.TabIndex = 1;
+            this.chkCheckModule.AutoSize = true;
+            this.chkCheckModule.Checked = true;
+            this.chkCheckModule.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkCheckModule.Location = new System.Drawing.Point(218, 19);
+            this.chkCheckModule.Name = "chkCheckModule";
+            this.chkCheckModule.Size = new System.Drawing.Size(267, 17);
+            this.chkCheckModule.TabIndex = 1;
+            this.chkCheckModule.Text = "Загрузить и проверить модуль после создания";
+            this.chkCheckModule.UseVisualStyleBackColor = true;
             // 
             // chkRemoveStrongNumbers
             // 
             this.chkRemoveStrongNumbers.AutoSize = true;
-            this.chkRemoveStrongNumbers.Location = new System.Drawing.Point(66, 20);
+            this.chkRemoveStrongNumbers.Location = new System.Drawing.Point(555, 19);
             this.chkRemoveStrongNumbers.Name = "chkRemoveStrongNumbers";
             this.chkRemoveStrongNumbers.Size = new System.Drawing.Size(154, 17);
             this.chkRemoveStrongNumbers.TabIndex = 0;
@@ -446,12 +357,12 @@
             this.label5.TabIndex = 11;
             this.label5.Text = "Папка с результатами";
             // 
-            // tbResultFilePath
+            // tbResultDirectory
             // 
-            this.tbResultFilePath.Location = new System.Drawing.Point(234, 90);
-            this.tbResultFilePath.Name = "tbResultFilePath";
-            this.tbResultFilePath.Size = new System.Drawing.Size(465, 20);
-            this.tbResultFilePath.TabIndex = 12;
+            this.tbResultDirectory.Location = new System.Drawing.Point(234, 90);
+            this.tbResultDirectory.Name = "tbResultDirectory";
+            this.tbResultDirectory.Size = new System.Drawing.Size(465, 20);
+            this.tbResultDirectory.TabIndex = 12;
             // 
             // btnResultFilePath
             // 
@@ -461,29 +372,21 @@
             this.btnResultFilePath.TabIndex = 13;
             this.btnResultFilePath.Text = "...";
             this.btnResultFilePath.UseVisualStyleBackColor = true;
-            // 
-            // pbMain
-            // 
-            this.pbMain.Location = new System.Drawing.Point(16, 338);
-            this.pbMain.Name = "pbMain";
-            this.pbMain.Size = new System.Drawing.Size(553, 23);
-            this.pbMain.TabIndex = 34;
-            this.pbMain.Visible = false;
+            this.btnResultFilePath.Click += new System.EventHandler(this.btnResultFilePath_Click);
             // 
             // ZefaniaXmlConverterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(743, 376);
-            this.Controls.Add(this.pbMain);
+            this.ClientSize = new System.Drawing.Size(743, 341);
             this.Controls.Add(this.tbLocale);
-            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.gbAdditionalParameters);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.tbVersion);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.btnResultFilePath);
-            this.Controls.Add(this.tbResultFilePath);
+            this.Controls.Add(this.tbResultDirectory);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.btnZefaniaXmlFilePath);
             this.Controls.Add(this.tbZefaniaXmlFilePath);
@@ -501,12 +404,13 @@
             this.Name = "ZefaniaXmlConverterForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ZefaniaXML Конвертер";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ZefaniaXmlConverterForm_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ZefaniaXmlConverterForm_FormClosed);
             this.Load += new System.EventHandler(this.ZefaniaXmlConverterForm_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudStringsCount)).EndInit();
+            this.gbAdditionalParameters.ResumeLayout(false);
+            this.gbAdditionalParameters.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -536,27 +440,17 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox cbNotebookBible;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox gbAdditionalParameters;
         private System.Windows.Forms.CheckBox chkRemoveStrongNumbers;
         private System.Windows.Forms.CheckBox chkNotebookSummaryOfNotesGenerate;
         private System.Windows.Forms.CheckBox chkNotebookBibleCommentsGenerate;
         private System.Windows.Forms.CheckBox chkNotebookBibleGenerate;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.TextBox tbLocale;
-        private System.Windows.Forms.TextBox tbNotebookBibleName;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox tbResultFilePath;
+        private System.Windows.Forms.TextBox tbResultDirectory;
         private System.Windows.Forms.Button btnResultFilePath;
-        private System.Windows.Forms.TextBox tbNotebookSummaryOfNotesName;
-        private System.Windows.Forms.TextBox tbNotebookBibleCommentsName;
-        private System.Windows.Forms.TextBox tbNotebookBibleStudyFilePath;
-        private System.Windows.Forms.CheckBox cbNotebookBibleStudyUseFromFile;
-        private System.Windows.Forms.Button btnNotebookBibleStudyFilePath;
-        private System.Windows.Forms.ProgressBar pbMain;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.NumericUpDown nudStringsCount;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox tbStrongDictionarySectionGroupName;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+        private System.Windows.Forms.CheckBox chkCheckModule;
     }
 }

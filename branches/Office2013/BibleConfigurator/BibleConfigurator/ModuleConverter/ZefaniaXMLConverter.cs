@@ -12,6 +12,7 @@ using System.Globalization;
 using BibleCommon.Common;
 using System.Xml.Serialization;
 using BibleCommon.Scheme;
+using BibleCommon.Contracts;
 
 namespace BibleConfigurator.ModuleConverter
 {
@@ -31,7 +32,8 @@ namespace BibleConfigurator.ModuleConverter
 
         protected ReadParameters[] AdditionalReadParameters { get; set; }
 
-        public Func<BIBLEBOOK, string, string> ConvertChapterNameFunc { get; set; }        
+        public Func<BIBLEBOOK, string, string> ConvertChapterNameFunc { get; set; }
+        protected ICustomLogger FormLogger { get; set; }
         
 
         /// <summary>
@@ -47,22 +49,24 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="newTestamentBooksCount"></param>
         /// <param name="locale">can be not specified</param>
         /// <param name="notebooksInfo"></param>
-        public ZefaniaXmlConverter(string moduleShortName, string moduleName, string zefaniaXMLFilePath, BibleBooksInfo booksInfo, string manifestFilesFolderPath, 
-            string locale, List<NotebookInfo> notebooksInfo, BibleTranslationDifferences translationDifferences, 
+        public ZefaniaXmlConverter(string moduleShortName, string moduleName, XMLBIBLE bibleContent, BibleBooksInfo booksInfo, string manifestFilesFolderPath,
+            string locale, NotebooksStructure notebooksStructure, BibleTranslationDifferences translationDifferences, 
             string chapterSectionNameTemplate, 
-            List<SectionInfo> sectionsInfo, bool isStrong, string dictionarySectionGroupName, int? strongNumbersCount,
-            Version version, bool generateNotebooks, params ReadParameters[] readParameters)
-            : base(moduleShortName, manifestFilesFolderPath, locale, notebooksInfo, null,
-                        translationDifferences, chapterSectionNameTemplate, sectionsInfo, isStrong, dictionarySectionGroupName, 
-                        strongNumbersCount, version, generateNotebooks, true)
+            bool isStrong, Version version, bool generateBibleNotebook, 
+            ICustomLogger formLogger,
+            params ReadParameters[] readParameters)
+            : base(moduleShortName, manifestFilesFolderPath, locale, notebooksStructure, null,
+                        translationDifferences, chapterSectionNameTemplate, isStrong, 
+                        version, generateBibleNotebook, true)
         {
-            this.ModuleName = moduleName;
-            this.ZefaniaXmlFilePath = zefaniaXMLFilePath;
+            this.ModuleName = moduleName;            
             this.BooksInfo = booksInfo;
-            this.ZefaniaXmlBibleInfo = Utils.LoadFromXmlFile<XMLBIBLE>(ZefaniaXmlFilePath);                
+            this.ZefaniaXmlBibleInfo = bibleContent;
             this.BookIndexes = BooksInfo.Books.Where(bi => ZefaniaXmlBibleInfo.Books.Any(zb => zb.Index == bi.Index)).Select(b => b.Index).ToList();
 
-            this.AdditionalReadParameters = readParameters;            
+            this.AdditionalReadParameters = readParameters;
+
+            this.FormLogger = formLogger;
 
             if (this.AdditionalReadParameters == null)
                 this.AdditionalReadParameters = new ReadParameters[] { };                
@@ -106,6 +110,9 @@ namespace BibleConfigurator.ModuleConverter
                     continue;
                 }
 
+                if (GenerateBibleNotebook)
+                    FormLogger.LogMessage(bookInfo.Name);
+
                 var sectionName = GetBookSectionName(bookInfo.Name, BibleInfo.Books.Count);
 
                 if (string.IsNullOrEmpty(currentSectionGroupId))
@@ -122,6 +129,9 @@ namespace BibleConfigurator.ModuleConverter
                         chapterPageName = ConvertChapterNameFunc(bibleBookContent, chapter.cnumber);
                     else
                         chapterPageName = ConvertChapterName(bookInfo, chapter.cnumber);
+
+                    if (GenerateBibleNotebook)
+                        FormLogger.LogMessage(string.Format("{0} {1}", bookInfo.Name, chapter.cnumber));
 
                     XmlNamespaceManager xnm;
                     currentChapterDoc = AddChapterPage(bookSectionId, chapterPageName, 2, out xnm);
@@ -144,33 +154,30 @@ namespace BibleConfigurator.ModuleConverter
             }           
         }
 
-        protected override ModuleInfo GenerateManifest(ExternalModuleInfo externalModuleInfo)
+        protected override void GenerateManifest(ExternalModuleInfo externalModuleInfo)
         {
-            var module = new ModuleInfo()
+            ModuleInfo = new ModuleInfo()
             {
                 ShortName = ModuleShortName,
-                Name =  ModuleName,
+                Name = ModuleName,
                 Version = this.Version,
                 Locale = this.Locale,
-                Notebooks = NotebooksInfo,
+                NotebooksStructure = this.NotebooksStructure,
                 Type = IsStrong ? BibleCommon.Common.ModuleType.Strong : BibleCommon.Common.ModuleType.Bible
             };
-            module.BibleTranslationDifferences = this.TranslationDifferences;
-            module.BibleStructure = new BibleStructureInfo()
+            ModuleInfo.BibleTranslationDifferences = this.TranslationDifferences;
+            ModuleInfo.BibleStructure = new BibleStructureInfo()
             {
                 Alphabet = BooksInfo.Alphabet,
                 ChapterSectionNameTemplate = ChapterSectionNameTemplate
-            };
-            module.Sections = this.SectionsInfo;
-            module.DictionarySectionGroupName = this.DictionarySectionGroupName;
-            module.DictionaryTermsCount = this.StrongNumbersCount;
+            };            
 
             var index = 0;
             foreach (var bookInfo in BibleInfo.Books)
             {
                 var bibleBookInfo = BooksInfo.Books.First(b => b.Index == bookInfo.Index);
 
-                module.BibleStructure.BibleBooks.Add(
+                ModuleInfo.BibleStructure.BibleBooks.Add(
                     new BibleBookInfo()
                     {
                         Index = bibleBookInfo.Index,
@@ -182,9 +189,7 @@ namespace BibleConfigurator.ModuleConverter
 
             }
 
-            SaveToXmlFile(module, Constants.ManifestFileName);
-
-            return module;
+            SaveToXmlFile(ModuleInfo, Constants.ManifestFileName);            
         }
 
         private string ConvertChapterName(BookInfo bookInfo, string lineText)
@@ -201,7 +206,7 @@ namespace BibleConfigurator.ModuleConverter
             testamentName = null;
             testamentSectionsCount = null;
 
-            var testamentSectionGroup = this.NotebooksInfo.FirstOrDefault(n => n.Type == ContainerType.Bible).SectionGroups.FirstOrDefault(s => s.Type == type);
+            var testamentSectionGroup = this.NotebooksStructure.Notebooks.FirstOrDefault(n => n.Type == ContainerType.Bible).SectionGroups.FirstOrDefault(s => s.Type == type);
             if (testamentSectionGroup != null)
             {
                 testamentName = testamentSectionGroup.Name;
@@ -211,7 +216,7 @@ namespace BibleConfigurator.ModuleConverter
 
         private void ProcessVerse(VERS verse, XElement currentTableElement, string alphabet)
         {
-            if (currentTableElement == null && GenerateNotebooks)
+            if (currentTableElement == null && GenerateBibleNotebook)
                 throw new Exception("currentTableElement is null");
 
             var verseItems = verse.Items;

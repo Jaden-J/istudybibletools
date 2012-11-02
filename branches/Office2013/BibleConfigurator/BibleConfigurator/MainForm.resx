@@ -1380,6 +1380,60 @@
   <data name="&gt;&gt;tabPage2.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
+  <data name="btnModuleChecker.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btnModuleChecker.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 213</value>
+  </data>
+  <data name="btnModuleChecker.Size" type="System.Drawing.Size, System.Drawing">
+    <value>230, 23</value>
+  </data>
+  <data name="btnModuleChecker.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="btnModuleChecker.Text" xml:space="preserve">
+    <value>Parallel Module Checker</value>
+  </data>
+  <data name="&gt;&gt;btnModuleChecker.Name" xml:space="preserve">
+    <value>btnModuleChecker</value>
+  </data>
+  <data name="&gt;&gt;btnModuleChecker.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnModuleChecker.Parent" xml:space="preserve">
+    <value>tabPage3</value>
+  </data>
+  <data name="&gt;&gt;btnModuleChecker.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="btnConverter.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btnConverter.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 173</value>
+  </data>
+  <data name="btnConverter.Size" type="System.Drawing.Size, System.Drawing">
+    <value>230, 23</value>
+  </data>
+  <data name="btnConverter.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="btnConverter.Text" xml:space="preserve">
+    <value>Zefania XML Converter</value>
+  </data>
+  <data name="&gt;&gt;btnConverter.Name" xml:space="preserve">
+    <value>btnConverter</value>
+  </data>
+  <data name="&gt;&gt;btnConverter.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnConverter.Parent" xml:space="preserve">
+    <value>tabPage3</value>
+  </data>
+  <data name="&gt;&gt;btnConverter.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
   <data name="btnBackup.Location" type="System.Drawing.Point, System.Drawing">
     <value>13, 133</value>
   </data>
@@ -1402,7 +1456,7 @@
     <value>tabPage3</value>
   </data>
   <data name="&gt;&gt;btnBackup.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>2</value>
   </data>
   <data name="btnResizeBibleTables.Location" type="System.Drawing.Point, System.Drawing">
     <value>13, 93</value>
@@ -1426,7 +1480,7 @@
     <value>tabPage3</value>
   </data>
   <data name="&gt;&gt;btnResizeBibleTables.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>3</value>
   </data>
   <data name="btnDeleteNotesPages.Location" type="System.Drawing.Point, System.Drawing">
     <value>13, 53</value>
@@ -1450,7 +1504,7 @@
     <value>tabPage3</value>
   </data>
   <data name="&gt;&gt;btnDeleteNotesPages.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>4</value>
   </data>
   <data name="btnRelinkComments.Location" type="System.Drawing.Point, System.Drawing">
     <value>13, 13</value>
@@ -1474,7 +1528,7 @@
     <value>tabPage3</value>
   </data>
   <data name="&gt;&gt;btnRelinkComments.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>5</value>
   </data>
   <data name="tabPage3.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>

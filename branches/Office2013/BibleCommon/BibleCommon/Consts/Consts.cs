@@ -19,10 +19,12 @@ namespace BibleCommon.Consts
         public static readonly string ManifestFileName = "manifest.xml";
         public static readonly string BibleInfoFileName = "bible.xml";
         public static readonly string DictionaryInfoFileName = "dictionary.xml";
-        public static readonly string FileExtensionIsbt = ".isbt";        
+        public static readonly string FileExtensionIsbt = ".isbt";
+        public static readonly string FileExtensionOnepkg = ".onepkg";
         public static readonly string TempDirectory = "Temp";
-        public static readonly string CacheDirectory = "Cache";
-        public static readonly string DefaultPartVersesAlphabet = "abcdefghijklmnopqrstuvwxyz";        
+        public static readonly string CacheDirectory = "Cache";        
+        public static readonly string DefaultPartVersesAlphabet = "abcdefghijklmnopqrstuvwxyz";
+        public static readonly int DefaultStrongNumbersCount = 14700;
         
         public static readonly int DefaultPageWidth_Notes = 500;
         public static readonly int DefaultPageWidth_RubbishNotes = 500;
@@ -32,14 +34,14 @@ namespace BibleCommon.Consts
         public static readonly bool DefaultUseDifferentPagesForEachVerse = true;
         public static readonly bool DefaultRubbishPage_Use = false;
         public static readonly bool DefaultRubbishPage_ExpandMultiVersesLinking = true;
-        public static readonly bool DefaultRubbishPage_ExcludedVersesLinking = true;
-        public static readonly string DefaultSupplementalBibleLinkName = "S";
+        public static readonly bool DefaultRubbishPage_ExcludedVersesLinking = true;        
         public static readonly bool DefaultUseMiddleStrongLinks = true;
 
         public static readonly string ResourceName_DefaultPageNameDefaultBookOverview = "DefaultPageNameDefaultBookOverview";
         public static readonly string ResourceName_DefaultPageNameDefaultComments = "DefaultPageNameDefaultComments";
         public static readonly string ResourceName_DefaultPageName_Notes = "DefaultPageName_Notes";
         public static readonly string ResourceName_DefaultPageName_RubbishNotes = "DefaultPageName_RubbishNotes";
+        public static readonly string ResourceName_DefaultSupplementalBibleLinkName = "DefaultSupplementalBibleLinkName";        
 
         public static readonly string ParameterName_NotebookIdBible = "NotebookId_Bible";
         public static readonly string ParameterName_NotebookIdBibleComments = "NotebookId_BibleComments";

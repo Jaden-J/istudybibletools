@@ -52,12 +52,27 @@ namespace BibleCommon.Services
         }
 
         public static int GetBibleChaptersCount(string moduleShortName, bool addBooksCount)
-        {
-            XMLBIBLE bibleInfo = null;
+        {            
             int result;
             try
             {
-                bibleInfo = GetModuleBibleInfo(moduleShortName);
+                var bibleInfo = GetModuleBibleInfo(moduleShortName);
+                result = GetBibleChaptersCount(bibleInfo, addBooksCount);
+            }
+            catch (InvalidModuleException)
+            {
+                result = 1189;
+            }
+
+            return result;
+        }
+
+
+        public static int GetBibleChaptersCount(XMLBIBLE bibleInfo, bool addBooksCount)
+        {            
+            int result;
+            try
+            {            
                 result = bibleInfo.Books.Sum(b => b.Chapters.Count);
                 if (addBooksCount)
                     result += bibleInfo.Books.Count;
@@ -200,7 +215,7 @@ namespace BibleCommon.Services
                 {
                     foreach (var notebookType in bibleModulePartTypes)
                     {
-                        if (!module.Notebooks.Exists(n => n.Type == notebookType))
+                        if (!module.NotebooksStructure.Notebooks.Exists(n => n.Type == notebookType))
                             throw new InvalidModuleException(string.Format(Resources.Constants.Error_NotebookTemplateNotDefined, notebookType));
                     }
                 }
@@ -214,14 +229,14 @@ namespace BibleCommon.Services
                 }
             }
 
-            foreach (var notebook in module.Notebooks)
+            foreach (var notebook in module.NotebooksStructure.Notebooks)
             {
                 if (!notebook.SkipCheck)                
                     if (!File.Exists(Path.Combine(moduleDirectory, notebook.Name)))
                         throw new InvalidModuleException(string.Format(Resources.Constants.Error_NotebookTemplateNotFound, notebook.Name, notebook.Type));
             }
 
-            foreach (var section in module.Sections)
+            foreach (var section in module.NotebooksStructure.Sections)
             {
                 if (!section.SkipCheck)
                     if (!File.Exists(Path.Combine(moduleDirectory, section.Name)))
