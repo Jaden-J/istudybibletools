@@ -48,7 +48,7 @@ namespace BibleCommon.Services
             public string SectionId { get; set; }
             public string PageId { get; set; }
             public VerseObjectInfo VerseInfo { get; set; }
-            public Dictionary<SimpleVersePointer, VerseObjectInfo> AdditionalObjectsIds { get; set; }                        
+            public Dictionary<VersePointer, VerseObjectInfo> AdditionalObjectsIds { get; set; }                        
             public List<VerseObjectInfo> GetAllObjectsIds()
             {
                 var result = new List<VerseObjectInfo>() { VerseInfo };
@@ -80,7 +80,7 @@ namespace BibleCommon.Services
 
             public HierarchyObjectInfo()
             {
-                this.AdditionalObjectsIds = new Dictionary<SimpleVersePointer, VerseObjectInfo>();
+                this.AdditionalObjectsIds = new Dictionary<VersePointer, VerseObjectInfo>();
             }
         }
 
@@ -103,7 +103,7 @@ namespace BibleCommon.Services
                 HierarchyObjectInfo = new HierarchyObjectInfo();
             }
 
-            public HierarchySearchResult(SimpleVersePointer simpleVersePointer, VersePointerLink versePointerLink)
+            public HierarchySearchResult(Application oneNoteApp, VersePointer simpleVersePointer, VersePointerLink versePointerLink)
                 : this()
             {                
                 this.ResultType = simpleVersePointer.IsChapter == versePointerLink.IsChapter ? HierarchySearchResultType.Successfully : HierarchySearchResultType.PartlyFound;
@@ -115,7 +115,8 @@ namespace BibleCommon.Services
                     VerseInfo = new VerseObjectInfo(versePointerLink)                    
                 };
 
-                foreach (var subVp in simpleVersePointer.GetAllVerses().Skip(1))
+                foreach (var subVp in simpleVersePointer.GetAllIncludedVersesExceptFirst(oneNoteApp, 
+                    new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible }))
                 {
                     var subLink = OneNoteProxy.Instance.GetVersePointerLink(subVp);
                     if (subLink != null)
@@ -139,10 +140,10 @@ namespace BibleCommon.Services
 
             if (OneNoteProxy.Instance.IsBibleVersesLinksCacheActive)
             {
-                var simpleVersePointer = vp.ToSimpleVersePointer();
+                var simpleVersePointer = vp;
                 var versePointerLink = OneNoteProxy.Instance.GetVersePointerLink(simpleVersePointer);
                 if (versePointerLink != null)
-                    return new HierarchySearchResult(simpleVersePointer, versePointerLink);
+                    return new HierarchySearchResult(oneNoteApp, simpleVersePointer, versePointerLink);
             }
 
             XElement targetSection = FindBibleBookSection(oneNoteApp, bibleNotebookId, vp.Book.SectionName);
@@ -185,7 +186,7 @@ namespace BibleCommon.Services
                                     var additionalVeseEl = FindVerse(pageContent.Content, vp.IsChapter, additionalVerse.Verse.Value, pageContent.Xnm, 
                                         out additionalVerseNumber, out additionalVerseTextWithoutNumber);
                                     if (additionalVeseEl != null)
-                                        result.HierarchyObjectInfo.AdditionalObjectsIds.Add(additionalVerse.ToSimpleVersePointer(),
+                                        result.HierarchyObjectInfo.AdditionalObjectsIds.Add(additionalVerse,
                                                                                             new VerseObjectInfo()
                                                                                                 {
                                                                                                     ObjectId = (string)additionalVeseEl.Parent.Attribute("objectID"),

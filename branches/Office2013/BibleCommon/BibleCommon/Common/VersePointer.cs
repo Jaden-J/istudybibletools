@@ -396,6 +396,11 @@ namespace BibleCommon.Common
             return base.ToString();
         }
 
+        public string ToFirstVerseString()
+        {
+            return string.Format("{0} {1}:{2}", Book != null ? Book.Name : string.Empty, Chapter, Verse.GetValueOrDefault());
+        }
+
         public static VersePointer GetChapterVersePointer(string bookName, int chapter)
         {
             return GetChapterVersePointer(string.Format("{0} {1}", bookName, chapter));
@@ -676,7 +681,17 @@ namespace BibleCommon.Common
         {
             return new VersePointer(this.OriginalBookName, this.Chapter.Value, 0);
         }
-        
+
+
+        public List<VersePointer> GetAllVerses(Application oneNoteApp, GetAllIncludedVersesExceptFirstArgs args)
+        {
+            var result = new List<VersePointer>();
+
+            result.Add(this);
+            result.AddRange(this.GetAllIncludedVersesExceptFirst(oneNoteApp, args));
+
+            return result;
+        }
 
         /// <summary>
         /// возвращает список всех вложенных стихов (за исключением первого) если Multiverse. 

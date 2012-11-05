@@ -653,7 +653,7 @@ namespace BibleCommon.Services
 
                 if (SettingsManager.Instance.UseDifferentPagesForEachVerse && !vp.IsChapter)  // для каждого стиха своя страница
                 {
-                    var key = vp.ToSimpleVersePointer();
+                    var key = vp;
                     string notesPageName = GetDefaultNotesPageName(
                                 hierarchySearchResult.HierarchyObjectInfo.AdditionalObjectsIds.ContainsKey(key)
                                     ? (VerseNumber?)hierarchySearchResult.HierarchyObjectInfo.AdditionalObjectsIds[key].VerseNumber

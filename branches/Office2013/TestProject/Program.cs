@@ -61,7 +61,7 @@ namespace TestProject
 
                 //CheckHTML();
 
-                //GenerateBibleVersesLinks();
+                GenerateBibleVersesLinks();
 
                 //SearchStrongTerm(args);
 
@@ -184,12 +184,12 @@ namespace TestProject
 
         private static void GenerateBibleVersesLinks()
         {
-            BibleVersesLinksCacheManager.GenerateBibleVersesLinks(OneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, new ConsoleLogger());            
+            //BibleVersesLinksCacheManager.GenerateBibleVersesLinks(OneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, new ConsoleLogger());            
 
 
-            //var result = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
+          //  var result = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
 
-            //var verse = OneNoteProxy.Instance.GetVersePointerLink(new SimpleVersePointer(1, 1, new VerseNumber(100)));
+            var verse = OneNoteProxy.Instance.GetVersePointerLink(new VersePointer("Быт 1:57"));
         }
 
         private static void SearchStrongTerm(string[] args)
