@@ -54,14 +54,16 @@ namespace TestProject
 
 
             try
-            {             
+            {
+                GenerateBibleBooks();
+
                 //SearchInNotebook();
 
                 //TestModule();
 
                 //CheckHTML();
 
-                GenerateBibleVersesLinks();
+                //GenerateBibleVersesLinks();
 
                 //SearchStrongTerm(args);
 
@@ -107,6 +109,14 @@ namespace TestProject
 
             Console.WriteLine("Finish. Elapsed time: {0}", sw.Elapsed);
             Console.ReadKey();
+        }
+
+        private static void GenerateBibleBooks()
+        {
+            var manifestFilePath = @"E:\browser downloads\RST\RST\manifest.xml";
+            var bibleQuotaIniFilePath = "";
+            var existingBooksFilePath = "";
+            var targetFilePath = @"";
         }
 
         //private static void ConvertEnglishModuleZefaniaXml()
@@ -189,7 +199,7 @@ namespace TestProject
 
           //  var result = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
 
-            var verse = OneNoteProxy.Instance.GetVersePointerLink(new VersePointer("Быт 1:57"));
+            var verse = OneNoteProxy.Instance.GetVersePointerLink(new VersePointer("Фил 6"));
         }
 
         private static void SearchStrongTerm(string[] args)

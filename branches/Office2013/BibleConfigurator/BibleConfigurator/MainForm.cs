@@ -164,10 +164,13 @@ namespace BibleConfigurator
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                             ToIndexBible = true;
                     }
-                }                
+                }
 
-                if (ToIndexBible)                
-                    IndexBible();                                    
+                if (ToIndexBible)
+                {
+                    IndexBible();
+                    ToIndexBible = false;
+                }
 
                 if (!FormLogger.WasErrorLogged)
                 {
@@ -277,7 +280,7 @@ namespace BibleConfigurator
                 SettingsManager.Instance.Language = (int)((ComboBoxItem)cbLanguage.SelectedItem).Key;                
             }
 
-            if (chkDefaultPageNameParameters.Checked)
+            if (chkDefaultParameters.Checked)
             {
                 SettingsManager.Instance.UseDefaultSettings = true;                
             }
@@ -300,6 +303,7 @@ namespace BibleConfigurator
             SettingsManager.Instance.RubbishPage_Use = chkUseRubbishPage.Checked;
             SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking = chkRubbishExpandMultiVersesLinking.Checked;
             SettingsManager.Instance.RubbishPage_ExcludedVersesLinking = chkRubbishExcludedVersesLinking.Checked;
+            SettingsManager.Instance.UseMiddleStrongLinks = chkNotOneNoteControls.Checked;
         }
 
         private void SaveIntegerSettings()
@@ -384,7 +388,8 @@ namespace BibleConfigurator
                 || SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking != chkRubbishExpandMultiVersesLinking.Checked
                 || SettingsManager.Instance.RubbishPage_ExcludedVersesLinking != chkRubbishExcludedVersesLinking.Checked
                 || SettingsManager.Instance.PageWidth_Notes.ToString() != tbNotesPageWidth.Text
-                || SettingsManager.Instance.PageWidth_RubbishNotes.ToString() != tbRubbishNotesPageWidth.Text;
+                || SettingsManager.Instance.PageWidth_RubbishNotes.ToString() != tbRubbishNotesPageWidth.Text
+                || SettingsManager.Instance.UseMiddleStrongLinks != chkNotOneNoteControls.Checked;
 
         }
 
@@ -703,6 +708,8 @@ namespace BibleConfigurator
             chkRubbishExpandMultiVersesLinking.Checked = SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking;
             chkRubbishExcludedVersesLinking.Checked = SettingsManager.Instance.RubbishPage_ExcludedVersesLinking;
 
+            chkNotOneNoteControls.Checked = SettingsManager.Instance.UseMiddleStrongLinks;
+
             chkUseRubbishPage_CheckedChanged(this, new EventArgs());
 
             InitLanguagesMenu();
@@ -964,18 +971,19 @@ namespace BibleConfigurator
 
         private void chkDefaultPageNameParameters_CheckedChanged(object sender, EventArgs e)
         {
-            tbCommentsPageName.Enabled = !chkDefaultPageNameParameters.Checked;
-            tbNotesPageName.Enabled = !chkDefaultPageNameParameters.Checked;
-            tbBookOverviewName.Enabled = !chkDefaultPageNameParameters.Checked;
-            tbNotesPageWidth.Enabled = !chkDefaultPageNameParameters.Checked;
-            chkExpandMultiVersesLinking.Enabled = !chkDefaultPageNameParameters.Checked;
-            chkExcludedVersesLinking.Enabled = !chkDefaultPageNameParameters.Checked;
-            chkUseDifferentPages.Enabled = !chkDefaultPageNameParameters.Checked;
-            chkUseRubbishPage.Enabled = !chkDefaultPageNameParameters.Checked;
-            tbRubbishNotesPageName.Enabled = !chkDefaultPageNameParameters.Checked;
-            tbRubbishNotesPageWidth.Enabled = !chkDefaultPageNameParameters.Checked;
-            chkRubbishExpandMultiVersesLinking.Enabled = !chkDefaultPageNameParameters.Checked;
-            chkRubbishExcludedVersesLinking.Enabled = !chkDefaultPageNameParameters.Checked;
+            tbCommentsPageName.Enabled = !chkDefaultParameters.Checked;
+            tbNotesPageName.Enabled = !chkDefaultParameters.Checked;
+            tbBookOverviewName.Enabled = !chkDefaultParameters.Checked;
+            tbNotesPageWidth.Enabled = !chkDefaultParameters.Checked;
+            chkExpandMultiVersesLinking.Enabled = !chkDefaultParameters.Checked;
+            chkExcludedVersesLinking.Enabled = !chkDefaultParameters.Checked;
+            chkUseDifferentPages.Enabled = !chkDefaultParameters.Checked;
+            chkUseRubbishPage.Enabled = !chkDefaultParameters.Checked;
+            tbRubbishNotesPageName.Enabled = !chkDefaultParameters.Checked;
+            tbRubbishNotesPageWidth.Enabled = !chkDefaultParameters.Checked;
+            chkRubbishExpandMultiVersesLinking.Enabled = !chkDefaultParameters.Checked;
+            chkRubbishExcludedVersesLinking.Enabled = !chkDefaultParameters.Checked;
+            chkNotOneNoteControls.Enabled = !chkDefaultParameters.Checked;
 
             chkUseRubbishPage_CheckedChanged(this, new EventArgs());            
         }
@@ -1586,6 +1594,14 @@ namespace BibleConfigurator
             var form = new ParallelBibleCheckerForm(this);
 
             form.ShowDialog();
+        }
+
+        private void chkNotOneNoteControls_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!((CheckBox)sender).Checked)
+            {
+                MessageBox.Show(
+            }
         }                                     
     }
 }

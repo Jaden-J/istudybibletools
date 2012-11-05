@@ -515,6 +515,9 @@ namespace BibleCommon.Common
 
         public SimpleVersePointer ToSimpleVersePointer()
         {
+            if (Book == null)
+                throw new InvalidOperationException(string.Format("Book is null for {0}", this.OriginalVerseName));
+
             return new SimpleVersePointer(Book.Index, Chapter.GetValueOrDefault(0), VerseNumber);
         }
 

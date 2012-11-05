@@ -732,11 +732,38 @@
   <data name="&gt;&gt;tabPage1.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="chkNotOneNoteControls.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="chkNotOneNoteControls.Location" type="System.Drawing.Point, System.Drawing">
+    <value>347, 81</value>
+  </data>
+  <data name="chkNotOneNoteControls.Size" type="System.Drawing.Size, System.Drawing">
+    <value>169, 17</value>
+  </data>
+  <data name="chkNotOneNoteControls.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
+  </data>
+  <data name="chkNotOneNoteControls.Text" xml:space="preserve">
+    <value>Can use not OneNote controls</value>
+  </data>
+  <data name="&gt;&gt;chkNotOneNoteControls.Name" xml:space="preserve">
+    <value>chkNotOneNoteControls</value>
+  </data>
+  <data name="&gt;&gt;chkNotOneNoteControls.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;chkNotOneNoteControls.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;chkNotOneNoteControls.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="label9.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="label9.Location" type="System.Drawing.Point, System.Drawing">
-    <value>355, 13</value>
+    <value>344, 13</value>
   </data>
   <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
     <value>55, 13</value>
@@ -757,10 +784,10 @@
     <value>tabPage2</value>
   </data>
   <data name="&gt;&gt;label9.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="cbLanguage.Location" type="System.Drawing.Point, System.Drawing">
-    <value>358, 29</value>
+    <value>347, 29</value>
   </data>
   <data name="cbLanguage.Size" type="System.Drawing.Size, System.Drawing">
     <value>121, 21</value>
@@ -778,7 +805,7 @@
     <value>tabPage2</value>
   </data>
   <data name="&gt;&gt;cbLanguage.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="chkUseDifferentPages.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1003,7 +1030,7 @@
     <value>tabPage2</value>
   </data>
   <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="chkUseRubbishPage.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1228,34 +1255,34 @@
     <value>tabPage2</value>
   </data>
   <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
-  <data name="chkDefaultPageNameParameters.AutoSize" type="System.Boolean, mscorlib">
+  <data name="chkDefaultParameters.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="chkDefaultPageNameParameters.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="chkDefaultParameters.Location" type="System.Drawing.Point, System.Drawing">
     <value>16, 329</value>
   </data>
-  <data name="chkDefaultPageNameParameters.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="chkDefaultParameters.Size" type="System.Drawing.Size, System.Drawing">
     <value>85, 17</value>
   </data>
-  <data name="chkDefaultPageNameParameters.TabIndex" type="System.Int32, mscorlib">
+  <data name="chkDefaultParameters.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
   </data>
-  <data name="chkDefaultPageNameParameters.Text" xml:space="preserve">
+  <data name="chkDefaultParameters.Text" xml:space="preserve">
     <value>Use defaults</value>
   </data>
-  <data name="&gt;&gt;chkDefaultPageNameParameters.Name" xml:space="preserve">
-    <value>chkDefaultPageNameParameters</value>
+  <data name="&gt;&gt;chkDefaultParameters.Name" xml:space="preserve">
+    <value>chkDefaultParameters</value>
   </data>
-  <data name="&gt;&gt;chkDefaultPageNameParameters.Type" xml:space="preserve">
+  <data name="&gt;&gt;chkDefaultParameters.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;chkDefaultPageNameParameters.Parent" xml:space="preserve">
+  <data name="&gt;&gt;chkDefaultParameters.Parent" xml:space="preserve">
     <value>tabPage2</value>
   </data>
-  <data name="&gt;&gt;chkDefaultPageNameParameters.ZOrder" xml:space="preserve">
-    <value>4</value>
+  <data name="&gt;&gt;chkDefaultParameters.ZOrder" xml:space="preserve">
+    <value>5</value>
   </data>
   <data name="tbBookOverviewName.Location" type="System.Drawing.Point, System.Drawing">
     <value>16, 79</value>
@@ -1276,7 +1303,7 @@
     <value>tabPage2</value>
   </data>
   <data name="&gt;&gt;tbBookOverviewName.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="label6.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1303,7 +1330,7 @@
     <value>tabPage2</value>
   </data>
   <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="tbCommentsPageName.Location" type="System.Drawing.Point, System.Drawing">
     <value>16, 29</value>
@@ -1324,7 +1351,7 @@
     <value>tabPage2</value>
   </data>
   <data name="&gt;&gt;tbCommentsPageName.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="label5.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1351,7 +1378,7 @@
     <value>tabPage2</value>
   </data>
   <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>9</value>
   </data>
   <data name="tabPage2.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
@@ -1399,7 +1426,7 @@
     <value>btnModuleChecker</value>
   </data>
   <data name="&gt;&gt;btnModuleChecker.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnModuleChecker.Parent" xml:space="preserve">
     <value>tabPage3</value>
@@ -1426,7 +1453,7 @@
     <value>btnConverter</value>
   </data>
   <data name="&gt;&gt;btnConverter.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnConverter.Parent" xml:space="preserve">
     <value>tabPage3</value>
