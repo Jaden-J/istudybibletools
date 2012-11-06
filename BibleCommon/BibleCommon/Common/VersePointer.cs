@@ -152,7 +152,10 @@ namespace BibleCommon.Common
         }        
     }
 
-    [Serializable]
+    /// <summary>
+    /// Важно: здесь не может быть указана TopChapter, потому не умеет работать со стихами типа "Быт 5:6-7:8". Только в пределах одной главы
+    /// </summary>
+    [Serializable]    
     public class SimpleVersePointer: ICloneable
     {
         public int BookIndex { get; set; }
@@ -740,8 +743,8 @@ namespace BibleCommon.Common
                         result.Add(vp);
                     }
                 }
-                else
-                {
+                else if (!TopChapter.HasValue)  // в будущем, когда у нас будут выделяться все указанные ссылки, надо будет переделать этот метод, чтобы если TopChapter.HasValue - то он доставал все стихи текущей главы (потому что до сюда он может дойти (если указана TopChapter) только если указан args.SearchOnlyForFirstChapter)
+                {                    
                     for (int verseIndex = Verse.GetValueOrDefault(0) + 1; verseIndex <= TopVerse; verseIndex++)
                     {
                         VersePointer vp = new VersePointer(this.OriginalBookName, this.Chapter.Value, verseIndex);

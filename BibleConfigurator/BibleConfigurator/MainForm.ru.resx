@@ -221,6 +221,16 @@
   <data name="tabPage2.Text" xml:space="preserve">
     <value>Параметры программы</value>
   </data>
+  <data name="chkNotOneNoteControls.Location" type="System.Drawing.Point, System.Drawing">
+    <value>347, 74</value>
+  </data>
+  <data name="chkNotOneNoteControls.Size" type="System.Drawing.Size, System.Drawing">
+    <value>247, 30</value>
+  </data>
+  <data name="chkNotOneNoteControls.Text" xml:space="preserve">
+    <value>Разрешено использование промежуточных
+элементов управления</value>
+  </data>
   <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
     <value>99, 13</value>
   </data>
@@ -292,12 +302,6 @@
   </data>
   <data name="lblRubbishNotesPageWidth.Text" xml:space="preserve">
     <value>Ширина страницы "Подробная сводная заметок"</value>
-  </data>
-  <data name="chkDefaultPageNameParameters.Size" type="System.Drawing.Size, System.Drawing">
-    <value>223, 17</value>
-  </data>
-  <data name="chkDefaultPageNameParameters.Text" xml:space="preserve">
-    <value>Использовать значения по умолчанию</value>
   </data>
   <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
     <value>335, 13</value>

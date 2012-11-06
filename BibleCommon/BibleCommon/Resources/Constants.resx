@@ -678,4 +678,7 @@
   <data name="DefaultSupplementalBibleLinkName" xml:space="preserve">
     <value>SB</value>
   </data>
+  <data name="ChangedNotOneNoteControlsParameter" xml:space="preserve">
+    <value>For the changes to take effect, you must delete and re-add the module with Strong's Dictionary to the Supplemental Bible.</value>
+  </data>
 </root>

@@ -16,33 +16,43 @@ using System.ComponentModel;
 
 namespace BibleCommon.Services
 {
-    public class DictionaryInfo
+    public class StoredModuleInfo
     {
         public string ModuleName { get; set; }
+        public Version ModuleVersion { get; set; }
         
         /// <summary>
         /// Section or SectionGroup ID
         /// </summary>
         public string SectionId { get; set; }
 
-        public DictionaryInfo(string moduleName, string sectionId)
+        public StoredModuleInfo(string moduleName, Version moduleVersion, string sectionId)
         {
             this.ModuleName = moduleName;
+            this.ModuleVersion = moduleVersion;
             this.SectionId = sectionId;
         }
 
-        internal DictionaryInfo(string xmlString)
+        public StoredModuleInfo(string moduleName, Version moduleVersion)
+            :this(moduleName, moduleVersion, null)
         {
-            var s = xmlString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            if (s.Length != 2)
-                throw new NotSupportedException(string.Format("Invalid DictionaryModuleInfo: '{0}'", xmlString));
-            this.ModuleName = s[0];
-            this.SectionId = s[1];
+            
+        }
+
+        internal StoredModuleInfo(string xmlString)
+        {
+            var parts = xmlString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length < 2)
+                throw new NotSupportedException(string.Format("Invalid StoredModuleInfo: '{0}'", xmlString));
+            this.ModuleName = parts[0];
+            this.ModuleVersion = new Version(parts[1]);
+            if (parts.Length > 2)
+                this.SectionId = parts[2];
         }
 
         public override string ToString()
         {
-            return string.Join(",", new string[] { this.ModuleName, this.SectionId });
+            return string.Join(",", new string[] { this.ModuleName, this.ModuleVersion.ToString(), this.SectionId });
         }
     }
 
@@ -108,10 +118,10 @@ namespace BibleCommon.Services
         public DateTime? NewVersionOnServerLatestCheckTime { get; set; }
         public int PageWidth_Notes { get; set; }
         public int Language { get; set; }
-        public int PageWidth_Bible { get; set; }        
-        public List<string> SupplementalBibleModules { get; set; }
+        public int PageWidth_Bible { get; set; }
+        public List<StoredModuleInfo> SupplementalBibleModules { get; set; }
         public string SupplementalBibleLinkName { get; set; }        
-        public List<DictionaryInfo> DictionariesModules { get; set; }
+        public List<StoredModuleInfo> DictionariesModules { get; set; }
 
         /// <summary>
         /// Использовать ли промежуточные ссылки, которые открываются комманд-хэндлером OpenVerseHandler
@@ -277,8 +287,8 @@ namespace BibleCommon.Services
 
         private void SetDefaultSettings()
         {
-            SupplementalBibleModules = new List<string>();
-            DictionariesModules = new List<DictionaryInfo>();
+            SupplementalBibleModules = new List<StoredModuleInfo>();
+            DictionariesModules = new List<StoredModuleInfo>();
         }
 
         private void LoadSettingsFromFile()
@@ -380,14 +390,14 @@ namespace BibleCommon.Services
             this.SectionGroupId_BibleNotesPages = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SectionGroupIdBibleNotesPages);
 
             this.NotebookId_SupplementalBible = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdSupplementalBible);
-            this.SupplementalBibleModules = GetParameterValue<List<string>>(xdoc, Consts.Constants.ParameterName_SupplementalBibleModules, new List<string>(), 
-                                                s => new List<string>(s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)));
+            this.SupplementalBibleModules = GetParameterValue<List<StoredModuleInfo>>(xdoc, Consts.Constants.ParameterName_SupplementalBibleModules, new List<StoredModuleInfo>(),
+                                                s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(xmlString => new StoredModuleInfo(xmlString)));
             this.SupplementalBibleLinkName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SupplementalBibleLinkName,
                                                   GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName));
 
             this.NotebookId_Dictionaries = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdDictionaries);
-            this.DictionariesModules = GetParameterValue<List<DictionaryInfo>>(xdoc, Consts.Constants.ParameterName_DictionariesModules, new List<DictionaryInfo>(), 
-                                                s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(xmlString => new DictionaryInfo(xmlString)));
+            this.DictionariesModules = GetParameterValue<List<StoredModuleInfo>>(xdoc, Consts.Constants.ParameterName_DictionariesModules, new List<StoredModuleInfo>(), 
+                                                s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(xmlString => new StoredModuleInfo(xmlString)));
         }
 
         private T GetParameterValue<T>(XDocument xdoc, string parameterName, object defaultValue = null, Func<string, T> convertFunc = null)
@@ -504,7 +514,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_ModuleName, this.ModuleName),
                                   new XElement(Consts.Constants.ParameterName_UseDefaultSettings, this.UseDefaultSettings.Value),
                                   new XElement(Consts.Constants.ParameterName_PageWidthBible, this.PageWidth_Bible),
-                                  new XElement(Consts.Constants.ParameterName_SupplementalBibleModules, string.Join(";", this.SupplementalBibleModules.ToArray())),
+                                  new XElement(Consts.Constants.ParameterName_SupplementalBibleModules, string.Join(";", this.SupplementalBibleModules.ConvertAll(dm => dm.ToString()).ToArray())),
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleLinkName, this.SupplementalBibleLinkName),                                  
                                   new XElement(Consts.Constants.ParameterName_DictionariesModules, string.Join(";", this.DictionariesModules.ConvertAll(dm => dm.ToString()).ToArray())),
                                   new XElement(Consts.Constants.ParameterName_UseMiddleStrongLinks, UseMiddleStrongLinks)

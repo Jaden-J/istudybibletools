@@ -28,7 +28,7 @@ namespace TestProject
 {    
     class Program
     {
-        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\Holy Bible\ForGenerating";
+        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\Holy Bible\IStudyBibleTools\ForGenerating";
         private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp";
 
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
@@ -55,7 +55,7 @@ namespace TestProject
 
             try
             {
-                GenerateBibleBooks();
+                //GenerateBibleBooks();
 
                 //SearchInNotebook();
 
@@ -83,6 +83,8 @@ namespace TestProject
 
                 //ConvertEnglishModuleZefaniaXml();
 
+                ConvertUkrModule();
+
                 //ConvertRussianModule();
 
                 //ConvertEnglishModule();
@@ -109,14 +111,44 @@ namespace TestProject
 
             Console.WriteLine("Finish. Elapsed time: {0}", sw.Elapsed);
             Console.ReadKey();
-        }
+        }      
 
         private static void GenerateBibleBooks()
         {
-            var manifestFilePath = @"E:\browser downloads\RST\RST\manifest.xml";
+            var manifestFilePath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\manifest.xml";
             var bibleQuotaIniFilePath = "";
             var existingBooksFilePath = "";
-            var targetFilePath = @"";
+            var targetFilePath = Path.Combine(TempFolderPath, "books.xml");
+
+            
+            var manifest = Utils.LoadFromXmlFile<ModuleInfo>(manifestFilePath);
+            manifest.CorrectModuleAfterDeserialization();
+
+            var booksInfo = new BibleBooksInfo()
+            {
+                Descr = manifest.ShortName,
+                Alphabet = manifest.BibleStructure.Alphabet,
+                ChapterString = "глава"
+            };
+
+            int bookIndex = 1;
+            foreach (var oldBookInfo in manifest.BibleStructure.BibleBooks)
+            {
+                var bookInfo = new BookInfo()
+                {
+                    Index = bookIndex++,
+                    Name = oldBookInfo.Name,
+                    ShortNamesXMLString = string.Join(";", oldBookInfo.Abbreviations.Select(
+                                abbr => !abbr.IsFullBookName 
+                                            ? abbr.Value 
+                                            : string.Format("'{0}'", abbr.Value)
+                            ).ToArray())
+                };
+
+                booksInfo.Books.Add(bookInfo);
+            }
+
+            Utils.SaveToXmlFile(booksInfo, targetFilePath);
         }
 
         //private static void ConvertEnglishModuleZefaniaXml()
@@ -282,7 +314,7 @@ namespace TestProject
             string defaultNotebookFolderPath;
             OneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
 
-            SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, "kjv", defaultNotebookFolderPath, null);
+            SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, ModulesManager.GetModuleInfo("kjv"), defaultNotebookFolderPath, null);
             var result = SupplementalBibleManager.LinkSupplementalBibleWithMainBible(OneNoteApp, 0, null, null);
 
             DateTime dtEnd = DateTime.Now;
@@ -304,7 +336,7 @@ namespace TestProject
             string defaultNotebookFolderPath;
             OneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
 
-            var result = SupplementalBibleManager.AddParallelBible(OneNoteApp, "rst", null, null);
+            var result = SupplementalBibleManager.AddParallelBible(OneNoteApp, ModulesManager.GetModuleInfo("rst"), null, null);
 
             DateTime dtEnd = DateTime.Now;
 
@@ -313,6 +345,28 @@ namespace TestProject
             Console.WriteLine("Successfully! Elapsed time - {0} seconds", elapsed.TotalSeconds);
 
             using (var form = new ErrorsForm(result.Errors.ConvertAll(er => er.Message)))
+            {
+                form.ShowDialog();
+            }
+        }
+
+        private static void ConvertUkrModule()
+        {
+            string moduleShortName = "UkrGYZ";
+            var notebooksStructure = new NotebooksStructure() { Notebooks = PredefinedNotebooksInfo.Russian };  // это тоже часто меняется
+            //notebooksStructure.DictionarySectionGroupName = "Стронга";  // параметры для стронга
+            //notebooksStructure.DictionaryTermsCount = 14700;
+
+            var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName), "ru",
+                notebooksStructure, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst),  // вот эти тоже часто надо менять                
+                "{0} глава. {1}",
+                false,                
+                new Version(2, 0), false,
+                BibleQuotaConverter.ReadParameters.None);  // и про эту не забыть
+
+            converter.Convert();
+
+            using (var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message)))
             {
                 form.ShowDialog();
             }

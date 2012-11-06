@@ -268,6 +268,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на For the changes to take effect, you must delete and re-add the module with Strong&apos;s Dictionary to the Supplemental Bible..
+        /// </summary>
+        public static string ChangedNotOneNoteControlsParameter {
+            get {
+                return ResourceManager.GetString("ChangedNotOneNoteControlsParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на This module contains another text of the Bible and other versions of abbreviations of books. For correct program work the follow notebooks must be re-created: Bible, Comments to the Bible, Summary of Notes. Continue?.
         /// </summary>
         public static string ChangeModuleWarning {

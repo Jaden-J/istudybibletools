@@ -675,4 +675,7 @@
   <data name="DefaultSupplementalBibleLinkName" xml:space="preserve">
     <value>СБ</value>
   </data>
+  <data name="ChangedNotOneNoteControlsParameter" xml:space="preserve">
+    <value>Чтобы изменения вступили в силу, необходимо удалить и заново добавить в справочную Библию модуль со словарём Стронга.</value>
+  </data>
 </root>

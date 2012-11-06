@@ -36,7 +36,8 @@ namespace BibleConfigurator
 @"Данная форма предназначена для управления словарями. 
 
 Обратите внимание:  
-  - необходимо, чтобы в программу были загружены модули типа 'Словарь'  
+  - необходимо, чтобы в программу были загружены модули типа 'Словарь';
+  - добавление нового словаря может занять неского минут.
 ";
             }
         }
@@ -44,7 +45,7 @@ namespace BibleConfigurator
         protected override List<string> CommitChanges(BibleCommon.Common.ModuleInfo selectedModuleInfo)
         {
             MainForm.PrepareForExternalProcessing(selectedModuleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
-            DictionaryManager.AddDictionary(OneNoteApp, selectedModuleInfo.ShortName, FolderBrowserDialog.SelectedPath, true);
+            DictionaryManager.AddDictionary(OneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true);
             Logger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexDictionary);
             DictionaryTermsCacheManager.GenerateCache(OneNoteApp, selectedModuleInfo, Logger);
             MainForm.ExternalProcessingDone(BibleCommon.Resources.Constants.AddDictionaryFinishMessage);

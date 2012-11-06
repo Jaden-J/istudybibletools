@@ -652,11 +652,10 @@ namespace BibleCommon.Services
                 }
 
                 if (SettingsManager.Instance.UseDifferentPagesForEachVerse && !vp.IsChapter)  // для каждого стиха своя страница
-                {
-                    var key = vp;
+                {                    
                     string notesPageName = GetDefaultNotesPageName(
-                                hierarchySearchResult.HierarchyObjectInfo.AdditionalObjectsIds.ContainsKey(key)
-                                    ? (VerseNumber?)hierarchySearchResult.HierarchyObjectInfo.AdditionalObjectsIds[key].VerseNumber
+                                hierarchySearchResult.HierarchyObjectInfo.AdditionalObjectsIds.ContainsKey(vp)
+                                    ? (VerseNumber?)hierarchySearchResult.HierarchyObjectInfo.AdditionalObjectsIds[vp].VerseNumber
                                     : hierarchySearchResult.HierarchyObjectInfo.VerseNumber);
                     TryLinkVerseToNotesPage(oneNoteApp, vp, searchResult.ResultType,
                         notePageId, notePageContentObjectId, linkDepth,
@@ -749,7 +748,7 @@ namespace BibleCommon.Services
             Action<HierarchySearchManager.HierarchySearchResult> onHierarchyElementFound)
         {
             hierarchySearchResult = HierarchySearchManager.GetHierarchyObject(
-                                                oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp);
+                                                oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.AllVerses);
             if (hierarchySearchResult.ResultType == HierarchySearchManager.HierarchySearchResultType.Successfully)
             {
                 if (hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder
@@ -1062,16 +1061,16 @@ namespace BibleCommon.Services
 
             var svp = vp.ToSimpleVersePointer();
             if (verseNumber.HasValue)
-                svp.VerseNumber = verseNumber.Value;            
+                svp.VerseNumber = verseNumber.Value;
+
+            var result = svp.GetAllVerses();
 
             if (!_notePageProcessedVerses[verseId].Contains(svp))   // отслеживаем обработанные стихи для каждой из страниц сводной заметок
-            {
-                var result = svp.GetAllVerses();
-                result.ForEach(v => _notePageProcessedVerses[verseId].Add(v));
-                return result;
+            {               
+                result.ForEach(v => _notePageProcessedVerses[verseId].Add(v));                
             }
 
-            return new List<SimpleVersePointer>();
+            return result;
         }
 
         public bool ContainsNotePageProcessedVerse(NotePageProcessedVerseId verseId, VersePointer vp)
