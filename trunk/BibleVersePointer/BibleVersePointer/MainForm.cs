@@ -124,7 +124,7 @@ namespace BibleVersePointer
 
         private bool GoToVerse(VersePointer vp)
         {   
-            var result = HierarchySearchManager.GetHierarchyObject(OneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, false);            
+            var result = HierarchySearchManager.GetHierarchyObject(OneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);            
 
             if (result.ResultType != HierarchySearchManager.HierarchySearchResultType.NotFound 
                 && (result.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder || result.HierarchyStage == HierarchySearchManager.HierarchyStage.Page))

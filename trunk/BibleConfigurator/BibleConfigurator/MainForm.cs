@@ -1521,7 +1521,7 @@ namespace BibleConfigurator
             var btn = (Button)sender;
             var moduleName = (string)btn.Tag;
 
-            if (SettingsManager.Instance.SupplementalBibleModules.Contains(moduleName))
+            if (SettingsManager.Instance.SupplementalBibleModules.Any(m => m.ModuleName == moduleName))
                 FormLogger.LogError(BibleCommon.Resources.Constants.ModuleCannotBeDeleted_SupplementalBibleModule);
             else if (SettingsManager.Instance.DictionariesModules.Any(m => m.ModuleName == moduleName))
                 FormLogger.LogError(BibleCommon.Resources.Constants.ModuleCannotBeDeleted_DictionaryModule);
@@ -1600,7 +1600,20 @@ namespace BibleConfigurator
         {
             if (!((CheckBox)sender).Checked)
             {
-                MessageBox.Show(
+                if (SettingsManager.Instance.SupplementalBibleModules != null)
+                {
+                    var modules = ModulesManager.GetModules(true);
+                    if (SettingsManager.Instance.SupplementalBibleModules.Any(moduleInfo =>
+                        {
+                            var module = modules.FirstOrDefault(m => m.ShortName == moduleInfo.ModuleName);
+                            if (module != null)
+                                return module.Type == ModuleType.Strong;
+                            return false;
+                        }))
+                    {
+                        MessageBox.Show(BibleCommon.Resources.Constants.ChangedNotOneNoteControlsParameter);
+                    }
+                }
             }
         }                                     
     }

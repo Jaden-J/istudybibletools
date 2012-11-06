@@ -18,7 +18,7 @@ namespace BibleCommon.Services
 {
     public static class SupplementalBibleManager
     {
-        public static void CreateSupplementalBible(Application oneNoteApp, string moduleShortName, string notebookDirectory, ICustomLogger logger)
+        public static void CreateSupplementalBible(Application oneNoteApp, ModuleInfo module, string notebookDirectory, ICustomLogger logger)
         {
             if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(oneNoteApp, true)))
             {
@@ -28,8 +28,8 @@ namespace BibleCommon.Services
 
             string currentSectionGroupId = null;
             string currentStrongPrefix = null;
-            var moduleInfo = ModulesManager.GetModuleInfo(moduleShortName);
-            var bibleInfo = ModulesManager.GetModuleBibleInfo(moduleShortName);            
+            var moduleInfo = ModulesManager.GetModuleInfo(module.ShortName);
+            var bibleInfo = ModulesManager.GetModuleBibleInfo(module.ShortName);            
 
             string oldTestamentName = null;
             int? oldTestamentSectionsCount = null;
@@ -42,7 +42,7 @@ namespace BibleCommon.Services
             GetTestamentInfo(moduleInfo, ContainerType.NewTestament, out newTestamentName, out newTestamentSectionsCount, out newTestamentStrongPrefix);
 
             SettingsManager.Instance.SupplementalBibleModules.Clear();
-            SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
+            SettingsManager.Instance.SupplementalBibleModules.Add(new StoredModuleInfo(module.ShortName, module.Version));
             SettingsManager.Instance.Save();
             
             for (int i = 0; i < moduleInfo.BibleStructure.BibleBooks.Count; i++)
@@ -123,7 +123,7 @@ namespace BibleCommon.Services
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
-            string supplementalModuleShortName = SettingsManager.Instance.SupplementalBibleModules[supplementalModuleIndex];            
+            string supplementalModuleShortName = SettingsManager.Instance.SupplementalBibleModules[supplementalModuleIndex].ModuleName;            
 
             BibleParallelTranslationManager.MergeModuleWithMainBible(supplementalModuleShortName);
 
@@ -171,17 +171,17 @@ namespace BibleCommon.Services
             return result;
         }
 
-        public static BibleParallelTranslationConnectionResult AddParallelBible(Application oneNoteApp, string moduleShortName, 
+        public static BibleParallelTranslationConnectionResult AddParallelBible(Application oneNoteApp, ModuleInfo module, 
                 Dictionary<string, string> strongTermLinksCache, ICustomLogger logger)
         {
             if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(oneNoteApp, true))
                 || SettingsManager.Instance.SupplementalBibleModules.Count == 0)
                 throw new NotConfiguredException();
 
-            SettingsManager.Instance.SupplementalBibleModules.Add(moduleShortName);
+            SettingsManager.Instance.SupplementalBibleModules.Add(new StoredModuleInfo(module.ShortName, module.Version));
             SettingsManager.Instance.Save();
             
-            BibleParallelTranslationManager.MergeModuleWithMainBible(moduleShortName);
+            BibleParallelTranslationManager.MergeModuleWithMainBible(module.ShortName);
 
             string oldTestamentName = null;
             int? oldTestamentSectionsCount = null;
@@ -195,7 +195,7 @@ namespace BibleCommon.Services
             var linkResult = new List<Exception>();            
 
             using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
-                SettingsManager.Instance.SupplementalBibleModules.First(), moduleShortName,
+                SettingsManager.Instance.SupplementalBibleModules.First().ModuleName, module.ShortName,
                 SettingsManager.Instance.NotebookId_SupplementalBible))
             {
                 UnlockSupplementalBible(oneNoteApp);
@@ -254,11 +254,11 @@ namespace BibleCommon.Services
 
             foreach (var parallelModuleName in SettingsManager.Instance.SupplementalBibleModules)
             {
-                BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(parallelModuleName);
-                var moduleInfo = ModulesManager.GetModuleInfo(parallelModuleName);
+                BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(parallelModuleName.ModuleName);
+                var moduleInfo = ModulesManager.GetModuleInfo(parallelModuleName.ModuleName);
                 if (moduleInfo.Type == Common.ModuleType.Strong)
                 {
-                    DictionaryManager.RemoveDictionary(oneNoteApp, parallelModuleName);
+                    DictionaryManager.RemoveDictionary(oneNoteApp, parallelModuleName.ModuleName);
                 }
             }
 
@@ -282,7 +282,9 @@ namespace BibleCommon.Services
             }
             else
             {
-                if (!SettingsManager.Instance.SupplementalBibleModules.Contains(moduleShortName))
+                var storedModuleInfo = SettingsManager.Instance.SupplementalBibleModules.FirstOrDefault(m => m.ModuleName == moduleShortName);
+
+                if (storedModuleInfo == null)
                     throw new ArgumentException(string.Format("Module '{0}' can not be found in Supplemental Bible", moduleShortName));
 
                 var moduleInfo = ModulesManager.GetModuleInfo(moduleShortName);
@@ -291,11 +293,11 @@ namespace BibleCommon.Services
 
                 BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(moduleShortName);
 
-                SettingsManager.Instance.SupplementalBibleModules.Remove(moduleShortName);
+                SettingsManager.Instance.SupplementalBibleModules.Remove(storedModuleInfo);
                 SettingsManager.Instance.Save();
 
                 using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
-                   SettingsManager.Instance.SupplementalBibleModules.First(), moduleShortName,
+                   SettingsManager.Instance.SupplementalBibleModules.First().ModuleName, moduleShortName,
                    SettingsManager.Instance.NotebookId_SupplementalBible))
                 {
                     bibleTranslationManager.Logger = logger;
@@ -351,7 +353,7 @@ namespace BibleCommon.Services
             var result = new List<Exception>();            
 
             var primaryBibleObjectsSearchResult = HierarchySearchManager.GetHierarchyObject(oneNoteApp,
-                    SettingsManager.Instance.NotebookId_Bible, parallelVerse.ToVersePointer(SettingsManager.Instance.CurrentModule), true);
+                    SettingsManager.Instance.NotebookId_Bible, parallelVerse.ToVersePointer(SettingsManager.Instance.CurrentModule), HierarchySearchManager.FindVerseLevel.AllVerses);
 
             if (primaryBibleObjectsSearchResult.ResultType != HierarchySearchManager.HierarchySearchResultType.Successfully
                 || primaryBibleObjectsSearchResult.HierarchyStage != HierarchySearchManager.HierarchyStage.ContentPlaceholder)

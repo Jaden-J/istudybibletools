@@ -16,7 +16,7 @@ namespace BibleCommon.Services
 {
     public static class DictionaryManager
     {
-        public static void AddDictionary(Application oneNoteApp, string moduleName, string notebookDirectory, bool waitForFinish)
+        public static void AddDictionary(Application oneNoteApp, ModuleInfo module, string notebookDirectory, bool waitForFinish)
         {
             if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidDictionariesNotebookId(oneNoteApp, true)))
             {
@@ -26,14 +26,14 @@ namespace BibleCommon.Services
                 SettingsManager.Instance.Save();
             }
 
-            if (!SettingsManager.Instance.DictionariesModules.Any(m => m.ModuleName == moduleName))
+            if (!SettingsManager.Instance.DictionariesModules.Any(m => m.ModuleName == module.ShortName))
             {
                 //section or sectionGroup Id
                 string dictionarySectionId = null;
                 string dictionarySectionPath = null;
                 XElement dictionarySectionEl = null;
 
-                var moduleInfo = ModulesManager.GetModuleInfo(moduleName);
+                var moduleInfo = ModulesManager.GetModuleInfo(module.ShortName);
 
                 if (moduleInfo.NotebooksStructure.Sections == null || moduleInfo.NotebooksStructure.Sections.Count == 0)
                     throw new InvalidModuleException("There is no information about dictionary sections.");
@@ -65,7 +65,7 @@ namespace BibleCommon.Services
                 {
                     string sectionElId;                    
 
-                    File.Copy(Path.Combine(ModulesManager.GetModuleDirectory(moduleName), sectionInfo.Name), Path.Combine(dictionarySectionPath, sectionInfo.Name), false);
+                    File.Copy(Path.Combine(ModulesManager.GetModuleDirectory(module.ShortName), sectionInfo.Name), Path.Combine(dictionarySectionPath, sectionInfo.Name), false);
                     oneNoteApp.OpenHierarchy(sectionInfo.Name, dictionarySectionId, out sectionElId, CreateFileType.cftSection);
 
                     if (string.IsNullOrEmpty(dictionarySectionId))
@@ -74,7 +74,7 @@ namespace BibleCommon.Services
 
                 oneNoteApp.SyncHierarchy(dictionarySectionId);
 
-                SettingsManager.Instance.DictionariesModules.Add(new DictionaryInfo(moduleName, dictionarySectionId));
+                SettingsManager.Instance.DictionariesModules.Add(new StoredModuleInfo(module.ShortName, module.Version, dictionarySectionId));
                 SettingsManager.Instance.Save();
 
                 if (waitForFinish)                
