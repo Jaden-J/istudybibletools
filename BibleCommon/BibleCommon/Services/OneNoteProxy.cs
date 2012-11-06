@@ -523,7 +523,7 @@ namespace BibleCommon.Services
             }            
         }
 
-        public VersePointerLink GetVersePointerLink(SimpleVersePointer vp)
+        public VersePointerLink GetVersePointerLink(VersePointer vp)
         {
             if (_bibleVersesLinks == null)
             {

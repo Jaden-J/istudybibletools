@@ -27,7 +27,7 @@ namespace BibleNoteLinker
             _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
         }
 
-        private int _originalFormHeight;
+        private int _originalFormHeight;        
         const int FirstFormHeight = 192;
         const int SecondFormHeight = 255;
         private bool _processAbortedByUser;
