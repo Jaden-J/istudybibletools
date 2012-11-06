@@ -210,7 +210,10 @@ namespace BibleCommon.Scheme
         {
             _versesDictionary = new Dictionary<int, VERS>();
             foreach (var verse in Verses)
-                _versesDictionary.Add(verse.Index, verse);
+            {
+                if (!_versesDictionary.ContainsKey(verse.Index))
+                    _versesDictionary.Add(verse.Index, verse);
+            }
         }
     }
 
@@ -286,6 +289,9 @@ namespace BibleCommon.Scheme
 
         public static string GetVerseText(object[] items, bool includeStrongNumbers = false, string strongPrefix = null)
         {
+            if (items == null)
+                return null;
+ 
             return string.Concat(items.Where(
                                     item =>
                                         item is GRAM

@@ -74,12 +74,14 @@
             this.chkRubbishExpandMultiVersesLinking = new System.Windows.Forms.CheckBox();
             this.tbRubbishNotesPageWidth = new System.Windows.Forms.TextBox();
             this.lblRubbishNotesPageWidth = new System.Windows.Forms.Label();
-            this.chkDefaultPageNameParameters = new System.Windows.Forms.CheckBox();
+            this.chkDefaultParameters = new System.Windows.Forms.CheckBox();
             this.tbBookOverviewName = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.tbCommentsPageName = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btnModuleChecker = new System.Windows.Forms.Button();
+            this.btnConverter = new System.Windows.Forms.Button();
             this.btnBackup = new System.Windows.Forms.Button();
             this.btnResizeBibleTables = new System.Windows.Forms.Button();
             this.btnDeleteNotesPages = new System.Windows.Forms.Button();
@@ -102,8 +104,8 @@
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.btnConverter = new System.Windows.Forms.Button();
-            this.btnModuleChecker = new System.Windows.Forms.Button();
+            this.chkNotOneNoteControls = new System.Windows.Forms.CheckBox();
+           
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -330,11 +332,12 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage2.Controls.Add(this.chkNotOneNoteControls);
             this.tabPage2.Controls.Add(this.label9);
             this.tabPage2.Controls.Add(this.cbLanguage);
             this.tabPage2.Controls.Add(this.groupBox2);
             this.tabPage2.Controls.Add(this.groupBox1);
-            this.tabPage2.Controls.Add(this.chkDefaultPageNameParameters);
+            this.tabPage2.Controls.Add(this.chkDefaultParameters);
             this.tabPage2.Controls.Add(this.tbBookOverviewName);
             this.tabPage2.Controls.Add(this.label6);
             this.tabPage2.Controls.Add(this.tbCommentsPageName);
@@ -462,12 +465,12 @@
             resources.ApplyResources(this.lblRubbishNotesPageWidth, "lblRubbishNotesPageWidth");
             this.lblRubbishNotesPageWidth.Name = "lblRubbishNotesPageWidth";
             // 
-            // chkDefaultPageNameParameters
+            // chkDefaultParameters
             // 
-            resources.ApplyResources(this.chkDefaultPageNameParameters, "chkDefaultPageNameParameters");
-            this.chkDefaultPageNameParameters.Name = "chkDefaultPageNameParameters";
-            this.chkDefaultPageNameParameters.UseVisualStyleBackColor = true;
-            this.chkDefaultPageNameParameters.CheckedChanged += new System.EventHandler(this.chkDefaultPageNameParameters_CheckedChanged);
+            resources.ApplyResources(this.chkDefaultParameters, "chkDefaultParameters");
+            this.chkDefaultParameters.Name = "chkDefaultParameters";
+            this.chkDefaultParameters.UseVisualStyleBackColor = true;
+            this.chkDefaultParameters.CheckedChanged += new System.EventHandler(this.chkDefaultPageNameParameters_CheckedChanged);
             // 
             // tbBookOverviewName
             // 
@@ -501,6 +504,20 @@
             resources.ApplyResources(this.tabPage3, "tabPage3");
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Enter += new System.EventHandler(this.tabPage1_Enter);
+            // 
+            // btnModuleChecker
+            // 
+            resources.ApplyResources(this.btnModuleChecker, "btnModuleChecker");
+            this.btnModuleChecker.Name = "btnModuleChecker";
+            this.btnModuleChecker.UseVisualStyleBackColor = true;
+            this.btnModuleChecker.Click += new System.EventHandler(this.btnModuleChecker_Click);
+            // 
+            // btnConverter
+            // 
+            resources.ApplyResources(this.btnConverter, "btnConverter");
+            this.btnConverter.Name = "btnConverter";
+            this.btnConverter.UseVisualStyleBackColor = true;
+            this.btnConverter.Click += new System.EventHandler(this.btnConverter_Click);
             // 
             // btnBackup
             // 
@@ -638,19 +655,12 @@
             this.openFileDialog.DefaultExt = "isbt";
             resources.ApplyResources(this.openFileDialog, "openFileDialog");
             // 
-            // btnConverter
+            // chkNotOneNoteControls
             // 
-            resources.ApplyResources(this.btnConverter, "btnConverter");
-            this.btnConverter.Name = "btnConverter";
-            this.btnConverter.UseVisualStyleBackColor = true;
-            this.btnConverter.Click += new System.EventHandler(this.btnConverter_Click);
-            // 
-            // btnModuleChecker
-            // 
-            resources.ApplyResources(this.btnModuleChecker, "btnModuleChecker");
-            this.btnModuleChecker.Name = "btnModuleChecker";
-            this.btnModuleChecker.UseVisualStyleBackColor = true;
-            this.btnModuleChecker.Click += new System.EventHandler(this.btnModuleChecker_Click);
+            resources.ApplyResources(this.chkNotOneNoteControls, "chkNotOneNoteControls");
+            this.chkNotOneNoteControls.Name = "chkNotOneNoteControls";
+            this.chkNotOneNoteControls.UseVisualStyleBackColor = true;
+            this.chkNotOneNoteControls.CheckedChanged += new System.EventHandler(this.chkNotOneNoteControls_CheckedChanged);
             // 
             // MainForm
             // 
@@ -722,7 +732,7 @@
         private System.Windows.Forms.Button btnBibleNotebookSetPath; 
         private System.Windows.Forms.Button btnSingleNotebookSetPath;
         private System.Windows.Forms.Button btnResizeBibleTables;
-        private System.Windows.Forms.CheckBox chkDefaultPageNameParameters;
+        private System.Windows.Forms.CheckBox chkDefaultParameters;
         private System.Windows.Forms.ProgressBar pbMain;
         private System.Windows.Forms.Label lblProgressInfo;
         private System.Windows.Forms.Label lblWarning;
@@ -762,6 +772,7 @@
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button btnModuleChecker;
         private System.Windows.Forms.Button btnConverter;
+        private System.Windows.Forms.CheckBox chkNotOneNoteControls;
 
     }
 }

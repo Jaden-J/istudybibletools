@@ -11,6 +11,7 @@ namespace BibleCommon.Services
     public static class VerseRecognitionManager
     {
         internal const char ChapterVerseDelimiter = ':';
+        internal const int MaxVerse = 200;
 
         /// <summary>
         /// 
@@ -44,7 +45,7 @@ namespace BibleCommon.Services
             {   
                 if (int.TryParse(numberString, out number))
                 {
-                    if (number > 0 && number <= 176)
+                    if (number > 0 && number <= MaxVerse)
                     {
                         isLink = StringUtils.IsSurroundedBy(textElement.Value, "<a", "</a", numberIndex, true);
                         isInBrackets = StringUtils.IsSurroundedBy(textElement.Value, "[", "]", numberIndex, false);
@@ -527,7 +528,7 @@ namespace BibleCommon.Services
             int verseNumber;
             if (int.TryParse(verseString, out verseNumber))
             {
-                if (verseNumber <= 176 && verseNumber > 0)
+                if (verseNumber <= MaxVerse && verseNumber > 0)
                 {
                     verseString = GetFullVerseString(textElement.Value, verseString, isLink, ref endIndex, ref nextHtmlBreakIndex);
                     return verseString;
@@ -561,19 +562,22 @@ namespace BibleCommon.Services
 
                 if (int.TryParse(nextChar, out temp))
                 {
-                    verseString = string.Format("{0}-{1}", verseString, nextChar.Trim());
-                    endIndex = tempEndIndex;
-                    nextHtmlBreakIndex = tempNextHtmlBreakIndex;
-
-                    if (StringUtils.GetChar(textElementValue, nextHtmlBreakIndex) == ChapterVerseDelimiter) // если строка типа Ин 1:2-3:4
+                    if (!(temp > MaxVerse || spaceWasFound))
                     {
-                        nextChar = StringUtils.GetNextString(textElementValue, nextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex);
+                        verseString = string.Format("{0}-{1}", verseString, nextChar.Trim());
+                        endIndex = tempEndIndex;
+                        nextHtmlBreakIndex = tempNextHtmlBreakIndex;
 
-                        if (int.TryParse(nextChar, out temp))
+                        if (StringUtils.GetChar(textElementValue, nextHtmlBreakIndex) == ChapterVerseDelimiter) // если строка типа Ин 1:2-3:4
                         {
-                            verseString += ChapterVerseDelimiter + nextChar;
-                            endIndex = tempEndIndex;
-                            nextHtmlBreakIndex = tempNextHtmlBreakIndex;
+                            nextChar = StringUtils.GetNextString(textElementValue, nextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex);
+
+                            if (int.TryParse(nextChar, out temp))
+                            {
+                                verseString += ChapterVerseDelimiter + nextChar;
+                                endIndex = tempEndIndex;
+                                nextHtmlBreakIndex = tempNextHtmlBreakIndex;
+                            }
                         }
                     }
                 }
