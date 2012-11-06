@@ -15,7 +15,7 @@ namespace BibleConfigurator.ModuleConverter
             ModuleInfo module = new ModuleInfo()
             {
                 Version = new Version(1, 0),
-                Name = "Синодальный перевод (Русский язык)",
+                DisplayName = "Синодальный перевод (Русский язык)",
                 Notebooks = new List<NotebookInfo>() 
                 {                    
                     new NotebookInfo() { Type = ContainerType.Bible, Name = "Библия.onepkg" },

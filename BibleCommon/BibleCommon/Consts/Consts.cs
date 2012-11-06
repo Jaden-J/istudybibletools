@@ -25,6 +25,8 @@ namespace BibleCommon.Consts
         public static readonly string CacheDirectory = "Cache";        
         public static readonly string DefaultPartVersesAlphabet = "abcdefghijklmnopqrstuvwxyz";
         public static readonly int DefaultStrongNumbersCount = 14700;
+        public static readonly string EmbeddedSupplementalModulesKey = "SupplementalModules";
+        public static readonly string EmbeddedDictionariesKey = "Dictionaries";
         
         public static readonly int DefaultPageWidth_Notes = 500;
         public static readonly int DefaultPageWidth_RubbishNotes = 500;

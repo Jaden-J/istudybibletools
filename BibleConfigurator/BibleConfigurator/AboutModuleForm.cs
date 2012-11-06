@@ -38,7 +38,7 @@ namespace BibleConfigurator
             {
                 ModuleInfo module = ModulesManager.GetModuleInfo(ModuleName);
 
-                this.Text = lblTitle.Text = string.Format("{0} ({1} {2})", module.Name, module.BibleStructure.BibleBooks.Count, BibleCommon.Resources.Constants.Books);
+                this.Text = lblTitle.Text = string.Format("{0} ({1} {2})", module.DisplayName, module.BibleStructure.BibleBooks.Count, BibleCommon.Resources.Constants.Books);
                 lblLocation.Text = ModulesManager.GetModuleDirectory(ModuleName);
 
                 int top = 5;

@@ -104,39 +104,33 @@ namespace BibleCommon.Services
             IterateBaseBible(
                 (chapterPageDoc, chapterPointer) =>
                 {
-                    RemoveChapterParallelTranslation(chapterPageDoc, moduleInfo, xnm);
+                    RemoveChapterParallelTranslation(_oneNoteApp, chapterPageDoc, moduleInfo, xnm);
 
                     return null;
                 }, true, false, null);
 
         }
 
-        internal static void RemoveChapterParallelTranslation(XDocument chapterPageDoc, ModuleInfo lastModuleInfo, XmlNamespaceManager xnm)
+        internal static void RemoveChapterParallelTranslation(Application oneNoteApp, XDocument chapterPageDoc, ModuleInfo moduleInfo, XmlNamespaceManager xnm)
         {
-            var tableEl = NotebookGenerator.GetPageTable(chapterPageDoc, xnm);
-
-            var cellIndex = 0;
-            var cellFound = false;
-            foreach (var cell in tableEl.XPathSelectElements("one:Row[1]/one:Cell/one:OEChildren/one:OE/one:T", xnm))
+            var supplementalModulesMetadata = OneNoteUtils.GetPageMetaData(oneNoteApp, chapterPageDoc.Root, Consts.Constants.EmbeddedSupplementalModulesKey, xnm);
+            if (!string.IsNullOrEmpty(supplementalModulesMetadata))
             {
-                if (StringUtils.GetText(cell.Value) == lastModuleInfo.Name)
+                var supplementalModulesInfo = EmbeddedModuleInfo.Deserialize(supplementalModulesMetadata);
+                var embeddedModuleInfo = supplementalModulesInfo.FirstOrDefault(m => m.ModuleName == moduleInfo.ShortName);
+                if (embeddedModuleInfo != null)
                 {
-                    cellFound = true;
-                    break;
+                    var tableEl = NotebookGenerator.GetPageTable(chapterPageDoc, xnm);
+
+                    tableEl.XPathSelectElements(string.Format("one:Row/one:Cell[{0}]", embeddedModuleInfo.ColumnIndex + 1), xnm).Remove();
+                    tableEl.XPathSelectElements(string.Format("one:Columns/one:Column[{0}]", embeddedModuleInfo.ColumnIndex + 1), xnm).Remove();
+
+                    int index = 0;
+                    foreach (var column in tableEl.XPathSelectElements("one:Columns/one:Column", xnm))
+                    {
+                        column.SetAttributeValue("index", index++);
+                    }
                 }
-                cellIndex++;
-            }
-
-            if (cellFound)
-            {
-                tableEl.XPathSelectElements(string.Format("one:Row/one:Cell[{0}]", cellIndex + 1), xnm).Remove();
-                tableEl.XPathSelectElements(string.Format("one:Columns/one:Column[{0}]", cellIndex + 1), xnm).Remove();
-            }
-
-            int index = 0;
-            foreach (var column in tableEl.XPathSelectElements("one:Columns/one:Column", xnm))
-            {
-                column.SetAttributeValue("index", index++);
             }
         }
 

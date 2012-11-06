@@ -234,7 +234,7 @@ namespace BibleCommon.Helpers
                 return (string)metaElement.Attribute("content");
             }
 
-            return string.Empty;
+            return null;
         }    
 
         public static NotebookIterator.PageInfo GetCurrentPageInfo(Application oneNoteApp)

@@ -303,7 +303,7 @@ namespace BibleConfigurator.ModuleConverter
             ModuleInfo = new ModuleInfo()
             {
                 ShortName = ModuleShortName,
-                Name = extModuleInfo.Name,
+                DisplayName = extModuleInfo.Name,
                 Version = this.Version,
                 Locale = this.Locale,
                 NotebooksStructure = this.NotebooksStructure,

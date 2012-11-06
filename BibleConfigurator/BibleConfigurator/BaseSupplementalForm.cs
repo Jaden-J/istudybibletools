@@ -249,7 +249,7 @@ namespace BibleConfigurator
         private void AddModuleRow(ModuleInfo moduleInfo, int index, int top)
         {
             Label lblName = new Label();
-            lblName.Text = moduleInfo.Name;
+            lblName.Text = moduleInfo.DisplayName;
             lblName.Top = top + 5;
             lblName.Left = 0;
             lblName.Width = 345;
@@ -378,7 +378,7 @@ namespace BibleConfigurator
             CbModule.DropDownStyle = ComboBoxStyle.DropDownList;
             CbModule.Width = 345;
             CbModule.Top = TopControlsPosition;
-            CbModule.ValueMember = "Name";
+            CbModule.ValueMember = "DisplayName";
 
             TopControlsPosition = TopControlsPosition + 30;
 

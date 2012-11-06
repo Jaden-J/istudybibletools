@@ -159,7 +159,7 @@ namespace BibleConfigurator.ModuleConverter
             ModuleInfo = new ModuleInfo()
             {
                 ShortName = ModuleShortName,
-                Name = ModuleName,
+                DisplayName = ModuleName,
                 Version = this.Version,
                 Locale = this.Locale,
                 NotebooksStructure = this.NotebooksStructure,
