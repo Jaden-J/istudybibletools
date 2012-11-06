@@ -1259,7 +1259,7 @@ namespace BibleConfigurator
             _lblModulesDictionariesTitleWasAdded = false;
             var allModules = ModulesManager.GetModules(false);
             var modules = new List<ModuleInfo>();
-            foreach (var module in allModules.OrderBy(m => GetModuleTypeWeight(m.Type)).ThenBy(m => m.Name))
+            foreach (var module in allModules.OrderBy(m => GetModuleTypeWeight(m.Type)).ThenBy(m => m.DisplayName))
             {
                 try
                 {
@@ -1367,10 +1367,10 @@ namespace BibleConfigurator
         {   
             var maximumModuleNameLength = 45;
             Label lblName = new Label();
-            if (moduleInfo.Name.Length > maximumModuleNameLength)
-                lblName.Text = moduleInfo.Name.Substring(0, maximumModuleNameLength) + "...";
+            if (moduleInfo.DisplayName.Length > maximumModuleNameLength)
+                lblName.Text = moduleInfo.DisplayName.Substring(0, maximumModuleNameLength) + "...";
             else
-                lblName.Text = moduleInfo.Name;
+                lblName.Text = moduleInfo.DisplayName;
             lblName.Top = top + 5;
             lblName.Left = 15;
             lblName.Width = 310;
@@ -1456,7 +1456,7 @@ namespace BibleConfigurator
 
             if (moduleInfo.Type == ModuleType.Dictionary)
             {
-                MessageBox.Show(!string.IsNullOrEmpty(moduleInfo.Description) ? moduleInfo.Description : moduleInfo.Name, 
+                MessageBox.Show(!string.IsNullOrEmpty(moduleInfo.Description) ? moduleInfo.Description : moduleInfo.DisplayName, 
                     BibleCommon.Resources.Constants.ModuleInformation, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else

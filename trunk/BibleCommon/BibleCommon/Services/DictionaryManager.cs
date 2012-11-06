@@ -39,7 +39,7 @@ namespace BibleCommon.Services
                     throw new InvalidModuleException("There is no information about dictionary sections.");
 
                 if (string.IsNullOrEmpty(moduleInfo.NotebooksStructure.DictionarySectionGroupName) && moduleInfo.NotebooksStructure.Sections.Count > 1)
-                    moduleInfo.NotebooksStructure.DictionarySectionGroupName = moduleInfo.Name;
+                    moduleInfo.NotebooksStructure.DictionarySectionGroupName = moduleInfo.DisplayName;
 
                 if (!string.IsNullOrEmpty(moduleInfo.NotebooksStructure.DictionarySectionGroupName))
                 {

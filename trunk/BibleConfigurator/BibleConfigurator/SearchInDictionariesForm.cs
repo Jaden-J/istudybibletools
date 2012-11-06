@@ -95,14 +95,14 @@ namespace BibleConfigurator
 
                     var dictionaryModuleInfo = OneNoteProxy.Instance.GetModuleDictionary(moduleInfo.ShortName);
                     _modulesTermSets.Add(moduleInfo.ShortName, dictionaryModuleInfo);
-                    _modules.Add(moduleInfo.Name, moduleInfo);                    
+                    _modules.Add(moduleInfo.DisplayName, moduleInfo);                    
 
                     foreach (var term in dictionaryModuleInfo.TermSet.Terms)
                     {                        
                         if (!_termsInModules.ContainsKey(term))
                             _termsInModules.Add(term, new TermInModules() { Term = term });
 
-                        _termsInModules[term].Add(moduleInfo.Name);
+                        _termsInModules[term].Add(moduleInfo.DisplayName);
                     }
                 }             
 
@@ -273,7 +273,7 @@ namespace BibleConfigurator
                 foreach(var name in _termsInModules[term])
                 {
                     if (cbDictionaries.SelectedIndex == 0 || (string)cbDictionaries.SelectedItem == name)
-                        cbFoundInDictionaries.Items.Add(_modules[name].Name);
+                        cbFoundInDictionaries.Items.Add(_modules[name].DisplayName);
                 }
 
                 if (cbFoundInDictionaries.Items.Count == 1)

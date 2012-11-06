@@ -69,7 +69,7 @@ namespace TestProject
 
                 //AddColorLink();
 
-                //GenerateDictionary();
+                GenerateDictionary();
 
                 //GenerateStrongDictionary();
                 
@@ -83,7 +83,7 @@ namespace TestProject
 
                 //ConvertEnglishModuleZefaniaXml();
 
-                ConvertUkrModule();
+                //ConvertUkrModule();
 
                 //ConvertRussianModule();
 

@@ -173,6 +173,9 @@ namespace BibleConfigurator.ModuleConverter
             if (!string.IsNullOrEmpty(pageDisplayName))
                 AddPageTitle(pageDoc, pageDisplayName, xnm);
 
+            OneNoteUtils.UpdatePageMetaData(OneNoteApp, pageDoc.Root, BibleCommon.Consts.Constants.EmbeddedDictionariesKey,
+                EmbeddedModuleInfo.Serialize(new List<EmbeddedModuleInfo>() { new EmbeddedModuleInfo(DictionaryModuleName, Version) }), xnm);
+
             PagesCount++;
 
             return new TermPageInfo() { PageDocument = pageDoc, TableElement = tableEl, StyleIndex = styleIndex };
@@ -386,7 +389,7 @@ namespace BibleConfigurator.ModuleConverter
             var module = new ModuleInfo()
             {
                 ShortName = DictionaryModuleName,
-                Name = DictionaryName,
+                DisplayName = DictionaryName,
                 Description = DictionaryDescription,
                 Version = this.Version,
                 Type = ModuleType.Dictionary,

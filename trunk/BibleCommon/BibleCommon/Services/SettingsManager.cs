@@ -39,7 +39,7 @@ namespace BibleCommon.Services
             
         }
 
-        internal StoredModuleInfo(string xmlString)
+        public StoredModuleInfo(string xmlString)
         {
             var parts = xmlString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length < 2)
@@ -52,7 +52,10 @@ namespace BibleCommon.Services
 
         public override string ToString()
         {
-            return string.Join(",", new string[] { this.ModuleName, this.ModuleVersion.ToString(), this.SectionId });
+            if (this.SectionId != null)
+                return string.Join(",", new string[] { this.ModuleName, this.ModuleVersion.ToString(), this.SectionId });
+            else
+                return string.Join(",", new string[] { this.ModuleName, this.ModuleVersion.ToString() });
         }
     }
 

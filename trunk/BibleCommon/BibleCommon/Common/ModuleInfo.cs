@@ -167,8 +167,8 @@ namespace BibleCommon.Common
             }
         }
 
-        [XmlAttribute]
-        public string Name { get; set; }
+        [XmlAttribute("Name")]
+        public string DisplayName { get; set; }
 
         [XmlAttribute]
         public string Locale { get; set; }
@@ -583,5 +583,60 @@ namespace BibleCommon.Common
         //    this.BaseVerses = baseVerses;
         //    this.ParallelVerses = parallelVerses;
         //}
-    }    
+    }
+
+
+    /// <summary>
+    /// Сохранённая на страницах OneNote информация о модулях
+    /// </summary>
+    public class EmbeddedModuleInfo
+    {
+        public string ModuleName { get; set; }
+        public Version ModuleVersion { get; set; }
+        public int? ColumnIndex { get; set; }
+
+        public EmbeddedModuleInfo(string moduleName, Version moduleVersion, int? columnIndex)
+        {
+            this.ModuleName = moduleName;
+            this.ModuleVersion = moduleVersion;
+            this.ColumnIndex = columnIndex;
+        }
+
+        public EmbeddedModuleInfo(string moduleName, Version moduleVersion)
+            : this(moduleName, moduleVersion, null)
+        {
+        }
+        
+
+        public EmbeddedModuleInfo(string xmlString)
+        {
+            var parts = xmlString.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length < 2)
+                throw new NotSupportedException(string.Format("Invalid EmbeddedModuleInfo: '{0}'", xmlString));
+
+            this.ModuleName = parts[0];
+            this.ModuleVersion = new Version(parts[1]);
+
+            if (parts.Length > 2)
+                this.ColumnIndex = int.Parse(parts[2]);
+        }
+
+        public override string ToString()
+        {
+            if (this.ColumnIndex.HasValue)
+                return string.Join(",", new string[] { this.ModuleName, this.ModuleVersion.ToString(), this.ColumnIndex.ToString() });
+            else
+                return string.Join(",", new string[] { this.ModuleName, this.ModuleVersion.ToString() });
+        }
+
+        public static string Serialize(List<EmbeddedModuleInfo> modules)
+        {
+            return string.Join(";", modules.ConvertAll(m => m.ToString()).ToArray());
+        }
+
+        public static List<EmbeddedModuleInfo> Deserialize(string s)
+        {
+            return s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(xmlString => new EmbeddedModuleInfo(xmlString));
+        }
+    }
 }
