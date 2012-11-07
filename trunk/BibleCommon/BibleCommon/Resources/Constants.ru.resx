@@ -678,4 +678,25 @@
   <data name="ChangedNotOneNoteControlsParameter" xml:space="preserve">
     <value>Чтобы изменения вступили в силу, необходимо удалить и заново добавить в справочную Библию модуль со словарём Стронга.</value>
   </data>
+  <data name="DictionariesNotebookWasAdded" xml:space="preserve">
+    <value>Записная книжка "Словари" успешно добавлена</value>
+  </data>
+  <data name="ModuleIsNotInstalled" xml:space="preserve">
+    <value>Модуль '{0}' не установлен. Установите данный модуль и повторите операцию.</value>
+  </data>
+  <data name="NeedToAddDictionaryNotebookWithStrongsNumber" xml:space="preserve">
+    <value>Обнаружена Библия с номерами Стронга в данной записной книжке. Необходимо добавить записную книжку со словарём Стронга.</value>
+  </data>
+  <data name="NeedToAddSupplementalNotebookWithStrongsNumber" xml:space="preserve">
+    <value>Обнаружен словарь Стронга в данной записной книжке. Необходимо добавить записную книжку с Библией со словарём Стронга.</value>
+  </data>
+  <data name="NotebookIsNotDictionariesNotebook" xml:space="preserve">
+    <value>Записная книжка '{0}' не является записной книжкой "Словари".</value>
+  </data>
+  <data name="NotebookIsNotSupplementalBible" xml:space="preserve">
+    <value>Записная книжка '{0}' не является справочной Библией.</value>
+  </data>
+  <data name="SupplementalNotebookWasAdded" xml:space="preserve">
+    <value>Записная книжка справочной Библии успешно добавлена</value>
+  </data>
 </root>

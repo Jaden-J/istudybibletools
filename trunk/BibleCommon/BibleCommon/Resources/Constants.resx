@@ -681,4 +681,25 @@
   <data name="ChangedNotOneNoteControlsParameter" xml:space="preserve">
     <value>For the changes to take effect, you must delete and re-add the module with Strong's Dictionary to the Supplemental Bible.</value>
   </data>
+  <data name="DictionariesNotebookWasAdded" xml:space="preserve">
+    <value>Dictionaries notebook was successfully added</value>
+  </data>
+  <data name="ModuleIsNotInstalled" xml:space="preserve">
+    <value>Module '{0}' is not installed. Please install this module and try again.</value>
+  </data>
+  <data name="NeedToAddDictionaryNotebookWithStrongsNumber" xml:space="preserve">
+    <value>There is a Bible with Strong's numbers in this notebook. You need to add a notebook with Strong's dictionary.</value>
+  </data>
+  <data name="NeedToAddSupplementalNotebookWithStrongsNumber" xml:space="preserve">
+    <value>There is a Strong's dictionary in this notebook. You need to add a Supplemental Bible notebook with Bible with Strong's numbers.</value>
+  </data>
+  <data name="NotebookIsNotDictionariesNotebook" xml:space="preserve">
+    <value>The notebook '{0}' is not a Dictionaries notebook.</value>
+  </data>
+  <data name="NotebookIsNotSupplementalBible" xml:space="preserve">
+    <value>The notebook '{0}' is not a Supplemental Bible notebook.</value>
+  </data>
+  <data name="SupplementalNotebookWasAdded" xml:space="preserve">
+    <value>Supplemental Bible notebook was successfully added</value>
+  </data>
 </root>

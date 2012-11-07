@@ -635,9 +635,9 @@ namespace BibleConfigurator
         private void LoadParameters(ModuleInfo module, bool? forceNeedToSaveSettings)
         {
             if (!SettingsManager.Instance.IsConfigured(_oneNoteApp) || forceNeedToSaveSettings.GetValueOrDefault(false))
-                lblWarning.Visible = true;        
+                lblWarning.Visible = true;
 
-            Dictionary<string, string> notebooks = GetNotebooks();
+            var notebooks = OneNoteUtils.GetExistingNotebooks(_oneNoteApp);
             string singleNotebookId = module.UseSingleNotebook() ? SearchForNotebook(module, notebooks.Keys, ContainerType.Single) : string.Empty;
             string bibleNotebookId = SearchForNotebook(module, notebooks.Keys, ContainerType.Bible);
             string bibleCommentsNotebookId = SearchForNotebook(module, notebooks.Keys, ContainerType.BibleComments);
@@ -796,23 +796,7 @@ namespace BibleConfigurator
             FormExtensions.SetToolTip(btnBibleNotesPagesNotebookSetPath, toolTipMessage);
         }
 
-        public Dictionary<string, string> GetNotebooks()
-        {
-            Dictionary<string, string> result = new Dictionary<string, string>();
-            
-            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, null, HierarchyScope.hsNotebooks, true);
-
-            foreach (XElement notebook in hierarchy.Content.Root.XPathSelectElements("one:Notebook", hierarchy.Xnm))
-            {
-                string name = (string)notebook.Attribute("nickname");
-                if (string.IsNullOrEmpty(name))
-                    name = (string)notebook.Attribute("name");
-                string id = (string)notebook.Attribute("ID");
-                result.Add(id, name);
-            }
-
-            return result;
-        }
+      
 
         private void rbMultiNotebook_CheckedChanged(object sender, EventArgs e)
         {
