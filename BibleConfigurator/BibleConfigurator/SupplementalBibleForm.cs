@@ -4,6 +4,11 @@ using System.Linq;
 using System.Text;
 using BibleCommon.Services;
 using BibleCommon.Common;
+using System.Xml;
+using BibleCommon.Helpers;
+using Microsoft.Office.Interop.OneNote;
+using System.Xml.Linq;
+using System.Xml.XPath;
 
 namespace BibleConfigurator
 {
@@ -177,6 +182,46 @@ namespace BibleConfigurator
         protected override string NotebookCannotBeClosedText
         {
             get { return string.Empty; }
+        }      
+
+        protected override string EmbeddedModulesKey
+        {
+            get { return BibleCommon.Consts.Constants.EmbeddedSupplementalModulesKey; }
+        }
+
+        protected override string NotebookIsNotSupplementalBibleMessage
+        {
+            get { return BibleCommon.Resources.Constants.NotebookIsNotSupplementalBible; }
+        }
+
+        protected override string SupplementalNotebookWasAddedMessage
+        {
+            get { return BibleCommon.Resources.Constants.SupplementalNotebookWasAdded; }
+        }
+
+        protected override void SaveSupplementalNotebookSettings(string notebookId)
+        {
+            SettingsManager.Instance.NotebookId_SupplementalBible = notebookId;
+            SettingsManager.Instance.Save();
+        }
+
+        protected override List<string> SaveEmbeddedModuleSettings(EmbeddedModuleInfo embeddedModuleInfo, ModuleInfo moduleInfo, XElement pageEl)
+        {
+            var result = new List<string>();
+
+            SettingsManager.Instance.SupplementalBibleModules.Add(new StoredModuleInfo(embeddedModuleInfo.ModuleName, embeddedModuleInfo.ModuleVersion));
+            if (moduleInfo.Type == ModuleType.Strong)
+            {
+                if (!SettingsManager.Instance.DictionariesModules.Any(m => m.ModuleName == embeddedModuleInfo.ModuleName))
+                    result.Add(BibleCommon.Resources.Constants.NeedToAddDictionaryNotebookWithStrongsNumber);
+            }
+
+            return result;
+        }
+
+        protected override void ClearSupplementalModules()
+        {
+            SettingsManager.Instance.SupplementalBibleModules.Clear();
         }
     }
 }

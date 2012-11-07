@@ -32,7 +32,15 @@ namespace BibleCommon.Common
         public InvalidModuleException(string message)
             : base(Constants.Error_InvalidModule + " " + message)
         {
-        }     
+        }
+    }
+
+    public class InvalidNotebookException : Exception
+    {
+        public InvalidNotebookException(string message)
+            : base(message)
+        {
+        }
     }
 
     public abstract class BaseVersePointerException: Exception

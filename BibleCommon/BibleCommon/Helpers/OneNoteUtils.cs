@@ -256,6 +256,24 @@ namespace BibleCommon.Helpers
                 SectionId = currentSectionId,
                 Id = currentPageId
             };
-        }        
+        }
+
+        public static Dictionary<string, string> GetExistingNotebooks(Application oneNoteApp)
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+
+            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, null, HierarchyScope.hsNotebooks, true);
+
+            foreach (XElement notebook in hierarchy.Content.Root.XPathSelectElements("one:Notebook", hierarchy.Xnm))
+            {
+                string name = (string)notebook.Attribute("nickname");
+                if (string.IsNullOrEmpty(name))
+                    name = (string)notebook.Attribute("name");
+                string id = (string)notebook.Attribute("ID");
+                result.Add(id, name);
+            }
+
+            return result;
+        }
     }
 }

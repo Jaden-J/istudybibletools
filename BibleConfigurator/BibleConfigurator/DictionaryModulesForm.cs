@@ -4,6 +4,11 @@ using System.Linq;
 using System.Text;
 using BibleCommon.Services;
 using BibleCommon.Common;
+using System.Xml;
+using BibleCommon.Helpers;
+using Microsoft.Office.Interop.OneNote;
+using System.Xml.XPath;
+using System.Xml.Linq;
 
 namespace BibleConfigurator
 {
@@ -117,6 +122,63 @@ namespace BibleConfigurator
         protected override string NotebookCannotBeClosedText
         {
             get { return BibleCommon.Resources.Constants.DictionaryNotebookCannotBeClosed; }
+        }       
+
+        protected override string EmbeddedModulesKey
+        {
+            get { return BibleCommon.Consts.Constants.EmbeddedDictionariesKey; }
+        }
+
+        protected override string NotebookIsNotSupplementalBibleMessage
+        {
+            get { return BibleCommon.Resources.Constants.NotebookIsNotDictionariesNotebook; }
+        }
+
+        protected override string SupplementalNotebookWasAddedMessage
+        {
+            get { return BibleCommon.Resources.Constants.DictionariesNotebookWasAdded; }
+        }
+
+        protected override void SaveSupplementalNotebookSettings(string notebookId)
+        {
+            SettingsManager.Instance.NotebookId_Dictionaries = notebookId;
+            SettingsManager.Instance.Save();
+        }
+
+        protected override List<string> SaveEmbeddedModuleSettings(EmbeddedModuleInfo embeddedModuleInfo, ModuleInfo moduleInfo, System.Xml.Linq.XElement pageEl)
+        {
+            var result = new List<string>();
+
+            XElement sectionEl;
+
+            if (string.IsNullOrEmpty(moduleInfo.NotebooksStructure.DictionarySectionGroupName))
+                sectionEl = pageEl.Parent;
+            else
+                sectionEl = pageEl.Parent.Parent;
+
+            var sectionId = (string)sectionEl.Attribute("ID");
+
+            SettingsManager.Instance.DictionariesModules.Add(new StoredModuleInfo(embeddedModuleInfo.ModuleName, embeddedModuleInfo.ModuleVersion, sectionId));
+
+            if (moduleInfo.Type == ModuleType.Strong)
+            {
+                if (!SettingsManager.Instance.SupplementalBibleModules.Any(m => m.ModuleName == embeddedModuleInfo.ModuleName))
+                    result.Add(BibleCommon.Resources.Constants.NeedToAddSupplementalNotebookWithStrongsNumber);
+            }
+
+            if (!DictionaryTermsCacheManager.CacheIsActive(moduleInfo.ShortName))
+            {
+                MainForm.PrepareForExternalProcessing(moduleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
+                Logger.Preffix = string.Format("{0} {1}: ", BibleCommon.Resources.Constants.IndexDictionary, moduleInfo.ShortName);
+                DictionaryTermsCacheManager.GenerateCache(OneNoteApp, moduleInfo, Logger);
+            }
+
+            return result;
+        }
+
+        protected override void ClearSupplementalModules()
+        {
+            SettingsManager.Instance.DictionariesModules.Clear();
         }
     }
 }

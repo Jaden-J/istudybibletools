@@ -116,8 +116,8 @@ namespace BibleCommon.Services
             var supplementalModulesMetadata = OneNoteUtils.GetPageMetaData(oneNoteApp, chapterPageDoc.Root, Consts.Constants.EmbeddedSupplementalModulesKey, xnm);
             if (!string.IsNullOrEmpty(supplementalModulesMetadata))
             {
-                var supplementalModulesInfo = EmbeddedModuleInfo.Deserialize(supplementalModulesMetadata);
-                var embeddedModuleInfo = supplementalModulesInfo.FirstOrDefault(m => m.ModuleName == moduleInfo.ShortName);
+                var embeddedModulesInfo = EmbeddedModuleInfo.Deserialize(supplementalModulesMetadata);
+                var embeddedModuleInfo = embeddedModulesInfo.FirstOrDefault(m => m.ModuleName == moduleInfo.ShortName);
                 if (embeddedModuleInfo != null)
                 {
                     var tableEl = NotebookGenerator.GetPageTable(chapterPageDoc, xnm);
@@ -130,6 +130,10 @@ namespace BibleCommon.Services
                     {
                         column.SetAttributeValue("index", index++);
                     }
+
+                    embeddedModulesInfo.Remove(embeddedModuleInfo);
+                    OneNoteUtils.UpdatePageMetaData(oneNoteApp, chapterPageDoc.Root, 
+                        Consts.Constants.EmbeddedSupplementalModulesKey, EmbeddedModuleInfo.Serialize(embeddedModulesInfo), xnm);
                 }
             }
         }
