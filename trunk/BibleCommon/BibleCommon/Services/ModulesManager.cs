@@ -26,15 +26,15 @@ namespace BibleCommon.Services
 
         public static ModuleInfo GetCurrentModuleInfo()
         {
-            if (!string.IsNullOrEmpty(SettingsManager.Instance.ModuleName))
-                return GetModuleInfo(SettingsManager.Instance.ModuleName);
+            if (!string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName))
+                return GetModuleInfo(SettingsManager.Instance.ModuleShortName);
 
             throw new InvalidModuleException(BibleCommon.Resources.Constants.CurrentModuleIsUndefined);
         }
 
         public static string GetCurrentModuleDirectiory()
         {
-            return GetModuleDirectory(SettingsManager.Instance.ModuleName);
+            return GetModuleDirectory(SettingsManager.Instance.ModuleShortName);
         }
 
         public static string GetModuleDirectory(string moduleShortName)

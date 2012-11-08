@@ -45,7 +45,7 @@ namespace BibleCommon.Scheme
             }
         }
 
-        public string GetVerseContent(SimpleVersePointer versePointer, string strongPrefix, 
+        public string GetVerseContent(SimpleVersePointer versePointer, string moduleShortName, string strongPrefix, 
             out VerseNumber verseNumber, out bool isEmpty, out bool isFullVerse)
         {
             isFullVerse = true;
@@ -59,13 +59,13 @@ namespace BibleCommon.Scheme
             }
 
             if (this.Chapters.Count < versePointer.Chapter)
-                throw new ParallelChapterNotFoundException(versePointer, BaseVersePointerException.Severity.Warning);
+                throw new ChapterNotFoundException(versePointer, moduleShortName, BaseVersePointerException.Severity.Warning);
 
             var chapter = this.Chapters[versePointer.Chapter - 1];
 
-            var verse = chapter.GetVerse(versePointer.Verse);
+            var verse = chapter.GetVerse(versePointer, moduleShortName);
             if (verse == null)
-                throw new ParallelVerseNotFoundException(versePointer, BaseVersePointerException.Severity.Warning);
+                throw new VerseNotFoundException(versePointer, moduleShortName, BaseVersePointerException.Severity.Warning);
 
             verseNumber = verse.VerseNumber;
 
@@ -107,7 +107,7 @@ namespace BibleCommon.Scheme
         /// <param name="isDiscontinuous">Прерывистые стихи. Например 8,22. </param>
         /// <param name="notFoundVerses"></param>
         /// <returns></returns>
-        public string GetVersesContent(List<SimpleVersePointer> verses, string strongPrefix, 
+        public string GetVersesContent(List<SimpleVersePointer> verses, string moduleShortName, string strongPrefix, 
             out int? topVerse, out bool isEmpty, out bool isFullVerses, out bool isDiscontinuous, out List<SimpleVersePointer> notFoundVerses)
         {
             var contents = new List<string>();
@@ -124,7 +124,7 @@ namespace BibleCommon.Scheme
             {
                 bool localIsEmpty, localIsFullVerse;
                 VerseNumber vn;
-                var verseContent = GetVerseContent(verse, strongPrefix, out vn, out localIsEmpty, out localIsFullVerse);
+                var verseContent = GetVerseContent(verse, moduleShortName, strongPrefix, out vn, out localIsEmpty, out localIsFullVerse);
                 contents.Add(verseContent);
 
                 if (!localIsEmpty)
@@ -193,26 +193,29 @@ namespace BibleCommon.Scheme
         }       
 
         private Dictionary<int, VERS> _versesDictionary;
-        public VERS GetVerse(int verseNumber)
+        public VERS GetVerse(SimpleVersePointer verse, string moduleShortName)
         {
             if (_versesDictionary == null)
-                LoadVersesDictionary();
+                LoadVersesDictionary(verse, moduleShortName);
 
-            if (_versesDictionary.ContainsKey(verseNumber))
-                return _versesDictionary[verseNumber];
-            else if (Verses.Any(v => v.IsMultiVerse && (v.Index <= verseNumber && verseNumber <= v.TopIndex)))
+            if (_versesDictionary.ContainsKey(verse.Verse))
+                return _versesDictionary[verse.Verse];
+            else if (Verses.Any(v => v.IsMultiVerse && (v.Index <= verse.Verse && verse.Verse <= v.TopIndex)))
                 return VERS.Empty;
 
             return null;
         }
 
-        private void LoadVersesDictionary()
+        private void LoadVersesDictionary(SimpleVersePointer verse, string moduleShortName)
         {
             _versesDictionary = new Dictionary<int, VERS>();
-            foreach (var verse in Verses)
+            foreach (var v in Verses)
             {
-                if (!_versesDictionary.ContainsKey(verse.Index))
-                    _versesDictionary.Add(verse.Index, verse);
+                if (_versesDictionary.ContainsKey(v.Index))
+                    throw new BaseVersePointerException(
+                                    string.Format("Repeated verses were found in chapter '({2}) {0} {1}'", verse.BookIndex, this.Index, moduleShortName),
+                                    BaseVersePointerException.Severity.Error);
+                _versesDictionary.Add(v.Index, v);               
             }
         }
     }

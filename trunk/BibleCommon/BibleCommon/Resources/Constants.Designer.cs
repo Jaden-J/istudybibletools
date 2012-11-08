@@ -1276,6 +1276,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Open a verse.
+        /// </summary>
+        public static string OpenVerse {
+            get {
+                return ResourceManager.GetString("OpenVerse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Pages count in &apos;{0}&apos; is not as expected: expected min {1}, found {2}..
         /// </summary>
         public static string PagesCountLessThanMin {
@@ -1447,6 +1456,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Search in Dictionaries.
+        /// </summary>
+        public static string SearchInDictionaries {
+            get {
+                return ResourceManager.GetString("SearchInDictionaries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на The query is invalid or Microsoft Search 3.0 or 4.0 is not installed on your computer.
         /// </summary>
         public static string SearchQueryIsInvalid {
@@ -1587,6 +1605,15 @@ namespace BibleCommon.Resources {
         public static string SkyDriveBibleIsNotSupportedForLock {
             get {
                 return ResourceManager.GetString("SkyDriveBibleIsNotSupportedForLock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Specify the Bible verse.
+        /// </summary>
+        public static string SpecifyBibleVerse {
+            get {
+                return ResourceManager.GetString("SpecifyBibleVerse", resourceCulture);
             }
         }
         

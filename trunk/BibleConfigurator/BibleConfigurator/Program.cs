@@ -30,7 +30,7 @@ namespace BibleConfigurator
         [STAThread]
         static void Main(params string[] args)
         {
-          //  try
+            //  try
             {
                 LanguageManager.SetThreadUICulture();
 
@@ -38,18 +38,19 @@ namespace BibleConfigurator
                 if (args.Length == 1 && File.Exists(args[0]))
                     message += " " + BibleCommon.Resources.Constants.LoadMofuleInExistingInstance;
 
-                FormExtensions.RunSingleInstance(message, () =>
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+
+                Form form = PrepareForRunning(args);
+
+                if (form != null)
                 {
-                    Application.EnableVisualStyles();
-                    Application.SetCompatibleTextRenderingDefault(false);
-
-                    Form form = PrepareForRunning(args);
-
-                    if (form != null)
-                    {                        
+                    FormExtensions.RunSingleInstance(form, message, () =>
+                    {
                         Application.Run(form);
-                    }
-                }, args.Contains(Consts.RunOnOneNoteStarts));
+                    }, args.Contains(Consts.RunOnOneNoteStarts));
+                }
+
             }
             //catch (Exception ex)
             //{
@@ -70,7 +71,7 @@ namespace BibleConfigurator
             var openVerseHandler = new NavigateToStrongHandler();
 
             if (args.Contains(Consts.ShowModuleInfo) && SettingsManager.Instance.IsConfigured(OneNoteApp))
-                result = new AboutModuleForm(SettingsManager.Instance.ModuleName, true);
+                result = new AboutModuleForm(SettingsManager.Instance.ModuleShortName, true);
             else if (args.Contains(Consts.ShowAboutProgram))
                 result = new AboutProgramForm();
             else if (args.Contains(Consts.ShowSearchInDictionaries))
@@ -202,8 +203,12 @@ namespace BibleConfigurator
             {
                 if (_firstLoad)
                 {
-                    Application.EnableVisualStyles();
-                    Application.SetCompatibleTextRenderingDefault(false);
+                    try
+                    {
+                        Application.EnableVisualStyles();
+                        Application.SetCompatibleTextRenderingDefault(false);
+                    }
+                    catch { }
                     _firstLoad = false;
                 }
 

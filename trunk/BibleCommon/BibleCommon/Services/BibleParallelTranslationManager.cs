@@ -293,7 +293,7 @@ namespace BibleCommon.Services
                     
 
                 if (parallelVersePointers.Count == 0)
-                    throw new GetParallelVerseException("parallelVersePointers.Count == 0", baseVersePointer, BaseVersePointerException.Severity.Error);
+                    throw new GetParallelVerseException("parallelVersePointers.Count == 0", baseVersePointer, BaseModuleShortName, BaseVersePointerException.Severity.Error);
                 
                 var parallelVerse = GetParallelVerses(baseVersePointer, parallelVersePointers, parallelBookContent, strongPrefix);
                 
@@ -327,19 +327,19 @@ namespace BibleCommon.Services
                         {
                             var previousProcessedChapterlastVerse = parallelBookContent.Chapters[lastProcessedChapter - 1].Verses.Last();
                             if ((previousProcessedChapterlastVerse.TopIndex ?? previousProcessedChapterlastVerse.Index) > lastProcessedVerse)
-                                throw new GetParallelVerseException("Miss verse (x01)", baseVersePointer, BaseVersePointerException.Severity.Warning);
+                                throw new GetParallelVerseException("Miss verse (x01)", baseVersePointer, BaseModuleShortName, BaseVersePointerException.Severity.Warning);
                         }
                         else if (firstParallelVerse.Verse > 1)  // начали главу не с начала                    
-                            throw new GetParallelVerseException("Miss verse (x02)", baseVersePointer, BaseVersePointerException.Severity.Warning);
+                            throw new GetParallelVerseException("Miss verse (x02)", baseVersePointer, BaseModuleShortName, BaseVersePointerException.Severity.Warning);
                     }
                     else
                     {
                         if (lastProcessedVerse > 0 && firstParallelVerse.Verse > lastProcessedVerse + 1)
-                            throw new GetParallelVerseException("Miss verse (x03)", baseVersePointer, BaseVersePointerException.Severity.Warning);
+                            throw new GetParallelVerseException("Miss verse (x03)", baseVersePointer, BaseModuleShortName, BaseVersePointerException.Severity.Warning);
                         else if (lastProcessedChapter == firstParallelVerse.Chapter && lastProcessedVerse == firstParallelVerse.Verse && !firstParallelVerse.PartIndex.HasValue)
-                            throw new GetParallelVerseException("Double verse (x04)", baseVersePointer, BaseVersePointerException.Severity.Warning);
+                            throw new GetParallelVerseException("Double verse (x04)", baseVersePointer, BaseModuleShortName, BaseVersePointerException.Severity.Warning);
                         else if (lastProcessedChapter == firstParallelVerse.Chapter && firstParallelVerse.Verse < lastProcessedVerse)
-                            throw new GetParallelVerseException("Reverse verse (x05)", baseVersePointer, BaseVersePointerException.Severity.Warning);                        
+                            throw new GetParallelVerseException("Reverse verse (x05)", baseVersePointer, BaseModuleShortName, BaseVersePointerException.Severity.Warning);                        
                     }
                 }
             }
@@ -362,7 +362,7 @@ namespace BibleCommon.Services
 
             bool isFullVerses, isDiscontinuous;
             List<SimpleVersePointer> notFoundVerses;
-            verseContent = parallelBookContent.GetVersesContent(parallelVersePointers, strongPrefix,
+            verseContent = parallelBookContent.GetVersesContent(parallelVersePointers, this.ParallelModuleInfo.ShortName, strongPrefix,
                                         out topLastVerse, out isEmpty, out isFullVerses, out isDiscontinuous, out notFoundVerses);
 
             if (!isEmpty)
@@ -376,7 +376,7 @@ namespace BibleCommon.Services
                                         firstParallelVerse.PartIndex.HasValue
                                             ? string.Format(" (versePart = {0})", firstParallelVerse.PartIndex + 1)
                                             : string.Empty),
-                                        baseVersePointer, BaseVersePointerException.Severity.Warning);
+                                        baseVersePointer, BaseModuleShortName, BaseVersePointerException.Severity.Warning);
                 }
                 else
                 {
@@ -387,7 +387,7 @@ namespace BibleCommon.Services
                                             notFoundVerse.PartIndex.HasValue
                                                 ? string.Format(" (versePart = {0})", notFoundVerse.PartIndex + 1)
                                                 : string.Empty),
-                                            baseVersePointer, BaseVersePointerException.Severity.Warning));
+                                            baseVersePointer, BaseModuleShortName, BaseVersePointerException.Severity.Warning));
                     }
                 }
             }
@@ -458,9 +458,9 @@ namespace BibleCommon.Services
         
         public static void MergeModuleWithMainBible(string parallelModuleName)
         {
-            if (SettingsManager.Instance.ModuleName != parallelModuleName)
+            if (SettingsManager.Instance.ModuleShortName != parallelModuleName)
             {
-                var baseModuleInfo = ModulesManager.GetModuleInfo(SettingsManager.Instance.ModuleName);
+                var baseModuleInfo = ModulesManager.GetModuleInfo(SettingsManager.Instance.ModuleShortName);
                 var parallelModuleInfo = ModulesManager.GetModuleInfo(parallelModuleName);                
 
                 // merge book abbriviations
@@ -496,9 +496,9 @@ namespace BibleCommon.Services
         
         public static void RemoveBookAbbreviationsFromMainBible(string parallelModuleName)
         {
-            if (SettingsManager.Instance.ModuleName != parallelModuleName)
+            if (SettingsManager.Instance.ModuleShortName != parallelModuleName)
             {
-                var baseModuleInfo = ModulesManager.GetModuleInfo(SettingsManager.Instance.ModuleName);
+                var baseModuleInfo = ModulesManager.GetModuleInfo(SettingsManager.Instance.ModuleShortName);
 
                 foreach (var baseBook in baseModuleInfo.BibleStructure.BibleBooks)
                 {

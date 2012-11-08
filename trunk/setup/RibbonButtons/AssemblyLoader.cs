@@ -55,7 +55,7 @@ namespace RibbonButtons
 
         private static void LoadAssemblyInternal(string assemblyPath)
         {
-            Assembly assembly = Assembly.LoadFile(assemblyPath);
+            Assembly assembly = assemblyPath.EndsWith(".exe") ? Assembly.LoadFile(assemblyPath) : Assembly.LoadFrom(assemblyPath);
 
             Assemblies.Add(assemblyPath, assembly);
         }

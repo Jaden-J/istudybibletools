@@ -202,7 +202,7 @@ namespace BibleConfigurator
 
         private void IndexBible()
         {
-            int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleName, true);
+            int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleShortName, true);
             PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.IndexBibleStart);
             LongProcessLogger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexBible);
             BibleVersesLinksCacheManager.GenerateBibleVersesLinks(_oneNoteApp,
@@ -587,11 +587,11 @@ namespace BibleConfigurator
                         if (NeedToSaveChangesAfterLoadingModuleAtStartUp)
                             needSaveSettings = true;
                     }
-                    else if (string.IsNullOrEmpty(SettingsManager.Instance.ModuleName))
+                    else if (string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName))
                     {
                         var modules = ModulesManager.GetModules(true);
                         if (modules.Count == 1)                        
-                            SettingsManager.Instance.ModuleName = modules[0].ShortName;                        
+                            SettingsManager.Instance.ModuleShortName = modules[0].ShortName;                        
                     }
                     
                     PrepareFolderBrowser();
@@ -1177,11 +1177,11 @@ namespace BibleConfigurator
 
                     if (!currentModuleIsCorrect && module.Type == ModuleType.Bible)
                     {
-                        SettingsManager.Instance.ModuleName = module.ShortName;
+                        SettingsManager.Instance.ModuleShortName = module.ShortName;
                         needToReload = true;
                     }
                     
-                    ReLoadModulesInfo();
+                    FormExtensions.Invoke(this, ReLoadModulesInfo);                    
 
                     FormLogger.LogMessage(BibleCommon.Resources.Constants.ModuleSuccessfullyUploaded);
 
@@ -1373,7 +1373,7 @@ namespace BibleConfigurator
             {
                 CheckBox cbIsActive = new CheckBox();
                 cbIsActive.AutoCheck = false;
-                cbIsActive.Checked = SettingsManager.Instance.ModuleName == moduleInfo.ShortName;
+                cbIsActive.Checked = SettingsManager.Instance.ModuleShortName == moduleInfo.ShortName;
                 cbIsActive.Top = top;
                 cbIsActive.Left = 355;
                 cbIsActive.Width = 20;
@@ -1397,7 +1397,7 @@ namespace BibleConfigurator
             {
                 Button btnUseThisModule = new Button();
                 btnUseThisModule.Text = GetBtnModuleManagementText(moduleInfo.Type);
-                btnUseThisModule.Enabled = moduleInfo.Type == ModuleType.Bible ? SettingsManager.Instance.ModuleName != moduleInfo.ShortName : true;
+                btnUseThisModule.Enabled = moduleInfo.Type == ModuleType.Bible ? SettingsManager.Instance.ModuleShortName != moduleInfo.ShortName : true;
                 btnUseThisModule.Tag = moduleInfo;
                 btnUseThisModule.Top = top;
                 btnUseThisModule.Left = 400;
@@ -1408,7 +1408,7 @@ namespace BibleConfigurator
 
             Button btnDel = new Button();
             btnDel.Image = BibleConfigurator.Properties.Resources.del;
-            btnDel.Enabled = SettingsManager.Instance.ModuleName != moduleInfo.ShortName;            
+            btnDel.Enabled = SettingsManager.Instance.ModuleShortName != moduleInfo.ShortName;            
             btnDel.Tag = moduleInfo.ShortName;
             btnDel.Top = top;            
             btnDel.Left = 590;
@@ -1472,7 +1472,7 @@ namespace BibleConfigurator
 
                     if (canContinue)
                     {                        
-                        SettingsManager.Instance.ModuleName = moduleInfo.ShortName;
+                        SettingsManager.Instance.ModuleShortName = moduleInfo.ShortName;
                         ReLoadModulesInfo();
                         ReLoadParameters(true);
                     }
@@ -1599,6 +1599,6 @@ namespace BibleConfigurator
                     }
                 }
             }
-        }                                     
+        }                                             
     }
 }

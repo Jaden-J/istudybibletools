@@ -55,6 +55,8 @@ namespace TestProject
 
             try
             {
+                Assembly assembly = Assembly.LoadFrom(@"C:\Program Files\IStudyBibleTools\OneNote IStudyBibleTools\tools\BibleNoteLinker\BibleNoteLinker.exe");
+
                 //GenerateBibleBooks();
 
                 //SearchInNotebook();
@@ -71,7 +73,7 @@ namespace TestProject
 
                 //GenerateDictionary();
 
-                GenerateStrongDictionary();
+                //GenerateStrongDictionary();
                 
                 //SearchForEnText();
 
@@ -315,7 +317,7 @@ namespace TestProject
             OneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
 
             SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, ModulesManager.GetModuleInfo("kjv"), defaultNotebookFolderPath, null);
-            var result = SupplementalBibleManager.LinkSupplementalBibleWithMainBible(OneNoteApp, 0, null, null);
+            var result = SupplementalBibleManager.LinkSupplementalBibleWithPrimaryBible(OneNoteApp, 0, null, null);
 
             DateTime dtEnd = DateTime.Now;
 

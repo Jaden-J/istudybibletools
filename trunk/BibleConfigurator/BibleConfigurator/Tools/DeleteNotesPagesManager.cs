@@ -37,7 +37,7 @@ namespace BibleConfigurator.Tools
                 BibleCommon.Services.Logger.Init("DeleteNotesPagesManager");
 
                 Dictionary<string, string> pagesToDelete = GetAllNotesPagesIds();
-                int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleName, true);
+                int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleShortName, true);
 
                 _form.PrepareForExternalProcessing(chaptersCount + pagesToDelete.Count, 1, BibleCommon.Resources.Constants.DeleteNotesPagesManagerStartMessage);
 

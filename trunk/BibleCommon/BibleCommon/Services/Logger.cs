@@ -13,6 +13,7 @@ namespace BibleCommon.Services
     {
         public static bool ErrorWasLogged = false;        
         private static int _level = 0;
+        private static string _logFilePath;
         private static FileStream _fileStream = null;
         private static StreamWriter _streamWriter = null;
         private static ListBox _lb = null;
@@ -32,12 +33,24 @@ namespace BibleCommon.Services
         {
             if (!_isInitialized)
             {
-                string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Consts.Constants.ToolsName);
+                string directoryPath = Path.Combine(
+                                            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Consts.Constants.ToolsName), 
+                                            Consts.Constants.LogsDirectory);
 
                 if (!Directory.Exists(directoryPath))
                     Directory.CreateDirectory(directoryPath);
 
-                _fileStream = new FileStream(Path.Combine(directoryPath, systemName + ".txt"), FileMode.Create);
+                _logFilePath = Path.Combine(directoryPath, systemName + ".txt");
+                try
+                {
+                    _fileStream = new FileStream(_logFilePath, FileMode.Create);
+                }
+                catch (IOException)
+                {
+                    _logFilePath = Path.Combine(directoryPath, systemName + Guid.NewGuid() + ".txt");
+                    _fileStream = new FileStream(_logFilePath, FileMode.Create);
+                }
+
                 _streamWriter = new StreamWriter(_fileStream);
 
                 Errors = new List<string>();
@@ -55,13 +68,26 @@ namespace BibleCommon.Services
         {
             if (_isInitialized)
             {
-                if (_streamWriter != null)
-                    _streamWriter.Close();
+                bool needToDelete = false;
 
                 if (_fileStream != null)
+                {
+                    if (_fileStream.Length == 0)
+                        needToDelete = true;
                     _fileStream.Close();
+                }                            
+
 
                 _isInitialized = false;
+
+                if (needToDelete)
+                {
+                    try
+                    {
+                        File.Delete(_logFilePath);
+                    }
+                    catch { }
+                }
                 //_lb = null;
             }
         }
@@ -109,10 +135,8 @@ namespace BibleCommon.Services
                 Console.WriteLine(message);
                 if (_lb != null)                   
                     _newLineForListBox = true;
-                
 
-                if (_streamWriter != null && _streamWriter.BaseStream != null)
-                    _streamWriter.WriteLine(messageEx);                    
+                TryToWriteToFile(messageEx);
             }
             else
             {
@@ -120,16 +144,33 @@ namespace BibleCommon.Services
                 if (_lb != null)
                     _newLineForListBox = false;
 
-                if (_streamWriter != null && _streamWriter.BaseStream != null)
-                    _streamWriter.Write(messageEx);
+                TryToWriteToFile(messageEx);               
             }
 
-            if (_streamWriter != null && _streamWriter.BaseStream != null)
-                _streamWriter.Flush();
+            try
+            {
+                if (_streamWriter != null && _streamWriter.BaseStream != null)
+                    _streamWriter.Flush();
+            }
+            catch { }
 
             if (isError)
                 if (Errors != null)
                     Errors.Add(message);
+        }
+
+        private static void TryToWriteToFile(string message)
+        {
+            try
+            {
+                if (_streamWriter != null && _streamWriter.BaseStream != null)
+                    _streamWriter.WriteLine(message);
+            }
+            catch (Exception subEx)
+            {
+                MessageBox.Show(subEx.ToString());
+                MessageBox.Show(message);
+            }
         }
 
 

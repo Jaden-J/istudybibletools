@@ -56,7 +56,7 @@ namespace RibbonButtons
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.ToString());
             }
 		}
 
@@ -71,7 +71,7 @@ namespace RibbonButtons
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.ToString());
             }
 
             return null;
@@ -107,7 +107,7 @@ namespace RibbonButtons
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.ToString());
                 return null;
             }
 		}
@@ -190,7 +190,7 @@ namespace RibbonButtons
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.ToString());
             }
 		}
 
@@ -209,9 +209,9 @@ namespace RibbonButtons
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(ex.ToString());
                     if (ex.InnerException != null)
-                        MessageBox.Show(ex.InnerException.Message);
+                        MessageBox.Show(ex.InnerException.ToString());
                 }
             }
             else
@@ -272,7 +272,7 @@ namespace RibbonButtons
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.ToString());
                 return null;
             }
         }

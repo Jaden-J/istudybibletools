@@ -166,7 +166,7 @@ namespace BibleCommon.Helpers
         {
             if (string.IsNullOrEmpty(alphabet))
             {
-                if (!string.IsNullOrEmpty(SettingsManager.Instance.ModuleName))
+                if (!string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName))
                     alphabet = SettingsManager.Instance.CurrentModule.BibleStructure.Alphabet;
             }
 

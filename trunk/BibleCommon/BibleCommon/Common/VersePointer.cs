@@ -529,7 +529,7 @@ namespace BibleCommon.Common
             if (IsValid)
             {
                 var parallelVersePointer = BibleParallelTranslationConnectorManager.GetParallelVersePointer(
-                                                ToSimpleVersePointer(), moduleName, SettingsManager.Instance.ModuleName);
+                                                ToSimpleVersePointer(), moduleName, SettingsManager.Instance.ModuleShortName);
 
                 this.OriginalBookName = this.Book.Name;
                 this.Chapter = parallelVersePointer.Chapter;
@@ -542,7 +542,7 @@ namespace BibleCommon.Common
                                                                     this.Book.Index, 
                                                                     this.TopChapter.GetValueOrDefault(this.Chapter.Value), 
                                                                     new VerseNumber(this.TopVerse.GetValueOrDefault(this.Verse.Value))), 
-                                                moduleName, SettingsManager.Instance.ModuleName);
+                                                moduleName, SettingsManager.Instance.ModuleShortName);
 
                     if (TopChapter.HasValue)
                         _topChapter = parallelVersePointer.Chapter;

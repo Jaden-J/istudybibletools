@@ -88,16 +88,23 @@ namespace BibleCommon.Helpers
             }
         }
 
-        public static void RunSingleInstance(string messageIfSecondInstance, Action singleAction, bool silent = false)
+        public static void RunSingleInstance(Form form, string messageIfSecondInstance, Action singleAction, bool silent = false)
         {
             string appGuid = ((GuidAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute), false).GetValue(0)).Value.ToString();
 
-            using (Mutex mutex = new Mutex(false, "Global\\" + appGuid))
+            using (Mutex mutex = new Mutex(false, "Global\\" + appGuid + (form != null ? form.GetType().FullName : string.Empty)))
             {
                 if (!mutex.WaitOne(0, false))
                 {
                     if (!silent)                    
                         MessageBox.Show(messageIfSecondInstance);
+
+                    if (form != null)
+                    {
+                        form.Close();
+                        form.Dispose();
+                    }
+                    BibleCommon.Services.Logger.Done();
 
                     return;
                 }
@@ -105,6 +112,7 @@ namespace BibleCommon.Helpers
                 singleAction();
             }
         }
+
         public static void SetToolTip(Control c, string toolTip)
         {
             var _toolTip = new ToolTip();
