@@ -102,7 +102,7 @@ namespace BibleCommon.Services
         public string PageName_Notes { get; set; }
 
         private string _moduleName { get; set; }
-        public string ModuleName 
+        public string ModuleShortName 
         {
             get
             {
@@ -215,7 +215,7 @@ namespace BibleCommon.Services
 
         public bool CurrentModuleIsCorrect()
         {
-            return !string.IsNullOrEmpty(ModuleName) && ModulesManager.ModuleIsCorrect(ModuleName, ModuleType.Bible);
+            return !string.IsNullOrEmpty(ModuleShortName) && ModulesManager.ModuleIsCorrect(ModuleShortName, ModuleType.Bible);
         }
 
         public bool IsConfigured(Application oneNoteApp)
@@ -227,8 +227,8 @@ namespace BibleCommon.Services
                 && !string.IsNullOrEmpty(this.SectionName_DefaultBookOverview)
                 && !string.IsNullOrEmpty(this.PageName_DefaultComments)
                 && !string.IsNullOrEmpty(this.PageName_Notes)
-                && !string.IsNullOrEmpty(this.ModuleName)
-                && ModulesManager.ModuleIsCorrect(this.ModuleName, ModuleType.Bible)
+                && !string.IsNullOrEmpty(this.ModuleShortName)
+                && ModulesManager.ModuleIsCorrect(this.ModuleShortName, ModuleType.Bible)
                 && _useDefaultSettingsNodeExists;
 
             if (result)
@@ -332,7 +332,7 @@ namespace BibleCommon.Services
             this.NewVersionOnServer = GetParameterValue<Version>(xdoc, Consts.Constants.ParameterName_NewVersionOnServer, null, value => new Version(value));
             this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, null, value => DateTime.Parse(value));            
             this.Language = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_Language, Thread.CurrentThread.CurrentUICulture.LCID);
-            this.ModuleName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ModuleName, string.Empty);            
+            this.ModuleShortName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ModuleName, string.Empty);            
         }
 
         private CultureInfo _currentCultureInfo = null;
@@ -514,7 +514,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, this.RubbishPage_ExpandMultiVersesLinking),
                                   new XElement(Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, this.RubbishPage_ExcludedVersesLinking),
                                   new XElement(Consts.Constants.ParameterName_Language, this.Language),
-                                  new XElement(Consts.Constants.ParameterName_ModuleName, this.ModuleName),
+                                  new XElement(Consts.Constants.ParameterName_ModuleName, this.ModuleShortName),
                                   new XElement(Consts.Constants.ParameterName_UseDefaultSettings, this.UseDefaultSettings.Value),
                                   new XElement(Consts.Constants.ParameterName_PageWidthBible, this.PageWidth_Bible),
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleModules, string.Join(";", this.SupplementalBibleModules.ConvertAll(dm => dm.ToString()).ToArray())),

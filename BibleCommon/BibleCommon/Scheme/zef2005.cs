@@ -25,6 +25,7 @@ using System.ComponentModel;
     //  -removed VERS.Text, STYLE.Text, GRAM.Text, SUP.Text properties
     //  -added [XmlText(typeof(string))] to VERS.Items, STYLE.Text, GRAM.Text, SUP.Text properties
     //  -added [System.Xml.Serialization.XmlElementAttribute("gr", typeof(gr))] to VERS.Items, STYLE.Text, GRAM.Text, SUP.Text properties
+    //  -commented [System.Xml.Serialization.XmlElementAttribute("date", typeof(System.DateTime), Form = System.Xml.Schema.XmlSchemaForm.Unqualified, DataType = "date")] at INFORMATION.Items
 
 
     /// <remarks/>
@@ -205,7 +206,7 @@ using System.ComponentModel;
         [System.Xml.Serialization.XmlElementAttribute("contributors", typeof(string), Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlElementAttribute("coverage", typeof(string), Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlElementAttribute("creator", typeof(string), Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        [System.Xml.Serialization.XmlElementAttribute("date", typeof(System.DateTime), Form = System.Xml.Schema.XmlSchemaForm.Unqualified, DataType = "date")]
+        //[System.Xml.Serialization.XmlElementAttribute("date", typeof(System.DateTime), Form = System.Xml.Schema.XmlSchemaForm.Unqualified, DataType = "date")]
         [System.Xml.Serialization.XmlElementAttribute("description", typeof(string), Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlElementAttribute("format", typeof(string), Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlElementAttribute("identifier", typeof(string), Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]

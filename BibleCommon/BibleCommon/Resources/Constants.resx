@@ -702,4 +702,13 @@
   <data name="SupplementalNotebookWasAdded" xml:space="preserve">
     <value>Supplemental Bible notebook was successfully added</value>
   </data>
+  <data name="OpenVerse" xml:space="preserve">
+    <value>Open a verse</value>
+  </data>
+  <data name="SearchInDictionaries" xml:space="preserve">
+    <value>Search in Dictionaries</value>
+  </data>
+  <data name="SpecifyBibleVerse" xml:space="preserve">
+    <value>Specify the Bible verse</value>
+  </data>
 </root>

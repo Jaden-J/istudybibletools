@@ -699,4 +699,13 @@
   <data name="SupplementalNotebookWasAdded" xml:space="preserve">
     <value>Записная книжка справочной Библии успешно добавлена</value>
   </data>
+  <data name="OpenVerse" xml:space="preserve">
+    <value>Открыть стих</value>
+  </data>
+  <data name="SearchInDictionaries" xml:space="preserve">
+    <value>Поиск в словарях</value>
+  </data>
+  <data name="SpecifyBibleVerse" xml:space="preserve">
+    <value>Укажите место Писания</value>
+  </data>
 </root>

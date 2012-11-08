@@ -15,18 +15,20 @@ namespace BibleNoteLinker
         [STAThread]
         static void Main(params string[] args)
         {
-            FormExtensions.RunSingleInstance(BibleCommon.Resources.Constants.MoreThanSingleInstanceRun, () =>
+
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            Form form = PrepareForRunning(args);
+
+            if (form != null)
             {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-
-                Form form = PrepareForRunning(args);
-
-                if (form != null)
-                {                    
+                FormExtensions.RunSingleInstance(form, BibleCommon.Resources.Constants.MoreThanSingleInstanceRun, () =>
+                {
                     Application.Run(form);
-                }
-            });
+                });
+            }
+
         }
 
         private static Form PrepareForRunning(params string[] args)
@@ -58,15 +60,34 @@ namespace BibleNoteLinker
             return result;
         }
 
+        private static bool _firstLoad = true;
         public static void RunFromAnotherApp(params string[] args)
         {
-             Form form = PrepareForRunning(args);
+            try
+            {
+                if (_firstLoad)
+                {
+                    try
+                    {
+                        Application.EnableVisualStyles();
+                        Application.SetCompatibleTextRenderingDefault(false);
+                    }
+                    catch { }
+                    _firstLoad = false;
+                }
 
-             if (form != null)
-             {
-                 form.ShowDialog();
-                 form.Dispose();
-             }
+                Form form = PrepareForRunning(args);
+
+                if (form != null)
+                {
+                    form.ShowDialog();
+                    form.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
         }
     }
 }

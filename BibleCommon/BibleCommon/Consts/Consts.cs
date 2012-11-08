@@ -22,7 +22,8 @@ namespace BibleCommon.Consts
         public static readonly string FileExtensionIsbt = ".isbt";
         public static readonly string FileExtensionOnepkg = ".onepkg";
         public static readonly string TempDirectory = "Temp";
-        public static readonly string CacheDirectory = "Cache";        
+        public static readonly string CacheDirectory = "Cache";
+        public static readonly string LogsDirectory = "Logs";        
         public static readonly string DefaultPartVersesAlphabet = "abcdefghijklmnopqrstuvwxyz";
         public static readonly int DefaultStrongNumbersCount = 14700;
         public static readonly string EmbeddedSupplementalModulesKey = "SupplementalModules";

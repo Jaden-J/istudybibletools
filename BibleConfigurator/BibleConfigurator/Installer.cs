@@ -44,7 +44,7 @@ namespace BibleConfigurator
                 {
                     if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible))
                     {
-                        SettingsManager.Instance.ModuleName = GenerateDefaultModule(oneNoteTemplatesFolder);
+                        SettingsManager.Instance.ModuleShortName = GenerateDefaultModule(oneNoteTemplatesFolder);
                         SettingsManager.Instance.Save();
                     }
                 }

@@ -39,11 +39,9 @@ namespace BibleVersePointer
             InitializeComponent();
 
             _onenoteApp = new Microsoft.Office.Interop.OneNote.Application();
-
-
-            //todo: переделать на ресурсы. сейчас есть проблема с загрузкой сателлитных сборок, когда загружаем порграмму в пул OneNote
-            this.Text = SettingsManager.Instance.Language == 1049 ? "Открыть стих" : "Open a verse";
-            lblDescription.Text = SettingsManager.Instance.Language == 1049 ? "Укажите место Писания" : "Specify the Bible verse";
+            
+            this.Text = BibleCommon.Resources.Constants.OpenVerse; 
+            lblDescription.Text = BibleCommon.Resources.Constants.SpecifyBibleVerse;
         }
 
         [DllImport("user32.dll")]

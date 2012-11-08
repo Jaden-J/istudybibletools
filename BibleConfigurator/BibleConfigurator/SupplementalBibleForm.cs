@@ -37,12 +37,12 @@ namespace BibleConfigurator
         {
             get
             {
-                return 
+                return
 @"Данная форма предназначена для управления справочной Библией. 
 
 Обратите внимание:
-  - в справочную Библию можно добавлять только модули версии 2.0 и выше;
-  - добавление нового модуля в справочную Библию может занять около часа.  
+  - в справочную Библию можно добавлять только модули версии 2.0 и выше;  
+  - добавление нового модуля в справочную Библию может занять около часа.    
 ";
             }
         }
@@ -91,7 +91,7 @@ namespace BibleConfigurator
                 MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.LinkSupplementalBibleStart);
                 Logger.Preffix = string.Format("{0} {1}/{1}: {2}: ", BibleCommon.Resources.Constants.Stage, stagesCount, BibleCommon.Resources.Constants.LinkSupplementalBible);
                 BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
-                result = SupplementalBibleManager.LinkSupplementalBibleWithMainBible(OneNoteApp, 0, strongTermLinksCache, Logger);
+                result = SupplementalBibleManager.LinkSupplementalBibleWithPrimaryBible(OneNoteApp, 0, strongTermLinksCache, Logger);
 
                 MainForm.ExternalProcessingDone(BibleCommon.Resources.Constants.CreateSupplementalBibleFinish);
             }

@@ -110,7 +110,7 @@ namespace BibleCommon.Services
             }
         }
 
-        public static BibleParallelTranslationConnectionResult LinkSupplementalBibleWithMainBible(Application oneNoteApp, int supplementalModuleIndex,
+        public static BibleParallelTranslationConnectionResult LinkSupplementalBibleWithPrimaryBible(Application oneNoteApp, int supplementalModuleIndex,
             Dictionary<string, string> strongTermLinksCache, ICustomLogger logger)
         {
             if (supplementalModuleIndex != 0)
@@ -131,7 +131,7 @@ namespace BibleCommon.Services
 
             BibleParallelTranslationConnectionResult result;
             using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
-                            supplementalModuleShortName, SettingsManager.Instance.ModuleName,
+                            supplementalModuleShortName, SettingsManager.Instance.ModuleShortName,
                             SettingsManager.Instance.NotebookId_SupplementalBible))
             {
                 if (bibleTranslationManager.BaseModuleInfo.Type == Common.ModuleType.Strong)
@@ -156,7 +156,7 @@ namespace BibleCommon.Services
                         if (!parallelVerse.IsEmpty)
                         {
                             linkResult.AddRange(
-                                LinkdMainBibleAndSupplementalVerses(oneNoteApp, baseVersePointer, parallelVerse, bibleIteratorArgs,
+                                LinkdPrimaryBibleAndSupplementalVerses(oneNoteApp, baseVersePointer, parallelVerse, bibleIteratorArgs,
                                             bibleTranslationManager.BaseModuleInfo.Type == Common.ModuleType.Strong, strongTermLinksCache,
                                             bibleTranslationManager.BaseModuleInfo.ShortName,
                                             bibleTranslationManager.BaseModuleInfo.BibleStructure.Alphabet, xnm, nms));
@@ -362,7 +362,7 @@ namespace BibleCommon.Services
             }
         }      
 
-        private static List<Exception> LinkdMainBibleAndSupplementalVerses(Application oneNoteApp, SimpleVersePointer baseVersePointer,
+        private static List<Exception> LinkdPrimaryBibleAndSupplementalVerses(Application oneNoteApp, SimpleVersePointer baseVersePointer,
             SimpleVerse parallelVerse, BibleIteratorArgs bibleIteratorArgs, bool isStrong, Dictionary<string, string> strongTermLinksCache, 
             string strongModuleShortName, string alphabet, XmlNamespaceManager xnm, XNamespace nms)
         {
@@ -373,7 +373,7 @@ namespace BibleCommon.Services
 
             if (primaryBibleObjectsSearchResult.ResultType != HierarchySearchManager.HierarchySearchResultType.Successfully
                 || primaryBibleObjectsSearchResult.HierarchyStage != HierarchySearchManager.HierarchyStage.ContentPlaceholder)
-                throw new ParallelVerseNotFoundException(parallelVerse, BaseVersePointerException.Severity.Error);
+                throw new VerseNotFoundException(parallelVerse, SettingsManager.Instance.ModuleShortName, BaseVersePointerException.Severity.Error);
 
             VerseNumber? baseVerseNumber;
             string verseTextWithoutNumber;
