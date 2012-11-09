@@ -92,17 +92,19 @@ namespace BibleConfigurator
                 foreach (var module in SettingsManager.Instance.DictionariesModules)
                 {
                     var moduleInfo = ModulesManager.GetModuleInfo(module.ModuleName);
+                    if (moduleInfo.Type == ModuleType.Dictionary)
+                    {
+                        var dictionaryModuleInfo = OneNoteProxy.Instance.GetModuleDictionary(moduleInfo.ShortName);
+                        _modulesTermSets.Add(moduleInfo.ShortName, dictionaryModuleInfo);
+                        _modules.Add(moduleInfo.DisplayName, moduleInfo);
 
-                    var dictionaryModuleInfo = OneNoteProxy.Instance.GetModuleDictionary(moduleInfo.ShortName);
-                    _modulesTermSets.Add(moduleInfo.ShortName, dictionaryModuleInfo);
-                    _modules.Add(moduleInfo.DisplayName, moduleInfo);                    
+                        foreach (var term in dictionaryModuleInfo.TermSet.Terms)
+                        {
+                            if (!_termsInModules.ContainsKey(term))
+                                _termsInModules.Add(term, new TermInModules() { Term = term });
 
-                    foreach (var term in dictionaryModuleInfo.TermSet.Terms)
-                    {                        
-                        if (!_termsInModules.ContainsKey(term))
-                            _termsInModules.Add(term, new TermInModules() { Term = term });
-
-                        _termsInModules[term].Add(moduleInfo.DisplayName);
+                            _termsInModules[term].Add(moduleInfo.DisplayName);
+                        }
                     }
                 }             
 

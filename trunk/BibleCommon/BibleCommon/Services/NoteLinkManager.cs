@@ -910,16 +910,17 @@ namespace BibleCommon.Services
             HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
             PageIdInfo notePageId, string notePageContentObjectId, bool createLinkToNotesPage,
             string notesPageName, string notesParentPageName, int notesPageWidth, int notesPageLevel, bool force)
-        {            
-            OneNoteProxy.PageContent versePageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, verseHierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);       
-            string biblePageName = (string)versePageDocument.Content.Root.Attribute("name");
+        {
+            string biblePageName = verseHierarchyObjectInfo.PageName;
 
             string notesPageId = null;
+            bool pageWasCreated = false;
+            bool rowWasAdded = false;
             try
             {
                 notesPageId = OneNoteProxy.Instance.GetNotesPageId(oneNoteApp,
                     verseHierarchyObjectInfo.SectionId,
-                    verseHierarchyObjectInfo.PageId, biblePageName, notesPageName, notesParentPageName, notesPageLevel);                    
+                    verseHierarchyObjectInfo.PageId, biblePageName, notesPageName, out pageWasCreated, notesParentPageName, notesPageLevel);                    
             }
             catch (Exception ex)
             {
@@ -930,10 +931,12 @@ namespace BibleCommon.Services
             {
                 string targetContentObjectId = NotesPageManager.UpdateNotesPage(oneNoteApp, this, vp, isChapter, verseHierarchyObjectInfo,
                         notePageId, notesPageId, notePageContentObjectId, 
-                        notesPageName, notesPageWidth, force);
+                        notesPageName, notesPageWidth, force, out rowWasAdded);
 
-                if (createLinkToNotesPage)
+                if (createLinkToNotesPage && (pageWasCreated || rowWasAdded))
                 {
+                    OneNoteProxy.PageContent versePageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, verseHierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);       
+
                     string link = string.Format("<font size='2pt'>{0}</font>",
                                     OneNoteUtils.GenerateHref(oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, null)); // здесь всегда передаём null, так как в частых случаях он и так null, потому что страница в кэше, и в OneNote она ещё не обновлялась (то есть идентификаторы ещё не проставлены). Так как эти идентификаторы проставятся в самом конце, то и ссылки обновим в конце.
 
@@ -953,9 +956,10 @@ namespace BibleCommon.Services
                     if (wasModified)
                     {
                         versePageDocument.WasModified = true;
-                        OneNoteProxy.Instance.AddProcessedBiblePages(verseHierarchyObjectInfo.SectionId, verseHierarchyObjectInfo.PageId, biblePageName, vp.GetChapterPointer());
+                        
+                        OneNoteProxy.Instance.AddProcessedBiblePageWithUpdatedLinksToNotesPages(verseHierarchyObjectInfo.SectionId, verseHierarchyObjectInfo.PageId, biblePageName, vp.GetChapterPointer());
 
-                        OneNoteProxy.Instance.AddProcessedVerse(vp, verseHierarchyObjectInfo.VerseNumber);  // добавляем только стихи, отмеченные на "Сводной заметок"
+                        OneNoteProxy.Instance.AddProcessedVerseOnBiblePageWithUpdatedLinksToNotesPages(vp, verseHierarchyObjectInfo.VerseNumber);  // добавляем только стихи, отмеченные на "Сводной заметок"
                     }                    
                 }
 

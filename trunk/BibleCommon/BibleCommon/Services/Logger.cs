@@ -107,6 +107,15 @@ namespace BibleCommon.Services
         private static bool _newLineForListBox = false;
         private static void LogMessageToFileAndConsole(bool newLine, string message, string messageEx, bool writeDateTime, bool isError)
         {
+            if (!_isInitialized)
+            {
+                try
+                {
+                    Init(System.Reflection.Assembly.GetEntryAssembly().GetName().Name);
+                }
+                catch { }
+            }
+
             if (string.IsNullOrEmpty(messageEx))
                 messageEx = message;
 

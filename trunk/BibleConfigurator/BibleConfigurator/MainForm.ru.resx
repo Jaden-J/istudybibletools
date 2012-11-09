@@ -221,15 +221,11 @@
   <data name="tabPage2.Text" xml:space="preserve">
     <value>Параметры программы</value>
   </data>
-  <data name="chkNotOneNoteControls.Location" type="System.Drawing.Point, System.Drawing">
-    <value>347, 74</value>
-  </data>
   <data name="chkNotOneNoteControls.Size" type="System.Drawing.Size, System.Drawing">
-    <value>247, 30</value>
+    <value>244, 17</value>
   </data>
   <data name="chkNotOneNoteControls.Text" xml:space="preserve">
-    <value>Разрешено использование промежуточных
-элементов управления</value>
+    <value>Разрешено использование прокси-ссылок</value>
   </data>
   <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
     <value>99, 13</value>

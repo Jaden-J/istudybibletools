@@ -122,7 +122,8 @@ namespace BibleConfigurator.Tools
             string commentText = StringUtils.GetText(commentLink);
 
             string commentPageName = GetCommentPageName(commentLink);
-            string commentPageId = OneNoteProxy.Instance.GetCommentPageId(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName, false);
+            bool pageWasCreated;
+            string commentPageId = OneNoteProxy.Instance.GetCommentPageId(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName, out pageWasCreated, false);
             if (!string.IsNullOrEmpty(commentPageId))
             {
                 string commentObjectId = GetComentObjectId(commentPageId, commentText, null, 0);

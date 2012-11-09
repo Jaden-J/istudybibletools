@@ -49,7 +49,7 @@ namespace BibleCommon.Services
                         {
                             VersePointer vp = new VersePointer(chapterPointer, verseNumber.Value.Verse);
                             
-                            if (OneNoteProxy.Instance.ProcessedVerses.Contains(vp.ToSimpleVersePointer()))  // если мы обрабатывали этот стих
+                            if (OneNoteProxy.Instance.ProcessedVersesOnBiblePagesWithUpdatedLinksToNotesPages.Contains(vp.ToSimpleVersePointer()))  // если мы обрабатывали этот стих
                             {
                                 if (RelinkBiblePageNote(bibleSectionId, biblePageId, biblePageName, textElement, verseNumber))
                                     wasModified = true;
@@ -65,8 +65,9 @@ namespace BibleCommon.Services
 
         private bool RelinkBiblePageNote(string bibleSectionId, string biblePageId, string biblePageName, XElement textElement, VerseNumber? verseNumber)
         {
+            bool pageWasCreated;
             string notesPageName = NoteLinkManager.GetDefaultNotesPageName(verseNumber);
-            string notesPageId = OneNoteProxy.Instance.GetNotesPageId(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName);
+            string notesPageId = OneNoteProxy.Instance.GetNotesPageId(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName, out pageWasCreated);
             string notesRowObjectId = NotesPageManager.GetNotesRowObjectId(_oneNoteApp, notesPageId, verseNumber, !verseNumber.HasValue);
 
             if (!string.IsNullOrEmpty(notesRowObjectId))
