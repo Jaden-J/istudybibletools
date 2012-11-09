@@ -93,7 +93,7 @@ namespace BibleConfigurator
                     }
                     catch (NotSupportedException)
                     {
-                        //todo: log it
+                        Logger.LogError("Locking is not supported for this notebook");                        
                     }
 
                     if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible))

@@ -399,7 +399,15 @@ namespace BibleConfigurator
                         BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                         == System.Windows.Forms.DialogResult.Yes)
                     {
-                        CloseSupplementalNotebook();
+                        btnOk.Enabled = false;
+                        try
+                        {
+                            CloseSupplementalNotebook();
+                        }
+                        finally
+                        {
+                            btnOk.Enabled = true;
+                        }
                     }
                     else
                     {

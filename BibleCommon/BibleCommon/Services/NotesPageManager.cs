@@ -9,6 +9,7 @@ using Microsoft.Office.Interop.OneNote;
 using System.Xml.XPath;
 using System.Xml;
 using BibleCommon.Consts;
+using System.Text.RegularExpressions;
 
 namespace BibleCommon.Services
 {
@@ -17,14 +18,14 @@ namespace BibleCommon.Services
         public static string UpdateNotesPage(Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, bool isChapter,
            HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
            PageIdInfo notePageId, string notesPageId, string notePageContentObjectId,
-           string notesPageName, int notesPageWidth, bool force)
+           string notesPageName, int notesPageWidth, bool force, out bool rowWasAdded)
         {
             string targetContentObjectId = string.Empty;
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
             OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
 
             XElement rowElement = GetNotesRowAndCreateIfNotExists(oneNoteApp, vp, isChapter, notesPageWidth, verseHierarchyObjectInfo,
-                notesPageDocument.Content, notesPageDocument.Xnm, nms);
+                notesPageDocument.Content, notesPageDocument.Xnm, nms, out rowWasAdded);
 
             if (rowElement != null)
             {
@@ -183,28 +184,14 @@ namespace BibleCommon.Services
 
         private static string GetExistingMultiVerseString(XElement suchNoteLink)
         {
-            string multiVerseString = string.Empty;
-
-            string topVerseSearchPattern = "(:";
-            string topVerseEndSearchPattern = ")";
-
-            int topVerseIndex = -1;
-            string suchNoteLinkText = string.Empty;
+            var multiVerseString = string.Empty;            
+            var suchNoteLinkText = string.Empty;
 
             if (suchNoteLink != null)
                 suchNoteLinkText = StringUtils.GetText(suchNoteLink.Value);
 
-            if (!string.IsNullOrEmpty(suchNoteLinkText))
-                topVerseIndex = suchNoteLinkText.IndexOf(topVerseSearchPattern);
-
-            if (topVerseIndex != -1)
-            {
-                int topVerseEndIndex = suchNoteLinkText.IndexOf(topVerseEndSearchPattern, topVerseIndex + 1);
-                if (topVerseEndIndex != -1)
-                {
-                    multiVerseString = suchNoteLinkText.Substring(topVerseIndex, topVerseEndIndex - topVerseIndex + 1);
-                }
-            }
+            if (!string.IsNullOrEmpty(suchNoteLinkText))            
+                multiVerseString = Regex.Match(suchNoteLinkText, @"\((\d+)?:\d+\-(\d+:)?\d+\)").Value;            
 
             if (!string.IsNullOrEmpty(multiVerseString))
                 return string.Format(" <b>{0}</b>", multiVerseString);
@@ -227,8 +214,10 @@ namespace BibleCommon.Services
 
         private static XElement GetNotesRowAndCreateIfNotExists(Application oneNoteApp, VersePointer vp, bool isChapter,
             int mainColumnWidth, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
-            XDocument notesPageDocument, XmlNamespaceManager xnm, XNamespace nms)
+            XDocument notesPageDocument, XmlNamespaceManager xnm, XNamespace nms, out bool rowWasAdded)
         {
+            rowWasAdded = false;
+
             XElement rootElement = notesPageDocument.XPathSelectElement("//one:Outline/one:OEChildren/one:OE", xnm);
             if (rootElement == null)
             {
@@ -257,6 +246,7 @@ namespace BibleCommon.Services
             if (rowElement == null)
             {
                 AddNewNotesRow(oneNoteApp, vp, isChapter, verseHierarchyObjectInfo, tableElement, xnm, nms);
+                rowWasAdded = true;
 
                 rowElement = GetNotesRow(tableElement, verseHierarchyObjectInfo.VerseNumber, isChapter, xnm);
             }

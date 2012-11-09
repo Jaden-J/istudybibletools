@@ -1183,7 +1183,8 @@ namespace BibleConfigurator
                     
                     FormExtensions.Invoke(this, ReLoadModulesInfo);                    
 
-                    FormLogger.LogMessage(BibleCommon.Resources.Constants.ModuleSuccessfullyUploaded);
+                    var form = new BibleCommon.UI.Forms.MessageForm(BibleCommon.Resources.Constants.ModuleSuccessfullyUploaded, BibleCommon.UI.Forms.MessageForm.Severity.Information);
+                    form.ShowDialog();
 
                     return needToReload;                    
                 }

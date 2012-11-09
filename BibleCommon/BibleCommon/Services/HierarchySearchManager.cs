@@ -47,6 +47,7 @@ namespace BibleCommon.Services
         {            
             public string SectionId { get; set; }
             public string PageId { get; set; }
+            public string PageName { get; set; }
             public VerseObjectInfo VerseInfo { get; set; }
             public Dictionary<VersePointer, VerseObjectInfo> AdditionalObjectsIds { get; set; }                        
             public List<VerseObjectInfo> GetAllObjectsIds()
@@ -187,6 +188,7 @@ namespace BibleCommon.Services
                 if (targetPage != null)
                 {
                     result.HierarchyObjectInfo.PageId = (string)targetPage.Attribute("ID");
+                    result.HierarchyObjectInfo.PageName = (string)targetPage.Attribute("name");
                     result.HierarchyStage = HierarchyStage.Page;
 
                     var pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, result.HierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);

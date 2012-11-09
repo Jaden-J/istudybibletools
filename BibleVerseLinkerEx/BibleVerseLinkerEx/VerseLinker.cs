@@ -119,8 +119,9 @@ namespace BibleVerseLinkerEx
                 string verseLinkPageId = null;
                 try
                 {
+                    bool pageWasCreated;
                     verseLinkPageId = BibleCommon.Services.VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(OneNoteApp, currentSectionId,
-                        currentPageId, currentPageName, DescriptionPageName, false);
+                        currentPageId, currentPageName, DescriptionPageName, false, out pageWasCreated);
                 }
                 catch (Exception ex)
                 {

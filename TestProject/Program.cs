@@ -89,7 +89,7 @@ namespace TestProject
 
                 //ConvertRussianModule();
 
-                //ConvertEnglishModule();
+                ConvertEnglishModule();
 
                 //ConvertRomanModule();
 
@@ -399,7 +399,7 @@ namespace TestProject
 
         private static void ConvertEnglishModule()
         {
-            string moduleShortName = "kjv";
+            string moduleShortName = "dourh";
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName),
                 "en", new NotebooksStructure() { Notebooks = PredefinedNotebooksInfo.English }, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
                 "{0} chapter. {1}",

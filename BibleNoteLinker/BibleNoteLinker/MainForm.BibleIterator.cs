@@ -151,7 +151,7 @@ namespace BibleNoteLinker
         {
             string message = BibleCommon.Resources.Constants.NoteLinkerLinksToNotesPagesUpdating;
             LogHighLevelMessage(message, 3, StagesCount);
-            int allPagesCount = OneNoteProxy.Instance.ProcessedBiblePages.Values.Count;            
+            int allPagesCount = OneNoteProxy.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values.Count;            
             Logger.LogMessage(string.Format("{0} ({1})",
                 message, Helper.GetRightPagesString(allPagesCount)));            
             pbMain.Maximum = allPagesCount;
@@ -161,7 +161,7 @@ namespace BibleNoteLinker
             int processedPagesCount = 0;
             using (var relinkNotesManager = new RelinkAllBibleNotesManager(_oneNoteApp))
             {
-                foreach (OneNoteProxy.BiblePageId processedBiblePageId in OneNoteProxy.Instance.ProcessedBiblePages.Values)
+                foreach (OneNoteProxy.BiblePageId processedBiblePageId in OneNoteProxy.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values)
                 {
                     LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
 
@@ -318,10 +318,22 @@ namespace BibleNoteLinker
 
             foreach (string id in Helper.GetSelectedNotebooksIds())
             {
-                if (SettingsManager.Instance.IsSingleNotebook)
-                    result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, id, filter));
-                else
-                    result.Add(iterator.GetNotebookPages(id, null, filter));
+                try
+                {
+                    if (SettingsManager.Instance.IsSingleNotebook)
+                        result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, id, filter));
+                    else
+                        result.Add(iterator.GetNotebookPages(id, null, filter));
+                }
+                catch (Exception ex)
+                {
+                    if (ex.Message.Contains("0x80042014"))   // The object does not exist.
+                    {
+                        //remove notebook from settings
+                    }
+                    else
+                        throw;
+                }
             }
 
             return result;

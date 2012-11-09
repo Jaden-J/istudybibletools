@@ -66,8 +66,8 @@
             // 
             // cbExistingNotebooks
             // 
-            resources.ApplyResources(this.cbExistingNotebooks, "cbExistingNotebooks");
             this.cbExistingNotebooks.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            resources.ApplyResources(this.cbExistingNotebooks, "cbExistingNotebooks");
             this.cbExistingNotebooks.FormattingEnabled = true;
             this.cbExistingNotebooks.Name = "cbExistingNotebooks";
             // 
@@ -101,20 +101,18 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // folderBrowserDialog
-            // 
-            resources.ApplyResources(this.folderBrowserDialog, "folderBrowserDialog");
-            // 
             // BaseSupplementalForm
             // 
-            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            resources.ApplyResources(this, "$this");
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.pnModules);
             this.Controls.Add(this.chkUseSupplementalBible);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.KeyPreview = true;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "BaseSupplementalForm";
             this.ShowInTaskbar = false;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SupplementalBibleForm_FormClosing);

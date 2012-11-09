@@ -27,9 +27,10 @@ namespace BibleCommon.Services
         /// <returns>target pageId</returns>
         public static string FindVerseLinkPageAndCreateIfNeeded(Application oneNoteApp, 
             string bibleSectionId, string biblePageId, string biblePageName, string descriptionPageName,
-            bool isSummaryNotesPage, string verseLinkParentPageId = null, int pageLevel = 1, bool createIfNeeded = true)
+            bool isSummaryNotesPage, out bool pageWasCreated, string verseLinkParentPageId = null, int pageLevel = 1, bool createIfNeeded = true)
         {
             string result = string.Empty;
+            pageWasCreated = false;
 
             string exceptionResolveWay = isSummaryNotesPage ? string.Empty : string.Format("\n{0}", BibleCommon.Resources.Constants.VerseLinkManagerOpenNotBiblePage);
             string sectionGroupId = FindDescriptionSectionGroupForBiblePage(oneNoteApp, bibleSectionId, createIfNeeded, isSummaryNotesPage, false);
@@ -40,7 +41,7 @@ namespace BibleCommon.Services
                 {
                     string bibleSectionName = OneNoteUtils.GetHierarchyElementName(oneNoteApp, bibleSectionId);
                     string pageId = FindDescriptionPageForBiblePage(oneNoteApp, sectionId,
-                        bibleSectionName, biblePageId, biblePageName, descriptionPageName, isSummaryNotesPage, verseLinkParentPageId, pageLevel, createIfNeeded);
+                        bibleSectionName, biblePageId, biblePageName, descriptionPageName, isSummaryNotesPage, verseLinkParentPageId, pageLevel, createIfNeeded, out pageWasCreated);
                     if (!string.IsNullOrEmpty(pageId))
                     {
                         result = pageId;
@@ -194,8 +195,9 @@ namespace BibleCommon.Services
         /// <returns></returns>
         private static string FindDescriptionPageForBiblePage(Application oneNoteApp, string sectionId, 
             string bibleSectionName, string biblePageId, string biblePageName, string descriptionPageName,
-            bool isSummaryNotesPage, string verseLinkParentPageId, int pageLevel, bool createIfNeeded)
-        {   
+            bool isSummaryNotesPage, string verseLinkParentPageId, int pageLevel, bool createIfNeeded, out bool pageWasCreated)
+        {
+            pageWasCreated = false;
             OneNoteProxy.HierarchyElement sectionDocument = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages);            
 
             VersePointer vp = GetVersePointer(bibleSectionName, biblePageName);
@@ -218,6 +220,7 @@ namespace BibleCommon.Services
                 if (createIfNeeded)
                 {
                     oneNoteApp.CreateNewPage(sectionId, out pageId, NewPageStyle.npsBlankPageWithTitle);
+                    pageWasCreated = true;
 
                     OneNoteProxy.PageContent biblePageDoc = OneNoteProxy.Instance.GetPageContent(oneNoteApp, biblePageId, OneNoteProxy.PageType.Bible);
                     string biblePageTitleId = (string)biblePageDoc.Content.Root
