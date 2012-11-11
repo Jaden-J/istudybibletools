@@ -128,6 +128,7 @@ namespace BibleCommon.Services
                 {                    
                     SectionId = versePointerLink.SectionId,
                     PageId = versePointerLink.PageId,
+                    PageName = versePointerLink.PageName,
                     VerseInfo = new VerseObjectInfo(versePointerLink)                    
                 };
 
