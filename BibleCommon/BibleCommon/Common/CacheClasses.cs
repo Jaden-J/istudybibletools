@@ -41,6 +41,7 @@ namespace BibleCommon.Common
 
         public string SectionId { get; set; }
         public string PageId { get; set; }
+        public string PageName { get; set; }
         public string ObjectId { get; set; }
         public string Href { get; set; }
         public VerseNumber? VerseNumber { get; set; }     // Мы, например, искали Быт 4:4 (модуль IBS). А нам вернули Быт 4:3. Здесь будем хранить "3-4".
@@ -56,15 +57,16 @@ namespace BibleCommon.Common
 
             SectionId = parts[0];
             PageId = parts[1];
-            ObjectId = parts[2];
-            Href = parts[3];
-            VerseNumber = string.IsNullOrEmpty(parts[4]) ? null : (VerseNumber?) Common.VerseNumber.Parse(parts[4]);
-            IsChapter = bool.Parse(parts[5]);
+            PageName = parts[2];
+            ObjectId = parts[3];
+            Href = parts[4];
+            VerseNumber = string.IsNullOrEmpty(parts[5]) ? null : (VerseNumber?) Common.VerseNumber.Parse(parts[5]);
+            IsChapter = bool.Parse(parts[6]);
         }
 
         public override string ToString()
         {
-            return string.Join(_separator, new string[] { SectionId, PageId, ObjectId, Href, VerseNumber.HasValue ? VerseNumber.Value.ToString() : string.Empty, IsChapter.ToString() });
+            return string.Join(_separator, new string[] { SectionId, PageId, PageName, ObjectId, Href, VerseNumber.HasValue ? VerseNumber.Value.ToString() : string.Empty, IsChapter.ToString() });
         }
     }   
 }

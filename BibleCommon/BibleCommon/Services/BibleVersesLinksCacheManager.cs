@@ -93,22 +93,23 @@ namespace BibleCommon.Services
 
             XmlNamespaceManager xnm;
             var pageId = (string)page.PageElement.Attribute("ID");
+            var pageName = (string)page.PageElement.Attribute("name");
             var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, pageId, out xnm);
 
             var tableEl = NotebookGenerator.GetPageTable(pageDoc, xnm);
             if (tableEl == null)
                 return;
 
-            AddChapterPointer(oneNoteApp, notebookId, section, pageDoc, pageId, chapterNumber, ref result, xnm);          
+            AddChapterPointer(oneNoteApp, notebookId, section, pageDoc, pageId, pageName, chapterNumber, ref result, xnm);          
             
             foreach (var cellTextEl in tableEl.XPathSelectElements("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
             {
-                AddVersePointer(oneNoteApp, notebookId, section, pageDoc, pageId, chapterNumber, cellTextEl, ref result, xnm);          
+                AddVersePointer(oneNoteApp, notebookId, section, pageDoc, pageId, pageName, chapterNumber, cellTextEl, ref result, xnm);          
             }
         }
 
         private static void AddItemToResult(Application oneNoteApp, VersePointer versePointer, string notebookId, NotebookIterator.SectionInfo section,
-            string pageId, XElement objectEl, bool isChapter, ref Dictionary<string, string> result)
+            string pageId, string pageName, XElement objectEl, bool isChapter, ref Dictionary<string, string> result)
         {
             if (versePointer.IsValid)
             {
@@ -126,6 +127,7 @@ namespace BibleCommon.Services
                         {
                             SectionId = section.Id,
                             PageId = pageId,
+                            PageName = pageName,
                             ObjectId = textElId,
                             Href = verseLink,
                             VerseNumber = commonKey.VerseNumber,
@@ -136,8 +138,8 @@ namespace BibleCommon.Services
             }       
         }
 
-        private static void AddVersePointer(Application oneNoteApp, string notebookId, NotebookIterator.SectionInfo section, 
-            XDocument pageDoc, string pageId, int? chapterNumber, XElement cellTextEl,
+        private static void AddVersePointer(Application oneNoteApp, string notebookId, NotebookIterator.SectionInfo section,
+            XDocument pageDoc, string pageId, string pageName, int? chapterNumber, XElement cellTextEl,
             ref Dictionary<string, string> result, XmlNamespaceManager xnm)
         {
             var verseNumber = VerseNumber.GetFromVerseText(cellTextEl.Value);                
@@ -148,12 +150,12 @@ namespace BibleCommon.Services
                 if (!versePointer.IsValid)
                     versePointer = new VersePointer(section.Title.Substring(4), chapterNumber.Value, verseNumber.Value.Verse, verseNumber.Value.TopVerse);  // иначе не понимает такие строки как "09. 1-я Царств 1:1"
 
-                AddItemToResult(oneNoteApp, versePointer, notebookId, section, pageId, cellTextEl, false, ref result);
+                AddItemToResult(oneNoteApp, versePointer, notebookId, section, pageId, pageName, cellTextEl, false, ref result);
             }      
         }
 
-        private static void AddChapterPointer(Application oneNoteApp, string notebookId, NotebookIterator.SectionInfo section, 
-            XDocument pageDoc, string pageId, int? chapterNumber,
+        private static void AddChapterPointer(Application oneNoteApp, string notebookId, NotebookIterator.SectionInfo section,
+            XDocument pageDoc, string pageId, string pageName, int? chapterNumber,
             ref Dictionary<string, string> result, XmlNamespaceManager xnm)
         {
             var pageTitleEl = NotebookGenerator.GetPageTitle(pageDoc, xnm);
@@ -163,7 +165,7 @@ namespace BibleCommon.Services
                 if (!chapterPointer.IsValid)
                     chapterPointer = new VersePointer(section.Title.Substring(4), chapterNumber.Value);
 
-                AddItemToResult(oneNoteApp, chapterPointer, notebookId, section, pageId, pageTitleEl, true, ref result);                
+                AddItemToResult(oneNoteApp, chapterPointer, notebookId, section, pageId, pageName, pageTitleEl, true, ref result);                
             }
         }
     }
