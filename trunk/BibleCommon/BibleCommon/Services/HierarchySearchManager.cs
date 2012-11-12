@@ -52,8 +52,13 @@ namespace BibleCommon.Services
             public Dictionary<VersePointer, VerseObjectInfo> AdditionalObjectsIds { get; set; }                        
             public List<VerseObjectInfo> GetAllObjectsIds()
             {
-                var result = new List<VerseObjectInfo>() { VerseInfo };
+                var result = new List<VerseObjectInfo>();
+
+                if (VerseInfo != null)
+                    result.Add(VerseInfo);
+
                 result.AddRange(AdditionalObjectsIds.Values);
+
                 return result;
             }
 

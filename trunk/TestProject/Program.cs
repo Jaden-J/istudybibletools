@@ -83,9 +83,9 @@ namespace TestProject
 
                 //ConvertEnglishModuleZefaniaXml();
 
-                //ConvertUkrModule();
+                ConvertUkrModule();
 
-                ConvertChineseModule();
+                //ConvertChineseModule();
 
                 //ConvertRussianModule();
 
@@ -354,13 +354,13 @@ namespace TestProject
 
         private static void ConvertUkrModule()
         {
-            string moduleShortName = "UkrGYZ";
+            string moduleShortName = "ukr";
             var notebooksStructure = new NotebooksStructure() { Notebooks = PredefinedNotebooksInfo.Russian };  // это тоже часто меняется
             //notebooksStructure.DictionarySectionGroupName = "Стронга";  // параметры для стронга
             //notebooksStructure.DictionaryTermsCount = 14700;
 
-            var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName), "ru",
-                notebooksStructure, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst),  // вот эти тоже часто надо менять                
+            var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName), "uk",
+                notebooksStructure, PredefinedBookIndexes.KJV, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst),  // вот эти тоже часто надо менять                
                 "{0} глава. {1}",
                 false,                
                 new Version(2, 0), false,

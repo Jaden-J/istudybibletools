@@ -97,24 +97,30 @@ namespace BibleConfigurator
                 }
             }
 
-            foreach (var section in container.Sections)
+            if (container.Sections != null)
             {
-                var sectionEl = containerEl.XPathSelectElement(string.Format("one:Section", section.Name));
+                foreach (var section in container.Sections)
+                {
+                    var sectionEl = containerEl.XPathSelectElement(string.Format("one:Section", section.Name));
 
-                if (section == null)
-                    throw new InvalidNotebookException(Constants.SectionNotFoundInContainer, section.Name, containerName);
+                    if (section == null)
+                        throw new InvalidNotebookException(Constants.SectionNotFoundInContainer, section.Name, containerName);
 
-                CheckSection(section, sectionEl, xnm);
+                    CheckSection(section, sectionEl, xnm);
+                }
             }
 
-            foreach (var subSectionGroup in container.SectionGroups)
+            if (container.SectionGroups != null)
             {
-                var subSectionGroupEl = containerEl.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", subSectionGroup.Name), xnm);
+                foreach (var subSectionGroup in container.SectionGroups)
+                {
+                    var subSectionGroupEl = containerEl.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", subSectionGroup.Name), xnm);
 
-                if (subSectionGroupEl == null)
-                    throw new InvalidNotebookException(Constants.SectionGroupNotFoundInContainer, subSectionGroup.Name, containerName);
+                    if (subSectionGroupEl == null)
+                        throw new InvalidNotebookException(Constants.SectionGroupNotFoundInContainer, subSectionGroup.Name, containerName);
 
-                CheckContainer(subSectionGroup, subSectionGroupEl, xnm);
+                    CheckContainer(subSectionGroup, subSectionGroupEl, xnm);
+                }
             }
         }
 

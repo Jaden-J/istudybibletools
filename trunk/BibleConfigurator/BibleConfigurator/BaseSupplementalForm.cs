@@ -57,6 +57,7 @@ namespace BibleConfigurator
         protected abstract string SupplementalNotebookWasAddedMessage { get; }
         protected abstract void SaveSupplementalNotebookSettings(string notebookId);
         protected abstract List<string> SaveEmbeddedModuleSettings(EmbeddedModuleInfo embeddedModuleInfo, ModuleInfo moduleInfo, XElement pageEl);
+        protected abstract bool AreThereModulesToAdd();
 
 
         protected FolderBrowserDialog FolderBrowserDialog
@@ -204,8 +205,7 @@ namespace BibleConfigurator
             BtnAddNewModule.Image = BibleConfigurator.Properties.Resources.plus;
             FormExtensions.SetToolTip(BtnAddNewModule, BibleCommon.Resources.Constants.AddSupplementalModule);
             BtnAddNewModule.Click += new EventHandler(_btnAddNewModule_Click);
-            BtnAddNewModule.Width = BtnAddNewModule.Height;            
-            BtnAddNewModule.Enabled = GetSupplementalModulesCount() < Modules.Count;            
+            BtnAddNewModule.Width = BtnAddNewModule.Height;                        
             pnModules.Controls.Add(BtnAddNewModule);
         }
 
@@ -441,12 +441,7 @@ namespace BibleConfigurator
         {
             if (e.KeyCode == Keys.Escape)
                 Close();
-        }
-
-        private bool AreThereModulesToAdd()
-        {
-            return Modules.Any(m => IsModuleSupported(m) && !SupplementalModuleAlreadyAdded(m.ShortName));            
-        }
+        }        
 
         private void AddModulesComboBox()
         {            

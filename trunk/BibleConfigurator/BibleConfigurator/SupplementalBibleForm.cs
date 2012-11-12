@@ -227,5 +227,10 @@ namespace BibleConfigurator
         {
             SettingsManager.Instance.SupplementalBibleModules.Clear();
         }
+
+        protected override bool AreThereModulesToAdd()
+        {
+            return Modules.Any(m => IsModuleSupported(m) && !SupplementalModuleAlreadyAdded(m.ShortName));            
+        }
     }
 }

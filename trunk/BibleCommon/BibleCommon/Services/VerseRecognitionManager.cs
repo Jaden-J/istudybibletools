@@ -563,25 +563,28 @@ namespace BibleCommon.Services
 
                 if (int.TryParse(nextChar, out tempTopVerse))
                 {
-                    if (!(tempTopVerse > MaxVerse || spaceWasFound))
+                    if (!(tempTopVerse > MaxVerse))
                     {
                         var afterChar = StringUtils.GetChar(textElementValue, tempNextHtmlBreakIndex);
-                        if (tempTopVerse > verseNumber 
+                        if (tempTopVerse > verseNumber
                             || afterChar == ChapterVerseDelimiter) // если строка типа Ин 1:2-3:4
                         {
-                            verseString = string.Format("{0}-{1}", verseString, nextChar.Trim());
-                            endIndex = tempEndIndex;
-                            nextHtmlBreakIndex = tempNextHtmlBreakIndex;
-
-                            if (afterChar == ChapterVerseDelimiter)
+                            if (!(afterChar != ChapterVerseDelimiter && spaceWasFound))
                             {
-                                nextChar = StringUtils.GetNextString(textElementValue, nextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex);
+                                verseString = string.Format("{0}-{1}", verseString, nextChar.Trim());
+                                endIndex = tempEndIndex;
+                                nextHtmlBreakIndex = tempNextHtmlBreakIndex;
 
-                                if (int.TryParse(nextChar, out tempTopVerse))
+                                if (afterChar == ChapterVerseDelimiter)
                                 {
-                                    verseString += ChapterVerseDelimiter + nextChar;
-                                    endIndex = tempEndIndex;
-                                    nextHtmlBreakIndex = tempNextHtmlBreakIndex;
+                                    nextChar = StringUtils.GetNextString(textElementValue, nextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex);
+
+                                    if (int.TryParse(nextChar, out tempTopVerse))
+                                    {
+                                        verseString += ChapterVerseDelimiter + nextChar;
+                                        endIndex = tempEndIndex;
+                                        nextHtmlBreakIndex = tempNextHtmlBreakIndex;
+                                    }
                                 }
                             }
                         }                        

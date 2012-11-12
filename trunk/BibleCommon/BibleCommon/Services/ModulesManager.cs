@@ -47,6 +47,7 @@ namespace BibleCommon.Services
             var module = GetModuleFile<ModuleInfo>(moduleShortName, Consts.Constants.ManifestFileName);
             if (string.IsNullOrEmpty(module.ShortName))
                 module.ShortName = moduleShortName;
+            module.CorrectModuleAfterDeserialization();
             
             return module;
         }
@@ -229,18 +230,24 @@ namespace BibleCommon.Services
                 }
             }
 
-            foreach (var notebook in module.NotebooksStructure.Notebooks)
+            if (module.NotebooksStructure.Notebooks != null)
             {
-                if (!notebook.SkipCheck)                
-                    if (!File.Exists(Path.Combine(moduleDirectory, notebook.Name)))
-                        throw new InvalidModuleException(string.Format(Resources.Constants.Error_NotebookTemplateNotFound, notebook.Name, notebook.Type));
+                foreach (var notebook in module.NotebooksStructure.Notebooks)
+                {
+                    if (!notebook.SkipCheck)
+                        if (!File.Exists(Path.Combine(moduleDirectory, notebook.Name)))
+                            throw new InvalidModuleException(string.Format(Resources.Constants.Error_NotebookTemplateNotFound, notebook.Name, notebook.Type));
+                }
             }
 
-            foreach (var section in module.NotebooksStructure.Sections)
+            if (module.NotebooksStructure.Sections != null)
             {
-                if (!section.SkipCheck)
-                    if (!File.Exists(Path.Combine(moduleDirectory, section.Name)))
-                        throw new InvalidModuleException(string.Format(Resources.Constants.Error_SectionFileNotFound, section.Name));
+                foreach (var section in module.NotebooksStructure.Sections)
+                {
+                    if (!section.SkipCheck)
+                        if (!File.Exists(Path.Combine(moduleDirectory, section.Name)))
+                            throw new InvalidModuleException(string.Format(Resources.Constants.Error_SectionFileNotFound, section.Name));
+                }
             }
         }
 
@@ -289,7 +296,8 @@ namespace BibleCommon.Services
 
                 var module = Dessirialize<ModuleInfo>(manifestFilePath);
                 if (string.IsNullOrEmpty(module.ShortName))
-                    module.ShortName = Path.GetFileNameWithoutExtension(moduleFilePath);                
+                    module.ShortName = Path.GetFileNameWithoutExtension(moduleFilePath);
+                module.CorrectModuleAfterDeserialization();
 
                 return module;
             }

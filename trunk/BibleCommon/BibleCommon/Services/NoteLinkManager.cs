@@ -175,6 +175,22 @@ namespace BibleCommon.Services
                 Logger.LogError(BibleCommon.Resources.Constants.NoteLinkManagerProcessingPageErrors, ex);
             }
         }
+        
+        public void SetCursorOnNearestVerse(string pageId)
+        {
+            try
+            {
+                OneNoteProxy.PageContent notePageDocument = OneNoteProxy.Instance.GetPageContent(_oneNoteApp, pageId, OneNoteProxy.PageType.NotePage, PageInfo.piSelection);
+                var pageEl = notePageDocument.Content.Root;                
+            }
+            catch (ProcessAbortedByUserException)
+            {
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(BibleCommon.Resources.Constants.NoteLinkManagerProcessingPageErrors, ex);
+            }
+        }
 
         private void ProcessChapters(List<FoundChapterInfo> foundChapters, 
             PageIdInfo notePageId, 

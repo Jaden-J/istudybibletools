@@ -111,7 +111,8 @@ namespace BibleCommon.Helpers
                     fs.Read(bom, 0, 4);
                     if ((bom[0] == 0xef && bom[1] == 0xbb && bom[2] == 0xbf)
                         || (bom[0] == 47 && bom[1] == 47 && bom[2] == 32 && bom[3] == 208)
-                        || (bom[0] == 60 && bom[1] == 109 && bom[2] == 101 && bom[3] == 116))  // utf-8 
+                        || (bom[0] == 60 && bom[1] == 109 && bom[2] == 101 && bom[3] == 116)
+                        || (bom[0] == 60 && bom[1] == 116 && bom[2] == 105 && bom[3] == 116))  // utf-8 
                     {
                         result = System.Text.Encoding.UTF8;
                     }

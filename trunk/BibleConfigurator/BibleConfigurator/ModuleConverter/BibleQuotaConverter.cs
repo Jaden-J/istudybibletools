@@ -291,9 +291,9 @@ namespace BibleConfigurator.ModuleConverter
             return result;
         }
 
-        protected override void GenerateBibleInfo()
+        protected override void GenerateBibleInfo(ExternalModuleInfo externalModuleInfo)
         {
-            base.GenerateBibleInfo();
+            base.GenerateBibleInfo(externalModuleInfo);
 
             var booksInfo = new BibleBooksInfo() { Descr = this.ModuleShortName, Alphabet = ModuleInfo.BibleStructure.Alphabet };
             foreach (var book in ModuleInfo.BibleStructure.BibleBooks)
