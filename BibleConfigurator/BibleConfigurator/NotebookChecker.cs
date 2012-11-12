@@ -53,6 +53,8 @@ namespace BibleConfigurator
             if (container.SkipCheck)
                 return;
 
+            var containerName = (string)containerEl.Attribute("name");
+
             if (container.CheckSectionGroupsCount)
             {
                 int subSectionGroupsCount = containerEl.XPathSelectElements("one:SectionGroup", xnm).Count();
@@ -60,17 +62,17 @@ namespace BibleConfigurator
                 if (container.SectionGroupsCount != default(int))
                 {
                     if (container.SectionGroupsCount != subSectionGroupsCount)
-                        throw new InvalidNotebookException(Constants.SectionGroupsCountNotEqual, container.Name, container.SectionGroupsCount, subSectionGroupsCount);
+                        throw new InvalidNotebookException(Constants.SectionGroupsCountNotEqual, containerName, container.SectionGroupsCount, subSectionGroupsCount);
                 }
                 else if (container.SectionGroupsCountMin != default(int))
                 {
                     if (container.SectionGroupsCountMin > subSectionGroupsCount)
-                        throw new InvalidNotebookException(Constants.SectionGroupsCountLessThanMin, container.Name, container.SectionGroupsCountMin, subSectionGroupsCount);
+                        throw new InvalidNotebookException(Constants.SectionGroupsCountLessThanMin, containerName, container.SectionGroupsCountMin, subSectionGroupsCount);
                 }
                 else if (container.SectionGroupsCountMax != default(int))
                 {
                     if (container.SectionGroupsCountMax < subSectionGroupsCount)
-                        throw new InvalidNotebookException(Constants.SectionGroupsCountMoreThanMax, container.Name, container.SectionGroupsCountMax, subSectionGroupsCount);
+                        throw new InvalidNotebookException(Constants.SectionGroupsCountMoreThanMax, containerName, container.SectionGroupsCountMax, subSectionGroupsCount);
                 }
             }
 
@@ -81,17 +83,17 @@ namespace BibleConfigurator
                 if (container.SectionsCount != default(int))
                 {
                     if (container.SectionsCount != sectionsCount)
-                        throw new InvalidNotebookException(Constants.SectionsCountNotEqual, container.Name, container.SectionsCount, sectionsCount);
+                        throw new InvalidNotebookException(Constants.SectionsCountNotEqual, containerName, container.SectionsCount, sectionsCount);
                 }
                 else if (container.SectionsCountMin != default(int))
                 {
                     if (container.SectionsCountMin > sectionsCount)
-                        throw new InvalidNotebookException(Constants.SectionsCountLessThanMin, container.Name, container.SectionsCountMin, sectionsCount);
+                        throw new InvalidNotebookException(Constants.SectionsCountLessThanMin, containerName, container.SectionsCountMin, sectionsCount);
                 }
                 else if (container.SectionsCountMax != default(int))
                 {
                     if (container.SectionsCountMax < sectionsCount)
-                        throw new InvalidNotebookException(Constants.SectionsCountMoreThanMax, container.Name, container.SectionsCountMax, sectionsCount);
+                        throw new InvalidNotebookException(Constants.SectionsCountMoreThanMax, containerName, container.SectionsCountMax, sectionsCount);
                 }
             }
 
@@ -100,7 +102,7 @@ namespace BibleConfigurator
                 var sectionEl = containerEl.XPathSelectElement(string.Format("one:Section", section.Name));
 
                 if (section == null)
-                    throw new InvalidNotebookException(Constants.SectionNotFoundInContainer, section.Name, container.Name);
+                    throw new InvalidNotebookException(Constants.SectionNotFoundInContainer, section.Name, containerName);
 
                 CheckSection(section, sectionEl, xnm);
             }
@@ -110,7 +112,7 @@ namespace BibleConfigurator
                 var subSectionGroupEl = containerEl.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", subSectionGroup.Name), xnm);
 
                 if (subSectionGroupEl == null)
-                    throw new InvalidNotebookException(Constants.SectionGroupNotFoundInContainer, subSectionGroup.Name, container.Name);
+                    throw new InvalidNotebookException(Constants.SectionGroupNotFoundInContainer, subSectionGroup.Name, containerName);
 
                 CheckContainer(subSectionGroup, subSectionGroupEl, xnm);
             }
