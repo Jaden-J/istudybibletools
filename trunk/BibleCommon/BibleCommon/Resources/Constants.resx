@@ -711,4 +711,10 @@
   <data name="SpecifyBibleVerse" xml:space="preserve">
     <value>Specify the Bible verse</value>
   </data>
+  <data name="NoteLinkerBiblePagesUpdating" xml:space="preserve">
+    <value>'Bible' pages updating</value>
+  </data>
+  <data name="NoteLinkerNotePagesUpdating" xml:space="preserve">
+    <value>'Notes' pages updating</value>
+  </data>
 </root>

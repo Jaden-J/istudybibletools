@@ -215,7 +215,7 @@ namespace BibleCommon.Services
                     else
                     {
                         endIndex = nextTextBreakIndex;
-                        verseString = GetFullVerseString(textElement.Value, number.ToString(), isLink, ref endIndex, ref nextHtmlBreakIndex);
+                        verseString = GetFullVerseString(textElement.Value, number, isLink, ref endIndex, ref nextHtmlBreakIndex);
 
                         if (!string.IsNullOrEmpty(verseString))
                         {
@@ -261,7 +261,7 @@ namespace BibleCommon.Services
             int startIndex, endIndex;
 
             endIndex = nextTextBreakIndex;            
-            string chapterString = GetFullVerseString(textElement.Value, number.ToString(), isLink, ref endIndex, ref nextHtmlBreakIndex);
+            string chapterString = GetFullVerseString(textElement.Value, number, isLink, ref endIndex, ref nextHtmlBreakIndex);
 
             if (!string.IsNullOrEmpty(chapterString))
             {
@@ -385,10 +385,9 @@ namespace BibleCommon.Services
                 if (canContinue)
                 {
                     if (!string.IsNullOrEmpty(chapterName))
-                    {
-                        string verseString = number.ToString();
+                    {                        
                         endIndex = nextTextBreakIndex;
-                        verseString = GetFullVerseString(textElement.Value, verseString, isLink, ref endIndex, ref nextHtmlBreakIndex);
+                        var verseString = GetFullVerseString(textElement.Value, number, isLink, ref endIndex, ref nextHtmlBreakIndex);
 
                         if (!string.IsNullOrEmpty(verseString))
                         {
@@ -516,7 +515,7 @@ namespace BibleCommon.Services
         }
 
         /// <summary>
-        /// Для случаев, когда мы нашли номер главы, и нам надо получить номер стих
+        /// Для случаев, когда мы нашли номер главы, и нам надо получить номер стиха
         /// </summary>
         /// <param name="textElement"></param>
         /// <param name="nextHtmlBreakIndex"></param>
@@ -530,7 +529,7 @@ namespace BibleCommon.Services
             {
                 if (verseNumber <= MaxVerse && verseNumber > 0)
                 {
-                    verseString = GetFullVerseString(textElement.Value, verseString, isLink, ref endIndex, ref nextHtmlBreakIndex);
+                    verseString = GetFullVerseString(textElement.Value, verseNumber, isLink, ref endIndex, ref nextHtmlBreakIndex);
                     return verseString;
                 }
             }
@@ -546,9 +545,11 @@ namespace BibleCommon.Services
         /// <param name="endIndex"></param>
         /// <param name="nextHtmlBreakIndex"></param>
         /// <returns></returns>
-        private static string GetFullVerseString(string textElementValue, string verseString, bool isLink, ref int endIndex, ref int nextHtmlBreakIndex)
+        private static string GetFullVerseString(string textElementValue, int verseNumber, bool isLink, ref int endIndex, ref int nextHtmlBreakIndex)
         {
-            int tempEndIndex, tempNextHtmlBreakIndex, temp;
+            var verseString = verseNumber.ToString();
+
+            int tempEndIndex, tempNextHtmlBreakIndex, tempTopVerse;
             bool spaceWasFound;
 
             string anotherKindOfDash = char.ConvertFromUtf32(8209);
@@ -560,25 +561,30 @@ namespace BibleCommon.Services
             {
                 string nextChar = StringUtils.GetNextString(textElementValue, tempNextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex, StringSearchIgnorance.IgnoreFirstSpaces);
 
-                if (int.TryParse(nextChar, out temp))
+                if (int.TryParse(nextChar, out tempTopVerse))
                 {
-                    if (!(temp > MaxVerse || spaceWasFound))
+                    if (!(tempTopVerse > MaxVerse || spaceWasFound))
                     {
-                        verseString = string.Format("{0}-{1}", verseString, nextChar.Trim());
-                        endIndex = tempEndIndex;
-                        nextHtmlBreakIndex = tempNextHtmlBreakIndex;
-
-                        if (StringUtils.GetChar(textElementValue, nextHtmlBreakIndex) == ChapterVerseDelimiter) // если строка типа Ин 1:2-3:4
+                        var afterChar = StringUtils.GetChar(textElementValue, tempNextHtmlBreakIndex);
+                        if (tempTopVerse > verseNumber 
+                            || afterChar == ChapterVerseDelimiter) // если строка типа Ин 1:2-3:4
                         {
-                            nextChar = StringUtils.GetNextString(textElementValue, nextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex);
+                            verseString = string.Format("{0}-{1}", verseString, nextChar.Trim());
+                            endIndex = tempEndIndex;
+                            nextHtmlBreakIndex = tempNextHtmlBreakIndex;
 
-                            if (int.TryParse(nextChar, out temp))
+                            if (afterChar == ChapterVerseDelimiter)
                             {
-                                verseString += ChapterVerseDelimiter + nextChar;
-                                endIndex = tempEndIndex;
-                                nextHtmlBreakIndex = tempNextHtmlBreakIndex;
+                                nextChar = StringUtils.GetNextString(textElementValue, nextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex);
+
+                                if (int.TryParse(nextChar, out tempTopVerse))
+                                {
+                                    verseString += ChapterVerseDelimiter + nextChar;
+                                    endIndex = tempEndIndex;
+                                    nextHtmlBreakIndex = tempNextHtmlBreakIndex;
+                                }
                             }
-                        }
+                        }                        
                     }
                 }
                 else

@@ -55,8 +55,6 @@ namespace TestProject
 
             try
             {
-                Assembly assembly = Assembly.LoadFrom(@"C:\Program Files\IStudyBibleTools\OneNote IStudyBibleTools\tools\BibleNoteLinker\BibleNoteLinker.exe");
-
                 //GenerateBibleBooks();
 
                 //SearchInNotebook();
@@ -87,9 +85,11 @@ namespace TestProject
 
                 //ConvertUkrModule();
 
+                ConvertChineseModule();
+
                 //ConvertRussianModule();
 
-                ConvertEnglishModule();
+                //ConvertEnglishModule();
 
                 //ConvertRomanModule();
 
@@ -396,6 +396,23 @@ namespace TestProject
                 form.ShowDialog();
             }
         }
+
+        private static void ConvertChineseModule()
+        {
+            string moduleShortName = "cuv";
+            var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName),
+                "zh_CN", new NotebooksStructure() { Notebooks = PredefinedNotebooksInfo.English }, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
+                "{0} chapter. {1}",
+                false,
+                new Version(2, 0), false);
+
+            converter.Convert();
+
+            using (var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message)))
+            {
+                form.ShowDialog();
+            }
+        }      
 
         private static void ConvertEnglishModule()
         {

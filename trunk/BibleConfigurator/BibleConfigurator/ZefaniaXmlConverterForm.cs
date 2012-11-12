@@ -21,9 +21,8 @@ namespace BibleConfigurator
 {
     public partial class ZefaniaXmlConverterForm : Form
     {
-        private const string Const_LocaleStructureFilePath = "structure.xml";
-        private const string Const_LocaleBooksInfoFilePath = "books.xml";
-        private const string Const_StructureFileSuffix = ".structure.xml";
+        private const string Const_StructureFileName = "structure.xml";
+        private const string Const_BooksInfoFileName = "books.xml";        
         private const string Const_BookDifferencesFileSuffix = ".diff.xml";
         private const string Const_OutputDirectoryName = "Output";
 
@@ -444,12 +443,13 @@ namespace BibleConfigurator
         private void LoadFiles()
         {
             var structureFilePath = GetExistingFile(
-                                        Path.Combine(ModuleDirectory, ModuleShortName + Const_StructureFileSuffix),
-                                        Path.Combine(LocaleDirectory, Const_LocaleStructureFilePath),
-                                        Path.Combine(InputDirectory, Const_LocaleStructureFilePath));
+                                        Path.Combine(ModuleDirectory, string.Format("{0}.{1}", ModuleShortName, Const_StructureFileName)),
+                                        Path.Combine(LocaleDirectory, Const_StructureFileName),
+                                        Path.Combine(InputDirectory, Const_StructureFileName));
             var booksFilePath = GetExistingFile(
-                                        Path.Combine(LocaleDirectory, Const_LocaleBooksInfoFilePath),
-                                        Path.Combine(InputDirectory, Const_LocaleBooksInfoFilePath));
+                                        Path.Combine(ModuleDirectory, string.Format("{0}.{1}", ModuleShortName, Const_BooksInfoFileName)),
+                                        Path.Combine(LocaleDirectory, Const_BooksInfoFileName),
+                                        Path.Combine(InputDirectory, Const_BooksInfoFileName));
             var diffFilePath = Path.Combine(ModuleDirectory, ModuleShortName + Const_BookDifferencesFileSuffix);            
             var existingModuleFilePath = Path.Combine(OutputModuleDirectory, BibleCommon.Consts.Constants.ManifestFileName);
 
@@ -523,7 +523,7 @@ namespace BibleConfigurator
             tbZefaniaXmlFilePath.ReadOnly = true;
 
             tbShortName.Text = ModuleShortName;
-            tbVersion.Text = "2.0";
+            tbVersion.Text = ExistingOutputModule != null ? ExistingOutputModule.Version.ToString() : "2.0";
             tbLocale.Text = Locale;
             tbDisplayName.Text = GetModuleDisplayName(BibleContent);
             if (string.IsNullOrEmpty(tbDisplayName.Text))

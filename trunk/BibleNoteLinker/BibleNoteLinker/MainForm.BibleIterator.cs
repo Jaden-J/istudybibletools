@@ -13,7 +13,7 @@ namespace BibleNoteLinker
 {
     public partial class MainForm
     {
-        private const int StagesCount = 5;
+        private const int StagesCount = 6;
         private const int ApproximatePageVersesCount = 100;
         private int _pagesForAnalyzeCount;
 
@@ -61,16 +61,27 @@ namespace BibleNoteLinker
 
             if (_pagesForAnalyzeCount > 0)
             {
-                CommitNotesPages();
+                CommitPages(BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating, 2, OneNoteProxy.PageType.NotesPage);
 
-                UpdateLinksToNotesPages();
+                SyncNotesPagesContainer();   // эта задача асинхронная, поэтому не выделаем как отдельный этап
 
-                CommitAllPages();
+                SortNotesPages();  // это происходит очень быстро, поэтому не выделяем как отдельный этап
 
-                SortNotesPages();  // это происходит очень быстро, поэтому не выделяем это как отдельный этап
+                CommitNotesPagesHierarchy(3);
 
-                CommitNotesPagesHierarchy();
+                CommitPages(BibleCommon.Resources.Constants.NoteLinkerNotePagesUpdating, 4, OneNoteProxy.PageType.NotePage);
+
+                UpdateLinksToNotesPages(5);
+
+                CommitPages(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, 6, null);                
             }          
+        }
+
+        private void SyncNotesPagesContainer()
+        {
+            _oneNoteApp.SyncHierarchy(!string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_BibleNotesPages)
+                                      ? SettingsManager.Instance.SectionGroupId_BibleNotesPages
+                                      : SettingsManager.Instance.NotebookId_BibleNotesPages);
         }
 
         private void PerformProcessStep()
@@ -81,10 +92,10 @@ namespace BibleNoteLinker
             pbMain.PerformStep();
         }
 
-        private void CommitNotesPagesHierarchy()
+        private void CommitNotesPagesHierarchy(int stage)
         {
             string message = BibleCommon.Resources.Constants.NoteLilnkerHierarchyUpdating;
-            LogHighLevelMessage(message, 5, StagesCount);
+            LogHighLevelMessage(message, stage, StagesCount);
             int allPagesCount = 0;
             int processedPagesCount = 0;
             Logger.LogMessage(message, true, false);
@@ -120,37 +131,12 @@ namespace BibleNoteLinker
                     Logger.LogError(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.NoteLinkerErrorWhilePageSorting, sortPageInfo.PageId), ex);
                 }
             }
-        }
+        }       
 
-        private void CommitAllPages()
-        {
-            string message = BibleCommon.Resources.Constants.NoteLinkerPagesUpdating;
-            LogHighLevelMessage(message, 4, StagesCount);
-            Logger.LogMessage(message, true, false);
-            int allPagesCount = 0;
-            int processedPagesCount = 0;
-            OneNoteProxy.Instance.CommitAllModifiedPages(_oneNoteApp,
-                null,
-                pagesCount =>
-                {
-                    allPagesCount = pagesCount;
-                    pbMain.Maximum = pagesCount;
-                    pbMain.Value = 0;
-                    pbMain.PerformStep();
-                    Logger.LogMessage(string.Format(" ({0})", Helper.GetRightPagesString(pagesCount)), false, true, false);
-                    LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
-                },
-                pageContent => 
-                {
-                    PerformProcessStep();
-                    LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
-                });
-        }
-
-        private void UpdateLinksToNotesPages()
+        private void UpdateLinksToNotesPages(int stage)
         {
             string message = BibleCommon.Resources.Constants.NoteLinkerLinksToNotesPagesUpdating;
-            LogHighLevelMessage(message, 3, StagesCount);
+            LogHighLevelMessage(message, stage, StagesCount);
             int allPagesCount = OneNoteProxy.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values.Count;            
             Logger.LogMessage(string.Format("{0} ({1})",
                 message, Helper.GetRightPagesString(allPagesCount)));            
@@ -180,15 +166,15 @@ namespace BibleNoteLinker
             }
         }
 
-        private void CommitNotesPages()
-        {
-            string message = BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating;
-            LogHighLevelMessage(message, 2, StagesCount);
+        private void CommitPages(string startMessage, int stage, OneNoteProxy.PageType? pagesType)
+        {   
+            LogHighLevelMessage(startMessage, stage, StagesCount);
+            Logger.LogMessage(startMessage, true, false);
             int allPagesCount = 0;
             int processedPagesCount = 0;
-            Logger.LogMessage(message, true, false);
+            //Logger.LogMessage(startMessage, true, false);
             OneNoteProxy.Instance.CommitAllModifiedPages(_oneNoteApp,
-                pageContent => pageContent.PageType == OneNoteProxy.PageType.NotesPage,
+                pageContent => pagesType.HasValue ? pageContent.PageType == pagesType : true,
                 pagesCount =>
                 {
                     allPagesCount = pagesCount;
@@ -203,7 +189,7 @@ namespace BibleNoteLinker
                     PerformProcessStep();
                     LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
                 });
-        }    
+        }            
 
         public void ProcessNotebook(NotebookIterator.NotebookInfo notebook)
         {

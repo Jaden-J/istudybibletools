@@ -181,7 +181,7 @@ namespace BibleConfigurator
         private void rbCheckAllModules_CheckedChanged(object sender, EventArgs e)
         {
             cbBaseModule.Enabled = !((RadioButton)sender).Checked;
-            cbParallelModule.Enabled = !((RadioButton)sender).Checked;
+            cbParallelModule.Enabled = !((RadioButton)sender).Checked && !chkWithAllModules.Checked;
             chkWithAllModules.Enabled = !((RadioButton)sender).Checked;
         }
 

@@ -57,15 +57,18 @@ namespace BibleConfigurator
             {
                 int stagesCount = selectedModuleInfo.Type == ModuleType.Strong ? 2 : 1;
 
-                int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.SupplementalBibleModules.First().ModuleName, false);
-                MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.AddParallelBibleTranslationStart);
+                int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.SupplementalBibleModules.First().ModuleName, false);                
 
                 if (selectedModuleInfo.Type == ModuleType.Strong)
                 {
+                    MainForm.PrepareForExternalProcessing(1, 1, BibleCommon.Resources.Constants.AddParallelBibleTranslationStart);
                     DictionaryManager.AddDictionary(OneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true);
                     strongTermLinksCache = RunIndexStrong(selectedModuleInfo, 1, stagesCount);
+                    MainForm.PrepareForExternalProcessing(chaptersCount, 1, string.Empty);                
                 }
-                
+                else
+                    MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.AddParallelBibleTranslationStart);                
+
                 string stagesString = stagesCount == 1 ? string.Empty : string.Format("{0} {1}/{1}: ", BibleCommon.Resources.Constants.Stage, stagesCount);
                 Logger.Preffix = string.Format("{0}{1}: ", stagesString, BibleCommon.Resources.Constants.AddParallelBibleTranslation); 
                 BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
