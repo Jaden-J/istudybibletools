@@ -98,7 +98,6 @@ namespace BibleConfigurator.ModuleConverter
             this.Version = version;
             this.Errors = new List<ConverterExceptionBase>();            
 
-
             if (!Directory.Exists(ManifestFilesFolderPath))
                 Directory.CreateDirectory(ManifestFilesFolderPath);
 
@@ -126,14 +125,17 @@ namespace BibleConfigurator.ModuleConverter
             ProcessBibleBooks(externalModuleInfo);
 
             GenerateManifest(externalModuleInfo);
-            
-            GenerateBibleInfo();
+
+            GenerateBibleInfo(externalModuleInfo);
         }
 
-        protected virtual void GenerateBibleInfo()
+        protected virtual void GenerateBibleInfo(ExternalModuleInfo externalModuleInfo)
         {
             if (GenerateBibleXml)
             {
+                BibleInfo.INFORMATION = new INFORMATION();
+                BibleInfo.INFORMATION.Items = new object[] { externalModuleInfo.Name };
+                BibleInfo.INFORMATION.ItemsElementName = new ItemsChoiceType[] { ItemsChoiceType.title };
                 SaveToXmlFile(BibleInfo, Constants.BibleInfoFileName);             
             }
         }

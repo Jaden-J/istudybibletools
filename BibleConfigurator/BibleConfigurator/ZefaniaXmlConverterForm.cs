@@ -522,12 +522,14 @@ namespace BibleConfigurator
             tbZefaniaXmlFilePath.Text = ZefaniaXmlFilePath;
             tbZefaniaXmlFilePath.ReadOnly = true;
 
-            tbShortName.Text = ModuleShortName;
+            tbShortName.Text = ExistingOutputModule != null ? ExistingOutputModule.ShortName : ModuleShortName;
             tbVersion.Text = ExistingOutputModule != null ? ExistingOutputModule.Version.ToString() : "2.0";
-            tbLocale.Text = Locale;
+            tbLocale.Text = ExistingOutputModule != null ? ExistingOutputModule.Locale : Locale;
+
             tbDisplayName.Text = GetModuleDisplayName(BibleContent);
             if (string.IsNullOrEmpty(tbDisplayName.Text))
-                tbDisplayName.Text = ModuleShortName;
+                tbDisplayName.Text = ExistingOutputModule != null ? ExistingOutputModule.DisplayName : ModuleShortName;
+
             tbResultDirectory.Text = OutputModuleDirectory;
             folderBrowserDialog.SelectedPath = OutputModuleDirectory;
 

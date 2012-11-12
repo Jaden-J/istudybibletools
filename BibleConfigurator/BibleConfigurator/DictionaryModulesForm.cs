@@ -188,5 +188,10 @@ namespace BibleConfigurator
         {
             SettingsManager.Instance.DictionariesModules.Clear();
         }
+
+        protected override bool AreThereModulesToAdd()
+        {
+            return Modules.Any(m => m.Type == ModuleType.Dictionary && !SupplementalModuleAlreadyAdded(m.ShortName));            
+        }
     }
 }
