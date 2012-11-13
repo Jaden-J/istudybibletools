@@ -100,6 +100,7 @@ namespace BibleCommon.Services
         public string PageName_DefaultComments { get; set; }
         public string SectionName_DefaultBookOverview { get; set; }
         public string PageName_Notes { get; set; }
+        public List<string> SelectedNotebooksForAnalyze { get; set; }
 
         private string _moduleName { get; set; }
         public string ModuleShortName 
@@ -401,6 +402,9 @@ namespace BibleCommon.Services
             this.NotebookId_Dictionaries = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdDictionaries);
             this.DictionariesModules = GetParameterValue<List<StoredModuleInfo>>(xdoc, Consts.Constants.ParameterName_DictionariesModules, new List<StoredModuleInfo>(), 
                                                 s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(xmlString => new StoredModuleInfo(xmlString)));
+
+            this.SelectedNotebooksForAnalyze = GetParameterValue<List<string>>(xdoc, Consts.Constants.ParameterName_SelectedNotebooksForAnalyze, 
+                                                        GetDefaultNotebooksForAnalyze(), GetNotebooksForAnalyze); 
         }
 
         private T GetParameterValue<T>(XDocument xdoc, string parameterName, object defaultValue = null, Func<string, T> convertFunc = null)
@@ -520,14 +524,61 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleModules, string.Join(";", this.SupplementalBibleModules.ConvertAll(dm => dm.ToString()).ToArray())),
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleLinkName, this.SupplementalBibleLinkName),                                  
                                   new XElement(Consts.Constants.ParameterName_DictionariesModules, string.Join(";", this.DictionariesModules.ConvertAll(dm => dm.ToString()).ToArray())),
-                                  new XElement(Consts.Constants.ParameterName_UseMiddleStrongLinks, UseMiddleStrongLinks)
+                                  new XElement(Consts.Constants.ParameterName_UseMiddleStrongLinks, UseMiddleStrongLinks)                                  
                                   );
+
+                    if (SelectedNotebooksForAnalyze != GetDefaultNotebooksForAnalyze())
+                        xDoc.Root.Add(new XElement(Consts.Constants.ParameterName_SelectedNotebooksForAnalyze, ConvertNotebooksForAnalyzeToString(SelectedNotebooksForAnalyze)));
 
                     xDoc.Save(sw);
                     sw.Flush();                    
                 }
             }
-        }                 
+        }
+
+        private List<string> GetNotebooksForAnalyze(string selectedNotebooksString)
+        {
+            if (!string.IsNullOrEmpty(selectedNotebooksString))
+            {
+                string[] s = selectedNotebooksString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (s.Length == 2 && s[0] == IsSingleNotebook.ToString().ToLower())
+                {
+                    return s[1].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                }
+            }
+
+            return GetDefaultNotebooksForAnalyze();
+        }
+
+        private List<string> GetDefaultNotebooksForAnalyze()
+        {
+            if (IsSingleNotebook)
+            {
+                return new List<string>() 
+                    {
+                        SectionGroupId_BibleStudy, 
+                        SectionGroupId_BibleComments
+                    };
+            }
+            else
+            {
+                return new List<string>() 
+                    {
+                        NotebookId_BibleStudy, 
+                        NotebookId_BibleComments
+                    };
+            }
+
+        }
+
+        private string ConvertNotebooksForAnalyzeToString(List<string> notebooksIds)
+        {
+            return string.Join(";", new string[] 
+            {
+                IsSingleNotebook.ToString().ToLower(), string.Join(",", notebooksIds.ToArray())
+            });
+        } 
     }
 }
 

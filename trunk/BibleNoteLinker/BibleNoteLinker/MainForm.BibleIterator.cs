@@ -302,7 +302,7 @@ namespace BibleNoteLinker
             if (rbAnalyzeChangedPages.Checked)
                 filter = IsPageWasModifiedAfterLastAnalyze;
 
-            foreach (string id in Helper.GetSelectedNotebooksIds())
+            foreach (string id in SettingsManager.Instance.SelectedNotebooksForAnalyze)
             {
                 try
                 {
@@ -315,7 +315,7 @@ namespace BibleNoteLinker
                 {
                     if (ex.Message.Contains("0x80042014"))   // The object does not exist.
                     {
-                        //remove notebook from settings
+                        //todo: remove notebook from settings
                     }
                     else
                         throw;

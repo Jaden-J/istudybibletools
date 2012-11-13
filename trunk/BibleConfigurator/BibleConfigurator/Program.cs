@@ -41,14 +41,15 @@ namespace BibleConfigurator
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
-                Form form = PrepareForRunning(args);
+                bool silent;
+                Form form = PrepareForRunning(out silent, args);
 
                 if (form != null)
                 {
                     FormExtensions.RunSingleInstance(form, message, () =>
                     {
                         Application.Run(form);
-                    }, args.Contains(Consts.RunOnOneNoteStarts));
+                    }, silent || args.Contains(Consts.RunOnOneNoteStarts));
                 }
 
             }
@@ -63,8 +64,9 @@ namespace BibleConfigurator
             //}
         }
 
-        private static Form PrepareForRunning(params string[] args)
+        private static Form PrepareForRunning(out bool silent, params string[] args)
         {
+            silent = false;
             Form result = null;
 
             var strongProtocolHandler = new FindVersesWithStrongNumberHandler();
@@ -165,6 +167,7 @@ namespace BibleConfigurator
                         {
                             ((MainForm)result).ShowModulesTabAtStartUp = true;
                             ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
+                            silent = true;
                         }
                         else
                             result = null;
@@ -212,7 +215,8 @@ namespace BibleConfigurator
                     _firstLoad = false;
                 }
 
-                Form form = PrepareForRunning(args);
+                bool silent;
+                Form form = PrepareForRunning(out silent, args);
 
                 if (form != null)
                 {

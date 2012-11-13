@@ -83,9 +83,9 @@ namespace TestProject
 
                 //ConvertEnglishModuleZefaniaXml();
 
-                ConvertUkrModule();
+                //ConvertUkrModule();
 
-                //ConvertChineseModule();
+                ConvertChineseModule();
 
                 //ConvertRussianModule();
 
@@ -399,7 +399,7 @@ namespace TestProject
 
         private static void ConvertChineseModule()
         {
-            string moduleShortName = "cuv";
+            string moduleShortName = "ncv";
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName),
                 "zh_CN", new NotebooksStructure() { Notebooks = PredefinedNotebooksInfo.English }, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
                 "{0} chapter. {1}",
