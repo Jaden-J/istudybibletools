@@ -59,8 +59,8 @@ namespace BibleCommon.Services
         private class FoundVerseInfo
         {
             internal int Index { get; set; }
-            internal VersePointerSearchResult SearchResult { get; set; }           
-            internal bool IsLink { get; set; }
+            internal VersePointerSearchResult SearchResult { get; set; }
+            internal VerseRecognitionManager.LinkType IsLink { get; set; }
             internal bool IsInBrackets { get; set; }
             internal bool IsExcluded { get; set; }
             internal int CursorPosition { get; set; }
@@ -419,10 +419,10 @@ namespace BibleCommon.Services
             
             HierarchySearchManager.HierarchySearchResult hierarchySearchResult;            
 
-            if (!verseInfo.IsLink || (verseInfo.IsLink && force) || (isTitle && verseInfo.IsInBrackets))
+            if (verseInfo.IsLink != VerseRecognitionManager.LinkType.LinkAfterFullAnalyze
+                || (verseInfo.IsLink == VerseRecognitionManager.LinkType.LinkAfterFullAnalyze && force) 
+                || (isTitle && verseInfo.IsInBrackets))
             {
-                
-
                 string textElementObjectId = (string)textElement.Parent.Attribute("objectID");
 
                 bool needToQueueIfChapter;
@@ -430,7 +430,7 @@ namespace BibleCommon.Services
                                             textElementValue,
                                             notePageId, textElementObjectId,
                                             linkDepth, verseInfo.GlobalChapterSearchResult, pageChaptersSearchResult,
-                                            verseInfo.IsLink, verseInfo.IsInBrackets, verseInfo.IsExcluded, force,
+                                            verseInfo.IsLink != VerseRecognitionManager.LinkType.None, verseInfo.IsInBrackets, verseInfo.IsExcluded, force,
                                             out cursorPosition, out hierarchySearchResult, out needToQueueIfChapter);
 
                 if (verseInfo.SearchResult.ResultType == VersePointerSearchResult.SearchResultType.SingleVerseOnly)  // то есть нашли стих, а до этого значит была скорее всего просто глава!
@@ -492,7 +492,7 @@ namespace BibleCommon.Services
                     int number;
                     int textBreakIndex;
                     int htmlBreakIndex;
-                    bool isLink;
+                    VerseRecognitionManager.LinkType isLink;
                     bool isInBrackets;
                     bool isExcluded;
                     if (VerseRecognitionManager.CanProcessAtNumberPosition(textElement, cursorPosition,
@@ -501,7 +501,7 @@ namespace BibleCommon.Services
                         VersePointerSearchResult searchResult = VerseRecognitionManager.GetValidVersePointer(textElement,
                             cursorPosition, textBreakIndex - 1, number,
                             globalChapterSearchResult,
-                            localChapterName, prevResult, isLink, isInBrackets, isTitle);
+                            localChapterName, prevResult, isLink != VerseRecognitionManager.LinkType.None, isInBrackets, isTitle);
 
                         if (searchResult.ResultType != VersePointerSearchResult.SearchResultType.Nothing && isSummaryNotesPage)
                             if (searchResult.VersePointer != null && searchResult.VersePointer.IsMultiVerse)  // если находимся на странице сводной заметок и нашли мультивёрс ссылку (например :4-7) - то такие ссылки не обрабатываем
@@ -639,8 +639,13 @@ namespace BibleCommon.Services
                                 textToChange = searchResult.VersePointer.OriginalVerseName;
 
                             hierarchySearchResult = localHierarchySearchResult;
+
+                            var additionalParams = new List<string>();
+                            if (linkDepth == AnalyzeDepth.SetVersesLinks)
+                                additionalParams.Add(string.Format("{0}=true", Consts.Constants.QueryParameter_QuickAnalyze));
+
                             string link = OneNoteUtils.GetOrGenerateHref(oneNoteApp, textToChange, localHierarchySearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref,
-                                localHierarchySearchResult.HierarchyObjectInfo.PageId, localHierarchySearchResult.HierarchyObjectInfo.VerseContentObjectId);
+                                localHierarchySearchResult.HierarchyObjectInfo.PageId, localHierarchySearchResult.HierarchyObjectInfo.VerseContentObjectId, additionalParams.ToArray());
 
                             link = string.Format("<span style='font-weight:normal'>{0}</span>", link);
 

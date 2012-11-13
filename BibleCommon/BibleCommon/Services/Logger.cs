@@ -47,11 +47,11 @@ namespace BibleCommon.Services
                 }
                 catch (IOException)
                 {
-                    _logFilePath = Path.Combine(directoryPath, systemName + Guid.NewGuid() + ".txt");
+                    _logFilePath = Path.Combine(directoryPath, string.Format("{0}_{1}.txt", systemName, Guid.NewGuid()));
                     _fileStream = new FileStream(_logFilePath, FileMode.Create);
                 }
 
-                _streamWriter = new StreamWriter(_fileStream);
+                _streamWriter = new StreamWriter(_fileStream, Encoding.UTF8);
 
                 Errors = new List<string>();
 
@@ -114,14 +114,13 @@ namespace BibleCommon.Services
                     Init(System.Reflection.Assembly.GetEntryAssembly().GetName().Name);
                 }
                 catch { }
-            }
+            }            
 
             if (string.IsNullOrEmpty(messageEx))
                 messageEx = message;
 
             if (writeDateTime)
                 messageEx = string.Format("{0}: {1}", DateTime.Now, messageEx);
-
 
             if (_lb != null)
             {

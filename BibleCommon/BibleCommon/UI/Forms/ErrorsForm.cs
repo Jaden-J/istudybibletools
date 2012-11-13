@@ -59,7 +59,7 @@ namespace BibleCommon.UI.Forms
                     foreach (var errors in AllErrors)
                     {
                         if (!string.IsNullOrEmpty(errors.ErrorsDecription))
-                            lbErrors.Items.Add(errors.ErrorsDecription);
+                            lbErrors.Items.Add(string.Format("{0} ({1})", errors.ErrorsDecription, errors.Count));
 
                         int index = 1;
 
@@ -93,7 +93,7 @@ namespace BibleCommon.UI.Forms
                         foreach (var errors in AllErrors)
                         {
                             if (!string.IsNullOrEmpty(errors.ErrorsDecription))
-                                sw.WriteLine(errors.ErrorsDecription);
+                                sw.WriteLine(string.Format("{0} ({1})", errors.ErrorsDecription, errors.Count));
 
                             int index = 1;
                             foreach (var error in errors)
@@ -108,6 +108,6 @@ namespace BibleCommon.UI.Forms
 
                 MessageBox.Show("Successfully.");
             }
-        }
+        }        
     }
 }

@@ -63,7 +63,8 @@ namespace BibleConfigurator.ModuleConverter
         protected Version Version { get; set; }
         protected int OldTestamentBooksCount { get; set; }
         protected bool GenerateBibleXml { get; set; }        
-        protected bool GenerateBibleNotebook { get; set; }        
+        protected bool GenerateBibleNotebook { get; set; }
+        protected string ModuleDisplayName { get; set; }
 
         /// <summary>
         /// 
@@ -134,7 +135,7 @@ namespace BibleConfigurator.ModuleConverter
             if (GenerateBibleXml)
             {
                 BibleInfo.INFORMATION = new INFORMATION();
-                BibleInfo.INFORMATION.Items = new object[] { externalModuleInfo.Name };
+                BibleInfo.INFORMATION.Items = new object[] { ModuleDisplayName };
                 BibleInfo.INFORMATION.ItemsElementName = new ItemsChoiceType[] { ItemsChoiceType.title };
                 SaveToXmlFile(BibleInfo, Constants.BibleInfoFileName);             
             }

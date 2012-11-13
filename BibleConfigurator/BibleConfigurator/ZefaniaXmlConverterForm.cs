@@ -568,7 +568,8 @@ namespace BibleConfigurator
             return bibleContent.Books.Any(b =>
                                     b.Chapters.Any(c =>
                                         c.Verses.Any(v =>
-                                            v.Items.Any(item =>
+                                            v.Items != null
+                                            && v.Items.Any(item =>
                                                 item is GRAM || item is gr))));
         }
 

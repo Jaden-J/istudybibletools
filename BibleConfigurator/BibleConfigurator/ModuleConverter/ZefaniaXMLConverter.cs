@@ -27,8 +27,7 @@ namespace BibleConfigurator.ModuleConverter
 
         protected XMLBIBLE ZefaniaXmlBibleInfo { get; set; }
         protected BibleBooksInfo BooksInfo { get; set; }
-        protected string ZefaniaXmlFilePath { get; set; }
-        protected string ModuleName { get; set; }
+        protected string ZefaniaXmlFilePath { get; set; }        
 
         protected ReadParameters[] AdditionalReadParameters { get; set; }
 
@@ -59,7 +58,7 @@ namespace BibleConfigurator.ModuleConverter
                         translationDifferences, chapterSectionNameTemplate, isStrong, 
                         version, generateBibleNotebook, true)
         {
-            this.ModuleName = moduleName;            
+            this.ModuleDisplayName = moduleName;            
             this.BooksInfo = booksInfo;
             this.ZefaniaXmlBibleInfo = bibleContent;
             this.BookIndexes = BooksInfo.Books.Where(bi => ZefaniaXmlBibleInfo.Books.Any(zb => zb.Index == bi.Index)).Select(b => b.Index).ToList();
@@ -159,7 +158,7 @@ namespace BibleConfigurator.ModuleConverter
             ModuleInfo = new ModuleInfo()
             {
                 ShortName = ModuleShortName,
-                DisplayName = ModuleName,
+                DisplayName = ModuleDisplayName,
                 Version = this.Version,
                 Locale = this.Locale,
                 NotebooksStructure = this.NotebooksStructure,

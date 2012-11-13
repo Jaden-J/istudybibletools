@@ -125,18 +125,33 @@ namespace BibleCommon.Helpers
             return result;
         }
 
-        public static bool IsSurroundedBy(string s, string leftSymbol, string rightSymbol, int startPosition, bool searchInHtml)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="leftSymbol"></param>
+        /// <param name="rightSymbol"></param>
+        /// <param name="startPosition"></param>
+        /// <param name="searchInHtml"></param>
+        /// <param name="textString">если мы ищем по html строке (searchInHtml == true), и если результат == true, то тогда здесь содержится текст между leftSymbol и rightSymbol</param>
+        /// <returns></returns>
+        public static bool IsSurroundedBy(string s, string leftSymbol, string rightSymbol, int startPosition, bool searchInHtml, out string textString)
         {
+            textString = null;
             bool isSurroundedOnRight = false;
             bool isSurroundedOnLeft = false;                        
             string rightString = searchInHtml ? string.Empty : GetText(s.Substring(startPosition + 1));
 
+            int htmlLeftIndex = 0, htmlRightIndex = 0;
 
             int startIndex = searchInHtml ? s.IndexOf(leftSymbol, startPosition) : rightString.IndexOf(leftSymbol);
             int endIndex = searchInHtml ? s.IndexOf(rightSymbol, startPosition) : rightString.IndexOf(rightSymbol);
             if (!((startIndex == -1 && endIndex == -1) || (startIndex != -1 && endIndex == -1)
-                || (startIndex != -1 && startIndex < endIndex)))                  // в любом случае здесь endIndex != -1, иначе бы он на предыдущем условии вышел                    
+                || (startIndex != -1 && startIndex < endIndex)))                  // в любом случае здесь endIndex != -1, иначе бы он на предыдущем условии вышел    
+            {
+                htmlRightIndex = endIndex;
                 isSurroundedOnRight = true;
+            }
 
             if (isSurroundedOnRight)
             {
@@ -146,10 +161,17 @@ namespace BibleCommon.Helpers
                 endIndex = searchInHtml ? s.LastIndexOf(leftSymbol, startPosition) : leftString.LastIndexOf(leftSymbol);
                 if (!((startIndex == -1 && endIndex == -1) || (startIndex != -1 && endIndex == -1)
                     || (startIndex != -1 && startIndex > endIndex)))                  // в любом случае здесь endIndex != -1, иначе бы он на предыдущем условии вышел                    
+                {
+                    htmlLeftIndex = endIndex;
                     isSurroundedOnLeft = true;
+                }
             }
 
-            return isSurroundedOnLeft && isSurroundedOnRight;
+            var result = isSurroundedOnLeft && isSurroundedOnRight;
+            if (result && searchInHtml)
+                textString = s.Substring(htmlLeftIndex, htmlRightIndex - htmlLeftIndex + rightSymbol.Length + 1);
+
+            return result;                
         }
 
         public static bool IsDigit(char c)
@@ -725,6 +747,6 @@ namespace BibleCommon.Helpers
             }
 
             return s;
-        }
+        }     
     }
 }

@@ -125,6 +125,8 @@ namespace BibleConfigurator.ModuleConverter
                 }
             }
 
+            this.ModuleDisplayName = result.Name;
+
             return result;
         }
 

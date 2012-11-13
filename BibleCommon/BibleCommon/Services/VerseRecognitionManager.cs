@@ -13,6 +13,13 @@ namespace BibleCommon.Services
         internal const char ChapterVerseDelimiter = ':';
         internal const int MaxVerse = 200;
 
+        public enum LinkType
+        { 
+            None,
+            LinkAfterQuickAnalyze,
+            LinkAfterFullAnalyze            
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -25,9 +32,9 @@ namespace BibleCommon.Services
         /// <param name="isExcluded">Не стоит его по дефолту анализировать</param>
         /// <returns></returns>
         public static bool CanProcessAtNumberPosition(XElement textElement, int numberIndex,
-            out int number, out int textBreakIndex, out int htmlBreakIndex, out bool isLink, out bool isInBrackets, out bool isExcluded)
+            out int number, out int textBreakIndex, out int htmlBreakIndex, out LinkType isLink, out bool isInBrackets, out bool isExcluded)
         {
-            isLink = false;
+            isLink = LinkType.None;
             number = -1;
             textBreakIndex = -1;
             htmlBreakIndex = -1;
@@ -47,9 +54,17 @@ namespace BibleCommon.Services
                 {
                     if (number > 0 && number <= MaxVerse)
                     {
-                        isLink = StringUtils.IsSurroundedBy(textElement.Value, "<a", "</a", numberIndex, true);
-                        isInBrackets = StringUtils.IsSurroundedBy(textElement.Value, "[", "]", numberIndex, false);
-                        isExcluded = StringUtils.IsSurroundedBy(textElement.Value, "{", "}", numberIndex, false);
+                        string textString;
+                        if (StringUtils.IsSurroundedBy(textElement.Value, "<a", "</a", numberIndex, true, out textString))
+                        {
+                            if (textString.Contains(string.Format("{0}=true", Consts.Constants.QueryParameter_QuickAnalyze)))
+                                isLink = LinkType.LinkAfterQuickAnalyze;
+                            else
+                                isLink = LinkType.LinkAfterFullAnalyze;
+                        }                        
+
+                        isInBrackets = StringUtils.IsSurroundedBy(textElement.Value, "[", "]", numberIndex, false, out textString);
+                        isExcluded = StringUtils.IsSurroundedBy(textElement.Value, "{", "}", numberIndex, false, out textString);
 
                         return true;
                     }
