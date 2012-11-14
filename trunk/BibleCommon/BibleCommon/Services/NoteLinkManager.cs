@@ -210,7 +210,8 @@ namespace BibleCommon.Services
                             chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
                             notePageId, chapterInfo.TextElementObjectId, true,
                             SettingsManager.Instance.PageName_Notes, null, SettingsManager.Instance.PageWidth_Notes, 1,
-                            chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter ? true : force);
+                            (chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
+                                || chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName) ? true : force);
                     }
 
                     if (SettingsManager.Instance.RubbishPage_Use)
@@ -221,7 +222,8 @@ namespace BibleCommon.Services
                                 chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
                                 notePageId, chapterInfo.TextElementObjectId, false,
                                 SettingsManager.Instance.PageName_RubbishNotes, null, SettingsManager.Instance.PageWidth_RubbishNotes, 1,
-                                chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter ? true : force);
+                                (chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
+                                    || chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName) ? true : force);
                         }
                     }
                 }
@@ -287,7 +289,8 @@ namespace BibleCommon.Services
                     wasModified = true;
             }
             
-            globalChapterSearchResult = pageChaptersSearchResult.Count == 1 ? pageChaptersSearchResult[0] : null;   // если в заголовке указана одна глава - то используем её при нахождении только стихов, если же указано несколько - то не используем их
+            globalChapterSearchResult = pageChaptersSearchResult.Count == 1 && !pageChaptersSearchResult[0].VersePointer.TopChapter.HasValue 
+                                                ? pageChaptersSearchResult[0] : null;   // если в заголовке указана одна глава - то используем её при нахождении только стихов, если же указано несколько - то не используем их
             prevResult = null;            
 
             foreach (XElement textElement in parent.XPathSelectElements(".//one:T", xnm))
@@ -437,7 +440,9 @@ namespace BibleCommon.Services
                 {
                     FoundChapterInfo chapterInfo = foundChapters.FirstOrDefault(fch =>
                             fch.VersePointerSearchResult.ResultType != VersePointerSearchResult.SearchResultType.ExcludableChapter
-                                && fch.VersePointerSearchResult.VersePointer.ChapterName == verseInfo.SearchResult.VersePointer.ChapterName);
+                            && fch.VersePointerSearchResult.ResultType != VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName
+                            && fch.VersePointerSearchResult.VersePointer.Book.Name == verseInfo.SearchResult.VersePointer.Book.Name
+                            && IsNumberInRange(verseInfo.SearchResult.VersePointer.Chapter.Value, fch.VersePointerSearchResult.VersePointer.Chapter.Value, fch.VersePointerSearchResult.VersePointer.TopChapter));                                
 
                     if (chapterInfo != null)
                         foundChapters.Remove(chapterInfo);
@@ -448,8 +453,10 @@ namespace BibleCommon.Services
                         && hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.Page)
                     {
                         if (!foundChapters.Exists(fch =>
-                                fch.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
-                                    && fch.VersePointerSearchResult.VersePointer.ChapterName == verseInfo.SearchResult.VersePointer.ChapterName))
+                                (fch.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
+                                    || fch.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName)
+                                && fch.VersePointerSearchResult.VersePointer.Book.Name == verseInfo.SearchResult.VersePointer.Book.Name
+                                && IsNumberInRange(verseInfo.SearchResult.VersePointer.Chapter.Value, fch.VersePointerSearchResult.VersePointer.Chapter.Value, fch.VersePointerSearchResult.VersePointer.TopChapter)))
                         {
                             foundChapters.Add(new FoundChapterInfo()
                             {
@@ -687,6 +694,8 @@ namespace BibleCommon.Services
                 }
 
                 first = false;
+
+                System.Windows.Forms.Application.DoEvents();
             }           
 
             #endregion           
@@ -710,6 +719,8 @@ namespace BibleCommon.Services
                         SettingsManager.Instance.PageName_RubbishNotes, null, SettingsManager.Instance.PageWidth_RubbishNotes, 1,
                         globalChapterSearchResult, pageChaptersSearchResult,
                         isInBrackets, isExcluded, force, !needToQueueIfChapter, out localHierarchySearchResult, ref processedVerses, null);
+
+                    System.Windows.Forms.Application.DoEvents();
                 }
             }
 
@@ -834,10 +845,14 @@ namespace BibleCommon.Services
                                             {
                                                 if (pageChaptersSearchResult.Any(pcsr =>
                                                 {
-                                                    return pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
-                                                            && pcsr.VersePointer.ChapterName == vp.ChapterName;
+                                                    return (pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
+                                                                || pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName)
+                                                            && pcsr.VersePointer.Book.Name == vp.Book.Name
+                                                            && IsNumberInRange(vp.Chapter.Value, pcsr.VersePointer.Chapter.Value, pcsr.VersePointer.TopChapter);
                                                 }))
+                                                {
                                                     canContinue = false;  // то есть среди исключаемых глав есть текущая
+                                                }
                                             }
                                         }
                                     }
@@ -862,6 +877,14 @@ namespace BibleCommon.Services
             }
 
             return false;
+        }
+
+        private bool IsNumberInRange(int number, int bottom, int? top)
+        {
+            if (top.HasValue)            
+                return number >= bottom && number <= top;            
+            else
+                return number == bottom;
         }
 
 
