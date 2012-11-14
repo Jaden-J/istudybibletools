@@ -379,7 +379,10 @@ namespace BibleCommon.Services
             this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
             this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking);
             this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking);
-            this.UseMiddleStrongLinks = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseMiddleStrongLinks, Consts.Constants.DefaultUseMiddleStrongLinks);            
+            this.UseMiddleStrongLinks = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseMiddleStrongLinks, Consts.Constants.DefaultUseMiddleStrongLinks);
+
+            this.SupplementalBibleLinkName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SupplementalBibleLinkName,
+                                                  GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName));
         }
 
         private void LoadGeneralSettings(XDocument xdoc)
@@ -395,9 +398,7 @@ namespace BibleCommon.Services
 
             this.NotebookId_SupplementalBible = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdSupplementalBible);
             this.SupplementalBibleModules = GetParameterValue<List<StoredModuleInfo>>(xdoc, Consts.Constants.ParameterName_SupplementalBibleModules, new List<StoredModuleInfo>(),
-                                                s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(xmlString => new StoredModuleInfo(xmlString)));
-            this.SupplementalBibleLinkName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SupplementalBibleLinkName,
-                                                  GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName));
+                                                s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(xmlString => new StoredModuleInfo(xmlString)));           
 
             this.NotebookId_Dictionaries = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdDictionaries);
             this.DictionariesModules = GetParameterValue<List<StoredModuleInfo>>(xdoc, Consts.Constants.ParameterName_DictionariesModules, new List<StoredModuleInfo>(), 
@@ -465,6 +466,7 @@ namespace BibleCommon.Services
             this.PageName_DefaultComments = GetResourceString(Consts.Constants.ResourceName_DefaultPageNameDefaultComments);
             this.PageName_Notes = GetResourceString(Consts.Constants.ResourceName_DefaultPageName_Notes);
             this.PageName_RubbishNotes = GetResourceString(Consts.Constants.ResourceName_DefaultPageName_RubbishNotes);
+            this.SupplementalBibleLinkName = GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName);
         }
 
         private bool DetermineIfCurrentSettingsAreDefualt()
@@ -481,7 +483,8 @@ namespace BibleCommon.Services
                 && this.PageWidth_RubbishNotes == Consts.Constants.DefaultPageWidth_RubbishNotes
                 && this.RubbishPage_ExpandMultiVersesLinking == Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking
                 && this.RubbishPage_ExcludedVersesLinking == Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking
-                && this.UseMiddleStrongLinks == Consts.Constants.DefaultUseMiddleStrongLinks;
+                && this.UseMiddleStrongLinks == Consts.Constants.DefaultUseMiddleStrongLinks
+                && this.SupplementalBibleLinkName == GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName);
         }
 
         public void Save()
@@ -525,7 +528,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleLinkName, this.SupplementalBibleLinkName),                                  
                                   new XElement(Consts.Constants.ParameterName_DictionariesModules, string.Join(";", this.DictionariesModules.ConvertAll(dm => dm.ToString()).ToArray())),
                                   new XElement(Consts.Constants.ParameterName_UseMiddleStrongLinks, UseMiddleStrongLinks)                                  
-                                  );
+                                  );                    
 
                     if (SelectedNotebooksForAnalyze != GetDefaultNotebooksForAnalyze())
                         xDoc.Root.Add(new XElement(Consts.Constants.ParameterName_SelectedNotebooksForAnalyze, ConvertNotebooksForAnalyzeToString(SelectedNotebooksForAnalyze)));
