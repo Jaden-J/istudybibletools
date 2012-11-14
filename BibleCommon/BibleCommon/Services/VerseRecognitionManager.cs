@@ -234,7 +234,9 @@ namespace BibleCommon.Services
 
                         if (!string.IsNullOrEmpty(verseString))
                         {
-                            resultType = VersePointerSearchResult.SearchResultType.ChapterWithoutBookName;
+                            resultType = isTitle && isInBrackets 
+                                ? VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName 
+                                : VersePointerSearchResult.SearchResultType.ChapterWithoutBookName;
                             verseName = GetVerseName(prevResult.VersePointer.OriginalBookName, verseString);
                         }
                     }
@@ -252,7 +254,8 @@ namespace BibleCommon.Services
                             result.VersePointerHtmlEndIndex = nextHtmlBreakIndex;
                             result.VersePointerHtmlStartIndex = prevHtmlBreakIndex;
                             result.ChapterName = GetVerseName(prevResult.VersePointer.OriginalBookName, number);
-                            result.VerseString = (resultType == VersePointerSearchResult.SearchResultType.ChapterWithoutBookName
+                            result.VerseString = ((resultType == VersePointerSearchResult.SearchResultType.ChapterWithoutBookName 
+                                                        || resultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName)
                                                     ? verseString
                                                     : string.Format("{0}{1}{2}", number, ChapterVerseDelimiter, verseString));
                             result.VerseStringStartsWithSpace = true;

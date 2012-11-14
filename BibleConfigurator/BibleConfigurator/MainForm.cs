@@ -50,7 +50,7 @@ namespace BibleConfigurator
         
 
         private const int LoadParametersAttemptsCount = 80;         // количество попыток загрузки параметров после команды создания записных книжек из шаблона
-        private const int LoadParametersPauseBetweenAttempts = 5;             // количество секунд ожидания между попытками загрузки параметров
+        private const int LoadParametersPauseBetweenAttempts = 5000;             // количество милисекунд ожидания между попытками загрузки параметров
         private const string LoadParametersImageFileName = "loader.gif";
 
         protected CustomFormLogger LongProcessLogger { get; set; }
@@ -216,10 +216,11 @@ namespace BibleConfigurator
             if (createFromTemplateControl.Checked)
             {
                 string notebookTemplateFileName = module.GetNotebook(notebookType).Name;
-                string notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, notebookFromTemplatePath);
+                string notebookFolderPath;
+                string notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, notebookFromTemplatePath, out notebookFolderPath);
                 if (!string.IsNullOrEmpty(notebookName))
                 {
-                    WaitAndLoadParameters(notebookType, notebookName);                         // выйдем из метода только когда OneNote отработает
+                    WaitAndLoadParameters(notebookType, notebookName, notebookFolderPath);                         // выйдем из метода только когда OneNote отработает
                     createFromTemplateControl.Checked = false;  // чтоб если ошибки будут потом, он заново не создавал
                     selectedNotebookNameControl.Items.Add(notebookName);
                     selectedNotebookNameControl.SelectedItem = notebookName;
@@ -240,10 +241,11 @@ namespace BibleConfigurator
             if (chkCreateSingleNotebookFromTemplate.Checked)
             {
                 string notebookTemplateFileName = module.GetNotebook(ContainerType.Single).Name;
-                notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, SingleNotebookFromTemplatePath);
+                string notebookFolderPath;
+                notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, SingleNotebookFromTemplatePath, out notebookFolderPath);
                 if (!string.IsNullOrEmpty(notebookName))
                 {
-                    WaitAndLoadParameters(ContainerType.Single, notebookName);
+                    WaitAndLoadParameters(ContainerType.Single, notebookName, notebookFolderPath);
                     SearchForCorrespondenceSectionGroups(module, SettingsManager.Instance.NotebookId_Bible);
                 }
             }
@@ -393,7 +395,7 @@ namespace BibleConfigurator
 
         }
 
-        private void WaitAndLoadParameters(ContainerType notebookType, string notebookName)
+        private void WaitAndLoadParameters(ContainerType notebookType, string notebookName, string notebookFolderPath)
         {   
             PrepareForExternalProcessing(100, 1, string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ConfiguratorNotebookCreation, notebookName));
             
@@ -402,18 +404,30 @@ namespace BibleConfigurator
             try
             {
                 string notebookId;                
-                for (int i = 0; i <= LoadParametersAttemptsCount; i++)
+                for (int attemptNumber = 0; attemptNumber <= LoadParametersAttemptsCount; attemptNumber++)
                 {
                     pbMain.PerformStep();
                     System.Windows.Forms.Application.DoEvents();
-                    
+
                     if (TryToLoadNotebookParameters(notebookType, notebookName, true, out notebookId))
                     {
                         parametersWasLoad = true;
                         break;
                     }
+                    else
+                    {
+                        if (attemptNumber > 5 && string.IsNullOrEmpty(notebookId))  // то есть прошло уже 25 секунд, а записная книжка даже ещё не создалась!!!
+                        {
+                            _oneNoteApp.OpenHierarchy(notebookFolderPath, null, out notebookId);
+                        }
+                    }
 
-                    Thread.Sleep(LoadParametersPauseBetweenAttempts * 1000);
+                    var freq = 10;
+                    for (var i = 0; i < freq; i++)
+                    {
+                        Thread.Sleep(LoadParametersPauseBetweenAttempts / freq);
+                        System.Windows.Forms.Application.DoEvents();
+                    }
                 }                
             }
             finally
@@ -536,21 +550,22 @@ namespace BibleConfigurator
             OneNoteProxy.Instance.RefreshHierarchyCache(_oneNoteApp, notebookId, HierarchyScope.hsSections);     
         }
 
-        private string CreateNotebookFromTemplate(string notebookTemplateFileName, string notebookFromTemplatePath)
+        private string CreateNotebookFromTemplate(string notebookTemplateFileName, string notebookFromTemplatePath, out string notebookFolderPath)
         {
             string s;
+            notebookFolderPath = null;
             string packageDirectory = ModulesManager.GetCurrentModuleDirectiory();                
-            string packageFilePath = Path.Combine(packageDirectory, notebookTemplateFileName);
+            string packageFilePath = Path.Combine(packageDirectory, notebookTemplateFileName);            
 
             if (File.Exists(packageFilePath))
             {
-                string folderPath = Path.Combine(notebookFromTemplatePath, Path.GetFileNameWithoutExtension(notebookTemplateFileName));                
+                notebookFolderPath = Path.Combine(notebookFromTemplatePath, Path.GetFileNameWithoutExtension(notebookTemplateFileName));
 
-                folderPath = Utils.GetNewDirectoryPath(folderPath);
+                notebookFolderPath = Utils.GetNewDirectoryPath(notebookFolderPath);
 
                 //if (!string.IsNullOrEmpty(folderPath))
                 //{
-                    _oneNoteApp.OpenPackage(packageFilePath, folderPath, out s);
+                _oneNoteApp.OpenPackage(packageFilePath, notebookFolderPath, out s);
 
                     string[] files = Directory.GetFiles(s, "*.onetoc2", SearchOption.TopDirectoryOnly);
                     if (files.Length > 0)
@@ -558,7 +573,7 @@ namespace BibleConfigurator
                     else
                         FormLogger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorErrorWhileNotebookOpenning, notebookTemplateFileName));
 
-                    return Path.GetFileNameWithoutExtension(folderPath);
+                    return Path.GetFileNameWithoutExtension(notebookFolderPath);
                 //}
                 //else
                 //    Logger.LogError(BibleCommon.Resources.Constants.ConfiguratorSelectAnotherFolder);
