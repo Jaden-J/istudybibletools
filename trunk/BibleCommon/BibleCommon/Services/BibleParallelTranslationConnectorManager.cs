@@ -46,11 +46,11 @@ namespace BibleCommon.Services
             return result;
         }
 
-        public static ParallelBibleInfo GetParallelBibleInfo(string baseModuleShortName, string parallelModuleShortName)
+        public static ParallelBibleInfo GetParallelBibleInfo(string baseModuleShortName, string parallelModuleShortName, bool refreshCache = false)
         {
              var key = GetKey(baseModuleShortName, parallelModuleShortName);
 
-             if (_cache.ContainsKey(key))
+             if (_cache.ContainsKey(key) && !refreshCache)
                  return _cache[key];
              else
              {
@@ -58,19 +58,19 @@ namespace BibleCommon.Services
                  var parallelModuleInfo = ModulesManager.GetModuleInfo(parallelModuleShortName);
 
                  return GetParallelBibleInfo(baseModuleShortName, parallelModuleShortName,
-                     baseModuleInfo.BibleTranslationDifferences, parallelModuleInfo.BibleTranslationDifferences);
+                     baseModuleInfo.BibleTranslationDifferences, parallelModuleInfo.BibleTranslationDifferences, refreshCache);
              }            
         }
 
         public static ParallelBibleInfo GetParallelBibleInfo(string baseModuleShortName, string parallelModuleShortName,
             BibleTranslationDifferences baseBookTranslationDifferences,
-            BibleTranslationDifferences parallelBookTranslationDifferences)
+            BibleTranslationDifferences parallelBookTranslationDifferences, bool refreshCache = false)
         {
             var key = GetKey(baseModuleShortName, parallelModuleShortName);
 
             ParallelBibleInfo result;
 
-            if (_cache.ContainsKey(key))
+            if (_cache.ContainsKey(key) && !refreshCache)
                 result = _cache[key];
             else
             {
@@ -85,7 +85,10 @@ namespace BibleCommon.Services
                     ProcessForParallelBookVerses(baseTranslationDifferencesEx, parallelTranslationDifferencesEx, result);
                 }
 
-                _cache.Add(key, result);
+                if (!_cache.ContainsKey(key))
+                    _cache.Add(key, result);
+                else
+                    _cache[key] = result;
             }
 
             return result;

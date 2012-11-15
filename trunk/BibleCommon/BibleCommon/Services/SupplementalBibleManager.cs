@@ -515,7 +515,10 @@ namespace BibleCommon.Services
         private static void GenerateChapterPage(Application oneNoteApp, CHAPTER chapter, string bookSectionId,
            ModuleInfo moduleInfo, BibleBookInfo bibleBookInfo, XMLBIBLE bibleInfo, string strongPrefix)
         {
-            string chapterPageName = string.Format(moduleInfo.BibleStructure.ChapterSectionNameTemplate, chapter.Index, bibleBookInfo.Name);
+            string chapterPageName = string.Format(!string.IsNullOrEmpty(bibleBookInfo.ChapterPageNameTemplate) 
+                                                        ? bibleBookInfo.ChapterPageNameTemplate
+                                                        : moduleInfo.BibleStructure.ChapterPageNameTemplate, 
+                                                   chapter.Index, bibleBookInfo.Name);
 
             XmlNamespaceManager xnm;
             var currentChapterDoc = NotebookGenerator.AddPage(oneNoteApp, bookSectionId, chapterPageName, 1, moduleInfo.Locale, out xnm);

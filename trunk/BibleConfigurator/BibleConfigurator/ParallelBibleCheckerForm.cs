@@ -137,7 +137,10 @@ namespace BibleConfigurator
                     _mainForm.ExternalProcessingDone("Checking complete");
                 }
 
-                _errorsForm.ShowDialog();
+                if (_errorsForm.AllErrors.Any(errors => errors.Count > 0))
+                    _errorsForm.ShowDialog();
+                else
+                    MessageBox.Show("There is no errors");
 
                 if (AutoStart)
                     Close();
@@ -157,7 +160,7 @@ namespace BibleConfigurator
         {
             var manager = new BibleParallelTranslationManager(null, primaryModuleName, parallelModuleName, SettingsManager.Instance.NotebookId_Bible);
             manager.ForCheckOnly = true;
-            var result = manager.IterateBaseBible(null, false, true, null);
+            var result = manager.IterateBaseBible(null, false, true, null, true);
 
             if (result.Errors.Count > 0)
             {
@@ -166,11 +169,7 @@ namespace BibleConfigurator
                     {
                         ErrorsDecription = string.Format("{0} -> {1}", primaryModuleName, parallelModuleName)
                     });
-            }
-            else if (rbCheckOneModule.Checked && !chkWithAllModules.Checked)
-            {
-                MessageBox.Show("There is no errors");
-            }
+            }            
         }
 
         private void chkWithAllModules_CheckedChanged(object sender, EventArgs e)

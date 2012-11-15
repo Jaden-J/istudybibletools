@@ -192,6 +192,7 @@ namespace BibleConfigurator
             pnModules.Controls.Add(rbCreateNew);
             pnModules.Controls.Add(rbUseExisting);
             pnModules.Controls.Add(cbExistingNotebooks);
+            pnModules.Controls.Add(btnSBFolder);
 
             TopControlsPosition = 10;
             LeftControlsPosition = 0;
