@@ -130,7 +130,7 @@ namespace TestProject
             {
                 Descr = manifest.ShortName,
                 Alphabet = manifest.BibleStructure.Alphabet,
-                ChapterString = "глава"
+                ChapterPageNameTemplate = "{0} глава. {1}"
             };
 
             int bookIndex = 1;

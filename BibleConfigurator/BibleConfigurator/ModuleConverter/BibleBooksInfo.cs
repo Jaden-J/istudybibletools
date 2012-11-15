@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+using System.ComponentModel;
 
 namespace BibleConfigurator.ModuleConverter
 {
@@ -16,7 +17,7 @@ namespace BibleConfigurator.ModuleConverter
         public string Alphabet { get; set; }
 
         [XmlAttribute]
-        public string ChapterString { get; set; }
+        public string ChapterPageNameTemplate { get; set; }
 
         [XmlElement(typeof(BookInfo), ElementName = "BOOK")]
         public List<BookInfo> Books { get; set; }
@@ -34,6 +35,10 @@ namespace BibleConfigurator.ModuleConverter
 
         [XmlAttribute("bshort")]
         public string ShortNamesXMLString { get; set; }
+
+        [XmlAttribute]
+        [DefaultValue("")]
+        public string ChapterPageNameTemplate { get; set; }
 
         [XmlText]        
         public string Name { get; set; }

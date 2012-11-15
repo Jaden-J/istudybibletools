@@ -37,7 +37,7 @@ namespace BibleConfigurator
         protected string ModuleDisplayName { get; set; }        
         protected string Locale { get; set; }
         protected bool BibleIsStrong { get; set; }
-        protected string ChapterSectionNameTemplate { get; set; }
+        protected string ChapterPageNameTemplate { get; set; }
         protected string NotebookBibleName { get; set; }
         protected string NotebookBibleCommentsName { get; set; }
         protected string NotebookSummaryOfNotesName { get; set; }
@@ -111,7 +111,7 @@ namespace BibleConfigurator
 
                 var converter = new ZefaniaXmlConverter(tbShortName.Text, tbDisplayName.Text, BibleContent, BibleBooksInfo,
                                                             tbResultDirectory.Text, tbLocale.Text, NotebooksStructure,
-                                                            BibleBookDifferences, ChapterSectionNameTemplate,
+                                                            BibleBookDifferences, ChapterPageNameTemplate,
                                                             BibleIsStrong && !chkRemoveStrongNumbers.Checked,
                                                             new Version(tbVersion.Text),
                                                             chkNotebookBibleGenerate.Checked,
@@ -510,11 +510,10 @@ namespace BibleConfigurator
         {
             BibleIsStrong = IsStrong(BibleContent);
 
-            if (string.IsNullOrEmpty(BibleBooksInfo.ChapterString))
-                throw new Exception("BibleBooksInfo.ChapterString is null");
+            if (string.IsNullOrEmpty(BibleBooksInfo.ChapterPageNameTemplate))
+                throw new Exception("BibleBooksInfo.ChapterPageNameTemplate is null");
 
-            ChapterSectionNameTemplate = string.Format("{{0}} {0}. {{1}}", BibleBooksInfo.ChapterString.ToLower());
-            
+            ChapterPageNameTemplate = BibleBooksInfo.ChapterPageNameTemplate;            
         }        
 
         private void ChangeControlsState()
