@@ -165,7 +165,7 @@ namespace BibleConfigurator
 
         protected override bool IsBaseModuleSupported()
         {
-            return BibleParallelTranslationManager.IsModuleSupported(SettingsManager.Instance.CurrentModule);
+            return BibleParallelTranslationManager.IsModuleSupported(SettingsManager.Instance.CurrentModuleCached);
         }
 
         protected override string DeleteModuleQuestionText

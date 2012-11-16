@@ -32,6 +32,15 @@ namespace BibleCommon.Services
             throw new InvalidModuleException(BibleCommon.Resources.Constants.CurrentModuleIsUndefined);
         }
 
+
+        public static XMLBIBLE GetCurrentBibleContent()
+        {
+            if (!string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName))
+                return GetModuleBibleInfo(SettingsManager.Instance.ModuleShortName);
+
+            throw new InvalidModuleException(BibleCommon.Resources.Constants.CurrentModuleIsUndefined);
+        }
+
         public static string GetCurrentModuleDirectiory()
         {
             return GetModuleDirectory(SettingsManager.Instance.ModuleShortName);
@@ -52,6 +61,19 @@ namespace BibleCommon.Services
             return module;
         }
 
+        public static int? GetChapterVersesCount(XMLBIBLE bibleIndo, VersePointer chapterVersePointer)
+        {
+            var bookInfo = bibleIndo.Books.FirstOrDefault(b => b.Index == chapterVersePointer.Book.Index);
+            if (bookInfo != null)
+            {
+                var chapterInfo = bookInfo.Chapters.FirstOrDefault(c => c.Index == chapterVersePointer.Chapter);
+                if (chapterInfo != null)
+                    return chapterInfo.Verses.Count;
+            }
+
+            return null;
+        }
+
         public static int GetBibleChaptersCount(string moduleShortName, bool addBooksCount)
         {            
             int result;
@@ -68,20 +90,11 @@ namespace BibleCommon.Services
             return result;
         }
 
-
         public static int GetBibleChaptersCount(XMLBIBLE bibleInfo, bool addBooksCount)
-        {            
-            int result;
-            try
-            {            
-                result = bibleInfo.Books.Sum(b => b.Chapters.Count);
-                if (addBooksCount)
-                    result += bibleInfo.Books.Count;
-            }
-            catch (InvalidModuleException)
-            {
-                result = 1189;
-            }
+        {
+            int result = bibleInfo.Books.Sum(b => b.Chapters.Count);
+            if (addBooksCount)
+                result += bibleInfo.Books.Count;
 
             return result;
         }

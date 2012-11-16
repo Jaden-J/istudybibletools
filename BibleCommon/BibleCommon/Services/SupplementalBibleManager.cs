@@ -369,7 +369,7 @@ namespace BibleCommon.Services
             var result = new List<Exception>();            
 
             var primaryBibleObjectsSearchResult = HierarchySearchManager.GetHierarchyObject(oneNoteApp,
-                    SettingsManager.Instance.NotebookId_Bible, parallelVerse.ToVersePointer(SettingsManager.Instance.CurrentModule), HierarchySearchManager.FindVerseLevel.AllVerses);
+                    SettingsManager.Instance.NotebookId_Bible, parallelVerse.ToVersePointer(SettingsManager.Instance.CurrentModuleCached), HierarchySearchManager.FindVerseLevel.AllVerses);
 
             if (primaryBibleObjectsSearchResult.ResultType != HierarchySearchManager.HierarchySearchResultType.Successfully
                 || primaryBibleObjectsSearchResult.HierarchyStage != HierarchySearchManager.HierarchyStage.ContentPlaceholder)

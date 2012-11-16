@@ -259,7 +259,7 @@ namespace BibleCommon.Common
         /// </summary>
         public void CorrectModuleAfterDeserialization()
         {
-            if (Version < new Version(1, 9))    
+            if (Version < Consts.Constants.ModulesWithXmlBibleMinVersion)    
             {
                 this.NotebooksStructure = new Common.NotebooksStructure() { Notebooks = this.Notebooks };                
 

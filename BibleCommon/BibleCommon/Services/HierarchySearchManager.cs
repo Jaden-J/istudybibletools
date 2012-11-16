@@ -383,14 +383,25 @@ namespace BibleCommon.Services
         {
             int? result = null;
 
-            var chapterPageResult = GetHierarchyObject(oneNoteApp, bibleNotebookId, versePointer, FindVerseLevel.OnlyFirstVerse);
-            if (chapterPageResult.ResultType != HierarchySearchResultType.NotFound)
+            if (bibleNotebookId == SettingsManager.Instance.NotebookId_Bible 
+                && SettingsManager.Instance.CurrentModuleCached != null 
+                && SettingsManager.Instance.CurrentModuleCached.Version >= Consts.Constants.ModulesWithXmlBibleMinVersion)
             {
-                var pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, chapterPageResult.HierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);
-                var table = pageContent.Content.Root.XPathSelectElement("//one:Table", pageContent.Xnm);
-                if (table != null)
+                result = ModulesManager.GetChapterVersesCount(SettingsManager.Instance.CurrentBibleContentCached, versePointer);
+            }
+
+            if (result == null)
+            {
+                var chapterPageResult = GetHierarchyObject(oneNoteApp, bibleNotebookId, versePointer, FindVerseLevel.OnlyFirstVerse);
+                if (chapterPageResult.ResultType != HierarchySearchResultType.NotFound 
+                    && chapterPageResult.HierarchyStage == HierarchyStage.Page)
                 {
-                    return table.XPathSelectElements("one:Row", pageContent.Xnm).Count();
+                    var pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, chapterPageResult.HierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);
+                    var table = pageContent.Content.Root.XPathSelectElement("//one:Table", pageContent.Xnm);
+                    if (table != null)
+                    {
+                        return table.XPathSelectElements("one:Row", pageContent.Xnm).Count();
+                    }
                 }
             }
 

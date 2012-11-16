@@ -464,7 +464,8 @@ namespace BibleCommon.Common
 
                 s = TrimLocation(s);
 
-                int? verse = StringUtils.GetStringLastNumber(s);
+                int verseIndex;
+                int? verse = StringUtils.GetStringLastNumber(s, out verseIndex);
 
                 if (verse.HasValue)
                 {
@@ -477,7 +478,8 @@ namespace BibleCommon.Common
                     int chapterIndex;
                     int? chapter = StringUtils.GetStringLastNumber(s, out chapterIndex);
 
-                    if (chapter.HasValue && chapterIndex > 1)  // чтобы уберечь от строк типа "1Кор" - то есть считаем, что глава идёт хотя бы с третьего символа
+                    if (chapter.HasValue && chapterIndex > 1         // чтобы уберечь от строк типа "1Кор" - то есть считаем, что глава идёт хотя бы с третьего символа
+                        && (verseIndex - chapterIndex == verse.Value.ToString().Length + 1))   // чтобы уберечь от строк типа "Во 2Кор 5 и Рим 14"
                     {
                         Chapter = chapter.Value;
 
@@ -680,7 +682,7 @@ namespace BibleCommon.Common
 
         private static BibleBookInfo GetBibleBook(string s, bool endsWithDot, out string moduleName)
         {   
-            return SettingsManager.Instance.CurrentModule.GetBibleBook(s, endsWithDot, out moduleName);
+            return SettingsManager.Instance.CurrentModuleCached.GetBibleBook(s, endsWithDot, out moduleName);
         }
 
         public VersePointer GetChapterPointer()

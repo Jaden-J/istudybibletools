@@ -103,7 +103,13 @@ namespace BibleConfigurator
                 {
                     if (!chkWithAllModules.Checked)
                     {
+                        _mainForm.PrepareForExternalProcessing(2, 1, "Start checking");
+
+                        _formLogger.LogMessage("{0} -> {1}", baseModule, parallelModule);
                         CheckModule(baseModule, parallelModule);
+
+                        _formLogger.LogMessage("{0} -> {1}", parallelModule, baseModule);
+                        CheckModule(parallelModule, baseModule);
                     }
                     else
                     {
@@ -116,9 +122,7 @@ namespace BibleConfigurator
 
                             _formLogger.LogMessage("{0} -> {1}", pModule.ShortName, baseModule);
                             CheckModule(pModule.ShortName, baseModule);
-                        }
-
-                        _mainForm.ExternalProcessingDone("Checking complete");
+                        }                        
                     }
                 }
                 else
@@ -132,10 +136,10 @@ namespace BibleConfigurator
                             _formLogger.LogMessage("{0} -> {1}", bModule.ShortName, pModule.ShortName);
                             CheckModule(bModule.ShortName, pModule.ShortName);
                         }
-                    }
-
-                    _mainForm.ExternalProcessingDone("Checking complete");
+                    }                    
                 }
+
+                _mainForm.ExternalProcessingDone("Checking complete");
 
                 if (_errorsForm.AllErrors.Any(errors => errors.Count > 0))
                     _errorsForm.ShowDialog();
@@ -147,6 +151,7 @@ namespace BibleConfigurator
                 else
                 {
                     FormExtensions.EnableAll(true, this.Controls);
+                    ReenableControls();
                     LoadControlsState();
                 }
             }
@@ -174,14 +179,19 @@ namespace BibleConfigurator
 
         private void chkWithAllModules_CheckedChanged(object sender, EventArgs e)
         {
-            cbParallelModule.Enabled = !((CheckBox)sender).Checked;
+            ReenableControls();
         }
 
         private void rbCheckAllModules_CheckedChanged(object sender, EventArgs e)
         {
-            cbBaseModule.Enabled = !((RadioButton)sender).Checked;
-            cbParallelModule.Enabled = !((RadioButton)sender).Checked && !chkWithAllModules.Checked;
-            chkWithAllModules.Enabled = !((RadioButton)sender).Checked;
+            ReenableControls();
+        }
+
+        private void ReenableControls()
+        {
+            cbBaseModule.Enabled = !rbCheckAllModules.Checked;
+            cbParallelModule.Enabled = !rbCheckAllModules.Checked && !chkWithAllModules.Checked;
+            chkWithAllModules.Enabled = !rbCheckAllModules.Checked;
         }
 
         private void ParallelBibleCheckerForm_FormClosing(object sender, FormClosingEventArgs e)

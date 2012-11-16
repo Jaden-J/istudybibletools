@@ -94,7 +94,7 @@ namespace BibleConfigurator
                 if (!IsBaseModuleSupported())
                 {
                     FormLogger.LogError(string.Format(BibleCommon.Resources.Constants.BaseModuleIsNotSupported,
-                                            SettingsManager.Instance.CurrentModule.Version, BibleParallelTranslationManager.SupportedModuleMinVersion));
+                                            SettingsManager.Instance.CurrentModuleCached.Version, BibleParallelTranslationManager.SupportedModuleMinVersion));
                     Close();
                 }
 
