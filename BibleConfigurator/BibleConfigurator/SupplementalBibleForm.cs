@@ -42,7 +42,7 @@ namespace BibleConfigurator
 
 Обратите внимание:
   - в справочную Библию можно добавлять только модули версии 2.0 и выше;  
-  - добавление нового модуля в справочную Библию может занять около часа.    
+  - добавление нового модуля в справочную Библию занимает около часа.    
 ";
             }
         }
@@ -57,15 +57,18 @@ namespace BibleConfigurator
             {
                 int stagesCount = selectedModuleInfo.Type == ModuleType.Strong ? 2 : 1;
 
-                int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.SupplementalBibleModules.First().ModuleName, false);
-                MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.AddParallelBibleTranslationStart);
+                int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.SupplementalBibleModules.First().ModuleName, false);                
 
                 if (selectedModuleInfo.Type == ModuleType.Strong)
                 {
+                    MainForm.PrepareForExternalProcessing(1, 1, BibleCommon.Resources.Constants.AddParallelBibleTranslationStart);
                     DictionaryManager.AddDictionary(OneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true);
                     strongTermLinksCache = RunIndexStrong(selectedModuleInfo, 1, stagesCount);
+                    MainForm.PrepareForExternalProcessing(chaptersCount, 1, string.Empty);                
                 }
-                
+                else
+                    MainForm.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.AddParallelBibleTranslationStart);                
+
                 string stagesString = stagesCount == 1 ? string.Empty : string.Format("{0} {1}/{1}: ", BibleCommon.Resources.Constants.Stage, stagesCount);
                 Logger.Preffix = string.Format("{0}{1}: ", stagesString, BibleCommon.Resources.Constants.AddParallelBibleTranslation); 
                 BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
@@ -162,7 +165,7 @@ namespace BibleConfigurator
 
         protected override bool IsBaseModuleSupported()
         {
-            return BibleParallelTranslationManager.IsModuleSupported(SettingsManager.Instance.CurrentModule);
+            return BibleParallelTranslationManager.IsModuleSupported(SettingsManager.Instance.CurrentModuleCached);
         }
 
         protected override string DeleteModuleQuestionText
@@ -223,6 +226,11 @@ namespace BibleConfigurator
         protected override void ClearSupplementalModules()
         {
             SettingsManager.Instance.SupplementalBibleModules.Clear();
+        }
+
+        protected override bool AreThereModulesToAdd()
+        {
+            return Modules.Any(m => IsModuleSupported(m) && !SupplementalModuleAlreadyAdded(m.ShortName));            
         }
     }
 }

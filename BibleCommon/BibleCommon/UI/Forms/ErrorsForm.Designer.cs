@@ -46,7 +46,7 @@
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             resources.ApplyResources(this.btnOk, "btnOk");
             this.btnOk.Name = "btnOk";
-            this.btnOk.UseVisualStyleBackColor = true;
+            this.btnOk.UseVisualStyleBackColor = true;            
             // 
             // btnSaveToFile
             // 
@@ -63,8 +63,8 @@
             // 
             // ErrorsForm
             // 
-            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            resources.ApplyResources(this, "$this");
             this.Controls.Add(this.btnSaveToFile);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.lbErrors);

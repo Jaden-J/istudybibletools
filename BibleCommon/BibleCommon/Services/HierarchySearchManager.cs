@@ -52,8 +52,13 @@ namespace BibleCommon.Services
             public Dictionary<VersePointer, VerseObjectInfo> AdditionalObjectsIds { get; set; }                        
             public List<VerseObjectInfo> GetAllObjectsIds()
             {
-                var result = new List<VerseObjectInfo>() { VerseInfo };
+                var result = new List<VerseObjectInfo>();
+
+                if (VerseInfo != null)
+                    result.Add(VerseInfo);
+
                 result.AddRange(AdditionalObjectsIds.Values);
+
                 return result;
             }
 
@@ -378,8 +383,18 @@ namespace BibleCommon.Services
         {
             int? result = null;
 
+            if (bibleNotebookId == SettingsManager.Instance.NotebookId_Bible 
+                && SettingsManager.Instance.CurrentModuleCached != null 
+                && SettingsManager.Instance.CurrentModuleCached.Version >= Consts.Constants.ModulesWithXmlBibleMinVersion)
+            {
+                result = ModulesManager.GetChapterVersesCount(SettingsManager.Instance.CurrentBibleContentCached, versePointer);
+            }
+
+            if (result == null)
+            {
             var chapterPageResult = GetHierarchyObject(oneNoteApp, bibleNotebookId, versePointer, FindVerseLevel.OnlyFirstVerse);
-            if (chapterPageResult.ResultType != HierarchySearchResultType.NotFound)
+                if (chapterPageResult.ResultType != HierarchySearchResultType.NotFound 
+                    && chapterPageResult.HierarchyStage == HierarchyStage.Page)
             {
                 var pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, chapterPageResult.HierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);
                 var table = pageContent.Content.Root.XPathSelectElement("//one:Table", pageContent.Xnm);
@@ -387,6 +402,7 @@ namespace BibleCommon.Services
                 {
                     return table.XPathSelectElements("one:Row", pageContent.Xnm).Count();
                 }
+            }
             }
 
             return result;

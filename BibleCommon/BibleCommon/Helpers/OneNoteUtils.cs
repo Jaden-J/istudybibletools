@@ -130,14 +130,17 @@ namespace BibleCommon.Helpers
         }
 
 
-        public static string GetOrGenerateHref(Application oneNoteApp, string title, string objectHref, string pageId, string objectId)
+        public static string GetOrGenerateHref(Application oneNoteApp, string title, string objectHref, string pageId, string objectId, params string[] additionalLinkQueryParameters)
         {
             string link;
 
             if (!string.IsNullOrEmpty(objectHref))
                 link = objectHref;
             else
-                link = OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, objectId);            
+                link = OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, objectId);
+
+            foreach (var param in additionalLinkQueryParameters)
+                link += "&" + param;
 
             return string.Format("<a href=\"{0}\">{1}</a>", link, title);            
         }

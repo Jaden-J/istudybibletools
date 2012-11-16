@@ -28,6 +28,10 @@ namespace BibleCommon.Consts
         public static readonly int DefaultStrongNumbersCount = 14700;
         public static readonly string EmbeddedSupplementalModulesKey = "SupplementalModules";
         public static readonly string EmbeddedDictionariesKey = "Dictionaries";
+        public static readonly string UnicodeFontName = "Arial Unicode MS";
+        public static readonly string QueryParameter_QuickAnalyze = "quick";
+
+        public static readonly Version ModulesWithXmlBibleMinVersion = new Version(1, 9);
         
         public static readonly int DefaultPageWidth_Notes = 500;
         public static readonly int DefaultPageWidth_RubbishNotes = 500;
@@ -67,6 +71,7 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_SupplementalBibleModules = "SupplementalBibleModules";
         public static readonly string ParameterName_SupplementalBibleLinkName = "SupplementalBibleLinkName";
         public static readonly string ParameterName_DictionariesModules = "DictionariesModules";
+        public static readonly string ParameterName_SelectedNotebooksForAnalyze = "SelectedNotebooksForAnalyze";
         
 
         public static readonly string ParameterName_PageWidthNotes = "Width_NotesPage";

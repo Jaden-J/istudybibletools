@@ -47,11 +47,11 @@ namespace BibleCommon.Services
                 }
                 catch (IOException)
                 {
-                    _logFilePath = Path.Combine(directoryPath, systemName + Guid.NewGuid() + ".txt");
+                    _logFilePath = Path.Combine(directoryPath, string.Format("{0}_{1}.txt", systemName, Guid.NewGuid()));
                     _fileStream = new FileStream(_logFilePath, FileMode.Create);
                 }
 
-                _streamWriter = new StreamWriter(_fileStream);
+                _streamWriter = new StreamWriter(_fileStream, Encoding.UTF8);
 
                 Errors = new List<string>();
 
@@ -114,7 +114,7 @@ namespace BibleCommon.Services
                     Init(System.Reflection.Assembly.GetEntryAssembly().GetName().Name);
                 }
                 catch { }
-            }
+            }            
 
             if (string.IsNullOrEmpty(messageEx))
                 messageEx = message;
@@ -122,9 +122,8 @@ namespace BibleCommon.Services
             if (writeDateTime)
                 messageEx = string.Format("{0}: {1}", DateTime.Now, messageEx);
 
-
             if (_lb != null)
-            {       
+            {
                 if (_newLineForListBox || _lb.Items.Count == 0)
                 {
                     _lb.Items.Add(message);
@@ -132,20 +131,20 @@ namespace BibleCommon.Services
                 }
                 else
                     _lb.Items[_lb.Items.Count - 1] += message;
-                
+
 
                 int width = Convert.ToInt32(message.Length * 5.75);
                 if (width > _lb.HorizontalExtent)
-                    _lb.HorizontalExtent = width;                
+                    _lb.HorizontalExtent = width;
             }
 
             if (newLine)
             {
                 Console.WriteLine(message);
-                if (_lb != null)                   
+                if (_lb != null)
                     _newLineForListBox = true;
 
-                TryToWriteToFile(messageEx);
+                TryToWriteToFile(messageEx, newLine);
             }
             else
             {
@@ -153,7 +152,7 @@ namespace BibleCommon.Services
                 if (_lb != null)
                     _newLineForListBox = false;
 
-                TryToWriteToFile(messageEx);               
+                TryToWriteToFile(messageEx, newLine);
             }
 
             try
@@ -168,12 +167,17 @@ namespace BibleCommon.Services
                     Errors.Add(message);
         }
 
-        private static void TryToWriteToFile(string message)
+        private static void TryToWriteToFile(string message, bool newLine)
         {
             try
             {
                 if (_streamWriter != null && _streamWriter.BaseStream != null)
-                    _streamWriter.WriteLine(message);
+                {
+                    if (newLine)
+                        _streamWriter.WriteLine(message);
+                    else
+                        _streamWriter.Write(message);
+                }
             }
             catch (Exception subEx)
             {

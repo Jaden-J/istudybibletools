@@ -299,6 +299,12 @@
   <data name="lblRubbishNotesPageWidth.Text" xml:space="preserve">
     <value>Ширина страницы "Подробная сводная заметок"</value>
   </data>
+  <data name="chkDefaultParameters.Size" type="System.Drawing.Size, System.Drawing">
+    <value>287, 17</value>
+  </data>
+  <data name="chkDefaultParameters.Text" xml:space="preserve">
+    <value>Использовать значения параметров по умолчанию</value>
+  </data>
   <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
     <value>335, 13</value>
   </data>

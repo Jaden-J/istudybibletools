@@ -402,23 +402,25 @@ namespace BibleCommon.Services
             return result;
         }
 
-        public PageContent GetPageContent(Application oneNoteApp, string pageId, PageType pageType)
+        public PageContent GetPageContent(Application oneNoteApp, string pageId, PageType pageType, PageInfo pageInfo = PageInfo.piBasic)
         {
-            return GetPageContent(oneNoteApp, pageId, pageType, false);
+            return GetPageContent(oneNoteApp, pageId, pageType, false, pageInfo);
         }
 
-        private PageContent GetPageContent(Application oneNoteApp, string pageId, PageType pageType, bool refreshCache)
+        private PageContent GetPageContent(Application oneNoteApp, string pageId, PageType pageType, bool refreshCache, PageInfo pageInfo)
         {
             PageContent result;
 
-            if (!_pageContentCache.ContainsKey(pageId) || refreshCache)
+            var key = string.Format("{0}_{1}", pageId, pageInfo);
+
+            if (!_pageContentCache.ContainsKey(key) || refreshCache)
             {
                 //lock (_locker)
                 {
                     string xml = string.Empty;
                     try
                     {
-                        oneNoteApp.GetPageContent(pageId, out xml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
+                        oneNoteApp.GetPageContent(key, out xml, pageInfo, Constants.CurrentOneNoteSchema);
                     }
                     catch (COMException ex)
                     {
@@ -431,14 +433,14 @@ namespace BibleCommon.Services
                     XmlNamespaceManager xnm;
                     XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
 
-                    if (!_pageContentCache.ContainsKey(pageId))
-                        _pageContentCache.Add(pageId, new PageContent() { PageId = pageId, Content = doc, Xnm = xnm, PageType = pageType });
+                    if (!_pageContentCache.ContainsKey(key))
+                        _pageContentCache.Add(key, new PageContent() { PageId = key, Content = doc, Xnm = xnm, PageType = pageType });
                     else
-                        _pageContentCache[pageId].Content = doc;
+                        _pageContentCache[key].Content = doc;
                 }
             }
 
-            result = _pageContentCache[pageId];
+            result = _pageContentCache[key];
 
             return result;
         }

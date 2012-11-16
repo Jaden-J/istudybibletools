@@ -47,11 +47,9 @@ namespace BibleNoteLinker
 
         private void LoadSelectedNotebooks()
         {
-            List<string> notebooksIds = Helper.GetSelectedNotebooksIds();
-
             foreach (CheckBox chk in pnMain.Controls)
             {
-                if (notebooksIds.Contains(chk.Name))                
+                if (SettingsManager.Instance.SelectedNotebooksForAnalyze.Contains(chk.Name))                
                     chk.Checked = true;                
             }
         }
@@ -70,6 +68,7 @@ namespace BibleNoteLinker
             CheckBox cb = new CheckBox();
             cb.Name = id;
             cb.Text = title;
+            cb.Font = new System.Drawing.Font(BibleCommon.Consts.Constants.UnicodeFontName, cb.Font.Size, cb.Font.Style);
             cb.Top = 25 * index;
             cb.Width = 250;
             pnMain.Controls.Add(cb);
@@ -112,7 +111,8 @@ namespace BibleNoteLinker
             }
             else
             {
-                Helper.SaveSelectedNotebooksIds(selectedNotebooks);
+                SettingsManager.Instance.SelectedNotebooksForAnalyze = selectedNotebooks;
+                SettingsManager.Instance.Save();
                 this.DialogResult = System.Windows.Forms.DialogResult.OK;
                 this.Close();
             }

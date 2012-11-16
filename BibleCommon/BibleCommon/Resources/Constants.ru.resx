@@ -708,4 +708,10 @@
   <data name="SpecifyBibleVerse" xml:space="preserve">
     <value>Укажите место Писания</value>
   </data>
+  <data name="NoteLinkerBiblePagesUpdating" xml:space="preserve">
+    <value>Обновление страниц Библии в OneNote</value>
+  </data>
+  <data name="NoteLinkerNotePagesUpdating" xml:space="preserve">
+    <value>Обновление страниц заметок в OneNote</value>
+  </data>
 </root>

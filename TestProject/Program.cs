@@ -55,8 +55,6 @@ namespace TestProject
 
             try
             {
-                Assembly assembly = Assembly.LoadFrom(@"C:\Program Files\IStudyBibleTools\OneNote IStudyBibleTools\tools\BibleNoteLinker\BibleNoteLinker.exe");
-
                 //GenerateBibleBooks();
 
                 //SearchInNotebook();
@@ -87,9 +85,11 @@ namespace TestProject
 
                 //ConvertUkrModule();
 
+                ConvertChineseModule();
+
                 //ConvertRussianModule();
 
-                ConvertEnglishModule();
+                //ConvertEnglishModule();
 
                 //ConvertRomanModule();
 
@@ -130,7 +130,7 @@ namespace TestProject
             {
                 Descr = manifest.ShortName,
                 Alphabet = manifest.BibleStructure.Alphabet,
-                ChapterString = "глава"
+                ChapterPageNameTemplate = "{0} глава. {1}"
             };
 
             int bookIndex = 1;
@@ -354,13 +354,13 @@ namespace TestProject
 
         private static void ConvertUkrModule()
         {
-            string moduleShortName = "UkrGYZ";
+            string moduleShortName = "ukr";
             var notebooksStructure = new NotebooksStructure() { Notebooks = PredefinedNotebooksInfo.Russian };  // это тоже часто меняется
             //notebooksStructure.DictionarySectionGroupName = "Стронга";  // параметры для стронга
             //notebooksStructure.DictionaryTermsCount = 14700;
 
-            var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName), "ru",
-                notebooksStructure, PredefinedBookIndexes.RST, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst),  // вот эти тоже часто надо менять                
+            var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName), "uk",
+                notebooksStructure, PredefinedBookIndexes.KJV, Utils.LoadFromXmlString<BibleTranslationDifferences>(Properties.Resources.rst),  // вот эти тоже часто надо менять                
                 "{0} глава. {1}",
                 false,                
                 new Version(2, 0), false,
@@ -396,6 +396,23 @@ namespace TestProject
                 form.ShowDialog();
             }
         }
+
+        private static void ConvertChineseModule()
+        {
+            string moduleShortName = "ncv";
+            var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName),
+                "zh_CN", new NotebooksStructure() { Notebooks = PredefinedNotebooksInfo.English }, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
+                "{0} chapter. {1}",
+                false,
+                new Version(2, 0), false);
+
+            converter.Convert();
+
+            using (var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message)))
+            {
+                form.ShowDialog();
+            }
+        }      
 
         private static void ConvertEnglishModule()
         {

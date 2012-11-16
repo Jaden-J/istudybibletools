@@ -32,6 +32,15 @@ namespace BibleCommon.Services
             throw new InvalidModuleException(BibleCommon.Resources.Constants.CurrentModuleIsUndefined);
         }
 
+
+        public static XMLBIBLE GetCurrentBibleContent()
+        {
+            if (!string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName))
+                return GetModuleBibleInfo(SettingsManager.Instance.ModuleShortName);
+
+            throw new InvalidModuleException(BibleCommon.Resources.Constants.CurrentModuleIsUndefined);
+        }
+
         public static string GetCurrentModuleDirectiory()
         {
             return GetModuleDirectory(SettingsManager.Instance.ModuleShortName);
@@ -47,8 +56,22 @@ namespace BibleCommon.Services
             var module = GetModuleFile<ModuleInfo>(moduleShortName, Consts.Constants.ManifestFileName);
             if (string.IsNullOrEmpty(module.ShortName))
                 module.ShortName = moduleShortName;
+            module.CorrectModuleAfterDeserialization();
             
             return module;
+        }
+
+        public static int? GetChapterVersesCount(XMLBIBLE bibleIndo, VersePointer chapterVersePointer)
+        {
+            var bookInfo = bibleIndo.Books.FirstOrDefault(b => b.Index == chapterVersePointer.Book.Index);
+            if (bookInfo != null)
+            {
+                var chapterInfo = bookInfo.Chapters.FirstOrDefault(c => c.Index == chapterVersePointer.Chapter);
+                if (chapterInfo != null)
+                    return chapterInfo.Verses.Count;
+            }
+
+            return null;
         }
 
         public static int GetBibleChaptersCount(string moduleShortName, bool addBooksCount)
@@ -67,20 +90,11 @@ namespace BibleCommon.Services
             return result;
         }
 
-
         public static int GetBibleChaptersCount(XMLBIBLE bibleInfo, bool addBooksCount)
-        {            
-            int result;
-            try
-            {            
-                result = bibleInfo.Books.Sum(b => b.Chapters.Count);
-                if (addBooksCount)
-                    result += bibleInfo.Books.Count;
-            }
-            catch (InvalidModuleException)
-            {
-                result = 1189;
-            }
+        {
+            int result = bibleInfo.Books.Sum(b => b.Chapters.Count);
+            if (addBooksCount)
+                result += bibleInfo.Books.Count;
 
             return result;
         }
@@ -229,18 +243,24 @@ namespace BibleCommon.Services
                 }
             }
 
-            foreach (var notebook in module.NotebooksStructure.Notebooks)
+            if (module.NotebooksStructure.Notebooks != null)
             {
-                if (!notebook.SkipCheck)                
-                    if (!File.Exists(Path.Combine(moduleDirectory, notebook.Name)))
-                        throw new InvalidModuleException(string.Format(Resources.Constants.Error_NotebookTemplateNotFound, notebook.Name, notebook.Type));
+                foreach (var notebook in module.NotebooksStructure.Notebooks)
+                {
+                    if (!notebook.SkipCheck)
+                        if (!File.Exists(Path.Combine(moduleDirectory, notebook.Name)))
+                            throw new InvalidModuleException(string.Format(Resources.Constants.Error_NotebookTemplateNotFound, notebook.Name, notebook.Type));
+                }
             }
 
-            foreach (var section in module.NotebooksStructure.Sections)
+            if (module.NotebooksStructure.Sections != null)
             {
-                if (!section.SkipCheck)
-                    if (!File.Exists(Path.Combine(moduleDirectory, section.Name)))
-                        throw new InvalidModuleException(string.Format(Resources.Constants.Error_SectionFileNotFound, section.Name));
+                foreach (var section in module.NotebooksStructure.Sections)
+                {
+                    if (!section.SkipCheck)
+                        if (!File.Exists(Path.Combine(moduleDirectory, section.Name)))
+                            throw new InvalidModuleException(string.Format(Resources.Constants.Error_SectionFileNotFound, section.Name));
+                }
             }
         }
 
@@ -289,7 +309,8 @@ namespace BibleCommon.Services
 
                 var module = Dessirialize<ModuleInfo>(manifestFilePath);
                 if (string.IsNullOrEmpty(module.ShortName))
-                    module.ShortName = Path.GetFileNameWithoutExtension(moduleFilePath);                
+                    module.ShortName = Path.GetFileNameWithoutExtension(moduleFilePath);
+                module.CorrectModuleAfterDeserialization();
 
                 return module;
             }

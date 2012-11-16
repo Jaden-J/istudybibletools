@@ -369,7 +369,7 @@ namespace BibleCommon.Services
             var result = new List<Exception>();            
 
             var primaryBibleObjectsSearchResult = HierarchySearchManager.GetHierarchyObject(oneNoteApp,
-                    SettingsManager.Instance.NotebookId_Bible, parallelVerse.ToVersePointer(SettingsManager.Instance.CurrentModule), HierarchySearchManager.FindVerseLevel.AllVerses);
+                    SettingsManager.Instance.NotebookId_Bible, parallelVerse.ToVersePointer(SettingsManager.Instance.CurrentModuleCached), HierarchySearchManager.FindVerseLevel.AllVerses);
 
             if (primaryBibleObjectsSearchResult.ResultType != HierarchySearchManager.HierarchySearchResultType.Successfully
                 || primaryBibleObjectsSearchResult.HierarchyStage != HierarchySearchManager.HierarchyStage.ContentPlaceholder)
@@ -515,7 +515,10 @@ namespace BibleCommon.Services
         private static void GenerateChapterPage(Application oneNoteApp, CHAPTER chapter, string bookSectionId,
            ModuleInfo moduleInfo, BibleBookInfo bibleBookInfo, XMLBIBLE bibleInfo, string strongPrefix)
         {
-            string chapterPageName = string.Format(moduleInfo.BibleStructure.ChapterSectionNameTemplate, chapter.Index, bibleBookInfo.Name);
+            string chapterPageName = string.Format(!string.IsNullOrEmpty(bibleBookInfo.ChapterPageNameTemplate) 
+                                                        ? bibleBookInfo.ChapterPageNameTemplate
+                                                        : moduleInfo.BibleStructure.ChapterPageNameTemplate, 
+                                                   chapter.Index, bibleBookInfo.Name);
 
             XmlNamespaceManager xnm;
             var currentChapterDoc = NotebookGenerator.AddPage(oneNoteApp, bookSectionId, chapterPageName, 1, moduleInfo.Locale, out xnm);

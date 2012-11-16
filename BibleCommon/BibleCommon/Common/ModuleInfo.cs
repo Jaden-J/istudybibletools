@@ -259,7 +259,7 @@ namespace BibleCommon.Common
         /// </summary>
         public void CorrectModuleAfterDeserialization()
         {
-            if (Version < new Version(1, 9))    
+            if (Version < Consts.Constants.ModulesWithXmlBibleMinVersion)    
             {
                 this.NotebooksStructure = new Common.NotebooksStructure() { Notebooks = this.Notebooks };                
 
@@ -426,7 +426,7 @@ namespace BibleCommon.Common
         public string Alphabet { get; set; }  // символы, встречающиеся в названии книг Библии                    
 
         [XmlAttribute]
-        public string ChapterSectionNameTemplate { get; set; }
+        public string ChapterPageNameTemplate { get; set; }
 
         [XmlElement(typeof(BibleBookInfo), ElementName = "BibleBook")]
         public List<BibleBookInfo> BibleBooks { get; set; }
@@ -448,6 +448,10 @@ namespace BibleCommon.Common
 
         [XmlAttribute]
         public string SectionName { get; set; }
+
+        [XmlAttribute]
+        [DefaultValue("")]
+        public string ChapterPageNameTemplate { get; set; }
 
         [XmlElement(typeof(Abbreviation), ElementName = "Abbreviation")]
         public List<Abbreviation> Abbreviations { get; set; }
