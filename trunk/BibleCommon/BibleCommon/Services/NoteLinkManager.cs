@@ -602,14 +602,18 @@ namespace BibleCommon.Services
             if (searchResult.VersePointer.IsChapter)
                 needToQueueIfChapter = !NeedToForceAnalyzeChapter(searchResult); // нужно ли анализировать главу сразу же, а не в самом конце             
 
+            List<VersePointer> allIncludedVersesExceptFirst = null;
+
             #region linking main notes page            
 
             List<VersePointer> verses = new List<VersePointer>() { searchResult.VersePointer };
 
             if (SettingsManager.Instance.ExpandMultiVersesLinking && searchResult.VersePointer.IsMultiVerse)
-                verses.AddRange(searchResult.VersePointer
-                                    .GetAllIncludedVersesExceptFirst(oneNoteApp,
-                                        new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible }));            
+            {
+                allIncludedVersesExceptFirst = searchResult.VersePointer.GetAllIncludedVersesExceptFirst(oneNoteApp,
+                                                    new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible });
+                verses.AddRange(allIncludedVersesExceptFirst);
+            }
 
             bool first = true;
             var processedVerses = new List<SimpleVersePointer>();
@@ -707,9 +711,12 @@ namespace BibleCommon.Services
                 List<VersePointer> rubbishVerses = new List<VersePointer>() { searchResult.VersePointer };
 
                 if (SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking && searchResult.VersePointer.IsMultiVerse)
-                    rubbishVerses.AddRange(searchResult.VersePointer
-                                                .GetAllIncludedVersesExceptFirst(oneNoteApp,
-                                                        new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible }));
+                {
+                    if (allIncludedVersesExceptFirst == null)
+                        allIncludedVersesExceptFirst = searchResult.VersePointer.GetAllIncludedVersesExceptFirst(oneNoteApp,
+                                                            new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible });
+                    rubbishVerses.AddRange(allIncludedVersesExceptFirst);
+                }
 
                 foreach (VersePointer vp in rubbishVerses)
                 {

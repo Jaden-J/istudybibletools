@@ -283,7 +283,6 @@ namespace BibleCommon.Services
 
             if (!string.IsNullOrEmpty(chapterString))
             {
-
                 for (int maxMissCount = 2; maxMissCount >= 0; maxMissCount--)
                 {
                     string bookName = StringUtils.GetPrevString(textElement.Value,

@@ -13,6 +13,7 @@ using BibleCommon.Common;
 using System.Resources;
 using System.Globalization;
 using System.ComponentModel;
+using BibleCommon.Scheme;
 
 namespace BibleCommon.Services
 {
@@ -177,7 +178,7 @@ namespace BibleCommon.Services
         /// Значение данного свойства сохраняется в памяти и не обновляется! нельзя использовать в коде, где текущий модуль может измениться
         /// </summary>
         private ModuleInfo _currentModule;
-        public ModuleInfo CurrentModule
+        public ModuleInfo CurrentModuleCached
         {
             get
             {
@@ -185,6 +186,21 @@ namespace BibleCommon.Services
                     _currentModule = ModulesManager.GetCurrentModuleInfo();
 
                 return _currentModule;
+            }
+        }
+
+        /// <summary>
+        /// Значение данного свойства сохраняется в памяти и не обновляется! нельзя использовать в коде, где текущий модуль может измениться
+        /// </summary>
+        private XMLBIBLE _currentBibleContent;
+        public XMLBIBLE CurrentBibleContentCached
+        {
+            get
+            {
+                if (_currentBibleContent == null)
+                    _currentBibleContent = ModulesManager.GetCurrentBibleContent();
+
+                return _currentBibleContent;
             }
         }
 
@@ -216,7 +232,7 @@ namespace BibleCommon.Services
 
         public bool CurrentModuleIsCorrect()
         {
-            return !string.IsNullOrEmpty(ModuleShortName) && ModulesManager.ModuleIsCorrect(ModuleShortName, ModuleType.Bible);
+            return !string.IsNullOrEmpty(ModuleShortName) && ModulesManager.ModuleIsCorrect(ModuleShortName, Common.ModuleType.Bible);
         }
 
         public bool IsConfigured(Application oneNoteApp)
@@ -229,7 +245,7 @@ namespace BibleCommon.Services
                 && !string.IsNullOrEmpty(this.PageName_DefaultComments)
                 && !string.IsNullOrEmpty(this.PageName_Notes)
                 && !string.IsNullOrEmpty(this.ModuleShortName)
-                && ModulesManager.ModuleIsCorrect(this.ModuleShortName, ModuleType.Bible)
+                && ModulesManager.ModuleIsCorrect(this.ModuleShortName, Common.ModuleType.Bible)
                 && _useDefaultSettingsNodeExists;
 
             if (result)

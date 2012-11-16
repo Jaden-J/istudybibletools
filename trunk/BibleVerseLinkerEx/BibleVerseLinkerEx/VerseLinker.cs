@@ -98,7 +98,7 @@ namespace BibleVerseLinkerEx
                 string currentObjectId;
                 XElement selectedElement = FindSelectedText(currentPageId, out currentPageDocument, out verseNumber, out currentObjectId, out xnm);
                 string selectedHtml = selectedElement != null ? ShellText(selectedElement.Value) : string.Empty;                
-                string selectedText = ShellText(StringUtils.GetText(selectedHtml, SettingsManager.Instance.CurrentModule.BibleStructure.Alphabet));
+                string selectedText = ShellText(StringUtils.GetText(selectedHtml, SettingsManager.Instance.CurrentModuleCached.BibleStructure.Alphabet));
                 bool selectedTextFound = !string.IsNullOrEmpty(selectedText);
 
                 if (selectedTextFound)
