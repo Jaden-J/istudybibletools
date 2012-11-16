@@ -99,8 +99,8 @@
             // 
             // lbLog
             // 
-            this.lbLog.FormattingEnabled = true;
             resources.ApplyResources(this.lbLog, "lbLog");
+            this.lbLog.FormattingEnabled = true;
             this.lbLog.Name = "lbLog";
             // 
             // lblProgress

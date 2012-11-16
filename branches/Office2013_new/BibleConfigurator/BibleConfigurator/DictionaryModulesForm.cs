@@ -42,7 +42,7 @@ namespace BibleConfigurator
 
 Обратите внимание:  
   - необходимо, чтобы в программу были загружены модули типа 'Словарь';
-  - добавление нового словаря может занять несколько минут.
+  - добавление нового словаря занимает несколько минут.
 ";
             }
         }
@@ -65,7 +65,15 @@ namespace BibleConfigurator
 
         protected override bool CanModuleBeDeleted(ModuleInfo moduleInfo, int index)
         {
-            return moduleInfo.Type == ModuleType.Dictionary;
+            return moduleInfo.Type == ModuleType.Dictionary
+                || (moduleInfo.Type == ModuleType.Strong && !SettingsManager.Instance.SupplementalBibleModules.Any(
+                    m => 
+                    {
+                        var sm = Modules.FirstOrDefault(module => module.ShortName == m.ModuleName);
+                        if (sm != null)
+                            return sm.Type == ModuleType.Strong;
+                        return false;
+                    }));
         }
 
         protected override void DeleteModule(string moduleShortName)
@@ -179,6 +187,11 @@ namespace BibleConfigurator
         protected override void ClearSupplementalModules()
         {
             SettingsManager.Instance.DictionariesModules.Clear();
+        }
+
+        protected override bool AreThereModulesToAdd()
+        {
+            return Modules.Any(m => m.Type == ModuleType.Dictionary && !SupplementalModuleAlreadyAdded(m.ShortName));            
         }
     }
 }

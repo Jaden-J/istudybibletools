@@ -21,7 +21,8 @@ namespace BibleCommon.Common
         public static bool IsWithoutBookName(SearchResultType resultType)
         {
             return resultType == SearchResultType.ChapterWithoutBookName
-                || resultType == SearchResultType.ChapterAndVerseWithoutBookName;
+                || resultType == SearchResultType.ChapterAndVerseWithoutBookName
+                || resultType == SearchResultType.ExcludableChapterWithoutBookName;
         }
 
         public static bool IsVerse(SearchResultType resultType)
@@ -35,7 +36,8 @@ namespace BibleCommon.Common
             return resultType == SearchResultType.ChapterOnly
                     || resultType == SearchResultType.ChapterOnlyAtStartString
                     || resultType == SearchResultType.ExcludableChapter
-                    || resultType == SearchResultType.ChapterWithoutBookName;
+                    || resultType == SearchResultType.ChapterWithoutBookName
+                    || resultType == SearchResultType.ExcludableChapterWithoutBookName;
         }
 
         public enum SearchResultType
@@ -50,6 +52,7 @@ namespace BibleCommon.Common
             ChapterAndVerseAtStartString = 7,   // полная ссылка с начала строки
             ChapterAndVerseWithoutBookName = 8,   // например 4:5, а книга берётся из предыдущего результата
             ChapterWithoutBookName = 9,             // например ",4", а книга берётся из предыдущего результата
+            ExcludableChapterWithoutBookName = 10,             
         }
 
         public VersePointer VersePointer { get; set; }

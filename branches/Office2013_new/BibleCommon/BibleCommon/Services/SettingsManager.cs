@@ -13,6 +13,7 @@ using BibleCommon.Common;
 using System.Resources;
 using System.Globalization;
 using System.ComponentModel;
+using BibleCommon.Scheme;
 
 namespace BibleCommon.Services
 {
@@ -100,6 +101,7 @@ namespace BibleCommon.Services
         public string PageName_DefaultComments { get; set; }
         public string SectionName_DefaultBookOverview { get; set; }
         public string PageName_Notes { get; set; }
+        public List<string> SelectedNotebooksForAnalyze { get; set; }
 
         private string _moduleName { get; set; }
         public string ModuleShortName 
@@ -176,7 +178,7 @@ namespace BibleCommon.Services
         /// Значение данного свойства сохраняется в памяти и не обновляется! нельзя использовать в коде, где текущий модуль может измениться
         /// </summary>
         private ModuleInfo _currentModule;
-        public ModuleInfo CurrentModule
+        public ModuleInfo CurrentModuleCached
         {
             get
             {
@@ -184,6 +186,21 @@ namespace BibleCommon.Services
                     _currentModule = ModulesManager.GetCurrentModuleInfo();
 
                 return _currentModule;
+            }
+        }
+
+        /// <summary>
+        /// Значение данного свойства сохраняется в памяти и не обновляется! нельзя использовать в коде, где текущий модуль может измениться
+        /// </summary>
+        private XMLBIBLE _currentBibleContent;
+        public XMLBIBLE CurrentBibleContentCached
+        {
+            get
+            {
+                if (_currentBibleContent == null)
+                    _currentBibleContent = ModulesManager.GetCurrentBibleContent();
+
+                return _currentBibleContent;
             }
         }
 
@@ -215,7 +232,7 @@ namespace BibleCommon.Services
 
         public bool CurrentModuleIsCorrect()
         {
-            return !string.IsNullOrEmpty(ModuleShortName) && ModulesManager.ModuleIsCorrect(ModuleShortName, ModuleType.Bible);
+            return !string.IsNullOrEmpty(ModuleShortName) && ModulesManager.ModuleIsCorrect(ModuleShortName, Common.ModuleType.Bible);
         }
 
         public bool IsConfigured(Application oneNoteApp)
@@ -228,7 +245,7 @@ namespace BibleCommon.Services
                 && !string.IsNullOrEmpty(this.PageName_DefaultComments)
                 && !string.IsNullOrEmpty(this.PageName_Notes)
                 && !string.IsNullOrEmpty(this.ModuleShortName)
-                && ModulesManager.ModuleIsCorrect(this.ModuleShortName, ModuleType.Bible)
+                && ModulesManager.ModuleIsCorrect(this.ModuleShortName, Common.ModuleType.Bible)
                 && _useDefaultSettingsNodeExists;
 
             if (result)
@@ -378,7 +395,10 @@ namespace BibleCommon.Services
             this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
             this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking);
             this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking);
-            this.UseMiddleStrongLinks = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseMiddleStrongLinks, Consts.Constants.DefaultUseMiddleStrongLinks);            
+            this.UseMiddleStrongLinks = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseMiddleStrongLinks, Consts.Constants.DefaultUseMiddleStrongLinks);
+
+            this.SupplementalBibleLinkName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SupplementalBibleLinkName,
+                                                  GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName));
         }
 
         private void LoadGeneralSettings(XDocument xdoc)
@@ -394,13 +414,14 @@ namespace BibleCommon.Services
 
             this.NotebookId_SupplementalBible = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdSupplementalBible);
             this.SupplementalBibleModules = GetParameterValue<List<StoredModuleInfo>>(xdoc, Consts.Constants.ParameterName_SupplementalBibleModules, new List<StoredModuleInfo>(),
-                                                s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(xmlString => new StoredModuleInfo(xmlString)));
-            this.SupplementalBibleLinkName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SupplementalBibleLinkName,
-                                                  GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName));
+                                                s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(xmlString => new StoredModuleInfo(xmlString)));           
 
             this.NotebookId_Dictionaries = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NotebookIdDictionaries);
             this.DictionariesModules = GetParameterValue<List<StoredModuleInfo>>(xdoc, Consts.Constants.ParameterName_DictionariesModules, new List<StoredModuleInfo>(), 
                                                 s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(xmlString => new StoredModuleInfo(xmlString)));
+
+            this.SelectedNotebooksForAnalyze = GetParameterValue<List<string>>(xdoc, Consts.Constants.ParameterName_SelectedNotebooksForAnalyze, 
+                                                        GetDefaultNotebooksForAnalyze(), GetNotebooksForAnalyze); 
         }
 
         private T GetParameterValue<T>(XDocument xdoc, string parameterName, object defaultValue = null, Func<string, T> convertFunc = null)
@@ -461,6 +482,7 @@ namespace BibleCommon.Services
             this.PageName_DefaultComments = GetResourceString(Consts.Constants.ResourceName_DefaultPageNameDefaultComments);
             this.PageName_Notes = GetResourceString(Consts.Constants.ResourceName_DefaultPageName_Notes);
             this.PageName_RubbishNotes = GetResourceString(Consts.Constants.ResourceName_DefaultPageName_RubbishNotes);
+            this.SupplementalBibleLinkName = GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName);
         }
 
         private bool DetermineIfCurrentSettingsAreDefualt()
@@ -477,7 +499,8 @@ namespace BibleCommon.Services
                 && this.PageWidth_RubbishNotes == Consts.Constants.DefaultPageWidth_RubbishNotes
                 && this.RubbishPage_ExpandMultiVersesLinking == Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking
                 && this.RubbishPage_ExcludedVersesLinking == Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking
-                && this.UseMiddleStrongLinks == Consts.Constants.DefaultUseMiddleStrongLinks;
+                && this.UseMiddleStrongLinks == Consts.Constants.DefaultUseMiddleStrongLinks
+                && this.SupplementalBibleLinkName == GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName);
         }
 
         public void Save()
@@ -520,14 +543,61 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleModules, string.Join(";", this.SupplementalBibleModules.ConvertAll(dm => dm.ToString()).ToArray())),
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleLinkName, this.SupplementalBibleLinkName),                                  
                                   new XElement(Consts.Constants.ParameterName_DictionariesModules, string.Join(";", this.DictionariesModules.ConvertAll(dm => dm.ToString()).ToArray())),
-                                  new XElement(Consts.Constants.ParameterName_UseMiddleStrongLinks, UseMiddleStrongLinks)
-                                  );
+                                  new XElement(Consts.Constants.ParameterName_UseMiddleStrongLinks, UseMiddleStrongLinks)                                  
+                                  );                    
+
+                    if (SelectedNotebooksForAnalyze != GetDefaultNotebooksForAnalyze())
+                        xDoc.Root.Add(new XElement(Consts.Constants.ParameterName_SelectedNotebooksForAnalyze, ConvertNotebooksForAnalyzeToString(SelectedNotebooksForAnalyze)));
 
                     xDoc.Save(sw);
                     sw.Flush();                    
                 }
             }
-        }                 
+        }
+
+        private List<string> GetNotebooksForAnalyze(string selectedNotebooksString)
+        {
+            if (!string.IsNullOrEmpty(selectedNotebooksString))
+            {
+                string[] s = selectedNotebooksString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (s.Length == 2 && s[0] == IsSingleNotebook.ToString().ToLower())
+                {
+                    return s[1].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                }
+            }
+
+            return GetDefaultNotebooksForAnalyze();
+        }
+
+        private List<string> GetDefaultNotebooksForAnalyze()
+        {
+            if (IsSingleNotebook)
+            {
+                return new List<string>() 
+                    {
+                        SectionGroupId_BibleStudy, 
+                        SectionGroupId_BibleComments
+                    };
+            }
+            else
+            {
+                return new List<string>() 
+                    {
+                        NotebookId_BibleStudy, 
+                        NotebookId_BibleComments
+                    };
+            }
+
+        }
+
+        private string ConvertNotebooksForAnalyzeToString(List<string> notebooksIds)
+        {
+            return string.Join(";", new string[] 
+            {
+                IsSingleNotebook.ToString().ToLower(), string.Join(",", notebooksIds.ToArray())
+            });
+        } 
     }
 }
 

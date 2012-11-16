@@ -148,15 +148,15 @@ namespace BibleCommon.Services
         /// <param name="verseAction"></param>
         /// <returns></returns>
         public BibleParallelTranslationConnectionResult IterateBaseBible(
-            Func<XDocument, SimpleVersePointer, BibleIteratorArgs> chapterAction, bool needToUpdateChapter, 
-            bool iterateVerses, Action<SimpleVersePointer, SimpleVerse, BibleIteratorArgs> verseAction)
+            Func<XDocument, SimpleVersePointer, BibleIteratorArgs> chapterAction, bool needToUpdateChapter,
+            bool iterateVerses, Action<SimpleVersePointer, SimpleVerse, BibleIteratorArgs> verseAction, bool refreshCache = false)
         {
             Errors.Clear();
 
             var bibleVersePointersComparisonTable = BibleParallelTranslationConnectorManager.GetParallelBibleInfo(
                                                           BaseModuleInfo.ShortName, ParallelModuleInfo.ShortName,
                                                           BaseModuleInfo.BibleTranslationDifferences,
-                                                          ParallelModuleInfo.BibleTranslationDifferences);
+                                                          ParallelModuleInfo.BibleTranslationDifferences, refreshCache);
 
             var result = new BibleParallelTranslationConnectionResult();
 

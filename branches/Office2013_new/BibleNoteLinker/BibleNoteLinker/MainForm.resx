@@ -303,8 +303,14 @@ Click to go to the download page.</value>
   <data name="&gt;&gt;pbMain.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
+  <data name="lbLog.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Arial Unicode MS, 8.25pt</value>
+  </data>
   <data name="lbLog.HorizontalScrollbar" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="lbLog.ItemHeight" type="System.Int32, mscorlib">
+    <value>15</value>
   </data>
   <data name="lbLog.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 233</value>
@@ -330,11 +336,14 @@ Click to go to the download page.</value>
   <data name="lblProgress.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <data name="lblProgress.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Arial Unicode MS, 8.25pt</value>
+  </data>
   <data name="lblProgress.Location" type="System.Drawing.Point, System.Drawing">
     <value>9, 166</value>
   </data>
   <data name="lblProgress.Size" type="System.Drawing.Size, System.Drawing">
-    <value>70, 13</value>
+    <value>71, 15</value>
   </data>
   <data name="lblProgress.TabIndex" type="System.Int32, mscorlib">
     <value>12</value>
@@ -384,18 +393,6 @@ Click to go to the download page.</value>
   <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <data name="tsmiSeelctNotebooks.Size" type="System.Drawing.Size, System.Drawing">
-    <value>156, 22</value>
-  </data>
-  <data name="tsmiSeelctNotebooks.Text" xml:space="preserve">
-    <value>Select notebooks</value>
-  </data>
-  <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>45, 20</value>
-  </data>
-  <data name="toolStripMenuItem1.Text" xml:space="preserve">
-    <value>Menu</value>
-  </data>
   <data name="menuStrip1.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
@@ -419,6 +416,18 @@ Click to go to the download page.</value>
   </data>
   <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
     <value>8</value>
+  </data>
+  <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>45, 20</value>
+  </data>
+  <data name="toolStripMenuItem1.Text" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="tsmiSeelctNotebooks.Size" type="System.Drawing.Size, System.Drawing">
+    <value>156, 22</value>
+  </data>
+  <data name="tsmiSeelctNotebooks.Text" xml:space="preserve">
+    <value>Select notebooks</value>
   </data>
   <data name="pbBaseElements.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 27</value>

@@ -59,11 +59,12 @@ namespace BibleConfigurator.ModuleConverter
         protected XMLBIBLE BibleInfo { get; set; }
         protected BibleTranslationDifferences TranslationDifferences { get; set; }
         protected List<int> BookIndexes { get; set; }  // массив индексов книг. Для KJV - упорядоченный массив цифр от 1 до 66.                 
-        protected string ChapterSectionNameTemplate { get; set; }        
+        protected string ChapterPageNameTemplate { get; set; }        
         protected Version Version { get; set; }
         protected int OldTestamentBooksCount { get; set; }
         protected bool GenerateBibleXml { get; set; }        
-        protected bool GenerateBibleNotebook { get; set; }        
+        protected bool GenerateBibleNotebook { get; set; }
+        protected string ModuleDisplayName { get; set; }
 
         /// <summary>
         /// 
@@ -78,7 +79,7 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="notebooksInfo"></param>
         public ConverterBase(string moduleShortName, string manifestFilesFolderPath, 
             string locale, NotebooksStructure notebooksStructure, List<int> bookIndexes, 
-            BibleTranslationDifferences translationDifferences, string chapterSectionNameTemplate,
+            BibleTranslationDifferences translationDifferences, string chapterPageNameTemplate,
             bool isStrong,  
             Version version, bool generateBibleNotebook, bool generateBibleXml)
         {
@@ -94,10 +95,9 @@ namespace BibleConfigurator.ModuleConverter
             this.BibleInfo = new XMLBIBLE();
             this.TranslationDifferences = translationDifferences;            
             this.BookIndexes = bookIndexes;
-            this.ChapterSectionNameTemplate = chapterSectionNameTemplate;                        
+            this.ChapterPageNameTemplate = chapterPageNameTemplate;                        
             this.Version = version;
             this.Errors = new List<ConverterExceptionBase>();            
-
 
             if (!Directory.Exists(ManifestFilesFolderPath))
                 Directory.CreateDirectory(ManifestFilesFolderPath);
@@ -126,14 +126,17 @@ namespace BibleConfigurator.ModuleConverter
             ProcessBibleBooks(externalModuleInfo);
 
             GenerateManifest(externalModuleInfo);
-            
-            GenerateBibleInfo();
+
+            GenerateBibleInfo(externalModuleInfo);
         }
 
-        protected virtual void GenerateBibleInfo()
+        protected virtual void GenerateBibleInfo(ExternalModuleInfo externalModuleInfo)
         {
             if (GenerateBibleXml)
             {
+                BibleInfo.INFORMATION = new INFORMATION();
+                BibleInfo.INFORMATION.Items = new object[] { ModuleDisplayName };
+                BibleInfo.INFORMATION.ItemsElementName = new ItemsChoiceType[] { ItemsChoiceType.title };
                 SaveToXmlFile(BibleInfo, Constants.BibleInfoFileName);             
             }
         }
@@ -313,7 +316,7 @@ namespace BibleConfigurator.ModuleConverter
             ModuleInfo.BibleStructure = new BibleStructureInfo()
             {
                 Alphabet = extModuleInfo.Alphabet,                
-                ChapterSectionNameTemplate = ChapterSectionNameTemplate              
+                ChapterPageNameTemplate = ChapterPageNameTemplate              
             };            
 
             int index = 0;

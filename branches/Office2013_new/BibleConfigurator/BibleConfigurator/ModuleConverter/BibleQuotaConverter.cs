@@ -68,11 +68,11 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="notebooksInfo"></param>
         public BibleQuotaConverter(string moduleShortName, string bqModuleFolder, string manifestFilesFolderPath,
             string locale, NotebooksStructure notebooksStructure, List<int> bookIndexes, BibleTranslationDifferences translationDifferences, 
-            string chapterSectionNameTemplate, 
+            string chapterPageNameTemplate, 
             bool isStrong, 
             Version version, bool generateNotebooks, params ReadParameters[] readParameters)
             : base(moduleShortName, manifestFilesFolderPath, locale, notebooksStructure, bookIndexes,
-                        translationDifferences, chapterSectionNameTemplate, isStrong,  
+                        translationDifferences, chapterPageNameTemplate, isStrong,  
                         version, generateNotebooks, true)
         {
             this.ModuleFolder = bqModuleFolder;
@@ -124,6 +124,8 @@ namespace BibleConfigurator.ModuleConverter
                         result.BibleBooksInfo[result.BibleBooksInfo.Count - 1].ChaptersCount = int.Parse(value);
                 }
             }
+
+            this.ModuleDisplayName = result.Name;
 
             return result;
         }
@@ -205,7 +207,7 @@ namespace BibleConfigurator.ModuleConverter
             if (!chapterIndex.HasValue)
                 chapterIndex = 1;
             
-            return string.Format(this.ChapterSectionNameTemplate, chapterIndex, bibleBookInfo.Name);            
+            return string.Format(this.ChapterPageNameTemplate, chapterIndex, bibleBookInfo.Name);            
         }
 
         private void GetTestamentInfo(ContainerType type, out string testamentName, out int? testamentSectionsCount)
@@ -291,9 +293,9 @@ namespace BibleConfigurator.ModuleConverter
             return result;
         }
 
-        protected override void GenerateBibleInfo()
+        protected override void GenerateBibleInfo(ExternalModuleInfo externalModuleInfo)
         {
-            base.GenerateBibleInfo();
+            base.GenerateBibleInfo(externalModuleInfo);
 
             var booksInfo = new BibleBooksInfo() { Descr = this.ModuleShortName, Alphabet = ModuleInfo.BibleStructure.Alphabet };
             foreach (var book in ModuleInfo.BibleStructure.BibleBooks)

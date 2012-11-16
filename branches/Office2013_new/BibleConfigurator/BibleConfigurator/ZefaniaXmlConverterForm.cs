@@ -21,9 +21,8 @@ namespace BibleConfigurator
 {
     public partial class ZefaniaXmlConverterForm : Form
     {
-        private const string Const_LocaleStructureFilePath = "structure.xml";
-        private const string Const_LocaleBooksInfoFilePath = "books.xml";
-        private const string Const_StructureFileSuffix = ".structure.xml";
+        private const string Const_StructureFileName = "structure.xml";
+        private const string Const_BooksInfoFileName = "books.xml";        
         private const string Const_BookDifferencesFileSuffix = ".diff.xml";
         private const string Const_OutputDirectoryName = "Output";
 
@@ -38,7 +37,7 @@ namespace BibleConfigurator
         protected string ModuleDisplayName { get; set; }        
         protected string Locale { get; set; }
         protected bool BibleIsStrong { get; set; }
-        protected string ChapterSectionNameTemplate { get; set; }
+        protected string ChapterPageNameTemplate { get; set; }
         protected string NotebookBibleName { get; set; }
         protected string NotebookBibleCommentsName { get; set; }
         protected string NotebookSummaryOfNotesName { get; set; }
@@ -112,7 +111,7 @@ namespace BibleConfigurator
 
                 var converter = new ZefaniaXmlConverter(tbShortName.Text, tbDisplayName.Text, BibleContent, BibleBooksInfo,
                                                             tbResultDirectory.Text, tbLocale.Text, NotebooksStructure,
-                                                            BibleBookDifferences, ChapterSectionNameTemplate,
+                                                            BibleBookDifferences, ChapterPageNameTemplate,
                                                             BibleIsStrong && !chkRemoveStrongNumbers.Checked,
                                                             new Version(tbVersion.Text),
                                                             chkNotebookBibleGenerate.Checked,
@@ -444,12 +443,13 @@ namespace BibleConfigurator
         private void LoadFiles()
         {
             var structureFilePath = GetExistingFile(
-                                        Path.Combine(ModuleDirectory, ModuleShortName + Const_StructureFileSuffix),
-                                        Path.Combine(LocaleDirectory, Const_LocaleStructureFilePath),
-                                        Path.Combine(InputDirectory, Const_LocaleStructureFilePath));
+                                        Path.Combine(ModuleDirectory, string.Format("{0}.{1}", ModuleShortName, Const_StructureFileName)),
+                                        Path.Combine(LocaleDirectory, Const_StructureFileName),
+                                        Path.Combine(InputDirectory, Const_StructureFileName));
             var booksFilePath = GetExistingFile(
-                                        Path.Combine(LocaleDirectory, Const_LocaleBooksInfoFilePath),
-                                        Path.Combine(InputDirectory, Const_LocaleBooksInfoFilePath));
+                                        Path.Combine(ModuleDirectory, string.Format("{0}.{1}", ModuleShortName, Const_BooksInfoFileName)),
+                                        Path.Combine(LocaleDirectory, Const_BooksInfoFileName),
+                                        Path.Combine(InputDirectory, Const_BooksInfoFileName));
             var diffFilePath = Path.Combine(ModuleDirectory, ModuleShortName + Const_BookDifferencesFileSuffix);            
             var existingModuleFilePath = Path.Combine(OutputModuleDirectory, BibleCommon.Consts.Constants.ManifestFileName);
 
@@ -510,11 +510,10 @@ namespace BibleConfigurator
         {
             BibleIsStrong = IsStrong(BibleContent);
 
-            if (string.IsNullOrEmpty(BibleBooksInfo.ChapterString))
-                throw new Exception("BibleBooksInfo.ChapterString is null");
+            if (string.IsNullOrEmpty(BibleBooksInfo.ChapterPageNameTemplate))
+                throw new Exception("BibleBooksInfo.ChapterPageNameTemplate is null");
 
-            ChapterSectionNameTemplate = string.Format("{{0}} {0}. {{1}}", BibleBooksInfo.ChapterString.ToLower());
-            
+            ChapterPageNameTemplate = BibleBooksInfo.ChapterPageNameTemplate;            
         }        
 
         private void ChangeControlsState()
@@ -522,12 +521,14 @@ namespace BibleConfigurator
             tbZefaniaXmlFilePath.Text = ZefaniaXmlFilePath;
             tbZefaniaXmlFilePath.ReadOnly = true;
 
-            tbShortName.Text = ModuleShortName;
-            tbVersion.Text = "2.0";
-            tbLocale.Text = Locale;
+            tbShortName.Text = ExistingOutputModule != null ? ExistingOutputModule.ShortName : ModuleShortName;
+            tbVersion.Text = ExistingOutputModule != null ? ExistingOutputModule.Version.ToString() : "2.0";
+            tbLocale.Text = ExistingOutputModule != null ? ExistingOutputModule.Locale : Locale;
+
             tbDisplayName.Text = GetModuleDisplayName(BibleContent);
             if (string.IsNullOrEmpty(tbDisplayName.Text))
-                tbDisplayName.Text = ModuleShortName;
+                tbDisplayName.Text = ExistingOutputModule != null ? ExistingOutputModule.DisplayName : ModuleShortName;
+
             tbResultDirectory.Text = OutputModuleDirectory;
             folderBrowserDialog.SelectedPath = OutputModuleDirectory;
 
@@ -566,7 +567,8 @@ namespace BibleConfigurator
             return bibleContent.Books.Any(b =>
                                     b.Chapters.Any(c =>
                                         c.Verses.Any(v =>
-                                            v.Items.Any(item =>
+                                            v.Items != null
+                                            && v.Items.Any(item =>
                                                 item is GRAM || item is gr))));
         }
 

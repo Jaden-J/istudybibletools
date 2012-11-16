@@ -1096,7 +1096,16 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sort pages error.
+        ///   Ищет локализованную строку, похожую на &apos;Bible&apos; pages updating.
+        /// </summary>
+        public static string NoteLinkerBiblePagesUpdating {
+            get {
+                return ResourceManager.GetString("NoteLinkerBiblePagesUpdating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Sort pages error.
         /// </summary>
         public static string NoteLinkerErrorWhilePageSorting {
             get {
@@ -1168,7 +1177,16 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;Summary of Notes&apos; pages updating.
+        ///   Ищет локализованную строку, похожую на &apos;Notes&apos; pages updating.
+        /// </summary>
+        public static string NoteLinkerNotePagesUpdating {
+            get {
+                return ResourceManager.GetString("NoteLinkerNotePagesUpdating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на &apos;Summary of Notes&apos; pages updating.
         /// </summary>
         public static string NoteLinkerNotesPagesUpdating {
             get {

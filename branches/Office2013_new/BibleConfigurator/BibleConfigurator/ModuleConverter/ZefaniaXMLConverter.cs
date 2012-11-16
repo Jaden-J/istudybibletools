@@ -27,8 +27,7 @@ namespace BibleConfigurator.ModuleConverter
 
         protected XMLBIBLE ZefaniaXmlBibleInfo { get; set; }
         protected BibleBooksInfo BooksInfo { get; set; }
-        protected string ZefaniaXmlFilePath { get; set; }
-        protected string ModuleName { get; set; }
+        protected string ZefaniaXmlFilePath { get; set; }        
 
         protected ReadParameters[] AdditionalReadParameters { get; set; }
 
@@ -51,15 +50,15 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="notebooksInfo"></param>
         public ZefaniaXmlConverter(string moduleShortName, string moduleName, XMLBIBLE bibleContent, BibleBooksInfo booksInfo, string manifestFilesFolderPath,
             string locale, NotebooksStructure notebooksStructure, BibleTranslationDifferences translationDifferences, 
-            string chapterSectionNameTemplate, 
+            string chapterPageNameTemplate, 
             bool isStrong, Version version, bool generateBibleNotebook, 
             ICustomLogger formLogger,
             params ReadParameters[] readParameters)
             : base(moduleShortName, manifestFilesFolderPath, locale, notebooksStructure, null,
-                        translationDifferences, chapterSectionNameTemplate, isStrong, 
+                        translationDifferences, chapterPageNameTemplate, isStrong, 
                         version, generateBibleNotebook, true)
         {
-            this.ModuleName = moduleName;            
+            this.ModuleDisplayName = moduleName;            
             this.BooksInfo = booksInfo;
             this.ZefaniaXmlBibleInfo = bibleContent;
             this.BookIndexes = BooksInfo.Books.Where(bi => ZefaniaXmlBibleInfo.Books.Any(zb => zb.Index == bi.Index)).Select(b => b.Index).ToList();
@@ -159,7 +158,7 @@ namespace BibleConfigurator.ModuleConverter
             ModuleInfo = new ModuleInfo()
             {
                 ShortName = ModuleShortName,
-                DisplayName = ModuleName,
+                DisplayName = ModuleDisplayName,
                 Version = this.Version,
                 Locale = this.Locale,
                 NotebooksStructure = this.NotebooksStructure,
@@ -169,13 +168,13 @@ namespace BibleConfigurator.ModuleConverter
             ModuleInfo.BibleStructure = new BibleStructureInfo()
             {
                 Alphabet = BooksInfo.Alphabet,
-                ChapterSectionNameTemplate = ChapterSectionNameTemplate
+                ChapterPageNameTemplate = ChapterPageNameTemplate
             };            
 
             var index = 0;
             foreach (var bookInfo in BibleInfo.Books)
             {
-                var bibleBookInfo = BooksInfo.Books.First(b => b.Index == bookInfo.Index);
+                var bibleBookInfo = BooksInfo.Books.First(b => b.Index == bookInfo.Index);                
 
                 ModuleInfo.BibleStructure.BibleBooks.Add(
                     new BibleBookInfo()
@@ -183,6 +182,7 @@ namespace BibleConfigurator.ModuleConverter
                         Index = bibleBookInfo.Index,
                         Name = bibleBookInfo.Name,
                         SectionName = GetBookSectionName(bibleBookInfo.Name, index++),
+                        ChapterPageNameTemplate = bibleBookInfo.ChapterPageNameTemplate,
                         Abbreviations = bibleBookInfo.ShortNamesXMLString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
                         .Select(s => new Abbreviation(s.Trim(new char[] { '\'' })) { IsFullBookName = s.StartsWith("'") }).ToList()
                     });
@@ -198,7 +198,10 @@ namespace BibleConfigurator.ModuleConverter
             if (!chapterIndex.HasValue)
                 chapterIndex = 1;
 
-            return string.Format(this.ChapterSectionNameTemplate, chapterIndex, bookInfo.Name);            
+            return string.Format(!string.IsNullOrEmpty(bookInfo.ChapterPageNameTemplate)
+                                    ? bookInfo.ChapterPageNameTemplate
+                                    : this.ChapterPageNameTemplate,
+                                 chapterIndex, bookInfo.Name);            
         }
 
         private void GetTestamentInfo(ContainerType type, out string testamentName, out int? testamentSectionsCount)
