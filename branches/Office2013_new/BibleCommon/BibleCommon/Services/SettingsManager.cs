@@ -14,6 +14,7 @@ using System.Resources;
 using System.Globalization;
 using System.ComponentModel;
 using BibleCommon.Scheme;
+using System.Xml;
 
 namespace BibleCommon.Services
 {
@@ -313,7 +314,22 @@ namespace BibleCommon.Services
 
         private void LoadSettingsFromFile()
         {
-            XDocument xdoc = XDocument.Load(_filePath);
+            XDocument xdoc = null;
+            try
+            {
+                 xdoc = XDocument.Load(_filePath);
+            }
+            catch(XmlException)
+            {
+                if (File.Exists(_filePath) && string.IsNullOrEmpty(File.ReadAllText(_filePath)))
+                {
+                    File.Delete(_filePath);
+                    ReLoadSettings();
+                    return;
+                }
+                else
+                    throw;
+            }
 
             try
             {   
@@ -544,10 +560,12 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleLinkName, this.SupplementalBibleLinkName),                                  
                                   new XElement(Consts.Constants.ParameterName_DictionariesModules, string.Join(";", this.DictionariesModules.ConvertAll(dm => dm.ToString()).ToArray())),
                                   new XElement(Consts.Constants.ParameterName_UseMiddleStrongLinks, UseMiddleStrongLinks)                                  
-                                  );                    
+                                  );
 
-                    if (SelectedNotebooksForAnalyze != GetDefaultNotebooksForAnalyze())
+                    if (SelectedNotebooksForAnalyze != GetDefaultNotebooksForAnalyze() && SelectedNotebooksForAnalyze != null)
+                    {
                         xDoc.Root.Add(new XElement(Consts.Constants.ParameterName_SelectedNotebooksForAnalyze, ConvertNotebooksForAnalyzeToString(SelectedNotebooksForAnalyze)));
+                    }
 
                     xDoc.Save(sw);
                     sw.Flush();                    
@@ -593,6 +611,9 @@ namespace BibleCommon.Services
 
         private string ConvertNotebooksForAnalyzeToString(List<string> notebooksIds)
         {
+            if (notebooksIds == null)
+                return null;
+
             return string.Join(";", new string[] 
             {
                 IsSingleNotebook.ToString().ToLower(), string.Join(",", notebooksIds.ToArray())
