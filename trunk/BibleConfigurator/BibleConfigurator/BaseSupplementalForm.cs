@@ -154,7 +154,8 @@ namespace BibleConfigurator
             }
             else
             {
-                if (AreThereModulesToAdd())
+                var areThereModulesToAdd = AreThereModulesToAdd();
+                if (areThereModulesToAdd)
                     GenerateNewModuleButton();
 
                 var notebookIsInUse = GetSupplementalModulesCount() != 0 && !string.IsNullOrEmpty(GetValidSupplementalNotebookId());
@@ -163,7 +164,12 @@ namespace BibleConfigurator
                 {
                     TopControlsPosition += 20;
                     LeftControlsPosition += 24;
-                    _btnAddNewModule_Click(this, null);
+
+                    if (areThereModulesToAdd)
+                        _btnAddNewModule_Click(BtnAddNewModule, null);
+                    else                    
+                        OnlyTryToUseExistingNotebook();                       
+                    
                     LoadExistingNotebooks();
                 }
                 else
@@ -176,6 +182,14 @@ namespace BibleConfigurator
                 rbUseExisting.Visible = !notebookIsInUse;
                 cbExistingNotebooks.Visible = !notebookIsInUse;
             }
+        }
+
+        private void OnlyTryToUseExistingNotebook()
+        {
+            rbUseExisting.Checked = true;
+            rbUseExisting_CheckedChanged(rbUseExisting, null);
+            rbCreateNew.Enabled = false;
+            NeedToCommitChanges = true;
         }
 
         private void LoadExistingNotebooks()
