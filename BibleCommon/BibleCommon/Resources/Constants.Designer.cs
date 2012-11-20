@@ -583,11 +583,29 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Notebook &quot;Dictionaries&quot; cannot be closed if Strong dictionary is installed. First delete module with Strong dictionary from Supplemental Bible on Supplemental Bible management form..
+        /// </summary>
+        public static string DictionariesNotebookCannotBeClosed {
+            get {
+                return ResourceManager.GetString("DictionariesNotebookCannotBeClosed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Dictionaries.
         /// </summary>
         public static string DictionariesNotebookName {
             get {
                 return ResourceManager.GetString("DictionariesNotebookName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Dictionaries Notebook is not found.
+        /// </summary>
+        public static string DictionariesNotebookNotFound {
+            get {
+                return ResourceManager.GetString("DictionariesNotebookNotFound", resourceCulture);
             }
         }
         
@@ -610,11 +628,11 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Notebook &quot;Dictionaries&quot; cannot be closed if Strong dictionary is installed. First delete module with Strong dictionary from Supplemental Bible on Supplemental Bible management form..
+        ///   Ищет локализованную строку, похожую на Module &apos;{0}&apos; is not installed correctly. Dictionary cache file is not found. Open the &apos;Program parameters&apos; and specify the necessary settings..
         /// </summary>
-        public static string DictionaryNotebookCannotBeClosed {
+        public static string DictionaryCacheFileNotFound {
             get {
-                return ResourceManager.GetString("DictionaryNotebookCannotBeClosed", resourceCulture);
+                return ResourceManager.GetString("DictionaryCacheFileNotFound", resourceCulture);
             }
         }
         
@@ -711,9 +729,9 @@ namespace BibleCommon.Resources {
         /// <summary>
         ///   Ищет локализованную строку, похожую на The program is not configured. Open the &apos;Program parameters&apos; and specify the necessary settings..
         /// </summary>
-        public static string Error_SystemIsNotConfigures {
+        public static string Error_SystemIsNotConfigured {
             get {
-                return ResourceManager.GetString("Error_SystemIsNotConfigures", resourceCulture);
+                return ResourceManager.GetString("Error_SystemIsNotConfigured", resourceCulture);
             }
         }
         

@@ -25,7 +25,7 @@ namespace BibleConfigurator
         protected int TopControlsPosition { get; set; }
         protected int LeftControlsPosition { get; set; }
         protected ComboBox CbModule { get; set; }
-        protected CustomFormLogger Logger { get; set; }
+        protected LongProcessLogger Logger { get; set; }
         protected bool NeedToCommitChanges { get; set; }
         protected bool WasLoaded { get; set; }
         protected bool InProgress { get; set; }
@@ -74,7 +74,7 @@ namespace BibleConfigurator
             MainForm = form;
             Modules = ModulesManager.GetModules(true);
             TopControlsPosition = 10;
-            Logger = new CustomFormLogger(MainForm);
+            Logger = new LongProcessLogger(MainForm);
 
             this.SetFormUICulture();
 
@@ -87,7 +87,7 @@ namespace BibleConfigurator
             {
                 if (!SettingsManager.Instance.IsConfigured(OneNoteApp))
                 {
-                    FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
+                    FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                     Close();
                 }
 
@@ -282,18 +282,18 @@ namespace BibleConfigurator
             catch (InvalidNotebookException ex)
             {
                 FormLogger.LogError(ex);
-                MainForm.ExternalProcessingDone(ex.Message);
+                MainForm.LongProcessingDone(ex.Message);
                 doNotClose = true;
             }
             catch (ProcessAbortedByUserException)
             {
                 BibleCommon.Services.Logger.LogMessage("Process aborted by user");
-                MainForm.ExternalProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
+                MainForm.LongProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
             }
             catch (Exception ex)
             {
                 BibleCommon.Services.Logger.LogError(ex.ToString());
-                MainForm.ExternalProcessingDone(string.Format("{0}: {1}", BibleCommon.Resources.Constants.ErrorOccurred, ex.Message));
+                MainForm.LongProcessingDone(string.Format("{0}: {1}", BibleCommon.Resources.Constants.ErrorOccurred, ex.Message));
             }                        
 
             EnableUI(true);
@@ -375,12 +375,12 @@ namespace BibleConfigurator
                 catch (ProcessAbortedByUserException)
                 {
                     BibleCommon.Services.Logger.LogMessage("Process aborted by user");
-                    MainForm.ExternalProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
+                    MainForm.LongProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
                 }
                 catch (Exception ex)
                 {
                     BibleCommon.Services.Logger.LogError(ex.ToString());
-                    MainForm.ExternalProcessingDone(string.Format("{0}: {1}", BibleCommon.Resources.Constants.ErrorOccurred, ex.Message));
+                    MainForm.LongProcessingDone(string.Format("{0}: {1}", BibleCommon.Resources.Constants.ErrorOccurred, ex.Message));
                 }
 
                 LoadFormData();
@@ -538,7 +538,7 @@ namespace BibleConfigurator
             int pagesCount = pagesDocs.Count();
 
             Logger.Preffix = BibleCommon.Resources.Constants.ProcessPage + " ";
-            MainForm.PrepareForExternalProcessing(pagesCount, 1, string.Empty);
+            MainForm.PrepareForLongProcessing(pagesCount, 1, string.Empty);
 
             foreach (var pageEl in pagesDocs)
             {
@@ -573,7 +573,7 @@ namespace BibleConfigurator
                 throw new InvalidNotebookException(string.Format(NotebookIsNotSupplementalBibleMessage, notebookName));            
             else
             {
-                MainForm.ExternalProcessingDone(SupplementalNotebookWasAddedMessage);
+                MainForm.LongProcessingDone(SupplementalNotebookWasAddedMessage);
                 SaveSupplementalNotebookSettings(notebookId);                
             }
 

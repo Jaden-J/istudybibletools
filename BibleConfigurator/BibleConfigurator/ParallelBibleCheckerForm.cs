@@ -19,14 +19,14 @@ namespace BibleConfigurator
         public bool AutoStart { get; set; }
 
         private MainForm _mainForm;        
-        private CustomFormLogger _formLogger;
+        private LongProcessLogger _formLogger;
         private ErrorsForm _errorsForm;
 
         public ParallelBibleCheckerForm(MainForm mainForm)
         {
             InitializeComponent();            
             _mainForm = mainForm;
-            _formLogger = new CustomFormLogger(_mainForm);
+            _formLogger = new LongProcessLogger(_mainForm);
             _formLogger.Preffix = "Checking: ";
             _errorsForm = new ErrorsForm();
         }
@@ -103,7 +103,7 @@ namespace BibleConfigurator
                 {
                     if (!chkWithAllModules.Checked)
                     {
-                        _mainForm.PrepareForExternalProcessing(2, 1, "Start checking");
+                        _mainForm.PrepareForLongProcessing(2, 1, "Start checking");
 
                         _formLogger.LogMessage("{0} -> {1}", baseModule, parallelModule);
                         CheckModule(baseModule, parallelModule);
@@ -113,7 +113,7 @@ namespace BibleConfigurator
                     }
                     else
                     {
-                        _mainForm.PrepareForExternalProcessing((allModules.Count - 1) * 2, 1, "Start checking");
+                        _mainForm.PrepareForLongProcessing((allModules.Count - 1) * 2, 1, "Start checking");
 
                         foreach (var pModule in allModules.Where(m => m.ShortName != baseModule))
                         {
@@ -127,7 +127,7 @@ namespace BibleConfigurator
                 }
                 else
                 {
-                    _mainForm.PrepareForExternalProcessing(allModules.Count * (allModules.Count - 1), 1, "Start checking");
+                    _mainForm.PrepareForLongProcessing(allModules.Count * (allModules.Count - 1), 1, "Start checking");
 
                     foreach (var bModule in allModules)
                     {
@@ -139,7 +139,7 @@ namespace BibleConfigurator
                     }                    
                 }
 
-                _mainForm.ExternalProcessingDone("Checking complete");
+                _mainForm.LongProcessingDone("Checking complete");
 
                 if (_errorsForm.AllErrors.Any(errors => errors.Count > 0))
                     _errorsForm.ShowDialog();
@@ -157,7 +157,7 @@ namespace BibleConfigurator
             }
             catch (ProcessAbortedByUserException)
             {
-                _mainForm.ExternalProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
+                _mainForm.LongProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
             }
         }
 

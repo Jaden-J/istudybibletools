@@ -69,7 +69,6 @@
     </Compile>
     <Compile Include="Common.cs" />
     <Compile Include="Consts.cs" />
-    <Compile Include="CustomFormLogger.cs" />
     <Compile Include="DictionaryModulesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -82,6 +81,7 @@
     <Compile Include="LoadForm.Designer.cs">
       <DependentUpon>LoadForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="LongProcessLogger.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

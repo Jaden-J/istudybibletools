@@ -49,11 +49,11 @@ namespace BibleConfigurator
 
         protected override List<string> CommitChanges(BibleCommon.Common.ModuleInfo selectedModuleInfo)
         {
-            MainForm.PrepareForExternalProcessing(selectedModuleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
+            MainForm.PrepareForLongProcessing(selectedModuleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
             DictionaryManager.AddDictionary(OneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true);
             Logger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexDictionary);
             DictionaryTermsCacheManager.GenerateCache(OneNoteApp, selectedModuleInfo, Logger);
-            MainForm.ExternalProcessingDone(BibleCommon.Resources.Constants.AddDictionaryFinishMessage);
+            MainForm.LongProcessingDone(BibleCommon.Resources.Constants.AddDictionaryFinishMessage);
 
             return new List<string>();
         }
@@ -129,7 +129,7 @@ namespace BibleConfigurator
 
         protected override string NotebookCannotBeClosedText
         {
-            get { return BibleCommon.Resources.Constants.DictionaryNotebookCannotBeClosed; }
+            get { return BibleCommon.Resources.Constants.DictionariesNotebookCannotBeClosed; }
         }       
 
         protected override string EmbeddedModulesKey
@@ -176,7 +176,7 @@ namespace BibleConfigurator
 
             if (!DictionaryTermsCacheManager.CacheIsActive(moduleInfo.ShortName))
             {
-                MainForm.PrepareForExternalProcessing(moduleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
+                MainForm.PrepareForLongProcessing(moduleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
                 Logger.Preffix = string.Format("{0} {1}: ", BibleCommon.Resources.Constants.IndexDictionary, moduleInfo.ShortName);
                 DictionaryTermsCacheManager.GenerateCache(OneNoteApp, moduleInfo, Logger);
             }

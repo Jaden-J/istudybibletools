@@ -44,7 +44,7 @@ namespace BibleNoteLinker
 
             if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
             {
-                MessageBox.Show(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
+                MessageBox.Show(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                 return;
             }
 

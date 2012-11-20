@@ -215,10 +215,21 @@ namespace BibleConfigurator
 
         private void StartTermSearhing(string term, string dictionaryName)
         {
-            _lastSearchedTerm = term;
-            var moduleShortName = _modules[dictionaryName].ShortName;
-            var link = OneNoteProxy.Instance.GetDictionaryTermLink(term.ToLower(), moduleShortName);
-            _oneNoteApp.NavigateTo(link.PageId, link.ObjectId);
+            try
+            {
+                _lastSearchedTerm = term;
+                var moduleShortName = _modules[dictionaryName].ShortName;
+
+                if (!DictionaryTermsCacheManager.CacheIsActive(moduleShortName))
+                    throw new Exception(BibleCommon.Resources.Constants.DictionaryCacheFileNotFound);
+
+                var link = OneNoteProxy.Instance.GetDictionaryTermLink(term.ToLower(), moduleShortName);
+                _oneNoteApp.NavigateTo(link.PageId, link.ObjectId);
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
         }
 
 
