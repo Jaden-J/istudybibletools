@@ -118,7 +118,7 @@ namespace BibleCommon.Services
                     }
                     catch (COMException ex)
                     {
-                        if (!ex.Message.Contains("0x80042014"))   // The object does not exist.
+                        if (!ex.Message.Contains(Utils.GetHexError(Error.hrObjectDoesNotExist)))
                             throw;
                     }
                     SettingsManager.Instance.DictionariesModules.Remove(dictionaryModuleInfo);

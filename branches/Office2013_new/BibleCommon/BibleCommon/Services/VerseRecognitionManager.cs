@@ -57,7 +57,7 @@ namespace BibleCommon.Services
                         string textString;
                         if (StringUtils.IsSurroundedBy(textElement.Value, "<a", "</a", numberIndex, true, out textString))
                         {
-                            if (textString.Contains(string.Format("{0}=true", Consts.Constants.QueryParameter_QuickAnalyze)))
+                            if (textString.Contains(Consts.Constants.QueryParameter_QuickAnalyze))
                                 isLink = LinkType.LinkAfterQuickAnalyze;
                             else
                                 isLink = LinkType.LinkAfterFullAnalyze;

@@ -302,20 +302,21 @@ namespace BibleNoteLinker
             if (rbAnalyzeChangedPages.Checked)
                 filter = IsPageWasModifiedAfterLastAnalyze;
 
-            foreach (string id in SettingsManager.Instance.SelectedNotebooksForAnalyze)
+            foreach (string notebookId in SettingsManager.Instance.SelectedNotebooksForAnalyze.ToArray())
             {
                 try
                 {
                     if (SettingsManager.Instance.IsSingleNotebook)
-                        result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, id, filter));
+                        result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, notebookId, filter));
                     else
-                        result.Add(iterator.GetNotebookPages(id, null, filter));
+                        result.Add(iterator.GetNotebookPages(notebookId, null, filter));
                 }
                 catch (Exception ex)
                 {
-                    if (ex.Message.Contains("0x80042014"))   // The object does not exist.
+                    if (ex.Message.Contains(Utils.GetHexError(Error.hrObjectDoesNotExist)))   
                     {
-                        //todo: remove notebook from settings
+                        SettingsManager.Instance.SelectedNotebooksForAnalyze.Remove(notebookId);
+                        SettingsManager.Instance.Save();
                     }
                     else
                         throw;

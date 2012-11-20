@@ -38,7 +38,7 @@ namespace BibleConfigurator.Tools
         {
             if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
             {
-                FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
+                FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                 return;
             }   
 
@@ -53,7 +53,7 @@ namespace BibleConfigurator.Tools
                 _notebooksCount = notebookIds.Count();
 
                 string initMessage = BibleCommon.Resources.Constants.BackupStartInfo;
-                _form.PrepareForExternalProcessing(_notebooksCount + 2, 1, initMessage);
+                _form.PrepareForLongProcessing(_notebooksCount + 2, 1, initMessage);
                 _form.PerformProgressStep(initMessage);
                 BibleCommon.Services.Logger.LogMessage(initMessage);
                 System.Windows.Forms.Application.DoEvents();
@@ -108,7 +108,7 @@ namespace BibleConfigurator.Tools
             if (successefully)
             {
                 string finalMessage = BibleCommon.Resources.Constants.BackupManagerFinishMessage;
-                _form.ExternalProcessingDone(finalMessage);
+                _form.LongProcessingDone(finalMessage);
                 BibleCommon.Services.Logger.LogMessage(finalMessage);
             }
 

@@ -53,7 +53,7 @@ namespace BibleConfigurator
         private const int LoadParametersPauseBetweenAttempts = 5000;             // количество милисекунд ожидания между попытками загрузки параметров
         private const string LoadParametersImageFileName = "loader.gif";
 
-        protected CustomFormLogger LongProcessLogger { get; set; }
+        protected LongProcessLogger LongProcessLogger { get; set; }
 
         private NotebookParametersForm _notebookParametersForm = null;
         
@@ -70,7 +70,7 @@ namespace BibleConfigurator
 
             InitializeComponent();
             BibleCommon.Services.Logger.Init("BibleConfigurator");
-            LongProcessLogger = new CustomFormLogger(this);
+            LongProcessLogger = new LongProcessLogger(this);
 
             IsModerator = args.Contains(Consts.ModeratorMode);
         }
@@ -172,6 +172,8 @@ namespace BibleConfigurator
                     ToIndexBible = false;
                 }
 
+                TryToIndexUnindexedDictionaries();
+
                 if (!FormLogger.WasErrorLogged)
                 {
                     SetProgramParameters();
@@ -200,14 +202,53 @@ namespace BibleConfigurator
             }
         }
 
+        private bool AreThereUnindexedDictionaries()
+        {
+            foreach (var dictionaryInfo in SettingsManager.Instance.DictionariesModules)
+            {
+                if (!DictionaryTermsCacheManager.CacheIsActive(dictionaryInfo.ModuleName))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private void TryToIndexUnindexedDictionaries()
+        {            
+            foreach (var dictionaryInfo in SettingsManager.Instance.DictionariesModules.ToArray())
+            {
+                if (!DictionaryTermsCacheManager.CacheIsActive(dictionaryInfo.ModuleName))
+                {   
+                    try
+                    {
+                        var moduleInfo = ModulesManager.GetModuleInfo(dictionaryInfo.ModuleName);
+                        PrepareForLongProcessing(moduleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
+                        LongProcessLogger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexDictionary);                        
+                        DictionaryTermsCacheManager.GenerateCache(_oneNoteApp, moduleInfo, LongProcessLogger);
+                        LongProcessingDone(BibleCommon.Resources.Constants.AddDictionaryFinishMessage);
+                    }
+                    catch (COMException ex)
+                    {
+                        if (ex.Message.Contains(Utils.GetHexError(Error.hrObjectDoesNotExist)))
+                        {
+                            SettingsManager.Instance.DictionariesModules.Remove(dictionaryInfo);
+                            LongProcessingDone(string.Empty);
+                        }
+                        else
+                            throw;
+                    }                    
+                }
+            }
+        }
+
         private void IndexBible()
         {
             int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleShortName, true);
-            PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.IndexBibleStart);
+            PrepareForLongProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.IndexBibleStart);
             LongProcessLogger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexBible);
             BibleVersesLinksCacheManager.GenerateBibleVersesLinks(_oneNoteApp,
                 SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, LongProcessLogger);
-            ExternalProcessingDone(BibleCommon.Resources.Constants.IndexBibleFinish);
+            LongProcessingDone(BibleCommon.Resources.Constants.IndexBibleFinish);
         }
 
         private void SaveMultiNotebookParameters(ModuleInfo module, ContainerType notebookType,
@@ -220,7 +261,7 @@ namespace BibleConfigurator
                 string notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, notebookFromTemplatePath, out notebookFolderPath);
                 if (!string.IsNullOrEmpty(notebookName))
                 {
-                    WaitAndLoadParameters(notebookType, notebookName, notebookFolderPath);                         // выйдем из метода только когда OneNote отработает
+                    WaitAndSaveParameters(notebookType, notebookName, notebookFolderPath);                         // выйдем из метода только когда OneNote отработает
                     createFromTemplateControl.Checked = false;  // чтоб если ошибки будут потом, он заново не создавал
                     selectedNotebookNameControl.Items.Add(notebookName);
                     selectedNotebookNameControl.SelectedItem = notebookName;
@@ -229,7 +270,7 @@ namespace BibleConfigurator
             else
             {
                 string notebookId;
-                TryToLoadNotebookParameters(notebookType, (string)selectedNotebookNameControl.SelectedItem, false, out notebookId);
+                TryToSaveNotebookParameters(notebookType, (string)selectedNotebookNameControl.SelectedItem, false, out notebookId);
             }
         }
 
@@ -245,14 +286,14 @@ namespace BibleConfigurator
                 notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, SingleNotebookFromTemplatePath, out notebookFolderPath);
                 if (!string.IsNullOrEmpty(notebookName))
                 {
-                    WaitAndLoadParameters(ContainerType.Single, notebookName, notebookFolderPath);
+                    WaitAndSaveParameters(ContainerType.Single, notebookName, notebookFolderPath);
                     SearchForCorrespondenceSectionGroups(module, SettingsManager.Instance.NotebookId_Bible);
                 }
             }
             else
             {
                 notebookName = (string)cbSingleNotebook.SelectedItem;
-                if (TryToLoadNotebookParameters(ContainerType.Single, notebookName, false, out notebookId))
+                if (TryToSaveNotebookParameters(ContainerType.Single, notebookName, false, out notebookId))
                 {
                     if (_notebookParametersForm != null && _notebookParametersForm.RenamedSectionGroups.Count > 0)
                         RenameSectionGroupsForm(notebookId, _notebookParametersForm.RenamedSectionGroups);
@@ -395,9 +436,9 @@ namespace BibleConfigurator
 
         }
 
-        private void WaitAndLoadParameters(ContainerType notebookType, string notebookName, string notebookFolderPath)
+        private void WaitAndSaveParameters(ContainerType notebookType, string notebookName, string notebookFolderPath)
         {   
-            PrepareForExternalProcessing(100, 1, string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ConfiguratorNotebookCreation, notebookName));
+            PrepareForLongProcessing(100, 1, string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ConfiguratorNotebookCreation, notebookName));
             
             bool parametersWasLoad = false;
 
@@ -409,7 +450,7 @@ namespace BibleConfigurator
                     pbMain.PerformStep();
                     System.Windows.Forms.Application.DoEvents();
 
-                    if (TryToLoadNotebookParameters(notebookType, notebookName, true, out notebookId))
+                    if (TryToSaveNotebookParameters(notebookType, notebookName, true, out notebookId))
                     {
                         parametersWasLoad = true;
                         break;
@@ -432,14 +473,14 @@ namespace BibleConfigurator
             }
             finally
             {
-                ExternalProcessingDone(string.Empty);                
+                LongProcessingDone(string.Empty);                
             }
 
             if (!parametersWasLoad)
                 throw new SaveParametersException(BibleCommon.Resources.Constants.ConfiguratorCanNotRequestDataFromOneNote, true);
         }
 
-        private bool TryToLoadNotebookParameters(ContainerType notebookType, string notebookName, bool silientMode, out string notebookId)
+        private bool TryToSaveNotebookParameters(ContainerType notebookType, string notebookName, bool silientMode, out string notebookId)
         {
             notebookId = string.Empty;
 
@@ -463,13 +504,19 @@ namespace BibleConfigurator
                             SettingsManager.Instance.NotebookId_Bible = notebookId;
                             break;
                         case ContainerType.BibleComments:
-                            SettingsManager.Instance.NotebookId_BibleComments = notebookId;
+                        case ContainerType.BibleStudy:
+                            {
+                                if (notebookType == ContainerType.BibleComments)
+                                    SettingsManager.Instance.NotebookId_BibleComments = notebookId;
+                                else
+                                    SettingsManager.Instance.NotebookId_BibleStudy = notebookId;        
+
+                                if (SettingsManager.Instance.SelectedNotebooksForAnalyze != null && !SettingsManager.Instance.SelectedNotebooksForAnalyze.Contains(notebookId))
+                                    SettingsManager.Instance.SelectedNotebooksForAnalyze.Add(notebookId);
+                            }
                             break;
                         case ContainerType.BibleNotesPages:
                             SettingsManager.Instance.NotebookId_BibleNotesPages = notebookId;
-                            break;
-                        case ContainerType.BibleStudy:
-                            SettingsManager.Instance.NotebookId_BibleStudy = notebookId;
                             break;
                     }
 
@@ -649,7 +696,7 @@ namespace BibleConfigurator
 
         private void LoadParameters(ModuleInfo module, bool? forceNeedToSaveSettings)
         {
-            if (!SettingsManager.Instance.IsConfigured(_oneNoteApp) || forceNeedToSaveSettings.GetValueOrDefault(false))
+            if (!SettingsManager.Instance.IsConfigured(_oneNoteApp) || forceNeedToSaveSettings.GetValueOrDefault(false) || AreThereUnindexedDictionaries())
                 lblWarning.Visible = true;
 
             var notebooks = OneNoteUtils.GetExistingNotebooks(_oneNoteApp);
@@ -731,7 +778,7 @@ namespace BibleConfigurator
 
             if (!rbSingleNotebook.Checked)
                 rbSingleNotebook.Enabled = false;            
-        }
+        }        
 
         private void InitLanguagesMenu()
         {
@@ -1013,7 +1060,7 @@ namespace BibleConfigurator
             }
         }
 
-        public void PrepareForExternalProcessing(int pbMaxValue, int pbStep, string infoText)
+        public void PrepareForLongProcessing(int pbMaxValue, int pbStep, string infoText)
         {
             pbMain.Value = 0;
             pbMain.Maximum = pbMaxValue;
@@ -1028,7 +1075,7 @@ namespace BibleConfigurator
             System.Windows.Forms.Application.DoEvents();
         }
 
-        public void ExternalProcessingDone(string infoText)
+        public void LongProcessingDone(string infoText)
         {
             FormExtensions.SetControlPropertyThreadSafe(pbMain, "Value", 0);
             FormExtensions.SetControlPropertyThreadSafe(pbMain, "Maximum", 100);

@@ -237,7 +237,7 @@
   <data name="Error_SectionGroupNotDefined" xml:space="preserve">
     <value>Не указана группа разделов типа '{0}' в шаблоне записной книжки типа '{1}'.</value>
   </data>
-  <data name="Error_SystemIsNotConfigures" xml:space="preserve">
+  <data name="Error_SystemIsNotConfigured" xml:space="preserve">
     <value>Программа не сконфигурирована. Откройте 'Параметры программы' и укажите все необходимые настройки.</value>
   </data>
   <data name="Error_UpdateError_InksOnPages" xml:space="preserve">
@@ -645,7 +645,7 @@
   <data name="FoundInSeveralDictionaries" xml:space="preserve">
     <value>Найдено в нескольких словарях</value>
   </data>
-  <data name="DictionaryNotebookCannotBeClosed" xml:space="preserve">
+  <data name="DictionariesNotebookCannotBeClosed" xml:space="preserve">
     <value>Записная книжка "Словари" не может быть закрыта, если установлен словарь Стронга. Для начала необходимо удалить модуль со словарём Стронга из справочной Библии с помощью формы управления справочной Библией.</value>
   </data>
   <data name="ModuleCannotBeDeleted_DictionaryModule" xml:space="preserve">
@@ -713,5 +713,11 @@
   </data>
   <data name="NoteLinkerNotePagesUpdating" xml:space="preserve">
     <value>Обновление страниц заметок в OneNote</value>
+  </data>
+  <data name="DictionariesNotebookNotFound" xml:space="preserve">
+    <value>Не найдена записная книжка "Словари"</value>
+  </data>
+  <data name="DictionaryCacheFileNotFound" xml:space="preserve">
+    <value>Модуль '{0}' установлен не правильно. Не найден файл кэша словаря. Откройте 'Параметры программы' и укажите все необходимые настройки.</value>
   </data>
 </root>
