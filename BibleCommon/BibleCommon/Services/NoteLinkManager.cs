@@ -176,12 +176,40 @@ namespace BibleCommon.Services
             }
         }
         
+
+        /// <summary>
+        /// Считается, что страница уже загружена к кэш, потому по pageId мы её быстро достанем
+        /// </summary>
+        /// <param name="pageId"></param>
         public void SetCursorOnNearestVerse(string pageId)
         {
             try
             {
-                OneNoteProxy.PageContent notePageDocument = OneNoteProxy.Instance.GetPageContent(_oneNoteApp, pageId, OneNoteProxy.PageType.NotePage, PageInfo.piSelection);
-                var pageEl = notePageDocument.Content.Root;                
+                OneNoteProxy.PageContent notePageDocument = OneNoteProxy.Instance.GetPageContent(_oneNoteApp, pageId, OneNoteProxy.PageType.NotePage);
+
+                XElement latestTextEl = null;
+                int latestVerseStartIndex = -1;
+
+                foreach (var textEl in notePageDocument.Content.Root.XPathSelectElements("//one:OE/one:T", notePageDocument.Xnm))
+                {
+                    var searchString = string.Format("{0}&{1}", Constants.QueryParameter_BibleVerse, Constants.QueryParameter_QuickAnalyze);
+                    var verseStartIndex = textEl.Value.LastIndexOf(searchString);
+
+                    if (verseStartIndex != -1)
+                    {
+                        latestTextEl = textEl;
+                        latestVerseStartIndex = verseStartIndex;                        
+                    }
+                }
+
+                if (latestTextEl != null)
+                {
+                    OneNoteUtils.NormalizeTextElement(latestTextEl);                    
+                    if (latestVerseStartIndex != -1)
+                    {
+                        InsertCursorOnPage(latestTextEl, latestVerseStartIndex);
+                    }
+                }
             }
             catch (ProcessAbortedByUserException)
             {
@@ -190,6 +218,29 @@ namespace BibleCommon.Services
             {
                 Logger.LogError(BibleCommon.Resources.Constants.NoteLinkManagerProcessingPageErrors, ex);
             }
+        }
+
+        private void InsertCursorOnPage(XElement textEl, int index)
+        {
+            XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
+            var startLinkSearchString = "<span";
+            var endLinkSearchString = "</span>";            
+
+            var startLinkIndex = StringUtils.LastIndexOf(textEl.Value, startLinkSearchString, 0, index);
+            var endLinkIndex = textEl.Value.IndexOf(endLinkSearchString, index);
+
+            var link = textEl.Value.Substring(startLinkIndex, endLinkIndex - startLinkIndex + endLinkSearchString.Length);
+            var textBefore = textEl.Value.Substring(0, startLinkIndex);
+            var textAfter = textEl.Value.Substring(endLinkIndex + endLinkSearchString.Length);
+
+            textEl.Value = textBefore;
+            textEl.AddAfterSelf(new XElement(nms + "T",
+                                                new XCData(textAfter))
+                                            );
+
+            textEl.AddAfterSelf(new XElement(nms + "T", new XAttribute("selected", "all"),
+                                                new XCData(link))
+                                            );            
         }
 
         private void ProcessChapters(List<FoundChapterInfo> foundChapters, 
@@ -585,18 +636,32 @@ namespace BibleCommon.Services
         {
             hierarchySearchResult = new HierarchySearchManager.HierarchySearchResult() { ResultType = HierarchySearchManager.HierarchySearchResultType.NotFound };
             HierarchySearchManager.HierarchySearchResult localHierarchySearchResult = new HierarchySearchManager.HierarchySearchResult() { ResultType = HierarchySearchManager.HierarchySearchResultType.NotFound };
-            needToQueueIfChapter = true;  // по умолчанию - анализируем главы в самом конце
+            needToQueueIfChapter = true;  // по умолчанию - анализируем главы в самом конце            
 
             int startVerseNameIndex = searchResult.VersePointerStartIndex;
             int endVerseNameIndex = searchResult.VersePointerEndIndex;
 
             newEndVerseIndex = endVerseNameIndex;
 
+            bool wasModified;
             if (!CorrectTextToChangeBoundary(textElementValue, isLink,
-                              ref startVerseNameIndex, ref endVerseNameIndex))
+                              ref startVerseNameIndex, ref endVerseNameIndex, out wasModified))
             {
                 newEndVerseIndex = searchResult.VersePointerHtmlEndIndex; // потому что это же значение мы присваиваем, если стоит !force и встретили гиперссылку                
                 return textElementValue;
+            }
+
+            if (!wasModified)
+            {             
+                if (searchResult.VersePointerHtmlStartIndex != searchResult.VersePointerStartIndex)
+                {
+                    if (StringUtils.GetChar(textElementValue, searchResult.VersePointerHtmlStartIndex) == VerseRecognitionManager.ChapterVerseDelimiter
+                        && StringUtils.GetChar(textElementValue, searchResult.VersePointerHtmlStartIndex + 1) == '<')  // случай типа "<span lang=ru>:</span><span lang=en-US>12</span>"
+                    {
+                        startVerseNameIndex = searchResult.VersePointerHtmlStartIndex;
+                        endVerseNameIndex = searchResult.VersePointerHtmlEndIndex;
+                    }
+                }
             }
 
             if (searchResult.VersePointer.IsChapter)
@@ -651,9 +716,9 @@ namespace BibleCommon.Services
 
                             hierarchySearchResult = localHierarchySearchResult;
 
-                            var additionalParams = new List<string>();
+                            var additionalParams = new List<string>() { Consts.Constants.QueryParameter_BibleVerse };
                             if (linkDepth == AnalyzeDepth.SetVersesLinks)
-                                additionalParams.Add(string.Format("{0}=true", Consts.Constants.QueryParameter_QuickAnalyze));
+                                additionalParams.Add(Consts.Constants.QueryParameter_QuickAnalyze);
 
                             string link = OneNoteUtils.GetOrGenerateHref(oneNoteApp, textToChange, localHierarchySearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref,
                                 localHierarchySearchResult.HierarchyObjectInfo.PageId, localHierarchySearchResult.HierarchyObjectInfo.VerseContentObjectId, additionalParams.ToArray());
@@ -904,8 +969,10 @@ namespace BibleCommon.Services
         /// <param name="startVerseNameIndex"></param>
         /// <param name="endVerseNameIndex"></param>
         /// <returns>false - если помимо библейской ссылки, в гиперссылке содержится и другой текст. Не обрабатываем такие ссылки</returns>
-        private bool CorrectTextToChangeBoundary(string textElementValue, bool isLink, ref int startVerseNameIndex, ref int endVerseNameIndex)
+        private bool CorrectTextToChangeBoundary(string textElementValue, bool isLink, ref int startVerseNameIndex, ref int endVerseNameIndex, out bool wasModified)
         {
+            wasModified = false;
+
             if (isLink)
             {
                 string beginSearchString = "<a ";
@@ -927,6 +994,7 @@ namespace BibleCommon.Services
                             {
                                 startVerseNameIndex = startVerseNameIndexTemp;
                                 endVerseNameIndex = endVerseNameIndexTemp;
+                                wasModified = true;
                                 return true;
                             }
                         }

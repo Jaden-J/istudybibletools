@@ -6,6 +6,7 @@ using System.Reflection;
 using System.IO;
 using BibleCommon.Consts;
 using System.Xml.Serialization;
+using Microsoft.Office.Interop.OneNote;
 
 
 namespace BibleCommon.Helpers
@@ -145,6 +146,11 @@ namespace BibleCommon.Helpers
             }
 
             return result;
+        }
+
+        public static string GetHexError(Error error)
+        {
+            return string.Format("0x{0}", Convert.ToString((int)error, 16));            
         }
     }
 }

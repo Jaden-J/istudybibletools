@@ -54,7 +54,8 @@ namespace TestProject
 
 
             try
-            {
+            {   
+                
                 //GenerateBibleBooks();
 
                 //SearchInNotebook();
@@ -71,25 +72,23 @@ namespace TestProject
 
                 //GenerateDictionary();
 
-                //GenerateStrongDictionary();
+                //GenerateRuStrongDictionary();
+
+                //GenerateEnStrongDictionary();
                 
                 //SearchForEnText();
 
                 //ChangeCurrentPageLocale("ro");
 
-                //TryToUpdateInkNodes();                
-
-                //ConvertRussianModuleZefaniaXml();
-
-                //ConvertEnglishModuleZefaniaXml();
+                //TryToUpdateInkNodes();                                
 
                 //ConvertUkrModule();
 
-                ConvertChineseModule();
+                //ConvertChineseModule();
 
                 //ConvertRussianModule();
 
-                //ConvertEnglishModule();
+                ConvertEnglishModule();
 
                 //ConvertRomanModule();
 
@@ -113,7 +112,7 @@ namespace TestProject
 
             Console.WriteLine("Finish. Elapsed time: {0}", sw.Elapsed);
             Console.ReadKey();
-        }      
+        }              
 
         private static void GenerateBibleBooks()
         {
@@ -263,7 +262,25 @@ namespace TestProject
             oneNoteApp.UpdatePageContent(currentPageDoc.ToString());
         }
 
-        private static void GenerateStrongDictionary()
+        private static void GenerateEnStrongDictionary()
+        {
+            var moduleName = "kjvstrong";
+            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", moduleName, "Strong's Dictionary", "Strong's Exhaustive Concordance (c) Bible Foundation",
+                 new List<DictionaryFile>() { 
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\HEBREW.HTM"), SectionName = "1. Old Testament.one", DictionaryPageDescription="Strong's Hebrew Dictionary (с) Bible Foundation", TermPrefix = "H" },
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\GREEK.HTM"), SectionName = "2. New Testament.one", DictionaryPageDescription="Strong's Greek Dictionary (с) Bible Foundation", TermPrefix= "G" }
+                }, BibleQuotaDictionaryConverter.StructureType.Strong, "Strong's",
+                 Path.Combine(TempFolderPath, moduleName), "<h4>", "User Notes", "Find all verses with this number", "en", new Version(2, 0));
+
+            converter.Convert();
+
+            using (var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message)))
+            {
+                form.ShowDialog();
+            }
+        }
+
+        private static void GenerateRuStrongDictionary()
         {
             var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "rststrong", "Словарь Стронга", "Еврейский и Греческий лексикон Стронга (с) Bob Jones University",
                 new List<DictionaryFile>() { 
@@ -399,7 +416,7 @@ namespace TestProject
 
         private static void ConvertChineseModule()
         {
-            string moduleShortName = "ncv";
+            string moduleShortName = "cuvs";
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName),
                 "zh_CN", new NotebooksStructure() { Notebooks = PredefinedNotebooksInfo.English }, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
                 "{0} chapter. {1}",
@@ -416,11 +433,17 @@ namespace TestProject
 
         private static void ConvertEnglishModule()
         {
-            string moduleShortName = "dourh";
+            string moduleShortName = "kjvstrong";
+
+
+            var notebooksStructure = new NotebooksStructure() { Notebooks = PredefinedNotebooksInfo.English };
+            notebooksStructure.DictionarySectionGroupName = "Strong's";
+            notebooksStructure.DictionaryTermsCount = 14298;
+            notebooksStructure.DictionaryPagesCount = 142;
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName),
-                "en", new NotebooksStructure() { Notebooks = PredefinedNotebooksInfo.English }, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
+                "en", notebooksStructure, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
                 "{0} chapter. {1}",
-                false, 
+                true, 
                 new Version(2, 0), false);
 
             converter.Convert();

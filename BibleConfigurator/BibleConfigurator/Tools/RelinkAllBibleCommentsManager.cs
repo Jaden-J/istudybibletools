@@ -28,7 +28,7 @@ namespace BibleConfigurator.Tools
         {
             if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
             {
-                FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
+                FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                 return;
             }   
 
@@ -46,7 +46,7 @@ namespace BibleConfigurator.Tools
                 }
 
                 int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleShortName, true);
-                _form.PrepareForExternalProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.RelinkBibleCommentsManagerStartMessage);
+                _form.PrepareForLongProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.RelinkBibleCommentsManagerStartMessage);
 
                 //для тестирования
                 //RelinkPageComments(_oneNoteApp.Windows.CurrentWindow.CurrentSectionId, 
@@ -70,7 +70,7 @@ namespace BibleConfigurator.Tools
                                 throw new ProcessAbortedByUserException();
                         });
 
-                _form.ExternalProcessingDone(BibleCommon.Resources.Constants.RelinkBibleCommentsManagerFinishMessage);
+                _form.LongProcessingDone(BibleCommon.Resources.Constants.RelinkBibleCommentsManagerFinishMessage);
             }
             catch (ProcessAbortedByUserException)
             {

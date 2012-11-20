@@ -28,7 +28,7 @@ namespace BibleConfigurator.Tools
         {
             if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
             {
-                FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
+                FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                 return;
             }
 
@@ -39,7 +39,7 @@ namespace BibleConfigurator.Tools
                 Dictionary<string, string> pagesToDelete = GetAllNotesPagesIds();
                 int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleShortName, true);
 
-                _form.PrepareForExternalProcessing(chaptersCount + pagesToDelete.Count, 1, BibleCommon.Resources.Constants.DeleteNotesPagesManagerStartMessage);
+                _form.PrepareForLongProcessing(chaptersCount + pagesToDelete.Count, 1, BibleCommon.Resources.Constants.DeleteNotesPagesManagerStartMessage);
 
                 NotebookIteratorHelper.Iterate(_oneNoteApp,
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
@@ -71,7 +71,7 @@ namespace BibleConfigurator.Tools
                         throw new ProcessAbortedByUserException();
                 }
 
-                _form.ExternalProcessingDone(BibleCommon.Resources.Constants.DeleteNotesPagesManagerFinishMessage);
+                _form.LongProcessingDone(BibleCommon.Resources.Constants.DeleteNotesPagesManagerFinishMessage);
             }
             catch (ProcessAbortedByUserException)
             {

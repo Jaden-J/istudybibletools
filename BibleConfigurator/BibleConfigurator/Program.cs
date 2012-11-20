@@ -70,7 +70,7 @@ namespace BibleConfigurator
             Form result = null;
 
             var strongProtocolHandler = new FindVersesWithStrongNumberHandler();
-            var openVerseHandler = new NavigateToStrongHandler();
+            var navToStrongHandler = new NavigateToStrongHandler();
 
             if (args.Contains(Consts.ShowModuleInfo) && SettingsManager.Instance.IsConfigured(OneNoteApp))
                 result = new AboutModuleForm(SettingsManager.Instance.ModuleShortName, true);
@@ -80,8 +80,8 @@ namespace BibleConfigurator
                 result = new SearchInDictionariesForm();
             else if (strongProtocolHandler.IsProtocolCommand(args))
                 strongProtocolHandler.ExecuteCommand(args);
-            else if (openVerseHandler.IsProtocolCommand(args))
-                openVerseHandler.ExecuteCommand(args);
+            else if (navToStrongHandler.IsProtocolCommand(args))
+                navToStrongHandler.ExecuteCommand(args);
             else if (args.Contains(Consts.ShowManual))
                 OpenManual();
             else if (args.Contains(Consts.RunOnOneNoteStarts))

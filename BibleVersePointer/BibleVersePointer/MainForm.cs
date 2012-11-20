@@ -66,7 +66,7 @@ namespace BibleVersePointer
 
                     if (!SettingsManager.Instance.IsConfigured(OneNoteApp))
                     {
-                        Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigures);
+                        Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                     }
                 }
                 else

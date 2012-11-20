@@ -210,7 +210,7 @@
   <data name="Error_OpenedNotePageNotFound" xml:space="preserve">
     <value>Opened notes page not found</value>
   </data>
-  <data name="Error_SystemIsNotConfigures" xml:space="preserve">
+  <data name="Error_SystemIsNotConfigured" xml:space="preserve">
     <value>The program is not configured. Open the 'Program parameters' and specify the necessary settings.</value>
   </data>
   <data name="Error_UpdateError_InksOnPages" xml:space="preserve">
@@ -648,7 +648,7 @@
   <data name="FoundInSeveralDictionaries" xml:space="preserve">
     <value>Found in several dictionaries</value>
   </data>
-  <data name="DictionaryNotebookCannotBeClosed" xml:space="preserve">
+  <data name="DictionariesNotebookCannotBeClosed" xml:space="preserve">
     <value>Notebook "Dictionaries" cannot be closed if Strong dictionary is installed. First delete module with Strong dictionary from Supplemental Bible on Supplemental Bible management form.</value>
   </data>
   <data name="ModuleCannotBeDeleted_DictionaryModule" xml:space="preserve">
@@ -716,5 +716,11 @@
   </data>
   <data name="NoteLinkerNotePagesUpdating" xml:space="preserve">
     <value>'Notes' pages updating</value>
+  </data>
+  <data name="DictionariesNotebookNotFound" xml:space="preserve">
+    <value>Dictionaries Notebook is not found</value>
+  </data>
+  <data name="DictionaryCacheFileNotFound" xml:space="preserve">
+    <value>Module '{0}' is not installed correctly. Dictionary cache file is not found. Open the 'Program parameters' and specify the necessary settings.</value>
   </data>
 </root>
