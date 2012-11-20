@@ -17,6 +17,17 @@ namespace BibleCommon.Helpers
 {
     public static class OneNoteUtils
     {
+        private static bool? _isOneNote2010;
+        public static bool IsOneNote2010Cached(Application oneNoteApp)
+        {
+            if (!_isOneNote2010.HasValue)
+            {
+                _isOneNote2010 = oneNoteApp.GetType().Assembly.GetName().Version < new Version(15, 0, 0, 0);
+            }
+
+            return _isOneNote2010.Value;
+        }
+
         public static bool NotebookExists(Application oneNoteApp, string notebookId, bool refreshCache = false)
         {
             OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, null, HierarchyScope.hsNotebooks, refreshCache);
