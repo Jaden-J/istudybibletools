@@ -127,7 +127,9 @@ namespace BibleCommon.Services
 
             BibleParallelTranslationManager.MergeModuleWithMainBible(supplementalModuleShortName);
 
-            UnlockSupplementalBible(oneNoteApp);            
+            UnlockSupplementalBible(oneNoteApp);
+
+            var isOneNote2010 = OneNoteUtils.IsOneNote2010Cached(oneNoteApp);
 
             BibleParallelTranslationConnectionResult result;
             using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
@@ -159,7 +161,7 @@ namespace BibleCommon.Services
                                 LinkdPrimaryBibleAndSupplementalVerses(oneNoteApp, baseVersePointer, parallelVerse, bibleIteratorArgs,
                                             bibleTranslationManager.BaseModuleInfo.Type == Common.ModuleType.Strong, strongTermLinksCache,
                                             bibleTranslationManager.BaseModuleInfo.ShortName,
-                                            bibleTranslationManager.BaseModuleInfo.BibleStructure.Alphabet, xnm, nms));
+                                            bibleTranslationManager.BaseModuleInfo.BibleStructure.Alphabet, isOneNote2010, xnm, nms));
                         }
                     });
 
@@ -192,7 +194,8 @@ namespace BibleCommon.Services
 
             BibleParallelTranslationConnectionResult result = null;
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
-            var linkResult = new List<Exception>();            
+            var linkResult = new List<Exception>();
+            var isOneNote2010 = OneNoteUtils.IsOneNote2010Cached(oneNoteApp);
 
             using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
                 SettingsManager.Instance.SupplementalBibleModules.First().ModuleName, module.ShortName,
@@ -231,7 +234,7 @@ namespace BibleCommon.Services
                             {
                                 parallelVerse.VerseContent = ProcessStrongVerse(parallelVerse.VerseContent, strongTermLinksCache,
                                     bibleTranslationManager.ParallelModuleShortName,
-                                    bibleTranslationManager.ParallelModuleInfo.BibleStructure.Alphabet, ref linkResult);
+                                    bibleTranslationManager.ParallelModuleInfo.BibleStructure.Alphabet, isOneNote2010, ref linkResult);
                             }
 
                             var cell = NotebookGenerator.AddParallelVerseRowToBibleTable(bibleIteratorArgs.TableElement, parallelVerse,
@@ -325,8 +328,11 @@ namespace BibleCommon.Services
         }       
 
         // перед обновлением страницы Библии со стронгом нужно обязательно вызывать этот метод, иначе все ссылки станут синими
-        public static void UpdatePageXmlForStrongBible(XDocument pageDoc)
+        public static void UpdatePageXmlForStrongBible(XDocument pageDoc, bool isOneNote2010)
         {
+            if (!isOneNote2010)
+                return;
+
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
             var styleEl = pageDoc.Root.XPathSelectElement(string.Format("one:QuickStyleDef[@name='{0}']", QuickStyleManager.StyleForStrongName), xnm);
             if (styleEl != null)  // значит видимо есть Библия Стронга на текущей странице
@@ -364,7 +370,7 @@ namespace BibleCommon.Services
 
         private static List<Exception> LinkdPrimaryBibleAndSupplementalVerses(Application oneNoteApp, SimpleVersePointer baseVersePointer,
             SimpleVerse parallelVerse, BibleIteratorArgs bibleIteratorArgs, bool isStrong, Dictionary<string, string> strongTermLinksCache, 
-            string strongModuleShortName, string alphabet, XmlNamespaceManager xnm, XNamespace nms)
+            string strongModuleShortName, string alphabet, bool isOneNote2010, XmlNamespaceManager xnm, XNamespace nms)
         {
             var result = new List<Exception>();            
 
@@ -386,24 +392,27 @@ namespace BibleCommon.Services
 
             LinkMainBibleVersesToSupplementalBibleVerse(oneNoteApp, baseChapterPageId, baseVerseElementId, parallelVerse, primaryBibleObjectsSearchResult, xnm, nms);
             LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(oneNoteApp, baseVersePointer, baseVerseEl, baseVerseNumber, verseTextWithoutNumber, primaryBibleObjectsSearchResult, 
-                isStrong, bibleIteratorArgs.StrongStyleIndex, strongTermLinksCache, strongModuleShortName, alphabet, ref result, nms);
+                isStrong, bibleIteratorArgs.StrongStyleIndex, strongTermLinksCache, strongModuleShortName, alphabet, isOneNote2010, ref result, nms);
 
             return result;
         }
 
         private static string ProcessStrongVerse(string verseText, Dictionary<string, string> strongTermLinksCache, 
-            string strongModuleShortName, string alphabet, ref List<Exception> errors)
+            string strongModuleShortName, string alphabet, bool isOneNote2010, ref List<Exception> errors)
         {
             int cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, null);
             int temp, htmlBreakIndex = -1;
-            string strongNumber;            
-            
-            var verseParts = StringUtils.GetText(verseText).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < verseParts.Length; i++)
+            string strongNumber;
+
+            if (isOneNote2010)
             {
-                verseParts[i] = string.Format("<span style='color:#000000'>{0}</span>", verseParts[i]);
+                var verseParts = StringUtils.GetText(verseText).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < verseParts.Length; i++)
+                {
+                    verseParts[i] = string.Format("<span style='color:#000000'>{0}</span>", verseParts[i]);
+                }
+                verseText = string.Join(" ", verseParts);
             }
-            verseText = string.Join(" ", verseParts);
             
             while (cursorPosition > -1)
             {                
@@ -443,7 +452,7 @@ namespace BibleCommon.Services
         private static void LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(Application oneNoteApp, 
             SimpleVersePointer baseVersePointer, XElement baseVerseEl, VerseNumber? baseVerseNumber, string verseTextWithoutNumber,
             HierarchySearchManager.HierarchySearchResult primaryBibleObjectsSearchResult,
-            bool isStrong, int strongStyleIndex, Dictionary<string, string> strongTermLinksCache, string strongModuleShortName, string alphabet, 
+            bool isStrong, int strongStyleIndex, Dictionary<string, string> strongTermLinksCache, string strongModuleShortName, string alphabet, bool isOneNote2010,
             ref List<Exception> result, XNamespace nms)
         {
             if (baseVersePointer.VerseNumber != baseVerseNumber)            
@@ -458,9 +467,10 @@ namespace BibleCommon.Services
             string versePart = verseTextWithoutNumber;
 
             if (isStrong)
-            {                
-                baseVerseEl.Parent.SetAttributeValue("quickStyleIndex", strongStyleIndex);
-                versePart = ProcessStrongVerse(versePart, strongTermLinksCache, strongModuleShortName, alphabet, ref result);
+            {
+                if (isOneNote2010)
+                    baseVerseEl.Parent.SetAttributeValue("quickStyleIndex", strongStyleIndex);
+                versePart = ProcessStrongVerse(versePart, strongTermLinksCache, strongModuleShortName, alphabet, isOneNote2010, ref result);
             }
 
             baseVerseEl.Value = string.Format("{0}<span> </span>{1}", linkToParallelVerse, versePart);

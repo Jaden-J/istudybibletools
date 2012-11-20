@@ -159,6 +159,7 @@ namespace BibleCommon.Services
                                                           ParallelModuleInfo.BibleTranslationDifferences, refreshCache);
 
             var result = new BibleParallelTranslationConnectionResult();
+            var isOneNote2010 = OneNoteUtils.IsOneNote2010Cached(_oneNoteApp);
 
             foreach (var baseBookContent in BaseBibleInfo.Books)
             {
@@ -179,7 +180,7 @@ namespace BibleCommon.Services
                     try
                     {
                         ProcessBibleBook(sectionEl, baseBookInfo, baseBookContent, parallelBookContent, bookVersePointersComparisonTable,
-                            chapterAction, needToUpdateChapter, iterateVerses, verseAction);
+                            chapterAction, needToUpdateChapter, isOneNote2010, iterateVerses, verseAction);
                     }
                     catch (BaseVersePointerException ex) 
                     {
@@ -196,7 +197,7 @@ namespace BibleCommon.Services
         private void ProcessBibleBook(XElement bibleBookSectionEl, BibleBookInfo baseBookInfo,
             BIBLEBOOK baseBookContent, BIBLEBOOK parallelBookContent, 
             SimpleVersePointersComparisonTable bookVersePointersComparisonTable,
-            Func<XDocument, SimpleVersePointer, BibleIteratorArgs> chapterAction, bool needToUpdateChapter,
+            Func<XDocument, SimpleVersePointer, BibleIteratorArgs> chapterAction, bool needToUpdateChapter, bool isOneNote2010,
             bool iterateVerses, Action<SimpleVersePointer, SimpleVerse, BibleIteratorArgs> verseAction)
         {
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
@@ -205,7 +206,7 @@ namespace BibleCommon.Services
             var sectionPagesEl = ForCheckOnly ? null : OneNoteUtils.GetHierarchyElement(_oneNoteApp, sectionId, HierarchyScope.hsPages, out xnm);
 
             int lastProcessedChapter = 0;
-            int lastProcessedVerse = 0;
+            int lastProcessedVerse = 0;            
 
             foreach (var baseChapter in baseBookContent.Chapters)
             {
@@ -268,7 +269,7 @@ namespace BibleCommon.Services
 
                 if (needToUpdateChapter && chapterAction != null && chapterWasModified.GetValueOrDefault(true) == true && !ForCheckOnly)
                 {
-                    SupplementalBibleManager.UpdatePageXmlForStrongBible(chapterPageDoc);
+                    SupplementalBibleManager.UpdatePageXmlForStrongBible(chapterPageDoc, isOneNote2010);
 
                     _oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
                 }
