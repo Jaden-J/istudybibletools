@@ -60,7 +60,7 @@ namespace BibleConfigurator
 
 
         private MainForm _mainForm;
-        private CustomFormLogger _formLogger;
+        private LongProcessLogger _formLogger;
         private FileSystemWatcher _fileWatcher;
         private DateTime _startTime;
         private static object _locker = new object();
@@ -72,7 +72,7 @@ namespace BibleConfigurator
             InitializeComponent();
             OneNoteApp = oneNoteApp;
             _mainForm = mainForm;
-            _formLogger = new CustomFormLogger(_mainForm);
+            _formLogger = new LongProcessLogger(_mainForm);
         }
 
         private void ZefaniaXmlConverterForm_Load(object sender, EventArgs e)
@@ -97,7 +97,7 @@ namespace BibleConfigurator
 
 
                 var initMessage = "Start converting";
-                _mainForm.PrepareForExternalProcessing(5 + (chkNotebookBibleGenerate.Checked
+                _mainForm.PrepareForLongProcessing(5 + (chkNotebookBibleGenerate.Checked
                                                         ? ModulesManager.GetBibleChaptersCount(BibleContent, true)
                                                         : 0),
                                                     1, initMessage);
@@ -143,7 +143,7 @@ namespace BibleConfigurator
             catch (ProcessAbortedByUserException)
             {
                 BibleCommon.Services.Logger.LogMessage(BibleCommon.Resources.Constants.ProcessAbortedByUser);
-                _mainForm.ExternalProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
+                _mainForm.LongProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
 
                 CloseResources();
             }
@@ -163,7 +163,7 @@ namespace BibleConfigurator
             ConvertedModuleShortName = ModuleShortName;
 
             string finalMessage = "Module was created";
-            _mainForm.ExternalProcessingDone(finalMessage);
+            _mainForm.LongProcessingDone(finalMessage);
             BibleCommon.Services.Logger.LogMessage(finalMessage);
 
             BibleCommon.Services.Logger.LogMessage(" {0}", DateTime.Now.Subtract(_startTime));

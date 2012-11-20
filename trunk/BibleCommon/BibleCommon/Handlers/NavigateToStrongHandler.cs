@@ -51,16 +51,33 @@ namespace BibleCommon.Handlers
 
             var strongNumber = verseArgs[0];
             var moduleShortName = verseArgs[1];
-            var strongTermLink = OneNoteProxy.Instance.GetDictionaryTermLink(strongNumber, moduleShortName);
 
             Application oneNoteApp = new Application();
+
             try
             {
-                oneNoteApp.NavigateTo(strongTermLink.PageId, strongTermLink.ObjectId);
+                var strongTermLink = OneNoteProxy.Instance.GetDictionaryTermLink(strongNumber, moduleShortName);
+                
+                try
+                {
+                    oneNoteApp.NavigateTo(strongTermLink.PageId, strongTermLink.ObjectId);
+                }
+                finally
+                {
+                    oneNoteApp = null;
+                }
             }
-            finally
+            catch (Exception ex)  // todo
             {
-                oneNoteApp = null;
+                if (!DictionaryTermsCacheManager.CacheIsActive(moduleShortName))
+                {
+                    if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidDictionariesNotebookId(oneNoteApp, true)))
+                        throw new Exception(BibleCommon.Resources.Constants.DictionariesNotebookNotFound);
+
+                    throw new Exception(BibleCommon.Resources.Constants.DictionaryCacheFileNotFound); 
+                }
+
+                throw;
             }
         }
 

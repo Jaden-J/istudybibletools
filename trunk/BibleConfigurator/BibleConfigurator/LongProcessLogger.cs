@@ -8,13 +8,13 @@ using BibleCommon.Common;
 
 namespace BibleConfigurator
 {
-    public class CustomFormLogger: ICustomLogger, IDisposable
+    public class LongProcessLogger: ICustomLogger, IDisposable
     {
         private MainForm _form;
         public string Preffix { get; set; }
         public bool AbortedByUsers { get; set; }
 
-        public CustomFormLogger(MainForm form)        
+        public LongProcessLogger(MainForm form)        
         {
             _form = form;
         }
