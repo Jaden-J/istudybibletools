@@ -334,7 +334,8 @@ namespace BibleConfigurator.ModuleConverter
                             .Replace("<h6>", Environment.NewLine + "<b>")
                             .Replace("</h6>", "</b>")
                             .Replace("<h5>", Environment.NewLine + "<b>")
-                            .Replace("</h5>", "</b>");                            
+                            .Replace("</h5>", "</b>")
+                            .Trim();                            
                                 
 
             if (Type == StructureType.Strong)

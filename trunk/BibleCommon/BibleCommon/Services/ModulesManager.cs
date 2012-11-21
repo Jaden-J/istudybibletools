@@ -14,14 +14,24 @@ namespace BibleCommon.Services
 {
     public static class ModulesManager
     {
-        private static Dictionary<Type, XmlSerializer> _serializers;        
+        private static Dictionary<Type, XmlSerializer> _serializersDictionary;                
+
+        private static XmlSerializer GetXmlSerializer(Type t)
+        {
+            if (!_serializersDictionary.ContainsKey(t))
+            {
+                _serializersDictionary.Add(t, new XmlSerializer(t));
+            }
+
+            return _serializersDictionary[t];
+        }
 
         static ModulesManager()
         {
-            _serializers = new Dictionary<Type, XmlSerializer>();
-            _serializers.Add(typeof(ModuleInfo), new XmlSerializer(typeof(ModuleInfo)));
-            _serializers.Add(typeof(XMLBIBLE), new XmlSerializer(typeof(XMLBIBLE)));
-            _serializers.Add(typeof(ModuleDictionaryInfo), new XmlSerializer(typeof(ModuleDictionaryInfo)));
+            _serializersDictionary = new Dictionary<Type, XmlSerializer>();
+            //_serializers.Add(typeof(ModuleInfo), new XmlSerializer(typeof(ModuleInfo)));
+            //_serializers.Add(typeof(XMLBIBLE), new XmlSerializer(typeof(XMLBIBLE)));
+            //_serializers.Add(typeof(ModuleDictionaryInfo), new XmlSerializer(typeof(ModuleDictionaryInfo)));
         }
 
         public static ModuleInfo GetCurrentModuleInfo()
@@ -137,7 +147,7 @@ namespace BibleCommon.Services
         {
             using (var fs = new FileStream(xmlFilePath, FileMode.Open))
             {
-                return ((T)_serializers[typeof(T)].Deserialize(fs));
+                return ((T)GetXmlSerializer(typeof(T)).Deserialize(fs));
             }
         }
 
