@@ -97,12 +97,15 @@ namespace BibleCommon.Services
             }
         }
 
-        private static void UnlockSupplementalBible(Application oneNoteApp)
+        private static void UnlockSupplementalBible(Application oneNoteApp, bool unlockBible, bool unlockSupplementalBible)
         {
             try
             {
-                OneNoteLocker.UnlockBible(oneNoteApp);
-                //OneNoteLocker.UnlockSupplementalBible(oneNoteApp);  // пока вроде как это не надо, так как данный метод вызывается только при создании спр Библии
+                if (unlockBible)
+                    OneNoteLocker.UnlockBible(oneNoteApp);
+
+                if (unlockSupplementalBible)
+                    OneNoteLocker.UnlockSupplementalBible(oneNoteApp);  
             }
             catch (NotSupportedException)
             {
@@ -127,7 +130,7 @@ namespace BibleCommon.Services
 
             BibleParallelTranslationManager.MergeModuleWithMainBible(supplementalModuleShortName);
 
-            UnlockSupplementalBible(oneNoteApp);
+            UnlockSupplementalBible(oneNoteApp, true, false);
 
             var isOneNote2010 = OneNoteUtils.IsOneNote2010Cached(oneNoteApp);
 
@@ -201,7 +204,7 @@ namespace BibleCommon.Services
                 SettingsManager.Instance.SupplementalBibleModules.First().ModuleName, module.ShortName,
                 SettingsManager.Instance.NotebookId_SupplementalBible))
             {
-                UnlockSupplementalBible(oneNoteApp);
+                UnlockSupplementalBible(oneNoteApp, false, true);
 
                 GetTestamentInfo(bibleTranslationManager.ParallelModuleInfo, ContainerType.OldTestament, out oldTestamentName, out oldTestamentSectionsCount, out oldTestamentStrongPrefix);
                 GetTestamentInfo(bibleTranslationManager.ParallelModuleInfo, ContainerType.NewTestament, out newTestamentName, out newTestamentSectionsCount, out newTestamentStrongPrefix);                
@@ -313,12 +316,14 @@ namespace BibleCommon.Services
                 BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(moduleShortName);
 
                 SettingsManager.Instance.SupplementalBibleModules.Remove(storedModuleInfo);
-                SettingsManager.Instance.Save();
+                SettingsManager.Instance.Save();               
 
                 using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
                    SettingsManager.Instance.SupplementalBibleModules.First().ModuleName, moduleShortName,
                    SettingsManager.Instance.NotebookId_SupplementalBible))
                 {
+                    UnlockSupplementalBible(oneNoteApp, false, true);
+
                     bibleTranslationManager.Logger = logger;
                     bibleTranslationManager.RemoveParallelTranslation(moduleShortName);
                 }                
