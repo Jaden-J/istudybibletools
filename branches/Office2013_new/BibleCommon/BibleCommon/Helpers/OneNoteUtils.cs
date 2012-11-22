@@ -22,7 +22,10 @@ namespace BibleCommon.Helpers
         {
             if (!_isOneNote2010.HasValue)
             {
-                _isOneNote2010 = oneNoteApp.GetType().Assembly.GetName().Version < new Version(15, 0, 0, 0);
+                if (oneNoteApp != null)
+                    _isOneNote2010 = oneNoteApp.GetType().Assembly.GetName().Version < new Version(15, 0, 0, 0);
+                else
+                    return true;
             }
 
             return _isOneNote2010.Value;
