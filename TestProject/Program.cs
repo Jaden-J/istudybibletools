@@ -264,7 +264,7 @@ namespace TestProject
 
         private static void GenerateEnStrongDictionary()
         {
-            var moduleName = "kjvstrong";
+            var moduleName = "nasbstrong";
             var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", moduleName, "Strong's Dictionary", "Strong's Exhaustive Concordance (c) Bible Foundation",
                  new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\HEBREW.HTM"), SectionName = "1. Old Testament.one", DictionaryPageDescription="Strong's Hebrew Dictionary (с) Bible Foundation", TermPrefix = "H" },
@@ -433,13 +433,13 @@ namespace TestProject
 
         private static void ConvertEnglishModule()
         {
-            string moduleShortName = "kjvstrong";
+            string moduleShortName = "nasbstrong";
 
 
             var notebooksStructure = new NotebooksStructure() { Notebooks = PredefinedNotebooksInfo.English };
             notebooksStructure.DictionarySectionGroupName = "Strong's";
-            notebooksStructure.DictionaryTermsCount = 14298;
-            notebooksStructure.DictionaryPagesCount = 142;
+            notebooksStructure.DictionaryTermsCount = 14198;
+            notebooksStructure.DictionaryPagesCount = 141;
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName),
                 "en", notebooksStructure, PredefinedBookIndexes.KJV, new BibleTranslationDifferences(),
                 "{0} chapter. {1}",

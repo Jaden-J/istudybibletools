@@ -475,7 +475,8 @@ namespace BibleCommon.Services
 
             if (verseInfo.IsLink != VerseRecognitionManager.LinkType.LinkAfterFullAnalyze
                 || (verseInfo.IsLink == VerseRecognitionManager.LinkType.LinkAfterFullAnalyze && force) 
-                || (isTitle && verseInfo.IsInBrackets))
+                || (isTitle && verseInfo.IsInBrackets)
+                || IsExtendedVerse(verseInfo))
             {
                 string textElementObjectId = (string)textElement.Parent.Attribute("objectID");
 
@@ -533,6 +534,27 @@ namespace BibleCommon.Services
                            CursorPosition = cursorPosition,
                            WasModified = wasModified
                        };
+        }
+
+        /// <summary>
+        /// Является ли стих случаем, когда у нас был "Ин 1:2". Мы проанализировали. А потом добавили "-22"
+        /// </summary>
+        /// <param name="verseInfo"></param>
+        /// <returns></returns>
+        private bool IsExtendedVerse(FoundVerseInfo verseInfo)
+        {
+            if (verseInfo.IsLink == VerseRecognitionManager.LinkType.LinkAfterFullAnalyze && verseInfo.SearchResult.VersePointer.IsMultiVerse)
+            {   
+                var link = verseInfo.SearchResult.TextElement.Value.Substring(verseInfo.SearchResult.VersePointerStartIndex, verseInfo.SearchResult.VersePointerEndIndex - verseInfo.SearchResult.VersePointerStartIndex);
+                var indexOfLink = link.IndexOf("</a>");
+                if (indexOfLink != -1)
+                {
+                    link = link.Substring(0, indexOfLink);
+                    return !link.Contains('-'); // то есть вроде как бы IsMultiVerse, но при этом нет тире внутри самой ссылки
+                }
+            }
+
+            return false;
         }
 
         private void IterateTextElementLinks(XElement textElement, VersePointerSearchResult globalChapterSearchResult, VersePointerSearchResult prevResult, 
