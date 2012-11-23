@@ -82,7 +82,7 @@ namespace BibleCommon.Services
             }
         }
 
-        private static void WaitWhileDictionaryIsCreating(Application oneNoteApp, string dictionarySectionId, int? dictionaryPagesCount, int attemptsCount)
+        public static void WaitWhileDictionaryIsCreating(Application oneNoteApp, string dictionarySectionId, int? dictionaryPagesCount, int attemptsCount)
         {
             if (dictionaryPagesCount.HasValue)
             {
@@ -93,6 +93,7 @@ namespace BibleCommon.Services
                     int pagesCount = xDoc.Root.XPathSelectElements("//one:Page", xnm).Count();
                     if (pagesCount < dictionaryPagesCount)
                     {
+                        oneNoteApp.SyncHierarchy(dictionarySectionId);
                         Thread.Sleep(3000);
                         WaitWhileDictionaryIsCreating(oneNoteApp, dictionarySectionId, dictionaryPagesCount, attemptsCount + 1);
                     }

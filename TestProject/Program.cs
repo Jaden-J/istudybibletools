@@ -54,7 +54,9 @@ namespace TestProject
 
 
             try
-            {   
+            {
+
+                var link = OneNoteProxy.Instance.GetDictionaryTermLink("G3801", "kjvstrong");
                 
                 //GenerateBibleBooks();
 

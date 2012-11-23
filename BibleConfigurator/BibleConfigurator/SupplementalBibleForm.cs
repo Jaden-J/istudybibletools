@@ -63,7 +63,7 @@ namespace BibleConfigurator
                 {
                     MainForm.PrepareForLongProcessing(1, 1, BibleCommon.Resources.Constants.AddParallelBibleTranslationStart);
                     DictionaryManager.AddDictionary(OneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true);
-                    strongTermLinksCache = RunIndexStrong(selectedModuleInfo, 1, stagesCount);
+                    strongTermLinksCache = RunIndexStrong(selectedModuleInfo, 1, stagesCount, false);
                     MainForm.PrepareForLongProcessing(chaptersCount, 1, string.Empty);                
                 }
                 else
@@ -90,7 +90,7 @@ namespace BibleConfigurator
                 SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, Logger);
                 
                 if (selectedModuleInfo.Type == ModuleType.Strong)                
-                    strongTermLinksCache = RunIndexStrong(selectedModuleInfo, 2, stagesCount);                                    
+                    strongTermLinksCache = RunIndexStrong(selectedModuleInfo, 2, stagesCount, true);                                    
 
                 MainForm.PrepareForLongProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.LinkSupplementalBibleStart);
                 Logger.Preffix = string.Format("{0} {1}/{1}: {2}: ", BibleCommon.Resources.Constants.Stage, stagesCount, BibleCommon.Resources.Constants.LinkSupplementalBible);
@@ -103,17 +103,27 @@ namespace BibleConfigurator
             return result.Errors.ConvertAll(ex => ex.Message);
         }
 
-        private Dictionary<string, string> RunIndexStrong(ModuleInfo moduleInfo, int stage, int stagesCount)
+        private Dictionary<string, string> RunIndexStrong(ModuleInfo moduleInfo, int stage, int stagesCount, bool checkPagesCount)
         {
             int strongTermsCount = moduleInfo.NotebooksStructure.DictionaryTermsCount.GetValueOrDefault(BibleCommon.Consts.Constants.DefaultStrongNumbersCount);
+            var pagesCount = moduleInfo.NotebooksStructure.DictionaryPagesCount;
+            var dictionaryModuleInfo = SettingsManager.Instance.DictionariesModules.FirstOrDefault(m => m.ModuleName == moduleInfo.ShortName);
+
             MainForm.PrepareForLongProcessing(strongTermsCount, 1, BibleCommon.Resources.Constants.IndexStrongDictionaryStart);
             Logger.Preffix = string.Format("{0} {1}/{2}: {3}: ", BibleCommon.Resources.Constants.Stage, stage, stagesCount, BibleCommon.Resources.Constants.IndexStrongDictionary);
             BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
 
+            if (checkPagesCount)
+                DictionaryManager.WaitWhileDictionaryIsCreating(OneNoteApp, dictionaryModuleInfo.SectionId, pagesCount, 0);  // повторный раз проверяем, что все страницы загрузились
+
+            Dictionary<string, string> result;
+
             if (DictionaryTermsCacheManager.CacheIsActive(moduleInfo.ShortName))
-                return DictionaryTermsCacheManager.LoadCachedDictionary(moduleInfo.ShortName);
+                result = DictionaryTermsCacheManager.LoadCachedDictionary(moduleInfo.ShortName);
             else
-                return DictionaryTermsCacheManager.GenerateCache(OneNoteApp, moduleInfo, Logger);
+                result = DictionaryTermsCacheManager.GenerateCache(OneNoteApp, moduleInfo, Logger);
+
+            return result;
         }
 
         protected override bool CanModuleBeDeleted(ModuleInfo moduleInfo, int index)

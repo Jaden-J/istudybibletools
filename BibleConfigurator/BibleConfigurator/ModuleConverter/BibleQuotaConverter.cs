@@ -381,7 +381,7 @@ namespace BibleConfigurator.ModuleConverter
 
             result = result.Replace("  ", " ");
 
-            result = StringUtils.GetText(result, moduleInfo.Alphabet).Trim();            
+            result = StringUtils.GetText(result).Trim();            
 
             return result;
         }

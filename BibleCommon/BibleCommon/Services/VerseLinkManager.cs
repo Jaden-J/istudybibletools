@@ -22,7 +22,7 @@ namespace BibleCommon.Services
         /// <param name="biblePageId"></param>
         /// <param name="biblePageName"></param>
         /// <param name="descriptionPageName"></param>
-        /// <param name="isSummaryNotesPage">Найти (создать) страницу, которая является страницей сводной заметок?</param>
+        /// <param name="isSummaryNotesPage">Найти (создать) страницу, которая является страницей сводной заметок. Если false - то комментарий к Библии</param>
         /// <param name="pageLevel">1, 2 or 3</param>
         /// <returns>target pageId</returns>
         public static string FindVerseLinkPageAndCreateIfNeeded(Application oneNoteApp, 
@@ -234,11 +234,12 @@ namespace BibleCommon.Services
                         pageName += string.Format(" <span style='font-size:10pt;'>[{0}]</span>", linkToBiblePage);
                     }
 
-                    SetPageName(oneNoteApp, pageId, pageName, isSummaryNotesPage, pageLevel, biblePageDoc.Xnm);              
+                    var pageEl = SetPageName(oneNoteApp, pageId, pageName, isSummaryNotesPage, pageLevel);              
 
-                    OneNoteProxy.Instance.RegisterVerseLinkSortPage(sectionId, pageId, verseLinkParentPageId, pageLevel);
-
-                    OneNoteProxy.Instance.RefreshHierarchyCache(oneNoteApp, sectionId, HierarchyScope.hsPages);                    
+                    OneNoteProxy.Instance.RegisterVerseLinkSortPage(sectionId, pageId, verseLinkParentPageId, pageLevel);         
+           
+                    var sectionHierarchyCache = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages);
+                    sectionHierarchyCache.Content.Root.Add(pageEl); // обновляем кэш иерархии
                 }
             }
             else
@@ -324,23 +325,33 @@ namespace BibleCommon.Services
         /// <param name="pageId"></param>
         /// <param name="pageName"></param>
         /// <param name="pageLevel">1, 2 or 3</param>
-        private static void SetPageName(Application oneNoteApp, string pageId, string pageName, bool isSummaryNotesPage, int pageLevel, XmlNamespaceManager xnm)
+        private static XElement SetPageName(Application oneNoteApp, string pageId, string pageName, bool isSummaryNotesPage, int pageLevel)
         {
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
-            XDocument pageDocument = new XDocument(new XElement(nms + "Page",                            
+
+            var pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, pageId, isSummaryNotesPage ? OneNoteProxy.PageType.NotesPage : OneNoteProxy.PageType.CommentPage);
+            pageContent.Content.Root.SetAttributeValue("pageLevel", pageLevel);
+            var title = pageContent.Content.Root.XPathSelectElement("one:Title/one:OE/one:T", pageContent.Xnm);
+            if (title != null)
+                title.Value = pageName;
+
+            var pageEl = new XElement(nms + "Page",
                             new XAttribute("ID", pageId),
+                            new XAttribute("name", pageName),
                             new XAttribute("pageLevel", pageLevel),
-                            new XElement(nms + "Title",
-                                new XElement(nms + "OE",
-                                    new XElement(nms + "T",
-                                        new XCData(
-                                            pageName
-                                            ))))));
+                            new XAttribute("dateTime", pageContent.Content.Root.Attribute("dateTime").Value),
+                            new XAttribute("lastModifiedTime", pageContent.Content.Root.Attribute("lastModifiedTime").Value)
+                        );
 
             if (isSummaryNotesPage)
-                OneNoteUtils.UpdatePageMetaData(oneNoteApp, pageDocument.Root, Constants.Key_IsSummaryNotesPage, isSummaryNotesPage.ToString(), xnm);
+            {
+                OneNoteUtils.UpdatePageMetaData(oneNoteApp, pageContent.Content.Root, Constants.Key_IsSummaryNotesPage, isSummaryNotesPage.ToString(), pageContent.Xnm);
+                OneNoteUtils.UpdatePageMetaData(oneNoteApp, pageEl, Constants.Key_IsSummaryNotesPage, isSummaryNotesPage.ToString(), pageContent.Xnm);
+            }
 
-            OneNoteUtils.UpdatePageContentSafe(oneNoteApp, pageDocument, xnm);
+            pageContent.WasModified = true;
+
+            return pageEl;
         }
     }
 }
