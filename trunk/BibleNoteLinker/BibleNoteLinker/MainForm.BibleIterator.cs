@@ -104,10 +104,10 @@ namespace BibleNoteLinker
                 {
                     allPagesCount = pagesCount;
                     pbMain.Maximum = pagesCount;
-                    pbMain.Value = 0;
-                    pbMain.PerformStep();
+                    pbMain.Value = 0;                    
                     Logger.LogMessage(string.Format(" ({0})", Helper.GetRightPagesString(pagesCount)), false, true, false);
-                    LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
+                    //pbMain.PerformStep();
+                    //LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
                 },
                 pageContent => 
                 {
@@ -179,10 +179,10 @@ namespace BibleNoteLinker
                 {
                     allPagesCount = pagesCount;
                     pbMain.Maximum = pagesCount;
-                    pbMain.Value = 0;
-                    pbMain.PerformStep();
+                    pbMain.Value = 0;                    
                     Logger.LogMessage(string.Format(" ({0})", Helper.GetRightPagesString(pagesCount)), false, true, false);
-                    LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
+                    //pbMain.PerformStep();
+                    //LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
                 },
                 pageContent =>
                 {
@@ -221,6 +221,7 @@ namespace BibleNoteLinker
 
             _highLevelMessage = message;
             lblProgress.Text = message;
+            System.Windows.Forms.Application.DoEvents();
         }
 
         private void ProcessSectionGroup(BibleCommon.Services.NotebookIterator.SectionGroupInfo sectionGroup, bool isRoot)

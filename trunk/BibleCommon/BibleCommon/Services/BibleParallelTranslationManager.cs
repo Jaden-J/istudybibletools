@@ -485,10 +485,13 @@ namespace BibleCommon.Services
                 }
 
                 //merge alphabets
-                foreach (var c in parallelModuleInfo.BibleStructure.Alphabet)
+                if (!string.IsNullOrEmpty(parallelModuleInfo.BibleStructure.Alphabet))
                 {
-                    if (!baseModuleInfo.BibleStructure.Alphabet.Contains(c))
-                        baseModuleInfo.BibleStructure.Alphabet += c;
+                    foreach (var c in parallelModuleInfo.BibleStructure.Alphabet)
+                    {
+                        if (!baseModuleInfo.BibleStructure.Alphabet.Contains(c))
+                            baseModuleInfo.BibleStructure.Alphabet += c;
+                    }
                 }
 
                 ModulesManager.UpdateModuleManifest(baseModuleInfo);
