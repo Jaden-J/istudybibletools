@@ -39,7 +39,7 @@ namespace RibbonButtons
 
         #region IDTExtensibility2 Members
 
-        ApplicationClass onApp;
+        //ApplicationClass onApp;
 
 		public void OnConnection(object Application, ext_ConnectMode ConnectMode, object AddInInst, ref Array custom)
 		{
@@ -49,7 +49,7 @@ namespace RibbonButtons
 
             try
             {
-                onApp = (ApplicationClass)Application;
+                //onApp = (ApplicationClass)Application;
 
                 AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 RunProgram(Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath), BibleConfiguratorProgramClassName, "-runOnOneNoteStarts", false);
@@ -80,14 +80,14 @@ namespace RibbonButtons
 		public void OnDisconnection(Extensibility.ext_DisconnectMode disconnectMode, ref System.Array custom)
 		{
 			//Clean up. Application is closing
-			onApp = null;
+			//onApp = null;
 			GC.Collect();
 			GC.WaitForPendingFinalizers();            
 		}
 		public void OnBeginShutdown(ref System.Array custom)
 		{
-			if (onApp != null)
-				onApp = null;
+            //if (onApp != null)
+            //    onApp = null;
 		}
 		public void OnStartupComplete(ref Array custom) { }
 		public void OnAddInsUpdate(ref Array custom) { }        
