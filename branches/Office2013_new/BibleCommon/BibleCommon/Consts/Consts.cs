@@ -17,8 +17,8 @@ namespace BibleCommon.Consts
         public static readonly string ModulesDirectoryName = "Modules";
         public static readonly string ModulesPackagesDirectoryName = "ModulesPackages";
         public static readonly string ManifestFileName = "manifest.xml";
-        public static readonly string BibleInfoFileName = "bible.xml";
-        public static readonly string DictionaryInfoFileName = "dictionary.xml";
+        public static readonly string BibleContentFileName = "bible.xml";
+        public static readonly string DictionaryContentsFileName = "dictionary.xml";
         public static readonly string FileExtensionIsbt = ".isbt";
         public static readonly string FileExtensionOnepkg = ".onepkg";
         public static readonly string TempDirectory = "Temp";

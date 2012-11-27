@@ -52,14 +52,14 @@ namespace BibleCommon.Helpers
             return htmlPattern.Replace(htmlString, string.Empty);
         }
 
-        public static string GetText(string htmlString, string alphabet)
-        {
-            int t1, t2;
-            string s = StringUtils.GetNextString(htmlString, -1,
-                                    new SearchMissInfo(htmlString.Length, SearchMissInfo.MissMode.CancelOnNextMiss), alphabet, out t1, out t2);
+        //public static string GetText(string htmlString, string alphabet)
+        //{
+        //    int t1, t2;
+        //    string s = StringUtils.GetNextString(htmlString, -1,
+        //                            new SearchMissInfo(htmlString.Length, SearchMissInfo.MissMode.CancelOnNextMiss), alphabet, out t1, out t2);
 
-            return s;
-        }
+        //    return s;
+        //}
         
         /// <summary>
         /// Сортирует, учитывая тот факт, что переданные строки могут содержать вначале цифры и сортировать надо по этим цифрам
@@ -195,7 +195,8 @@ namespace BibleCommon.Helpers
             if (!string.IsNullOrEmpty(alphabet))
                 return alphabet.Contains(c)
                         || (!strict && (c >= 'a' && c <= 'z'))
-                        || (!strict && (c >= 'A' && c <= 'Z'));
+                        || (!strict && (c >= 'A' && c <= 'Z'))
+                        || (!strict && char.IsLetter(c));
             else
                 return char.IsLetter(c);
         }

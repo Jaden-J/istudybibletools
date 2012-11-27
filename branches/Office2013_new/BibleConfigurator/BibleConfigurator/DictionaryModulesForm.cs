@@ -124,7 +124,9 @@ namespace BibleConfigurator
 
         protected override bool CanNotebookBeClosed()
         {
-            return !SettingsManager.Instance.DictionariesModules.Any(dm => Modules.First(m => m.ShortName == dm.ModuleName).Type == ModuleType.Strong);
+            return !(SettingsManager.Instance.DictionariesModules.Any(dm => Modules.First(m => m.ShortName == dm.ModuleName).Type == ModuleType.Strong)
+                    && SettingsManager.Instance.SupplementalBibleModules.Any(sm => Modules.First(m => m.ShortName == sm.ModuleName).Type == ModuleType.Strong)
+                    && !string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(OneNoteApp)));
         }
 
         protected override string NotebookCannotBeClosedText

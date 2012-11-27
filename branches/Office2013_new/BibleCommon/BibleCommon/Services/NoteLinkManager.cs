@@ -132,8 +132,14 @@ namespace BibleCommon.Services
                 string pageTitleId = titleElement != null ? (string)titleElement.Attribute("objectID") : null;
 
 
-                string noteSectionGroupName = OneNoteUtils.GetHierarchyElementName(_oneNoteApp, sectionGroupId);
-                string noteSectionName = OneNoteUtils.GetHierarchyElementName(_oneNoteApp, sectionId);
+                string noteSectionGroupName = null;
+                string noteSectionName = null;  
+                if (linkDepth > AnalyzeDepth.SetVersesLinks)
+                {
+                    noteSectionGroupName = OneNoteUtils.GetHierarchyElementName(_oneNoteApp, sectionGroupId);
+                    noteSectionName = OneNoteUtils.GetHierarchyElementName(_oneNoteApp, sectionId);
+                }
+
                 List<FoundChapterInfo> foundChapters = new List<FoundChapterInfo>();
                 var pageIdInfo = new PageIdInfo()
                 {
@@ -231,16 +237,23 @@ namespace BibleCommon.Services
 
             var link = textEl.Value.Substring(startLinkIndex, endLinkIndex - startLinkIndex + endLinkSearchString.Length);
             var textBefore = textEl.Value.Substring(0, startLinkIndex);
-            var textAfter = textEl.Value.Substring(endLinkIndex + endLinkSearchString.Length);
+            var textAfter = textEl.Value.Substring(endLinkIndex + endLinkSearchString.Length);            
 
-            textEl.Value = textBefore;
-            textEl.AddAfterSelf(new XElement(nms + "T",
+            textEl.AddAfterSelf(new XElement(nms + "T", 
                                                 new XCData(textAfter))
                                             );
 
             textEl.AddAfterSelf(new XElement(nms + "T", new XAttribute("selected", "all"),
+                                                new XCData(string.Empty))
+                                            );
+
+            textEl.AddAfterSelf(new XElement(nms + "T", 
                                                 new XCData(link))
-                                            );            
+                                            );
+
+            textEl.ReplaceWith(new XElement(nms + "T",
+                                                new XCData(textBefore))
+                                            );
         }
 
         private void ProcessChapters(List<FoundChapterInfo> foundChapters, 
@@ -657,7 +670,7 @@ namespace BibleCommon.Services
             out int newEndVerseIndex, out HierarchySearchManager.HierarchySearchResult hierarchySearchResult, out bool needToQueueIfChapter)
         {
             hierarchySearchResult = new HierarchySearchManager.HierarchySearchResult() { ResultType = HierarchySearchManager.HierarchySearchResultType.NotFound };
-            HierarchySearchManager.HierarchySearchResult localHierarchySearchResult = new HierarchySearchManager.HierarchySearchResult() { ResultType = HierarchySearchManager.HierarchySearchResultType.NotFound };
+            var localHierarchySearchResult = new HierarchySearchManager.HierarchySearchResult() { ResultType = HierarchySearchManager.HierarchySearchResultType.NotFound };
             needToQueueIfChapter = true;  // по умолчанию - анализируем главы в самом конце            
 
             int startVerseNameIndex = searchResult.VersePointerStartIndex;
@@ -666,7 +679,7 @@ namespace BibleCommon.Services
             newEndVerseIndex = endVerseNameIndex;
 
             bool wasModified;
-            if (!CorrectTextToChangeBoundary(textElementValue, isLink,
+            if (!CorrectTextToChangeBoundary(ref textElementValue, isLink,
                               ref startVerseNameIndex, ref endVerseNameIndex, out wasModified))
             {
                 newEndVerseIndex = searchResult.VersePointerHtmlEndIndex; // потому что это же значение мы присваиваем, если стоит !force и встретили гиперссылку                
@@ -991,7 +1004,7 @@ namespace BibleCommon.Services
         /// <param name="startVerseNameIndex"></param>
         /// <param name="endVerseNameIndex"></param>
         /// <returns>false - если помимо библейской ссылки, в гиперссылке содержится и другой текст. Не обрабатываем такие ссылки</returns>
-        private bool CorrectTextToChangeBoundary(string textElementValue, bool isLink, ref int startVerseNameIndex, ref int endVerseNameIndex, out bool wasModified)
+        private bool CorrectTextToChangeBoundary(ref string textElementValue, bool isLink, ref int startVerseNameIndex, ref int endVerseNameIndex, out bool wasModified)
         {
             wasModified = false;
 
@@ -1003,6 +1016,21 @@ namespace BibleCommon.Services
                 if (linkStartIndex != -1)
                 {
                     int linkEndIndex = textElementValue.IndexOf(endSearchString, endVerseNameIndex);
+
+                    if (linkEndIndex == -1)  // то есть ссылка началась и не окончилась. два варианта: либо ссылки внутри окончилась (до endVerseNameIndex), либо она вобще тут не оканчивается. 
+                    {
+                        linkEndIndex = textElementValue.IndexOf(endSearchString, linkStartIndex);
+                        if (linkEndIndex != -1)  // значит окончилась внутри. Тогда просто переносим </a> на конец библейской ссылки
+                        {
+                            var textBeforeEndLink = textElementValue.Substring(0, linkEndIndex);
+                            var textAfterEndLinkButBeforeEndVerse = textElementValue.Substring(linkEndIndex + endSearchString.Length, endVerseNameIndex - linkEndIndex - endSearchString.Length);
+                            var textAfter = textElementValue.Substring(endVerseNameIndex);
+                            textElementValue = string.Concat(textBeforeEndLink, textAfterEndLinkButBeforeEndVerse, endSearchString, textAfter);
+                            endVerseNameIndex -= endSearchString.Length;
+                            linkEndIndex = textElementValue.IndexOf(endSearchString, endVerseNameIndex);
+                        }
+                    }
+
                     if (linkEndIndex != -1)
                     {
                         int startVerseNameIndexTemp = linkStartIndex;

@@ -49,7 +49,7 @@ namespace BibleConfigurator.Tools
                 _startTime = DateTime.Now;
                 BibleCommon.Services.Logger.LogMessage("{0}: {1}",BibleCommon.Resources.Constants.StartTime,  _startTime.ToLongTimeString());                
 
-                IEnumerable<string> notebookIds = GetDistinctNotebooksIds();
+                var notebookIds = GetDistinctNotebooksIds();
                 _notebooksCount = notebookIds.Count();
 
                 string initMessage = BibleCommon.Resources.Constants.BackupStartInfo;
@@ -171,11 +171,11 @@ namespace BibleConfigurator.Tools
 
         private IEnumerable<string> GetDistinctNotebooksIds()
         {
-            return new List<string>() 
+            return new List<string>(SettingsManager.Instance.SelectedNotebooksForAnalyze) 
             {
                 SettingsManager.Instance.NotebookId_Bible,
-                SettingsManager.Instance.NotebookId_BibleStudy,
-                SettingsManager.Instance.NotebookId_BibleComments //,
+                //SettingsManager.Instance.NotebookId_BibleStudy,
+                //SettingsManager.Instance.NotebookId_BibleComments //,
                 //SettingsManager.Instance.NotebookId_BibleNotesPages                
             }.Distinct();
         }

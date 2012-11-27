@@ -104,6 +104,7 @@
     <Compile Include="ModuleConverter\PredefinedInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ModuleConverter\TextFilesConverter.cs" />
     <Compile Include="ModuleConverter\ZefaniaXmlConverter.cs">
       <SubType>Code</SubType>
     </Compile>

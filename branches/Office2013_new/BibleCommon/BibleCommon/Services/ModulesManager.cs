@@ -111,12 +111,12 @@ namespace BibleCommon.Services
 
         public static ModuleDictionaryInfo GetModuleDictionaryInfo(string moduleShortName)
         {
-            return GetModuleFile<ModuleDictionaryInfo>(moduleShortName, Consts.Constants.DictionaryInfoFileName);
+            return GetModuleFile<ModuleDictionaryInfo>(moduleShortName, Consts.Constants.DictionaryContentsFileName);
         }
 
         public static XMLBIBLE GetModuleBibleInfo(string moduleShortName)
         {
-            return GetModuleFile<XMLBIBLE>(moduleShortName, Consts.Constants.BibleInfoFileName);
+            return GetModuleFile<XMLBIBLE>(moduleShortName, Consts.Constants.BibleContentFileName);
         }
 
         private static string GetModuleFilePath(string moduleShortName, string fileRelativePath)

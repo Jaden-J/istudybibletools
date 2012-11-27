@@ -98,7 +98,7 @@ namespace BibleVerseLinkerEx
                 string currentObjectId;
                 XElement selectedElement = FindSelectedText(currentPageId, out currentPageDocument, out verseNumber, out currentObjectId, out xnm);
                 string selectedHtml = selectedElement != null ? ShellText(selectedElement.Value) : string.Empty;                
-                string selectedText = ShellText(StringUtils.GetText(selectedHtml, SettingsManager.Instance.CurrentModuleCached.BibleStructure.Alphabet));
+                string selectedText = ShellText(StringUtils.GetText(selectedHtml));
                 bool selectedTextFound = !string.IsNullOrEmpty(selectedText);
 
                 if (selectedTextFound)
@@ -202,13 +202,8 @@ namespace BibleVerseLinkerEx
         /// <returns></returns>
         public string UpdateDescriptionPage(string pageId, string pointerValueString, VerseNumber? verseNumber)
         {
-            string pageContentXml;
-            XDocument pageDocument;
-            XmlNamespaceManager xnm;
-            OneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
-            pageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
-
+            var pageContent = OneNoteProxy.Instance.GetPageContent(OneNoteApp, pageId, OneNoteProxy.PageType.CommentPage);
 
             XElement newCommentElement = new XElement(nms + "Outline",
                                             new XElement(nms + "Size", new XAttribute("width", "500"), new XAttribute("height", 15)),
@@ -224,7 +219,7 @@ namespace BibleVerseLinkerEx
             if (verseNumber.HasValue)
             {
                 string searchPattern = ">:";
-                foreach (XElement commentElement in pageDocument.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:T", xnm))
+                foreach (XElement commentElement in pageContent.Content.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:T", pageContent.Xnm))
                 {
                     int i = commentElement.Value.IndexOf(searchPattern);
                     if (i != -1)
@@ -244,12 +239,12 @@ namespace BibleVerseLinkerEx
 
                 if (prevComment == null)
                 {
-                    prevComment = pageDocument.Root.XPathSelectElement("one:Title", xnm);                    
-                    SetPositionYForComment(newCommentElement, 87, xnm, nms);             
+                    prevComment = pageContent.Content.Root.XPathSelectElement("one:Title", pageContent.Xnm);
+                    SetPositionYForComment(newCommentElement, 87, pageContent.Xnm, nms);             
                 }
                 else
                 {
-                    SetPositionYForComment(newCommentElement, prevComment, xnm, nms);
+                    SetPositionYForComment(newCommentElement, prevComment, pageContent.Xnm, nms);
                 }
 
                 prevComment.AddAfterSelf(newCommentElement);
@@ -257,16 +252,18 @@ namespace BibleVerseLinkerEx
                 prevComment = newCommentElement;
                 foreach (XElement nextComment in newCommentElement.ElementsAfterSelf())
                 {
-                    SetPositionYForComment(nextComment, prevComment, xnm, nms);
+                    SetPositionYForComment(nextComment, prevComment, pageContent.Xnm, nms);
                     prevComment = nextComment;
                 }
             }
             else
-                pageDocument.Root.Add(newCommentElement);
+                pageContent.Content.Root.Add(newCommentElement);
 
-            OneNoteUtils.UpdatePageContentSafe(OneNoteApp, pageDocument, xnm);
+            pageContent.WasModified = true;
 
-            XElement addedObject = GetLastPageObject(pageId, GetOutlinePosition(pageDocument, newCommentElement, xnm));
+            OneNoteProxy.Instance.CommitAllModifiedPages(OneNoteApp, pc => pc.PageType == OneNoteProxy.PageType.CommentPage, null, null);
+
+            XElement addedObject = GetLastPageObject(pageId, GetOutlinePosition(pageContent.Content, newCommentElement, pageContent.Xnm));
 
             if (addedObject != null)
             {
