@@ -413,7 +413,7 @@ namespace BibleConfigurator.ModuleConverter
             {
                 Utils.SaveToXmlFile(
                     new ModuleDictionaryInfo() { TermSet = new TermSet() { Terms = this.Terms } },
-                    Path.Combine(ManifestFilesFolder, Constants.DictionaryInfoFileName));
+                    Path.Combine(ManifestFilesFolder, Constants.DictionaryContentsFileName));
             }
         }
 
