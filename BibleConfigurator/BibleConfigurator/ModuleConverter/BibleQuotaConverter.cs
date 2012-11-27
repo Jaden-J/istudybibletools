@@ -297,7 +297,7 @@ namespace BibleConfigurator.ModuleConverter
         {
             base.GenerateBibleInfo(externalModuleInfo);
 
-            var booksInfo = new BibleBooksInfo() { Descr = this.ModuleShortName, Alphabet = ModuleInfo.BibleStructure.Alphabet };
+            var booksInfo = new BibleBooksInfo() { Descr = this.ModuleShortName, Alphabet = ModuleInfo.BibleStructure.Alphabet, ChapterPageNameTemplate =  this.ChapterPageNameTemplate };
             foreach (var book in ModuleInfo.BibleStructure.BibleBooks)
             {
                 booksInfo.Books.Add(new BookInfo()
@@ -381,7 +381,7 @@ namespace BibleConfigurator.ModuleConverter
 
             result = result.Replace("  ", " ");
 
-            result = StringUtils.GetText(result, moduleInfo.Alphabet).Trim();            
+            result = StringUtils.GetText(result).Trim();            
 
             return result;
         }

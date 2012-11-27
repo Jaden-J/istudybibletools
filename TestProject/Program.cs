@@ -54,7 +54,10 @@ namespace TestProject
 
 
             try
-            {   
+            {
+                //var link = OneNoteProxy.Instance.GetDictionaryTermLink("G3801", "kjvstrong");
+
+                //ConvertChineseModuleFromTextFiles();
                 
                 //GenerateBibleBooks();
 
@@ -88,7 +91,7 @@ namespace TestProject
 
                 //ConvertRussianModule();
 
-                ConvertEnglishModule();
+                //ConvertEnglishModule();
 
                 //ConvertRomanModule();
 
@@ -112,6 +115,18 @@ namespace TestProject
 
             Console.WriteLine("Finish. Elapsed time: {0}", sw.Elapsed);
             Console.ReadKey();
+        }
+
+        private static void ConvertChineseModuleFromTextFiles()
+        {
+            var folder = @"C:\Users\lux_demko\Desktop\temp\Dropbox\IStudyBibleTools\Module's Sources\Chinese\NCV\NCV-T";
+            var converter = new TextFilesConverter(folder, Path.Combine(TempFolderPath, Path.GetFileName(folder)));
+            converter.Convert();
+
+            using (var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message)))
+            {
+                form.ShowDialog();
+            }
         }              
 
         private static void GenerateBibleBooks()
@@ -269,7 +284,7 @@ namespace TestProject
                  new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\HEBREW.HTM"), SectionName = "1. Old Testament.one", DictionaryPageDescription="Strong's Hebrew Dictionary (с) Bible Foundation", TermPrefix = "H" },
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\GREEK.HTM"), SectionName = "2. New Testament.one", DictionaryPageDescription="Strong's Greek Dictionary (с) Bible Foundation", TermPrefix= "G" }
-                }, BibleQuotaDictionaryConverter.StructureType.Strong, "Strong's",
+                }, BibleQuotaDictionaryConverter.StructureType.Strong, "Strong",
                  Path.Combine(TempFolderPath, moduleName), "<h4>", "User Notes", "Find all verses with this number", "en", new Version(2, 0));
 
             converter.Convert();
@@ -433,11 +448,10 @@ namespace TestProject
 
         private static void ConvertEnglishModule()
         {
-            string moduleShortName = "nasbstrong";
-
+            string moduleShortName = "kjvstrong";
 
             var notebooksStructure = new NotebooksStructure() { Notebooks = PredefinedNotebooksInfo.English };
-            notebooksStructure.DictionarySectionGroupName = "Strong's";
+            notebooksStructure.DictionarySectionGroupName = "Strong";
             notebooksStructure.DictionaryTermsCount = 14198;
             notebooksStructure.DictionaryPagesCount = 141;
             var converter = new BibleQuotaConverter(moduleShortName, Path.Combine(Path.Combine(ForGeneratingFolderPath, "old"), moduleShortName), Path.Combine(TempFolderPath, moduleShortName),

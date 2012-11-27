@@ -137,7 +137,7 @@ namespace BibleConfigurator.ModuleConverter
                 BibleInfo.INFORMATION = new INFORMATION();
                 BibleInfo.INFORMATION.Items = new object[] { ModuleDisplayName };
                 BibleInfo.INFORMATION.ItemsElementName = new ItemsChoiceType[] { ItemsChoiceType.title };
-                SaveToXmlFile(BibleInfo, Constants.BibleInfoFileName);             
+                SaveToXmlFile(BibleInfo, Constants.BibleContentFileName);             
             }
         }
 
