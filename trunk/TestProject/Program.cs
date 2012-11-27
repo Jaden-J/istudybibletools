@@ -57,7 +57,7 @@ namespace TestProject
             {
                 //var link = OneNoteProxy.Instance.GetDictionaryTermLink("G3801", "kjvstrong");
 
-                ConvertChineseModuleFromTextFiles();
+                //ConvertChineseModuleFromTextFiles();
                 
                 //GenerateBibleBooks();
 
