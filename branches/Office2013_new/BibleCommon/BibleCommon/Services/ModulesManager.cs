@@ -277,9 +277,9 @@ namespace BibleCommon.Services
         public static ModuleInfo UploadModule(string originalFilePath, string destFilePath, string moduleName)
         {
             if (Path.GetExtension(originalFilePath).ToLower() != Constants.FileExtensionIsbt)
-                throw new InvalidModuleException(string.Format(Resources.Constants.SelectFileWithExtension, Constants.FileExtensionIsbt)); 
+                throw new InvalidModuleException(string.Format(Resources.Constants.SelectFileWithExtension, Constants.FileExtensionIsbt));
 
-            File.Copy(originalFilePath, destFilePath, true);
+            destFilePath = CopyModulePackage(originalFilePath, destFilePath);            
 
             string destFolder = GetModuleDirectory(moduleName);
             if (Directory.Exists(destFolder))
@@ -298,6 +298,37 @@ namespace BibleCommon.Services
             catch (Exception ex)
             {
                 throw new InvalidModuleException(ex.Message);
+            }
+        }
+
+        private static string CopyModulePackage(string originalFilePath, string destFilePath)
+        {
+            try
+            {
+                File.Copy(originalFilePath, destFilePath, true);
+                return destFilePath;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+
+                if (ex is IOException
+                    || ex is UnauthorizedAccessException)
+                {
+                    for (var i = 1; i <= 20; i++)
+                    {
+                        var tempDestFilePath = Path.Combine(Path.GetDirectoryName(destFilePath), string.Concat(Path.GetFileNameWithoutExtension(destFilePath), i, Path.GetExtension(destFilePath)));
+                        if (!File.Exists(tempDestFilePath))
+                        {
+                            destFilePath = tempDestFilePath;
+                            File.Copy(originalFilePath, destFilePath, true);
+
+                            return destFilePath;
+                        }
+                    }
+                }
+
+                throw;
             }
         }
 
@@ -350,7 +381,16 @@ namespace BibleCommon.Services
 
             string manifestFilePath = Path.Combine(GetModulesPackagesDirectory(), moduleShortName + Constants.FileExtensionIsbt);
             if (File.Exists(manifestFilePath))
-                File.Delete(manifestFilePath);
+            {
+                try
+                {
+                    File.Delete(manifestFilePath);
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    Logger.LogError(ex);
+                }
+            }
         }
     }
 }
