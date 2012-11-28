@@ -184,7 +184,7 @@ namespace BibleVersePointer
                         el.SetAttributeValue("selected", "all");
                 }
                 
-                OneNoteUtils.UpdatePageContentSafe(oneNoteApp, pageDoc, xnm);
+                OneNoteUtils.UpdatePageContentSafe(ref oneNoteApp, pageDoc, xnm);
             }
         }      
     }
