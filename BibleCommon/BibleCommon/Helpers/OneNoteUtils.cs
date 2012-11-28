@@ -178,12 +178,12 @@ namespace BibleCommon.Helpers
         }
 
 
-        public static void UpdatePageContentSafe(Application oneNoteApp, XDocument pageContent, XmlNamespaceManager xnm)
+        public static void UpdatePageContentSafe(ref Application oneNoteApp, XDocument pageContent, XmlNamespaceManager xnm)
         {
-            UpdatePageContentSafeInternal(oneNoteApp, pageContent, xnm, 0);
+            UpdatePageContentSafeInternal(ref oneNoteApp, pageContent, xnm, 0);
         }
 
-        private static void UpdatePageContentSafeInternal(Application oneNoteApp, XDocument pageContent, XmlNamespaceManager xnm, int attemptCount)
+        private static void UpdatePageContentSafeInternal(ref Application oneNoteApp, XDocument pageContent, XmlNamespaceManager xnm, int attemptCount)
         {
             var inkNodes = pageContent.Root.XPathSelectElements("one:InkDrawing", xnm)
                             //.Union(doc.Root.XPathSelectElements("//one:OE[.//one:InkDrawing]", xnm))    // тогда удалятся все неподдерживаемые элементы. Но тогда у пользователей будут просто удаляться некоторые рисунки
@@ -200,14 +200,15 @@ namespace BibleCommon.Helpers
                 if (ex.ErrorCode == -2147213304)
                     throw new Exception(Resources.Constants.Error_UpdateError_InksOnPages);
 
-                if (ex.Message.EndsWith("0x80010100"))  // "System.Runtime.InteropServices.COMException (0x80010100): System call failed. (Exception from HRESULT: 0x80010100 (RPC_E_SYS_CALL_FAILED))"
+                if (ex.Message.Contains("0x80010100") || ex.Message.Contains("0x800706BA") || ex.Message.Contains("0x800706BE"))  // "System.Runtime.InteropServices.COMException (0x80010100): System call failed. (Exception from HRESULT: 0x80010100 (RPC_E_SYS_CALL_FAILED))"
                 {
-                    Logger.LogMessage("Trace {0}: {1}", attemptCount, ex.Message);
+                    Logger.LogMessage("UpdatePageContentSafeInternal. Attempt {0}: {1}", attemptCount, ex.Message);
                     if (attemptCount <= 10)
                     {
                         attemptCount++;
                         Thread.Sleep(1000 * attemptCount);
-                        UpdatePageContentSafeInternal(oneNoteApp, pageContent, xnm, attemptCount);
+                        oneNoteApp = new Application();
+                        UpdatePageContentSafeInternal(ref oneNoteApp, pageContent, xnm, attemptCount);
                     }
                     else
                         throw;
