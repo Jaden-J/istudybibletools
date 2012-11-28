@@ -237,7 +237,8 @@ namespace TestProject
 
             NotebookGenerator.AddTextElementToPage(pageDoc, s);
 
-            OneNoteUtils.UpdatePageContentSafe(OneNoteApp, pageDoc, xnm);
+            var oneNoteApp = OneNoteApp;
+            OneNoteUtils.UpdatePageContentSafe(ref oneNoteApp, pageDoc, xnm);
         }
 
         private static void GenerateBibleVersesLinks()

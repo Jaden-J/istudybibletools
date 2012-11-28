@@ -144,7 +144,7 @@ namespace BibleVerseLinkerEx
                         selectedElement.Value = string.Empty;
                         selectedElement.Add(new XCData(selectedValue.Replace(selectedHtml, href)));
                     
-                        OneNoteUtils.UpdatePageContentSafe(_oneNoteApp, currentPageDocument, xnm);
+                        OneNoteUtils.UpdatePageContentSafe(ref _oneNoteApp, currentPageDocument, xnm);
                     }
 
                     OneNoteApp.NavigateTo(verseLinkPageId, objectId);
