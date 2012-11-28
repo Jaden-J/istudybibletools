@@ -99,7 +99,7 @@ namespace BibleConfigurator.Tools
                 SetWidthAttribute(column2, 37);
                 SetLockedAttribute(column2);
 
-                OneNoteUtils.UpdatePageContentSafe(_oneNoteApp, notePageDocument, xnm);
+                OneNoteUtils.UpdatePageContentSafe(ref _oneNoteApp, notePageDocument, xnm);
             }
         }
 
