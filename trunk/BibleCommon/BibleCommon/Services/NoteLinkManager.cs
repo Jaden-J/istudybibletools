@@ -751,9 +751,14 @@ namespace BibleCommon.Services
 
                             hierarchySearchResult = localHierarchySearchResult;
 
+                            var prevLinkText = isLink ? textElementValue.Substring(startVerseNameIndex, endVerseNameIndex - startVerseNameIndex) : null;
+
                             var additionalParams = new List<string>() { Consts.Constants.QueryParameter_BibleVerse };
                             if (linkDepth == AnalyzeDepth.SetVersesLinks)
-                                additionalParams.Add(Consts.Constants.QueryParameter_QuickAnalyze);
+                            {
+                                if (isLink && prevLinkText.Contains(Consts.Constants.QueryParameter_QuickAnalyze))                                
+                                    additionalParams.Add(Consts.Constants.QueryParameter_QuickAnalyze);
+                            }
 
                             string link = OneNoteUtils.GetOrGenerateHref(oneNoteApp, textToChange, localHierarchySearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref,
                                 localHierarchySearchResult.HierarchyObjectInfo.PageId, localHierarchySearchResult.HierarchyObjectInfo.VerseContentObjectId, additionalParams.ToArray());
@@ -1012,7 +1017,9 @@ namespace BibleCommon.Services
             {
                 string beginSearchString = "<a ";
                 string endSearchString = "</a>";
-                int linkStartIndex = StringUtils.LastIndexOf(textElementValue, beginSearchString, 0, startVerseNameIndex);
+                int linkStartIndex = StringUtils.LastIndexOf(textElementValue, beginSearchString, 0, endVerseNameIndex
+                //startVerseNameIndex
+                );
                 if (linkStartIndex != -1)
                 {
                     int linkEndIndex = textElementValue.IndexOf(endSearchString, endVerseNameIndex);
@@ -1036,7 +1043,9 @@ namespace BibleCommon.Services
                         int startVerseNameIndexTemp = linkStartIndex;
                         int endVerseNameIndexTemp = linkEndIndex + endSearchString.Length;
 
-                        string textBefore = StringUtils.GetText(textElementValue.Substring(startVerseNameIndexTemp, startVerseNameIndex - startVerseNameIndexTemp));                        
+                        string textBefore = startVerseNameIndexTemp < startVerseNameIndex 
+                                                ? StringUtils.GetText(textElementValue.Substring(startVerseNameIndexTemp, startVerseNameIndex - startVerseNameIndexTemp))
+                                                : StringUtils.GetText(textElementValue.Substring(startVerseNameIndex, startVerseNameIndexTemp - startVerseNameIndex));
                         if (string.IsNullOrEmpty(textBefore))                        
                         {
                             string textAfter = StringUtils.GetText(textElementValue.Substring(endVerseNameIndex, endVerseNameIndexTemp - endVerseNameIndex));

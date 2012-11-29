@@ -173,7 +173,7 @@ namespace BibleNoteLinker
             int allPagesCount = 0;
             int processedPagesCount = 0;
             //Logger.LogMessage(startMessage, true, false);
-            OneNoteProxy.Instance.CommitAllModifiedPages(_oneNoteApp,
+            OneNoteProxy.Instance.CommitAllModifiedPages(ref _oneNoteApp,
                 pageContent => pagesType.HasValue ? pageContent.PageType == pagesType : true,
                 pagesCount =>
                 {

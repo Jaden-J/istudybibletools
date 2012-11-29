@@ -46,7 +46,7 @@ namespace BibleVerseLinkerEx
             currentObjectId = null;
 
             string pageContentXml;
-            OneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piSelection, Constants.CurrentOneNoteSchema);
+            _oneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piSelection, Constants.CurrentOneNoteSchema);
 
             document = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
             XElement pointerElement = document.Root.XPathSelectElement("//one:T[@selected='all']", xnm);
@@ -68,7 +68,7 @@ namespace BibleVerseLinkerEx
             _oneNoteApp.SyncHierarchy(pageId);
 
             string pageContentXml;
-            OneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
+            _oneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
 
             XmlNamespaceManager xnm;
             XDocument document = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
@@ -86,11 +86,11 @@ namespace BibleVerseLinkerEx
 
         public void Do()
         {
-            if (OneNoteApp.Windows.CurrentWindow != null)
+            if (_oneNoteApp.Windows.CurrentWindow != null)
             {
-                string currentPageId = OneNoteApp.Windows.CurrentWindow.CurrentPageId;
-                string currentSectionId = OneNoteApp.Windows.CurrentWindow.CurrentSectionId;
-                string currentNotebookId = OneNoteApp.Windows.CurrentWindow.CurrentNotebookId;
+                string currentPageId = _oneNoteApp.Windows.CurrentWindow.CurrentPageId;
+                string currentSectionId = _oneNoteApp.Windows.CurrentWindow.CurrentSectionId;
+                string currentNotebookId = _oneNoteApp.Windows.CurrentWindow.CurrentNotebookId;
 
                 XDocument currentPageDocument;
                 XmlNamespaceManager xnm;
@@ -105,7 +105,7 @@ namespace BibleVerseLinkerEx
                 {
                     try
                     {
-                        BibleCommon.Services.OneNoteLocker.UnlockCurrentSection(OneNoteApp);
+                        BibleCommon.Services.OneNoteLocker.UnlockCurrentSection(_oneNoteApp);
                     }
                     catch (NotSupportedException)
                     {
@@ -120,7 +120,7 @@ namespace BibleVerseLinkerEx
                 try
                 {
                     bool pageWasCreated;
-                    verseLinkPageId = BibleCommon.Services.VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(OneNoteApp, currentSectionId,
+                    verseLinkPageId = BibleCommon.Services.VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(_oneNoteApp, currentSectionId,
                         currentPageId, currentPageName, DescriptionPageName, false, out pageWasCreated);
                 }
                 catch (Exception ex)
@@ -138,7 +138,7 @@ namespace BibleVerseLinkerEx
 
                     if (selectedTextFound)
                     {
-                        string href = OneNoteUtils.GenerateHref(OneNoteApp, selectedHtml, verseLinkPageId, objectId);
+                        string href = OneNoteUtils.GenerateHref(_oneNoteApp, selectedHtml, verseLinkPageId, objectId);
 
                         string selectedValue = selectedElement.Value;
                         selectedElement.Value = string.Empty;
@@ -147,7 +147,7 @@ namespace BibleVerseLinkerEx
                         OneNoteUtils.UpdatePageContentSafe(ref _oneNoteApp, currentPageDocument, xnm);
                     }
 
-                    OneNoteApp.NavigateTo(verseLinkPageId, objectId);
+                    _oneNoteApp.NavigateTo(verseLinkPageId, objectId);
                 }
             }
             else
@@ -181,7 +181,7 @@ namespace BibleVerseLinkerEx
             if (verseNumber != null)
             {
                 bool pointerValueIsVerseNumber = verseNumber.ToString() == pointerValueString;
-                string linkToCurrentObject = OneNoteProxy.Instance.GenerateHref(OneNoteApp, currentPageId, currentObjectId);
+                string linkToCurrentObject = OneNoteProxy.Instance.GenerateHref(_oneNoteApp, currentPageId, currentObjectId);
                 newContent = string.Format("<a href=\"{0}\">:{1}</a>{2}<b>{3}</b>", linkToCurrentObject, verseNumber,
                     !pointerValueIsVerseNumber ? "&nbsp" : string.Empty,
                     !pointerValueIsVerseNumber ? pointerValueString : string.Empty);
@@ -203,7 +203,7 @@ namespace BibleVerseLinkerEx
         public string UpdateDescriptionPage(string pageId, string pointerValueString, VerseNumber? verseNumber)
         {
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
-            var pageContent = OneNoteProxy.Instance.GetPageContent(OneNoteApp, pageId, OneNoteProxy.PageType.CommentPage);
+            var pageContent = OneNoteProxy.Instance.GetPageContent(_oneNoteApp, pageId, OneNoteProxy.PageType.CommentPage);
 
             XElement newCommentElement = new XElement(nms + "Outline",
                                             new XElement(nms + "Size", new XAttribute("width", "500"), new XAttribute("height", 15)),
@@ -261,7 +261,7 @@ namespace BibleVerseLinkerEx
 
             pageContent.WasModified = true;
 
-            OneNoteProxy.Instance.CommitAllModifiedPages(OneNoteApp, pc => pc.PageType == OneNoteProxy.PageType.CommentPage, null, null);
+            OneNoteProxy.Instance.CommitAllModifiedPages(ref _oneNoteApp, pc => pc.PageType == OneNoteProxy.PageType.CommentPage, null, null);
 
             XElement addedObject = GetLastPageObject(pageId, GetOutlinePosition(pageContent.Content, newCommentElement, pageContent.Xnm));
 

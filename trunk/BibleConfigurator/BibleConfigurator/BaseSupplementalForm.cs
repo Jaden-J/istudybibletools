@@ -18,9 +18,13 @@ namespace BibleConfigurator
 {
     public abstract partial class BaseSupplementalForm : Form
     {
-        protected Microsoft.Office.Interop.OneNote.Application OneNoteApp { get; set; }
+        private Label LblDescription { get; set; }
+
+        protected Microsoft.Office.Interop.OneNote.Application _oneNoteApp;        
+
         protected MainForm MainForm { get; set; }
-        protected List<ModuleInfo> Modules { get; set; }        
+        protected List<ModuleInfo> Modules { get; set; }
+        protected Dictionary<string, ModuleInfo> DictionaryModules { get; set; }        
         protected Button BtnAddNewModule { get; set; }
         protected int TopControlsPosition { get; set; }
         protected int LeftControlsPosition { get; set; }
@@ -29,9 +33,7 @@ namespace BibleConfigurator
         protected bool NeedToCommitChanges { get; set; }
         protected bool WasLoaded { get; set; }
         protected bool InProgress { get; set; }
-        protected Dictionary<string, string> ExistingNotebooks { get; set; }
-
-        private Label LblDescription { get; set; }
+        protected Dictionary<string, string> ExistingNotebooks { get; set; }        
 
         protected abstract string GetFormText();
         protected abstract string GetChkUseText();
@@ -58,6 +60,7 @@ namespace BibleConfigurator
         protected abstract void SaveSupplementalNotebookSettings(string notebookId);
         protected abstract List<string> SaveEmbeddedModuleSettings(EmbeddedModuleInfo embeddedModuleInfo, ModuleInfo moduleInfo, XElement pageEl);
         protected abstract bool AreThereModulesToAdd();
+        protected abstract string GetPostCommitErrorMessage(ModuleInfo selectedModuleInfo);
 
 
         protected FolderBrowserDialog FolderBrowserDialog
@@ -68,11 +71,17 @@ namespace BibleConfigurator
             }
         }
 
-        public BaseSupplementalForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
+        public BaseSupplementalForm(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
         {
-            OneNoteApp = oneNoteApp;
+            _oneNoteApp = oneNoteApp;
             MainForm = form;
+
             Modules = ModulesManager.GetModules(true);
+
+            DictionaryModules = new Dictionary<string, ModuleInfo>();
+            foreach (var module in Modules)
+                DictionaryModules.Add(module.ShortName, module);
+
             TopControlsPosition = 10;
             Logger = new LongProcessLogger(MainForm);
 
@@ -85,7 +94,7 @@ namespace BibleConfigurator
         {
             try
             {
-                if (!SettingsManager.Instance.IsConfigured(OneNoteApp))
+                if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
                 {
                     FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                     Close();
@@ -101,7 +110,7 @@ namespace BibleConfigurator
                 LoadFormData();
 
                 string defaultNotebookFolderPath;
-                OneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+                _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
                 folderBrowserDialog.SelectedPath = defaultNotebookFolderPath;
                 folderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetNotebookFolder;
                 folderBrowserDialog.ShowNewFolderButton = true;
@@ -195,7 +204,7 @@ namespace BibleConfigurator
         private void LoadExistingNotebooks()
         {
             if (ExistingNotebooks == null)
-                ExistingNotebooks = OneNoteUtils.GetExistingNotebooks(OneNoteApp);
+                ExistingNotebooks = OneNoteUtils.GetExistingNotebooks(_oneNoteApp);
 
             cbExistingNotebooks.DataSource = ExistingNotebooks.Values.ToList();            
         }
@@ -259,9 +268,11 @@ namespace BibleConfigurator
             try
             {
                 List<string> errors;
+                ModuleInfo selectedModuleInfo = null;
+
                 if (!useExistingNotebook)
                 {
-                    var selectedModuleInfo = ((ModuleInfo)CbModule.SelectedItem);
+                    selectedModuleInfo = ((ModuleInfo)CbModule.SelectedItem);
                     errors = CommitChanges(selectedModuleInfo);
                 }
                 else
@@ -273,9 +284,21 @@ namespace BibleConfigurator
 
                 if (errors.Count > 0)
                 {
-                    using (var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(errors))
+                    var showErrors = true;
+
+                    if (selectedModuleInfo != null)
                     {
-                        errorsForm.ShowDialog();
+                        var preCommitErrorMessage = GetPostCommitErrorMessage(selectedModuleInfo);
+                        if (!string.IsNullOrEmpty(preCommitErrorMessage))
+                            showErrors = MessageBox.Show(preCommitErrorMessage, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes;                    
+                    }                    
+
+                    if (showErrors)
+                    {
+                        using (var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(errors))
+                        {
+                            errorsForm.ShowDialog();
+                        }
                     }
                 }
             }
@@ -317,7 +340,7 @@ namespace BibleConfigurator
         {
             for (int i = 0; i < GetSupplementalModulesCount(); i++)
             {
-                var module = Modules.First(m => m.ShortName == GetSupplementalModuleName(i));
+                var module = DictionaryModules[GetSupplementalModuleName(i)];
                 if (IsModuleSupported(module))
                 {
                     AddModuleRow(module, i, TopControlsPosition);
@@ -395,7 +418,7 @@ namespace BibleConfigurator
 
         private void SupplementalBibleForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            OneNoteApp = null;
+            _oneNoteApp = null;
             MainForm = null;
             Logger.Dispose();
         }
@@ -533,7 +556,7 @@ namespace BibleConfigurator
             var result = new List<string>();
             ClearSupplementalModules();            
                         
-            var xDoc = OneNoteUtils.GetHierarchyElement(OneNoteApp, notebookId, HierarchyScope.hsPages, out xnm);
+            var xDoc = OneNoteUtils.GetHierarchyElement(_oneNoteApp, notebookId, HierarchyScope.hsPages, out xnm);
             var pagesDocs = xDoc.Root.XPathSelectElements("//one:Page", xnm);
             int pagesCount = pagesDocs.Count();
 
@@ -547,17 +570,17 @@ namespace BibleConfigurator
 
                 Logger.LogMessage(pageName);
 
-                var embeddedModulesInfo_string = OneNoteUtils.GetPageMetaData(OneNoteApp, pageEl, EmbeddedModulesKey, xnm);
+                var embeddedModulesInfo_string = OneNoteUtils.GetPageMetaData(_oneNoteApp, pageEl, EmbeddedModulesKey, xnm);
                 if (!string.IsNullOrEmpty(embeddedModulesInfo_string))
                 {
                     var embeddedModulesInfo = EmbeddedModuleInfo.Deserialize(embeddedModulesInfo_string);
 
                     foreach (var embeddedModuleInfo in embeddedModulesInfo)
                     {
-                        var module = Modules.FirstOrDefault(m => m.ShortName == embeddedModuleInfo.ModuleName);
-
-                        if (module == null)
+                        if (!DictionaryModules.ContainsKey(embeddedModuleInfo.ModuleName))
                             throw new InvalidNotebookException(string.Format(BibleCommon.Resources.Constants.ModuleIsNotInstalled, embeddedModuleInfo.ModuleName));
+
+                        var module = DictionaryModules[embeddedModuleInfo.ModuleName];                        
 
                         if (!SupplementalModuleAlreadyAdded(embeddedModuleInfo.ModuleName))
                         {

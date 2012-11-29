@@ -26,7 +26,7 @@ namespace BibleCommon.Handlers
             return args.Length > 0 && args[0].StartsWith(ProtocolName, StringComparison.OrdinalIgnoreCase);
         }
 
-        public void ExecuteCommand(string[] args)
+        public bool ExecuteCommand(string[] args)
         {
             try
             {
@@ -36,6 +36,8 @@ namespace BibleCommon.Handlers
             {
                 FormLogger.LogError(ex);
             }
+
+            return true;
         }
 
         private void TryExecuteCommand(string[] args)

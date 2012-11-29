@@ -48,7 +48,14 @@ namespace BibleConfigurator
                 {
                     FormExtensions.RunSingleInstance(form, message, () =>
                     {
-                        Application.Run(form);
+                        try
+                        {
+                            Application.Run(form);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.LogError(ex);
+                        }
                     }, silent || args.Contains(Consts.RunOnOneNoteStarts));
                 }
 
@@ -78,12 +85,19 @@ namespace BibleConfigurator
                 result = new AboutProgramForm();
             else if (args.Contains(Consts.ShowSearchInDictionaries))
                 result = new SearchInDictionariesForm();
+            else if (args.Contains(Consts.ShowManual))
+                OpenManual();
             else if (strongProtocolHandler.IsProtocolCommand(args))
                 strongProtocolHandler.ExecuteCommand(args);
             else if (navToStrongHandler.IsProtocolCommand(args))
-                navToStrongHandler.ExecuteCommand(args);
-            else if (args.Contains(Consts.ShowManual))
-                OpenManual();
+            {
+                if (!navToStrongHandler.ExecuteCommand(args))
+                {
+                    result = new MainForm(args);
+                    ((MainForm)result).ForceIndexDictionaryModuleName = navToStrongHandler.ModuleShortName;
+                    ((MainForm)result).CommitChangesAfterLoad = true;
+                }
+            }            
             else if (args.Contains(Consts.RunOnOneNoteStarts))
             {
                 if (SettingsManager.Instance.IsConfigured(OneNoteApp))
@@ -95,11 +109,11 @@ namespace BibleConfigurator
                     }
                     catch (NotSupportedException)
                     {
-                        Logger.LogError("Locking is not supported for this notebook");                        
+                        Logger.LogError("Locking is not supported for this notebook");
                     }
 
                     if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible))
-                    {                        
+                    {
                         using (var form = new MessageForm(BibleCommon.Resources.Constants.IndexBibleQuestionAtStartUp, BibleCommon.Resources.Constants.Warning,
                             MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                         {
