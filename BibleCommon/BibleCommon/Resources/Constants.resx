@@ -756,4 +756,13 @@
   <data name="ParallelModuleCheckFinish" xml:space="preserve">
     <value>Finish checking modules</value>
   </data>
+  <data name="DictionaryFormDescription" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ReopenParametersToSeeChanges" xml:space="preserve">
+    <value>Please close and open the 'Program Parameters' to see changes.</value>
+  </data>
+  <data name="SupplementalBibleFormDescription" xml:space="preserve">
+    <value />
+  </data>
 </root>

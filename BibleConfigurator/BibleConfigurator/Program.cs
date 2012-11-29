@@ -32,21 +32,17 @@ namespace BibleConfigurator
         {
             try
             {
-                LanguageManager.SetThreadUICulture();
-
-                string message = BibleCommon.Resources.Constants.MoreThanSingleInstanceRun;
-                if (args.Length == 1 && File.Exists(args[0]))
-                    message += " " + BibleCommon.Resources.Constants.LoadMofuleInExistingInstance;
+                LanguageManager.SetThreadUICulture();                
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
-                bool silent;
+                bool silent;                
                 Form form = PrepareForRunning(out silent, args);
 
                 if (form != null)
                 {
-                    FormExtensions.RunSingleInstance(form, message, () =>
+                    FormExtensions.RunSingleInstance(form, BibleCommon.Resources.Constants.MoreThanSingleInstanceRun, () =>
                     {
                         try
                         {
@@ -72,7 +68,7 @@ namespace BibleConfigurator
         }
 
         private static Form PrepareForRunning(out bool silent, params string[] args)
-        {
+        {            
             silent = false;
             Form result = null;
 
@@ -181,7 +177,7 @@ namespace BibleConfigurator
                         {
                             ((MainForm)result).ShowModulesTabAtStartUp = true;
                             ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
-                            silent = true;
+                            silent = true;                            
                         }
                         else
                             result = null;
@@ -229,7 +225,7 @@ namespace BibleConfigurator
                     _firstLoad = false;
                 }
 
-                bool silent;
+                bool silent;                
                 Form form = PrepareForRunning(out silent, args);
 
                 if (form != null)

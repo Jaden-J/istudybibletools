@@ -753,4 +753,21 @@
   <data name="ParallelModuleCheckFinish" xml:space="preserve">
     <value>Проверка модулей завершена</value>
   </data>
+  <data name="DictionaryFormDescription" xml:space="preserve">
+    <value>Данная форма предназначена для управления словарями. 
+
+Обратите внимание:  
+  - необходимо, чтобы в программу были загружены модули типа 'Словарь';
+  - добавление нового словаря занимает несколько минут.</value>
+  </data>
+  <data name="ReopenParametersToSeeChanges" xml:space="preserve">
+    <value>Пожалуйста, закройте и откройте 'Параметры программы', чтобы увидеть изменения.</value>
+  </data>
+  <data name="SupplementalBibleFormDescription" xml:space="preserve">
+    <value>Данная форма предназначена для управления справочной Библией. 
+
+Обратите внимание:
+  - в справочную Библию можно добавлять только модули версии 2.0 и выше;  
+  - добавление нового модуля в справочную Библию занимает около часа.</value>
+  </data>
 </root>

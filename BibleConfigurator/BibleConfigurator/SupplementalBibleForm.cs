@@ -40,13 +40,7 @@ namespace BibleConfigurator
         {
             get
             {
-                return
-@"Данная форма предназначена для управления справочной Библией. 
-
-Обратите внимание:
-  - в справочную Библию можно добавлять только модули версии 2.0 и выше;  
-  - добавление нового модуля в справочную Библию занимает около часа.    
-";
+                return BibleCommon.Resources.Constants.SupplementalBibleFormDescription;
             }
         }
 
