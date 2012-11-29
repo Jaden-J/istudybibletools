@@ -145,9 +145,9 @@ namespace BibleCommon.Services
 
         private static T Dessirialize<T>(string xmlFilePath)
         {
-            using (var fs = new FileStream(xmlFilePath, FileMode.Open))
+            using (var ms = new MemoryStream(File.ReadAllBytes(xmlFilePath)))
             {
-                return ((T)GetXmlSerializer(typeof(T)).Deserialize(fs));
+                return ((T)GetXmlSerializer(typeof(T)).Deserialize(ms));
             }
         }
 

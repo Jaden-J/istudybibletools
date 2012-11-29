@@ -474,7 +474,8 @@ namespace BibleCommon.Services
 
             string linkToParallelVerse = OneNoteUtils.GetOrGenerateHref(oneNoteApp, baseVerseNumber.ToString(),
                 primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref,
-                primaryBibleObjectsSearchResult.HierarchyObjectInfo.PageId, primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseContentObjectId);
+                primaryBibleObjectsSearchResult.HierarchyObjectInfo.PageId, primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseContentObjectId, 
+                Consts.Constants.QueryParameter_BibleVerse);
 
             string versePart = verseTextWithoutNumber;
 

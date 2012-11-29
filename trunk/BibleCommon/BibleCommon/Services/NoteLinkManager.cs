@@ -487,8 +487,7 @@ namespace BibleCommon.Services
             HierarchySearchManager.HierarchySearchResult hierarchySearchResult;            
 
             if (verseInfo.IsLink != VerseRecognitionManager.LinkType.LinkAfterFullAnalyze
-                || (verseInfo.IsLink == VerseRecognitionManager.LinkType.LinkAfterFullAnalyze && force) 
-                || (isTitle && verseInfo.IsInBrackets)
+                || (verseInfo.IsLink == VerseRecognitionManager.LinkType.LinkAfterFullAnalyze && force)                 
                 || IsExtendedVerse(verseInfo))
             {
                 string textElementObjectId = (string)textElement.Parent.Attribute("objectID");
@@ -749,21 +748,25 @@ namespace BibleCommon.Services
                             else
                                 textToChange = searchResult.VersePointer.OriginalVerseName;
 
-                            hierarchySearchResult = localHierarchySearchResult;
+                             hierarchySearchResult = localHierarchySearchResult;
 
                             var prevLinkText = isLink ? textElementValue.Substring(startVerseNameIndex, endVerseNameIndex - startVerseNameIndex) : null;
 
                             var additionalParams = new List<string>() { Consts.Constants.QueryParameter_BibleVerse };
                             if (linkDepth == AnalyzeDepth.SetVersesLinks)
                             {
-                                if (isLink && prevLinkText.Contains(Consts.Constants.QueryParameter_QuickAnalyze))                                
+                                if (!isLink || prevLinkText.Contains(Consts.Constants.QueryParameter_QuickAnalyze))
                                     additionalParams.Add(Consts.Constants.QueryParameter_QuickAnalyze);
                             }
+
+                            string prevStyle = string.Empty;
+                            if (isLink)                            
+                                prevStyle = StringUtils.GetAttributeValue(prevLinkText, "style");
 
                             string link = OneNoteUtils.GetOrGenerateHref(oneNoteApp, textToChange, localHierarchySearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref,
                                 localHierarchySearchResult.HierarchyObjectInfo.PageId, localHierarchySearchResult.HierarchyObjectInfo.VerseContentObjectId, additionalParams.ToArray());
 
-                            link = string.Format("<span style='font-weight:normal'>{0}</span>", link);
+                            link = string.Format("<span style='font-weight:normal;{1}'>{0}</span>", link, prevStyle);
 
                             var htmlTextBefore = textElementValue.Substring(0, startVerseNameIndex);
                             var htmlTextAfter = textElementValue.Substring(endVerseNameIndex);                            
@@ -1046,10 +1049,10 @@ namespace BibleCommon.Services
                         string textBefore = startVerseNameIndexTemp < startVerseNameIndex 
                                                 ? StringUtils.GetText(textElementValue.Substring(startVerseNameIndexTemp, startVerseNameIndex - startVerseNameIndexTemp))
                                                 : StringUtils.GetText(textElementValue.Substring(startVerseNameIndex, startVerseNameIndexTemp - startVerseNameIndex));
-                        if (string.IsNullOrEmpty(textBefore))                        
+                        if (string.IsNullOrEmpty(textBefore.Trim()))                        
                         {
                             string textAfter = StringUtils.GetText(textElementValue.Substring(endVerseNameIndex, endVerseNameIndexTemp - endVerseNameIndex));
-                            if (string.IsNullOrEmpty(textAfter))
+                            if (string.IsNullOrEmpty(textAfter.Trim()))
                             {
                                 startVerseNameIndex = startVerseNameIndexTemp;
                                 endVerseNameIndex = endVerseNameIndexTemp;

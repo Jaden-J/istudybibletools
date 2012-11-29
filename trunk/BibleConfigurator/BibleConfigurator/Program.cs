@@ -30,7 +30,7 @@ namespace BibleConfigurator
         [STAThread]
         static void Main(params string[] args)
         {
-            //  try
+            try
             {
                 LanguageManager.SetThreadUICulture();
 
@@ -60,15 +60,15 @@ namespace BibleConfigurator
                 }
 
             }
-            //catch (Exception ex)
-            //{
-            //    FormLogger.LogError(ex);
-            //}
-            //finally
-            //{
-            //    if (_oneNoteApp != null)
-            //        _oneNoteApp = null;
-            //}
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
+            finally
+            {
+                if (_oneNoteApp != null)
+                    _oneNoteApp = null;
+            }
         }
 
         private static Form PrepareForRunning(out bool silent, params string[] args)
@@ -99,7 +99,7 @@ namespace BibleConfigurator
                 }
             }            
             else if (args.Contains(Consts.RunOnOneNoteStarts))
-            {
+            {                
                 if (SettingsManager.Instance.IsConfigured(OneNoteApp))
                 {
                     try
