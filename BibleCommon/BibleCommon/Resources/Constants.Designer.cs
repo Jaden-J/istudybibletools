@@ -223,7 +223,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на The passage can not be found.
+        ///   Ищет локализованную строку, похожую на The passage is not found.
         /// </summary>
         public static string BibleVersePointerCanNotFindPlace {
             get {
@@ -331,7 +331,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Notebook template not found at.
+        ///   Ищет локализованную строку, похожую на Notebook template is not found at.
         /// </summary>
         public static string ConfiguratorNotebookTemplateNotFound {
             get {
@@ -358,7 +358,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Section group not found.
+        ///   Ищет локализованную строку, похожую на Section group is not found.
         /// </summary>
         public static string ConfiguratorSectionGroupNotFound {
             get {
@@ -399,6 +399,24 @@ namespace BibleCommon.Resources {
         public static string ConfiguratorWrongParameterValue {
             get {
                 return ResourceManager.GetString("ConfiguratorWrongParameterValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Add parallel translation anyway?.
+        /// </summary>
+        public static string ContinueAddingParallelBible {
+            get {
+                return ResourceManager.GetString("ContinueAddingParallelBible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Create Supplemental Bible anyway?.
+        /// </summary>
+        public static string ContinueCreatingSupplementalBible {
+            get {
+                return ResourceManager.GetString("ContinueCreatingSupplementalBible", resourceCulture);
             }
         }
         
@@ -637,6 +655,24 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Can not find term &apos;{0}&apos; in Dictionary cached TermSet &apos;{1}&apos;. Please try to update dictionary module..
+        /// </summary>
+        public static string DictionaryTermNotFoundInCache {
+            get {
+                return ResourceManager.GetString("DictionaryTermNotFoundInCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Some Dictionary terms were not found in OneNote. Please try to update dictionary module..
+        /// </summary>
+        public static string DictionaryTermsNotFound {
+            get {
+                return ResourceManager.GetString("DictionaryTermsNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на http://IStudyBibleTools.com/download.htm?fromProgram=true.
         /// </summary>
         public static string DownloadPageUrl {
@@ -759,6 +795,15 @@ namespace BibleCommon.Resources {
         public static string ErrorOccurred {
             get {
                 return ResourceManager.GetString("ErrorOccurred", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на The errors are saved in file &apos;{0}&apos;..
+        /// </summary>
+        public static string ErrorsAreSavedInFile {
+            get {
+                return ResourceManager.GetString("ErrorsAreSavedInFile", resourceCulture);
             }
         }
         
@@ -1348,6 +1393,33 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Finish checking modules.
+        /// </summary>
+        public static string ParallelModuleCheckFinish {
+            get {
+                return ResourceManager.GetString("ParallelModuleCheckFinish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Checking modules.
+        /// </summary>
+        public static string ParallelModuleChecking {
+            get {
+                return ResourceManager.GetString("ParallelModuleChecking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Start checking modules.
+        /// </summary>
+        public static string ParallelModuleCheckStart {
+            get {
+                return ResourceManager.GetString("ParallelModuleCheckStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Process aborted by user.
         /// </summary>
         public static string ProcessAbortedByUser {
@@ -1425,6 +1497,15 @@ namespace BibleCommon.Resources {
         public static string ProcessVerse {
             get {
                 return ResourceManager.GetString("ProcessVerse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Term is not found in OneNote. Update the dictionary cache?.
+        /// </summary>
+        public static string RebuldDictionaryCache {
+            get {
+                return ResourceManager.GetString("RebuldDictionaryCache", resourceCulture);
             }
         }
         
@@ -1704,6 +1785,24 @@ namespace BibleCommon.Resources {
         public static string SupportedModulesNotFound {
             get {
                 return ResourceManager.GetString("SupportedModulesNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на After it is necessary to remove the added parallel module and add it again. Show errors that have occurred while adding parallel module?.
+        /// </summary>
+        public static string ThereAreErrorsAfterParallelModuleWasAdded {
+            get {
+                return ResourceManager.GetString("ThereAreErrorsAfterParallelModuleWasAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Inconsistencies are detected in the modules &apos;{0} (version {1})&apos; and &apos;{2} (version {3})&apos;. Probably these modules are not of the latest version. Try to download these modules from the site {4} and to update these modules in the system..
+        /// </summary>
+        public static string ThereAreErrorsOnModulesMerging {
+            get {
+                return ResourceManager.GetString("ThereAreErrorsOnModulesMerging", resourceCulture);
             }
         }
         

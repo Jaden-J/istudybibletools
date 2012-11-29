@@ -82,29 +82,34 @@ namespace BibleCommon.UI.Forms
             }
         }
 
+        public void SaveErrorsToFile(string filePath)
+        {
+            using (FileStream fs = new FileStream(filePath, FileMode.Create))
+            {
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
+                    foreach (var errors in AllErrors)
+                    {
+                        if (!string.IsNullOrEmpty(errors.ErrorsDecription))
+                            sw.WriteLine(string.Format("{0} ({1})", errors.ErrorsDecription, errors.Count));
+
+                        int index = 1;
+                        foreach (var error in errors)
+                        {
+                            sw.WriteLine(string.Format("{0}. {1}", index++, error));
+                        }
+                        sw.WriteLine(string.Empty);
+                    }
+                    sw.Flush();
+                }
+            }
+        }
+
         private void btnSaveToFile_Click(object sender, EventArgs e)
         {
             if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                using (FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.Create))
-                {
-                    using (StreamWriter sw = new StreamWriter(fs))
-                    {
-                        foreach (var errors in AllErrors)
-                        {
-                            if (!string.IsNullOrEmpty(errors.ErrorsDecription))
-                                sw.WriteLine(string.Format("{0} ({1})", errors.ErrorsDecription, errors.Count));
-
-                            int index = 1;
-                            foreach (var error in errors)
-                            {
-                                sw.WriteLine(string.Format("{0}. {1}", index++, error));
-                            }
-                            sw.WriteLine(string.Empty);                            
-                        }
-                        sw.Flush();
-                    }
-                }
+                SaveErrorsToFile(saveFileDialog.FileName);
 
                 MessageBox.Show("Successfully.");
             }

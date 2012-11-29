@@ -9,18 +9,21 @@ using BibleCommon.Helpers;
 using Microsoft.Office.Interop.OneNote;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using BibleCommon.UI.Forms;
+using System.Windows.Forms;
+using System.IO;
 
 namespace BibleConfigurator
 {
     public class SupplementalBibleForm: BaseSupplementalForm
     {
-        public SupplementalBibleForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
-            : base(oneNoteApp, form)
+        public SupplementalBibleForm(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
+            : base(ref oneNoteApp, form)
         { }        
 
         protected override string GetValidSupplementalNotebookId()
         {
-            return SettingsManager.Instance.GetValidSupplementalBibleNotebookId(OneNoteApp, true);
+            return SettingsManager.Instance.GetValidSupplementalBibleNotebookId(_oneNoteApp, true);
         }        
 
         protected override int GetSupplementalModulesCount()
@@ -55,6 +58,10 @@ namespace BibleConfigurator
 
             if (SettingsManager.Instance.SupplementalBibleModules.Count > 0)
             {
+                if (!CheckModules(DictionaryModules[SettingsManager.Instance.SupplementalBibleModules.First().ModuleName],
+                    selectedModuleInfo, BibleCommon.Resources.Constants.ContinueAddingParallelBible))
+                    return new List<string>();
+
                 int stagesCount = selectedModuleInfo.Type == ModuleType.Strong ? 2 : 1;
 
                 int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.SupplementalBibleModules.First().ModuleName, false);                
@@ -62,8 +69,8 @@ namespace BibleConfigurator
                 if (selectedModuleInfo.Type == ModuleType.Strong)
                 {
                     MainForm.PrepareForLongProcessing(1, 1, BibleCommon.Resources.Constants.AddParallelBibleTranslationStart);
-                    DictionaryManager.AddDictionary(OneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true);
-                    strongTermLinksCache = RunIndexStrong(selectedModuleInfo, 1, stagesCount, false);
+                    DictionaryManager.AddDictionary(_oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true);
+                    strongTermLinksCache = RunIndexStrongStage(selectedModuleInfo, 1, stagesCount, false);
                     MainForm.PrepareForLongProcessing(chaptersCount, 1, string.Empty);                
                 }
                 else
@@ -72,12 +79,15 @@ namespace BibleConfigurator
                 string stagesString = stagesCount == 1 ? string.Empty : string.Format("{0} {1}/{1}: ", BibleCommon.Resources.Constants.Stage, stagesCount);
                 Logger.Preffix = string.Format("{0}{1}: ", stagesString, BibleCommon.Resources.Constants.AddParallelBibleTranslation); 
                 BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
-                result = SupplementalBibleManager.AddParallelBible(OneNoteApp, selectedModuleInfo, strongTermLinksCache, Logger);
+                result = SupplementalBibleManager.AddParallelBible(_oneNoteApp, selectedModuleInfo, strongTermLinksCache, Logger);
 
                 MainForm.LongProcessingDone(BibleCommon.Resources.Constants.AddParallelBibleTranslationFinishMessage);
             }
             else
             {
+                if (!CheckModules(selectedModuleInfo, SettingsManager.Instance.CurrentModuleCached, BibleCommon.Resources.Constants.ContinueCreatingSupplementalBible))
+                    return new List<string>();
+
                 int stagesCount = selectedModuleInfo.Type == ModuleType.Strong ? 3 : 2;
 
                 int chaptersCount = ModulesManager.GetBibleChaptersCount(selectedModuleInfo.ShortName, false);
@@ -86,16 +96,16 @@ namespace BibleConfigurator
                 BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
 
                 if (selectedModuleInfo.Type == ModuleType.Strong)
-                    DictionaryManager.AddDictionary(OneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, false);                
-                SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, Logger);
+                    DictionaryManager.AddDictionary(_oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, false);                
+                SupplementalBibleManager.CreateSupplementalBible(_oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, Logger);
                 
                 if (selectedModuleInfo.Type == ModuleType.Strong)                
-                    strongTermLinksCache = RunIndexStrong(selectedModuleInfo, 2, stagesCount, true);                                    
+                    strongTermLinksCache = RunIndexStrongStage(selectedModuleInfo, 2, stagesCount, true);                                    
 
                 MainForm.PrepareForLongProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.LinkSupplementalBibleStart);
                 Logger.Preffix = string.Format("{0} {1}/{1}: {2}: ", BibleCommon.Resources.Constants.Stage, stagesCount, BibleCommon.Resources.Constants.LinkSupplementalBible);
                 BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
-                result = SupplementalBibleManager.LinkSupplementalBibleWithPrimaryBible(OneNoteApp, 0, strongTermLinksCache, Logger);
+                result = SupplementalBibleManager.LinkSupplementalBibleWithPrimaryBible(ref _oneNoteApp, strongTermLinksCache, Logger);
 
                 MainForm.LongProcessingDone(BibleCommon.Resources.Constants.CreateSupplementalBibleFinish);
             }
@@ -103,7 +113,44 @@ namespace BibleConfigurator
             return result.Errors.ConvertAll(ex => ex.Message);
         }
 
-        private Dictionary<string, string> RunIndexStrong(ModuleInfo moduleInfo, int stage, int stagesCount, bool checkPagesCount)
+        private bool CheckModules(ModuleInfo baseModule, ModuleInfo parallelModule, string messageToContinue)
+        {
+            MainForm.PrepareForLongProcessing(1, 1, BibleCommon.Resources.Constants.ParallelModuleChecking);                        
+            
+            var errors = ParallelBibleCheckerForm.CheckModule(baseModule.ShortName, parallelModule.ShortName);
+            MainForm.PerformProgressStep(BibleCommon.Resources.Constants.ParallelModuleCheckFinish);
+            System.Windows.Forms.Application.DoEvents();
+            MainForm.LongProcessingDone(string.Empty);
+
+            if (errors != null)
+            {
+                var errorsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), string.Format("{0}--{1}.errors.txt", baseModule.ShortName, parallelModule.ShortName));
+                using (var form = new ErrorsForm())
+                {
+                    form.AllErrors.Add(errors);
+                    form.SaveErrorsToFile(errorsFile);
+                }
+
+
+                using (var form = new MessageForm(string.Format("{0} {1} {2}",
+                                                        string.Format(BibleCommon.Resources.Constants.ThereAreErrorsOnModulesMerging,
+                                                                        baseModule.ShortName, baseModule.Version,
+                                                                        parallelModule.ShortName, parallelModule.Version,
+                                                                        BibleCommon.Resources.Constants.WebSiteUrl),
+                                                        string.Format(BibleCommon.Resources.Constants.ErrorsAreSavedInFile, errorsFile),
+                                                        messageToContinue), 
+                                                  BibleCommon.Resources.Constants.Warning,
+                                                  System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question))
+                {
+                    if (form.ShowDialog() != System.Windows.Forms.DialogResult.Yes)
+                        return false;
+                }                                               
+            }
+
+            return true;
+        }
+
+        private Dictionary<string, string> RunIndexStrongStage(ModuleInfo moduleInfo, int stage, int stagesCount, bool checkPagesCount)
         {
             int strongTermsCount = moduleInfo.NotebooksStructure.DictionaryTermsCount.GetValueOrDefault(BibleCommon.Consts.Constants.DefaultStrongNumbersCount);
             var pagesCount = moduleInfo.NotebooksStructure.DictionaryPagesCount;
@@ -114,14 +161,14 @@ namespace BibleConfigurator
             BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
 
             if (checkPagesCount)
-                DictionaryManager.WaitWhileDictionaryIsCreating(OneNoteApp, dictionaryModuleInfo.SectionId, pagesCount, 0);  // повторный раз проверяем, что все страницы загрузились
+                DictionaryManager.WaitWhileDictionaryIsCreating(_oneNoteApp, dictionaryModuleInfo.SectionId, pagesCount, 0);  // повторный раз проверяем, что все страницы загрузились
 
             Dictionary<string, string> result;
 
             if (DictionaryTermsCacheManager.CacheIsActive(moduleInfo.ShortName))
                 result = DictionaryTermsCacheManager.LoadCachedDictionary(moduleInfo.ShortName);
             else
-                result = DictionaryTermsCacheManager.GenerateCache(OneNoteApp, moduleInfo, Logger);
+                result = DictionaryTermsCacheManager.GenerateCache(_oneNoteApp, moduleInfo, Logger);
 
             return result;
         }
@@ -135,7 +182,7 @@ namespace BibleConfigurator
         {
             int chaptersCount = ModulesManager.GetBibleChaptersCount(moduleShortName, false);
             MainForm.PrepareForLongProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.RemoveParallelBibleTranslation);
-            var removeResult = SupplementalBibleManager.RemoveSupplementalBibleModule(OneNoteApp, moduleShortName, Logger);
+            var removeResult = SupplementalBibleManager.RemoveSupplementalBibleModule(_oneNoteApp, moduleShortName, Logger);
             MainForm.LongProcessingDone(
                 removeResult == SupplementalBibleManager.RemoveResult.RemoveModule
                     ? BibleCommon.Resources.Constants.RemoveParallelBibleTranslationFinishMessage
@@ -149,7 +196,7 @@ namespace BibleConfigurator
 
         protected override void CloseSupplementalNotebook()
         {
-            SupplementalBibleManager.CloseSupplementalBible(OneNoteApp);
+            SupplementalBibleManager.CloseSupplementalBible(_oneNoteApp);
         }
 
         protected override bool IsModuleSupported(ModuleInfo moduleInfo)
@@ -241,6 +288,21 @@ namespace BibleConfigurator
         protected override bool AreThereModulesToAdd()
         {
             return Modules.Any(m => IsModuleSupported(m) && !SupplementalModuleAlreadyAdded(m.ShortName));            
+        }
+
+        protected override string GetPostCommitErrorMessage(ModuleInfo selectedModuleInfo)
+        {
+            var primaryModule = DictionaryModules[SettingsManager.Instance.SupplementalBibleModules.First().ModuleName];
+            var parallelModule = SettingsManager.Instance.SupplementalBibleModules.Count > 1
+                                    ? selectedModuleInfo
+                                    : SettingsManager.Instance.CurrentModuleCached;
+
+            return string.Format("{0} {1}",
+                string.Format(BibleCommon.Resources.Constants.ThereAreErrorsOnModulesMerging,
+                                        primaryModule.ShortName, primaryModule.Version,
+                                        parallelModule.ShortName, parallelModule.Version,
+                                        BibleCommon.Resources.Constants.WebSiteUrl),
+                BibleCommon.Resources.Constants.ThereAreErrorsAfterParallelModuleWasAdded);
         }
     }
 }

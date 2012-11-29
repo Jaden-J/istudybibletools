@@ -105,11 +105,9 @@ namespace BibleCommon.Helpers
                         form.Dispose();
                     }
                     BibleCommon.Services.Logger.Done();
-
-                    return;
                 }
-
-                singleAction();
+                else
+                    singleAction();
             }
         }
 

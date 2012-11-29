@@ -77,7 +77,7 @@ namespace BibleConfigurator.Tools
 
                     BackupNotebook(id, notebookName);                    
                     
-                    if (_form.StopExternalProcess)
+                    if (_form.StopLongProcess)
                         throw new ProcessAbortedByUserException();
                 }                
             }
@@ -128,7 +128,7 @@ namespace BibleConfigurator.Tools
         {
             try
             {
-                if (_form.StopExternalProcess)
+                if (_form.StopLongProcess)
                     throw new ProcessAbortedByUserException();
 
                 if (new FileInfo(e.FullPath).Length > 0)

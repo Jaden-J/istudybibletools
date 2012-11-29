@@ -61,6 +61,7 @@ namespace BibleConfigurator
         public bool NeedToSaveChangesAfterLoadingModuleAtStartUp { get; set; }
         public bool ToIndexBible { get; set; }
         public bool CommitChangesAfterLoad { get; set; }
+        public string ForceIndexDictionaryModuleName { get; set; }
 
         public bool IsModerator { get; set; }
 
@@ -75,7 +76,7 @@ namespace BibleConfigurator
             IsModerator = args.Contains(Consts.ModeratorMode);
         }
 
-        public bool StopExternalProcess { get; set; }        
+        public bool StopLongProcess { get; set; }        
 
         private void btnOK_Click(object sender, EventArgs e)
         {
@@ -217,7 +218,7 @@ namespace BibleConfigurator
         {            
             foreach (var dictionaryInfo in SettingsManager.Instance.DictionariesModules.ToArray())
             {
-                if (!DictionaryTermsCacheManager.CacheIsActive(dictionaryInfo.ModuleName))
+                if (!DictionaryTermsCacheManager.CacheIsActive(dictionaryInfo.ModuleName) || dictionaryInfo.ModuleName == ForceIndexDictionaryModuleName)
                 {   
                     try
                     {
@@ -1036,7 +1037,7 @@ namespace BibleConfigurator
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            StopExternalProcess = true;
+            StopLongProcess = true;
             LongProcessLogger.AbortedByUsers = true;
         }
 
@@ -1243,10 +1244,12 @@ namespace BibleConfigurator
                         needToReload = true;
                     }
                     
-                    FormExtensions.Invoke(this, ReLoadModulesInfo);                    
+                    FormExtensions.Invoke(this, ReLoadModulesInfo);
 
-                    var form = new BibleCommon.UI.Forms.MessageForm(BibleCommon.Resources.Constants.ModuleSuccessfullyUploaded, BibleCommon.UI.Forms.MessageForm.Severity.Information);
-                    form.ShowDialog();
+                    using (var form = new BibleCommon.UI.Forms.MessageForm(BibleCommon.Resources.Constants.ModuleSuccessfullyUploaded, BibleCommon.UI.Forms.MessageForm.Severity.Information))
+                    {
+                        form.ShowDialog();
+                    }
 
                     return needToReload;                    
                 }
@@ -1601,7 +1604,7 @@ namespace BibleConfigurator
 
         private void ShowSupplementalBibleManagementForm()
         {
-            using (var form = new SupplementalBibleForm(_oneNoteApp, this))
+            using (var form = new SupplementalBibleForm(ref _oneNoteApp, this))
             {
                 form.ShowDialog();
             }
@@ -1614,7 +1617,7 @@ namespace BibleConfigurator
 
         private void ShowDictionariesManagementForm()
         {
-            using (var form = new DictionaryModulesForm(_oneNoteApp, this))
+            using (var form = new DictionaryModulesForm(ref _oneNoteApp, this))
             {
                 form.ShowDialog();
             }

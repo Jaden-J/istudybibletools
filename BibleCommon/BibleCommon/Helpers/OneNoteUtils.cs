@@ -202,11 +202,12 @@ namespace BibleCommon.Helpers
 
                 if (ex.Message.Contains("0x80010100") || ex.Message.Contains("0x800706BA") || ex.Message.Contains("0x800706BE"))  // "System.Runtime.InteropServices.COMException (0x80010100): System call failed. (Exception from HRESULT: 0x80010100 (RPC_E_SYS_CALL_FAILED))"
                 {
-                    Logger.LogMessage("UpdatePageContentSafeInternal. Attempt {0}: {1}", attemptCount, ex.Message);
+                    Logger.LogMessageSilient("UpdatePageContentSafeInternal. Attempt {0}: {1}", attemptCount, ex.Message);
                     if (attemptCount <= 10)
                     {
                         attemptCount++;
                         Thread.Sleep(1000 * attemptCount);
+                        oneNoteApp = null;
                         oneNoteApp = new Application();
                         UpdatePageContentSafeInternal(ref oneNoteApp, pageContent, xnm, attemptCount);
                     }
