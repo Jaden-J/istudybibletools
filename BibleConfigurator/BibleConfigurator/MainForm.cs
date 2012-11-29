@@ -218,6 +218,13 @@ namespace BibleConfigurator
         {
             var notebooks = OneNoteUtils.GetExistingNotebooks(_oneNoteApp);
 
+            notebooks.Remove(SettingsManager.Instance.NotebookId_Bible);
+            notebooks.Remove(SettingsManager.Instance.NotebookId_BibleStudy);
+            notebooks.Remove(SettingsManager.Instance.NotebookId_BibleComments);
+            if (notebooks.ContainsKey(SettingsManager.Instance.NotebookId_BibleNotesPages))
+                notebooks.Remove(SettingsManager.Instance.NotebookId_BibleNotesPages);
+
+
             TryToSearchNotebookForNewModule(module, ContainerType.Bible, SettingsManager.Instance.NotebookId_Bible,
                 chkCreateBibleNotebookFromTemplate, cbBibleNotebook, ref notebooks, null);
 
