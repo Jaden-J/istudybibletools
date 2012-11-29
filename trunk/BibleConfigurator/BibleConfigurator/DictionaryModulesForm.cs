@@ -37,13 +37,7 @@ namespace BibleConfigurator
         {
             get
             {
-                return
-@"Данная форма предназначена для управления словарями. 
-
-Обратите внимание:  
-  - необходимо, чтобы в программу были загружены модули типа 'Словарь';
-  - добавление нового словаря занимает несколько минут.
-";
+                return BibleCommon.Resources.Constants.DictionaryFormDescription;
             }
         }
 

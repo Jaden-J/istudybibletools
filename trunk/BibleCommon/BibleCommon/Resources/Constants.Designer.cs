@@ -655,6 +655,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на .
+        /// </summary>
+        public static string DictionaryFormDescription {
+            get {
+                return ResourceManager.GetString("DictionaryFormDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Can not find term &apos;{0}&apos; in Dictionary cached TermSet &apos;{1}&apos;. Please try to update dictionary module..
         /// </summary>
         public static string DictionaryTermNotFoundInCache {
@@ -1555,6 +1564,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Please close and open the &apos;Program Parameters&apos; to see changes..
+        /// </summary>
+        public static string ReopenParametersToSeeChanges {
+            get {
+                return ResourceManager.GetString("ReopenParametersToSeeChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Bible pages width have been successfully changed..
         /// </summary>
         public static string ResizeBibleTableManagerFinishMessage {
@@ -1749,6 +1767,15 @@ namespace BibleCommon.Resources {
         public static string StartTime {
             get {
                 return ResourceManager.GetString("StartTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на .
+        /// </summary>
+        public static string SupplementalBibleFormDescription {
+            get {
+                return ResourceManager.GetString("SupplementalBibleFormDescription", resourceCulture);
             }
         }
         
