@@ -41,6 +41,7 @@
             this.Name = "MessageForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MessageForm";
+            this.TopMost = true;
             this.Load += new System.EventHandler(this.MessageForm_Load);
             this.ResumeLayout(false);
 

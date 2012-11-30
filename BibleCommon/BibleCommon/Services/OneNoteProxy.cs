@@ -196,7 +196,7 @@ namespace BibleCommon.Services
                 cachedLinks = _dictionariesTermsLinks[dictionaryModuleShortName];
 
             if (!cachedLinks.ContainsKey(term))
-                throw new ArgumentException(string.Format("Can not find term '{0}' in DictionaryCachedTermSet '{1}' ", term, dictionaryModuleShortName));
+                throw new ArgumentException(string.Format(BibleCommon.Resources.Constants.DictionaryTermNotFoundInCache, term, dictionaryModuleShortName));
 
             return new DictionaryTermLink(cachedLinks[term]);
         }
@@ -455,7 +455,7 @@ namespace BibleCommon.Services
             _hierarchyContentCache.Clear();
         }
 
-        public void CommitAllModifiedPages(Application oneNoteApp, Func<PageContent, bool> filter, 
+        public void CommitAllModifiedPages(ref Application oneNoteApp, Func<PageContent, bool> filter, 
             Action<int> onAllPagesToCommitFound, Action<PageContent> onPageProcessed)
         {   
             List<PageContent> toCommit = _pageContentCache.Values.Where(pg => pg.WasModified && (filter == null || filter(pg))).ToList();

@@ -18,6 +18,16 @@ namespace BibleCommon.Handlers
             get { return _protocolName; }
         }
 
+        /// <summary>
+        /// Доступно только после вызова ExecuteCommand()
+        /// </summary>
+        public string ModuleShortName { get; set; }
+
+        /// <summary>
+        /// Доступно только после вызова ExecuteCommand()
+        /// </summary>
+        public string StrongNumber { get; set; }
+
         public static string GetCommandUrlStatic(string strongNumber, string moduleShortName)
         {
             return string.Format("{0}:{1};{2}", _protocolName, strongNumber, moduleShortName);
@@ -28,19 +38,20 @@ namespace BibleCommon.Handlers
             return args.Length > 0 && args[0].StartsWith(ProtocolName, StringComparison.OrdinalIgnoreCase);
         }
 
-        public void ExecuteCommand(string[] args)
+        public bool ExecuteCommand(string[] args)
         {
             try
             {
-                TryExecuteCommand(args);
+                return TryExecuteCommand(args);
             }
             catch (Exception ex)
             {
                 FormLogger.LogError(ex);
+                return true;
             }           
         }
 
-        private void TryExecuteCommand(string[] args)
+        private bool TryExecuteCommand(string[] args)
         {
             if (args.Length == 0)
                 throw new ArgumentNullException("args");
@@ -49,35 +60,32 @@ namespace BibleCommon.Handlers
                                 .Split(new char[] { ':' })[1])
                                 .Split(new char[] { ';' });
 
-            var strongNumber = verseArgs[0];
-            var moduleShortName = verseArgs[1];
+            StrongNumber = verseArgs[0];
+            ModuleShortName = verseArgs[1];
 
             Application oneNoteApp = new Application();
 
             try
             {
-                var strongTermLink = OneNoteProxy.Instance.GetDictionaryTermLink(strongNumber, moduleShortName);
-                
-                try
-                {
-                    oneNoteApp.NavigateTo(strongTermLink.PageId, strongTermLink.ObjectId);
-                }
-                finally
-                {
-                    oneNoteApp = null;
-                }
+                var strongTermLink = OneNoteProxy.Instance.GetDictionaryTermLink(StrongNumber, ModuleShortName);
+
+                return DictionaryManager.GoToTerm(oneNoteApp, strongTermLink);
             }
-            catch (Exception ex)  // todo
+            catch (Exception)
             {
-                if (!DictionaryTermsCacheManager.CacheIsActive(moduleShortName))
+                if (!DictionaryTermsCacheManager.CacheIsActive(ModuleShortName))
                 {
                     if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidDictionariesNotebookId(oneNoteApp, true)))
                         throw new Exception(BibleCommon.Resources.Constants.DictionariesNotebookNotFound);
 
-                    throw new Exception(BibleCommon.Resources.Constants.DictionaryCacheFileNotFound); 
+                    throw new Exception(BibleCommon.Resources.Constants.DictionaryCacheFileNotFound);
                 }
 
                 throw;
+            }
+            finally
+            {
+                oneNoteApp = null;
             }
         }
 

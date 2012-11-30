@@ -18,21 +18,35 @@ namespace BibleCommon.Services
         public static void LogError(Exception ex)
         {
             BibleCommon.Services.Logger.LogError(ex);
-            MessageBox.Show(ex.Message, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            using (var form = new BibleCommon.UI.Forms.MessageForm(ex.Message, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning))
+            {
+                form.ShowDialog();
+            }            
+
             WasErrorLogged = true;
         }
 
         public static void LogError(string message)
         {
             BibleCommon.Services.Logger.LogError(message);
-            MessageBox.Show(message, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            using (var form = new BibleCommon.UI.Forms.MessageForm(message, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning))
+            {
+                form.ShowDialog();
+            }            
+
             WasErrorLogged = true;
         }
 
         public static void LogMessage(string message)
         {
             BibleCommon.Services.Logger.LogMessage(message);
-            MessageBox.Show(message, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);            
+
+            using (var form = new BibleCommon.UI.Forms.MessageForm(message, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information))
+            {
+                form.ShowDialog();
+            }                
         }        
     }
 }

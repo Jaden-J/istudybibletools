@@ -11,6 +11,7 @@ using System.Xml;
 using System.Threading;
 using System.Xml.XPath;
 using System.Runtime.InteropServices;
+using BibleCommon.UI.Forms;
 
 namespace BibleCommon.Services
 {
@@ -55,10 +56,12 @@ namespace BibleCommon.Services
                 dictionarySectionPath = (string)dictionarySectionEl.Attribute("path");
                 
                 oneNoteApp.SyncHierarchy(dictionarySectionId);
-                while (!Directory.Exists(dictionarySectionPath))
+                int attemptsCount = 0;
+                while (!Directory.Exists(dictionarySectionPath) && attemptsCount < 500)
                 {
                     Thread.Sleep(1000);
                     System.Windows.Forms.Application.DoEvents();
+                    attemptsCount++;
                 }
 
                 foreach (var sectionInfo in moduleInfo.NotebooksStructure.Sections)
@@ -86,7 +89,7 @@ namespace BibleCommon.Services
         {
             if (dictionaryPagesCount.HasValue)
             {
-                if (attemptsCount < 1000)
+                if (attemptsCount < 500)  // 25 минут
                 {
                     XmlNamespaceManager xnm;
                     var xDoc = OneNoteUtils.GetHierarchyElement(oneNoteApp, dictionarySectionId, HierarchyScope.hsPages, out xnm);
@@ -122,6 +125,9 @@ namespace BibleCommon.Services
                         if (!ex.Message.Contains(Utils.GetHexError(Error.hrObjectDoesNotExist)))
                             throw;
                     }
+
+                    DictionaryTermsCacheManager.RemoveCache(dictionaryModuleInfo.ModuleName);
+
                     SettingsManager.Instance.DictionariesModules.Remove(dictionaryModuleInfo);
                     SettingsManager.Instance.Save();
                 }
@@ -133,8 +139,46 @@ namespace BibleCommon.Services
             OneNoteUtils.CloseNotebookSafe(oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries);
 
             SettingsManager.Instance.NotebookId_Dictionaries = null;
+
+            foreach (var dictionaryInfo in SettingsManager.Instance.DictionariesModules)
+            {
+                DictionaryTermsCacheManager.RemoveCache(dictionaryInfo.ModuleName);
+            }
+
             SettingsManager.Instance.DictionariesModules.Clear();
             SettingsManager.Instance.Save();
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oneNoteApp"></param>
+        /// <param name="link"></param>
+        /// <returns>если false - надо перестраивать кэш</returns>
+        public static bool GoToTerm(Application oneNoteApp, DictionaryTermLink link)
+        {
+            try
+            {
+                oneNoteApp.NavigateTo(link.PageId, link.ObjectId);
+                return true;
+            }
+            catch (COMException ex)
+            {
+                if (ex.Message.Contains(Utils.GetHexError(Error.hrObjectDoesNotExist)))
+                {
+                    using (var form = new MessageForm(BibleCommon.Resources.Constants.RebuldDictionaryCache, BibleCommon.Resources.Constants.Warning,
+                            System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question))
+                    {
+                        if (form.ShowDialog() == System.Windows.Forms.DialogResult.Yes)                        
+                            return false;                        
+                        else
+                            return true;
+                    }
+                }
+                else
+                    throw;
+            }
         }
     }
 }

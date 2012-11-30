@@ -457,6 +457,7 @@ namespace BibleCommon.Services
                         char prevPrevChar = StringUtils.GetChar(textElement.Value, prevHtmlBreakIndex);
                         if (!(StringUtils.IsCharAlphabetical(prevPrevChar) || StringUtils.IsDigit(prevPrevChar)))
                         {
+                            bookName = bookName.Trim();
                             string verseName = GetVerseName(bookName, number, verseString);
 
                             VersePointer vp = new VersePointer(verseName);

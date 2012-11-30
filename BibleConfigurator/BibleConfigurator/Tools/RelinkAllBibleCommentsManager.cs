@@ -66,7 +66,7 @@ namespace BibleConfigurator.Tools
                                 FormLogger.LogError(ex.ToString());
                             }
 
-                            if (_form.StopExternalProcess)
+                            if (_form.StopLongProcess)
                                 throw new ProcessAbortedByUserException();
                         });
 

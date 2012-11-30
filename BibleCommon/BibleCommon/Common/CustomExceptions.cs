@@ -6,7 +6,15 @@ using BibleCommon.Resources;
 
 namespace BibleCommon.Common
 {
-    public class NotConfiguredException : Exception
+    public class ProgramException : Exception
+    {
+        public ProgramException(string message, params string[] args)
+            : base(string.Format(message, args))
+        {
+        }
+    }
+
+    public class NotConfiguredException : ProgramException
     {
         public NotConfiguredException()
             : base(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured)
@@ -19,7 +27,7 @@ namespace BibleCommon.Common
         }
     }
 
-    public class NotFoundVerseLinkPageExceptions : Exception
+    public class NotFoundVerseLinkPageExceptions : ProgramException
     {
         public NotFoundVerseLinkPageExceptions(string message)
             : base(message)
@@ -27,7 +35,7 @@ namespace BibleCommon.Common
         }        
     }
 
-    public class InvalidModuleException : Exception
+    public class InvalidModuleException : ProgramException
     {
         public InvalidModuleException(string message)
             : base(Constants.Error_InvalidModule + " " + message)
@@ -35,7 +43,7 @@ namespace BibleCommon.Common
         }
     }
 
-    public class InvalidNotebookException : Exception
+    public class InvalidNotebookException : ProgramException
     {
         public InvalidNotebookException(string message)
             : base(message)
@@ -43,7 +51,7 @@ namespace BibleCommon.Common
         }
     }
 
-    public class BaseVersePointerException: Exception
+    public class BaseVersePointerException : ProgramException
     {
         public enum Severity
         {
@@ -87,7 +95,7 @@ namespace BibleCommon.Common
         }
     }
 
-    public class ChapterNotFoundException: BaseVersePointerException
+    public class ChapterNotFoundException : BaseVersePointerException
     {
         public ChapterNotFoundException(SimpleVersePointer verse, string moduleShortName, Severity level)
             : base(string.Format("There is no chapter '({2}) {0} {1}'", verse.BookIndex, verse.Chapter, moduleShortName), level)

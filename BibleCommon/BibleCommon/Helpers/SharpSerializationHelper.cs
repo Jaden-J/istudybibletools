@@ -14,7 +14,10 @@ namespace BibleCommon.Helpers
         public static T Deserialize<T>(string filePath)
         {
             var serializer = new SharpSerializer(true);
-            return (T)serializer.Deserialize(filePath);
+            using (var ms = new MemoryStream(File.ReadAllBytes(filePath)))
+            {
+                return (T)serializer.Deserialize(ms);
+            }
         }
 
         public static void Serialize(object data, string filePath)

@@ -278,7 +278,7 @@ namespace BibleConfigurator
         {
             try
             {
-                if (_mainForm.StopExternalProcess)
+                if (_mainForm.StopLongProcess)
                     throw new ProcessAbortedByUserException();
 
                 if (new FileInfo(e.FullPath).Length > 0)

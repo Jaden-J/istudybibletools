@@ -41,38 +41,46 @@ namespace BibleConfigurator
                 this.Text = lblTitle.Text = string.Format("{0} ({1} {2})", module.DisplayName, module.BibleStructure.BibleBooks.Count, BibleCommon.Resources.Constants.Books);
                 lblLocation.Text = ModulesManager.GetModuleDirectory(ModuleName);
 
-                int top = 5;
-
+                var sb = new StringBuilder(
+@"<html>
+    <body>
+        <div>");
+                sb.AppendFormat(
+@"
+            <table style='font-family: @{0};font-size:smaller'>", BibleCommon.Consts.Constants.UnicodeFontName);
                 foreach (var book in module.BibleStructure.BibleBooks)
                 {
-                    var lblBook = new Label();
-                    lblBook.Top = top;
-                    lblBook.Left = 0;
-                    lblBook.Text = string.Format("{0}:", book.Name);
-                    lblBook.Font = new System.Drawing.Font("Microsoft Sans Serif", (float)8.25, FontStyle.Bold);
-                    lblBook.Width = GetLabelWidth(lblBook);
-                    pnBooks.Controls.Add(lblBook);
-
-                    var lblAbbr = new Label();
-                    lblAbbr.Top = top;
-                    lblAbbr.Left = lblBook.Width + 5;
-                    lblAbbr.Text = string.Join("  ", book.Abbreviations.Select(abbr => abbr.Value).ToArray());
-                    lblAbbr.Width = GetLabelWidth(lblAbbr);
-                    pnBooks.Controls.Add(lblAbbr);
-
-                    top += 25;
+                    sb.Append(
+@"
+                <tr>");
+                    sb.AppendFormat(
+@"
+                    <td>
+                        <span style='font-weight: bold;white-space:nowrap;'>{0}</span>:
+                    </td>", book.Name);
+                    sb.AppendFormat(
+@"
+                    <td style='padding-left: 10px;'>
+                        <span style='white-space:nowrap;'>{0}</span>
+                    </td>", string.Join(",&nbsp;", book.Abbreviations.Select(abbr => string.Format("'{0}'", abbr.Value)).ToArray()));
+                    sb.Append(
+@"
+                </tr>");
                 }
+                sb.Append(
+@"
+            </table>
+        </div>
+    </body>
+</html>");
+
+                wbBooks.DocumentText = sb.ToString();              
             }
             catch (Exception ex)
             {
                 FormLogger.LogError(ex);
             }
-        }
-
-        private int GetLabelWidth(Label lbl)
-        {
-            return (int)lbl.CreateGraphics().MeasureString(lbl.Text, lbl.Font).Width + 20;
-        }
+        }      
 
         private bool _wasShown = false;
         private void AboutModuleForm_Shown(object sender, EventArgs e)

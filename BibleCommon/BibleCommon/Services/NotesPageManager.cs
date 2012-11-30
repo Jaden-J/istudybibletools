@@ -281,7 +281,8 @@ namespace BibleCommon.Services
                                                         !isChapter ?
                                                             OneNoteUtils.GetOrGenerateHref(oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseNumber),
                                                                 verseHierarchyObjectInfo.VerseInfo.ObjectHref,
-                                                                verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.VerseContentObjectId)
+                                                                verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.VerseContentObjectId, 
+                                                                Consts.Constants.QueryParameter_BibleVerse)
                                                             :
                                                             string.Empty
                                                                 ))))),

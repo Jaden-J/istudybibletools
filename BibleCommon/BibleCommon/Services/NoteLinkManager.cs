@@ -487,8 +487,7 @@ namespace BibleCommon.Services
             HierarchySearchManager.HierarchySearchResult hierarchySearchResult;            
 
             if (verseInfo.IsLink != VerseRecognitionManager.LinkType.LinkAfterFullAnalyze
-                || (verseInfo.IsLink == VerseRecognitionManager.LinkType.LinkAfterFullAnalyze && force) 
-                || (isTitle && verseInfo.IsInBrackets)
+                || (verseInfo.IsLink == VerseRecognitionManager.LinkType.LinkAfterFullAnalyze && force)                 
                 || IsExtendedVerse(verseInfo))
             {
                 string textElementObjectId = (string)textElement.Parent.Attribute("objectID");
@@ -678,15 +677,15 @@ namespace BibleCommon.Services
 
             newEndVerseIndex = endVerseNameIndex;
 
-            bool wasModified;
+            bool wasModifiedOnLinkCorrection;
             if (!CorrectTextToChangeBoundary(ref textElementValue, isLink,
-                              ref startVerseNameIndex, ref endVerseNameIndex, out wasModified))
+                              ref startVerseNameIndex, ref endVerseNameIndex, out wasModifiedOnLinkCorrection))
             {
                 newEndVerseIndex = searchResult.VersePointerHtmlEndIndex; // потому что это же значение мы присваиваем, если стоит !force и встретили гиперссылку                
                 return textElementValue;
             }
 
-            if (!wasModified)
+            if (!wasModifiedOnLinkCorrection)
             {             
                 if (searchResult.VersePointerHtmlStartIndex != searchResult.VersePointerStartIndex)
                 {
@@ -749,16 +748,25 @@ namespace BibleCommon.Services
                             else
                                 textToChange = searchResult.VersePointer.OriginalVerseName;
 
-                            hierarchySearchResult = localHierarchySearchResult;
+                             hierarchySearchResult = localHierarchySearchResult;
+
+                            var prevLinkText = isLink ? textElementValue.Substring(startVerseNameIndex, endVerseNameIndex - startVerseNameIndex) : null;
 
                             var additionalParams = new List<string>() { Consts.Constants.QueryParameter_BibleVerse };
                             if (linkDepth == AnalyzeDepth.SetVersesLinks)
-                                additionalParams.Add(Consts.Constants.QueryParameter_QuickAnalyze);
+                            {
+                                if (!isLink || prevLinkText.Contains(Consts.Constants.QueryParameter_QuickAnalyze) || wasModifiedOnLinkCorrection)
+                                    additionalParams.Add(Consts.Constants.QueryParameter_QuickAnalyze);
+                            }
+
+                            string prevStyle = string.Empty;
+                            if (isLink)                            
+                                prevStyle = StringUtils.GetAttributeValue(prevLinkText, "style");
 
                             string link = OneNoteUtils.GetOrGenerateHref(oneNoteApp, textToChange, localHierarchySearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref,
                                 localHierarchySearchResult.HierarchyObjectInfo.PageId, localHierarchySearchResult.HierarchyObjectInfo.VerseContentObjectId, additionalParams.ToArray());
 
-                            link = string.Format("<span style='font-weight:normal'>{0}</span>", link);
+                            link = string.Format("<span style='font-weight:normal;{1}'>{0}</span>", link, prevStyle);
 
                             var htmlTextBefore = textElementValue.Substring(0, startVerseNameIndex);
                             var htmlTextAfter = textElementValue.Substring(endVerseNameIndex);                            
@@ -769,7 +777,6 @@ namespace BibleCommon.Services
                                 if (!textBefore.EndsWith(" "))
                                     needToAddSpace = true;
                             }
-
 
                             textElementValue = string.Concat(
                                 htmlTextBefore,
@@ -1012,35 +1019,36 @@ namespace BibleCommon.Services
             {
                 string beginSearchString = "<a ";
                 string endSearchString = "</a>";
-                int linkStartIndex = StringUtils.LastIndexOf(textElementValue, beginSearchString, 0, startVerseNameIndex);
+                int linkStartIndex = StringUtils.LastIndexOf(textElementValue, beginSearchString, 0, endVerseNameIndex
+                //startVerseNameIndex
+                );
                 if (linkStartIndex != -1)
                 {
-                    int linkEndIndex = textElementValue.IndexOf(endSearchString, endVerseNameIndex);
+                    var linkEndIndexInside = textElementValue.IndexOf(endSearchString, linkStartIndex);
+                    var linkEndIndexOutside = textElementValue.IndexOf(endSearchString, endVerseNameIndex);
 
-                    if (linkEndIndex == -1)  // то есть ссылка началась и не окончилась. два варианта: либо ссылки внутри окончилась (до endVerseNameIndex), либо она вобще тут не оканчивается. 
+                    if (linkEndIndexInside != -1 && linkEndIndexInside != linkEndIndexOutside)  // то есть ссылка окончилась внутри. Тогда просто переносим </a> на конец библейской ссылки
                     {
-                        linkEndIndex = textElementValue.IndexOf(endSearchString, linkStartIndex);
-                        if (linkEndIndex != -1)  // значит окончилась внутри. Тогда просто переносим </a> на конец библейской ссылки
-                        {
-                            var textBeforeEndLink = textElementValue.Substring(0, linkEndIndex);
-                            var textAfterEndLinkButBeforeEndVerse = textElementValue.Substring(linkEndIndex + endSearchString.Length, endVerseNameIndex - linkEndIndex - endSearchString.Length);
-                            var textAfter = textElementValue.Substring(endVerseNameIndex);
-                            textElementValue = string.Concat(textBeforeEndLink, textAfterEndLinkButBeforeEndVerse, endSearchString, textAfter);
-                            endVerseNameIndex -= endSearchString.Length;
-                            linkEndIndex = textElementValue.IndexOf(endSearchString, endVerseNameIndex);
-                        }
+                        var textBeforeEndLink = textElementValue.Substring(0, linkEndIndexInside);
+                        var textAfterEndLinkButBeforeEndVerse = textElementValue.Substring(linkEndIndexInside + endSearchString.Length, endVerseNameIndex - linkEndIndexInside - endSearchString.Length);
+                        var textAfter = textElementValue.Substring(endVerseNameIndex);
+                        textElementValue = string.Concat(textBeforeEndLink, textAfterEndLinkButBeforeEndVerse, endSearchString, textAfter);
+                        endVerseNameIndex -= endSearchString.Length;
+                        linkEndIndexOutside = textElementValue.IndexOf(endSearchString, endVerseNameIndex);
                     }
 
-                    if (linkEndIndex != -1)
+                    if (linkEndIndexOutside != -1)
                     {
                         int startVerseNameIndexTemp = linkStartIndex;
-                        int endVerseNameIndexTemp = linkEndIndex + endSearchString.Length;
+                        int endVerseNameIndexTemp = linkEndIndexOutside + endSearchString.Length;
 
-                        string textBefore = StringUtils.GetText(textElementValue.Substring(startVerseNameIndexTemp, startVerseNameIndex - startVerseNameIndexTemp));                        
-                        if (string.IsNullOrEmpty(textBefore))                        
+                        string textBefore = startVerseNameIndexTemp < startVerseNameIndex 
+                                                ? StringUtils.GetText(textElementValue.Substring(startVerseNameIndexTemp, startVerseNameIndex - startVerseNameIndexTemp))
+                                                : StringUtils.GetText(textElementValue.Substring(startVerseNameIndex, startVerseNameIndexTemp - startVerseNameIndex));
+                        if (string.IsNullOrEmpty(textBefore.Trim()))                        
                         {
                             string textAfter = StringUtils.GetText(textElementValue.Substring(endVerseNameIndex, endVerseNameIndexTemp - endVerseNameIndex));
-                            if (string.IsNullOrEmpty(textAfter))
+                            if (string.IsNullOrEmpty(textAfter.Trim()))
                             {
                                 startVerseNameIndex = startVerseNameIndexTemp;
                                 endVerseNameIndex = endVerseNameIndexTemp;
