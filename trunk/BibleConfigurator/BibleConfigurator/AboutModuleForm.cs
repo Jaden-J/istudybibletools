@@ -56,13 +56,13 @@ namespace BibleConfigurator
                     sb.AppendFormat(
 @"
                     <td>
-                        <span style='font-weight: bold;white-space:nowrap;'>{0}</span>
+                        <span style='font-weight: bold;white-space:nowrap;'>{0}</span>:
                     </td>", book.Name);
                     sb.AppendFormat(
 @"
                     <td style='padding-left: 10px;'>
                         <span style='white-space:nowrap;'>{0}</span>
-                    </td>", string.Join("&nbsp;&nbsp;", book.Abbreviations.Select(abbr => string.Format("'{0}'", abbr.Value)).ToArray()));
+                    </td>", string.Join(",&nbsp;", book.Abbreviations.Select(abbr => string.Format("'{0}'", abbr.Value)).ToArray()));
                     sb.Append(
 @"
                 </tr>");

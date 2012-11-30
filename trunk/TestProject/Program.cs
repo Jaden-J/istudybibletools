@@ -42,12 +42,10 @@ namespace TestProject
             sw.Start();
 
 
+            _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+
             try
             {
-                _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
-
-                //var link = OneNoteProxy.Instance.GetDictionaryTermLink("G3801", "kjvstrong");
-
                 //ConvertChineseModuleFromTextFiles();
                 
                 //GenerateBibleBooks();
@@ -66,7 +64,7 @@ namespace TestProject
 
                 //GenerateDictionary();
 
-                //GenerateRuStrongDictionary();
+                GenerateRuStrongDictionary();
 
                 //GenerateEnStrongDictionary();
                 
@@ -270,8 +268,8 @@ namespace TestProject
 
         private static void GenerateEnStrongDictionary()
         {
-            var moduleName = "nasbstrong";
-            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Словари", moduleName, "Strong's Dictionary", "Strong's Exhaustive Concordance (c) Bible Foundation",
+            var moduleName = "kjvstrong";
+            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Dictionaries", moduleName, "Strong's Dictionary", "Strong's Exhaustive Concordance (c) Bible Foundation",
                  new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\HEBREW.HTM"), SectionName = "1. Old Testament.one", DictionaryPageDescription="Strong's Hebrew Dictionary (с) Bible Foundation", TermPrefix = "H" },
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\GREEK.HTM"), SectionName = "2. New Testament.one", DictionaryPageDescription="Strong's Greek Dictionary (с) Bible Foundation", TermPrefix= "G" }
