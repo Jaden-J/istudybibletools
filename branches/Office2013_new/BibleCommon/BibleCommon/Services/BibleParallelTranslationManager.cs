@@ -31,6 +31,7 @@ namespace BibleCommon.Services
         public int BibleIndex { get; set; }
         public int StrongStyleIndex { get; set; }
         public string StrongPrefix { get; set; }
+        public bool? NotNeedToUpdateChapter { get; set; }
     }
 
     public class BibleParallelTranslationManager : IDisposable
@@ -104,16 +105,17 @@ namespace BibleCommon.Services
             IterateBaseBible(
                 (chapterPageDoc, chapterPointer) =>
                 {
-                    RemoveChapterParallelTranslation(_oneNoteApp, chapterPageDoc, moduleInfo, xnm);
-
-                    return null;
+                    return new BibleIteratorArgs() 
+                    { 
+                        NotNeedToUpdateChapter = !RemoveChapterParallelTranslation(_oneNoteApp, chapterPageDoc, moduleInfo, xnm) 
+                    };                    
                 }, true, false, null);
 
         }
 
-        internal static void RemoveChapterParallelTranslation(Application oneNoteApp, XDocument chapterPageDoc, ModuleInfo moduleInfo, XmlNamespaceManager xnm)
+        internal static bool RemoveChapterParallelTranslation(Application oneNoteApp, XDocument chapterPageDoc, ModuleInfo moduleInfo, XmlNamespaceManager xnm)
         {
-            var supplementalModulesMetadata = OneNoteUtils.GetPageMetaData(oneNoteApp, chapterPageDoc.Root, Consts.Constants.EmbeddedSupplementalModulesKey, xnm);
+            var supplementalModulesMetadata = OneNoteUtils.GetPageMetaData(oneNoteApp, chapterPageDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules, xnm);
             if (!string.IsNullOrEmpty(supplementalModulesMetadata))
             {
                 var embeddedModulesInfo = EmbeddedModuleInfo.Deserialize(supplementalModulesMetadata);
@@ -133,9 +135,12 @@ namespace BibleCommon.Services
 
                     embeddedModulesInfo.Remove(embeddedModuleInfo);
                     OneNoteUtils.UpdatePageMetaData(oneNoteApp, chapterPageDoc.Root, 
-                        Consts.Constants.EmbeddedSupplementalModulesKey, EmbeddedModuleInfo.Serialize(embeddedModulesInfo), xnm);
+                        Consts.Constants.Key_EmbeddedSupplementalModules, EmbeddedModuleInfo.Serialize(embeddedModulesInfo), xnm);
+                    return true;
                 }
             }
+
+            return false;
         }
 
         /// <summary>
@@ -267,7 +272,8 @@ namespace BibleCommon.Services
                     }
                 }
 
-                if (needToUpdateChapter && chapterAction != null && chapterWasModified.GetValueOrDefault(true) == true && !ForCheckOnly)
+                if (needToUpdateChapter && chapterAction != null && chapterWasModified.GetValueOrDefault(true) == true && !ForCheckOnly 
+                    && (bibleIteratorArgs == null || bibleIteratorArgs.NotNeedToUpdateChapter == null || !bibleIteratorArgs.NotNeedToUpdateChapter.Value))
                 {
                     SupplementalBibleManager.UpdatePageXmlForStrongBible(chapterPageDoc, isOneNote2010);
 

@@ -34,6 +34,7 @@ namespace BibleConfigurator
                             break;
                         default:
                             CheckContainer(notebook, notebookEl.Content.Root, notebookEl.Xnm);
+                            CheckNotebookMetadata(oneNoteApp, module, notebookId, notebookType, notebookEl);     // то есть проверка показала, что записная книжка похожа на Библию. Теперь посмотрим, есть ли информация в метаданных                       
                             break;
                     }
 
@@ -46,6 +47,82 @@ namespace BibleConfigurator
             }
 
             return false;
+        }
+
+        public static bool ElementIsBible(ModuleInfo module, XElement element, XmlNamespaceManager xnm)
+        {
+            try
+            {
+                CheckContainer(module.GetNotebook(ContainerType.Bible), element, xnm);
+                return true;
+            }
+            catch (InvalidNotebookException)
+            {
+                return false;
+            }
+
+        }
+
+        public static bool ElementIsBibleComments(ModuleInfo module, XElement element, XmlNamespaceManager xnm)
+        {
+            try
+            {
+                CheckContainer(module.GetNotebook(ContainerType.BibleComments), element, xnm);
+                return true;
+            }
+            catch (InvalidNotebookException)
+            {
+                return false;
+            }
+        }     
+
+        internal static XElement GetFirstNotebookPageId(Application oneNoteApp, string notebookId, OneNoteProxy.HierarchyElement containerEl, out XmlNamespaceManager xnm)
+        {   
+            XElement sectionsDoc;
+
+            if (containerEl == null)
+                sectionsDoc = OneNoteUtils.GetHierarchyElement(oneNoteApp, notebookId, HierarchyScope.hsSections, out xnm).Root;
+            else
+            {
+                sectionsDoc = containerEl.Content.Root;
+                xnm = containerEl.Xnm;
+            }
+
+            var firstSection = sectionsDoc.XPathSelectElement(string.Format("//one:Section[{0}]", OneNoteUtils.NotInRecycleXPathCondition), xnm);
+            if (firstSection != null)
+            {
+                var pagesDoc = OneNoteUtils.GetHierarchyElement(oneNoteApp, (string)firstSection.Attribute("ID"), HierarchyScope.hsPages, out xnm);
+                var firstPage = pagesDoc.Root.XPathSelectElement("one:Page", xnm);
+                return firstPage;
+            }
+
+            return null;
+        }
+
+        private static void CheckNotebookMetadata(Application oneNoteApp, ModuleInfo module, string notebookId, ContainerType notebookType, OneNoteProxy.HierarchyElement containerEl)
+        {
+            if (notebookType == ContainerType.Bible)
+            {
+                XmlNamespaceManager xnm;
+                var firstNotebookPageEl = GetFirstNotebookPageId(oneNoteApp, notebookId, containerEl, out xnm);
+                if (firstNotebookPageEl != null)
+                {
+                    var bibleModuleMetadata = OneNoteUtils.GetPageMetaData(oneNoteApp, firstNotebookPageEl, BibleCommon.Consts.Constants.Key_EmbeddedBibleModule, xnm);
+                    if (!string.IsNullOrEmpty(bibleModuleMetadata))
+                    {
+                        var bibleModuleInfo = EmbeddedModuleInfo.Deserialize(bibleModuleMetadata);
+                        if (bibleModuleInfo.Count > 0)
+                        {
+                            if (bibleModuleInfo[0].ModuleName != module.ShortName)
+                            {
+                                var containerName = (string)containerEl.Content.Root.Attribute("name");
+                                throw new InvalidNotebookException(BibleCommon.Resources.Constants.BibleNotebookIsForAnotherModule,
+                                                                        containerName, bibleModuleInfo[0].ModuleName, module.ShortName);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private static void CheckContainer(SectionGroupInfo container, XElement containerEl, XmlNamespaceManager xnm)
@@ -155,34 +232,7 @@ namespace BibleConfigurator
 
             if (ElementIsBibleComments(module, element, xnm))
                 throw new InvalidNotebookException(Constants.SelectedNotebookForType, ContainerType.BibleComments);            
-        }
-
-        public static bool ElementIsBible(ModuleInfo module, XElement element, XmlNamespaceManager xnm)
-        {
-            try
-            {
-                CheckContainer(module.GetNotebook(ContainerType.Bible), element, xnm);
-                return true;
-            }
-            catch (InvalidNotebookException)
-            {
-                return false;
-            }
-
-        }
-      
-        public static bool ElementIsBibleComments(ModuleInfo module, XElement element, XmlNamespaceManager xnm)
-        {
-            try
-            {
-                CheckContainer(module.GetNotebook(ContainerType.BibleComments), element, xnm);
-                return true;
-            }
-            catch (InvalidNotebookException)
-            {
-                return false;
-            }
-        }     
+        }      
 
     }
 }

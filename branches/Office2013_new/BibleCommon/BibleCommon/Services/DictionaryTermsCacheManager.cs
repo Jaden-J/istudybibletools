@@ -11,6 +11,7 @@ using BibleCommon.Contracts;
 using System.Xml.XPath;
 using System.Xml.Linq;
 using Polenter.Serialization;
+using BibleCommon.UI.Forms;
 
 namespace BibleCommon.Services
 {
@@ -39,9 +40,54 @@ namespace BibleCommon.Services
             return SharpSerializationHelper.Deserialize<Dictionary<string, string>>(filePath);
         }
 
-        public static Dictionary<string, string> GenerateCache(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger)
+        public static void RemoveCache(string moduleShortName)
+        {
+            try
+            {
+                var filePath = GetCacheFilePath(moduleShortName);
+                if (File.Exists(filePath))
+                    File.Delete(filePath);
+            }
+            catch (Exception ex)
+            {
+                BibleCommon.Services.Logger.LogError(ex);
+            }
+        }
+
+        public static Dictionary<string, string> GenerateCache(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger, bool silient = false)
         {
             var cacheData = IndexDictionary(oneNoteApp, moduleInfo, logger);
+
+            if (moduleInfo.NotebooksStructure.DictionaryTermsCount > cacheData.Count)
+            {
+                var notFoundTerms = new List<string>();
+                bool isStrong = moduleInfo.Type == ModuleType.Strong;
+                
+                var moduleDictionaryInfo = ModulesManager.GetModuleDictionaryInfo(moduleInfo.ShortName);
+                foreach (var term in moduleDictionaryInfo.TermSet.Terms)
+                {
+                    if (!cacheData.ContainsKey(GetTermName(term, isStrong)))
+                        notFoundTerms.Add(term);
+                }
+
+                if (notFoundTerms.Count > 0)
+                {
+                    if (silient)
+                        Logger.LogWarning("The terms of module '{0}' were not found: ", moduleInfo.ShortName, string.Join(", ", notFoundTerms.ToArray()));
+                    else
+                    {
+                        using (var form = new ErrorsForm())
+                        {
+                            form.AllErrors.Add(new ErrorsForm.ErrorsList(notFoundTerms)
+                            {
+                                ErrorsDecription = BibleCommon.Resources.Constants.DictionaryTermsNotFound
+                            });
+                            form.ShowDialog();
+                        }
+                    }
+                }
+            }
+
             var filePath = GetCacheFilePath(moduleInfo.ShortName);
 
             SharpSerializationHelper.Serialize(cacheData, filePath);
@@ -49,7 +95,7 @@ namespace BibleCommon.Services
             return cacheData;
         }
 
-        public static Dictionary<string, string> IndexDictionary(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger)
+        private static Dictionary<string, string> IndexDictionary(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger)
         {
             var result = new Dictionary<string, string>();
             var dictionaryModuleInfo = SettingsManager.Instance.DictionariesModules.FirstOrDefault(m => m.ModuleName == moduleInfo.ShortName);
@@ -68,7 +114,7 @@ namespace BibleCommon.Services
                 }
                 else
                     IndexDictionarySection(oneNoteApp, sectionGroupDoc.Root, ref result, moduleInfo.Type == ModuleType.Strong, logger, xnm);
-            }
+            }           
 
             return result;
         }
@@ -87,7 +133,10 @@ namespace BibleCommon.Services
                 foreach (var termTextEl in tableEl.XPathSelectElements("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
                 {
                     var termName = StringUtils.GetText(termTextEl.Value);
-                    termName = isStrong ? termName.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0] : termName.ToLower();
+                    if (isStrong)
+                        termName = termName.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    termName = GetTermName(termName, isStrong);
+
                     var termTextElementId = (string)termTextEl.Parent.Attribute("objectID");
 
                     var href = (isStrong && !SettingsManager.Instance.UseMiddleStrongLinks) 
@@ -101,6 +150,11 @@ namespace BibleCommon.Services
                         logger.LogMessage(termName);
                 }               
             }
+        }        
+
+        private static string GetTermName(string term, bool isStrong)
+        {
+            return isStrong ? term : term.ToLower();
         }
     }
 }

@@ -23,14 +23,7 @@ namespace BibleVersePointer
 {
     public partial class MainForm : Form
     {   
-        private Microsoft.Office.Interop.OneNote.Application _onenoteApp = null;
-        public Microsoft.Office.Interop.OneNote.Application OneNoteApp
-        {
-            get
-            {
-                return _onenoteApp;
-            }
-        }
+        private Microsoft.Office.Interop.OneNote.Application _oneNoteApp = null;       
 
         public MainForm()
         {
@@ -38,7 +31,7 @@ namespace BibleVersePointer
 
             InitializeComponent();
 
-            _onenoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
             
             this.Text = BibleCommon.Resources.Constants.OpenVerse; 
             lblDescription.Text = BibleCommon.Resources.Constants.SpecifyBibleVerse;
@@ -60,11 +53,11 @@ namespace BibleVersePointer
 
             try
             {
-                if (!SettingsManager.Instance.IsConfigured(OneNoteApp))
+                if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
                 {
                     SettingsManager.Instance.ReLoadSettings();  // так как программа кэшируется в пуле OneNote, то проверим - может уже сконфигурили всё.
 
-                    if (!SettingsManager.Instance.IsConfigured(OneNoteApp))
+                    if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
                     {
                         Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                     }
@@ -85,8 +78,8 @@ namespace BibleVersePointer
 
                             if (vp.IsValid)
                             {
-                                if (OneNoteApp.Windows.CurrentWindow == null)
-                                    OneNoteApp.NavigateTo(string.Empty);
+                                if (_oneNoteApp.Windows.CurrentWindow == null)
+                                    _oneNoteApp.NavigateTo(string.Empty);
 
                                 if (GoToVerse(vp))
                                 {
@@ -109,8 +102,8 @@ namespace BibleVersePointer
 
                 if (!Logger.WasLogged)
                 {
-                    if (OneNoteApp.Windows.CurrentWindow != null)
-                        SetForegroundWindow(new IntPtr((long)OneNoteApp.Windows.CurrentWindow.WindowHandle));
+                    if (_oneNoteApp.Windows.CurrentWindow != null)
+                        SetForegroundWindow(new IntPtr((long)_oneNoteApp.Windows.CurrentWindow.WindowHandle));
                     this.Close();
                 }
             }
@@ -122,7 +115,7 @@ namespace BibleVersePointer
 
         private bool GoToVerse(VersePointer vp)
         {   
-            var result = HierarchySearchManager.GetHierarchyObject(OneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);            
+            var result = HierarchySearchManager.GetHierarchyObject(_oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);            
 
             if (result.ResultType != HierarchySearchManager.HierarchySearchResultType.NotFound 
                 && (result.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder || result.HierarchyStage == HierarchySearchManager.HierarchyStage.Page))
@@ -130,7 +123,7 @@ namespace BibleVersePointer
                 string hierarchyObjectId = !string.IsNullOrEmpty(result.HierarchyObjectInfo.PageId)
                     ? result.HierarchyObjectInfo.PageId : result.HierarchyObjectInfo.SectionId;
 
-                NavigateTo(OneNoteApp, hierarchyObjectId, result.HierarchyObjectInfo.GetAllObjectsIds().ToArray());
+                NavigateTo(ref _oneNoteApp, hierarchyObjectId, result.HierarchyObjectInfo.GetAllObjectsIds().ToArray());
                 return true;
             }
             else
@@ -163,11 +156,11 @@ namespace BibleVersePointer
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _onenoteApp = null;
+            _oneNoteApp = null;
         }
 
 
-        private static void NavigateTo(Microsoft.Office.Interop.OneNote.Application oneNoteApp, string pageId, params HierarchySearchManager.VerseObjectInfo[] objectsIds)
+        private static void NavigateTo(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, string pageId, params HierarchySearchManager.VerseObjectInfo[] objectsIds)
         {
             oneNoteApp.NavigateTo(pageId, objectsIds.Length > 0 ? objectsIds[0].ObjectId : null);            
 

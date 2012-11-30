@@ -76,7 +76,7 @@ namespace BibleConfigurator
                     DictionariesNotebookId = SettingsManager.Instance.GetValidDictionariesNotebookId(_oneNoteApp, true);
                 }
 
-                if (string.IsNullOrEmpty(DictionariesNotebookId))
+                if (string.IsNullOrEmpty(DictionariesNotebookId) || SettingsManager.Instance.DictionariesModules.Count == 0)
                 {
                     this.Visible = false;
                     this.SetFocus();                    
@@ -111,8 +111,7 @@ namespace BibleConfigurator
                 return true;
             }
             catch (Exception ex)
-            {
-                Logger.LogError(ex);
+            {                
                 BibleCommon.Services.Logger.LogError(ex);
                 throw;
             }
@@ -151,6 +150,7 @@ namespace BibleConfigurator
             catch (Exception ex)
             {
                 FormLogger.LogError(ex);
+                Close();
             }
         }        
 
@@ -221,10 +221,19 @@ namespace BibleConfigurator
                 var moduleShortName = _modules[dictionaryName].ShortName;
 
                 if (!DictionaryTermsCacheManager.CacheIsActive(moduleShortName))
-                    throw new Exception(BibleCommon.Resources.Constants.DictionaryCacheFileNotFound);
+                    throw new Exception(string.Format(BibleCommon.Resources.Constants.DictionaryCacheFileNotFound, moduleShortName));
 
                 var link = OneNoteProxy.Instance.GetDictionaryTermLink(term.ToLower(), moduleShortName);
-                _oneNoteApp.NavigateTo(link.PageId, link.ObjectId);
+
+                if (!DictionaryManager.GoToTerm(_oneNoteApp, link))
+                {
+                    using (var form = new MainForm())
+                    {
+                        form.ForceIndexDictionaryModuleName = moduleShortName;
+                        form.CommitChangesAfterLoad = true;
+                        form.ShowDialog();
+                    }
+                }                
             }
             catch (Exception ex)
             {
@@ -256,7 +265,14 @@ namespace BibleConfigurator
         {
             if (!_wasShown)
             {
-                this.SetFocus();
+                try
+                {
+                    this.SetFocus();
+                }
+                catch (Exception)
+                {
+                    int i = 0;
+                }
                 _wasShown = true;
             }
         }

@@ -720,4 +720,57 @@
   <data name="DictionaryCacheFileNotFound" xml:space="preserve">
     <value>Модуль '{0}' установлен не правильно. Не найден файл кэша словаря. Откройте 'Параметры программы' и укажите все необходимые настройки.</value>
   </data>
+  <data name="ContinueAddingParallelBible" xml:space="preserve">
+    <value>Всё равно добавить параллельный перевод?</value>
+  </data>
+  <data name="ContinueCreatingSupplementalBible" xml:space="preserve">
+    <value>Всё равно создать справочную Библию?</value>
+  </data>
+  <data name="DictionaryTermNotFoundInCache" xml:space="preserve">
+    <value>Не удалось найти термин '{0}' в кэше словаря '{1}'. Попробуйте обновить модуль.</value>
+  </data>
+  <data name="DictionaryTermsNotFound" xml:space="preserve">
+    <value>Не удалось найти некоторые термины словаря в OneNote. Попробуйте обновить модуль.</value>
+  </data>
+  <data name="ParallelModuleChecking" xml:space="preserve">
+    <value>Проверка модулей</value>
+  </data>
+  <data name="ParallelModuleCheckStart" xml:space="preserve">
+    <value>Старт проверки модулей</value>
+  </data>
+  <data name="RebuldDictionaryCache" xml:space="preserve">
+    <value>Не найден соответствующий термин в OneNote. Обновить кэш словаря?</value>
+  </data>
+  <data name="ThereAreErrorsAfterParallelModuleWasAdded" xml:space="preserve">
+    <value>После чего необходимо удалить добавленный параллельный модуль и добавить его снова. Показать ошибки, произошедшие при добавлении параллельного модуля?</value>
+  </data>
+  <data name="ThereAreErrorsOnModulesMerging" xml:space="preserve">
+    <value>Обнаружены несоответствия в модулях '{0} (версия {1})' и '{2} (версия {3})'. Скорее всего, вы используете не последние версии данных модулей. Попробуйте скачать данные модули с сайта {4} и обновить данные модули в системе.</value>
+  </data>
+  <data name="ErrorsAreSavedInFile" xml:space="preserve">
+    <value>Ошибки сохранены в файле '{0}'.</value>
+  </data>
+  <data name="ParallelModuleCheckFinish" xml:space="preserve">
+    <value>Проверка модулей завершена</value>
+  </data>
+  <data name="DictionaryFormDescription" xml:space="preserve">
+    <value>Данная форма предназначена для управления словарями. 
+
+Обратите внимание:  
+  - необходимо, чтобы в программу были загружены модули типа 'Словарь';
+  - добавление нового словаря занимает несколько минут.</value>
+  </data>
+  <data name="ReopenParametersToSeeChanges" xml:space="preserve">
+    <value>Пожалуйста, закройте и откройте окно 'Параметры программы', чтобы увидеть изменения.</value>
+  </data>
+  <data name="SupplementalBibleFormDescription" xml:space="preserve">
+    <value>Данная форма предназначена для управления справочной Библией. 
+
+Обратите внимание:
+  - в справочную Библию можно добавлять только модули версии 2.0 и выше;  
+  - добавление нового модуля в справочную Библию занимает около часа.</value>
+  </data>
+  <data name="BibleNotebookIsForAnotherModule" xml:space="preserve">
+    <value>Записная книжка '{0}' создана для модуля '{1}', а не для '{2}'.</value>
+  </data>
 </root>

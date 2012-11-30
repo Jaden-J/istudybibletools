@@ -71,13 +71,13 @@ namespace BibleConfigurator.Tools
 
                 foreach (string id in notebookIds)
                 {
-                    string notebookName = OneNoteUtils.GetHierarchyElementName(_oneNoteApp, id) + OneNotePackageExtension;
+                    string notebookName = OneNoteUtils.GetHierarchyElementNickname(_oneNoteApp, id) + OneNotePackageExtension;
 
                     _notebookNames.Add(notebookName);
 
                     BackupNotebook(id, notebookName);                    
                     
-                    if (_form.StopExternalProcess)
+                    if (_form.StopLongProcess)
                         throw new ProcessAbortedByUserException();
                 }                
             }
@@ -128,7 +128,7 @@ namespace BibleConfigurator.Tools
         {
             try
             {
-                if (_form.StopExternalProcess)
+                if (_form.StopLongProcess)
                     throw new ProcessAbortedByUserException();
 
                 if (new FileInfo(e.FullPath).Length > 0)

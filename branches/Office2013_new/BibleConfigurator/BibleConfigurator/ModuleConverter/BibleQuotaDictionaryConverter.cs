@@ -173,7 +173,7 @@ namespace BibleConfigurator.ModuleConverter
             if (!string.IsNullOrEmpty(pageDisplayName))
                 AddPageTitle(pageDoc, pageDisplayName, xnm);
 
-            OneNoteUtils.UpdatePageMetaData(OneNoteApp, pageDoc.Root, BibleCommon.Consts.Constants.EmbeddedDictionariesKey,
+            OneNoteUtils.UpdatePageMetaData(OneNoteApp, pageDoc.Root, BibleCommon.Consts.Constants.Key_EmbeddedDictionaries,
                 EmbeddedModuleInfo.Serialize(new List<EmbeddedModuleInfo>() { new EmbeddedModuleInfo(DictionaryModuleName, Version) }), xnm);
 
             PagesCount++;
@@ -335,7 +335,7 @@ namespace BibleConfigurator.ModuleConverter
                             .Replace("</h6>", "</b>")
                             .Replace("<h5>", Environment.NewLine + "<b>")
                             .Replace("</h5>", "</b>")
-                            .Trim();                            
+                            .Trim(new char[] { ' ', '\t' });                            
                                 
 
             if (Type == StructureType.Strong)

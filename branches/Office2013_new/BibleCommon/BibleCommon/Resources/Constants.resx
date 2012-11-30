@@ -130,7 +130,7 @@
     <value>Backup starts</value>
   </data>
   <data name="BibleVersePointerCanNotFindPlace" xml:space="preserve">
-    <value>The passage can not be found</value>
+    <value>The passage is not found</value>
   </data>
   <data name="BibleVersePointerCanNotParseString" xml:space="preserve">
     <value>String cannot be parsed</value>
@@ -151,7 +151,7 @@
     <value>Notebook not defined</value>
   </data>
   <data name="ConfiguratorNotebookTemplateNotFound" xml:space="preserve">
-    <value>Notebook template not found at</value>
+    <value>Notebook template is not found at</value>
   </data>
   <data name="ConfiguratorQuestionDeleteAllNotesPages" xml:space="preserve">
     <value>Delete all summary of notes and references to them?</value>
@@ -160,7 +160,7 @@
     <value>'Summary of Notes' pages use a separate notebook. It is recommended to manually remove the notebook 'Summary of Notes' and recreate it from template. Continue?</value>
   </data>
   <data name="ConfiguratorSectionGroupNotFound" xml:space="preserve">
-    <value>Section group not found</value>
+    <value>Section group is not found</value>
   </data>
   <data name="ConfiguratorSelectAnotherFolder" xml:space="preserve">
     <value>Unable to create the notebook. Select a different folder.</value>
@@ -722,5 +722,50 @@
   </data>
   <data name="DictionaryCacheFileNotFound" xml:space="preserve">
     <value>Module '{0}' is not installed correctly. Dictionary cache file is not found. Open the 'Program parameters' and specify the necessary settings.</value>
+  </data>
+  <data name="ContinueAddingParallelBible" xml:space="preserve">
+    <value>Add parallel translation anyway?</value>
+  </data>
+  <data name="ContinueCreatingSupplementalBible" xml:space="preserve">
+    <value>Create Supplemental Bible anyway?</value>
+  </data>
+  <data name="DictionaryTermNotFoundInCache" xml:space="preserve">
+    <value>Can not find term '{0}' in Dictionary cached TermSet '{1}'. Please try to update dictionary module.</value>
+  </data>
+  <data name="DictionaryTermsNotFound" xml:space="preserve">
+    <value>Some Dictionary terms were not found in OneNote. Please try to update dictionary module.</value>
+  </data>
+  <data name="ParallelModuleChecking" xml:space="preserve">
+    <value>Checking modules</value>
+  </data>
+  <data name="ParallelModuleCheckStart" xml:space="preserve">
+    <value>Start checking modules</value>
+  </data>
+  <data name="RebuldDictionaryCache" xml:space="preserve">
+    <value>Term is not found in OneNote. Update the dictionary cache?</value>
+  </data>
+  <data name="ThereAreErrorsAfterParallelModuleWasAdded" xml:space="preserve">
+    <value>After it is necessary to remove the added parallel module and add it again. Show errors that have occurred while adding parallel module?</value>
+  </data>
+  <data name="ThereAreErrorsOnModulesMerging" xml:space="preserve">
+    <value>Inconsistencies are detected in the modules '{0} (version {1})' and '{2} (version {3})'. Probably these modules are not of the latest version. Try to download these modules from the site {4} and to update these modules in the system.</value>
+  </data>
+  <data name="ErrorsAreSavedInFile" xml:space="preserve">
+    <value>The errors are saved in file '{0}'.</value>
+  </data>
+  <data name="ParallelModuleCheckFinish" xml:space="preserve">
+    <value>Finish checking modules</value>
+  </data>
+  <data name="DictionaryFormDescription" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ReopenParametersToSeeChanges" xml:space="preserve">
+    <value>Please close and open the 'Program Parameters' window to see changes.</value>
+  </data>
+  <data name="SupplementalBibleFormDescription" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BibleNotebookIsForAnotherModule" xml:space="preserve">
+    <value>Notebook '{0}' is created for module '{1}', not for '{2}'.</value>
   </data>
 </root>

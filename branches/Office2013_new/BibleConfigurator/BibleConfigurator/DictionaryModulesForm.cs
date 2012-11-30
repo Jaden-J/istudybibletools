@@ -14,13 +14,13 @@ namespace BibleConfigurator
 {
     public class DictionaryModulesForm: BaseSupplementalForm
     {
-        public DictionaryModulesForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
-            : base(oneNoteApp, form)
+        public DictionaryModulesForm(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
+            : base(ref oneNoteApp, form)
         { }
 
         protected override string GetValidSupplementalNotebookId()
         {
-            return SettingsManager.Instance.GetValidDictionariesNotebookId(OneNoteApp, true);
+            return SettingsManager.Instance.GetValidDictionariesNotebookId(_oneNoteApp, true);
         }        
 
         protected override int GetSupplementalModulesCount()
@@ -37,22 +37,16 @@ namespace BibleConfigurator
         {
             get
             {
-                return
-@"Данная форма предназначена для управления словарями. 
-
-Обратите внимание:  
-  - необходимо, чтобы в программу были загружены модули типа 'Словарь';
-  - добавление нового словаря занимает несколько минут.
-";
+                return BibleCommon.Resources.Constants.DictionaryFormDescription;
             }
         }
 
         protected override List<string> CommitChanges(BibleCommon.Common.ModuleInfo selectedModuleInfo)
         {
             MainForm.PrepareForLongProcessing(selectedModuleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
-            DictionaryManager.AddDictionary(OneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true);
+            DictionaryManager.AddDictionary(_oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true);
             Logger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexDictionary);
-            DictionaryTermsCacheManager.GenerateCache(OneNoteApp, selectedModuleInfo, Logger);
+            DictionaryTermsCacheManager.GenerateCache(_oneNoteApp, selectedModuleInfo, Logger);
             MainForm.LongProcessingDone(BibleCommon.Resources.Constants.AddDictionaryFinishMessage);
 
             return new List<string>();
@@ -69,16 +63,16 @@ namespace BibleConfigurator
                 || (moduleInfo.Type == ModuleType.Strong && !SettingsManager.Instance.SupplementalBibleModules.Any(
                     m => 
                     {
-                        var sm = Modules.FirstOrDefault(module => module.ShortName == m.ModuleName);
-                        if (sm != null)
-                            return sm.Type == ModuleType.Strong;
-                        return false;
+                        if (DictionaryModules.ContainsKey(m.ModuleName))                        
+                            return DictionaryModules[m.ModuleName].Type == ModuleType.Strong;
+                        else
+                            return false;                       
                     }));
         }
 
         protected override void DeleteModule(string moduleShortName)
         {
-            DictionaryManager.RemoveDictionary(OneNoteApp, moduleShortName);            
+            DictionaryManager.RemoveDictionary(_oneNoteApp, moduleShortName);            
         }
 
         protected override string CloseSupplementalNotebookQuestionText
@@ -88,7 +82,7 @@ namespace BibleConfigurator
 
         protected override void CloseSupplementalNotebook()
         {
-            DictionaryManager.CloseDictionariesNotebook(OneNoteApp);
+            DictionaryManager.CloseDictionariesNotebook(_oneNoteApp);
         }
 
         protected override bool IsModuleSupported(BibleCommon.Common.ModuleInfo moduleInfo)
@@ -124,9 +118,9 @@ namespace BibleConfigurator
 
         protected override bool CanNotebookBeClosed()
         {
-            return !(SettingsManager.Instance.DictionariesModules.Any(dm => Modules.First(m => m.ShortName == dm.ModuleName).Type == ModuleType.Strong)
-                    && SettingsManager.Instance.SupplementalBibleModules.Any(sm => Modules.First(m => m.ShortName == sm.ModuleName).Type == ModuleType.Strong)
-                    && !string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(OneNoteApp)));
+            return !(SettingsManager.Instance.DictionariesModules.Any(dm => DictionaryModules[dm.ModuleName].Type == ModuleType.Strong)
+                    && SettingsManager.Instance.SupplementalBibleModules.Any(sm => DictionaryModules[sm.ModuleName].Type == ModuleType.Strong)
+                    && !string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(_oneNoteApp)));
         }
 
         protected override string NotebookCannotBeClosedText
@@ -136,7 +130,7 @@ namespace BibleConfigurator
 
         protected override string EmbeddedModulesKey
         {
-            get { return BibleCommon.Consts.Constants.EmbeddedDictionariesKey; }
+            get { return BibleCommon.Consts.Constants.Key_EmbeddedDictionaries; }
         }
 
         protected override string NotebookIsNotSupplementalBibleMessage
@@ -180,7 +174,7 @@ namespace BibleConfigurator
             {
                 MainForm.PrepareForLongProcessing(moduleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
                 Logger.Preffix = string.Format("{0} {1}: ", BibleCommon.Resources.Constants.IndexDictionary, moduleInfo.ShortName);
-                DictionaryTermsCacheManager.GenerateCache(OneNoteApp, moduleInfo, Logger);
+                DictionaryTermsCacheManager.GenerateCache(_oneNoteApp, moduleInfo, Logger);
             }
 
             return result;
@@ -194,6 +188,11 @@ namespace BibleConfigurator
         protected override bool AreThereModulesToAdd()
         {
             return Modules.Any(m => m.Type == ModuleType.Dictionary && !SupplementalModuleAlreadyAdded(m.ShortName));            
+        }
+
+        protected override string GetPostCommitErrorMessage(ModuleInfo selectedModuleInfo)
+        {
+            return null;
         }
     }
 }

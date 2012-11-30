@@ -31,18 +31,7 @@ namespace TestProject
         private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\Holy Bible\IStudyBibleTools\ForGenerating";
         private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp";
 
-        private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
-        private static Microsoft.Office.Interop.OneNote.Application OneNoteApp
-        {
-            get
-            {
-                if (_oneNoteApp == null)
-                    _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
-
-                return _oneNoteApp;
-            }
-        }
-
+        private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;       
        
 
         [STAThread]
@@ -53,10 +42,10 @@ namespace TestProject
             sw.Start();
 
 
+            _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+
             try
             {
-                //var link = OneNoteProxy.Instance.GetDictionaryTermLink("G3801", "kjvstrong");
-
                 //ConvertChineseModuleFromTextFiles();
                 
                 //GenerateBibleBooks();
@@ -75,7 +64,7 @@ namespace TestProject
 
                 //GenerateDictionary();
 
-                //GenerateRuStrongDictionary();
+                GenerateRuStrongDictionary();
 
                 //GenerateEnStrongDictionary();
                 
@@ -231,14 +220,13 @@ namespace TestProject
         private static void CheckHTML()
         {
             XmlNamespaceManager xnm;
-            var pageDoc = OneNoteUtils.GetPageContent(OneNoteApp, OneNoteApp.Windows.CurrentWindow.CurrentPageId, out xnm);
+            var pageDoc = OneNoteUtils.GetPageContent(_oneNoteApp, _oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xnm);
 
             string s = @"";
 
             NotebookGenerator.AddTextElementToPage(pageDoc, s);
-
-            var oneNoteApp = OneNoteApp;
-            OneNoteUtils.UpdatePageContentSafe(ref oneNoteApp, pageDoc, xnm);
+            
+            OneNoteUtils.UpdatePageContentSafe(ref _oneNoteApp, pageDoc, xnm);
         }
 
         private static void GenerateBibleVersesLinks()
@@ -261,7 +249,7 @@ namespace TestProject
         {   
             var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();             
             string xml;
-            oneNoteApp.GetPageContent(OneNoteApp.Windows.CurrentWindow.CurrentPageId, out xml);
+            oneNoteApp.GetPageContent(_oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xml);
             var currentPageDoc = XDocument.Parse(xml);
 
             var nms = XNamespace.Get("http://schemas.microsoft.com/office/onenote/2010/onenote");
@@ -280,8 +268,8 @@ namespace TestProject
 
         private static void GenerateEnStrongDictionary()
         {
-            var moduleName = "nasbstrong";
-            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", moduleName, "Strong's Dictionary", "Strong's Exhaustive Concordance (c) Bible Foundation",
+            var moduleName = "kjvstrong";
+            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Dictionaries", moduleName, "Strong's Dictionary", "Strong's Exhaustive Concordance (c) Bible Foundation",
                  new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\HEBREW.HTM"), SectionName = "1. Old Testament.one", DictionaryPageDescription="Strong's Hebrew Dictionary (с) Bible Foundation", TermPrefix = "H" },
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\GREEK.HTM"), SectionName = "2. New Testament.one", DictionaryPageDescription="Strong's Greek Dictionary (с) Bible Foundation", TermPrefix= "G" }
@@ -298,7 +286,7 @@ namespace TestProject
 
         private static void GenerateRuStrongDictionary()
         {
-            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "rststrong", "Словарь Стронга", "Еврейский и Греческий лексикон Стронга (с) Bob Jones University",
+            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Словари", "rststrong", "Словарь Стронга", "Еврейский и Греческий лексикон Стронга (с) Bob Jones University",
                 new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs\HEBREW.HTM"), SectionName = "Ветхий Завет.one", DictionaryPageDescription="Еврейский лексикон Стронга (с) Bob Jones University", TermPrefix = "H" },
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs\GREEK.HTM"), SectionName = "Новый Завет.one", DictionaryPageDescription="Греческий лексикон Стронга (с) Bob Jones University", TermPrefix= "G" }
@@ -322,7 +310,7 @@ namespace TestProject
             //    Path.Combine(TempFolderPath, "goetze"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0));
 
 
-            var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
+            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Словари", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
              new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
                 }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
@@ -347,10 +335,10 @@ namespace TestProject
             DateTime dtStart = DateTime.Now;
 
             string defaultNotebookFolderPath;
-            OneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+            _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
 
-            SupplementalBibleManager.CreateSupplementalBible(OneNoteApp, ModulesManager.GetModuleInfo("kjv"), defaultNotebookFolderPath, null);
-            var result = SupplementalBibleManager.LinkSupplementalBibleWithPrimaryBible(OneNoteApp, 0, null, null);
+            SupplementalBibleManager.CreateSupplementalBible(_oneNoteApp, ModulesManager.GetModuleInfo("kjv"), defaultNotebookFolderPath, null);
+            var result = SupplementalBibleManager.LinkSupplementalBibleWithPrimaryBible(ref _oneNoteApp, null, null);
 
             DateTime dtEnd = DateTime.Now;
 
@@ -369,9 +357,9 @@ namespace TestProject
             DateTime dtStart = DateTime.Now;
 
             string defaultNotebookFolderPath;
-            OneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+            _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
 
-            var result = SupplementalBibleManager.AddParallelBible(OneNoteApp, ModulesManager.GetModuleInfo("rst"), null, null);
+            var result = SupplementalBibleManager.AddParallelBible(_oneNoteApp, ModulesManager.GetModuleInfo("rst"), null, null);
 
             DateTime dtEnd = DateTime.Now;
 
@@ -527,7 +515,7 @@ namespace TestProject
         private static void TryToUpdateInkNodes()
         {
             string xml;
-            OneNoteApp.GetPageContent(OneNoteApp.Windows.CurrentWindow.CurrentPageId, out xml, Microsoft.Office.Interop.OneNote.PageInfo.piBasic, Constants.CurrentOneNoteSchema);
+            _oneNoteApp.GetPageContent(_oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xml, Microsoft.Office.Interop.OneNote.PageInfo.piBasic, Constants.CurrentOneNoteSchema);
 
             System.Xml.XmlNamespaceManager xnm = new System.Xml.XmlNamespaceManager(new System.Xml.NameTable());
             var xd = System.Xml.Linq.XDocument.Parse(xml);
@@ -557,7 +545,7 @@ namespace TestProject
             //foreach (var inkNode in inkNodes)
             //    inkNode.Remove();
 
-            OneNoteApp.UpdatePageContent(doc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+            _oneNoteApp.UpdatePageContent(doc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
 
         }
 

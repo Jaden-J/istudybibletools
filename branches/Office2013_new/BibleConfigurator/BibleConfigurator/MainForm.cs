@@ -56,11 +56,15 @@ namespace BibleConfigurator
         protected LongProcessLogger LongProcessLogger { get; set; }
 
         private NotebookParametersForm _notebookParametersForm = null;
+
+        private bool _moduleWasChanged = false;
+        private string _originalModuleShortName; // модуль, который изначально является текущим в системе
         
         public bool ShowModulesTabAtStartUp { get; set; }
         public bool NeedToSaveChangesAfterLoadingModuleAtStartUp { get; set; }
         public bool ToIndexBible { get; set; }
         public bool CommitChangesAfterLoad { get; set; }
+        public string ForceIndexDictionaryModuleName { get; set; }
 
         public bool IsModerator { get; set; }
 
@@ -75,7 +79,7 @@ namespace BibleConfigurator
             IsModerator = args.Contains(Consts.ModeratorMode);
         }
 
-        public bool StopExternalProcess { get; set; }        
+        public bool StopLongProcess { get; set; }        
 
         private void btnOK_Click(object sender, EventArgs e)
         {
@@ -141,6 +145,11 @@ namespace BibleConfigurator
                     SettingsManager.Instance.SectionGroupId_BibleComments = string.Empty;
                     SettingsManager.Instance.SectionGroupId_BibleNotesPages = string.Empty;
 
+                    if (_moduleWasChanged)
+                    {
+                        TryToSearchNotebooksForNewModule(module);                        
+                    }
+
                     SaveMultiNotebookParameters(module, ContainerType.Bible,
                         chkCreateBibleNotebookFromTemplate, cbBibleNotebook, BibleNotebookFromTemplatePath);
 
@@ -182,7 +191,10 @@ namespace BibleConfigurator
                     if (closeForm)
                         Close();
                     else
+                    {
                         ReLoadParameters(false);
+                        _originalModuleShortName = SettingsManager.Instance.ModuleShortName;
+                    }
                 }
             }
             catch (SaveParametersException ex)
@@ -202,6 +214,54 @@ namespace BibleConfigurator
             }
         }
 
+        private void TryToSearchNotebooksForNewModule(ModuleInfo module)
+        {
+            var notebooks = OneNoteUtils.GetExistingNotebooks(_oneNoteApp);
+
+            notebooks.Remove(SettingsManager.Instance.NotebookId_Bible);
+            notebooks.Remove(SettingsManager.Instance.NotebookId_BibleStudy);
+            notebooks.Remove(SettingsManager.Instance.NotebookId_BibleComments);
+            if (notebooks.ContainsKey(SettingsManager.Instance.NotebookId_BibleNotesPages))
+                notebooks.Remove(SettingsManager.Instance.NotebookId_BibleNotesPages);
+
+
+            TryToSearchNotebookForNewModule(module, ContainerType.Bible, SettingsManager.Instance.NotebookId_Bible,
+                chkCreateBibleNotebookFromTemplate, cbBibleNotebook, ref notebooks, null);
+
+            var commentsNotebookId = TryToSearchNotebookForNewModule(module, ContainerType.BibleComments, SettingsManager.Instance.NotebookId_BibleComments,
+                chkCreateBibleCommentsNotebookFromTemplate, cbBibleCommentsNotebook, ref notebooks, null);
+
+            TryToSearchNotebookForNewModule(module, ContainerType.BibleNotesPages, SettingsManager.Instance.NotebookId_BibleNotesPages,
+                chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, ref notebooks, commentsNotebookId);     
+        }
+
+        private string TryToSearchNotebookForNewModule(ModuleInfo module, ContainerType containerType, string currentNotebookId,
+            CheckBox chkCreateNotebookFromTemplate, ComboBox cbNotebook, ref Dictionary<string, string> notebooks, string defaultNotebookId)
+        {
+            if (!chkCreateNotebookFromTemplate.Checked)
+            {
+                var notebookId = OneNoteUtils.GetNotebookIdByName(_oneNoteApp, (string)cbNotebook.SelectedItem, true);
+                if (notebookId == currentNotebookId)  // то есть если пользователь уже сам поменял, то не трогаем
+                {                    
+                    notebookId = SearchForNotebook(module, notebooks.Keys, containerType);
+
+                    if (string.IsNullOrEmpty(notebookId) && !string.IsNullOrEmpty(defaultNotebookId))
+                        notebookId = defaultNotebookId;
+
+                    if (string.IsNullOrEmpty(notebookId))
+                        chkCreateNotebookFromTemplate.Checked = true;
+                    else
+                    {
+                        cbNotebook.SelectedItem = OneNoteUtils.GetHierarchyElementNickname(_oneNoteApp, notebookId);
+                        notebooks.Remove(notebookId);
+                        return notebookId;
+                    }
+                }
+            }
+
+            return null;
+        }
+
         private bool AreThereUnindexedDictionaries()
         {
             foreach (var dictionaryInfo in SettingsManager.Instance.DictionariesModules)
@@ -217,7 +277,7 @@ namespace BibleConfigurator
         {            
             foreach (var dictionaryInfo in SettingsManager.Instance.DictionariesModules.ToArray())
             {
-                if (!DictionaryTermsCacheManager.CacheIsActive(dictionaryInfo.ModuleName))
+                if (!DictionaryTermsCacheManager.CacheIsActive(dictionaryInfo.ModuleName) || dictionaryInfo.ModuleName == ForceIndexDictionaryModuleName)
                 {   
                     try
                     {
@@ -261,7 +321,7 @@ namespace BibleConfigurator
                 string notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, notebookFromTemplatePath, out notebookFolderPath);
                 if (!string.IsNullOrEmpty(notebookName))
                 {
-                    WaitAndSaveParameters(notebookType, notebookName, notebookFolderPath);                         // выйдем из метода только когда OneNote отработает
+                    WaitAndSaveParameters(module, notebookType, notebookName, notebookFolderPath, notebookType == ContainerType.Bible);                         // выйдем из метода только когда OneNote отработает
                     createFromTemplateControl.Checked = false;  // чтоб если ошибки будут потом, он заново не создавал
                     selectedNotebookNameControl.Items.Add(notebookName);
                     selectedNotebookNameControl.SelectedItem = notebookName;
@@ -286,7 +346,7 @@ namespace BibleConfigurator
                 notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, SingleNotebookFromTemplatePath, out notebookFolderPath);
                 if (!string.IsNullOrEmpty(notebookName))
                 {
-                    WaitAndSaveParameters(ContainerType.Single, notebookName, notebookFolderPath);
+                    WaitAndSaveParameters(module, ContainerType.Single, notebookName, notebookFolderPath, false);
                     SearchForCorrespondenceSectionGroups(module, SettingsManager.Instance.NotebookId_Bible);
                 }
             }
@@ -436,15 +496,15 @@ namespace BibleConfigurator
 
         }
 
-        private void WaitAndSaveParameters(ContainerType notebookType, string notebookName, string notebookFolderPath)
+        private void WaitAndSaveParameters(ModuleInfo module, ContainerType notebookType, string notebookName, string notebookFolderPath, bool saveModuleInformationIntoFirstPage)
         {   
             PrepareForLongProcessing(100, 1, string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ConfiguratorNotebookCreation, notebookName));
             
             bool parametersWasLoad = false;
+            string notebookId = null;                
 
             try
-            {
-                string notebookId;                
+            {                
                 for (int attemptNumber = 0; attemptNumber <= LoadParametersAttemptsCount; attemptNumber++)
                 {
                     pbMain.PerformStep();
@@ -478,6 +538,24 @@ namespace BibleConfigurator
 
             if (!parametersWasLoad)
                 throw new SaveParametersException(BibleCommon.Resources.Constants.ConfiguratorCanNotRequestDataFromOneNote, true);
+            else if (saveModuleInformationIntoFirstPage)
+            {
+                if (!string.IsNullOrEmpty(notebookId))
+                    SaveModuleInformationIntoFirstPage(notebookId, module);
+            }
+        }
+
+        private void SaveModuleInformationIntoFirstPage(string notebookId, ModuleInfo module)
+        {
+            XmlNamespaceManager xnm;
+            var firstNotebookPageEl = NotebookChecker.GetFirstNotebookPageId(_oneNoteApp, notebookId, null, out xnm);
+            if (firstNotebookPageEl != null)
+            {
+                var moduleInfo = new EmbeddedModuleInfo(module.ShortName, module.Version);
+                var pageContent = OneNoteUtils.GetPageContent(_oneNoteApp, (string)firstNotebookPageEl.Attribute("ID"), out xnm);
+                OneNoteUtils.UpdatePageMetaData(_oneNoteApp, pageContent.Root, BibleCommon.Consts.Constants.Key_EmbeddedBibleModule, moduleInfo.ToString(), xnm);
+                OneNoteUtils.UpdatePageContentSafe(ref _oneNoteApp, pageContent, xnm);
+            }
         }
 
         private bool TryToSaveNotebookParameters(ContainerType notebookType, string notebookName, bool silientMode, out string notebookId)
@@ -665,6 +743,7 @@ namespace BibleConfigurator
                     {
                         var module = ModulesManager.GetCurrentModuleInfo();
                         LoadParameters(module, needSaveSettings);
+                        _originalModuleShortName = SettingsManager.Instance.ModuleShortName;
                     }
 
                     if (!IsModerator)
@@ -685,7 +764,7 @@ namespace BibleConfigurator
                 if (CommitChangesAfterLoad)
                     btnOK_Click(this, null);
             }
-        }
+        }      
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -698,6 +777,8 @@ namespace BibleConfigurator
         {
             if (!SettingsManager.Instance.IsConfigured(_oneNoteApp) || forceNeedToSaveSettings.GetValueOrDefault(false) || AreThereUnindexedDictionaries())
                 lblWarning.Visible = true;
+            //else  // пусть лучше будет так, чтобы если пользователь что-то поменял - его программа просила всегда сохранить изменения, пока он не сохранит
+            //    lblWarning.Visible = false;
 
             var notebooks = OneNoteUtils.GetExistingNotebooks(_oneNoteApp);
             string singleNotebookId = module.UseSingleNotebook() ? SearchForNotebook(module, notebooks.Keys, ContainerType.Single) : string.Empty;
@@ -737,8 +818,7 @@ namespace BibleConfigurator
                 SetNotebookParameters(rbSingleNotebook.Checked, !string.IsNullOrEmpty(singleNotebookId) ? notebooks[singleNotebookId] :
                     Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.Single).Name),
                     notebooks, SettingsManager.Instance.NotebookId_Bible, cbSingleNotebook, chkCreateSingleNotebookFromTemplate);
-            }
-            
+            }            
 
             SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotebookId) ? notebooks[bibleNotebookId] :
                 Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.Bible).Name), 
@@ -1036,7 +1116,7 @@ namespace BibleConfigurator
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            StopExternalProcess = true;
+            StopLongProcess = true;
             LongProcessLogger.AbortedByUsers = true;
         }
 
@@ -1243,11 +1323,10 @@ namespace BibleConfigurator
                         needToReload = true;
                     }
                     
-                    FormExtensions.Invoke(this, ReLoadModulesInfo);                    
+                    FormExtensions.Invoke(this, ReLoadModulesInfo);
 
-                    var form = new BibleCommon.UI.Forms.MessageForm(BibleCommon.Resources.Constants.ModuleSuccessfullyUploaded, BibleCommon.UI.Forms.MessageForm.Severity.Information);
-                    form.ShowDialog();
-
+                    FormLogger.LogMessage(BibleCommon.Resources.Constants.ModuleSuccessfullyUploaded);
+                    
                     return needToReload;                    
                 }
                 catch (InvalidModuleException ex)
@@ -1528,16 +1607,29 @@ namespace BibleConfigurator
                     if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible) && OneNoteUtils.NotebookExists(_oneNoteApp, SettingsManager.Instance.NotebookId_Bible, true)
                         && SettingsManager.Instance.CurrentModuleIsCorrect())
                     {
-                        if (MessageBox.Show(BibleCommon.Resources.Constants.ChangeModuleWarning, BibleCommon.Resources.Constants.Warning,
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)
-                            canContinue = false;
+                        if (moduleInfo.ShortName != _originalModuleShortName)
+                        {
+                            if (MessageBox.Show(BibleCommon.Resources.Constants.ChangeModuleWarning, BibleCommon.Resources.Constants.Warning,
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)
+                            {
+                                canContinue = false;
+                            }
+                            else
+                            {
+                                _moduleWasChanged = true;
+                            }
+                        }
+                        else
+                        {
+                            _moduleWasChanged = false;
+                        }
                     }
 
                     if (canContinue)
                     {                        
                         SettingsManager.Instance.ModuleShortName = moduleInfo.ShortName;
                         ReLoadModulesInfo();
-                        ReLoadParameters(true);
+                        ReLoadParameters(SettingsManager.Instance.ModuleShortName != _originalModuleShortName);
                     }
                     break;
                 case ModuleType.Strong:
@@ -1601,7 +1693,7 @@ namespace BibleConfigurator
 
         private void ShowSupplementalBibleManagementForm()
         {
-            using (var form = new SupplementalBibleForm(_oneNoteApp, this))
+            using (var form = new SupplementalBibleForm(ref _oneNoteApp, this))
             {
                 form.ShowDialog();
             }
@@ -1614,7 +1706,7 @@ namespace BibleConfigurator
 
         private void ShowDictionariesManagementForm()
         {
-            using (var form = new DictionaryModulesForm(_oneNoteApp, this))
+            using (var form = new DictionaryModulesForm(ref _oneNoteApp, this))
             {
                 form.ShowDialog();
             }

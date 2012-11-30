@@ -30,42 +30,47 @@ namespace BibleConfigurator
         [STAThread]
         static void Main(params string[] args)
         {
-            //  try
+            try
             {
-                LanguageManager.SetThreadUICulture();
-
-                string message = BibleCommon.Resources.Constants.MoreThanSingleInstanceRun;
-                if (args.Length == 1 && File.Exists(args[0]))
-                    message += " " + BibleCommon.Resources.Constants.LoadMofuleInExistingInstance;
+                LanguageManager.SetThreadUICulture();                
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
-                bool silent;
-                Form form = PrepareForRunning(out silent, args);
+                bool silent;                
+                string moreThanSingleInstanceRunMessage;
+                Form form = PrepareForRunning(out silent, out moreThanSingleInstanceRunMessage, args);
 
                 if (form != null)
                 {
-                    FormExtensions.RunSingleInstance(form, message, () =>
+                    FormExtensions.RunSingleInstance(form, moreThanSingleInstanceRunMessage, () =>
                     {
-                        Application.Run(form);
+                        try
+                        {
+                            Application.Run(form);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.LogError(ex);
+                        }
                     }, silent || args.Contains(Consts.RunOnOneNoteStarts));
                 }
 
             }
-            //catch (Exception ex)
-            //{
-            //    FormLogger.LogError(ex);
-            //}
-            //finally
-            //{
-            //    if (_oneNoteApp != null)
-            //        _oneNoteApp = null;
-            //}
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
+            finally
+            {
+                if (_oneNoteApp != null)
+                    _oneNoteApp = null;
+            }
         }
 
-        private static Form PrepareForRunning(out bool silent, params string[] args)
+        private static Form PrepareForRunning(out bool silent, out string moreThanSingleInstanceRunMessage, params string[] args)
         {
+            moreThanSingleInstanceRunMessage = BibleCommon.Resources.Constants.MoreThanSingleInstanceRun;
             silent = false;
             Form result = null;
 
@@ -78,14 +83,21 @@ namespace BibleConfigurator
                 result = new AboutProgramForm();
             else if (args.Contains(Consts.ShowSearchInDictionaries))
                 result = new SearchInDictionariesForm();
+            else if (args.Contains(Consts.ShowManual))
+                OpenManual();
             else if (strongProtocolHandler.IsProtocolCommand(args))
                 strongProtocolHandler.ExecuteCommand(args);
             else if (navToStrongHandler.IsProtocolCommand(args))
-                navToStrongHandler.ExecuteCommand(args);
-            else if (args.Contains(Consts.ShowManual))
-                OpenManual();
-            else if (args.Contains(Consts.RunOnOneNoteStarts))
             {
+                if (!navToStrongHandler.ExecuteCommand(args))
+                {
+                    result = new MainForm(args);
+                    ((MainForm)result).ForceIndexDictionaryModuleName = navToStrongHandler.ModuleShortName;
+                    ((MainForm)result).CommitChangesAfterLoad = true;
+                }
+            }            
+            else if (args.Contains(Consts.RunOnOneNoteStarts))
+            {                
                 if (SettingsManager.Instance.IsConfigured(OneNoteApp))
                 {
                     try
@@ -95,11 +107,11 @@ namespace BibleConfigurator
                     }
                     catch (NotSupportedException)
                     {
-                        Logger.LogError("Locking is not supported for this notebook");                        
+                        Logger.LogError("Locking is not supported for this notebook");
                     }
 
                     if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible))
-                    {                        
+                    {
                         using (var form = new MessageForm(BibleCommon.Resources.Constants.IndexBibleQuestionAtStartUp, BibleCommon.Resources.Constants.Warning,
                             MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                         {
@@ -166,8 +178,9 @@ namespace BibleConfigurator
                         if (moduleWasAdded)
                         {
                             ((MainForm)result).ShowModulesTabAtStartUp = true;
-                            ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
-                            silent = true;
+                            ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;                            
+                            moreThanSingleInstanceRunMessage = BibleCommon.Resources.Constants.ReopenParametersToSeeChanges;
+                            //silent = true;
                         }
                         else
                             result = null;
@@ -216,7 +229,8 @@ namespace BibleConfigurator
                 }
 
                 bool silent;
-                Form form = PrepareForRunning(out silent, args);
+                string moreThanSingleInstanceRunMessage;
+                Form form = PrepareForRunning(out silent, out moreThanSingleInstanceRunMessage, args);
 
                 if (form != null)
                 {
@@ -266,10 +280,7 @@ namespace BibleConfigurator
 
         private static void ShowMessage(string message)
         {
-            using (var form = new MessageForm(message))
-            {
-                form.ShowDialog();                
-            }
+            FormLogger.LogMessage(message);
         }
     }
 }

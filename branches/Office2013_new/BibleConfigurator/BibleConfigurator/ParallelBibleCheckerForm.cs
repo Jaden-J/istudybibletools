@@ -103,13 +103,13 @@ namespace BibleConfigurator
                 {
                     if (!chkWithAllModules.Checked)
                     {
-                        _mainForm.PrepareForLongProcessing(2, 1, "Start checking");
+                        _mainForm.PrepareForLongProcessing(2, 1, BibleCommon.Resources.Constants.ParallelModuleCheckStart);
 
                         _formLogger.LogMessage("{0} -> {1}", baseModule, parallelModule);
-                        CheckModule(baseModule, parallelModule);
+                        CheckModuleAndAddErrors(baseModule, parallelModule);
 
                         _formLogger.LogMessage("{0} -> {1}", parallelModule, baseModule);
-                        CheckModule(parallelModule, baseModule);
+                        CheckModuleAndAddErrors(parallelModule, baseModule);
                     }
                     else
                     {
@@ -118,10 +118,10 @@ namespace BibleConfigurator
                         foreach (var pModule in allModules.Where(m => m.ShortName != baseModule))
                         {
                             _formLogger.LogMessage("{0} -> {1}", baseModule, pModule.ShortName);
-                            CheckModule(baseModule, pModule.ShortName);
+                            CheckModuleAndAddErrors(baseModule, pModule.ShortName);
 
                             _formLogger.LogMessage("{0} -> {1}", pModule.ShortName, baseModule);
-                            CheckModule(pModule.ShortName, baseModule);
+                            CheckModuleAndAddErrors(pModule.ShortName, baseModule);
                         }                        
                     }
                 }
@@ -134,7 +134,7 @@ namespace BibleConfigurator
                         foreach (var pModule in allModules.Where(m => m.ShortName != bModule.ShortName))
                         {
                             _formLogger.LogMessage("{0} -> {1}", bModule.ShortName, pModule.ShortName);
-                            CheckModule(bModule.ShortName, pModule.ShortName);
+                            CheckModuleAndAddErrors(bModule.ShortName, pModule.ShortName);
                         }
                     }                    
                 }
@@ -161,7 +161,14 @@ namespace BibleConfigurator
             }
         }
 
-        private void CheckModule(string primaryModuleName, string parallelModuleName)
+        private void CheckModuleAndAddErrors(string primaryModuleName, string parallelModuleName)
+        {
+            var errorsList = CheckModule(primaryModuleName, parallelModuleName);
+            if (errorsList != null)
+                _errorsForm.AllErrors.Add(errorsList);
+        }
+
+        public static ErrorsForm.ErrorsList CheckModule(string primaryModuleName, string parallelModuleName)
         {
             var manager = new BibleParallelTranslationManager(null, primaryModuleName, parallelModuleName, SettingsManager.Instance.NotebookId_Bible);
             manager.ForCheckOnly = true;
@@ -169,12 +176,13 @@ namespace BibleConfigurator
 
             if (result.Errors.Count > 0)
             {
-                _errorsForm.AllErrors.Add(
-                    new ErrorsForm.ErrorsList(result.Errors.ConvertAll(ex => ex.Message))
-                    {
-                        ErrorsDecription = string.Format("{0} -> {1}", primaryModuleName, parallelModuleName)
-                    });
-            }            
+                return new ErrorsForm.ErrorsList(result.Errors.ConvertAll(ex => ex.Message))
+                {
+                    ErrorsDecription = string.Format("{0} -> {1}", primaryModuleName, parallelModuleName)
+                };
+            }
+
+            return null;
         }
 
         private void chkWithAllModules_CheckedChanged(object sender, EventArgs e)

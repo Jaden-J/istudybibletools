@@ -35,6 +35,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.lblLocation = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.wbBooks = new System.Windows.Forms.WebBrowser();
+            this.pnBooks.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnOK
@@ -54,6 +56,7 @@
             resources.ApplyResources(this.pnBooks, "pnBooks");
             this.pnBooks.BackColor = System.Drawing.SystemColors.Control;
             this.pnBooks.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnBooks.Controls.Add(this.wbBooks);
             this.pnBooks.Name = "pnBooks";
             // 
             // label1
@@ -71,6 +74,12 @@
             resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
             // 
+            // wbBooks
+            // 
+            resources.ApplyResources(this.wbBooks, "wbBooks");
+            this.wbBooks.MinimumSize = new System.Drawing.Size(20, 20);
+            this.wbBooks.Name = "wbBooks";
+            // 
             // AboutModuleForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -87,6 +96,7 @@
             this.Name = "AboutModuleForm";
             this.Load += new System.EventHandler(this.AboutModule_Load);
             this.Shown += new System.EventHandler(this.AboutModuleForm_Shown);
+            this.pnBooks.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -100,5 +110,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblLocation;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.WebBrowser wbBooks;
     }
 }
