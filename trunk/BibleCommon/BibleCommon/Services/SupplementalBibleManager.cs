@@ -266,14 +266,14 @@ namespace BibleCommon.Services
         private static void UpdateSupplementalModulesMetadata(Application oneNoteApp, XDocument chapterPageDoc, SimpleVersePointer chapterPointer, ModuleInfo module,
             XmlNamespaceManager xnm)
         {
-            var supplementalModulesMetadata = OneNoteUtils.GetPageMetaData(oneNoteApp, chapterPageDoc.Root, Consts.Constants.EmbeddedSupplementalModulesKey, xnm);
+            var supplementalModulesMetadata = OneNoteUtils.GetPageMetaData(oneNoteApp, chapterPageDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules, xnm);
             if (string.IsNullOrEmpty(supplementalModulesMetadata))
                 throw new InvalidOperationException(string.Format("Chapter page metadata was not found: {0}", chapterPointer));
 
             var supplementalModulesInfo = EmbeddedModuleInfo.Deserialize(supplementalModulesMetadata);
             supplementalModulesInfo.Add(new EmbeddedModuleInfo(module.ShortName, module.Version, supplementalModulesInfo.Count));
 
-            OneNoteUtils.UpdatePageMetaData(oneNoteApp, chapterPageDoc.Root, Consts.Constants.EmbeddedSupplementalModulesKey, 
+            OneNoteUtils.UpdatePageMetaData(oneNoteApp, chapterPageDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules, 
                 EmbeddedModuleInfo.Serialize(supplementalModulesInfo), xnm);
         }
 
@@ -546,7 +546,7 @@ namespace BibleCommon.Services
             XmlNamespaceManager xnm;
             var currentChapterDoc = NotebookGenerator.AddPage(oneNoteApp, bookSectionId, chapterPageName, 1, moduleInfo.Locale, out xnm);
 
-            OneNoteUtils.UpdatePageMetaData(oneNoteApp, currentChapterDoc.Root, Consts.Constants.EmbeddedSupplementalModulesKey,
+            OneNoteUtils.UpdatePageMetaData(oneNoteApp, currentChapterDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules,
                 EmbeddedModuleInfo.Serialize(new List<EmbeddedModuleInfo>() { new EmbeddedModuleInfo(moduleInfo.ShortName, moduleInfo.Version, 0) }), xnm);
 
             var currentTableElement = NotebookGenerator.AddTableToPage(currentChapterDoc, false, xnm, new CellInfo(SettingsManager.Instance.PageWidth_Bible));
