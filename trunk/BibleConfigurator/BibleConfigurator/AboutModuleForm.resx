@@ -176,6 +176,31 @@
   <data name="pnBooks.AutoScroll" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="wbBooks.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="wbBooks.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="wbBooks.Size" type="System.Drawing.Size, System.Drawing">
+    <value>658, 363</value>
+  </data>
+  <data name="wbBooks.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;wbBooks.Name" xml:space="preserve">
+    <value>wbBooks</value>
+  </data>
+  <data name="&gt;&gt;wbBooks.Type" xml:space="preserve">
+    <value>System.Windows.Forms.WebBrowser, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;wbBooks.Parent" xml:space="preserve">
+    <value>pnBooks</value>
+  </data>
+  <data name="&gt;&gt;wbBooks.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="pnBooks.Location" type="System.Drawing.Point, System.Drawing">
     <value>16, 87</value>
   </data>
@@ -385,7 +410,6 @@
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 </value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterScreen</value>
   </data>
