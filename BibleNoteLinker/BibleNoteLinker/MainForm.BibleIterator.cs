@@ -30,6 +30,17 @@ namespace BibleNoteLinker
                 //todo: log it
             }
 
+            Exception getCurrentPageException = null;
+            NotebookIterator.PageInfo currentPage = null;
+            try
+            {
+                currentPage = OneNoteUtils.GetCurrentPageInfo(_oneNoteApp);
+            }
+            catch (ProgramException ex)
+            {
+                getCurrentPageException = ex;
+            }
+
             if (!rbAnalyzeCurrentPage.Checked)
             {
                 List<NotebookIterator.NotebookInfo> notebooks = GetNotebooksInfo();
@@ -45,7 +56,8 @@ namespace BibleNoteLinker
             }
             else
             {
-                var currentPage = OneNoteUtils.GetCurrentPageInfo(_oneNoteApp);
+                if (getCurrentPageException != null)
+                    throw getCurrentPageException;
 
                 _pagesForAnalyzeCount = 1;
                 string message = BibleCommon.Resources.Constants.ProcessCurrentPage;
@@ -74,7 +86,12 @@ namespace BibleNoteLinker
                 UpdateLinksToNotesPages(5);
 
                 CommitPages(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, 6, null);                
-            }          
+            }
+
+            if (_oneNoteApp.Windows.CurrentWindow != null && currentPage != null)
+            {
+                _oneNoteApp.NavigateTo(currentPage.Id, null);
+            }
         }
 
         private void SyncNotesPagesContainer()

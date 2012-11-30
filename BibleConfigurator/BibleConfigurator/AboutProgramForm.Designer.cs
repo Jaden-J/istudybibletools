@@ -36,6 +36,8 @@
             this.lblAuthor = new System.Windows.Forms.Label();
             this.lblNewVersion = new System.Windows.Forms.Label();
             this.btnClose = new System.Windows.Forms.Button();
+            this.lblVersion = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lblTitle
@@ -80,10 +82,23 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
+            // lblVersion
+            // 
+            resources.ApplyResources(this.lblVersion, "lblVersion");
+            this.lblVersion.Name = "lblVersion";
+            this.lblVersion.UseMnemonic = false;
+            // 
+            // label4
+            // 
+            resources.ApplyResources(this.label4, "label4");
+            this.label4.Name = "label4";
+            // 
             // AboutProgramForm
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.Controls.Add(this.lblVersion);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.lblNewVersion);
             this.Controls.Add(this.lblAuthor);
@@ -112,5 +127,7 @@
         private System.Windows.Forms.Label lblAuthor;
         private System.Windows.Forms.Label lblNewVersion;
         private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Label lblVersion;
+        private System.Windows.Forms.Label label4;
     }
 }

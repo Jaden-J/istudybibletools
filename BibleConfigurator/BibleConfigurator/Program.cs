@@ -38,11 +38,12 @@ namespace BibleConfigurator
                 Application.SetCompatibleTextRenderingDefault(false);
 
                 bool silent;                
-                Form form = PrepareForRunning(out silent, args);
+                string moreThanSingleInstanceRunMessage;
+                Form form = PrepareForRunning(out silent, out moreThanSingleInstanceRunMessage, args);
 
                 if (form != null)
                 {
-                    FormExtensions.RunSingleInstance(form, BibleCommon.Resources.Constants.MoreThanSingleInstanceRun, () =>
+                    FormExtensions.RunSingleInstance(form, moreThanSingleInstanceRunMessage, () =>
                     {
                         try
                         {
@@ -67,8 +68,9 @@ namespace BibleConfigurator
             }
         }
 
-        private static Form PrepareForRunning(out bool silent, params string[] args)
-        {            
+        private static Form PrepareForRunning(out bool silent, out string moreThanSingleInstanceRunMessage, params string[] args)
+        {
+            moreThanSingleInstanceRunMessage = BibleCommon.Resources.Constants.MoreThanSingleInstanceRun;
             silent = false;
             Form result = null;
 
@@ -176,8 +178,9 @@ namespace BibleConfigurator
                         if (moduleWasAdded)
                         {
                             ((MainForm)result).ShowModulesTabAtStartUp = true;
-                            ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
-                            silent = true;                            
+                            ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;                            
+                            moreThanSingleInstanceRunMessage = BibleCommon.Resources.Constants.ReopenParametersToSeeChanges;
+                            //silent = true;
                         }
                         else
                             result = null;
@@ -225,8 +228,9 @@ namespace BibleConfigurator
                     _firstLoad = false;
                 }
 
-                bool silent;                
-                Form form = PrepareForRunning(out silent, args);
+                bool silent;
+                string moreThanSingleInstanceRunMessage;
+                Form form = PrepareForRunning(out silent, out moreThanSingleInstanceRunMessage, args);
 
                 if (form != null)
                 {
@@ -276,10 +280,7 @@ namespace BibleConfigurator
 
         private static void ShowMessage(string message)
         {
-            using (var form = new MessageForm(message))
-            {
-                form.ShowDialog();                
-            }
+            FormLogger.LogMessage(message);
         }
     }
 }

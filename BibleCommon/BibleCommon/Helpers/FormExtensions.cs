@@ -97,7 +97,7 @@ namespace BibleCommon.Helpers
                 if (!mutex.WaitOne(0, false))
                 {
                     if (!silent)                    
-                        MessageBox.Show(messageIfSecondInstance);
+                        MessageBox.Show(messageIfSecondInstance, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                     if (form != null)
                     {

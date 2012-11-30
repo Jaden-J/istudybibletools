@@ -29,10 +29,10 @@ namespace BibleConfigurator
             {
                 hlSite.Text = Constants.WebSiteUrl;
                 lblAuthor.Text = Constants.Author;
+                lblVersion.Text = SettingsManager.Instance.CurrentVersion.ToString();
 
                 string versionMessage = string.Format(" v{0}", SettingsManager.Instance.CurrentVersion);
-                this.Text += versionMessage;
-                lblTitle.Text += versionMessage;
+                this.Text += versionMessage;                
 
                 new Thread(CheckForNewerVersion).Start();
             }

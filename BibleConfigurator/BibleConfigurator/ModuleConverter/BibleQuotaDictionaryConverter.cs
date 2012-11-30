@@ -173,7 +173,7 @@ namespace BibleConfigurator.ModuleConverter
             if (!string.IsNullOrEmpty(pageDisplayName))
                 AddPageTitle(pageDoc, pageDisplayName, xnm);
 
-            OneNoteUtils.UpdatePageMetaData(OneNoteApp, pageDoc.Root, BibleCommon.Consts.Constants.EmbeddedDictionariesKey,
+            OneNoteUtils.UpdatePageMetaData(OneNoteApp, pageDoc.Root, BibleCommon.Consts.Constants.Key_EmbeddedDictionaries,
                 EmbeddedModuleInfo.Serialize(new List<EmbeddedModuleInfo>() { new EmbeddedModuleInfo(DictionaryModuleName, Version) }), xnm);
 
             PagesCount++;

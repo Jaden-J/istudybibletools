@@ -12,6 +12,7 @@ using BibleCommon.Services;
 using System.Xml.XPath;
 using System.Runtime.InteropServices;
 using System.Threading;
+using BibleCommon.Common;
 
 namespace BibleCommon.Helpers
 {
@@ -63,7 +64,13 @@ namespace BibleCommon.Helpers
             }
 
             return string.Empty;
-        }     
+        }
+
+        public static string GetHierarchyElementNickname(Application oneNoteApp, string elementId)
+        {
+            OneNoteProxy.HierarchyElement doc = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, elementId, HierarchyScope.hsSelf);
+            return (string)doc.Content.Root.Attribute("nickname");
+        }
 
         public static string GetHierarchyElementName(Application oneNoteApp, string elementId)
         {   
@@ -259,11 +266,11 @@ namespace BibleCommon.Helpers
         public static NotebookIterator.PageInfo GetCurrentPageInfo(Application oneNoteApp)
         {
             if (oneNoteApp.Windows.CurrentWindow == null)
-                throw new Exception(BibleCommon.Resources.Constants.Error_OpenedNotebookNotFound);
+                throw new ProgramException(BibleCommon.Resources.Constants.Error_OpenedNotebookNotFound);
 
             string currentPageId = oneNoteApp.Windows.CurrentWindow.CurrentPageId;
             if (string.IsNullOrEmpty(currentPageId))
-                throw new Exception(BibleCommon.Resources.Constants.Error_OpenedNotePageNotFound);
+                throw new ProgramException(BibleCommon.Resources.Constants.Error_OpenedNotePageNotFound);
 
             string currentSectionId = oneNoteApp.Windows.CurrentWindow.CurrentSectionId;
             string currentSectionGroupId = oneNoteApp.Windows.CurrentWindow.CurrentSectionGroupId;

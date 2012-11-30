@@ -25,9 +25,7 @@ namespace BibleCommon.Consts
         public static readonly string CacheDirectory = "Cache";
         public static readonly string LogsDirectory = "Logs";        
         public static readonly string DefaultPartVersesAlphabet = "abcdefghijklmnopqrstuvwxyz";
-        public static readonly int DefaultStrongNumbersCount = 14700;
-        public static readonly string EmbeddedSupplementalModulesKey = "SupplementalModules";
-        public static readonly string EmbeddedDictionariesKey = "Dictionaries";
+        public static readonly int DefaultStrongNumbersCount = 14700;        
         public static readonly string UnicodeFontName = "Arial Unicode MS";
         public static readonly string QueryParameter_QuickAnalyze = "qa=1";
         public static readonly string QueryParameter_BibleVerse = "bv=1";
@@ -96,7 +94,10 @@ namespace BibleCommon.Consts
         
 
         public static readonly string Key_IsSummaryNotesPage = "IsSummaryNotesPage";
-        public static readonly string Key_LatestAnalyzeTime = "LatestAnalyzeTime";        
+        public static readonly string Key_LatestAnalyzeTime = "LatestAnalyzeTime";
+        public static readonly string Key_EmbeddedBibleModule = "BibleModule";
+        public static readonly string Key_EmbeddedSupplementalModules = "SupplementalModules";
+        public static readonly string Key_EmbeddedDictionaries = "Dictionaries";
     }   
 }
 

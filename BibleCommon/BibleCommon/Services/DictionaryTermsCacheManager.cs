@@ -40,6 +40,20 @@ namespace BibleCommon.Services
             return SharpSerializationHelper.Deserialize<Dictionary<string, string>>(filePath);
         }
 
+        public static void RemoveCache(string moduleShortName)
+        {
+            try
+            {
+                var filePath = GetCacheFilePath(moduleShortName);
+                if (File.Exists(filePath))
+                    File.Delete(filePath);
+            }
+            catch (Exception ex)
+            {
+                BibleCommon.Services.Logger.LogError(ex);
+            }
+        }
+
         public static Dictionary<string, string> GenerateCache(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger, bool silient = false)
         {
             var cacheData = IndexDictionary(oneNoteApp, moduleInfo, logger);
@@ -136,7 +150,7 @@ namespace BibleCommon.Services
                         logger.LogMessage(termName);
                 }               
             }
-        }
+        }        
 
         private static string GetTermName(string term, bool isStrong)
         {

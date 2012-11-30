@@ -223,6 +223,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Notebook &apos;{0}&apos; is created for module &apos;{1}&apos;, not for &apos;{2}&apos;..
+        /// </summary>
+        public static string BibleNotebookIsForAnotherModule {
+            get {
+                return ResourceManager.GetString("BibleNotebookIsForAnotherModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на The passage is not found.
         /// </summary>
         public static string BibleVersePointerCanNotFindPlace {
@@ -1564,7 +1573,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Please close and open the &apos;Program Parameters&apos; to see changes..
+        ///   Ищет локализованную строку, похожую на Please close and open the &apos;Program Parameters&apos; window to see changes..
         /// </summary>
         public static string ReopenParametersToSeeChanges {
             get {

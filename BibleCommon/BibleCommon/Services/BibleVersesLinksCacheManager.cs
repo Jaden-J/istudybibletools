@@ -13,14 +13,7 @@ using System.Xml.Linq;
 using Polenter.Serialization;
 
 namespace BibleCommon.Services
-{
-    /// <summary>
-    /// На данный момент кэш не используется по следующим причинам:
-    /// 1. Самое важное - долго дессириализуется! 4,5 секунд на хорошем компе!!!!! Надо оптимизировать структуру хранения данных. Возможно надо хранить дерево объектов, чтобы не дублировать id страниц и секций. + чтобы не хранить значения енумов. 
-    /// 2. Надо доделать
-    ///     - сейчас не хранятся ссылки на элементы. 
-    ///     - соответственно везде, где после HierarchySearchManager.GetHierarchyObject() вызывается OneNoteUtils.GenerateHref() нужно доставать данные из кэша.
-    /// </summary>
+{   
     public static class BibleVersesLinksCacheManager
     {
         private static string GetCacheFilePath(string notebookId)

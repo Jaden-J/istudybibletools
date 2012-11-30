@@ -56,10 +56,12 @@ namespace BibleCommon.Services
                 dictionarySectionPath = (string)dictionarySectionEl.Attribute("path");
                 
                 oneNoteApp.SyncHierarchy(dictionarySectionId);
-                while (!Directory.Exists(dictionarySectionPath))
+                int attemptsCount = 0;
+                while (!Directory.Exists(dictionarySectionPath) && attemptsCount < 500)
                 {
                     Thread.Sleep(1000);
                     System.Windows.Forms.Application.DoEvents();
+                    attemptsCount++;
                 }
 
                 foreach (var sectionInfo in moduleInfo.NotebooksStructure.Sections)
@@ -87,7 +89,7 @@ namespace BibleCommon.Services
         {
             if (dictionaryPagesCount.HasValue)
             {
-                if (attemptsCount < 1000)
+                if (attemptsCount < 500)  // 25 минут
                 {
                     XmlNamespaceManager xnm;
                     var xDoc = OneNoteUtils.GetHierarchyElement(oneNoteApp, dictionarySectionId, HierarchyScope.hsPages, out xnm);
@@ -123,6 +125,9 @@ namespace BibleCommon.Services
                         if (!ex.Message.Contains(Utils.GetHexError(Error.hrObjectDoesNotExist)))
                             throw;
                     }
+
+                    DictionaryTermsCacheManager.RemoveCache(dictionaryModuleInfo.ModuleName);
+
                     SettingsManager.Instance.DictionariesModules.Remove(dictionaryModuleInfo);
                     SettingsManager.Instance.Save();
                 }
@@ -134,6 +139,12 @@ namespace BibleCommon.Services
             OneNoteUtils.CloseNotebookSafe(oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries);
 
             SettingsManager.Instance.NotebookId_Dictionaries = null;
+
+            foreach (var dictionaryInfo in SettingsManager.Instance.DictionariesModules)
+            {
+                DictionaryTermsCacheManager.RemoveCache(dictionaryInfo.ModuleName);
+            }
+
             SettingsManager.Instance.DictionariesModules.Clear();
             SettingsManager.Instance.Save();
         }

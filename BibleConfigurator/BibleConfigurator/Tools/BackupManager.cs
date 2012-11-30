@@ -71,7 +71,7 @@ namespace BibleConfigurator.Tools
 
                 foreach (string id in notebookIds)
                 {
-                    string notebookName = OneNoteUtils.GetHierarchyElementName(_oneNoteApp, id) + OneNotePackageExtension;
+                    string notebookName = OneNoteUtils.GetHierarchyElementNickname(_oneNoteApp, id) + OneNotePackageExtension;
 
                     _notebookNames.Add(notebookName);
 

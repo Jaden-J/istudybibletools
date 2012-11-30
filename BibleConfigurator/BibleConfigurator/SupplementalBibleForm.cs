@@ -241,7 +241,7 @@ namespace BibleConfigurator
 
         protected override string EmbeddedModulesKey
         {
-            get { return BibleCommon.Consts.Constants.EmbeddedSupplementalModulesKey; }
+            get { return BibleCommon.Consts.Constants.Key_EmbeddedSupplementalModules; }
         }
 
         protected override string NotebookIsNotSupplementalBibleMessage
