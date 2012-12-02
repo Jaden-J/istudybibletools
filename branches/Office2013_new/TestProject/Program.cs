@@ -28,8 +28,8 @@ namespace TestProject
 {    
     class Program
     {
-        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\Holy Bible\IStudyBibleTools\ForGenerating";
-        private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp";
+        private const string ForGeneratingFolderPath = @"E:\Dropbox\Holy Bible\IStudyBibleTools\ForGenerating";
+        private const string TempFolderPath = @"E:\temp";
 
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;       
        
@@ -64,9 +64,9 @@ namespace TestProject
 
                 //GenerateDictionary();
 
-                GenerateRuStrongDictionary();
+                //GenerateRuStrongDictionary();
 
-                //GenerateEnStrongDictionary();
+                GenerateEnStrongDictionary();
                 
                 //SearchForEnText();
 
