@@ -39,6 +39,7 @@ namespace BibleCommon.Services
         public static readonly Version SupportedModuleMinVersion = new Version(2, 0);
 
         private Application _oneNoteApp;
+        private bool _isOneNote2010;
 
         public string BibleNotebookId { get; set; }
         public string BaseModuleShortName { get; set; }
@@ -72,6 +73,7 @@ namespace BibleCommon.Services
             CheckModules();
 
             _oneNoteApp = oneNoteApp;
+            _isOneNote2010 = OneNoteUtils.IsOneNote2010Cached(_oneNoteApp);
         }
 
         public static bool IsModuleSupported(ModuleInfo moduleInfo)
@@ -163,8 +165,7 @@ namespace BibleCommon.Services
                                                           BaseModuleInfo.BibleTranslationDifferences,
                                                           ParallelModuleInfo.BibleTranslationDifferences, refreshCache);
 
-            var result = new BibleParallelTranslationConnectionResult();
-            var isOneNote2010 = OneNoteUtils.IsOneNote2010Cached(_oneNoteApp);
+            var result = new BibleParallelTranslationConnectionResult();            
 
             foreach (var baseBookContent in BaseBibleInfo.Books)
             {
@@ -185,7 +186,7 @@ namespace BibleCommon.Services
                     try
                     {
                         ProcessBibleBook(sectionEl, baseBookInfo, baseBookContent, parallelBookContent, bookVersePointersComparisonTable,
-                            chapterAction, needToUpdateChapter, isOneNote2010, iterateVerses, verseAction);
+                            chapterAction, needToUpdateChapter, iterateVerses, verseAction);
                     }
                     catch (BaseVersePointerException ex) 
                     {
@@ -202,7 +203,7 @@ namespace BibleCommon.Services
         private void ProcessBibleBook(XElement bibleBookSectionEl, BibleBookInfo baseBookInfo,
             BIBLEBOOK baseBookContent, BIBLEBOOK parallelBookContent, 
             SimpleVersePointersComparisonTable bookVersePointersComparisonTable,
-            Func<XDocument, SimpleVersePointer, BibleIteratorArgs> chapterAction, bool needToUpdateChapter, bool isOneNote2010,
+            Func<XDocument, SimpleVersePointer, BibleIteratorArgs> chapterAction, bool needToUpdateChapter,
             bool iterateVerses, Action<SimpleVersePointer, SimpleVerse, BibleIteratorArgs> verseAction)
         {
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
@@ -275,7 +276,7 @@ namespace BibleCommon.Services
                 if (needToUpdateChapter && chapterAction != null && chapterWasModified.GetValueOrDefault(true) == true && !ForCheckOnly 
                     && (bibleIteratorArgs == null || bibleIteratorArgs.NotNeedToUpdateChapter == null || !bibleIteratorArgs.NotNeedToUpdateChapter.Value))
                 {
-                    SupplementalBibleManager.UpdatePageXmlForStrongBible(chapterPageDoc, isOneNote2010);
+                    SupplementalBibleManager.UpdatePageXmlForStrongBible(chapterPageDoc, _isOneNote2010);
 
                     _oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
                 }

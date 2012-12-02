@@ -60,7 +60,7 @@ namespace BibleCommon.Services
         }
 
         public static void SetQuickStyleDefForCell(XElement cell, int styleIndex, XmlNamespaceManager xnm)
-        {
+        {            
             cell.XPathSelectElement("one:OEChildren/one:OE", xnm).SetAttributeValue("quickStyleIndex", styleIndex);
         }
 

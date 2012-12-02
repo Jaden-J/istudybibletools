@@ -41,6 +41,8 @@ namespace BibleCommon.Services
             GetTestamentInfo(moduleInfo, ContainerType.OldTestament, out oldTestamentName, out oldTestamentSectionsCount, out oldTestamentStrongPrefix);
             GetTestamentInfo(moduleInfo, ContainerType.NewTestament, out newTestamentName, out newTestamentSectionsCount, out newTestamentStrongPrefix);
 
+            var isOneNote2010 = OneNoteUtils.IsOneNote2010Cached(oneNoteApp);
+
             SettingsManager.Instance.SupplementalBibleModules.Clear();
             SettingsManager.Instance.SupplementalBibleModules.Add(new StoredModuleInfo(module.ShortName, module.Version));
             SettingsManager.Instance.Save();
@@ -70,7 +72,7 @@ namespace BibleCommon.Services
                     if (logger != null)
                         logger.LogMessage("{0} '{1} {2}'", BibleCommon.Resources.Constants.ProcessChapter, bibleBookInfo.Name, chapter.Index);
 
-                    GenerateChapterPage(oneNoteApp, chapter, bookSectionId, moduleInfo, bibleBookInfo, bibleInfo, currentStrongPrefix);
+                    GenerateChapterPage(oneNoteApp, chapter, bookSectionId, moduleInfo, bibleBookInfo, bibleInfo, currentStrongPrefix, isOneNote2010);
                 }
             }
 
@@ -225,7 +227,7 @@ namespace BibleCommon.Services
                         var tableEl = NotebookGenerator.GetPageTable(chapterPageDoc, xnm);
                         var bibleIndex = NotebookGenerator.AddColumnToTable(tableEl, SettingsManager.Instance.PageWidth_Bible, xnm);
                         NotebookGenerator.AddParallelBibleTitle(chapterPageDoc, tableEl, 
-                            bibleTranslationManager.ParallelModuleInfo.DisplayName, bibleIndex, bibleTranslationManager.ParallelModuleInfo.Locale, xnm);
+                            bibleTranslationManager.ParallelModuleInfo.DisplayName, bibleIndex, bibleTranslationManager.ParallelModuleInfo.Locale, isOneNote2010, xnm);
 
                         int styleIndex = QuickStyleManager.AddQuickStyleDef(chapterPageDoc, QuickStyleManager.StyleForStrongName, QuickStyleManager.PredefinedStyles.GrayHyperlink, xnm);
 
@@ -252,7 +254,8 @@ namespace BibleCommon.Services
 
                             if (bibleTranslationManager.ParallelModuleInfo.Type == Common.ModuleType.Strong)
                             {
-                                QuickStyleManager.SetQuickStyleDefForCell(cell, bibleIteratorArgs.StrongStyleIndex, xnm);
+                                if (isOneNote2010)
+                                    QuickStyleManager.SetQuickStyleDefForCell(cell, bibleIteratorArgs.StrongStyleIndex, xnm);
                             }
                         }
                     });
@@ -536,7 +539,7 @@ namespace BibleCommon.Services
 
 
         private static void GenerateChapterPage(Application oneNoteApp, CHAPTER chapter, string bookSectionId,
-           ModuleInfo moduleInfo, BibleBookInfo bibleBookInfo, XMLBIBLE bibleInfo, string strongPrefix)
+           ModuleInfo moduleInfo, BibleBookInfo bibleBookInfo, XMLBIBLE bibleInfo, string strongPrefix, bool isOneNote2010)
         {
             string chapterPageName = string.Format(!string.IsNullOrEmpty(bibleBookInfo.ChapterPageNameTemplate) 
                                                         ? bibleBookInfo.ChapterPageNameTemplate
@@ -551,7 +554,7 @@ namespace BibleCommon.Services
 
             var currentTableElement = NotebookGenerator.AddTableToPage(currentChapterDoc, false, xnm, new CellInfo(SettingsManager.Instance.PageWidth_Bible));
 
-            NotebookGenerator.AddParallelBibleTitle(currentChapterDoc, currentTableElement, moduleInfo.DisplayName, 0, moduleInfo.Locale, xnm);
+            NotebookGenerator.AddParallelBibleTitle(currentChapterDoc, currentTableElement, moduleInfo.DisplayName, 0, moduleInfo.Locale, isOneNote2010, xnm);
 
             foreach (var verse in chapter.Verses)
             {                
