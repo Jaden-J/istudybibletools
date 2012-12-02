@@ -269,9 +269,9 @@ namespace BibleConfigurator
                 {
                     this.SetFocus();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    int i = 0;
+                    FormLogger.LogError(ex);
                 }
                 _wasShown = true;
             }
