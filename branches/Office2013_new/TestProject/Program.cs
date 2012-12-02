@@ -120,9 +120,7 @@ namespace TestProject
 
         private static void GenerateBibleBooks()
         {
-            var manifestFilePath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\manifest.xml";
-            var bibleQuotaIniFilePath = "";
-            var existingBooksFilePath = "";
+            var manifestFilePath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\manifest.xml";            
             var targetFilePath = Path.Combine(TempFolderPath, "books.xml");
 
             
