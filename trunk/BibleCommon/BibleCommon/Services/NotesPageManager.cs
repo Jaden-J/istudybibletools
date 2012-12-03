@@ -18,7 +18,7 @@ namespace BibleCommon.Services
         public static string UpdateNotesPage(Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, bool isChapter,
            HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
            PageIdInfo notePageId, string notesPageId, string notePageContentObjectId,
-           string notesPageName, int notesPageWidth, bool force, out bool rowWasAdded)
+           string notesPageName, int notesPageWidth, bool force, bool processAsExtendedVerse, out bool rowWasAdded)
         {
             string targetContentObjectId = string.Empty;
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
@@ -29,8 +29,8 @@ namespace BibleCommon.Services
 
             if (rowElement != null)
             {
-                AddLinkToNotesPage(oneNoteApp, noteLinkManager, vp, rowElement, notePageId, 
-                    notePageContentObjectId, notesPageDocument, notesPageDocument.Xnm, nms, notesPageName, force);
+                AddLinkToNotesPage(oneNoteApp, noteLinkManager, vp, rowElement, notePageId,
+                    notePageContentObjectId, notesPageDocument, notesPageDocument.Xnm, nms, notesPageName, force, processAsExtendedVerse);
 
                 targetContentObjectId = GetNotesRowObjectId(oneNoteApp, notesPageId, verseHierarchyObjectInfo.VerseNumber, isChapter);
             }
@@ -40,7 +40,7 @@ namespace BibleCommon.Services
 
         private static void AddLinkToNotesPage(Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, XElement rowElement,
            PageIdInfo notePageId, string notePageContentObjectId,
-           OneNoteProxy.PageContent notesPageDocument, XmlNamespaceManager xnm, XNamespace nms, string notesPageName, bool force)
+           OneNoteProxy.PageContent notesPageDocument, XmlNamespaceManager xnm, XNamespace nms, string notesPageName, bool force, bool processAsExtendedVerse)
         {
             string noteTitle = (notePageId.SectionGroupName != notePageId.SectionName && !string.IsNullOrEmpty(notePageId.SectionGroupName))
                 ? string.Format("{0} / {1} / {2}", notePageId.SectionGroupName, notePageId.SectionName, notePageId.PageName)
@@ -72,7 +72,7 @@ namespace BibleCommon.Services
             if (suchNoteLink != null)
             {
                 var key = new NoteLinkManager.NotePageProcessedVerseId() { NotePageId = notePageId.PageId, NotesPageName = notesPageName };
-                if (force && !noteLinkManager.ContainsNotePageProcessedVerse(key, vp))  // если в первый раз и force                
+                if (force && !noteLinkManager.ContainsNotePageProcessedVerse(key, vp) && !processAsExtendedVerse)  // если в первый раз и force и не расширенный стих
                 {  // удаляем старые ссылки на текущую странцу, так как мы начали новый анализ с параметром "force" и мы только в первый раз зашли сюда
                     var verseLinks = suchNoteLink.Parent.NextNode;
                     if (verseLinks != null && verseLinks.XPathSelectElement("one:List", xnm) == null)
@@ -120,7 +120,7 @@ namespace BibleCommon.Services
                     prevLink.AddAfterSelf(linkElement);
                 }
             }
-            else
+            else if (!processAsExtendedVerse)
             {
                 string pageLink = OneNoteUtils.GenerateHref(oneNoteApp, noteTitle, notePageId.PageId, notePageId.PageTitleId);
 
@@ -161,7 +161,7 @@ namespace BibleCommon.Services
                                                     new XElement(nms + "Number", new XAttribute("numberSequence", 0), new XAttribute("numberFormat", "##."))));
 
             }
-
+            
             notesPageDocument.WasModified = true;
         }      
 

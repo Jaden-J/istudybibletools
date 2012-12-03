@@ -68,7 +68,7 @@ namespace BibleCommon.UI.Forms
                             lbErrors.Items.Add(string.Format("{0}. {1}", index++, error));
 
                             //int width = Convert.ToInt32(error.Length * 5.75);
-                            int width = (int)g.MeasureString(error, lbErrors.Font).Width;
+                            int width = (int)g.MeasureString(error, lbErrors.Font).Width + 100;
                             if (width > lbErrors.HorizontalExtent)
                                 lbErrors.HorizontalExtent = width;
                         }
