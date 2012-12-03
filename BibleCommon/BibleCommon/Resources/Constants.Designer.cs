@@ -1546,7 +1546,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Removing parallel Bible translation start.
+        ///   Ищет локализованную строку, похожую на Removing parallel Bible translation.
         /// </summary>
         public static string RemoveParallelBibleTranslation {
             get {
@@ -1560,6 +1560,15 @@ namespace BibleCommon.Resources {
         public static string RemoveParallelBibleTranslationFinishMessage {
             get {
                 return ResourceManager.GetString("RemoveParallelBibleTranslationFinishMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Removing parallel Bible translation start.
+        /// </summary>
+        public static string RemoveParallelBibleTranslationStartMessage {
+            get {
+                return ResourceManager.GetString("RemoveParallelBibleTranslationStartMessage", resourceCulture);
             }
         }
         
@@ -1776,6 +1785,15 @@ namespace BibleCommon.Resources {
         public static string StartTime {
             get {
                 return ResourceManager.GetString("StartTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Saved successfully.
+        /// </summary>
+        public static string SuccessfullySaved {
+            get {
+                return ResourceManager.GetString("SuccessfullySaved", resourceCulture);
             }
         }
         

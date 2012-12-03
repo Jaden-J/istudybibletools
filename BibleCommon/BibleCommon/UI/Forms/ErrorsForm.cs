@@ -9,21 +9,12 @@ using System.Windows.Forms;
 using BibleCommon.Services;
 using System.IO;
 using BibleCommon.Helpers;
+using BibleCommon.Common;
 
 namespace BibleCommon.UI.Forms
 {
     public partial class ErrorsForm : Form
     {
-        public class ErrorsList : List<string>
-        {
-            public string ErrorsDecription { get; set; }
-
-            public ErrorsList(IEnumerable<string> collection)
-                : base(collection)
-            {
-            }
-        }
-
         public List<ErrorsList> AllErrors { get; set; }
 
         public ErrorsForm()
@@ -111,7 +102,7 @@ namespace BibleCommon.UI.Forms
             {
                 SaveErrorsToFile(saveFileDialog.FileName);
 
-                MessageBox.Show("Successfully.");
+                MessageBox.Show(BibleCommon.Resources.Constants.SuccessfullySaved);
             }
         }        
     }

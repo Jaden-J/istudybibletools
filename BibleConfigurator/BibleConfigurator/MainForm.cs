@@ -22,6 +22,7 @@ using System.Runtime.InteropServices;
 using BibleCommon.Common;
 using BibleConfigurator.ModuleConverter;
 using System.Globalization;
+using BibleCommon.UI.Forms;
 
 namespace BibleConfigurator
 {
@@ -284,8 +285,21 @@ namespace BibleConfigurator
                         var moduleInfo = ModulesManager.GetModuleInfo(dictionaryInfo.ModuleName);
                         PrepareForLongProcessing(moduleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
                         LongProcessLogger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexDictionary);                        
-                        DictionaryTermsCacheManager.GenerateCache(_oneNoteApp, moduleInfo, LongProcessLogger);
+                        List<string> notFoundTerms;
+                        DictionaryTermsCacheManager.GenerateCache(_oneNoteApp, moduleInfo, LongProcessLogger, out notFoundTerms);
                         LongProcessingDone(BibleCommon.Resources.Constants.AddDictionaryFinishMessage);
+
+                        if (notFoundTerms != null && notFoundTerms.Count > 0)
+                        {
+                            using (var form = new ErrorsForm())
+                            {
+                                form.AllErrors.Add(new ErrorsList(notFoundTerms)
+                                {
+                                    ErrorsDecription = BibleCommon.Resources.Constants.DictionaryTermsNotFound
+                                });
+                                form.ShowDialog();
+                            }
+                        }
                     }
                     catch (COMException ex)
                     {

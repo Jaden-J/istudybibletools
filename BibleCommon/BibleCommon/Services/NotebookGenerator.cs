@@ -334,10 +334,16 @@ namespace BibleCommon.Services
             return string.Format("{0:00}. {1}", bookPrefix, bookName);
         }
 
-        public static XElement AddRootSectionGroupToNotebook(Application oneNoteApp, string notebookId, string sectionGroupName)
+        public static XElement AddRootSectionGroupToNotebook(Application oneNoteApp, string notebookId, string sectionGroupName, string suffixIfSectionGroupExists = null)
         {
             XmlNamespaceManager xnm;
             var notebook = OneNoteUtils.GetHierarchyElement(oneNoteApp, notebookId, HierarchyScope.hsChildren, out xnm);
+
+            if (notebook.Root.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", sectionGroupName), xnm) != null)
+            {
+                if (!string.IsNullOrEmpty(suffixIfSectionGroupExists))  // иначе ошибку выдаст сам OneNote
+                    sectionGroupName += suffixIfSectionGroupExists; 
+            }
 
             AddSectionGroup(oneNoteApp, notebook.Root, sectionGroupName);
 

@@ -504,7 +504,7 @@
   <data name="DeleteSupplementalBibleQuestion" xml:space="preserve">
     <value>Закрыть записную книжку справочной Библии?</value>
   </data>
-  <data name="RemoveParallelBibleTranslation" xml:space="preserve">
+  <data name="RemoveParallelBibleTranslationStartMessage" xml:space="preserve">
     <value>Старт удаления параллельного перевода</value>
   </data>
   <data name="RemoveParallelBibleTranslationFinishMessage" xml:space="preserve">
@@ -772,5 +772,11 @@
   </data>
   <data name="BibleNotebookIsForAnotherModule" xml:space="preserve">
     <value>Записная книжка '{0}' создана для модуля '{1}', а не для '{2}'.</value>
+  </data>
+  <data name="RemoveParallelBibleTranslation" xml:space="preserve">
+    <value>Удаление параллельного перевода</value>
+  </data>
+  <data name="SuccessfullySaved" xml:space="preserve">
+    <value>Успешно сохранено</value>
   </data>
 </root>

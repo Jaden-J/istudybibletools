@@ -17,7 +17,7 @@ namespace BibleCommon.Services
 {
     public static class DictionaryManager
     {
-        public static void AddDictionary(Application oneNoteApp, ModuleInfo module, string notebookDirectory, bool waitForFinish)
+        public static void AddDictionary(Application oneNoteApp, ModuleInfo moduleInfo, string notebookDirectory, bool waitForFinish, Func<bool> checkIfExternalProcessAborted)
         {
             if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidDictionariesNotebookId(oneNoteApp, true)))
             {
@@ -27,14 +27,12 @@ namespace BibleCommon.Services
                 SettingsManager.Instance.Save();
             }
 
-            if (!SettingsManager.Instance.DictionariesModules.Any(m => m.ModuleName == module.ShortName))
+            if (!SettingsManager.Instance.DictionariesModules.Any(m => m.ModuleName == moduleInfo.ShortName))
             {
                 //section or sectionGroup Id
                 string dictionarySectionId = null;
                 string dictionarySectionPath = null;
-                XElement dictionarySectionEl = null;
-
-                var moduleInfo = ModulesManager.GetModuleInfo(module.ShortName);
+                XElement dictionarySectionEl = null;                
 
                 if (moduleInfo.NotebooksStructure.Sections == null || moduleInfo.NotebooksStructure.Sections.Count == 0)
                     throw new InvalidModuleException("There is no information about dictionary sections.");
@@ -44,7 +42,8 @@ namespace BibleCommon.Services
 
                 if (!string.IsNullOrEmpty(moduleInfo.NotebooksStructure.DictionarySectionGroupName))
                 {
-                    dictionarySectionEl = NotebookGenerator.AddRootSectionGroupToNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries, moduleInfo.NotebooksStructure.DictionarySectionGroupName);                                        
+                    dictionarySectionEl = NotebookGenerator.AddRootSectionGroupToNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries,
+                                                                moduleInfo.NotebooksStructure.DictionarySectionGroupName, moduleInfo.ShortName);
                 }
                 else
                 {
@@ -60,6 +59,13 @@ namespace BibleCommon.Services
                 while (!Directory.Exists(dictionarySectionPath) && attemptsCount < 500)
                 {
                     Thread.Sleep(1000);
+
+                    if (checkIfExternalProcessAborted != null)
+                    {
+                        if (checkIfExternalProcessAborted())
+                            throw new ProcessAbortedByUserException();
+                    }
+
                     System.Windows.Forms.Application.DoEvents();
                     attemptsCount++;
                 }
@@ -68,7 +74,7 @@ namespace BibleCommon.Services
                 {
                     string sectionElId;                    
 
-                    File.Copy(Path.Combine(ModulesManager.GetModuleDirectory(module.ShortName), sectionInfo.Name), Path.Combine(dictionarySectionPath, sectionInfo.Name), false);
+                    File.Copy(Path.Combine(ModulesManager.GetModuleDirectory(moduleInfo.ShortName), sectionInfo.Name), Path.Combine(dictionarySectionPath, sectionInfo.Name), false);
                     oneNoteApp.OpenHierarchy(sectionInfo.Name, dictionarySectionId, out sectionElId, CreateFileType.cftSection);
 
                     if (string.IsNullOrEmpty(dictionarySectionId))
@@ -77,15 +83,15 @@ namespace BibleCommon.Services
 
                 oneNoteApp.SyncHierarchy(dictionarySectionId);
 
-                SettingsManager.Instance.DictionariesModules.Add(new StoredModuleInfo(module.ShortName, module.Version, dictionarySectionId));
+                SettingsManager.Instance.DictionariesModules.Add(new StoredModuleInfo(moduleInfo.ShortName, moduleInfo.Version, dictionarySectionId));
                 SettingsManager.Instance.Save();
 
                 if (waitForFinish)                
-                    WaitWhileDictionaryIsCreating(oneNoteApp, dictionarySectionId, moduleInfo.NotebooksStructure.DictionaryPagesCount, 0);                
+                    WaitWhileDictionaryIsCreating(oneNoteApp, dictionarySectionId, moduleInfo.NotebooksStructure.DictionaryPagesCount, 0, checkIfExternalProcessAborted);                
             }
         }
 
-        public static void WaitWhileDictionaryIsCreating(Application oneNoteApp, string dictionarySectionId, int? dictionaryPagesCount, int attemptsCount)
+        public static void WaitWhileDictionaryIsCreating(Application oneNoteApp, string dictionarySectionId, int? dictionaryPagesCount, int attemptsCount, Func<bool> checkIfExternalProcessAborted)
         {
             if (dictionaryPagesCount.HasValue)
             {
@@ -97,8 +103,19 @@ namespace BibleCommon.Services
                     if (pagesCount < dictionaryPagesCount)
                     {
                         oneNoteApp.SyncHierarchy(dictionarySectionId);
-                        Thread.Sleep(3000);
-                        WaitWhileDictionaryIsCreating(oneNoteApp, dictionarySectionId, dictionaryPagesCount, attemptsCount + 1);
+
+                        for (var i = 0; i < 3; i++)
+                        {
+                            Thread.Sleep(1000);
+                            if (checkIfExternalProcessAborted != null)
+                            {
+                                if (checkIfExternalProcessAborted())
+                                    throw new ProcessAbortedByUserException();
+                            }
+                            System.Windows.Forms.Application.DoEvents();
+                        }
+
+                        WaitWhileDictionaryIsCreating(oneNoteApp, dictionarySectionId, dictionaryPagesCount, attemptsCount + 1, checkIfExternalProcessAborted);
                     }
                 }
             }

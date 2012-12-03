@@ -22,6 +22,7 @@ using System.Xml.Serialization;
 using BibleCommon.Scheme;
 using TestProject.Properties;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 
 namespace TestProject
@@ -280,16 +281,20 @@ namespace TestProject
             {
                 form.ShowDialog();
             }
+
+            MessageBox.Show(string.Format("Не забыть обновить в {0}.structure.xml аттрибуты: XmlDictionaryPagesCount и XmlDictionaryTermsCount", moduleName));                
         }
 
         private static void GenerateRuStrongDictionary()
         {
-            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Словари", "rststrong", "Словарь Стронга", "Еврейский и Греческий лексикон Стронга (с) Bob Jones University",
+            var moduleName = "rststrong";
+
+            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Словари", moduleName, "Словарь Стронга", "Еврейский и Греческий лексикон Стронга (с) Bob Jones University",
                 new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs\HEBREW.HTM"), SectionName = "Ветхий Завет.one", DictionaryPageDescription="Еврейский лексикон Стронга (с) Bob Jones University", TermPrefix = "H" },
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs\GREEK.HTM"), SectionName = "Новый Завет.one", DictionaryPageDescription="Греческий лексикон Стронга (с) Bob Jones University", TermPrefix= "G" }
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\HEBREW.HTM"), SectionName = "Ветхий Завет.one", DictionaryPageDescription="Еврейский лексикон Стронга (с) Bob Jones University", TermPrefix = "H" },
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\GREEK.HTM"), SectionName = "Новый Завет.one", DictionaryPageDescription="Греческий лексикон Стронга (с) Bob Jones University", TermPrefix= "G" }
                 }, BibleQuotaDictionaryConverter.StructureType.Strong, "Стронга",
-                Path.Combine(TempFolderPath, "strong"), "<h4>", "Пользовательские заметки", "Найти все стихи с этим номером", "ru", new Version(2, 0));
+                Path.Combine(TempFolderPath, moduleName), "<h4>", "Пользовательские заметки", "Найти все стихи с этим номером", "ru", new Version(2, 0));
 
             converter.Convert();
 
@@ -297,6 +302,8 @@ namespace TestProject
             {
                 form.ShowDialog();
             }
+
+            MessageBox.Show(string.Format("Не забыть обновить в {0}.structure.xml аттрибуты: XmlDictionaryPagesCount и XmlDictionaryTermsCount", moduleName));                
         }
 
         private static void GenerateDictionary()

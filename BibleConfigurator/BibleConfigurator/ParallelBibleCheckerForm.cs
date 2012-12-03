@@ -168,7 +168,7 @@ namespace BibleConfigurator
                 _errorsForm.AllErrors.Add(errorsList);
         }
 
-        public static ErrorsForm.ErrorsList CheckModule(string primaryModuleName, string parallelModuleName)
+        public static ErrorsList CheckModule(string primaryModuleName, string parallelModuleName)
         {
             var manager = new BibleParallelTranslationManager(null, primaryModuleName, parallelModuleName, SettingsManager.Instance.NotebookId_Bible);
             manager.ForCheckOnly = true;
@@ -176,7 +176,7 @@ namespace BibleConfigurator
 
             if (result.Errors.Count > 0)
             {
-                return new ErrorsForm.ErrorsList(result.Errors.ConvertAll(ex => ex.Message))
+                return new ErrorsList(result.Errors.ConvertAll(ex => ex.Message))
                 {
                     ErrorsDecription = string.Format("{0} -> {1}", primaryModuleName, parallelModuleName)
                 };
