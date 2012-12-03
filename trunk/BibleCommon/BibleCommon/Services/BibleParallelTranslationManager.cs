@@ -32,6 +32,7 @@ namespace BibleCommon.Services
         public int StrongStyleIndex { get; set; }
         public string StrongPrefix { get; set; }
         public bool? NotNeedToUpdateChapter { get; set; }
+        public bool? NotNeedToProcessVerses { get; set; }
     }
 
     public class BibleParallelTranslationManager : IDisposable
@@ -235,9 +236,11 @@ namespace BibleCommon.Services
                     bibleIteratorArgs = chapterAction(chapterPageDoc, new SimpleVersePointer(baseBookInfo.Index, baseChapter.Index));
                 }
 
+                var updatingChapterWasNotCanceled = bibleIteratorArgs == null || bibleIteratorArgs.NotNeedToUpdateChapter == null || !bibleIteratorArgs.NotNeedToUpdateChapter.Value;
+                var processingVersesWasNotCanceled = bibleIteratorArgs == null || bibleIteratorArgs.NotNeedToProcessVerses == null || !bibleIteratorArgs.NotNeedToProcessVerses.Value;
 
                 bool? chapterWasModified = null;
-                if (iterateVerses)
+                if (iterateVerses && processingVersesWasNotCanceled)
                 {
                     chapterWasModified = false;
                     foreach (var baseVerse in baseChapter.Verses)
@@ -273,8 +276,11 @@ namespace BibleCommon.Services
                     }
                 }
 
-                if (needToUpdateChapter && chapterAction != null && chapterWasModified.GetValueOrDefault(true) == true && !ForCheckOnly 
-                    && (bibleIteratorArgs == null || bibleIteratorArgs.NotNeedToUpdateChapter == null || !bibleIteratorArgs.NotNeedToUpdateChapter.Value))
+                if (needToUpdateChapter
+                    && chapterAction != null 
+                    && chapterWasModified.GetValueOrDefault(true) == true 
+                    && !ForCheckOnly 
+                    && updatingChapterWasNotCanceled)
                 {
                     SupplementalBibleManager.UpdatePageXmlForStrongBible(chapterPageDoc, _isOneNote2010);
 

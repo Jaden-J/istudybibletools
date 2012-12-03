@@ -54,43 +54,38 @@ namespace BibleCommon.Services
             }
         }
 
-        public static Dictionary<string, string> GenerateCache(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger, bool silient = false)
+        public static Dictionary<string, string> GenerateCache(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger, out List<string> notFoundTerms)
         {
+            notFoundTerms = null;
+
             var cacheData = IndexDictionary(oneNoteApp, moduleInfo, logger);
-
-            if (moduleInfo.NotebooksStructure.DictionaryTermsCount > cacheData.Count)
-            {
-                var notFoundTerms = new List<string>();
-                bool isStrong = moduleInfo.Type == ModuleType.Strong;
-                
-                var moduleDictionaryInfo = ModulesManager.GetModuleDictionaryInfo(moduleInfo.ShortName);
-                foreach (var term in moduleDictionaryInfo.TermSet.Terms)
-                {
-                    if (!cacheData.ContainsKey(GetTermName(term, isStrong)))
-                        notFoundTerms.Add(term);
-                }
-
-                if (notFoundTerms.Count > 0)
-                {
-                    if (silient)
-                        Logger.LogWarning("The terms of module '{0}' were not found: ", moduleInfo.ShortName, string.Join(", ", notFoundTerms.ToArray()));
-                    else
-                    {
-                        using (var form = new ErrorsForm())
-                        {
-                            form.AllErrors.Add(new ErrorsForm.ErrorsList(notFoundTerms)
-                            {
-                                ErrorsDecription = BibleCommon.Resources.Constants.DictionaryTermsNotFound
-                            });
-                            form.ShowDialog();
-                        }
-                    }
-                }
-            }
 
             var filePath = GetCacheFilePath(moduleInfo.ShortName);
 
             SharpSerializationHelper.Serialize(cacheData, filePath);
+
+            if (moduleInfo.NotebooksStructure.DictionaryTermsCount > cacheData.Count)
+            {
+                int notFoundTermsCount;
+                if (moduleInfo.Type == ModuleType.Dictionary)
+                {
+                    notFoundTerms = new List<string>();
+                    bool isStrong = moduleInfo.Type == ModuleType.Strong;
+
+                    var moduleDictionaryInfo = ModulesManager.GetModuleDictionaryInfo(moduleInfo.ShortName);
+                    foreach (var term in moduleDictionaryInfo.TermSet.Terms)
+                    {
+                        if (!cacheData.ContainsKey(GetTermName(term, isStrong)))
+                            notFoundTerms.Add(term);
+                    }
+
+                    notFoundTermsCount = notFoundTerms.Count;                    
+                }
+                else
+                    notFoundTermsCount = moduleInfo.NotebooksStructure.DictionaryTermsCount.GetValueOrDefault() - cacheData.Count;
+
+                Logger.LogMessage("{0} terms were not found in dictionary '{1}'", notFoundTermsCount, moduleInfo.ShortName);
+            }
 
             return cacheData;
         }

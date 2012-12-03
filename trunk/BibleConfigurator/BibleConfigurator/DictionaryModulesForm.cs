@@ -9,6 +9,7 @@ using BibleCommon.Helpers;
 using Microsoft.Office.Interop.OneNote;
 using System.Xml.XPath;
 using System.Xml.Linq;
+using BibleCommon.UI.Forms;
 
 namespace BibleConfigurator
 {
@@ -41,15 +42,25 @@ namespace BibleConfigurator
             }
         }
 
-        protected override List<string> CommitChanges(BibleCommon.Common.ModuleInfo selectedModuleInfo)
+        protected override ErrorsList CommitChanges(BibleCommon.Common.ModuleInfo selectedModuleInfo)
         {
             MainForm.PrepareForLongProcessing(selectedModuleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
-            DictionaryManager.AddDictionary(_oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true);
+            DictionaryManager.AddDictionary(_oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true, () => Logger.AbortedByUsers);
             Logger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexDictionary);
-            DictionaryTermsCacheManager.GenerateCache(_oneNoteApp, selectedModuleInfo, Logger);
+
+            List<string> notFoundTerms;
+            DictionaryTermsCacheManager.GenerateCache(_oneNoteApp, selectedModuleInfo, Logger, out notFoundTerms);
             MainForm.LongProcessingDone(BibleCommon.Resources.Constants.AddDictionaryFinishMessage);
 
-            return new List<string>();
+            if (notFoundTerms != null && notFoundTerms.Count > 0)
+            {
+                return new ErrorsList(notFoundTerms)
+                {
+                    ErrorsDecription = BibleCommon.Resources.Constants.DictionaryTermsNotFound
+                };
+            }
+            else
+                return null;
         }
 
         protected override string GetSupplementalModuleName(int index)
@@ -174,7 +185,21 @@ namespace BibleConfigurator
             {
                 MainForm.PrepareForLongProcessing(moduleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
                 Logger.Preffix = string.Format("{0} {1}: ", BibleCommon.Resources.Constants.IndexDictionary, moduleInfo.ShortName);
-                DictionaryTermsCacheManager.GenerateCache(_oneNoteApp, moduleInfo, Logger);
+
+                List<string> notFoundTerms;
+                DictionaryTermsCacheManager.GenerateCache(_oneNoteApp, moduleInfo, Logger, out notFoundTerms);
+
+                if (notFoundTerms != null && notFoundTerms.Count > 0)
+                {
+                    using (var form = new ErrorsForm())
+                    {
+                        form.AllErrors.Add(new ErrorsList(notFoundTerms)
+                        {
+                            ErrorsDecription = BibleCommon.Resources.Constants.DictionaryTermsNotFound
+                        });
+                        form.ShowDialog();
+                    }
+                }
             }
 
             return result;

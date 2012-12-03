@@ -222,20 +222,24 @@ namespace BibleCommon.Services
                 result = bibleTranslationManager.IterateBaseBible(
                     (chapterPageDoc, chapterPointer) =>
                     {
-                        UpdateSupplementalModulesMetadata(oneNoteApp, chapterPageDoc, chapterPointer, module, xnm);
+                        if (UpdateSupplementalModulesMetadata(oneNoteApp, chapterPageDoc, chapterPointer, module, xnm))
+                        {
 
-                        var tableEl = NotebookGenerator.GetPageTable(chapterPageDoc, xnm);
-                        var bibleIndex = NotebookGenerator.AddColumnToTable(tableEl, SettingsManager.Instance.PageWidth_Bible, xnm);
-                        NotebookGenerator.AddParallelBibleTitle(chapterPageDoc, tableEl, 
-                            bibleTranslationManager.ParallelModuleInfo.DisplayName, bibleIndex, bibleTranslationManager.ParallelModuleInfo.Locale, isOneNote2010, xnm);
+                            var tableEl = NotebookGenerator.GetPageTable(chapterPageDoc, xnm);
+                            var bibleIndex = NotebookGenerator.AddColumnToTable(tableEl, SettingsManager.Instance.PageWidth_Bible, xnm);
+                            NotebookGenerator.AddParallelBibleTitle(chapterPageDoc, tableEl,
+                                bibleTranslationManager.ParallelModuleInfo.DisplayName, bibleIndex, bibleTranslationManager.ParallelModuleInfo.Locale, isOneNote2010, xnm);
 
-                        int styleIndex = QuickStyleManager.AddQuickStyleDef(chapterPageDoc, QuickStyleManager.StyleForStrongName, QuickStyleManager.PredefinedStyles.GrayHyperlink, xnm);
+                            int styleIndex = QuickStyleManager.AddQuickStyleDef(chapterPageDoc, QuickStyleManager.StyleForStrongName, QuickStyleManager.PredefinedStyles.GrayHyperlink, xnm);
 
-                        var strongPrefix = bibleTranslationManager.ParallelModuleInfo.Type == Common.ModuleType.Strong 
-                            ? GetStrongPrefix(chapterPointer.BookIndex, (oldTestamentSectionsCount ?? newTestamentSectionsCount).Value, oldTestamentStrongPrefix, newTestamentStrongPrefix)
-                            : null;
+                            var strongPrefix = bibleTranslationManager.ParallelModuleInfo.Type == Common.ModuleType.Strong
+                                ? GetStrongPrefix(chapterPointer.BookIndex, (oldTestamentSectionsCount ?? newTestamentSectionsCount).Value, oldTestamentStrongPrefix, newTestamentStrongPrefix)
+                                : null;
 
-                        return new BibleIteratorArgs() { BibleIndex = bibleIndex, TableElement = tableEl, StrongStyleIndex = styleIndex, StrongPrefix = strongPrefix };
+                            return new BibleIteratorArgs() { BibleIndex = bibleIndex, TableElement = tableEl, StrongStyleIndex = styleIndex, StrongPrefix = strongPrefix };
+                        }
+                        else
+                            return new BibleIteratorArgs() { NotNeedToProcessVerses = true, NotNeedToUpdateChapter = true };
                     },               
                     true, true,
                     (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
@@ -265,8 +269,8 @@ namespace BibleCommon.Services
 
             return result;
         }
-
-        private static void UpdateSupplementalModulesMetadata(Application oneNoteApp, XDocument chapterPageDoc, SimpleVersePointer chapterPointer, ModuleInfo module,
+        
+        private static bool UpdateSupplementalModulesMetadata(Application oneNoteApp, XDocument chapterPageDoc, SimpleVersePointer chapterPointer, ModuleInfo module,
             XmlNamespaceManager xnm)
         {
             var supplementalModulesMetadata = OneNoteUtils.GetPageMetaData(oneNoteApp, chapterPageDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules, xnm);
@@ -274,10 +278,17 @@ namespace BibleCommon.Services
                 throw new InvalidOperationException(string.Format("Chapter page metadata was not found: {0}", chapterPointer));
 
             var supplementalModulesInfo = EmbeddedModuleInfo.Deserialize(supplementalModulesMetadata);
-            supplementalModulesInfo.Add(new EmbeddedModuleInfo(module.ShortName, module.Version, supplementalModulesInfo.Count));
+            if (!supplementalModulesInfo.Any(sm => sm.ModuleName == module.ShortName))
+            {
+                supplementalModulesInfo.Add(new EmbeddedModuleInfo(module.ShortName, module.Version, supplementalModulesInfo.Count));
 
-            OneNoteUtils.UpdatePageMetaData(oneNoteApp, chapterPageDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules, 
-                EmbeddedModuleInfo.Serialize(supplementalModulesInfo), xnm);
+                OneNoteUtils.UpdatePageMetaData(oneNoteApp, chapterPageDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules,
+                    EmbeddedModuleInfo.Serialize(supplementalModulesInfo), xnm);
+
+                return true;
+            }
+            else
+                return false;
         }
 
         public static void CloseSupplementalBible(Application oneNoteApp)

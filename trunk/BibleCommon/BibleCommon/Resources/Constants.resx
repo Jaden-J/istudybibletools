@@ -507,7 +507,7 @@
   <data name="DeleteSupplementalBibleQuestion" xml:space="preserve">
     <value>Close the Supplemental Bible Notebook?</value>
   </data>
-  <data name="RemoveParallelBibleTranslation" xml:space="preserve">
+  <data name="RemoveParallelBibleTranslationStartMessage" xml:space="preserve">
     <value>Removing parallel Bible translation start</value>
   </data>
   <data name="RemoveParallelBibleTranslationFinishMessage" xml:space="preserve">
@@ -767,5 +767,11 @@
   </data>
   <data name="BibleNotebookIsForAnotherModule" xml:space="preserve">
     <value>Notebook '{0}' is created for module '{1}', not for '{2}'.</value>
+  </data>
+  <data name="RemoveParallelBibleTranslation" xml:space="preserve">
+    <value>Removing parallel Bible translation</value>
+  </data>
+  <data name="SuccessfullySaved" xml:space="preserve">
+    <value>Saved successfully</value>
   </data>
 </root>

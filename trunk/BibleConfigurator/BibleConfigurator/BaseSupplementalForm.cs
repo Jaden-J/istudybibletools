@@ -42,7 +42,7 @@ namespace BibleConfigurator
         protected abstract void ClearSupplementalModules();
         protected abstract bool SupplementalModuleAlreadyAdded(string moduleShortName);
         protected abstract string FormDescription { get; }
-        protected abstract List<string> CommitChanges(ModuleInfo selectedModuleInfo);        
+        protected abstract ErrorsList CommitChanges(ModuleInfo selectedModuleInfo);        
         protected abstract string GetSupplementalModuleName(int index);
         protected abstract bool CanModuleBeDeleted(ModuleInfo moduleInfo, int index);
         protected abstract bool CanModuleBeAdded(ModuleInfo moduleInfo);
@@ -282,7 +282,7 @@ namespace BibleConfigurator
 
                 BibleCommon.Services.Logger.LogMessage("Finish work with supplemental modules. Elapsed time = '{0}'", DateTime.Now - dt);
 
-                if (errors.Count > 0)
+                if (errors != null && errors.Count > 0)
                 {
                     var showErrors = true;
 
@@ -295,8 +295,12 @@ namespace BibleConfigurator
 
                     if (showErrors)
                     {
-                        using (var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(errors))
+                        using (var errorsForm = new BibleCommon.UI.Forms.ErrorsForm())
                         {
+                            errorsForm.AllErrors.Add(new ErrorsList(errors)
+                            {
+                                ErrorsDecription = BibleCommon.Resources.Constants.DictionaryTermsNotFound
+                            });
                             errorsForm.ShowDialog();
                         }
                     }
@@ -521,11 +525,14 @@ namespace BibleConfigurator
         {
             if (InProgress)
             {
-                if (MessageBox.Show(BibleCommon.Resources.Constants.AbortTheOperation, 
+                if (MessageBox.Show(BibleCommon.Resources.Constants.AbortTheOperation,
                         BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)
                     e.Cancel = true;
                 else
+                {
                     Logger.AbortedByUsers = true;
+                    MainForm.StopLongProcess = true;
+                }
             }
         }
 

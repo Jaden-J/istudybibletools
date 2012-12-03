@@ -47,7 +47,7 @@ namespace BibleConfigurator
         <div>");
                 sb.AppendFormat(
 @"
-            <table style='font-family: @{0};font-size:smaller'>", BibleCommon.Consts.Constants.UnicodeFontName);
+            <table style='font-family: @{0};font-size:small'>", BibleCommon.Consts.Constants.UnicodeFontName);
                 foreach (var book in module.BibleStructure.BibleBooks)
                 {
                     sb.Append(
