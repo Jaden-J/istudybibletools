@@ -632,7 +632,11 @@ namespace BibleCommon.Services
                                                              });
 
 
-                            localChapterName = searchResult.ChapterName;   // всегда запоминаем
+                            localChapterName = string.Format("{0} {1}", 
+                                searchResult.VersePointer.OriginalBookName, searchResult.VersePointer.TopChapter.GetValueOrDefault(searchResult.VersePointer.Chapter.Value));  // всегда запоминаем  
+
+                            //ранее было "localChapterName = searchResult.ChapterName;". Пришлось изменить, чтобы понимать правильную главу для стиха Ин 2:3 в "Ин 1:1-2:2,3".
+
                             prevResult = searchResult;
                         }
                     }
