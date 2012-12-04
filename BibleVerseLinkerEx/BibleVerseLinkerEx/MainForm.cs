@@ -36,50 +36,60 @@ namespace BibleVerseLinkerEx
 
             Microsoft.Office.Interop.OneNote.Application oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
 
-            Logger.Initialize();
+            try
+            {
+                Logger.Initialize();
 
-            if (!SettingsManager.Instance.IsConfigured(oneNoteApp))
-            {
-                Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
-            }
-            else
-            {
-                try
+                if (!SettingsManager.Instance.IsConfigured(ref oneNoteApp))
                 {
-                    using (VerseLinker vlManager = new VerseLinker())
+                    Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
+                }
+                else
+                {
+                    try
                     {
-                        if (!string.IsNullOrEmpty(tbPageName.Text))
-                            vlManager.DescriptionPageName = tbPageName.Text;
-                        else
-                        {   
-                            tbPageName.Text = SettingsManager.Instance.PageName_DefaultComments;
-                            Application.DoEvents();
-                        }
-
-                        vlManager.Do();
-
-                        if (!Logger.WasLogged)
+                        using (VerseLinker vlManager = new VerseLinker(oneNoteApp))
                         {
-                            SetForegroundWindow(new IntPtr((long)vlManager.OneNoteApp.Windows.CurrentWindow.WindowHandle));
-                            this.Visible = false;
-                            vlManager.SortCommentsPages();
+                            if (!string.IsNullOrEmpty(tbPageName.Text))
+                                vlManager.DescriptionPageName = tbPageName.Text;
+                            else
+                            {
+                                tbPageName.Text = SettingsManager.Instance.PageName_DefaultComments;
+                                Application.DoEvents();
+                            }
+
+                            vlManager.Do();
+
+                            if (!Logger.WasLogged)
+                            {
+                                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                                {
+                                    SetForegroundWindow(new IntPtr((long)oneNoteAppSafe.Windows.CurrentWindow.WindowHandle));
+                                });
+                                this.Visible = false;
+                                vlManager.SortCommentsPages();
+                            }
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex.Message);
+                    }
                 }
-                catch (Exception ex)
+
+                btnOk.Enabled = true;
+
+                if (!Logger.WasLogged)
                 {
-                    Logger.LogError(ex.Message);
+                    this.Visible = false;
+                    Properties.Settings.Default.LastPageName = tbPageName.Text;
+                    Properties.Settings.Default.Save();
+                    this.Close();
                 }
             }
-
-            btnOk.Enabled = true;
-
-            if (!Logger.WasLogged)
+            finally
             {
-                this.Visible = false;
-                Properties.Settings.Default.LastPageName = tbPageName.Text;                
-                Properties.Settings.Default.Save();
-                this.Close();
+                oneNoteApp = null;
             }
         }
        

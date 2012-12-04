@@ -110,15 +110,15 @@ namespace BibleCommon.Services
                 {
                     return new BibleIteratorArgs() 
                     { 
-                        NotNeedToUpdateChapter = !RemoveChapterParallelTranslation(_oneNoteApp, chapterPageDoc, moduleInfo, xnm) 
+                        NotNeedToUpdateChapter = !RemoveChapterParallelTranslation(chapterPageDoc, moduleInfo, xnm) 
                     };                    
                 }, true, false, null);
 
         }
 
-        internal static bool RemoveChapterParallelTranslation(Application oneNoteApp, XDocument chapterPageDoc, ModuleInfo moduleInfo, XmlNamespaceManager xnm)
+        internal static bool RemoveChapterParallelTranslation(XDocument chapterPageDoc, ModuleInfo moduleInfo, XmlNamespaceManager xnm)
         {
-            var supplementalModulesMetadata = OneNoteUtils.GetPageMetaData(oneNoteApp, chapterPageDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules, xnm);
+            var supplementalModulesMetadata = OneNoteUtils.GetPageMetaData(chapterPageDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules, xnm);
             if (!string.IsNullOrEmpty(supplementalModulesMetadata))
             {
                 var embeddedModulesInfo = EmbeddedModuleInfo.Deserialize(supplementalModulesMetadata);
@@ -137,7 +137,7 @@ namespace BibleCommon.Services
                     }
 
                     embeddedModulesInfo.Remove(embeddedModuleInfo);
-                    OneNoteUtils.UpdatePageMetaData(oneNoteApp, chapterPageDoc.Root, 
+                    OneNoteUtils.UpdatePageMetaData(chapterPageDoc.Root, 
                         Consts.Constants.Key_EmbeddedSupplementalModules, EmbeddedModuleInfo.Serialize(embeddedModulesInfo), xnm);
                     return true;
                 }
@@ -177,7 +177,7 @@ namespace BibleCommon.Services
                 var parallelBookContent = ParallelBibleInfo.Books.FirstOrDefault(b => b.Index == baseBookContent.Index);
                 if (parallelBookContent != null)
                 {
-                    XElement sectionEl = ForCheckOnly ? null : HierarchySearchManager.FindBibleBookSection(_oneNoteApp, BibleNotebookId, baseBookInfo.SectionName);
+                    XElement sectionEl = ForCheckOnly ? null : HierarchySearchManager.FindBibleBookSection(ref _oneNoteApp, BibleNotebookId, baseBookInfo.SectionName);
                     if (sectionEl == null && !ForCheckOnly)
                         throw new Exception(string.Format("Section with name {0} is not found", baseBookInfo.SectionName));
 
@@ -210,7 +210,7 @@ namespace BibleCommon.Services
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
             string sectionId = ForCheckOnly ? null : (string)bibleBookSectionEl.Attribute("ID");            
 
-            var sectionPagesEl = ForCheckOnly ? null : OneNoteUtils.GetHierarchyElement(_oneNoteApp, sectionId, HierarchyScope.hsPages, out xnm);
+            var sectionPagesEl = ForCheckOnly ? null : OneNoteUtils.GetHierarchyElement(ref _oneNoteApp, sectionId, HierarchyScope.hsPages, out xnm);
 
             int lastProcessedChapter = 0;
             int lastProcessedVerse = 0;            
@@ -225,13 +225,13 @@ namespace BibleCommon.Services
 
                 if (chapterAction != null)
                 {
-                    var chapterPageEl = ForCheckOnly ? null : HierarchySearchManager.FindChapterPage(_oneNoteApp, sectionPagesEl.Root, baseChapter.Index, xnm);
+                    var chapterPageEl = ForCheckOnly ? null : HierarchySearchManager.FindChapterPage(sectionPagesEl.Root, baseChapter.Index, xnm);
 
                     if (chapterPageEl == null && !ForCheckOnly)
                         throw new BaseChapterSectionNotFoundException(baseChapter.Index, baseBookInfo.Index);
 
                     string chapterPageId = ForCheckOnly ? null : (string)chapterPageEl.Attribute("ID");
-                    chapterPageDoc = ForCheckOnly ? null : OneNoteUtils.GetPageContent(_oneNoteApp, chapterPageId, out xnm);
+                    chapterPageDoc = ForCheckOnly ? null : OneNoteUtils.GetPageContent(ref _oneNoteApp, chapterPageId, out xnm);
 
                     bibleIteratorArgs = chapterAction(chapterPageDoc, new SimpleVersePointer(baseBookInfo.Index, baseChapter.Index));
                 }
@@ -284,7 +284,10 @@ namespace BibleCommon.Services
                 {
                     SupplementalBibleManager.UpdatePageXmlForStrongBible(chapterPageDoc, _isOneNote2010);
 
-                    _oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+                    OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                    {
+                        oneNoteAppSafe.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+                    });
                 }
             }            
         }

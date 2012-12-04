@@ -16,13 +16,13 @@ namespace BibleConfigurator
 {
     public static class NotebookChecker
     {
-        public static bool CheckNotebook(Application oneNoteApp, ModuleInfo module, string notebookId, ContainerType notebookType, out string errorText)
+        public static bool CheckNotebook(ref Application oneNoteApp, ModuleInfo module, string notebookId, ContainerType notebookType, out string errorText)
         {
             errorText = string.Empty;
 
             if (!string.IsNullOrEmpty(notebookId))
             {
-                OneNoteProxy.HierarchyElement notebookEl = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, HierarchyScope.hsSections, true);
+                OneNoteProxy.HierarchyElement notebookEl = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsSections, true);
                 var notebook = module.GetNotebook(notebookType);
 
                 try
@@ -34,7 +34,7 @@ namespace BibleConfigurator
                             break;
                         default:
                             CheckContainer(notebook, notebookEl.Content.Root, notebookEl.Xnm);
-                            CheckNotebookMetadata(oneNoteApp, module, notebookId, notebookType, notebookEl);     // то есть проверка показала, что записная книжка похожа на Библию. Теперь посмотрим, есть ли информация в метаданных                       
+                            CheckNotebookMetadata(ref oneNoteApp, module, notebookId, notebookType, notebookEl);     // то есть проверка показала, что записная книжка похожа на Библию. Теперь посмотрим, есть ли информация в метаданных                       
                             break;
                     }
 
@@ -76,12 +76,12 @@ namespace BibleConfigurator
             }
         }     
 
-        internal static XElement GetFirstNotebookPageId(Application oneNoteApp, string notebookId, OneNoteProxy.HierarchyElement containerEl, out XmlNamespaceManager xnm)
+        internal static XElement GetFirstNotebookPageId(ref Application oneNoteApp, string notebookId, OneNoteProxy.HierarchyElement containerEl, out XmlNamespaceManager xnm)
         {   
             XElement sectionsDoc;
 
             if (containerEl == null)
-                sectionsDoc = OneNoteUtils.GetHierarchyElement(oneNoteApp, notebookId, HierarchyScope.hsSections, out xnm).Root;
+                sectionsDoc = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, notebookId, HierarchyScope.hsSections, out xnm).Root;
             else
             {
                 sectionsDoc = containerEl.Content.Root;
@@ -91,7 +91,7 @@ namespace BibleConfigurator
             var firstSection = sectionsDoc.XPathSelectElement(string.Format("//one:Section[{0}]", OneNoteUtils.NotInRecycleXPathCondition), xnm);
             if (firstSection != null)
             {
-                var pagesDoc = OneNoteUtils.GetHierarchyElement(oneNoteApp, (string)firstSection.Attribute("ID"), HierarchyScope.hsPages, out xnm);
+                var pagesDoc = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, (string)firstSection.Attribute("ID"), HierarchyScope.hsPages, out xnm);
                 var firstPage = pagesDoc.Root.XPathSelectElement("one:Page", xnm);
                 return firstPage;
             }
@@ -99,15 +99,15 @@ namespace BibleConfigurator
             return null;
         }
 
-        private static void CheckNotebookMetadata(Application oneNoteApp, ModuleInfo module, string notebookId, ContainerType notebookType, OneNoteProxy.HierarchyElement containerEl)
+        private static void CheckNotebookMetadata(ref Application oneNoteApp, ModuleInfo module, string notebookId, ContainerType notebookType, OneNoteProxy.HierarchyElement containerEl)
         {
             if (notebookType == ContainerType.Bible)
             {
                 XmlNamespaceManager xnm;
-                var firstNotebookPageEl = GetFirstNotebookPageId(oneNoteApp, notebookId, containerEl, out xnm);
+                var firstNotebookPageEl = GetFirstNotebookPageId(ref oneNoteApp, notebookId, containerEl, out xnm);
                 if (firstNotebookPageEl != null)
                 {
-                    var bibleModuleMetadata = OneNoteUtils.GetPageMetaData(oneNoteApp, firstNotebookPageEl, BibleCommon.Consts.Constants.Key_EmbeddedBibleModule, xnm);
+                    var bibleModuleMetadata = OneNoteUtils.GetPageMetaData(firstNotebookPageEl, BibleCommon.Consts.Constants.Key_EmbeddedBibleModule, xnm);
                     if (!string.IsNullOrEmpty(bibleModuleMetadata))
                     {
                         var bibleModuleInfo = EmbeddedModuleInfo.Deserialize(bibleModuleMetadata);

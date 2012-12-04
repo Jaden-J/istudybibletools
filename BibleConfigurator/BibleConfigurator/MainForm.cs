@@ -217,7 +217,7 @@ namespace BibleConfigurator
 
         private void TryToSearchNotebooksForNewModule(ModuleInfo module)
         {
-            var notebooks = OneNoteUtils.GetExistingNotebooks(_oneNoteApp);
+            var notebooks = OneNoteUtils.GetExistingNotebooks(ref _oneNoteApp);
 
             notebooks.Remove(SettingsManager.Instance.NotebookId_Bible);
             notebooks.Remove(SettingsManager.Instance.NotebookId_BibleStudy);
@@ -241,7 +241,7 @@ namespace BibleConfigurator
         {
             if (!chkCreateNotebookFromTemplate.Checked)
             {
-                var notebookId = OneNoteUtils.GetNotebookIdByName(_oneNoteApp, (string)cbNotebook.SelectedItem, true);
+                var notebookId = OneNoteUtils.GetNotebookIdByName(ref _oneNoteApp, (string)cbNotebook.SelectedItem, true);
                 if (notebookId == currentNotebookId)  // то есть если пользователь уже сам поменял, то не трогаем
                 {                    
                     notebookId = SearchForNotebook(module, notebooks.Keys, containerType);
@@ -253,7 +253,7 @@ namespace BibleConfigurator
                         chkCreateNotebookFromTemplate.Checked = true;
                     else
                     {
-                        cbNotebook.SelectedItem = OneNoteUtils.GetHierarchyElementNickname(_oneNoteApp, notebookId);
+                        cbNotebook.SelectedItem = OneNoteUtils.GetHierarchyElementNickname(ref _oneNoteApp, notebookId);
                         notebooks.Remove(notebookId);
                         return notebookId;
                     }
@@ -286,7 +286,7 @@ namespace BibleConfigurator
                         PrepareForLongProcessing(moduleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
                         LongProcessLogger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexDictionary);                        
                         List<string> notFoundTerms;
-                        DictionaryTermsCacheManager.GenerateCache(_oneNoteApp, moduleInfo, LongProcessLogger, out notFoundTerms);
+                        DictionaryTermsCacheManager.GenerateCache(ref _oneNoteApp, moduleInfo, LongProcessLogger, out notFoundTerms);
                         LongProcessingDone(BibleCommon.Resources.Constants.AddDictionaryFinishMessage);
 
                         if (notFoundTerms != null && notFoundTerms.Count > 0)
@@ -320,7 +320,7 @@ namespace BibleConfigurator
             int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleShortName, true);
             PrepareForLongProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.IndexBibleStart);
             LongProcessLogger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexBible);
-            BibleVersesLinksCacheManager.GenerateBibleVersesLinks(_oneNoteApp,
+            BibleVersesLinksCacheManager.GenerateBibleVersesLinks(ref _oneNoteApp,
                 SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, LongProcessLogger);
             LongProcessingDone(BibleCommon.Resources.Constants.IndexBibleFinish);
         }
@@ -533,7 +533,10 @@ namespace BibleConfigurator
                     {
                         if (attemptNumber > 5 && string.IsNullOrEmpty(notebookId))  // то есть прошло уже 25 секунд, а записная книжка даже ещё не создалась!!!
                         {
-                            _oneNoteApp.OpenHierarchy(notebookFolderPath, null, out notebookId);
+                            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                            {
+                                oneNoteAppSafe.OpenHierarchy(notebookFolderPath, null, out notebookId);
+                            });
                         }
                     }
 
@@ -562,12 +565,12 @@ namespace BibleConfigurator
         private void SaveModuleInformationIntoFirstPage(string notebookId, ModuleInfo module)
         {
             XmlNamespaceManager xnm;
-            var firstNotebookPageEl = NotebookChecker.GetFirstNotebookPageId(_oneNoteApp, notebookId, null, out xnm);
+            var firstNotebookPageEl = NotebookChecker.GetFirstNotebookPageId(ref _oneNoteApp, notebookId, null, out xnm);
             if (firstNotebookPageEl != null)
             {
                 var moduleInfo = new EmbeddedModuleInfo(module.ShortName, module.Version);
-                var pageContent = OneNoteUtils.GetPageContent(_oneNoteApp, (string)firstNotebookPageEl.Attribute("ID"), out xnm);
-                OneNoteUtils.UpdatePageMetaData(_oneNoteApp, pageContent.Root, BibleCommon.Consts.Constants.Key_EmbeddedBibleModule, moduleInfo.ToString(), xnm);
+                var pageContent = OneNoteUtils.GetPageContent(ref _oneNoteApp, (string)firstNotebookPageEl.Attribute("ID"), out xnm);
+                OneNoteUtils.UpdatePageMetaData(pageContent.Root, BibleCommon.Consts.Constants.Key_EmbeddedBibleModule, moduleInfo.ToString(), xnm);
                 OneNoteUtils.UpdatePageContentSafe(ref _oneNoteApp, pageContent, xnm);
             }
         }
@@ -578,11 +581,11 @@ namespace BibleConfigurator
 
             try
             {
-                notebookId = OneNoteUtils.GetNotebookIdByName(_oneNoteApp, notebookName, true);
+                notebookId = OneNoteUtils.GetNotebookIdByName(ref _oneNoteApp, notebookName, true);
                 var module = ModulesManager.GetCurrentModuleInfo();
 
                 string errorText;
-                if (NotebookChecker.CheckNotebook(_oneNoteApp, module, notebookId, notebookType, out errorText))
+                if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, out errorText))
                 {
                     switch (notebookType)
                     {
@@ -637,7 +640,7 @@ namespace BibleConfigurator
 
         private void SearchForCorrespondenceSectionGroups(ModuleInfo module, string notebookId)
         {
-            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, notebookId, HierarchyScope.hsSections, true);
+            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, notebookId, HierarchyScope.hsSections, true);
 
             List<ContainerType> sectionGroups = new List<ContainerType>();
 
@@ -671,7 +674,7 @@ namespace BibleConfigurator
 
         private void RenameSectionGroupsForm(string notebookId, Dictionary<string, string> renamedSectionGroups)
         {
-            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, notebookId, HierarchyScope.hsSections, true);     
+            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, notebookId, HierarchyScope.hsSections, true);     
 
             foreach (string sectionGroupId in renamedSectionGroups.Keys)
             {
@@ -685,16 +688,19 @@ namespace BibleConfigurator
                     FormLogger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorSectionGroupNotFound, sectionGroupId));
             }
 
-            _oneNoteApp.UpdateHierarchy(notebook.Content.ToString(), Constants.CurrentOneNoteSchema);
-            OneNoteProxy.Instance.RefreshHierarchyCache(_oneNoteApp, notebookId, HierarchyScope.hsSections);     
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.UpdateHierarchy(notebook.Content.ToString(), Constants.CurrentOneNoteSchema);
+            });
+            OneNoteProxy.Instance.RefreshHierarchyCache(ref _oneNoteApp, notebookId, HierarchyScope.hsSections);     
         }
 
         private string CreateNotebookFromTemplate(string notebookTemplateFileName, string notebookFromTemplatePath, out string notebookFolderPath)
         {
-            string s;
+            string s = null;
             notebookFolderPath = null;
             string packageDirectory = ModulesManager.GetCurrentModuleDirectiory();                
-            string packageFilePath = Path.Combine(packageDirectory, notebookTemplateFileName);            
+            string packageFilePath = Path.Combine(packageDirectory, notebookTemplateFileName);
 
             if (File.Exists(packageFilePath))
             {
@@ -704,15 +710,19 @@ namespace BibleConfigurator
 
                 //if (!string.IsNullOrEmpty(folderPath))
                 //{
-                _oneNoteApp.OpenPackage(packageFilePath, notebookFolderPath, out s);
+                string notebookFolderPathTemp = notebookFolderPath;
+                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                {
+                    oneNoteAppSafe.OpenPackage(packageFilePath, notebookFolderPathTemp, out s);
+                });
 
-                    string[] files = Directory.GetFiles(s, "*.onetoc2", SearchOption.TopDirectoryOnly);
-                    if (files.Length > 0)
-                        Process.Start(files[0]);
-                    else
-                        FormLogger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorErrorWhileNotebookOpenning, notebookTemplateFileName));
+                string[] files = Directory.GetFiles(s, "*.onetoc2", SearchOption.TopDirectoryOnly);
+                if (files.Length > 0)
+                    Process.Start(files[0]);
+                else
+                    FormLogger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorErrorWhileNotebookOpenning, notebookTemplateFileName));
 
-                    return Path.GetFileNameWithoutExtension(notebookFolderPath);
+                return Path.GetFileNameWithoutExtension(notebookFolderPath);
                 //}
                 //else
                 //    Logger.LogError(BibleCommon.Resources.Constants.ConfiguratorSelectAnotherFolder);
@@ -789,12 +799,12 @@ namespace BibleConfigurator
 
         private void LoadParameters(ModuleInfo module, bool? forceNeedToSaveSettings)
         {
-            if (!SettingsManager.Instance.IsConfigured(_oneNoteApp) || forceNeedToSaveSettings.GetValueOrDefault(false) || AreThereUnindexedDictionaries())
+            if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp) || forceNeedToSaveSettings.GetValueOrDefault(false) || AreThereUnindexedDictionaries())
                 lblWarning.Visible = true;
             //else  // пусть лучше будет так, чтобы если пользователь что-то поменял - его программа просила всегда сохранить изменения, пока он не сохранит
             //    lblWarning.Visible = false;
 
-            var notebooks = OneNoteUtils.GetExistingNotebooks(_oneNoteApp);
+            var notebooks = OneNoteUtils.GetExistingNotebooks(ref _oneNoteApp);
             string singleNotebookId = module.UseSingleNotebook() ? SearchForNotebook(module, notebooks.Keys, ContainerType.Single) : string.Empty;
             string bibleNotebookId = SearchForNotebook(module, notebooks.Keys, ContainerType.Bible);
             string bibleCommentsNotebookId = SearchForNotebook(module, notebooks.Keys, ContainerType.BibleComments);
@@ -895,7 +905,7 @@ namespace BibleConfigurator
             foreach (string notebookId in notebooksIds)
             {
                 string errorText;
-                if (NotebookChecker.CheckNotebook(_oneNoteApp, module, notebookId, notebookType, out errorText))
+                if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, out errorText))
                 {
                     return notebookId;
                 }
@@ -937,8 +947,13 @@ namespace BibleConfigurator
 
         private void PrepareFolderBrowser()
         {
-            string defaultNotebookFolderPath;
-            _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);            
+            string defaultNotebookFolderPath = null;
+
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+            });
+
             
             folderBrowserDialog.SelectedPath = defaultNotebookFolderPath;
             folderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetNotebookFolder;
@@ -1025,10 +1040,10 @@ namespace BibleConfigurator
             if (!string.IsNullOrEmpty((string)cbSingleNotebook.SelectedItem))
             {
                 string notebookName = (string)cbSingleNotebook.SelectedItem;
-                string notebookId = OneNoteUtils.GetNotebookIdByName(_oneNoteApp, notebookName, true);
+                string notebookId = OneNoteUtils.GetNotebookIdByName(ref _oneNoteApp, notebookName, true);
                 var module = ModulesManager.GetCurrentModuleInfo();
                 string errorText;
-                if (NotebookChecker.CheckNotebook(_oneNoteApp, module, notebookId, ContainerType.Single, out errorText))
+                if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, ContainerType.Single, out errorText))
                 {
                     if (_notebookParametersForm == null)
                         _notebookParametersForm = new NotebookParametersForm(_oneNoteApp, notebookId);
@@ -1618,7 +1633,7 @@ namespace BibleConfigurator
                 case ModuleType.Bible:
                     bool canContinue = true;
 
-                    if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible) && OneNoteUtils.NotebookExists(_oneNoteApp, SettingsManager.Instance.NotebookId_Bible, true)
+                    if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible) && OneNoteUtils.NotebookExists(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Bible, true)
                         && SettingsManager.Instance.CurrentModuleIsCorrect())
                     {
                         if (moduleInfo.ShortName != _originalModuleShortName)
@@ -1707,7 +1722,7 @@ namespace BibleConfigurator
 
         private void ShowSupplementalBibleManagementForm()
         {
-            using (var form = new SupplementalBibleForm(ref _oneNoteApp, this))
+            using (var form = new SupplementalBibleForm(_oneNoteApp, this))
             {
                 form.ShowDialog();
             }
@@ -1720,7 +1735,7 @@ namespace BibleConfigurator
 
         private void ShowDictionariesManagementForm()
         {
-            using (var form = new DictionaryModulesForm(ref _oneNoteApp, this))
+            using (var form = new DictionaryModulesForm(_oneNoteApp, this))
             {
                 form.ShowDialog();
             }

@@ -107,7 +107,7 @@ namespace BibleCommon.Services
             try
             {
                 bool wasModified = false;
-                OneNoteProxy.PageContent notePageDocument = OneNoteProxy.Instance.GetPageContent(_oneNoteApp, pageId, OneNoteProxy.PageType.NotePage);
+                OneNoteProxy.PageContent notePageDocument = OneNoteProxy.Instance.GetPageContent(ref _oneNoteApp, pageId, OneNoteProxy.PageType.NotePage);
 
                 string notePageName = (string)notePageDocument.Content.Root.Attribute("name");
 
@@ -116,7 +116,7 @@ namespace BibleCommon.Services
 
                 bool isSummaryNotesPage = false;
 
-                if (IsSummaryNotesPage(_oneNoteApp, notePageDocument, notePageName))
+                if (IsSummaryNotesPage(ref _oneNoteApp, notePageDocument, notePageName))
                 {
                     Logger.LogMessage(BibleCommon.Resources.Constants.NoteLinkManagerProcessNotesPage);
                     isSummaryNotesPage = true;
@@ -136,8 +136,8 @@ namespace BibleCommon.Services
                 string noteSectionName = null;  
                 if (linkDepth > AnalyzeDepth.SetVersesLinks)
                 {
-                    noteSectionGroupName = OneNoteUtils.GetHierarchyElementName(_oneNoteApp, sectionGroupId);
-                    noteSectionName = OneNoteUtils.GetHierarchyElementName(_oneNoteApp, sectionId);
+                    noteSectionGroupName = OneNoteUtils.GetHierarchyElementName(ref _oneNoteApp, sectionGroupId);
+                    noteSectionName = OneNoteUtils.GetHierarchyElementName(ref _oneNoteApp, sectionId);
                 }
 
                 List<FoundChapterInfo> foundChapters = new List<FoundChapterInfo>();
@@ -150,7 +150,7 @@ namespace BibleCommon.Services
                     PageTitleId = pageTitleId
                 };
 
-                List<VersePointerSearchResult> pageChaptersSearchResult = ProcessPageTitle(_oneNoteApp, notePageDocument.Content,
+                List<VersePointerSearchResult> pageChaptersSearchResult = ProcessPageTitle(ref _oneNoteApp, notePageDocument.Content,
                     pageIdInfo, foundChapters, notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage,
                     out wasModified);  // получаем главы текущей страницы, указанные в заголовке (глобальные главы, если больше одной - то не используем их при определении принадлежности только ситхов (:3))                
 
@@ -158,7 +158,7 @@ namespace BibleCommon.Services
 
                 foreach (XElement oeChildrenElement in notePageDocument.Content.Root.XPathSelectElements("one:Outline/one:OEChildren", notePageDocument.Xnm))
                 {
-                    if (ProcessTextElements(_oneNoteApp, oeChildrenElement, pageIdInfo, foundChapters, processedTextElements, pageChaptersSearchResult,
+                    if (ProcessTextElements(ref _oneNoteApp, oeChildrenElement, pageIdInfo, foundChapters, processedTextElements, pageChaptersSearchResult,
                          notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage))
                         wasModified = true;
                 }
@@ -191,7 +191,7 @@ namespace BibleCommon.Services
         {
             try
             {
-                OneNoteProxy.PageContent notePageDocument = OneNoteProxy.Instance.GetPageContent(_oneNoteApp, pageId, OneNoteProxy.PageType.NotePage);
+                OneNoteProxy.PageContent notePageDocument = OneNoteProxy.Instance.GetPageContent(ref _oneNoteApp, pageId, OneNoteProxy.PageType.NotePage);
 
                 XElement latestTextEl = null;
                 int latestVerseStartIndex = -1;
@@ -271,7 +271,7 @@ namespace BibleCommon.Services
 
                     if (!SettingsManager.Instance.ExcludedVersesLinking)   // иначе мы её обработали сразу же, когда встретили
                     {
-                        LinkVerseToNotesPage(_oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, true,
+                        LinkVerseToNotesPage(ref _oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, true,
                             chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
                             notePageId, chapterInfo.TextElementObjectId, true,
                             SettingsManager.Instance.PageName_Notes, null, SettingsManager.Instance.PageWidth_Notes, 1,
@@ -283,7 +283,7 @@ namespace BibleCommon.Services
                     {
                         if (!SettingsManager.Instance.RubbishPage_ExcludedVersesLinking)   // иначе мы её обработали сразу же, когда встретили
                         {
-                            LinkVerseToNotesPage(_oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, true,
+                            LinkVerseToNotesPage(ref _oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, true,
                                 chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
                                 notePageId, chapterInfo.TextElementObjectId, false,
                                 SettingsManager.Instance.PageName_RubbishNotes, null, SettingsManager.Instance.PageWidth_RubbishNotes, 1,
@@ -297,7 +297,7 @@ namespace BibleCommon.Services
             Logger.LogMessage(string.Empty, false, true, false);
         }
 
-        private List<VersePointerSearchResult> ProcessPageTitle(Application oneNoteApp, XDocument notePageDocument,
+        private List<VersePointerSearchResult> ProcessPageTitle(ref Application oneNoteApp, XDocument notePageDocument,
             PageIdInfo notePageId,
             List<FoundChapterInfo> foundChapters, XmlNamespaceManager xnm,
             AnalyzeDepth linkDepth, bool force, bool isSummaryNotesPage, out bool wasModified)
@@ -307,7 +307,7 @@ namespace BibleCommon.Services
             VersePointerSearchResult globalChapterSearchResult = null;   // результат поиска "глобальной" главы 
             VersePointerSearchResult prevResult = null;
 
-            if (ProcessTextElement(oneNoteApp, NotebookGenerator.GetPageTitle(notePageDocument, xnm),
+            if (ProcessTextElement(NotebookGenerator.GetPageTitle(notePageDocument, xnm),
                         notePageId, foundChapters, ref globalChapterSearchResult, ref prevResult, null, linkDepth, force, true, isSummaryNotesPage, searchResult =>
                         {
                             if (VersePointerSearchResult.IsChapter(searchResult.ResultType))
@@ -319,9 +319,9 @@ namespace BibleCommon.Services
             return pageChaptersSearchResult;
         }
 
-        private bool IsSummaryNotesPage(Application oneNoteApp, OneNoteProxy.PageContent pageDocument, string pageName)
+        private bool IsSummaryNotesPage(ref Application oneNoteApp, OneNoteProxy.PageContent pageDocument, string pageName)
         {
-            string isNotesPage = OneNoteUtils.GetPageMetaData(oneNoteApp, pageDocument.Content.Root, Constants.Key_IsSummaryNotesPage, pageDocument.Xnm);
+            string isNotesPage = OneNoteUtils.GetPageMetaData(pageDocument.Content.Root, Constants.Key_IsSummaryNotesPage, pageDocument.Xnm);
             if (!string.IsNullOrEmpty(isNotesPage))
             {
                 if (bool.Parse(isNotesPage))
@@ -336,7 +336,7 @@ namespace BibleCommon.Services
             return false;
         }
 
-        private bool ProcessTextElements(Application oneNoteApp, XElement parent,
+        private bool ProcessTextElements(ref Application oneNoteApp, XElement parent,
             PageIdInfo notePageId,
             List<FoundChapterInfo> foundChapters, List<XElement> processedTextElements,
             List<VersePointerSearchResult> pageChaptersSearchResult,
@@ -349,7 +349,7 @@ namespace BibleCommon.Services
 
             foreach (XElement cellElement in parent.XPathSelectElements(".//one:Table/one:Row/one:Cell", xnm))
             {
-                if (ProcessTextElements(oneNoteApp, cellElement, notePageId, foundChapters, processedTextElements, pageChaptersSearchResult,
+                if (ProcessTextElements(ref oneNoteApp, cellElement, notePageId, foundChapters, processedTextElements, pageChaptersSearchResult,
                         xnm, linkDepth, force, isSummaryNotesPage))
                     wasModified = true;
             }
@@ -367,7 +367,7 @@ namespace BibleCommon.Services
                     continue;
                 }
 
-                if (ProcessTextElement(oneNoteApp, textElement, notePageId, foundChapters,
+                if (ProcessTextElement(textElement, notePageId, foundChapters,
                                          ref globalChapterSearchResult, ref prevResult, pageChaptersSearchResult, linkDepth, force, false, isSummaryNotesPage, null))
                     wasModified = true;
 
@@ -409,7 +409,7 @@ namespace BibleCommon.Services
         /// <param name="isTitle">анализируем ли заголовок</param>
         /// <param name="onVersePointerFound"></param>
         /// <returns></returns>
-        private bool ProcessTextElement(Application oneNoteApp, XElement textElement, PageIdInfo notePageId, List<FoundChapterInfo> foundChapters,
+        private bool ProcessTextElement(XElement textElement, PageIdInfo notePageId, List<FoundChapterInfo> foundChapters,
             ref VersePointerSearchResult globalChapterSearchResult, ref VersePointerSearchResult prevResult, 
             List<VersePointerSearchResult> pageChaptersSearchResult,
             AnalyzeDepth linkDepth, bool force, bool isTitle, bool isSummaryNotesPage, Action<VersePointerSearchResult> onVersePointerFound)
@@ -495,7 +495,7 @@ namespace BibleCommon.Services
                 string textElementObjectId = (string)textElement.Parent.Attribute("objectID");
 
                 bool needToQueueIfChapter;
-                textElementValue = ProcessVerse(_oneNoteApp, verseInfo.SearchResult,                                            
+                textElementValue = ProcessVerse(ref _oneNoteApp, verseInfo.SearchResult,                                            
                                             textElementValue,
                                             notePageId, textElementObjectId,
                                             linkDepth, verseInfo.GlobalChapterSearchResult, pageChaptersSearchResult,
@@ -672,7 +672,7 @@ namespace BibleCommon.Services
         /// <param name="newEndVerseIndex"></param>
         /// <param name="hierarchySearchResult"></param>
         /// <returns></returns>
-        private string ProcessVerse(Application oneNoteApp, VersePointerSearchResult searchResult,
+        private string ProcessVerse(ref Application oneNoteApp, VersePointerSearchResult searchResult,
             string textElementValue, PageIdInfo notePageId, string notePageContentObjectId,
             AnalyzeDepth linkDepth, VersePointerSearchResult globalChapterSearchResult, List<VersePointerSearchResult> pageChaptersSearchResult,
             VerseRecognitionManager.LinkInfo linkInfo, bool isInBrackets, bool isExcluded, bool force, 
@@ -719,7 +719,7 @@ namespace BibleCommon.Services
 
             if (SettingsManager.Instance.ExpandMultiVersesLinking && searchResult.VersePointer.IsMultiVerse)
             {
-                allIncludedVersesExceptFirst = searchResult.VersePointer.GetAllIncludedVersesExceptFirst(oneNoteApp,
+                allIncludedVersesExceptFirst = searchResult.VersePointer.GetAllIncludedVersesExceptFirst(ref oneNoteApp,
                                                     new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible });
                 verses.AddRange(allIncludedVersesExceptFirst);
             }
@@ -735,7 +735,7 @@ namespace BibleCommon.Services
                 if (processedVerses.Contains(vp.ToSimpleVersePointer()))
                     continue;                
                 
-                if (TryLinkVerseToNotesPage(oneNoteApp, vp, searchResult.ResultType,
+                if (TryLinkVerseToNotesPage(ref oneNoteApp, vp, searchResult.ResultType,
                         notePageId, notePageContentObjectId, linkDepth,
                         !SettingsManager.Instance.UseDifferentPagesForEachVerse || (vp.IsChapter && !needToQueueIfChapter), SettingsManager.Instance.ExcludedVersesLinking,
                         SettingsManager.Instance.PageName_Notes, null, SettingsManager.Instance.PageWidth_Notes, 1,
@@ -783,7 +783,7 @@ namespace BibleCommon.Services
                             if (linkInfo.IsLink)
                                 prevStyle = StringUtils.GetAttributeValue(prevLinkText, "style");
 
-                            string link = OneNoteUtils.GetOrGenerateHref(oneNoteApp, textToChange,                                
+                            string link = OneNoteUtils.GetOrGenerateHref(ref oneNoteApp, textToChange,                                
                                             localHierarchySearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref,
                                             localHierarchySearchResult.HierarchyObjectInfo.PageId, localHierarchySearchResult.HierarchyObjectInfo.VerseContentObjectId, additionalParams.ToArray());
 
@@ -817,7 +817,8 @@ namespace BibleCommon.Services
                                 hierarchySearchResult.HierarchyObjectInfo.AdditionalObjectsIds.ContainsKey(vp)
                                     ? (VerseNumber?)hierarchySearchResult.HierarchyObjectInfo.AdditionalObjectsIds[vp].VerseNumber
                                     : hierarchySearchResult.HierarchyObjectInfo.VerseNumber);
-                    TryLinkVerseToNotesPage(oneNoteApp, vp, searchResult.ResultType,
+
+                    TryLinkVerseToNotesPage(ref oneNoteApp, vp, searchResult.ResultType,
                         notePageId, notePageContentObjectId, linkDepth,
                         true, SettingsManager.Instance.ExcludedVersesLinking,
                         notesPageName, SettingsManager.Instance.PageName_Notes, SettingsManager.Instance.PageWidth_Notes, 2,
@@ -841,14 +842,14 @@ namespace BibleCommon.Services
                 if (SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking && searchResult.VersePointer.IsMultiVerse)
                 {
                     if (allIncludedVersesExceptFirst == null)
-                        allIncludedVersesExceptFirst = searchResult.VersePointer.GetAllIncludedVersesExceptFirst(oneNoteApp,
+                        allIncludedVersesExceptFirst = searchResult.VersePointer.GetAllIncludedVersesExceptFirst(ref oneNoteApp,
                                                             new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible });
                     rubbishVerses.AddRange(allIncludedVersesExceptFirst);
                 }
                 
                 foreach (VersePointer vp in rubbishVerses)
                 {
-                    TryLinkVerseToNotesPage(oneNoteApp, vp, searchResult.ResultType, 
+                    TryLinkVerseToNotesPage(ref oneNoteApp, vp, searchResult.ResultType, 
                         notePageId, notePageContentObjectId, linkDepth,
                         false, SettingsManager.Instance.RubbishPage_ExcludedVersesLinking, 
                         SettingsManager.Instance.PageName_RubbishNotes, null, SettingsManager.Instance.PageWidth_RubbishNotes, 1,
@@ -904,7 +905,7 @@ namespace BibleCommon.Services
         /// <param name="onHierarchyElementFound"></param>
         /// <param name="notesPageLevel">1, 2 or 3</param>
         /// <returns></returns>
-        private bool TryLinkVerseToNotesPage(Application oneNoteApp, VersePointer vp,
+        private bool TryLinkVerseToNotesPage(ref Application oneNoteApp, VersePointer vp,
             VersePointerSearchResult.SearchResultType resultType, 
             PageIdInfo notePageId, string notePageContentObjectId, AnalyzeDepth linkDepth,
             bool createLinkToNotesPage, bool excludedVersesLinking, 
@@ -915,7 +916,7 @@ namespace BibleCommon.Services
             Action<HierarchySearchManager.HierarchySearchResult> onHierarchyElementFound)
         {
             hierarchySearchResult = HierarchySearchManager.GetHierarchyObject(
-                                                oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.AllVerses);
+                                                ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.AllVerses);
             if (hierarchySearchResult.ResultType == HierarchySearchManager.HierarchySearchResultType.Successfully)
             {
                 if (hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder
@@ -995,7 +996,7 @@ namespace BibleCommon.Services
 
                                 if (canContinue)
                                 {
-                                    var verses = LinkVerseToNotesPage(oneNoteApp, vp, isChapter,
+                                    var verses = LinkVerseToNotesPage(ref oneNoteApp, vp, isChapter,
                                         hierarchySearchResult.HierarchyObjectInfo,
                                         notePageId,
                                         notePageContentObjectId, createLinkToNotesPage, notesPageName, notesParentPageName, notesPageWidth, notesPageLevel, force, processAsExtendedVerse);
@@ -1102,7 +1103,7 @@ namespace BibleCommon.Services
         /// <param name="createLinkToNotesPage">Необходримо ли создавать сслыку на страницу сводной заметок. Если например мы обрабатываем RubbishPage, то такая ссылка не нужна</param>
         /// <param name="notesPageName">название страницы "Сводная заметок"</param>
         /// <param name="force"></param>
-        private List<SimpleVersePointer> LinkVerseToNotesPage(Application oneNoteApp, VersePointer vp, bool isChapter,
+        private List<SimpleVersePointer> LinkVerseToNotesPage(ref Application oneNoteApp, VersePointer vp, bool isChapter,
             HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
             PageIdInfo notePageId, string notePageContentObjectId, bool createLinkToNotesPage,
             string notesPageName, string notesParentPageName, int notesPageWidth, int notesPageLevel, bool force, bool processAsExtendedVerse)
@@ -1114,7 +1115,7 @@ namespace BibleCommon.Services
             bool rowWasAdded = false;
             try
             {
-                notesPageId = OneNoteProxy.Instance.GetNotesPageId(oneNoteApp,
+                notesPageId = OneNoteProxy.Instance.GetNotesPageId(ref oneNoteApp,
                     verseHierarchyObjectInfo.SectionId,
                     verseHierarchyObjectInfo.PageId, biblePageName, notesPageName, out pageWasCreated, notesParentPageName, notesPageLevel);                    
             }
@@ -1125,16 +1126,16 @@ namespace BibleCommon.Services
 
             if (!string.IsNullOrEmpty(notesPageId))
             {
-                string targetContentObjectId = NotesPageManager.UpdateNotesPage(oneNoteApp, this, vp, isChapter, verseHierarchyObjectInfo,
+                string targetContentObjectId = NotesPageManager.UpdateNotesPage(ref oneNoteApp, this, vp, isChapter, verseHierarchyObjectInfo,
                         notePageId, notesPageId, notePageContentObjectId, 
                         notesPageName, notesPageWidth, force, processAsExtendedVerse, out rowWasAdded);
 
                 if (createLinkToNotesPage && (pageWasCreated || rowWasAdded))
                 {
-                    OneNoteProxy.PageContent versePageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, verseHierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);       
+                    OneNoteProxy.PageContent versePageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, verseHierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);       
 
                     string link = string.Format("<font size='2pt'>{0}</font>",
-                                    OneNoteUtils.GenerateHref(oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, null)); // здесь всегда передаём null, так как в частых случаях он и так null, потому что страница в кэше, и в OneNote она ещё не обновлялась (то есть идентификаторы ещё не проставлены). Так как эти идентификаторы проставятся в самом конце, то и ссылки обновим в конце.
+                                    OneNoteUtils.GenerateHref(ref oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, null)); // здесь всегда передаём null, так как в частых случаях он и так null, потому что страница в кэше, и в OneNote она ещё не обновлялась (то есть идентификаторы ещё не проставлены). Так как эти идентификаторы проставятся в самом конце, то и ссылки обновим в конце.
 
                     bool wasModified = false;
 

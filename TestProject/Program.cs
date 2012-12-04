@@ -29,8 +29,8 @@ namespace TestProject
 {    
     class Program
     {
-        private const string ForGeneratingFolderPath = @"E:\Dropbox\Holy Bible\IStudyBibleTools\ForGenerating";
-        private const string TempFolderPath = @"E:\temp";
+        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\Holy Bible\IStudyBibleTools\ForGenerating";
+        private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp";
 
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;       
        
@@ -219,7 +219,7 @@ namespace TestProject
         private static void CheckHTML()
         {
             XmlNamespaceManager xnm;
-            var pageDoc = OneNoteUtils.GetPageContent(_oneNoteApp, _oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xnm);
+            var pageDoc = OneNoteUtils.GetPageContent(ref _oneNoteApp, _oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xnm);
 
             string s = @"";
 
@@ -339,10 +339,13 @@ namespace TestProject
         {
             DateTime dtStart = DateTime.Now;
 
-            string defaultNotebookFolderPath;
-            _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+            string defaultNotebookFolderPath = null;
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+            });
 
-            SupplementalBibleManager.CreateSupplementalBible(_oneNoteApp, ModulesManager.GetModuleInfo("kjv"), defaultNotebookFolderPath, null);
+            SupplementalBibleManager.CreateSupplementalBible(ref _oneNoteApp, ModulesManager.GetModuleInfo("kjv"), defaultNotebookFolderPath, null);
             var result = SupplementalBibleManager.LinkSupplementalBibleWithPrimaryBible(ref _oneNoteApp, null, null);
 
             DateTime dtEnd = DateTime.Now;
@@ -361,10 +364,13 @@ namespace TestProject
         {
             DateTime dtStart = DateTime.Now;
 
-            string defaultNotebookFolderPath;
-            _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+            string defaultNotebookFolderPath = null;
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+            });
 
-            var result = SupplementalBibleManager.AddParallelBible(_oneNoteApp, ModulesManager.GetModuleInfo("rst"), null, null);
+            var result = SupplementalBibleManager.AddParallelBible(ref _oneNoteApp, ModulesManager.GetModuleInfo("rst"), null, null);
 
             DateTime dtEnd = DateTime.Now;
 
@@ -482,14 +488,14 @@ namespace TestProject
         private static void SearchForEnText()
         {
             var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
-            string notebookId = OneNoteUtils.GetNotebookIdByName(oneNoteApp, "Biblia", false);
+            string notebookId = OneNoteUtils.GetNotebookIdByName(ref oneNoteApp, "Biblia", false);
 
-            var pages = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, false);
+            var pages = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, false);
             foreach (var page in pages.Content.Root.XPathSelectElements("//one:Page", pages.Xnm))
             {
                 string pageId = (string)page.Attribute("ID");
                 XmlNamespaceManager xnm;
-                var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, pageId, out xnm);
+                var pageDoc = OneNoteUtils.GetPageContent(ref oneNoteApp, pageId, out xnm);
                 if (pageDoc.ToString().IndexOf("en-US") != -1)
                 {
                     string pageName = (string)page.Attribute("name");
@@ -503,7 +509,7 @@ namespace TestProject
             var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
 
             XmlNamespaceManager xnm;
-            var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xnm);
+            var pageDoc = OneNoteUtils.GetPageContent(ref oneNoteApp, oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xnm);
 
             foreach (var oe in pageDoc.Root.XPathSelectElements("//one:Cell", xnm))
             {

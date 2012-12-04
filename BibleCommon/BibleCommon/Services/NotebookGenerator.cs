@@ -29,17 +29,21 @@ namespace BibleCommon.Services
     {
         public const int MinimalCellWidth = 37;
 
-        public static string AddSection(Application oneNoteApp, string sectionGroupId, string sectionName)
+        public static string AddSection(ref Application oneNoteApp, string sectionGroupId, string sectionName)
         {
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
             XElement section = new XElement(nms + "Section", new XAttribute("name", sectionName));
 
             XmlNamespaceManager xnm;
-            var sectionGroup = OneNoteUtils.GetHierarchyElement(oneNoteApp, sectionGroupId, HierarchyScope.hsSections, out xnm);
+            var sectionGroup = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, sectionGroupId, HierarchyScope.hsSections, out xnm);
             sectionGroup.Root.Add(section);
-            oneNoteApp.UpdateHierarchy(sectionGroup.ToString(), Constants.CurrentOneNoteSchema);
 
-            sectionGroup = OneNoteUtils.GetHierarchyElement(oneNoteApp, sectionGroupId, HierarchyScope.hsSections, out xnm);
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.UpdateHierarchy(sectionGroup.ToString(), Constants.CurrentOneNoteSchema);
+            });
+
+            sectionGroup = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, sectionGroupId, HierarchyScope.hsSections, out xnm);
             section = sectionGroup.Root.XPathSelectElement(string.Format("one:Section[@name='{0}']", sectionName), xnm);
             string sectionId = (string)section.Attribute("ID");
 
@@ -47,10 +51,14 @@ namespace BibleCommon.Services
         }
 
 
-        public static XDocument AddPage(Application oneNoteApp, string sectionId, string pageTitle, int pageLevel, string locale, out XmlNamespaceManager xnm)
+        public static XDocument AddPage(ref Application oneNoteApp, string sectionId, string pageTitle, int pageLevel, string locale, out XmlNamespaceManager xnm)
         {
-            string pageId;
-            oneNoteApp.CreateNewPage(sectionId, out pageId, NewPageStyle.npsBlankPageWithTitle);
+            string pageId = null;
+
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.CreateNewPage(sectionId, out pageId, NewPageStyle.npsBlankPageWithTitle);
+            });
 
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
             XDocument pageDocument = new XDocument(new XElement(nms + "Page",
@@ -66,9 +74,12 @@ namespace BibleCommon.Services
             if (!string.IsNullOrEmpty(locale))
                 pageDocument.Root.Add(new XAttribute("lang", locale));
 
-            oneNoteApp.UpdatePageContent(pageDocument.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.UpdatePageContent(pageDocument.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+            });
 
-            var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, pageId, out xnm);
+            var pageDoc = OneNoteUtils.GetPageContent(ref oneNoteApp, pageId, out xnm);
 
             return pageDoc;
         }
@@ -175,12 +186,16 @@ namespace BibleCommon.Services
             return columnsCount;
         }
 
-        public static void RenameHierarchyElement(Application oneNoteApp, string hierarchyElementId, HierarchyScope scope, string newName)
+        public static void RenameHierarchyElement(ref Application oneNoteApp, string hierarchyElementId, HierarchyScope scope, string newName)
         {
             XmlNamespaceManager xnm;
-            var element = OneNoteUtils.GetHierarchyElement(oneNoteApp, hierarchyElementId, scope, out xnm);
+            var element = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, hierarchyElementId, scope, out xnm);
             element.Root.SetAttributeValue("name", newName);
-            oneNoteApp.UpdateHierarchy(element.ToString(), Constants.CurrentOneNoteSchema);
+
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.UpdateHierarchy(element.ToString(), Constants.CurrentOneNoteSchema);
+            });
         }
 
         public static XElement AddParallelVerseRowToBibleTable(XElement tableElement, SimpleVerse verse, int translationIndex, 
@@ -274,22 +289,22 @@ namespace BibleCommon.Services
             return cell;
         }
 
-        public static string GenerateBibleCommentsNotebook(Application oneNoteApp, string notebookName, 
+        public static string GenerateBibleCommentsNotebook(ref Application oneNoteApp, string notebookName, 
             BibleStructureInfo bibleStructure, NotebooksStructure notebooksStructure, bool generateBookSectionGroups)
         {
-            string targetNotebookId = NotebookGenerator.CreateNotebook(oneNoteApp, notebookName);
+            string targetNotebookId = NotebookGenerator.CreateNotebook(ref oneNoteApp, notebookName);
 
             var bookIndex = 0;
 
             foreach (var testament in notebooksStructure.Notebooks.First(n => n.Type == ContainerType.Bible).SectionGroups)
             {
-                XElement testamentSectionGroupEl = AddRootSectionGroupToNotebook(oneNoteApp, targetNotebookId, testament.Name);
+                XElement testamentSectionGroupEl = AddRootSectionGroupToNotebook(ref oneNoteApp, targetNotebookId, testament.Name);
 
                 if (generateBookSectionGroups)
                 {
                     for (int i = 0; i < testament.SectionsCount; i++)
                     {
-                        AddSectionGroup(oneNoteApp, testamentSectionGroupEl, bibleStructure.BibleBooks[bookIndex++].SectionName);
+                        AddSectionGroup(ref oneNoteApp, testamentSectionGroupEl, bibleStructure.BibleBooks[bookIndex++].SectionName);
                     }
                 }
             }
@@ -297,14 +312,19 @@ namespace BibleCommon.Services
             return targetNotebookId;
         }
 
-        public static string CreateNotebook(Application oneNoteApp, string notebookName)
+        public static string CreateNotebook(ref Application oneNoteApp, string notebookName)
         {
-            string defaultNotebookFolderPath;
-            oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
-            return CreateNotebook(oneNoteApp, notebookName, defaultNotebookFolderPath);
+            string defaultNotebookFolderPath = null;
+
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+            });
+
+            return CreateNotebook(ref oneNoteApp, notebookName, defaultNotebookFolderPath);
         }
 
-        public static string CreateNotebook(Application oneNoteApp, string notebookName, string notebookDirectory)
+        public static string CreateNotebook(ref Application oneNoteApp, string notebookName, string notebookDirectory)
         {
             XmlNamespaceManager xnm;
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
@@ -315,7 +335,7 @@ namespace BibleCommon.Services
             var notebookEl = new XElement(nms + "Notebook",
                                 new XAttribute("name", notebookName),
                                 new XAttribute("path", newNotebookPath));
-            var notebooksEl = OneNoteUtils.GetHierarchyElement(oneNoteApp, null, HierarchyScope.hsNotebooks, out xnm);
+            var notebooksEl = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, null, HierarchyScope.hsNotebooks, out xnm);
 
             var lastNotebook = notebooksEl.Root.XPathSelectElements("one:Notebook", xnm).LastOrDefault();
             if (lastNotebook != null)
@@ -323,9 +343,12 @@ namespace BibleCommon.Services
             else
                 notebooksEl.Root.AddFirst(notebookEl);
 
-            oneNoteApp.UpdateHierarchy(notebooksEl.ToString(), Constants.CurrentOneNoteSchema);
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.UpdateHierarchy(notebooksEl.ToString(), Constants.CurrentOneNoteSchema);
+            });
 
-            return OneNoteUtils.GetNotebookIdByName(oneNoteApp, notebookName, true);
+            return OneNoteUtils.GetNotebookIdByName(ref oneNoteApp, notebookName, true);
         }        
 
         public static string GetBibleBookSectionName(string bookName, int bookIndex, int oldTestamentBooksCount)
@@ -334,10 +357,10 @@ namespace BibleCommon.Services
             return string.Format("{0:00}. {1}", bookPrefix, bookName);
         }
 
-        public static XElement AddRootSectionGroupToNotebook(Application oneNoteApp, string notebookId, string sectionGroupName, string suffixIfSectionGroupExists = null)
+        public static XElement AddRootSectionGroupToNotebook(ref Application oneNoteApp, string notebookId, string sectionGroupName, string suffixIfSectionGroupExists = null)
         {
             XmlNamespaceManager xnm;
-            var notebook = OneNoteUtils.GetHierarchyElement(oneNoteApp, notebookId, HierarchyScope.hsChildren, out xnm);
+            var notebook = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, notebookId, HierarchyScope.hsChildren, out xnm);
 
             if (notebook.Root.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", sectionGroupName), xnm) != null)
             {
@@ -345,21 +368,25 @@ namespace BibleCommon.Services
                     sectionGroupName += suffixIfSectionGroupExists; 
             }
 
-            AddSectionGroup(oneNoteApp, notebook.Root, sectionGroupName);
+            AddSectionGroup(ref oneNoteApp, notebook.Root, sectionGroupName);
 
-            notebook = OneNoteUtils.GetHierarchyElement(oneNoteApp, notebookId, HierarchyScope.hsChildren, out xnm);
+            notebook = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, notebookId, HierarchyScope.hsChildren, out xnm);
             var newSectionGroup = notebook.Root.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", sectionGroupName), xnm);
             return newSectionGroup;
         }
 
-        public static void AddSectionGroup(Application oneNoteApp, XElement parentElement, string sectionGroupName)
+        public static void AddSectionGroup(ref Application oneNoteApp, XElement parentElement, string sectionGroupName)
         {
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
             XElement newSectionGroup = new XElement(nms + "SectionGroup",
                                     new XAttribute("name", sectionGroupName));
 
             parentElement.Add(newSectionGroup);
-            oneNoteApp.UpdateHierarchy(parentElement.ToString(), Constants.CurrentOneNoteSchema);
+
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.UpdateHierarchy(parentElement.ToString(), Constants.CurrentOneNoteSchema);
+            });
         }     
     }
 }

@@ -6,6 +6,7 @@ using BibleCommon.Contracts;
 using Microsoft.Office.Interop.OneNote;
 using BibleCommon.Services;
 using System.Runtime.InteropServices;
+using BibleCommon.Helpers;
 
 namespace BibleCommon.Handlers
 {
@@ -52,7 +53,10 @@ namespace BibleCommon.Handlers
                 string result;
                 try
                 {
-                    oneNoteApp.FindPages(SettingsManager.Instance.NotebookId_SupplementalBible, strongNumber, out result, true, true, Consts.Constants.CurrentOneNoteSchema);
+                    OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                    {
+                        oneNoteAppSafe.FindPages(SettingsManager.Instance.NotebookId_SupplementalBible, strongNumber, out result, true, true, Consts.Constants.CurrentOneNoteSchema);
+                    });
                 }
                 catch (COMException ex)
                 {

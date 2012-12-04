@@ -71,7 +71,7 @@ namespace BibleConfigurator
             }
         }
 
-        public BaseSupplementalForm(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
+        public BaseSupplementalForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
         {
             _oneNoteApp = oneNoteApp;
             MainForm = form;
@@ -94,7 +94,7 @@ namespace BibleConfigurator
         {
             try
             {
-                if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
+                if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
                 {
                     FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                     Close();
@@ -109,8 +109,11 @@ namespace BibleConfigurator
 
                 LoadFormData();
 
-                string defaultNotebookFolderPath;
-                _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+                string defaultNotebookFolderPath = null;
+                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                {
+                    oneNoteAppSafe.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+                });
                 folderBrowserDialog.SelectedPath = defaultNotebookFolderPath;
                 folderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetNotebookFolder;
                 folderBrowserDialog.ShowNewFolderButton = true;
@@ -204,7 +207,7 @@ namespace BibleConfigurator
         private void LoadExistingNotebooks()
         {
             if (ExistingNotebooks == null)
-                ExistingNotebooks = OneNoteUtils.GetExistingNotebooks(_oneNoteApp);
+                ExistingNotebooks = OneNoteUtils.GetExistingNotebooks(ref _oneNoteApp);
 
             cbExistingNotebooks.DataSource = ExistingNotebooks.Values.ToList();            
         }
@@ -563,7 +566,7 @@ namespace BibleConfigurator
             var result = new List<string>();
             ClearSupplementalModules();            
                         
-            var xDoc = OneNoteUtils.GetHierarchyElement(_oneNoteApp, notebookId, HierarchyScope.hsPages, out xnm);
+            var xDoc = OneNoteUtils.GetHierarchyElement(ref _oneNoteApp, notebookId, HierarchyScope.hsPages, out xnm);
             var pagesDocs = xDoc.Root.XPathSelectElements("//one:Page", xnm);
             int pagesCount = pagesDocs.Count();
 
@@ -577,7 +580,7 @@ namespace BibleConfigurator
 
                 Logger.LogMessage(pageName);
 
-                var embeddedModulesInfo_string = OneNoteUtils.GetPageMetaData(_oneNoteApp, pageEl, EmbeddedModulesKey, xnm);
+                var embeddedModulesInfo_string = OneNoteUtils.GetPageMetaData(pageEl, EmbeddedModulesKey, xnm);
                 if (!string.IsNullOrEmpty(embeddedModulesInfo_string))
                 {
                     var embeddedModulesInfo = EmbeddedModuleInfo.Deserialize(embeddedModulesInfo_string);

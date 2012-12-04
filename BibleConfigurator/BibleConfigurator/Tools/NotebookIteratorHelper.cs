@@ -11,7 +11,7 @@ namespace BibleConfigurator.Tools
 {
     public static class NotebookIteratorHelper
     {
-        public static void Iterate(Application oneNoteApp, string notebookId, string sectionGroupId, Action<BibleCommon.Services.NotebookIterator.PageInfo> pageAction)
+        public static void Iterate(ref Application oneNoteApp, string notebookId, string sectionGroupId, Action<BibleCommon.Services.NotebookIterator.PageInfo> pageAction)
         {
             if (pageAction == null)
                 throw new ArgumentNullException("pageAction");

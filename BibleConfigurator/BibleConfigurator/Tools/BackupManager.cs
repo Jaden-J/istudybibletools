@@ -36,7 +36,7 @@ namespace BibleConfigurator.Tools
 
         public void Backup(string filePath)
         {
-            if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
+            if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
             {
                 FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                 return;
@@ -71,7 +71,7 @@ namespace BibleConfigurator.Tools
 
                 foreach (string id in notebookIds)
                 {
-                    string notebookName = OneNoteUtils.GetHierarchyElementNickname(_oneNoteApp, id) + OneNotePackageExtension;
+                    string notebookName = OneNoteUtils.GetHierarchyElementNickname(ref _oneNoteApp, id) + OneNotePackageExtension;
 
                     _notebookNames.Add(notebookName);
 
@@ -165,8 +165,11 @@ namespace BibleConfigurator.Tools
 
         private void BackupNotebook(string notebookId, string notebookName)
         {
-            _oneNoteApp.Publish(notebookId, Path.Combine(_tempFolderPath,
-                notebookName), PublishFormat.pfOneNotePackage);
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.Publish(notebookId, Path.Combine(_tempFolderPath,
+                    notebookName), PublishFormat.pfOneNotePackage);
+            });
         }
 
         private IEnumerable<string> GetDistinctNotebooksIds()

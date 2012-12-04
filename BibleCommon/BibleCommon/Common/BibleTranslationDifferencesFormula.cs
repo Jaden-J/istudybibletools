@@ -108,8 +108,11 @@ namespace BibleCommon.Common
                 _allVerses.Add(new SimpleVersePointer(BookIndex, FirstChapter, new VerseNumber(FirstVerse)) { IsEmpty = IsEmpty });
 
                 if (IsMultiVerse)
-                    _allVerses.AddRange(BaseVersePointer.GetAllIncludedVersesExceptFirst(null, new GetAllIncludedVersesExceptFirstArgs() { Force = true })
+                {
+                    Microsoft.Office.Interop.OneNote.Application temp = null;
+                    _allVerses.AddRange(BaseVersePointer.GetAllIncludedVersesExceptFirst(ref temp, new GetAllIncludedVersesExceptFirstArgs() { Force = true })
                         .ConvertAll<SimpleVersePointer>(v => new SimpleVersePointer(BookIndex, v.Chapter.GetValueOrDefault(), new VerseNumber(v.Verse.GetValueOrDefault())) { IsEmpty = IsEmpty }));
+                }
 
                 if (SkipCheck)
                     _allVerses.ForEach(v => v.SkipCheck = SkipCheck);

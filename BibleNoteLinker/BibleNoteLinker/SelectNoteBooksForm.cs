@@ -80,7 +80,7 @@ namespace BibleNoteLinker
 
             if (SettingsManager.Instance.IsSingleNotebook)
             {
-                OneNoteProxy.HierarchyElement sectionGroups = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, 
+                OneNoteProxy.HierarchyElement sectionGroups = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, 
                     SettingsManager.Instance.NotebookId_Bible, HierarchyScope.hsChildren);
 
                 foreach (XElement sectionGroup in sectionGroups.Content.Root.XPathSelectElements("one:SectionGroup", sectionGroups.Xnm))
@@ -90,7 +90,7 @@ namespace BibleNoteLinker
             }
             else
             {
-                OneNoteProxy.HierarchyElement notebooks = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, null, HierarchyScope.hsNotebooks);
+                OneNoteProxy.HierarchyElement notebooks = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, null, HierarchyScope.hsNotebooks);
 
                 foreach (XElement notebook in notebooks.Content.Root.XPathSelectElements("one:Notebook", notebooks.Xnm))
                 {

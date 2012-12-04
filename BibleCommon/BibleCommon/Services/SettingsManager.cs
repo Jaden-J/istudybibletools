@@ -207,10 +207,10 @@ namespace BibleCommon.Services
 
         #endregion
 
-        public string GetValidSupplementalBibleNotebookId(Application oneNoteApp, bool refreshCache = false)
+        public string GetValidSupplementalBibleNotebookId(ref Application oneNoteApp, bool refreshCache = false)
         {
             if (!string.IsNullOrEmpty(NotebookId_SupplementalBible))
-                if (!OneNoteUtils.NotebookExists(oneNoteApp, NotebookId_SupplementalBible, refreshCache))
+                if (!OneNoteUtils.NotebookExists(ref oneNoteApp, NotebookId_SupplementalBible, refreshCache))
                 {
                     this.SupplementalBibleModules.Clear();
                     return null;
@@ -219,10 +219,10 @@ namespace BibleCommon.Services
             return NotebookId_SupplementalBible;
         }
 
-        public string GetValidDictionariesNotebookId(Application oneNoteApp, bool refreshCache = false)
+        public string GetValidDictionariesNotebookId(ref Application oneNoteApp, bool refreshCache = false)
         {
             if (!string.IsNullOrEmpty(NotebookId_Dictionaries))
-                if (!OneNoteUtils.NotebookExists(oneNoteApp, NotebookId_Dictionaries, refreshCache))
+                if (!OneNoteUtils.NotebookExists(ref oneNoteApp, NotebookId_Dictionaries, refreshCache))
                 {
                     this.DictionariesModules.Clear();
                     return null;
@@ -236,7 +236,7 @@ namespace BibleCommon.Services
             return !string.IsNullOrEmpty(ModuleShortName) && ModulesManager.ModuleIsCorrect(ModuleShortName, Common.ModuleType.Bible);
         }
 
-        public bool IsConfigured(Application oneNoteApp)
+        public bool IsConfigured(ref Application oneNoteApp)
         {
             bool result = !string.IsNullOrEmpty(this.NotebookId_Bible)
                 && !string.IsNullOrEmpty(this.NotebookId_BibleComments)
@@ -260,19 +260,19 @@ namespace BibleCommon.Services
 
                     if (result)
                     {
-                        result = OneNoteUtils.RootSectionGroupExists(oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_Bible)
-                            && OneNoteUtils.RootSectionGroupExists(oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_BibleStudy)
-                            && OneNoteUtils.RootSectionGroupExists(oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_BibleComments)
-                            && OneNoteUtils.RootSectionGroupExists(oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_BibleNotesPages);
+                        result = OneNoteUtils.RootSectionGroupExists(ref oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_Bible)
+                            && OneNoteUtils.RootSectionGroupExists(ref oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_BibleStudy)
+                            && OneNoteUtils.RootSectionGroupExists(ref oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_BibleComments)
+                            && OneNoteUtils.RootSectionGroupExists(ref oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_BibleNotesPages);
                     }
                 }
 
                 if (result)
                 {
-                    result = OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_Bible)
-                        && OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_BibleComments)
-                        && OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_BibleStudy)
-                        && OneNoteUtils.NotebookExists(oneNoteApp, this.NotebookId_BibleNotesPages);
+                    result = OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_Bible)
+                        && OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_BibleComments)
+                        && OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_BibleStudy)
+                        && OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_BibleNotesPages);
                 }
             }
 

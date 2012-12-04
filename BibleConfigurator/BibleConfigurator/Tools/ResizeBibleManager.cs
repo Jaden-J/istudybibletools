@@ -26,7 +26,7 @@ namespace BibleConfigurator.Tools
 
         public void ResizeBiblePages(int width)
         {
-            if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
+            if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
             {
                 FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                 return;
@@ -38,7 +38,7 @@ namespace BibleConfigurator.Tools
 
                 try
                 {
-                    OneNoteLocker.UnlockBible(_oneNoteApp);
+                    OneNoteLocker.UnlockBible(ref _oneNoteApp);
                 }
                 catch (NotSupportedException)
                 {
@@ -48,7 +48,7 @@ namespace BibleConfigurator.Tools
                 int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleShortName, true);
                 _form.PrepareForLongProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.ResizeBibleTableManagerStartMessage);
 
-                NotebookIteratorHelper.Iterate(_oneNoteApp,
+                NotebookIteratorHelper.Iterate(ref _oneNoteApp,
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
                         {
                             try
@@ -80,10 +80,13 @@ namespace BibleConfigurator.Tools
         {
             _form.PerformProgressStep(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage, pageName));
 
-            string pageContentXml;
+            string pageContentXml = null;
             XDocument notePageDocument;
             XmlNamespaceManager xnm;
-            _oneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.GetPageContent(pageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
+            });
             notePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
 
             XElement columns = notePageDocument.Root.XPathSelectElement("//one:Table/one:Columns", xnm);
