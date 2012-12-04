@@ -27,8 +27,14 @@ namespace BibleCommon.Services
                 SettingsManager.Instance.Save();
             }
 
-            if (!SettingsManager.Instance.DictionariesModules.Any(m => m.ModuleName == moduleInfo.ShortName))
+            var existingDictionaryModuleInfo = SettingsManager.Instance.DictionariesModules.FirstOrDefault(m => m.ModuleName == moduleInfo.ShortName);
+
+            if (existingDictionaryModuleInfo == null 
+                || !OneNoteUtils.HierarchyElementExists(oneNoteApp, existingDictionaryModuleInfo.SectionId))
             {
+                if (existingDictionaryModuleInfo != null)
+                    SettingsManager.Instance.DictionariesModules.Remove(existingDictionaryModuleInfo);
+
                 //section or sectionGroup Id
                 string dictionarySectionId = null;
                 string dictionarySectionPath = null;
@@ -43,7 +49,7 @@ namespace BibleCommon.Services
                 if (!string.IsNullOrEmpty(moduleInfo.NotebooksStructure.DictionarySectionGroupName))
                 {
                     dictionarySectionEl = NotebookGenerator.AddRootSectionGroupToNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries,
-                                                                moduleInfo.NotebooksStructure.DictionarySectionGroupName, moduleInfo.ShortName);
+                                                                moduleInfo.NotebooksStructure.DictionarySectionGroupName, "." + moduleInfo.ShortName);
                 }
                 else
                 {

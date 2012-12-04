@@ -93,6 +93,23 @@ namespace BibleCommon.Helpers
             return xd;
         }
 
+        public static bool HierarchyElementExists(Application oneNoteApp, string hierarchyId)
+        {
+            try
+            {
+                string xml;
+                oneNoteApp.GetHierarchy(hierarchyId, HierarchyScope.hsSelf, out xml, Constants.CurrentOneNoteSchema);
+                return true;
+            }
+            catch (COMException ex)
+            {
+                if (ex.Message.Contains(Utils.GetHexError(Error.hrObjectDoesNotExist)))
+                    return false;
+                else
+                    throw;
+            }
+        }
+
         public static XDocument GetHierarchyElement(Application oneNoteApp, string hierarchyId, HierarchyScope scope, out XmlNamespaceManager xnm)
         {
             string xml;

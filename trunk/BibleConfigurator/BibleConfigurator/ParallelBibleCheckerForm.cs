@@ -86,19 +86,19 @@ namespace BibleConfigurator
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            string baseModule = (string)cbBaseModule.SelectedValue;
-            string parallelModule = (string)cbParallelModule.SelectedValue;
-            
-            FormExtensions.EnableAll(false, this.Controls, btnClose);
-            this.SetFocus();
-            System.Windows.Forms.Application.DoEvents();
-
-            _errorsForm.ClearErrors();
-
-            var allModules = GetModules();
-
             try
             {
+                string baseModule = (string)cbBaseModule.SelectedValue;
+                string parallelModule = (string)cbParallelModule.SelectedValue;
+
+                FormExtensions.EnableAll(false, this.Controls, btnClose);
+                this.SetFocus();
+                System.Windows.Forms.Application.DoEvents();
+
+                _errorsForm.ClearErrors();
+
+                var allModules = GetModules();
+
                 if (rbCheckOneModule.Checked)
                 {
                     if (!chkWithAllModules.Checked)
@@ -122,7 +122,7 @@ namespace BibleConfigurator
 
                             _formLogger.LogMessage("{0} -> {1}", pModule.ShortName, baseModule);
                             CheckModuleAndAddErrors(pModule.ShortName, baseModule);
-                        }                        
+                        }
                     }
                 }
                 else
@@ -136,7 +136,7 @@ namespace BibleConfigurator
                             _formLogger.LogMessage("{0} -> {1}", bModule.ShortName, pModule.ShortName);
                             CheckModuleAndAddErrors(bModule.ShortName, pModule.ShortName);
                         }
-                    }                    
+                    }
                 }
 
                 _mainForm.LongProcessingDone("Checking complete");
@@ -158,6 +158,12 @@ namespace BibleConfigurator
             catch (ProcessAbortedByUserException)
             {
                 _mainForm.LongProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+                this.Close();
+                _mainForm.LongProcessingDone(ex.Message);
             }
         }
 

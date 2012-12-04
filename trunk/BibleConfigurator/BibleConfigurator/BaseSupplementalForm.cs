@@ -76,7 +76,7 @@ namespace BibleConfigurator
             _oneNoteApp = oneNoteApp;
             MainForm = form;
 
-            Modules = ModulesManager.GetModules(true);
+            Modules = ModulesManager.GetModules(true).OrderBy(m => m.DisplayName).ToList();
 
             DictionaryModules = new Dictionary<string, ModuleInfo>();
             foreach (var module in Modules)
