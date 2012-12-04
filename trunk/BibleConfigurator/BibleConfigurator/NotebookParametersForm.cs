@@ -85,7 +85,7 @@ namespace BibleConfigurator
         {
             Dictionary<ContainerType, SectionGroupDTO> result = new Dictionary<ContainerType, SectionGroupDTO>();
 
-            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(_oneNoteApp, _notebookId, HierarchyScope.hsSections, true);
+            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, _notebookId, HierarchyScope.hsSections, true);
             var module = ModulesManager.GetCurrentModuleInfo();
 
             foreach (XElement sectionGroup in notebook.Content.Root.XPathSelectElements("one:SectionGroup", notebook.Xnm).Where(sg => !OneNoteUtils.IsRecycleBin(sg)))

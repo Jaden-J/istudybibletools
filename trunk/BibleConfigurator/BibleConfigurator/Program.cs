@@ -68,6 +68,19 @@ namespace BibleConfigurator
             }
         }
 
+        private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
+        private static void CreateOneNoteAppIfNotExists()
+        {
+            if (_oneNoteApp == null)
+                _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+        }
+
+        private static bool IsSystemConfigured()
+        {
+            CreateOneNoteAppIfNotExists();
+            return SettingsManager.Instance.IsConfigured(ref _oneNoteApp);
+        }
+
         private static Form PrepareForRunning(out bool silent, out string moreThanSingleInstanceRunMessage, params string[] args)
         {
             moreThanSingleInstanceRunMessage = BibleCommon.Resources.Constants.MoreThanSingleInstanceRun;
@@ -77,7 +90,7 @@ namespace BibleConfigurator
             var strongProtocolHandler = new FindVersesWithStrongNumberHandler();
             var navToStrongHandler = new NavigateToStrongHandler();
 
-            if (args.Contains(Consts.ShowModuleInfo) && SettingsManager.Instance.IsConfigured(OneNoteApp))
+            if (args.Contains(Consts.ShowModuleInfo) && IsSystemConfigured())
                 result = new AboutModuleForm(SettingsManager.Instance.ModuleShortName, true);
             else if (args.Contains(Consts.ShowAboutProgram))
                 result = new AboutProgramForm();
@@ -97,13 +110,14 @@ namespace BibleConfigurator
                 }
             }            
             else if (args.Contains(Consts.RunOnOneNoteStarts))
-            {                
-                if (SettingsManager.Instance.IsConfigured(OneNoteApp))
+            {
+                CreateOneNoteAppIfNotExists();
+                if (SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
                 {
                     try
                     {
-                        OneNoteLocker.LockBible(OneNoteApp);
-                        OneNoteLocker.LockSupplementalBible(OneNoteApp);
+                        OneNoteLocker.LockBible(ref _oneNoteApp);
+                        OneNoteLocker.LockSupplementalBible(ref _oneNoteApp);
                     }
                     catch (NotSupportedException)
                     {
@@ -133,8 +147,9 @@ namespace BibleConfigurator
             {
                 try
                 {
-                    OneNoteLocker.LockBible(OneNoteApp);
-                    OneNoteLocker.LockSupplementalBible(OneNoteApp);
+                    CreateOneNoteAppIfNotExists();
+                    OneNoteLocker.LockBible(ref _oneNoteApp);
+                    OneNoteLocker.LockSupplementalBible(ref _oneNoteApp);
                 }
                 catch (NotSupportedException)
                 {
@@ -145,8 +160,9 @@ namespace BibleConfigurator
             {
                 try
                 {
-                    OneNoteLocker.UnlockBible(OneNoteApp);
-                    OneNoteLocker.UnlockSupplementalBible(OneNoteApp);
+                    CreateOneNoteAppIfNotExists();
+                    OneNoteLocker.UnlockBible(ref _oneNoteApp);
+                    OneNoteLocker.UnlockSupplementalBible(ref _oneNoteApp);
                 }
                 catch (NotSupportedException)
                 {
@@ -157,7 +173,8 @@ namespace BibleConfigurator
             {
                 try
                 {
-                    OneNoteLocker.UnlockCurrentSection(OneNoteApp);
+                    CreateOneNoteAppIfNotExists();
+                    OneNoteLocker.UnlockCurrentSection(ref _oneNoteApp);
                 }
                 catch (NotSupportedException)
                 {
@@ -247,19 +264,7 @@ namespace BibleConfigurator
                 if (_oneNoteApp != null)
                     _oneNoteApp = null;
             }
-        }
-
-        private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
-        private static Microsoft.Office.Interop.OneNote.Application OneNoteApp
-        {
-            get
-            {
-                if (_oneNoteApp == null)
-                    _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
-
-                return _oneNoteApp;
-            }
-        }
+        }        
 
         private static bool OpenManual()
         {

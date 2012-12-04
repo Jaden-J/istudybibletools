@@ -15,30 +15,30 @@ namespace BibleCommon.Services
 {
     public static class NotesPageManager
     {
-        public static string UpdateNotesPage(Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, bool isChapter,
+        public static string UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, bool isChapter,
            HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
            PageIdInfo notePageId, string notesPageId, string notePageContentObjectId,
            string notesPageName, int notesPageWidth, bool force, bool processAsExtendedVerse, out bool rowWasAdded)
         {
             string targetContentObjectId = string.Empty;
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
-            OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
+            OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
 
-            XElement rowElement = GetNotesRowAndCreateIfNotExists(oneNoteApp, vp, isChapter, notesPageWidth, verseHierarchyObjectInfo,
+            XElement rowElement = GetNotesRowAndCreateIfNotExists(ref oneNoteApp, vp, isChapter, notesPageWidth, verseHierarchyObjectInfo,
                 notesPageDocument.Content, notesPageDocument.Xnm, nms, out rowWasAdded);
 
             if (rowElement != null)
             {
-                AddLinkToNotesPage(oneNoteApp, noteLinkManager, vp, rowElement, notePageId,
+                AddLinkToNotesPage(ref oneNoteApp, noteLinkManager, vp, rowElement, notePageId,
                     notePageContentObjectId, notesPageDocument, notesPageDocument.Xnm, nms, notesPageName, force, processAsExtendedVerse);
 
-                targetContentObjectId = GetNotesRowObjectId(oneNoteApp, notesPageId, verseHierarchyObjectInfo.VerseNumber, isChapter);
+                targetContentObjectId = GetNotesRowObjectId(ref oneNoteApp, notesPageId, verseHierarchyObjectInfo.VerseNumber, isChapter);
             }
 
             return targetContentObjectId;
         }
 
-        private static void AddLinkToNotesPage(Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, XElement rowElement,
+        private static void AddLinkToNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, XElement rowElement,
            PageIdInfo notePageId, string notePageContentObjectId,
            OneNoteProxy.PageContent notesPageDocument, XmlNamespaceManager xnm, XNamespace nms, string notesPageName, bool force, bool processAsExtendedVerse)
         {
@@ -49,7 +49,7 @@ namespace BibleCommon.Services
             XElement suchNoteLink = null;
             XElement notesCellElement = rowElement.XPathSelectElement("one:Cell[2]/one:OEChildren", xnm);
 
-            string link = OneNoteUtils.GenerateHref(oneNoteApp, noteTitle, notePageId.PageId, notePageContentObjectId);
+            string link = OneNoteUtils.GenerateHref(ref oneNoteApp, noteTitle, notePageId.PageId, notePageContentObjectId);
             string pageId;
             int pageIdStringIndex = link.IndexOf("page-id={");
             if (pageIdStringIndex == -1)
@@ -122,7 +122,7 @@ namespace BibleCommon.Services
             }
             else if (!processAsExtendedVerse)
             {
-                string pageLink = OneNoteUtils.GenerateHref(oneNoteApp, noteTitle, notePageId.PageId, notePageId.PageTitleId);
+                string pageLink = OneNoteUtils.GenerateHref(ref oneNoteApp, noteTitle, notePageId.PageId, notePageId.PageTitleId);
 
                 var verseLinksOE = suchNoteLink.Parent.NextNode;
                 if (verseLinksOE != null && verseLinksOE.XPathSelectElement("one:List", xnm) == null)  // значит следующая строка без номера, то есть значит идут ссылки
@@ -132,7 +132,7 @@ namespace BibleCommon.Services
 
                     int currentVerseIndex = existingVerseLinksElement.Value.Split(new string[] { "</a>" }, StringSplitOptions.None).Length;
 
-                    existingVerseLinksElement.Value += Resources.Constants.VerseLinksDelimiter + OneNoteUtils.GenerateHref(oneNoteApp,
+                    existingVerseLinksElement.Value += Resources.Constants.VerseLinksDelimiter + OneNoteUtils.GenerateHref(ref oneNoteApp,
                                 string.Format(Resources.Constants.VerseLinkTemplate, currentVerseIndex), notePageId.PageId, notePageContentObjectId)
                                 + GetMultiVerseString(vp.ParentVersePointer ?? vp);
 
@@ -146,7 +146,7 @@ namespace BibleCommon.Services
                                                         new XCData(StringUtils.MultiplyString("&nbsp;", 8) +
                                                             string.Join(Resources.Constants.VerseLinksDelimiter, new string[] { 
                                                                 firstVerseLink + GetExistingMultiVerseString(suchNoteLink), 
-                                                                OneNoteUtils.GenerateHref(oneNoteApp, 
+                                                                OneNoteUtils.GenerateHref(ref oneNoteApp, 
                                                                     string.Format(Resources.Constants.VerseLinkTemplate, 2), notePageId.PageId, notePageContentObjectId)
                                                                     + GetMultiVerseString(vp.ParentVersePointer ?? vp) })
                                                             )));
@@ -199,10 +199,10 @@ namespace BibleCommon.Services
             return multiVerseString;
         }
 
-        internal static string GetNotesRowObjectId(Application oneNoteApp, string notesPageId, VerseNumber? verseNumber, bool isChapter)
+        internal static string GetNotesRowObjectId(ref Application oneNoteApp, string notesPageId, VerseNumber? verseNumber, bool isChapter)
         {
             string result = string.Empty;
-            OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
+            OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
             XElement tableElement = notesPageDocument.Content.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", notesPageDocument.Xnm);
             XElement targetElement = GetNotesRow(tableElement, verseNumber, isChapter, notesPageDocument.Xnm);
 
@@ -212,7 +212,7 @@ namespace BibleCommon.Services
             return result;
         }
 
-        private static XElement GetNotesRowAndCreateIfNotExists(Application oneNoteApp, VersePointer vp, bool isChapter,
+        private static XElement GetNotesRowAndCreateIfNotExists(ref Application oneNoteApp, VersePointer vp, bool isChapter,
             int mainColumnWidth, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
             XDocument notesPageDocument, XmlNamespaceManager xnm, XNamespace nms, out bool rowWasAdded)
         {
@@ -245,7 +245,7 @@ namespace BibleCommon.Services
 
             if (rowElement == null)
             {
-                AddNewNotesRow(oneNoteApp, vp, isChapter, verseHierarchyObjectInfo, tableElement, xnm, nms);
+                AddNewNotesRow(ref oneNoteApp, vp, isChapter, verseHierarchyObjectInfo, tableElement, xnm, nms);
                 rowWasAdded = true;
 
                 rowElement = GetNotesRow(tableElement, verseHierarchyObjectInfo.VerseNumber, isChapter, xnm);
@@ -269,7 +269,7 @@ namespace BibleCommon.Services
             return result;
         }
 
-        private static void AddNewNotesRow(Application oneNoteApp, VersePointer vp, bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
+        private static void AddNewNotesRow(ref Application oneNoteApp, VersePointer vp, bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
             XElement tableElement, XmlNamespaceManager xnm, XNamespace nms)
         {
             XElement newRow = new XElement(nms + "Row",
@@ -279,7 +279,7 @@ namespace BibleCommon.Services
                                                 new XElement(nms + "T",
                                                     new XCData(
                                                         !isChapter ?
-                                                            OneNoteUtils.GetOrGenerateHref(oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseNumber),
+                                                            OneNoteUtils.GetOrGenerateHref(ref oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseNumber),
                                                                 verseHierarchyObjectInfo.VerseInfo.ObjectHref,
                                                                 verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.VerseContentObjectId, 
                                                                 Consts.Constants.QueryParameter_BibleVerse)

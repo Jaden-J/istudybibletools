@@ -41,7 +41,7 @@ namespace BibleConfigurator.ModuleConverter
             Dictionary
         }
 
-        public Application OneNoteApp { get; set; }
+        public Application _oneNoteApp;
         public bool IsOneNote2010 { get; set; }
         public string NotebookId { get; set; }        
         public StructureType Type { get; set; }
@@ -83,12 +83,12 @@ namespace BibleConfigurator.ModuleConverter
             this.DictionaryName = dictionaryName;
             this.DictionaryDescription = dictionaryDescription;            
             this.DictionarySectionGroupName = dictionarySectionGroupName;
-            this.OneNoteApp = oneNoteApp;
+            this._oneNoteApp = oneNoteApp;
             IsOneNote2010 = OneNoteUtils.IsOneNote2010Cached(oneNoteApp);
             this.ManifestFilesFolder = manifestFilesFolder;
-            this.NotebookId = OneNoteUtils.GetNotebookIdByName(OneNoteApp, notebookName, true);
+            this.NotebookId = OneNoteUtils.GetNotebookIdByName(ref _oneNoteApp, notebookName, true);
             if (string.IsNullOrEmpty(this.NotebookId))
-                this.NotebookId = NotebookGenerator.CreateNotebook(OneNoteApp, notebookName);
+                this.NotebookId = NotebookGenerator.CreateNotebook(ref _oneNoteApp, notebookName);
             this.DictionaryFiles = dictionaryFiles;            
             this.Locale = locale;
             this.TermStartString = termStartString;            
@@ -108,7 +108,7 @@ namespace BibleConfigurator.ModuleConverter
 
         public void Convert()
         {
-            var sectionGroupEl = NotebookGenerator.AddRootSectionGroupToNotebook(OneNoteApp, NotebookId, this.DictionaryModuleName);
+            var sectionGroupEl = NotebookGenerator.AddRootSectionGroupToNotebook(ref _oneNoteApp, NotebookId, this.DictionaryModuleName);
             SectionGroupId = (string)sectionGroupEl.Attribute("ID");
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
 
@@ -122,7 +122,7 @@ namespace BibleConfigurator.ModuleConverter
 
                 if (Type == StructureType.Strong)
                 {
-                    SectionId = NotebookGenerator.AddSection(OneNoteApp, SectionGroupId, Path.GetFileNameWithoutExtension(file.SectionName));
+                    SectionId = NotebookGenerator.AddSection(ref _oneNoteApp, SectionGroupId, Path.GetFileNameWithoutExtension(file.SectionName));
                     pageInfo = AddTermsPage(string.Format("{0:0000}-", file.StartIndex), file.DictionaryPageDescription);
                 }
                                 
@@ -169,13 +169,13 @@ namespace BibleConfigurator.ModuleConverter
         {
             XmlNamespaceManager xnm;
             var firstColumnWidthK = Type == StructureType.Strong ? 1 : 2;
-            var pageDoc = NotebookGenerator.AddPage(OneNoteApp, SectionId, pageName, 1, Locale, out xnm);
+            var pageDoc = NotebookGenerator.AddPage(ref _oneNoteApp, SectionId, pageName, 1, Locale, out xnm);
             var tableEl = NotebookGenerator.AddTableToPage(pageDoc, true, xnm, new CellInfo((int)(NotebookGenerator.MinimalCellWidth * firstColumnWidthK)), new CellInfo(SettingsManager.Instance.PageWidth_Bible));
             var styleIndex = QuickStyleManager.AddQuickStyleDef(pageDoc, QuickStyleManager.StyleNameH3, QuickStyleManager.PredefinedStyles.H3, xnm);
             if (!string.IsNullOrEmpty(pageDisplayName))
                 AddPageTitle(pageDoc, pageDisplayName, xnm);
 
-            OneNoteUtils.UpdatePageMetaData(OneNoteApp, pageDoc.Root, BibleCommon.Consts.Constants.Key_EmbeddedDictionaries,
+            OneNoteUtils.UpdatePageMetaData(pageDoc.Root, BibleCommon.Consts.Constants.Key_EmbeddedDictionaries,
                 EmbeddedModuleInfo.Serialize(new List<EmbeddedModuleInfo>() { new EmbeddedModuleInfo(DictionaryModuleName, Version) }), xnm);
 
             PagesCount++;
@@ -198,7 +198,7 @@ namespace BibleConfigurator.ModuleConverter
                 }
                 
                 string sectionName = GetFirstTermValueChar(termName);
-                SectionId = NotebookGenerator.AddSection(OneNoteApp, SectionGroupId, sectionName);
+                SectionId = NotebookGenerator.AddSection(ref _oneNoteApp, SectionGroupId, sectionName);
                 sectionName += ".one";
                 if (!DictionarySections.Any(s => s.Name == sectionName))
                     DictionarySections.Add(new SectionInfo() { Name = sectionName});
@@ -384,7 +384,10 @@ namespace BibleConfigurator.ModuleConverter
 
         protected void UpdatePage(XDocument pageDoc)
         {
-            OneNoteApp.UpdatePageContent(pageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.UpdatePageContent(pageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+            });
         }
 
         private void GenerateManifest()
@@ -421,7 +424,7 @@ namespace BibleConfigurator.ModuleConverter
 
         public void Dispose()
         {
-            OneNoteApp = null;
+            _oneNoteApp = null;
         }
     }
 }

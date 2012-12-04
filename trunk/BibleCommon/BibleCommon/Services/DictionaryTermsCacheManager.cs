@@ -54,11 +54,11 @@ namespace BibleCommon.Services
             }
         }
 
-        public static Dictionary<string, string> GenerateCache(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger, out List<string> notFoundTerms)
+        public static Dictionary<string, string> GenerateCache(ref Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger, out List<string> notFoundTerms)
         {
             notFoundTerms = null;
 
-            var cacheData = IndexDictionary(oneNoteApp, moduleInfo, logger);
+            var cacheData = IndexDictionary(ref oneNoteApp, moduleInfo, logger);
 
             var filePath = GetCacheFilePath(moduleInfo.ShortName);
 
@@ -90,38 +90,38 @@ namespace BibleCommon.Services
             return cacheData;
         }
 
-        private static Dictionary<string, string> IndexDictionary(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger)
+        private static Dictionary<string, string> IndexDictionary(ref Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger)
         {
             var result = new Dictionary<string, string>();
             var dictionaryModuleInfo = SettingsManager.Instance.DictionariesModules.FirstOrDefault(m => m.ModuleName == moduleInfo.ShortName);
             if (dictionaryModuleInfo != null)
             {
                 XmlNamespaceManager xnm;
-                var sectionGroupDoc = OneNoteUtils.GetHierarchyElement(oneNoteApp, dictionaryModuleInfo.SectionId, HierarchyScope.hsPages, out xnm);
+                var sectionGroupDoc = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, dictionaryModuleInfo.SectionId, HierarchyScope.hsPages, out xnm);
 
                 var sectionsEl = sectionGroupDoc.Root.XPathSelectElements("one:Section", xnm);
                 if (sectionsEl.Count() > 0)
                 {
                     foreach (var sectionEl in sectionsEl)
                     {
-                        IndexDictionarySection(oneNoteApp, sectionEl, ref result, moduleInfo.Type == ModuleType.Strong, logger, xnm);
+                        IndexDictionarySection(ref oneNoteApp, sectionEl, ref result, moduleInfo.Type == ModuleType.Strong, logger, xnm);
                     }
                 }
                 else
-                    IndexDictionarySection(oneNoteApp, sectionGroupDoc.Root, ref result, moduleInfo.Type == ModuleType.Strong, logger, xnm);
+                    IndexDictionarySection(ref oneNoteApp, sectionGroupDoc.Root, ref result, moduleInfo.Type == ModuleType.Strong, logger, xnm);
             }           
 
             return result;
         }
 
-        private static void IndexDictionarySection(Application oneNoteApp, XElement sectionEl, ref Dictionary<string, string> result, bool isStrong, ICustomLogger logger, XmlNamespaceManager xnm)
+        private static void IndexDictionarySection(ref Application oneNoteApp, XElement sectionEl, ref Dictionary<string, string> result, bool isStrong, ICustomLogger logger, XmlNamespaceManager xnm)
         {
             string sectionName = (string)sectionEl.Attribute("name");
 
             foreach (var pageEl in sectionEl.XPathSelectElements("one:Page", xnm))
             {
                 var pageId = (string)pageEl.Attribute("ID");
-                var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, pageId, out xnm);
+                var pageDoc = OneNoteUtils.GetPageContent(ref oneNoteApp, pageId, out xnm);
 
                 var tableEl = NotebookGenerator.GetPageTable(pageDoc, xnm);
 
@@ -135,7 +135,7 @@ namespace BibleCommon.Services
                     var termTextElementId = (string)termTextEl.Parent.Attribute("objectID");
 
                     var href = (isStrong && !SettingsManager.Instance.UseMiddleStrongLinks) 
-                                    ? OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, termTextElementId) 
+                                    ? OneNoteProxy.Instance.GenerateHref(ref oneNoteApp, pageId, termTextElementId) 
                                     : null;                    
 
                     if (!result.ContainsKey(termName))

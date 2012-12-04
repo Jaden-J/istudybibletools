@@ -68,12 +68,12 @@ namespace BibleConfigurator
         {
             try
             {                
-                DictionariesNotebookId = SettingsManager.Instance.GetValidDictionariesNotebookId(_oneNoteApp);
+                DictionariesNotebookId = SettingsManager.Instance.GetValidDictionariesNotebookId(ref _oneNoteApp);
 
                 if (string.IsNullOrEmpty(DictionariesNotebookId))
                 {
                     SettingsManager.Instance.ReLoadSettings();
-                    DictionariesNotebookId = SettingsManager.Instance.GetValidDictionariesNotebookId(_oneNoteApp, true);
+                    DictionariesNotebookId = SettingsManager.Instance.GetValidDictionariesNotebookId(ref _oneNoteApp, true);
                 }
 
                 if (string.IsNullOrEmpty(DictionariesNotebookId) || SettingsManager.Instance.DictionariesModules.Count == 0)
@@ -225,7 +225,7 @@ namespace BibleConfigurator
 
                 var link = OneNoteProxy.Instance.GetDictionaryTermLink(term.ToLower(), moduleShortName);
 
-                if (!DictionaryManager.GoToTerm(_oneNoteApp, link))
+                if (!DictionaryManager.GoToTerm(ref _oneNoteApp, link))
                 {
                     using (var form = new MainForm())
                     {

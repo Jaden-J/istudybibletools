@@ -23,7 +23,7 @@ namespace BibleNoteLinker
 
             try
             {
-                OneNoteLocker.UnlockBible(_oneNoteApp);
+                OneNoteLocker.UnlockBible(ref _oneNoteApp);
             }
             catch (NotSupportedException)
             {
@@ -34,7 +34,7 @@ namespace BibleNoteLinker
             NotebookIterator.PageInfo currentPage = null;
             try
             {
-                currentPage = OneNoteUtils.GetCurrentPageInfo(_oneNoteApp);
+                currentPage = OneNoteUtils.GetCurrentPageInfo(ref _oneNoteApp);
             }
             catch (ProgramException ex)
             {
@@ -88,17 +88,23 @@ namespace BibleNoteLinker
                 CommitPages(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, 6, null);                
             }
 
-            if (_oneNoteApp.Windows.CurrentWindow != null && currentPage != null)
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
             {
-                _oneNoteApp.NavigateTo(currentPage.Id, null);
-            }
+                if (oneNoteAppSafe.Windows.CurrentWindow != null && currentPage != null)
+                {
+                    oneNoteAppSafe.NavigateTo(currentPage.Id, null);
+                }
+            });
         }
 
         private void SyncNotesPagesContainer()
         {
-            _oneNoteApp.SyncHierarchy(!string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_BibleNotesPages)
-                                      ? SettingsManager.Instance.SectionGroupId_BibleNotesPages
-                                      : SettingsManager.Instance.NotebookId_BibleNotesPages);
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.SyncHierarchy(!string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_BibleNotesPages)
+                                          ? SettingsManager.Instance.SectionGroupId_BibleNotesPages
+                                          : SettingsManager.Instance.NotebookId_BibleNotesPages);
+            });
         }
 
         private void PerformProcessStep()
@@ -116,7 +122,7 @@ namespace BibleNoteLinker
             int allPagesCount = 0;
             int processedPagesCount = 0;
             Logger.LogMessage(message, true, false);
-            OneNoteProxy.Instance.CommitAllModifiedHierarchy(_oneNoteApp,
+            OneNoteProxy.Instance.CommitAllModifiedHierarchy(ref _oneNoteApp,
                 pagesCount =>
                 {
                     allPagesCount = pagesCount;
@@ -140,7 +146,7 @@ namespace BibleNoteLinker
             {
                 try
                 {
-                    VerseLinkManager.SortVerseLinkPages(_oneNoteApp,
+                    VerseLinkManager.SortVerseLinkPages(ref _oneNoteApp,
                         sortPageInfo.SectionId, sortPageInfo.PageId, sortPageInfo.ParentPageId, sortPageInfo.PageLevel);
                 }
                 catch (Exception ex)
@@ -351,7 +357,7 @@ namespace BibleNoteLinker
             {
                 DateTime lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value);
 
-                string lastAnalyzeTime = OneNoteUtils.GetPageMetaData(_oneNoteApp, page.PageElement, Constants.Key_LatestAnalyzeTime, page.Xnm);
+                string lastAnalyzeTime = OneNoteUtils.GetPageMetaData(page.PageElement, Constants.Key_LatestAnalyzeTime, page.Xnm);
                 if (!string.IsNullOrEmpty(lastAnalyzeTime) && lastModifiedDate <= DateTime.Parse(lastAnalyzeTime).ToLocalTime())
                     return false;
             }

@@ -15,13 +15,13 @@ namespace BibleConfigurator
 {
     public class DictionaryModulesForm: BaseSupplementalForm
     {
-        public DictionaryModulesForm(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
-            : base(ref oneNoteApp, form)
+        public DictionaryModulesForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
+            : base(oneNoteApp, form)
         { }
 
         protected override string GetValidSupplementalNotebookId()
         {
-            return SettingsManager.Instance.GetValidDictionariesNotebookId(_oneNoteApp, true);
+            return SettingsManager.Instance.GetValidDictionariesNotebookId(ref _oneNoteApp, true);
         }        
 
         protected override int GetSupplementalModulesCount()
@@ -45,11 +45,11 @@ namespace BibleConfigurator
         protected override ErrorsList CommitChanges(BibleCommon.Common.ModuleInfo selectedModuleInfo)
         {
             MainForm.PrepareForLongProcessing(selectedModuleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
-            DictionaryManager.AddDictionary(_oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true, () => Logger.AbortedByUsers);
+            DictionaryManager.AddDictionary(ref _oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true, () => Logger.AbortedByUsers);
             Logger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexDictionary);
 
             List<string> notFoundTerms;
-            DictionaryTermsCacheManager.GenerateCache(_oneNoteApp, selectedModuleInfo, Logger, out notFoundTerms);
+            DictionaryTermsCacheManager.GenerateCache(ref _oneNoteApp, selectedModuleInfo, Logger, out notFoundTerms);
             MainForm.LongProcessingDone(BibleCommon.Resources.Constants.AddDictionaryFinishMessage);
 
             if (notFoundTerms != null && notFoundTerms.Count > 0)
@@ -77,7 +77,7 @@ namespace BibleConfigurator
 
         protected override void DeleteModule(string moduleShortName)
         {
-            DictionaryManager.RemoveDictionary(_oneNoteApp, moduleShortName);            
+            DictionaryManager.RemoveDictionary(ref _oneNoteApp, moduleShortName);            
         }
 
         protected override string CloseSupplementalNotebookQuestionText
@@ -87,7 +87,7 @@ namespace BibleConfigurator
 
         protected override void CloseSupplementalNotebook()
         {
-            DictionaryManager.CloseDictionariesNotebook(_oneNoteApp);
+            DictionaryManager.CloseDictionariesNotebook(ref _oneNoteApp);
         }
 
         protected override bool IsModuleSupported(BibleCommon.Common.ModuleInfo moduleInfo)
@@ -125,7 +125,7 @@ namespace BibleConfigurator
         {
             return !(SettingsManager.Instance.DictionariesModules.Any(dm => DictionaryModules[dm.ModuleName].Type == ModuleType.Strong)
                     && SettingsManager.Instance.SupplementalBibleModules.Any(sm => DictionaryModules[sm.ModuleName].Type == ModuleType.Strong)
-                    && !string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(_oneNoteApp)));
+                    && !string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(ref _oneNoteApp)));
         }
 
         protected override string NotebookCannotBeClosedText
@@ -181,7 +181,7 @@ namespace BibleConfigurator
                 Logger.Preffix = string.Format("{0} {1}: ", BibleCommon.Resources.Constants.IndexDictionary, moduleInfo.ShortName);
 
                 List<string> notFoundTerms;
-                DictionaryTermsCacheManager.GenerateCache(_oneNoteApp, moduleInfo, Logger, out notFoundTerms);
+                DictionaryTermsCacheManager.GenerateCache(ref _oneNoteApp, moduleInfo, Logger, out notFoundTerms);
 
                 if (notFoundTerms != null && notFoundTerms.Count > 0)
                 {

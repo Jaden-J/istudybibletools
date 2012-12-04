@@ -30,7 +30,7 @@ namespace BibleConfigurator
         public bool NeedToCheckModule { get; set; }
         public string ConvertedModuleShortName { get; set; }
 
-        protected Microsoft.Office.Interop.OneNote.Application OneNoteApp { get; set; }
+        protected Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
 
         protected string ZefaniaXmlFilePath { get; set; }
         protected string ModuleShortName { get; set; }
@@ -70,7 +70,7 @@ namespace BibleConfigurator
         public ZefaniaXmlConverterForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm mainForm)
         {
             InitializeComponent();
-            OneNoteApp = oneNoteApp;
+            _oneNoteApp = oneNoteApp;
             _mainForm = mainForm;
             _formLogger = new LongProcessLogger(_mainForm);
         }
@@ -229,7 +229,7 @@ namespace BibleConfigurator
 
             if (chkNotebookBibleCommentsGenerate.Checked)
             {
-                var notebookId = NotebookGenerator.GenerateBibleCommentsNotebook(OneNoteApp, NotebookBibleCommentsName, converter.ModuleInfo.BibleStructure, NotebooksStructure, false);
+                var notebookId = NotebookGenerator.GenerateBibleCommentsNotebook(ref _oneNoteApp, NotebookBibleCommentsName, converter.ModuleInfo.BibleStructure, NotebooksStructure, false);
                 PublishNotebook(notebookId, Path.Combine(tbResultDirectory.Text, NotebookBibleCommentsName + BibleCommon.Consts.Constants.FileExtensionOnepkg), true);                
             }
             else
@@ -239,7 +239,7 @@ namespace BibleConfigurator
 
             if (chkNotebookSummaryOfNotesGenerate.Checked)
             {
-                var notebookId = NotebookGenerator.GenerateBibleCommentsNotebook(OneNoteApp, NotebookSummaryOfNotesName, converter.ModuleInfo.BibleStructure, NotebooksStructure, true);
+                var notebookId = NotebookGenerator.GenerateBibleCommentsNotebook(ref _oneNoteApp, NotebookSummaryOfNotesName, converter.ModuleInfo.BibleStructure, NotebooksStructure, true);
                 PublishNotebook(notebookId, Path.Combine(tbResultDirectory.Text, NotebookSummaryOfNotesName + BibleCommon.Consts.Constants.FileExtensionOnepkg), true);                
             }
             else
@@ -289,9 +289,14 @@ namespace BibleConfigurator
                         {
                             if (_notebookFilesToWatch.ContainsKey(e.FullPath))
                             {
-                                var notebookId = _notebookFilesToWatch[e.FullPath];                                
-                                if (!string.IsNullOrEmpty(notebookId))                                    
-                                    OneNoteApp.CloseNotebook(notebookId);
+                                var notebookId = _notebookFilesToWatch[e.FullPath];
+                                if (!string.IsNullOrEmpty(notebookId))
+                                {
+                                    OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                                    {
+                                        oneNoteAppSafe.CloseNotebook(notebookId);
+                                    });
+                                }
                                 _notebookFilesToWatch.Remove(e.FullPath);                                
 
                                 if (!NeedToWaitFileWatcher)
@@ -329,13 +334,16 @@ namespace BibleConfigurator
                 throw new Exception("Marking section file was not found");
 
             XmlNamespaceManager xnm;
-            var notebookDoc = OneNoteUtils.GetHierarchyElement(OneNoteApp, notebookId, HierarchyScope.hsSelf, out xnm);
+            var notebookDoc = OneNoteUtils.GetHierarchyElement(ref _oneNoteApp, notebookId, HierarchyScope.hsSelf, out xnm);
             var notebookPath = (string)notebookDoc.Root.Attribute("path");
             var markingWordsSectionName = Path.GetFileName(MarkingWordsSectionFilePath);
 
             File.Copy(MarkingWordsSectionFilePath, Path.Combine(notebookPath, markingWordsSectionName), true);
             string markingWordsSectionId;
-            OneNoteApp.OpenHierarchy(markingWordsSectionName, notebookId, out markingWordsSectionId, CreateFileType.cftSection);
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.OpenHierarchy(markingWordsSectionName, notebookId, out markingWordsSectionId, CreateFileType.cftSection);
+            });
         }
 
         private void PublishNotebook(string notebookId, string targetFilePath, bool closeNotebook)
@@ -345,7 +353,10 @@ namespace BibleConfigurator
 
 
             AddFileForWatching(targetFilePath, closeNotebook ? notebookId : null);
-            OneNoteApp.Publish(notebookId, targetFilePath, PublishFormat.pfOneNotePackage);                        
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.Publish(notebookId, targetFilePath, PublishFormat.pfOneNotePackage);
+            });
         }
 
         private void CopyExistingNotebookFile(ComboBox cb)
@@ -664,7 +675,7 @@ namespace BibleConfigurator
 
         private void ZefaniaXmlConverterForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            OneNoteApp = null;
+            _oneNoteApp = null;
             _mainForm = null;
             _formLogger.Dispose();
         }
