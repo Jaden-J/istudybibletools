@@ -377,10 +377,10 @@ namespace BibleCommon.Common
                 {
                     var indexOfComma = OriginalFormula.IndexOf(",");
                     if (indexOfComma == -1)
-                        throw new NotSupportedException(string.Format("Two colons must be devided by comma", OriginalFormula));
+                        throw new NotSupportedException(string.Format("Two colons must be devided by comma: '{0}'", OriginalFormula));
 
                     if (indexOfComma != OriginalFormula.LastIndexOf(","))
-                        throw new NotSupportedException(string.Format("Only one comma is supported", OriginalFormula));
+                        throw new NotSupportedException(string.Format("Only one comma is supported: '{0}'", OriginalFormula));
 
                     var parts = OriginalFormula.Split(new char[] { ',' });
                     this.OriginalFormula = parts[0];

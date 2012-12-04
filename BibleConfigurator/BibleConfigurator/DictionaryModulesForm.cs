@@ -71,14 +71,8 @@ namespace BibleConfigurator
         protected override bool CanModuleBeDeleted(ModuleInfo moduleInfo, int index)
         {
             return moduleInfo.Type == ModuleType.Dictionary
-                || (moduleInfo.Type == ModuleType.Strong && !SettingsManager.Instance.SupplementalBibleModules.Any(
-                    m => 
-                    {
-                        if (DictionaryModules.ContainsKey(m.ModuleName))                        
-                            return DictionaryModules[m.ModuleName].Type == ModuleType.Strong;
-                        else
-                            return false;                       
-                    }));
+                   || (moduleInfo.Type == ModuleType.Strong
+                      && !SettingsManager.Instance.SupplementalBibleModules.Any(m => m.ModuleName == moduleInfo.ShortName));
         }
 
         protected override void DeleteModule(string moduleShortName)

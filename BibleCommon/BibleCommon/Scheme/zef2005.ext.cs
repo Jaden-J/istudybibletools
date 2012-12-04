@@ -104,14 +104,15 @@ namespace BibleCommon.Scheme
         /// <param name="topVerse"></param>
         /// <param name="isEmpty"></param>
         /// <param name="isFullVerses">Запрашиваемые стихи являются полными. А то стих может быть "Текст стиха|". То есть вроде как две части стиха, но первая часть равна всему стиху.</param>
-        /// <param name="isDiscontinuous">Прерывистые стихи. Например 8,22. </param>
+        /// <param name="isDiscontinuous">Прерывистые стихи. Например: 8,22. </param>
         /// <param name="notFoundVerses"></param>
         /// <returns></returns>
         public string GetVersesContent(List<SimpleVersePointer> verses, string moduleShortName, string strongPrefix, 
-            out int? topVerse, out bool isEmpty, out bool isFullVerses, out bool isDiscontinuous, out List<SimpleVersePointer> notFoundVerses)
+            out int? topVerse, out bool isEmpty, out bool isFullVerses, out bool isDiscontinuous, out List<SimpleVersePointer> notFoundVerses, out List<SimpleVersePointer> emptyVerses)
         {
             var contents = new List<string>();
             notFoundVerses = new List<SimpleVersePointer>();
+            emptyVerses = new List<SimpleVersePointer>();
 
             var firstVerse = verses.First();
             topVerse = firstVerse.TopVerse.GetValueOrDefault(firstVerse.Verse);
@@ -134,6 +135,9 @@ namespace BibleCommon.Scheme
                     else if (verseContent == string.Empty)
                         localIsEmpty = true;
                 }
+
+                if (localIsEmpty)
+                    emptyVerses.Add(verse);
 
                 isEmpty = isEmpty && localIsEmpty;
                 isFullVerses = isFullVerses && localIsFullVerse;
