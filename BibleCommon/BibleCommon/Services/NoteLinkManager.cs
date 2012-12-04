@@ -199,9 +199,6 @@ namespace BibleCommon.Services
                 foreach (var textEl in notePageDocument.Content.Root.XPathSelectElements("//one:OE/one:T", notePageDocument.Xnm))
                 {                    
                     var verseStartIndex = textEl.Value.LastIndexOf(Constants.QueryParameter_QuickAnalyze);
-
-
-
                     if (verseStartIndex != -1)
                     {
                         latestTextEl = textEl;
@@ -236,25 +233,28 @@ namespace BibleCommon.Services
             var startLinkIndex = StringUtils.LastIndexOf(textEl.Value, startLinkSearchString, 0, index);
             var endLinkIndex = textEl.Value.IndexOf(endLinkSearchString, index);
 
-            var link = textEl.Value.Substring(startLinkIndex, endLinkIndex - startLinkIndex + endLinkSearchString.Length);
-            var textBefore = textEl.Value.Substring(0, startLinkIndex);
-            var textAfter = textEl.Value.Substring(endLinkIndex + endLinkSearchString.Length);            
+            if (startLinkIndex != -1 && endLinkIndex != -1)
+            {
+                var link = textEl.Value.Substring(startLinkIndex, endLinkIndex - startLinkIndex + endLinkSearchString.Length);
+                var textBefore = textEl.Value.Substring(0, startLinkIndex);
+                var textAfter = textEl.Value.Substring(endLinkIndex + endLinkSearchString.Length);
 
-            textEl.AddAfterSelf(new XElement(nms + "T", 
-                                                new XCData(textAfter))
-                                            );
+                textEl.AddAfterSelf(new XElement(nms + "T",
+                                                    new XCData(textAfter))
+                                                );
 
-            textEl.AddAfterSelf(new XElement(nms + "T", new XAttribute("selected", "all"),
-                                                new XCData(string.Empty))
-                                            );
+                textEl.AddAfterSelf(new XElement(nms + "T", new XAttribute("selected", "all"),
+                                                    new XCData(string.Empty))
+                                                );
 
-            textEl.AddAfterSelf(new XElement(nms + "T", 
-                                                new XCData(link))
-                                            );
+                textEl.AddAfterSelf(new XElement(nms + "T",
+                                                    new XCData(link))
+                                                );
 
-            textEl.ReplaceWith(new XElement(nms + "T",
-                                                new XCData(textBefore))
-                                            );
+                textEl.ReplaceWith(new XElement(nms + "T",
+                                                    new XCData(textBefore))
+                                                );
+            }
         }
 
         private void ProcessChapters(List<FoundChapterInfo> foundChapters, 
