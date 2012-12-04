@@ -168,7 +168,7 @@ namespace BibleCommon.Services
 
             var result = new BibleParallelTranslationConnectionResult();            
 
-            foreach (var baseBookContent in BaseBibleInfo.Books.Skip(43))
+            foreach (var baseBookContent in BaseBibleInfo.Books)
             {
                 var baseBookInfo = BaseModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBookContent.Index);
                 if (baseBookInfo == null)
