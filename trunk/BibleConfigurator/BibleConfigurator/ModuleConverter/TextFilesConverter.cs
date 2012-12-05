@@ -94,14 +94,21 @@ namespace BibleConfigurator.ModuleConverter
                 var chapter = new CHAPTER() { cnumber = chapterIndex.ToString() };
                 book.Items = book.Items.Add(chapter).ToArray();
 
-                string fileContent = File.ReadAllText(filePath, Encoding);
+                string fileContent = File.ReadAllText(filePath, Encoding);                
 
                 var classTString = "class=\"t\"";
                 var classVString = "class=\"v\"";
+                var classTLString = "class=\"tl\"";
                 var getVerseContentByClass = fileContent.IndexOf(classTString) != -1;
                 var verseContentStartSearchString = getVerseContentByClass ? classTString : "<td>";
 
                 var cursor = fileContent.IndexOf(classVString, StringComparison.InvariantCultureIgnoreCase);
+
+                var chapterTitleIndex = StringUtils.LastIndexOf(fileContent, classTLString, 0, cursor);
+                var chapterTitle = string.Empty;
+                if (chapterTitleIndex != -1)
+                    chapterTitle = GetTagValue(fileContent, chapterTitleIndex);
+
                 while (cursor > -1)
                 {
                     var verseIndexString = GetTagValue(fileContent, cursor);
@@ -124,9 +131,12 @@ namespace BibleConfigurator.ModuleConverter
                     if (verseContentStartIndex == -1)
                         throw new Exception(string.Format("VerseContent not found in chapter {0} {1}", book.Index, chapterIndex));
 
-                    var versecontent = GetTagValue(fileContent, verseContentStartIndex);                    
+                    var verseContent = GetTagValue(fileContent, verseContentStartIndex);
 
-                    chapter.Items = chapter.Items.Add(new VERS() { vnumber = verseIndex, Items = new object[] { versecontent } }).ToArray();
+                    if ((chapter.Items == null || chapter.Items.Length == 0) && !string.IsNullOrEmpty(chapterTitle))
+                        verseContent = string.Format("<{0}> {1}", chapterTitle, verseContent);
+
+                    chapter.Items = chapter.Items.Add(new VERS() { vnumber = verseIndex, Items = new object[] { verseContent } }).ToArray();
 
                     cursor = fileContent.IndexOf("class=\"v\"", cursor + 1, StringComparison.InvariantCultureIgnoreCase);
                 }

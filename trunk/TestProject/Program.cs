@@ -47,7 +47,7 @@ namespace TestProject
 
             try
             {
-                //ConvertChineseModuleFromTextFiles();
+                ConvertChineseModuleFromTextFiles();
                 
                 //GenerateBibleBooks();
 
@@ -67,7 +67,7 @@ namespace TestProject
 
                 //GenerateRuStrongDictionary();
 
-                GenerateEnStrongDictionary();
+                //GenerateEnStrongDictionary();
                 
                 //SearchForEnText();
 
@@ -109,7 +109,7 @@ namespace TestProject
 
         private static void ConvertChineseModuleFromTextFiles()
         {
-            var folder = @"C:\Users\lux_demko\Desktop\temp\Dropbox\IStudyBibleTools\Module's Sources\Chinese\NCV\NCV-T";
+            var folder = @"C:\TEMP\temp\ncv-t";
             var converter = new TextFilesConverter(folder, Path.Combine(TempFolderPath, Path.GetFileName(folder)));
             converter.Convert();
 
