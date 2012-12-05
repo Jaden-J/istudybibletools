@@ -80,12 +80,12 @@ namespace BibleCommon.Common
             if (string.IsNullOrEmpty(this.OriginalFormula))
             {
                 if (parallelVersesFormula.IndexOfAny(new char[] { 'X', '+' }) != -1)
-                    throw new NotSupportedException("For empty base verse must be defined concrete parallel verse.");
+                    throw new NotSupportedException(string.Format("For empty base verse must be defined concrete parallel verse: '{0}'", parallelVersesFormula));
 
                 int indexOfColon = OriginalFormula.IndexOf(":");                
                 if (indexOfColon != OriginalFormula.LastIndexOf(":"))
                     throw new NotSupportedException(
-                        string.Format("The verses formula with two colons (':') is not supported yet: '{0}'", OriginalFormula));
+                        string.Format("The verses formula with two colons (':') is not supported yet: '{0}'", OriginalFormula));                
                 
                 Initialize(parallelVersesFormula);
                 IsEmpty = true;
@@ -123,6 +123,9 @@ namespace BibleCommon.Common
 
         private void Initialize(string baseVersesFormula)
         {
+            if (baseVersesFormula.IndexOf('(') != -1)
+                throw new NotSupportedException(string.Format("Brackets in base formula is not supported yet: {0}", baseVersesFormula));
+
             BaseVersePointer = new VersePointer("book " + baseVersesFormula);
             _allVerses = null;
         }

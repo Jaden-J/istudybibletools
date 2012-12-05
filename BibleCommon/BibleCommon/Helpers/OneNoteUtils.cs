@@ -130,6 +130,14 @@ namespace BibleCommon.Helpers
             return GetXDocument(xml, out xnm);            
         }
 
+        public static XElement GetHierarchyElementByName(ref Application oneNoteApp, string elementTag, string elementName, string parentElementId)
+        {
+            XmlNamespaceManager xnm;
+            var parentEl = GetHierarchyElement(ref oneNoteApp, parentElementId, HierarchyScope.hsChildren, out xnm);
+
+            return parentEl.Root.XPathSelectElement(string.Format("one:{0}[@name='{1}']", elementTag, elementName), xnm);
+        }
+
 
         public static XDocument GetPageContent(ref Application oneNoteApp, string pageId, out XmlNamespaceManager xnm)
         {

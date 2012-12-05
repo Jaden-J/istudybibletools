@@ -757,13 +757,21 @@
     <value>Finish checking modules</value>
   </data>
   <data name="DictionaryFormDescription" xml:space="preserve">
-    <value />
+    <value>This form is designed for the Dictionary management.
+
+Please take notice:
+  - It is necessary to download modules of type “Dictionary” to the program;
+  - It takes a few minutes to add a new dictionary.</value>
   </data>
   <data name="ReopenParametersToSeeChanges" xml:space="preserve">
     <value>Please close and open the 'Program Parameters' window to see changes.</value>
   </data>
   <data name="SupplementalBibleFormDescription" xml:space="preserve">
-    <value />
+    <value>This form is designed for the Supplemental Bible management. 
+
+Please take notice:
+  - You can add modules version 2.0 or higher to the Supplemental Bible
+  - It takes about an hour to add a new module to the Supplemental Bible.</value>
   </data>
   <data name="BibleNotebookIsForAnotherModule" xml:space="preserve">
     <value>Notebook '{0}' is created for module '{1}', not for '{2}'.</value>

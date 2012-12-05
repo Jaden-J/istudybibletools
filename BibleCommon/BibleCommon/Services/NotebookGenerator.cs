@@ -373,7 +373,7 @@ namespace BibleCommon.Services
             notebook = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, notebookId, HierarchyScope.hsChildren, out xnm);
             var newSectionGroup = notebook.Root.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", sectionGroupName), xnm);
             return newSectionGroup;
-        }
+        }       
 
         public static void AddSectionGroup(ref Application oneNoteApp, XElement parentElement, string sectionGroupName)
         {
