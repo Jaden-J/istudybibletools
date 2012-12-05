@@ -288,10 +288,11 @@ namespace BibleConfigurator
                 if (errors != null && errors.Count > 0)
                 {
                     var showErrors = true;
+                    string preCommitErrorMessage = null;
 
                     if (selectedModuleInfo != null)
                     {
-                        var preCommitErrorMessage = GetPostCommitErrorMessage(selectedModuleInfo);
+                        preCommitErrorMessage = GetPostCommitErrorMessage(selectedModuleInfo);
                         if (!string.IsNullOrEmpty(preCommitErrorMessage))
                             showErrors = MessageBox.Show(preCommitErrorMessage, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes;                    
                     }                    
@@ -299,10 +300,10 @@ namespace BibleConfigurator
                     if (showErrors)
                     {
                         using (var errorsForm = new BibleCommon.UI.Forms.ErrorsForm())
-                        {
+                        {   
                             errorsForm.AllErrors.Add(new ErrorsList(errors)
                             {
-                                ErrorsDecription = BibleCommon.Resources.Constants.DictionaryTermsNotFound
+                                ErrorsDecription = preCommitErrorMessage
                             });
                             errorsForm.ShowDialog();
                         }
@@ -567,13 +568,13 @@ namespace BibleConfigurator
             ClearSupplementalModules();            
                         
             var xDoc = OneNoteUtils.GetHierarchyElement(ref _oneNoteApp, notebookId, HierarchyScope.hsPages, out xnm);
-            var pagesDocs = xDoc.Root.XPathSelectElements("//one:Page", xnm);
-            int pagesCount = pagesDocs.Count();
+            var pagesEls = xDoc.Root.XPathSelectElements("//one:Page", xnm);
+            int pagesCount = pagesEls.Count();
 
             Logger.Preffix = BibleCommon.Resources.Constants.ProcessPage + " ";
             MainForm.PrepareForLongProcessing(pagesCount, 1, string.Empty);
 
-            foreach (var pageEl in pagesDocs)
+            foreach (var pageEl in pagesEls)
             {
                 var pageId = (string)pageEl.Attribute("ID");
                 var pageName = (string)pageEl.Attribute("name");

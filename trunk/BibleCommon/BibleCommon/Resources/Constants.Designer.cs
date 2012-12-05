@@ -664,7 +664,11 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на .
+        ///   Ищет локализованную строку, похожую на This form is designed for the Dictionary management.
+        ///
+        ///Please take notice:
+        ///  - It is necessary to download modules of type “Dictionary” to the program;
+        ///  - It takes a few minutes to add a new dictionary..
         /// </summary>
         public static string DictionaryFormDescription {
             get {
@@ -1798,7 +1802,11 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на .
+        ///   Ищет локализованную строку, похожую на This form is designed for the Supplemental Bible management. 
+        ///
+        ///Please take notice:
+        ///  - You can add modules version 2.0 or higher to the Supplemental Bible
+        ///  - It takes about an hour to add a new module to the Supplemental Bible..
         /// </summary>
         public static string SupplementalBibleFormDescription {
             get {

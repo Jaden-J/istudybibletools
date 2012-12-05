@@ -74,7 +74,7 @@ namespace BibleConfigurator
     </body>
 </html>");
 
-                wbBooks.DocumentText = sb.ToString();              
+                wbBooks.DocumentText = sb.ToString();                
             }
             catch (Exception ex)
             {
@@ -88,6 +88,7 @@ namespace BibleConfigurator
             if (!_wasShown)
             {
                 this.SetFocus();
+                wbBooks.Focus();
                 _wasShown = true;
             }
         }
