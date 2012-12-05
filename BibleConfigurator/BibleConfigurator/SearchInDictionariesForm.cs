@@ -78,10 +78,7 @@ namespace BibleConfigurator
 
                 if (string.IsNullOrEmpty(DictionariesNotebookId) || SettingsManager.Instance.DictionariesModules.Count == 0)
                 {
-                    this.Visible = false;
-                    this.SetFocus();                    
-                    FormLogger.LogError(BibleCommon.Resources.Constants.DictionariesNotInstalled);                    
-                    Close();
+                    ShowDictionariesIsNotInstalled();
                     return false;
                 }
 
@@ -106,7 +103,13 @@ namespace BibleConfigurator
                             _termsInModules[term].Add(moduleInfo.DisplayName);
                         }
                     }
-                }             
+                }
+
+                if (_modules.Count == 0)
+                {
+                    ShowDictionariesIsNotInstalled();
+                    return false;
+                }
 
                 return true;
             }
@@ -115,6 +118,14 @@ namespace BibleConfigurator
                 BibleCommon.Services.Logger.LogError(ex);
                 throw;
             }
+        }
+
+        private void ShowDictionariesIsNotInstalled()
+        {
+            this.Visible = false;
+            this.SetFocus();
+            FormLogger.LogError(BibleCommon.Resources.Constants.DictionariesNotInstalled);
+            Close();
         }
 
         public SearchInDictionariesForm()
