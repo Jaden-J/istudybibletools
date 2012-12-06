@@ -17,11 +17,12 @@ namespace BibleCommon.Services
     public class BibleParallelTranslationConnectionResult
     {
         public List<Exception> Errors { get; set; }
-        public List<string> Warnings { get; set; }  
+        public List<string> NotFoundBibleVerses { get; set; }
 
         public BibleParallelTranslationConnectionResult()
         {
-            this.Errors = new List<Exception>();            
+            Errors = new List<Exception>();
+            NotFoundBibleVerses = new List<string>();
         }
     }
 
@@ -53,10 +54,11 @@ namespace BibleCommon.Services
         public XMLBIBLE BaseBibleInfo { get; set; }
         public XMLBIBLE ParallelBibleInfo { get; set; }
 
-        public ICustomLogger Logger { get; set; }
+        public ICustomLogger Logger { get; set; }        
 
-        public List<Exception> Errors { get; set; }
         public bool ForCheckOnly { get; set; }
+
+        private BibleParallelTranslationConnectionResult _result;
 
         public BibleParallelTranslationManager(Application oneNoteApp, string baseModuleShortName, string parallelModuleShortName, string bibleNotebookId)
         {            
@@ -68,9 +70,7 @@ namespace BibleCommon.Services
             this.ParallelModuleInfo = ModulesManager.GetModuleInfo(this.ParallelModuleShortName);
 
             this.BaseBibleInfo = ModulesManager.GetModuleBibleInfo(this.BaseModuleShortName);
-            this.ParallelBibleInfo = ModulesManager.GetModuleBibleInfo(this.ParallelModuleShortName);
-
-            Errors = new List<Exception>();
+            this.ParallelBibleInfo = ModulesManager.GetModuleBibleInfo(this.ParallelModuleShortName);            
 
             CheckModules();
 
@@ -147,6 +147,20 @@ namespace BibleCommon.Services
             return false;
         }
 
+        public static List<Exception> CheckModules(string primaryModuleName, string parallelModuleName)
+        {
+            var manager = new BibleParallelTranslationManager(null, primaryModuleName, parallelModuleName, SettingsManager.Instance.NotebookId_Bible);
+            manager.ForCheckOnly = true;
+            return manager.IterateBaseBible(null, false, true, null, true).Errors;
+        }
+
+        public static List<string> CheckForInconsistencies(string baseModuleName, string parallelModuleName)
+        {
+            var manager = new BibleParallelTranslationManager(null, baseModuleName, parallelModuleName, SettingsManager.Instance.NotebookId_Bible);
+            manager.ForCheckOnly = true;
+            return manager.IterateBaseBible(null, false, false, null, true).NotFoundBibleVerses;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -160,14 +174,12 @@ namespace BibleCommon.Services
             Func<XDocument, SimpleVersePointer, BibleIteratorArgs> chapterAction, bool needToUpdateChapter,
             bool iterateVerses, Action<SimpleVersePointer, SimpleVerse, BibleIteratorArgs> verseAction, bool refreshCache = false)
         {
-            Errors.Clear();
+            _result = new BibleParallelTranslationConnectionResult();
 
             var bibleVersePointersComparisonTable = BibleParallelTranslationConnectorManager.GetParallelBibleInfo(
                                                           BaseModuleInfo.ShortName, ParallelModuleInfo.ShortName,
                                                           BaseModuleInfo.BibleTranslationDifferences,
-                                                          ParallelModuleInfo.BibleTranslationDifferences, refreshCache);
-
-            var result = new BibleParallelTranslationConnectionResult();            
+                                                          ParallelModuleInfo.BibleTranslationDifferences, refreshCache);            
 
             foreach (var baseBookContent in BaseBibleInfo.Books)
             {
@@ -190,16 +202,16 @@ namespace BibleCommon.Services
                         ProcessBibleBook(sectionEl, baseBookInfo, baseBookContent, parallelBookContent, bookVersePointersComparisonTable,
                             chapterAction, needToUpdateChapter, iterateVerses, verseAction);
                     }
-                    catch (BaseVersePointerException ex) 
+                    catch (BaseVersePointerException ex)
                     {
-                        Errors.Add(ex);
+                        _result.Errors.Add(ex);
                     }
                 }
+                else
+                    _result.NotFoundBibleVerses.Add(baseBookInfo.Name);
             }
 
-            result.Errors = Errors;
-
-            return result;
+            return _result;
         }      
 
         private void ProcessBibleBook(XElement bibleBookSectionEl, BibleBookInfo baseBookInfo,
@@ -219,7 +231,10 @@ namespace BibleCommon.Services
             foreach (var baseChapter in baseBookContent.Chapters)
             {
                 if (Logger != null)                
-                    Logger.LogMessage("{0} '{1} {2}'", BibleCommon.Resources.Constants.ProcessChapter, baseBookInfo.Name, baseChapter.Index);                
+                    Logger.LogMessage("{0} '{1} {2}'", BibleCommon.Resources.Constants.ProcessChapter, baseBookInfo.Name, baseChapter.Index);
+
+                if (!parallelBookContent.Chapters.Any(pch => pch.Index == baseChapter.Index))
+                    _result.NotFoundBibleVerses.Add(string.Format("{0} {1}", baseBookInfo.Name, baseChapter.Index));
 
                 XDocument chapterPageDoc = null;
                 BibleIteratorArgs bibleIteratorArgs = null;
@@ -264,7 +279,7 @@ namespace BibleCommon.Services
                             }
                             catch (BaseVersePointerException ex)
                             {
-                                Errors.Add(ex);
+                                _result.Errors.Add(ex);
                             }
                         }
 
@@ -296,7 +311,7 @@ namespace BibleCommon.Services
         private SimpleVerse GetParallelVerse(SimpleVersePointer baseVersePointer, BIBLEBOOK parallelBookContent, 
             SimpleVersePointersComparisonTable bookVersePointersComparisonTable, string strongPrefix, int lastProcessedChapter, int lastProcessedVerse)
         {
-            ComparisonVersesInfo parallelVersePointers = new ComparisonVersesInfo();;            
+            ComparisonVersesInfo parallelVersePointers = new ComparisonVersesInfo();            
 
             try
             {
@@ -325,7 +340,7 @@ namespace BibleCommon.Services
                 if (ex.IsChapterException)
                     throw;
 
-                Errors.Add(ex);
+                _result.Errors.Add(ex);
                 return new SimpleVerse(baseVersePointer, string.Empty);
             }
         }
@@ -363,7 +378,7 @@ namespace BibleCommon.Services
             }
             catch (BaseVersePointerException ex)
             {
-                Errors.Add(ex);
+                _result.Errors.Add(ex);
             }
         }
 
@@ -401,7 +416,7 @@ namespace BibleCommon.Services
                 {
                     foreach (var notFoundVerse in notFoundVerses)
                     {
-                        Errors.Add(new GetParallelVerseException(                        // значит один из нескольких стихов не удалось найти
+                        _result.Errors.Add(new GetParallelVerseException(                        // значит один из нескольких стихов не удалось найти
                             string.Format("Can not find verseContent{0}",
                                             notFoundVerse.PartIndex.HasValue
                                                 ? string.Format(" (versePart = {0})", notFoundVerse.PartIndex + 1)
