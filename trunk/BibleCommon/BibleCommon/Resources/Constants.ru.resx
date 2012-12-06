@@ -721,10 +721,10 @@
     <value>Модуль '{0}' установлен не правильно. Не найден файл кэша словаря. Откройте 'Параметры программы' и укажите все необходимые настройки.</value>
   </data>
   <data name="ContinueAddingParallelBible" xml:space="preserve">
-    <value>Всё равно добавить параллельный перевод?</value>
+    <value>Продолжить операцию добавления параллельного перевода?</value>
   </data>
   <data name="ContinueCreatingSupplementalBible" xml:space="preserve">
-    <value>Всё равно создать справочную Библию?</value>
+    <value>Продолжить операцию создания справочной Библии?</value>
   </data>
   <data name="DictionaryTermNotFoundInCache" xml:space="preserve">
     <value>Не удалось найти термин '{0}' в кэше словаря '{1}'. Попробуйте обновить модуль.</value>
@@ -781,6 +781,12 @@
   </data>
   <data name="FinishWithWarnings" xml:space="preserve">
     <value>Завершено с предупреждениями.</value>
+  </data>
+  <data name="NotExistingInFirstSupplemenBibleVersesFound" xml:space="preserve">
+    <value>Найдены места Писания, которые отсутствуют в первом модуле Справочной Библии. Такие места Писания не будут добавлены в Справочную Библию.</value>
+  </data>
+  <data name="NotExistingInPrimaryBibleVersesFound" xml:space="preserve">
+    <value>Найдены места Писания, которые отсутствуют в основной Библии. Такие места Писания не будут анализироваться и привязываться к Библии.</value>
   </data>
   <data name="ShowErrors" xml:space="preserve">
     <value>Показать ошибки</value>

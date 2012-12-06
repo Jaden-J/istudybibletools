@@ -326,7 +326,7 @@ namespace TestProject
              new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"vine\Vine_compl.htm"), DictionaryPageDescription="Vine's Expository Dictionary" }                    
                 }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Vine",
-               Path.Combine(TempFolderPath, "vine"), "<h4>", "User Notes", null, "en", new Version(2, 0));
+               Path.Combine(TempFolderPath, "vine"), "<p><b>", "User Notes", null, "en", new Version(2, 0));
 
             converter.Convert();
 

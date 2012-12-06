@@ -176,13 +176,11 @@ namespace BibleConfigurator
 
         public static ErrorsList CheckModule(string primaryModuleName, string parallelModuleName)
         {
-            var manager = new BibleParallelTranslationManager(null, primaryModuleName, parallelModuleName, SettingsManager.Instance.NotebookId_Bible);
-            manager.ForCheckOnly = true;
-            var result = manager.IterateBaseBible(null, false, true, null, true);
+            var errors = BibleParallelTranslationManager.CheckModules(primaryModuleName, parallelModuleName);
 
-            if (result.Errors.Count > 0)
+            if (errors.Count > 0)
             {
-                return new ErrorsList(result.Errors.ConvertAll(ex => ex.Message))
+                return new ErrorsList(errors.ConvertAll(ex => ex.Message))
                 {
                     ErrorsDecription = string.Format("{0} -> {1}", primaryModuleName, parallelModuleName)
                 };

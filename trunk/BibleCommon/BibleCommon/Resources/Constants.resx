@@ -724,10 +724,10 @@
     <value>Module '{0}' is not installed correctly. Dictionary cache file is not found. Open the 'Program parameters' and specify the necessary settings.</value>
   </data>
   <data name="ContinueAddingParallelBible" xml:space="preserve">
-    <value>Add parallel translation anyway?</value>
+    <value>Add the parallel translation anyway?</value>
   </data>
   <data name="ContinueCreatingSupplementalBible" xml:space="preserve">
-    <value>Create Supplemental Bible anyway?</value>
+    <value>Create the Supplemental Bible anyway?</value>
   </data>
   <data name="DictionaryTermNotFoundInCache" xml:space="preserve">
     <value>Can not find term '{0}' in Dictionary cached TermSet '{1}'. Please try to update dictionary module.</value>
@@ -784,6 +784,12 @@ Please take notice:
   </data>
   <data name="FinishWithWarnings" xml:space="preserve">
     <value>Completed with warnings.</value>
+  </data>
+  <data name="NotExistingInFirstSupplemenBibleVersesFound" xml:space="preserve">
+    <value>Found passages that are missing in the first module of the Supplemental Bible. These passages will not be added to the Supplemental Bible.</value>
+  </data>
+  <data name="NotExistingInPrimaryBibleVersesFound" xml:space="preserve">
+    <value>Found passages that are not in the primary Bible. These passages will not be analyzed and linked to the Bible.</value>
   </data>
   <data name="ShowErrors" xml:space="preserve">
     <value>Show errors</value>

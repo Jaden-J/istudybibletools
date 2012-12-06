@@ -109,28 +109,64 @@ namespace BibleConfigurator
 
         private bool CheckModules(ModuleInfo baseModule, ModuleInfo parallelModule, string messageToContinue)
         {
-            MainForm.PrepareForLongProcessing(1, 1, BibleCommon.Resources.Constants.ParallelModuleChecking);                        
+            var notFoundVerses = new List<ErrorsList>();
+
+            MainForm.PrepareForLongProcessing(SettingsManager.Instance.SupplementalBibleModules.Count > 0 ? 3 : 2, 1, BibleCommon.Resources.Constants.ParallelModuleChecking);                        
             
             var errors = ParallelBibleCheckerForm.CheckModule(baseModule.ShortName, parallelModule.ShortName);
-            MainForm.PerformProgressStep(BibleCommon.Resources.Constants.ParallelModuleCheckFinish);            
+            MainForm.PerformProgressStep(BibleCommon.Resources.Constants.ParallelModuleChecking);
 
+            if (SettingsManager.Instance.SupplementalBibleModules.Count > 0)
+            {
+                notFoundVerses.Add(new ErrorsList(BibleParallelTranslationManager.CheckForInconsistencies(parallelModule.ShortName, baseModule.ShortName))
+                                   {
+                                       ErrorsDecription = BibleCommon.Resources.Constants.NotExistingInFirstSupplemenBibleVersesFound
+                                   });
+                MainForm.PerformProgressStep(BibleCommon.Resources.Constants.ParallelModuleChecking);
+
+                notFoundVerses.Add(new ErrorsList(BibleParallelTranslationManager.CheckForInconsistencies(parallelModule.ShortName, SettingsManager.Instance.ModuleShortName))
+                {
+                    ErrorsDecription = BibleCommon.Resources.Constants.NotExistingInPrimaryBibleVersesFound
+                });
+                MainForm.PerformProgressStep(BibleCommon.Resources.Constants.ParallelModuleCheckFinish);
+            }
+            else
+            {
+                notFoundVerses.Add(new ErrorsList(BibleParallelTranslationManager.CheckForInconsistencies(baseModule.ShortName, SettingsManager.Instance.ModuleShortName))
+                {
+                    ErrorsDecription = BibleCommon.Resources.Constants.NotExistingInPrimaryBibleVersesFound
+                });
+                MainForm.PerformProgressStep(BibleCommon.Resources.Constants.ParallelModuleCheckFinish);
+            }            
+
+            var needToContinue = ShowWarnings(baseModule, parallelModule, notFoundVerses, messageToContinue);
+
+            if (needToContinue)
+                needToContinue = ShowErrors(baseModule, parallelModule, errors, messageToContinue);
+
+            return needToContinue;
+        }
+
+        private bool ShowErrors(ModuleInfo baseModule, ModuleInfo parallelModule, ErrorsList errors, string messageToContinue)
+        {
             if (errors != null)
             {
-                var errorsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), string.Format("{0}--{1}.errors.txt", baseModule.ShortName, parallelModule.ShortName));
+                var errorsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), 
+                    string.Format("{0}--{1}.errors.txt", baseModule.ShortName, parallelModule.ShortName));
+
                 using (var form = new ErrorsForm())
                 {
                     form.AllErrors.Add(errors);
                     form.SaveErrorsToFile(errorsFile);
                 }
 
-
-                using (var form = new MessageForm(string.Format("{0} {1} {2}",
+                using (var form = new MessageForm(string.Format("{0}{3}{1}{3}{2}",
                                                         string.Format(BibleCommon.Resources.Constants.ThereAreErrorsOnModulesMerging,
                                                                         baseModule.ShortName, baseModule.Version,
                                                                         parallelModule.ShortName, parallelModule.Version,
                                                                         BibleCommon.Resources.Constants.WebSiteUrl),
                                                         string.Format(BibleCommon.Resources.Constants.ErrorsAreSavedInFile, errorsFile),
-                                                        messageToContinue), 
+                                                        messageToContinue, Environment.NewLine),
                                                   BibleCommon.Resources.Constants.Warning,
                                                   System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question))
                 {
@@ -139,7 +175,49 @@ namespace BibleConfigurator
                         MainForm.LongProcessingDone(string.Empty);
                         return false;
                     }
-                }                                               
+                }
+            }
+
+            return true;
+        }
+
+        private bool ShowWarnings(ModuleInfo baseModule, ModuleInfo parallelModule, List<ErrorsList> notFoundVerses, string messageToContinue)
+        {
+            if (notFoundVerses.Any(wrngs => wrngs.Count > 0))
+            {
+                var notFoundVersesFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),
+                    string.Format("{0}--{1}.warnings.txt", baseModule.ShortName, parallelModule.ShortName));
+
+                using (var form = new ErrorsForm())
+                {
+                    form.AllErrors = notFoundVerses;
+                    form.SaveErrorsToFile(notFoundVersesFile);
+                }
+
+                var warningMessage = string.Empty;
+                foreach (var nfv in notFoundVerses)
+                {
+                    if (nfv.Count > 0)
+                    {
+                        if (!string.IsNullOrEmpty(warningMessage))
+                            warningMessage += Environment.NewLine;
+                        warningMessage += nfv.ErrorsDecription;
+                    }
+                }
+
+                warningMessage += Environment.NewLine + string.Format(BibleCommon.Resources.Constants.ErrorsAreSavedInFile, notFoundVersesFile);
+                warningMessage += Environment.NewLine + messageToContinue;
+
+                using (var form = new MessageForm(warningMessage,
+                                                 BibleCommon.Resources.Constants.Warning,
+                                                 System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question))
+                {
+                    if (form.ShowDialog() != System.Windows.Forms.DialogResult.Yes)
+                    {
+                        MainForm.LongProcessingDone(string.Empty);
+                        return false;
+                    }
+                }
             }
 
             return true;

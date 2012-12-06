@@ -412,7 +412,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Add parallel translation anyway?.
+        ///   Ищет локализованную строку, похожую на Add the parallel translation anyway?.
         /// </summary>
         public static string ContinueAddingParallelBible {
             get {
@@ -421,7 +421,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Create Supplemental Bible anyway?.
+        ///   Ищет локализованную строку, похожую на Create the Supplemental Bible anyway?.
         /// </summary>
         public static string ContinueCreatingSupplementalBible {
             get {
@@ -1384,6 +1384,24 @@ namespace BibleCommon.Resources {
         public static string NoteLinkManagerVerseCellNotFound {
             get {
                 return ResourceManager.GetString("NoteLinkManagerVerseCellNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Found passages that are missing in the first module of the Supplemental Bible. These passages will not be added to the Supplemental Bible..
+        /// </summary>
+        public static string NotExistingInFirstSupplemenBibleVersesFound {
+            get {
+                return ResourceManager.GetString("NotExistingInFirstSupplemenBibleVersesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Found passages that are not in the primary Bible. These passages will not be analyzed and linked to the Bible..
+        /// </summary>
+        public static string NotExistingInPrimaryBibleVersesFound {
+            get {
+                return ResourceManager.GetString("NotExistingInPrimaryBibleVersesFound", resourceCulture);
             }
         }
         
