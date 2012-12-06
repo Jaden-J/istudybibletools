@@ -49,7 +49,7 @@ namespace BibleNoteLinker
                 pbMain.Maximum = _pagesForAnalyzeCount > 1 ? _pagesForAnalyzeCount : ApproximatePageVersesCount;
 
                 pbMain.PerformStep();
-                Logger.LogMessage(Helper.GetRightFoundPagesString(_pagesForAnalyzeCount));
+                Logger.LogMessageParams(Helper.GetRightFoundPagesString(_pagesForAnalyzeCount));
 
                 foreach (NotebookIterator.NotebookInfo notebook in notebooks)
                     ProcessNotebook(notebook);
@@ -65,7 +65,7 @@ namespace BibleNoteLinker
                 pbMain.Maximum = ApproximatePageVersesCount;
 
                 LogHighLevelMessage(message, 1, StagesCount);
-                Logger.LogMessage(message);
+                Logger.LogMessageParams(message);
                 Logger.MoveLevel(1);
                 ProcessPage(currentPage);
                 Logger.MoveLevel(-1);
@@ -161,7 +161,7 @@ namespace BibleNoteLinker
             string message = BibleCommon.Resources.Constants.NoteLinkerLinksToNotesPagesUpdating;
             LogHighLevelMessage(message, stage, StagesCount);
             int allPagesCount = OneNoteProxy.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values.Count;            
-            Logger.LogMessage(string.Format("{0} ({1})",
+            Logger.LogMessageParams(string.Format("{0} ({1})",
                 message, Helper.GetRightPagesString(allPagesCount)));            
             pbMain.Maximum = allPagesCount;
             pbMain.Value = 0;
@@ -218,7 +218,7 @@ namespace BibleNoteLinker
         {
             if (notebook.PagesCount > 0)
             {
-                Logger.LogMessage("{0}: '{1}'", BibleCommon.Resources.Constants.NoteLinkerProcessNotebook, notebook.Title);
+                Logger.LogMessageParams("{0}: '{1}'", BibleCommon.Resources.Constants.NoteLinkerProcessNotebook, notebook.Title);
                 Logger.MoveLevel(1);
 
                 ProcessSectionGroup(notebook.RootSectionGroup, true);
@@ -251,20 +251,20 @@ namespace BibleNoteLinker
         {
             if (!isRoot)
             {
-                Logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSectionGroup, sectionGroup.Title);
+                Logger.LogMessageParams("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSectionGroup, sectionGroup.Title);
                 Logger.MoveLevel(1);
             }
 
             foreach (BibleCommon.Services.NotebookIterator.SectionInfo section in sectionGroup.Sections)
             {
-                Logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSection, section.Title);
+                Logger.LogMessageParams("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSection, section.Title);
                 Logger.MoveLevel(1);
 
                 foreach (BibleCommon.Services.NotebookIterator.PageInfo page in section.Pages)
                 {
                     string message = string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage, page.Title);
                     LogHighLevelMessage(message, 1, StagesCount);
-                    Logger.LogMessage(message);
+                    Logger.LogMessageParams(message);
                     Logger.MoveLevel(1);
 
                     ProcessPage(page);                    

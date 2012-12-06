@@ -263,7 +263,7 @@ namespace BibleConfigurator
             EnableUI(false);
             InProgress = true;
 
-            BibleCommon.Services.Logger.LogMessage("Start work with supplemental modules");
+            BibleCommon.Services.Logger.LogMessageParams("Start work with supplemental modules");
             var dt = DateTime.Now;
 
             bool doNotClose = false;
@@ -283,7 +283,7 @@ namespace BibleConfigurator
                     errors = TryToUseExistingNotebook(ExistingNotebooks.First(n => n.Value == (string)cbExistingNotebooks.SelectedValue).Key, (string)cbExistingNotebooks.SelectedValue);
                 }
 
-                BibleCommon.Services.Logger.LogMessage("Finish work with supplemental modules. Elapsed time = '{0}'", DateTime.Now - dt);
+                BibleCommon.Services.Logger.LogMessageParams("Finish work with supplemental modules. Elapsed time = '{0}'", DateTime.Now - dt);
 
                 if (errors != null && errors.Count > 0)
                 {
@@ -318,7 +318,7 @@ namespace BibleConfigurator
             }
             catch (ProcessAbortedByUserException)
             {
-                BibleCommon.Services.Logger.LogMessage("Process aborted by user");
+                BibleCommon.Services.Logger.LogMessageParams("Process aborted by user");
                 MainForm.LongProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
             }
             catch (Exception ex)
@@ -405,7 +405,7 @@ namespace BibleConfigurator
                 }
                 catch (ProcessAbortedByUserException)
                 {
-                    BibleCommon.Services.Logger.LogMessage("Process aborted by user");
+                    BibleCommon.Services.Logger.LogMessageParams("Process aborted by user");
                     MainForm.LongProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
                 }
                 catch (Exception ex)

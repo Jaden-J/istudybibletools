@@ -44,8 +44,10 @@
             this.tsmiSeelctNotebooks = new System.Windows.Forms.ToolStripMenuItem();
             this.pbBaseElements = new System.Windows.Forms.Panel();
             this.llblShowErrors = new System.Windows.Forms.LinkLabel();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.menuStrip1.SuspendLayout();
             this.pbBaseElements.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // chkForce
@@ -151,12 +153,18 @@
             this.llblShowErrors.TabStop = true;
             this.llblShowErrors.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llblShowErrors_LinkClicked);
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.llblShowErrors);
+            resources.ApplyResources(this.flowLayoutPanel1, "flowLayoutPanel1");
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
-            this.Controls.Add(this.llblShowErrors);
+            this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.pbBaseElements);
             this.Controls.Add(this.llblDetails);
             this.Controls.Add(this.btnOk);
@@ -181,6 +189,8 @@
             this.menuStrip1.PerformLayout();
             this.pbBaseElements.ResumeLayout(false);
             this.pbBaseElements.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -203,6 +213,7 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiSeelctNotebooks;
         private System.Windows.Forms.Panel pbBaseElements;
         private System.Windows.Forms.LinkLabel llblShowErrors;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }
 

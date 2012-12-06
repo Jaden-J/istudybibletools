@@ -118,7 +118,7 @@ namespace BibleCommon.Services
 
                 if (IsSummaryNotesPage(ref _oneNoteApp, notePageDocument, notePageName))
                 {
-                    Logger.LogMessage(BibleCommon.Resources.Constants.NoteLinkManagerProcessNotesPage);
+                    Logger.LogMessageParams(BibleCommon.Resources.Constants.NoteLinkManagerProcessNotesPage);
                     isSummaryNotesPage = true;
                     if (linkDepth > AnalyzeDepth.SetVersesLinks)
                         linkDepth = AnalyzeDepth.SetVersesLinks;  // на странице заметок только обновляем ссылки
@@ -227,11 +227,11 @@ namespace BibleCommon.Services
         private void InsertCursorOnPage(XElement textEl, int index)
         {
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
-            var startLinkSearchString = "<span";
-            var endLinkSearchString = "</span>";            
+            var startLinkSearchString = "<a";
+            var endLinkSearchString = "</a>";            
 
             var startLinkIndex = StringUtils.LastIndexOf(textEl.Value, startLinkSearchString, 0, index);
-            var endLinkIndex = textEl.Value.IndexOf(endLinkSearchString, index);
+            var endLinkIndex = textEl.Value.IndexOf(endLinkSearchString, index);         
 
             if (startLinkIndex != -1 && endLinkIndex != -1)
             {
@@ -748,7 +748,7 @@ namespace BibleCommon.Services
                         out localHierarchySearchResult, ref processedVerses, hsr =>
                         {
                             if (first)                            
-                                Logger.LogMessage("{0}: {1}", 
+                                Logger.LogMessageParams("{0}: {1}", 
                                     searchResult.VersePointer.IsChapter ? BibleCommon.Resources.Constants.ProcessChapter : BibleCommon.Resources.Constants.ProcessVerse, 
                                     searchResult.VersePointer.OriginalVerseName);                                                            
                         }))

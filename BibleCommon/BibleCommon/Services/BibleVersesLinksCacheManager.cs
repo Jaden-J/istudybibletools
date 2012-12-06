@@ -59,13 +59,13 @@ namespace BibleCommon.Services
         {
             foreach (NotebookIterator.SectionInfo section in sectionGroup.Sections)
             {
-                BibleCommon.Services.Logger.LogMessage("section: " + section.Title);
+                BibleCommon.Services.Logger.LogMessageParams("section: " + section.Title);
 
                 foreach (NotebookIterator.PageInfo page in section.Pages)
                 {
                     logger.LogMessage(page.Title);
 
-                    BibleCommon.Services.Logger.LogMessage("page: " + page.Title);
+                    BibleCommon.Services.Logger.LogMessageParams("page: " + page.Title);
 
                     ProcessPage(ref oneNoteApp, notebookId, page, section, ref result);
                 }

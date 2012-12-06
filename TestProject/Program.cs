@@ -47,7 +47,7 @@ namespace TestProject
 
             try
             {
-                ConvertChineseModuleFromTextFiles();
+                //ConvertChineseModuleFromTextFiles();
                 
                 //GenerateBibleBooks();
 
@@ -63,7 +63,7 @@ namespace TestProject
 
                 //AddColorLink();
 
-                //GenerateDictionary();
+                GenerateDictionary();
 
                 //GenerateRuStrongDictionary();
 
@@ -315,11 +315,18 @@ namespace TestProject
             //    Path.Combine(TempFolderPath, "goetze"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0));
 
 
-            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Словари", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
+            //var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Словари", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
+            // new List<DictionaryFile>() { 
+            //        new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
+            //    }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
+            //   Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0));
+
+
+            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Dictionaries", "vine", "Vine's Expository Dictionary", "Vine's Expository Dictionary",
              new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
-                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
-               Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0));
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"vine\Vine_compl.htm"), DictionaryPageDescription="Vine's Expository Dictionary" }                    
+                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Vine",
+               Path.Combine(TempFolderPath, "vine"), "<h4>", "User Notes", null, "en", new Version(2, 0));
 
             converter.Convert();
 

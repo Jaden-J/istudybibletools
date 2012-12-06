@@ -170,6 +170,20 @@ namespace BibleCommon.Services
         /// <param name="findAllVerseObjects">Поиск осуществляется только по текущей главе. Чтобы найти все стихи во всех главах (если например ссылка 3:4-6:8), то надо отдельно вызвать GetAllIncludedVersesExceptFirst</param>
         /// <returns></returns>
         public static HierarchySearchResult GetHierarchyObject(ref Application oneNoteApp, string bibleNotebookId, VersePointer vp, FindVerseLevel findAllVerseObjects)
+        {
+            var result = GetHierarchyObjectInternal(ref oneNoteApp, bibleNotebookId, vp, findAllVerseObjects);
+
+            if (!(result.ResultType == HierarchySearchResultType.Successfully && 
+                (result.HierarchyStage == HierarchyStage.ContentPlaceholder || result.HierarchyStage == HierarchyStage.Page )))
+            {
+                BibleCommon.Services.Logger.LogWarning(BibleCommon.Resources.Constants.VerseNotFound, vp.OriginalVerseName);
+            }
+
+            return result;
+        }
+
+
+        private static HierarchySearchResult GetHierarchyObjectInternal(ref Application oneNoteApp, string bibleNotebookId, VersePointer vp, FindVerseLevel findAllVerseObjects)
         {   
             HierarchySearchResult result = new HierarchySearchResult();
             result.ResultType = HierarchySearchResultType.NotFound;

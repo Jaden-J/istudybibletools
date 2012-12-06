@@ -875,6 +875,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Completed with warnings..
+        /// </summary>
+        public static string FinishWithWarnings {
+            get {
+                return ResourceManager.GetString("FinishWithWarnings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Found in one dictionary.
         /// </summary>
         public static string FoundInOneDictionary {
@@ -1757,6 +1766,24 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Show errors.
+        /// </summary>
+        public static string ShowErrors {
+            get {
+                return ResourceManager.GetString("ShowErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Show warnings.
+        /// </summary>
+        public static string ShowWarnings {
+            get {
+                return ResourceManager.GetString("ShowWarnings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Locking the Bible stored in SkyDrive is not currently supported. Use another kind of internet storage..
         /// </summary>
         public static string SkyDriveBibleIsNotSupportedForLock {
@@ -1991,6 +2018,15 @@ namespace BibleCommon.Resources {
         public static string VerseLinkTemplate {
             get {
                 return ResourceManager.GetString("VerseLinkTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Bible verse &apos;{0}&apos; was not found..
+        /// </summary>
+        public static string VerseNotFound {
+            get {
+                return ResourceManager.GetString("VerseNotFound", resourceCulture);
             }
         }
         

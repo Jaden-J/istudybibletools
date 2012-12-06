@@ -93,7 +93,7 @@ namespace BibleConfigurator
                 BibleCommon.Services.Logger.Init("ZefaniaXmlConverterForm");
 
                 _startTime = DateTime.Now;
-                BibleCommon.Services.Logger.LogMessage("{0}: {1}", BibleCommon.Resources.Constants.StartTime, _startTime.ToLongTimeString());
+                BibleCommon.Services.Logger.LogMessageParams("{0}: {1}", BibleCommon.Resources.Constants.StartTime, _startTime.ToLongTimeString());
 
 
                 var initMessage = "Start converting";
@@ -103,7 +103,7 @@ namespace BibleConfigurator
                                                     1, initMessage);
 
                 _formLogger.LogMessage(initMessage);
-                BibleCommon.Services.Logger.LogMessage(initMessage);
+                BibleCommon.Services.Logger.LogMessageParams(initMessage);
                 FormExtensions.EnableAll(false, this.Controls, btnClose);
                 System.Windows.Forms.Application.DoEvents();
 
@@ -142,7 +142,7 @@ namespace BibleConfigurator
             }
             catch (ProcessAbortedByUserException)
             {
-                BibleCommon.Services.Logger.LogMessage(BibleCommon.Resources.Constants.ProcessAbortedByUser);
+                BibleCommon.Services.Logger.LogMessageParams(BibleCommon.Resources.Constants.ProcessAbortedByUser);
                 _mainForm.LongProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
 
                 CloseResources();
@@ -164,9 +164,9 @@ namespace BibleConfigurator
 
             string finalMessage = "Module was created";
             _mainForm.LongProcessingDone(finalMessage);
-            BibleCommon.Services.Logger.LogMessage(finalMessage);
+            BibleCommon.Services.Logger.LogMessageParams(finalMessage);
 
-            BibleCommon.Services.Logger.LogMessage(" {0}", DateTime.Now.Subtract(_startTime));
+            BibleCommon.Services.Logger.LogMessageParams(" {0}", DateTime.Now.Subtract(_startTime));
             BibleCommon.Services.Logger.Done();       
 
             if (chkCheckModule.Checked)
@@ -312,7 +312,7 @@ namespace BibleConfigurator
             }
             catch (ProcessAbortedByUserException)
             {
-                BibleCommon.Services.Logger.LogMessage("Process aborted by user");
+                BibleCommon.Services.Logger.LogMessageParams("Process aborted by user");
 
                 CloseResources();
             }

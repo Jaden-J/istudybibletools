@@ -272,7 +272,7 @@ namespace BibleCommon.Helpers
             {
                 if (ex.Message.Contains("0x80010100") || ex.Message.Contains("0x800706BA") || ex.Message.Contains("0x800706BE"))  // "System.Runtime.InteropServices.COMException (0x80010100): System call failed. (Exception from HRESULT: 0x80010100 (RPC_E_SYS_CALL_FAILED))"
                 {
-                    Logger.LogMessageSilient("UseOneNoteAPI. Attempt {0}: {1}", attemptsCount, ex.Message);
+                    Logger.LogMessageSilientParams("UseOneNoteAPI. Attempt {0}: {1}", attemptsCount, ex.Message);
                     if (attemptsCount <= 15)
                     {
                         attemptsCount++;

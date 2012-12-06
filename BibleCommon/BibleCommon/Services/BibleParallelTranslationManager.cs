@@ -17,10 +17,11 @@ namespace BibleCommon.Services
     public class BibleParallelTranslationConnectionResult
     {
         public List<Exception> Errors { get; set; }
+        public List<string> Warnings { get; set; }  
 
         public BibleParallelTranslationConnectionResult()
         {
-            this.Errors = new List<Exception>();
+            this.Errors = new List<Exception>();            
         }
     }
 
@@ -289,7 +290,7 @@ namespace BibleCommon.Services
                         oneNoteAppSafe.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
                     });
                 }
-            }            
+            }
         }
 
         private SimpleVerse GetParallelVerse(SimpleVersePointer baseVersePointer, BIBLEBOOK parallelBookContent, 
