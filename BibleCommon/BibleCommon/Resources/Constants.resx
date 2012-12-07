@@ -786,10 +786,10 @@ Please take notice:
     <value>Completed with warnings.</value>
   </data>
   <data name="NotExistingInFirstSupplemenBibleVersesFound" xml:space="preserve">
-    <value>Found passages that are missing in the first module of the Supplemental Bible. These passages will not be added to the Supplemental Bible.</value>
+    <value>Found passages that are missing in the first module of the Supplemental Bible. These passages will not be added to the Supplemental Bible. If you want this passages to be added to the Supplemental Bible, use this module as the first module of the Supplemental Bible.</value>
   </data>
   <data name="NotExistingInPrimaryBibleVersesFound" xml:space="preserve">
-    <value>Found passages that are not in the primary Bible. These passages will not be analyzed and linked to the Bible.</value>
+    <value>Found passages that are not in the primary Bible. These passages will not be analyzed and linked to the Bible. If you want this passages to be analyzed and linked to the Bible, use this module as a primary module.</value>
   </data>
   <data name="ShowErrors" xml:space="preserve">
     <value>Show errors</value>

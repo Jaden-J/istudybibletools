@@ -220,7 +220,7 @@ namespace BibleCommon.Helpers
             {
                 if (!string.IsNullOrEmpty(textElement.Value))
                 {
-                    textElement.Value = textElement.Value.Replace("\n", " ").Replace("&nbsp;", " ");
+                    textElement.Value = textElement.Value.Replace("\n", " ").Replace("&nbsp;", " ").Replace("<br>", "<br>\n");
                 }
             }
 

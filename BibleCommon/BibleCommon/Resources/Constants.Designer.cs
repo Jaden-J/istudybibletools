@@ -1388,7 +1388,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Found passages that are missing in the first module of the Supplemental Bible. These passages will not be added to the Supplemental Bible..
+        ///   Ищет локализованную строку, похожую на Found passages that are missing in the first module of the Supplemental Bible. These passages will not be added to the Supplemental Bible. If you want this passages to be added to the Supplemental Bible, use this module as the first module of the Supplemental Bible..
         /// </summary>
         public static string NotExistingInFirstSupplemenBibleVersesFound {
             get {
@@ -1397,7 +1397,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Found passages that are not in the primary Bible. These passages will not be analyzed and linked to the Bible..
+        ///   Ищет локализованную строку, похожую на Found passages that are not in the primary Bible. These passages will not be analyzed and linked to the Bible. If you want this passages to be analyzed and linked to the Bible, use this module as a primary module..
         /// </summary>
         public static string NotExistingInPrimaryBibleVersesFound {
             get {
