@@ -23,7 +23,7 @@ namespace BibleNoteLinker
 
             try
             {
-                OneNoteLocker.UnlockBible(_oneNoteApp);
+                OneNoteLocker.UnlockBible(ref _oneNoteApp);
             }
             catch (NotSupportedException)
             {
@@ -34,7 +34,7 @@ namespace BibleNoteLinker
             NotebookIterator.PageInfo currentPage = null;
             try
             {
-                currentPage = OneNoteUtils.GetCurrentPageInfo(_oneNoteApp);
+                currentPage = OneNoteUtils.GetCurrentPageInfo(ref _oneNoteApp);
             }
             catch (ProgramException ex)
             {
@@ -49,7 +49,7 @@ namespace BibleNoteLinker
                 pbMain.Maximum = _pagesForAnalyzeCount > 1 ? _pagesForAnalyzeCount : ApproximatePageVersesCount;
 
                 pbMain.PerformStep();
-                Logger.LogMessage(Helper.GetRightFoundPagesString(_pagesForAnalyzeCount));
+                Logger.LogMessageParams(Helper.GetRightFoundPagesString(_pagesForAnalyzeCount));
 
                 foreach (NotebookIterator.NotebookInfo notebook in notebooks)
                     ProcessNotebook(notebook);
@@ -65,7 +65,7 @@ namespace BibleNoteLinker
                 pbMain.Maximum = ApproximatePageVersesCount;
 
                 LogHighLevelMessage(message, 1, StagesCount);
-                Logger.LogMessage(message);
+                Logger.LogMessageParams(message);
                 Logger.MoveLevel(1);
                 ProcessPage(currentPage);
                 Logger.MoveLevel(-1);
@@ -88,17 +88,23 @@ namespace BibleNoteLinker
                 CommitPages(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, 6, null);                
             }
 
-            if (_oneNoteApp.Windows.CurrentWindow != null && currentPage != null)
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
             {
-                _oneNoteApp.NavigateTo(currentPage.Id, null);
-            }
+                if (oneNoteAppSafe.Windows.CurrentWindow != null && currentPage != null)
+                {
+                    oneNoteAppSafe.NavigateTo(currentPage.Id, null);
+                }
+            });
         }
 
         private void SyncNotesPagesContainer()
         {
-            _oneNoteApp.SyncHierarchy(!string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_BibleNotesPages)
-                                      ? SettingsManager.Instance.SectionGroupId_BibleNotesPages
-                                      : SettingsManager.Instance.NotebookId_BibleNotesPages);
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.SyncHierarchy(!string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_BibleNotesPages)
+                                          ? SettingsManager.Instance.SectionGroupId_BibleNotesPages
+                                          : SettingsManager.Instance.NotebookId_BibleNotesPages);
+            });
         }
 
         private void PerformProcessStep()
@@ -116,7 +122,7 @@ namespace BibleNoteLinker
             int allPagesCount = 0;
             int processedPagesCount = 0;
             Logger.LogMessage(message, true, false);
-            OneNoteProxy.Instance.CommitAllModifiedHierarchy(_oneNoteApp,
+            OneNoteProxy.Instance.CommitAllModifiedHierarchy(ref _oneNoteApp,
                 pagesCount =>
                 {
                     allPagesCount = pagesCount;
@@ -140,7 +146,7 @@ namespace BibleNoteLinker
             {
                 try
                 {
-                    VerseLinkManager.SortVerseLinkPages(_oneNoteApp,
+                    VerseLinkManager.SortVerseLinkPages(ref _oneNoteApp,
                         sortPageInfo.SectionId, sortPageInfo.PageId, sortPageInfo.ParentPageId, sortPageInfo.PageLevel);
                 }
                 catch (Exception ex)
@@ -155,7 +161,7 @@ namespace BibleNoteLinker
             string message = BibleCommon.Resources.Constants.NoteLinkerLinksToNotesPagesUpdating;
             LogHighLevelMessage(message, stage, StagesCount);
             int allPagesCount = OneNoteProxy.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values.Count;            
-            Logger.LogMessage(string.Format("{0} ({1})",
+            Logger.LogMessageParams(string.Format("{0} ({1})",
                 message, Helper.GetRightPagesString(allPagesCount)));            
             pbMain.Maximum = allPagesCount;
             pbMain.Value = 0;
@@ -212,7 +218,7 @@ namespace BibleNoteLinker
         {
             if (notebook.PagesCount > 0)
             {
-                Logger.LogMessage("{0}: '{1}'", BibleCommon.Resources.Constants.NoteLinkerProcessNotebook, notebook.Title);
+                Logger.LogMessageParams("{0}: '{1}'", BibleCommon.Resources.Constants.NoteLinkerProcessNotebook, notebook.Title);
                 Logger.MoveLevel(1);
 
                 ProcessSectionGroup(notebook.RootSectionGroup, true);
@@ -245,20 +251,20 @@ namespace BibleNoteLinker
         {
             if (!isRoot)
             {
-                Logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSectionGroup, sectionGroup.Title);
+                Logger.LogMessageParams("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSectionGroup, sectionGroup.Title);
                 Logger.MoveLevel(1);
             }
 
             foreach (BibleCommon.Services.NotebookIterator.SectionInfo section in sectionGroup.Sections)
             {
-                Logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSection, section.Title);
+                Logger.LogMessageParams("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSection, section.Title);
                 Logger.MoveLevel(1);
 
                 foreach (BibleCommon.Services.NotebookIterator.PageInfo page in section.Pages)
                 {
                     string message = string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage, page.Title);
                     LogHighLevelMessage(message, 1, StagesCount);
-                    Logger.LogMessage(message);
+                    Logger.LogMessageParams(message);
                     Logger.MoveLevel(1);
 
                     ProcessPage(page);                    
@@ -351,7 +357,7 @@ namespace BibleNoteLinker
             {
                 DateTime lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value);
 
-                string lastAnalyzeTime = OneNoteUtils.GetPageMetaData(_oneNoteApp, page.PageElement, Constants.Key_LatestAnalyzeTime, page.Xnm);
+                string lastAnalyzeTime = OneNoteUtils.GetPageMetaData(page.PageElement, Constants.Key_LatestAnalyzeTime, page.Xnm);
                 if (!string.IsNullOrEmpty(lastAnalyzeTime) && lastModifiedDate <= DateTime.Parse(lastAnalyzeTime).ToLocalTime())
                     return false;
             }

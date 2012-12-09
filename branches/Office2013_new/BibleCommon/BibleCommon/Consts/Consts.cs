@@ -29,6 +29,7 @@ namespace BibleCommon.Consts
         public static readonly string UnicodeFontName = "Arial Unicode MS";
         public static readonly string QueryParameter_QuickAnalyze = "qa=1";
         public static readonly string QueryParameter_BibleVerse = "bv=1";
+        public static readonly string QueryParameter_ExtendedVerse = "ev=1";
 
         public static readonly Version ModulesWithXmlBibleMinVersion = new Version(1, 9);
         

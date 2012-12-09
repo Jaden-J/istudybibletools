@@ -80,12 +80,12 @@ namespace BibleCommon.Common
             if (string.IsNullOrEmpty(this.OriginalFormula))
             {
                 if (parallelVersesFormula.IndexOfAny(new char[] { 'X', '+' }) != -1)
-                    throw new NotSupportedException("For empty base verse must be defined concrete parallel verse.");
+                    throw new NotSupportedException(string.Format("For empty base verse must be defined concrete parallel verse: '{0}'", parallelVersesFormula));
 
                 int indexOfColon = OriginalFormula.IndexOf(":");                
                 if (indexOfColon != OriginalFormula.LastIndexOf(":"))
                     throw new NotSupportedException(
-                        string.Format("The verses formula with two colons (':') is not supported yet: '{0}'", OriginalFormula));
+                        string.Format("The verses formula with two colons (':') is not supported yet: '{0}'", OriginalFormula));                
                 
                 Initialize(parallelVersesFormula);
                 IsEmpty = true;
@@ -108,8 +108,11 @@ namespace BibleCommon.Common
                 _allVerses.Add(new SimpleVersePointer(BookIndex, FirstChapter, new VerseNumber(FirstVerse)) { IsEmpty = IsEmpty });
 
                 if (IsMultiVerse)
-                    _allVerses.AddRange(BaseVersePointer.GetAllIncludedVersesExceptFirst(null, new GetAllIncludedVersesExceptFirstArgs() { Force = true })
+                {
+                    Microsoft.Office.Interop.OneNote.Application temp = null;
+                    _allVerses.AddRange(BaseVersePointer.GetAllIncludedVersesExceptFirst(ref temp, new GetAllIncludedVersesExceptFirstArgs() { Force = true })
                         .ConvertAll<SimpleVersePointer>(v => new SimpleVersePointer(BookIndex, v.Chapter.GetValueOrDefault(), new VerseNumber(v.Verse.GetValueOrDefault())) { IsEmpty = IsEmpty }));
+                }
 
                 if (SkipCheck)
                     _allVerses.ForEach(v => v.SkipCheck = SkipCheck);
@@ -120,6 +123,9 @@ namespace BibleCommon.Common
 
         private void Initialize(string baseVersesFormula)
         {
+            if (baseVersesFormula.IndexOf('(') != -1)
+                throw new NotSupportedException(string.Format("Brackets in base formula is not supported yet: {0}", baseVersesFormula));
+
             BaseVersePointer = new VersePointer("book " + baseVersesFormula);
             _allVerses = null;
         }
@@ -377,10 +383,10 @@ namespace BibleCommon.Common
                 {
                     var indexOfComma = OriginalFormula.IndexOf(",");
                     if (indexOfComma == -1)
-                        throw new NotSupportedException(string.Format("Two colons must be devided by comma", OriginalFormula));
+                        throw new NotSupportedException(string.Format("Two colons must be devided by comma: '{0}'", OriginalFormula));
 
                     if (indexOfComma != OriginalFormula.LastIndexOf(","))
-                        throw new NotSupportedException(string.Format("Only one comma is supported", OriginalFormula));
+                        throw new NotSupportedException(string.Format("Only one comma is supported: '{0}'", OriginalFormula));
 
                     var parts = OriginalFormula.Split(new char[] { ',' });
                     this.OriginalFormula = parts[0];

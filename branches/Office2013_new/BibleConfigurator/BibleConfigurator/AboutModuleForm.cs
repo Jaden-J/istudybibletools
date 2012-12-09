@@ -47,7 +47,7 @@ namespace BibleConfigurator
         <div>");
                 sb.AppendFormat(
 @"
-            <table style='font-family: @{0};font-size:smaller'>", BibleCommon.Consts.Constants.UnicodeFontName);
+            <table style='font-family: @{0};font-size:small'>", BibleCommon.Consts.Constants.UnicodeFontName);
                 foreach (var book in module.BibleStructure.BibleBooks)
                 {
                     sb.Append(
@@ -74,7 +74,7 @@ namespace BibleConfigurator
     </body>
 </html>");
 
-                wbBooks.DocumentText = sb.ToString();              
+                wbBooks.DocumentText = sb.ToString();                
             }
             catch (Exception ex)
             {
@@ -88,6 +88,7 @@ namespace BibleConfigurator
             if (!_wasShown)
             {
                 this.SetFocus();
+                wbBooks.Focus();
                 _wasShown = true;
             }
         }

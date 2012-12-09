@@ -49,8 +49,8 @@ namespace BibleConfigurator.ModuleConverter
 
         protected abstract ExternalModuleInfo ReadExternalModuleInfo();
         protected abstract void ProcessBibleBooks(ExternalModuleInfo externalModuleInfo);
-        
-        protected Application OneNoteApp { get; set; }        
+
+        protected Application _oneNoteApp;
         protected bool IsStrong { get; set; }
         protected string ModuleShortName { get; set; }        
         protected string ManifestFilesFolderPath { get; set; }                
@@ -83,12 +83,12 @@ namespace BibleConfigurator.ModuleConverter
             bool isStrong,  
             Version version, bool generateBibleNotebook, bool generateBibleXml)
         {
-            OneNoteApp = new Application();
+            _oneNoteApp = new Application();
             this.IsStrong = isStrong;
             this.ModuleShortName = moduleShortName.ToLower();            
             this.GenerateBibleNotebook = generateBibleNotebook;
             this.GenerateBibleXml = generateBibleXml;
-            this.BibleNotebookId = GenerateBibleNotebook ? NotebookGenerator.CreateNotebook(OneNoteApp, ModuleShortName) : null;
+            this.BibleNotebookId = GenerateBibleNotebook ? NotebookGenerator.CreateNotebook(ref _oneNoteApp, ModuleShortName) : null;
             this.ManifestFilesFolderPath = manifestFilesFolderPath;            
             this.Locale = locale;
             this.NotebooksStructure = notebooksStructure;
@@ -152,14 +152,17 @@ namespace BibleConfigurator.ModuleConverter
                 return;
             
             XmlNamespaceManager xnm;
-            var notebook = OneNoteUtils.GetHierarchyElement(OneNoteApp, BibleNotebookId, HierarchyScope.hsSelf, out xnm);
+            var notebook = OneNoteUtils.GetHierarchyElement(ref _oneNoteApp, BibleNotebookId, HierarchyScope.hsSelf, out xnm);
 
             string notebookName = Path.GetFileNameWithoutExtension(NotebooksStructure.Notebooks.First(n => n.Type == ContainerType.Bible).Name);
 
             notebook.Root.SetAttributeValue("name", notebookName);
             notebook.Root.SetAttributeValue("nickname", notebookName);
 
-            OneNoteApp.UpdateHierarchy(notebook.ToString(), Constants.CurrentOneNoteSchema);
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.UpdateHierarchy(notebook.ToString(), Constants.CurrentOneNoteSchema);
+            });
         }
 
         protected virtual string AddTestamentSectionGroup(string testamentName)
@@ -167,12 +170,12 @@ namespace BibleConfigurator.ModuleConverter
             if (!GenerateBibleNotebook)
                 return null;
 
-            return (string)NotebookGenerator.AddRootSectionGroupToNotebook(OneNoteApp, BibleNotebookId, testamentName).Attribute("ID");            
+            return (string)NotebookGenerator.AddRootSectionGroupToNotebook(ref _oneNoteApp, BibleNotebookId, testamentName).Attribute("ID");            
         }
 
         protected virtual string AddBookSection(string sectionGroupId, string sectionName, string bookName)
         {
-            var sectionId = GenerateBibleNotebook ? NotebookGenerator.AddSection(OneNoteApp, sectionGroupId, sectionName) : null;
+            var sectionId = GenerateBibleNotebook ? NotebookGenerator.AddSection(ref _oneNoteApp, sectionGroupId, sectionName) : null;
 
             if (GenerateBibleXml)
                 AddNewBookContent();
@@ -197,9 +200,14 @@ namespace BibleConfigurator.ModuleConverter
         }
 
         protected virtual void UpdateChapterPage(XDocument chapterPageDoc)
-        {            
+        {
             if (GenerateBibleNotebook)
-                OneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);                                 
+            {
+                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                {
+                    oneNoteAppSafe.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+                });
+            }
         }
 
         protected virtual XDocument AddPage(string bookSectionId, string pageTitle, int pageLevel, out XmlNamespaceManager xnm)
@@ -209,7 +217,7 @@ namespace BibleConfigurator.ModuleConverter
             if (!GenerateBibleNotebook)           
                 return null;            
 
-            return NotebookGenerator.AddPage(OneNoteApp, bookSectionId, pageTitle, pageLevel, Locale, out xnm);    
+            return NotebookGenerator.AddPage(ref _oneNoteApp, bookSectionId, pageTitle, pageLevel, Locale, out xnm);    
         }
 
         protected virtual XDocument AddChapterPage(string bookSectionId, string pageTitle, int pageLevel, out XmlNamespaceManager xnm)
@@ -337,7 +345,7 @@ namespace BibleConfigurator.ModuleConverter
 
         public void Dispose()
         {
-            OneNoteApp = null;
+            _oneNoteApp = null;
         }
     }
 }

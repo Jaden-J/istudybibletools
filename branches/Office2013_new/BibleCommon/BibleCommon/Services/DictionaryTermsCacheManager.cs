@@ -54,79 +54,74 @@ namespace BibleCommon.Services
             }
         }
 
-        public static Dictionary<string, string> GenerateCache(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger, bool silient = false)
+        public static Dictionary<string, string> GenerateCache(ref Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger, out List<string> notFoundTerms)
         {
-            var cacheData = IndexDictionary(oneNoteApp, moduleInfo, logger);
+            notFoundTerms = null;
 
-            if (moduleInfo.NotebooksStructure.DictionaryTermsCount > cacheData.Count)
-            {
-                var notFoundTerms = new List<string>();
-                bool isStrong = moduleInfo.Type == ModuleType.Strong;
-                
-                var moduleDictionaryInfo = ModulesManager.GetModuleDictionaryInfo(moduleInfo.ShortName);
-                foreach (var term in moduleDictionaryInfo.TermSet.Terms)
-                {
-                    if (!cacheData.ContainsKey(GetTermName(term, isStrong)))
-                        notFoundTerms.Add(term);
-                }
-
-                if (notFoundTerms.Count > 0)
-                {
-                    if (silient)
-                        Logger.LogWarning("The terms of module '{0}' were not found: ", moduleInfo.ShortName, string.Join(", ", notFoundTerms.ToArray()));
-                    else
-                    {
-                        using (var form = new ErrorsForm())
-                        {
-                            form.AllErrors.Add(new ErrorsForm.ErrorsList(notFoundTerms)
-                            {
-                                ErrorsDecription = BibleCommon.Resources.Constants.DictionaryTermsNotFound
-                            });
-                            form.ShowDialog();
-                        }
-                    }
-                }
-            }
+            var cacheData = IndexDictionary(ref oneNoteApp, moduleInfo, logger);
 
             var filePath = GetCacheFilePath(moduleInfo.ShortName);
 
             SharpSerializationHelper.Serialize(cacheData, filePath);
 
+            if (moduleInfo.NotebooksStructure.DictionaryTermsCount > cacheData.Count)
+            {
+                int notFoundTermsCount;
+                if (moduleInfo.Type == ModuleType.Dictionary)
+                {
+                    notFoundTerms = new List<string>();
+                    bool isStrong = moduleInfo.Type == ModuleType.Strong;
+
+                    var moduleDictionaryInfo = ModulesManager.GetModuleDictionaryInfo(moduleInfo.ShortName);
+                    foreach (var term in moduleDictionaryInfo.TermSet.Terms)
+                    {
+                        if (!cacheData.ContainsKey(GetTermName(term, isStrong)))
+                            notFoundTerms.Add(term);
+                    }
+
+                    notFoundTermsCount = notFoundTerms.Count;                    
+                }
+                else
+                    notFoundTermsCount = moduleInfo.NotebooksStructure.DictionaryTermsCount.GetValueOrDefault() - cacheData.Count;
+
+                Logger.LogMessageParams("{0} terms were not found in dictionary '{1}'", notFoundTermsCount, moduleInfo.ShortName);
+            }
+
             return cacheData;
         }
 
-        private static Dictionary<string, string> IndexDictionary(Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger)
+        private static Dictionary<string, string> IndexDictionary(ref Application oneNoteApp, ModuleInfo moduleInfo, ICustomLogger logger)
         {
             var result = new Dictionary<string, string>();
             var dictionaryModuleInfo = SettingsManager.Instance.DictionariesModules.FirstOrDefault(m => m.ModuleName == moduleInfo.ShortName);
             if (dictionaryModuleInfo != null)
             {
                 XmlNamespaceManager xnm;
-                var sectionGroupDoc = OneNoteUtils.GetHierarchyElement(oneNoteApp, dictionaryModuleInfo.SectionId, HierarchyScope.hsPages, out xnm);
+                var sectionGroupDoc = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, dictionaryModuleInfo.SectionId, HierarchyScope.hsPages, out xnm);
 
                 var sectionsEl = sectionGroupDoc.Root.XPathSelectElements("one:Section", xnm);
                 if (sectionsEl.Count() > 0)
                 {
                     foreach (var sectionEl in sectionsEl)
                     {
-                        IndexDictionarySection(oneNoteApp, sectionEl, ref result, moduleInfo.Type == ModuleType.Strong, logger, xnm);
+                        IndexDictionarySection(ref oneNoteApp, sectionEl, ref result, moduleInfo.Type == ModuleType.Strong, logger, xnm);
                     }
                 }
                 else
-                    IndexDictionarySection(oneNoteApp, sectionGroupDoc.Root, ref result, moduleInfo.Type == ModuleType.Strong, logger, xnm);
+                    IndexDictionarySection(ref oneNoteApp, sectionGroupDoc.Root, ref result, moduleInfo.Type == ModuleType.Strong, logger, xnm);
             }           
 
             return result;
         }
 
-        private static void IndexDictionarySection(Application oneNoteApp, XElement sectionEl, ref Dictionary<string, string> result, bool isStrong, ICustomLogger logger, XmlNamespaceManager xnm)
+        private static void IndexDictionarySection(ref Application oneNoteApp, XElement sectionEl, ref Dictionary<string, string> result, bool isStrong, ICustomLogger logger, XmlNamespaceManager xnm)
         {
             string sectionName = (string)sectionEl.Attribute("name");
 
             foreach (var pageEl in sectionEl.XPathSelectElements("one:Page", xnm))
             {
                 var pageId = (string)pageEl.Attribute("ID");
-                var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, pageId, out xnm);
+                var pageDoc = OneNoteUtils.GetPageContent(ref oneNoteApp, pageId, out xnm);
 
                 var tableEl = NotebookGenerator.GetPageTable(pageDoc, xnm);
 
@@ -140,7 +135,7 @@ namespace BibleCommon.Services
                     var termTextElementId = (string)termTextEl.Parent.Attribute("objectID");
 
                     var href = (isStrong && !SettingsManager.Instance.UseMiddleStrongLinks) 
-                                    ? OneNoteProxy.Instance.GenerateHref(oneNoteApp, pageId, termTextElementId) 
+                                    ? OneNoteProxy.Instance.GenerateHref(ref oneNoteApp, pageId, termTextElementId) 
                                     : null;                    
 
                     if (!result.ContainsKey(termName))

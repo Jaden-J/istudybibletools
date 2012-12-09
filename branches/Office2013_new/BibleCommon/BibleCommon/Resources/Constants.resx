@@ -507,7 +507,7 @@
   <data name="DeleteSupplementalBibleQuestion" xml:space="preserve">
     <value>Close the Supplemental Bible Notebook?</value>
   </data>
-  <data name="RemoveParallelBibleTranslation" xml:space="preserve">
+  <data name="RemoveParallelBibleTranslationStartMessage" xml:space="preserve">
     <value>Removing parallel Bible translation start</value>
   </data>
   <data name="RemoveParallelBibleTranslationFinishMessage" xml:space="preserve">
@@ -724,10 +724,10 @@
     <value>Module '{0}' is not installed correctly. Dictionary cache file is not found. Open the 'Program parameters' and specify the necessary settings.</value>
   </data>
   <data name="ContinueAddingParallelBible" xml:space="preserve">
-    <value>Add parallel translation anyway?</value>
+    <value>Add the parallel translation anyway?</value>
   </data>
   <data name="ContinueCreatingSupplementalBible" xml:space="preserve">
-    <value>Create Supplemental Bible anyway?</value>
+    <value>Create the Supplemental Bible anyway?</value>
   </data>
   <data name="DictionaryTermNotFoundInCache" xml:space="preserve">
     <value>Can not find term '{0}' in Dictionary cached TermSet '{1}'. Please try to update dictionary module.</value>
@@ -757,15 +757,47 @@
     <value>Finish checking modules</value>
   </data>
   <data name="DictionaryFormDescription" xml:space="preserve">
-    <value />
+    <value>This form is designed for the Dictionary management.
+
+Please take notice:
+  - It is necessary to download modules of type “Dictionary” to the program;
+  - It takes a few minutes to add a new dictionary.</value>
   </data>
   <data name="ReopenParametersToSeeChanges" xml:space="preserve">
     <value>Please close and open the 'Program Parameters' window to see changes.</value>
   </data>
   <data name="SupplementalBibleFormDescription" xml:space="preserve">
-    <value />
+    <value>This form is designed for the Supplemental Bible management. 
+
+Please take notice:
+  - You can add modules version 2.0 or higher to the Supplemental Bible
+  - It takes about an hour to add a new module to the Supplemental Bible.</value>
   </data>
   <data name="BibleNotebookIsForAnotherModule" xml:space="preserve">
     <value>Notebook '{0}' is created for module '{1}', not for '{2}'.</value>
+  </data>
+  <data name="RemoveParallelBibleTranslation" xml:space="preserve">
+    <value>Removing parallel Bible translation</value>
+  </data>
+  <data name="SuccessfullySaved" xml:space="preserve">
+    <value>Saved successfully</value>
+  </data>
+  <data name="FinishWithWarnings" xml:space="preserve">
+    <value>Completed with warnings.</value>
+  </data>
+  <data name="NotExistingInFirstSupplemenBibleVersesFound" xml:space="preserve">
+    <value>Found passages that are missing in the first module of the Supplemental Bible. These passages will not be added to the Supplemental Bible. If you want this passages to be added to the Supplemental Bible, use this module as the first module of the Supplemental Bible.</value>
+  </data>
+  <data name="NotExistingInPrimaryBibleVersesFound" xml:space="preserve">
+    <value>Found passages that are not in the primary Bible. These passages will not be analyzed and linked to the Bible. If you want this passages to be analyzed and linked to the Bible, use this module as a primary module.</value>
+  </data>
+  <data name="ShowErrors" xml:space="preserve">
+    <value>Show errors</value>
+  </data>
+  <data name="ShowWarnings" xml:space="preserve">
+    <value>Show warnings</value>
+  </data>
+  <data name="VerseNotFound" xml:space="preserve">
+    <value>Bible verse '{0}' was not found.</value>
   </data>
 </root>

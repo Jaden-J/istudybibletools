@@ -41,7 +41,7 @@ namespace BibleNoteLinker
                 {
                     Logger.Init("QuickAnalyze");
                     var _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
-                    var currentPage = OneNoteUtils.GetCurrentPageInfo(_oneNoteApp);
+                    var currentPage = OneNoteUtils.GetCurrentPageInfo(ref _oneNoteApp);
                     using (NoteLinkManager noteLinkManager = new NoteLinkManager(_oneNoteApp))
                     {
                         noteLinkManager.LinkPageVerses(currentPage.SectionGroupId, currentPage.SectionId, currentPage.Id, NoteLinkManager.AnalyzeDepth.SetVersesLinks, false);

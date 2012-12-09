@@ -13,11 +13,29 @@ namespace BibleCommon.Services
         internal const char ChapterVerseDelimiter = ':';
         internal const int MaxVerse = 200;
 
-        public enum LinkType
+        public class LinkInfo
         { 
-            None,
-            LinkAfterQuickAnalyze,
-            LinkAfterFullAnalyze            
+            public enum LinkTypeEnum
+            {
+                None,
+                LinkAfterQuickAnalyze,
+                LinkAfterFullAnalyze
+            }
+
+            public LinkTypeEnum LinkType { get; set; }
+            public bool ExtendedVerse { get; set; }  // вначале было Ин 1:6. Проанализировали. Потом дописали "-7". И вроде бы ссылка уже есть, но анализировать снова надо. Но при этом нужно понимать, что первый стих уже анализировали ранее.
+            public bool IsLink
+            {
+                get
+                {
+                    return LinkType != LinkTypeEnum.None;
+                }
+            }
+
+            public LinkInfo()
+            {
+                LinkType = LinkTypeEnum.None;
+            }
         }
 
         /// <summary>
@@ -27,14 +45,14 @@ namespace BibleCommon.Services
         /// <param name="numberIndex"></param>
         /// <param name="number"></param>
         /// <param name="breakIndex"></param>
-        /// <param name="isLink"></param>
+        /// <param name="linkInfo"></param>
         /// <param name="isInBrackets">если в скобках []</param>
         /// <param name="isExcluded">Не стоит его по дефолту анализировать</param>
         /// <returns></returns>
         public static bool CanProcessAtNumberPosition(XElement textElement, int numberIndex,
-            out int number, out int textBreakIndex, out int htmlBreakIndex, out LinkType isLink, out bool isInBrackets, out bool isExcluded)
+            out int number, out int textBreakIndex, out int htmlBreakIndex, out LinkInfo linkInfo, out bool isInBrackets, out bool isExcluded)
         {
-            isLink = LinkType.None;
+            linkInfo = new LinkInfo();
             number = -1;
             textBreakIndex = -1;
             htmlBreakIndex = -1;
@@ -58,9 +76,12 @@ namespace BibleCommon.Services
                         if (StringUtils.IsSurroundedBy(textElement.Value, "<a", "</a", numberIndex, true, out textString))
                         {
                             if (textString.Contains(Consts.Constants.QueryParameter_QuickAnalyze))
-                                isLink = LinkType.LinkAfterQuickAnalyze;
+                                linkInfo.LinkType = LinkInfo.LinkTypeEnum.LinkAfterQuickAnalyze;                            
                             else
-                                isLink = LinkType.LinkAfterFullAnalyze;
+                                linkInfo.LinkType = LinkInfo.LinkTypeEnum.LinkAfterFullAnalyze;
+
+                            if (textString.Contains(Consts.Constants.QueryParameter_ExtendedVerse))
+                                linkInfo.ExtendedVerse = true;
                         }                        
 
                         isInBrackets = StringUtils.IsSurroundedBy(textElement.Value, "[", "]", numberIndex, false, out textString);

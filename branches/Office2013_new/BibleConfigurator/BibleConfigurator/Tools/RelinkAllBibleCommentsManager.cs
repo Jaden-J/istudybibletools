@@ -26,7 +26,7 @@ namespace BibleConfigurator.Tools
 
         public void RelinkAllBibleComments()
         {
-            if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
+            if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
             {
                 FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                 return;
@@ -38,7 +38,7 @@ namespace BibleConfigurator.Tools
 
                 try
                 {
-                    OneNoteLocker.UnlockBible(_oneNoteApp);
+                    OneNoteLocker.UnlockBible(ref _oneNoteApp);
                 }
                 catch (NotSupportedException)
                 {
@@ -54,7 +54,7 @@ namespace BibleConfigurator.Tools
                 //    OneNoteUtils.GetHierarchyElementName(_oneNoteApp, _oneNoteApp.Windows.CurrentWindow.CurrentPageId));
                 //return;
 
-                NotebookIteratorHelper.Iterate(_oneNoteApp,
+                NotebookIteratorHelper.Iterate(ref _oneNoteApp,
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
                         {
                             try
@@ -74,7 +74,7 @@ namespace BibleConfigurator.Tools
             }
             catch (ProcessAbortedByUserException)
             {
-                BibleCommon.Services.Logger.LogMessage("Process aborted by user");
+                BibleCommon.Services.Logger.LogMessageParams("Process aborted by user");
             }
             finally
             {                
@@ -86,9 +86,12 @@ namespace BibleConfigurator.Tools
         {
             _form.PerformProgressStep(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage, pageName));
 
-            string pageContent;
+            string pageContent = null;
             XmlNamespaceManager xnm;
-            _oneNoteApp.GetPageContent(pageId, out pageContent, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.GetPageContent(pageId, out pageContent, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
+            });
             XDocument pageDocument = OneNoteUtils.GetXDocument(pageContent, out xnm);            
             bool wasModified = false;
 
@@ -123,13 +126,13 @@ namespace BibleConfigurator.Tools
 
             string commentPageName = GetCommentPageName(commentLink);
             bool pageWasCreated;
-            string commentPageId = OneNoteProxy.Instance.GetCommentPageId(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName, out pageWasCreated, false);
+            string commentPageId = OneNoteProxy.Instance.GetCommentPageId(ref _oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName, out pageWasCreated, false);
             if (!string.IsNullOrEmpty(commentPageId))
             {
                 string commentObjectId = GetComentObjectId(commentPageId, commentText, null, 0);
                 if (!string.IsNullOrEmpty(commentObjectId))
                 {
-                    string newCommentLink = OneNoteUtils.GenerateHref(_oneNoteApp, commentText, commentPageId, commentObjectId);
+                    string newCommentLink = OneNoteUtils.GenerateHref(ref _oneNoteApp, commentText, commentPageId, commentObjectId);
 
                     textElement.Value = textElement.Value.Replace(commentLink, newCommentLink);
 
@@ -142,7 +145,7 @@ namespace BibleConfigurator.Tools
 
         private string GetComentObjectId(string commentPageId, string commentText, string textElementId, int startIndex)
         {            
-            OneNoteProxy.PageContent pageDoc = OneNoteProxy.Instance.GetPageContent(_oneNoteApp, commentPageId, OneNoteProxy.PageType.CommentPage);
+            OneNoteProxy.PageContent pageDoc = OneNoteProxy.Instance.GetPageContent(ref _oneNoteApp, commentPageId, OneNoteProxy.PageType.CommentPage);
 
             foreach (XElement el in pageDoc.Content.Root.XPathSelectElements(string.Format("one:Outline/one:OEChildren/one:OE{0}/one:T", 
                 !string.IsNullOrEmpty(textElementId) ? string.Format("[@objectID='{0}']", textElementId) : string.Empty), pageDoc.Xnm))

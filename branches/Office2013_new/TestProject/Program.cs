@@ -22,6 +22,7 @@ using System.Xml.Serialization;
 using BibleCommon.Scheme;
 using TestProject.Properties;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 
 namespace TestProject
@@ -108,7 +109,7 @@ namespace TestProject
 
         private static void ConvertChineseModuleFromTextFiles()
         {
-            var folder = @"C:\Users\lux_demko\Desktop\temp\Dropbox\IStudyBibleTools\Module's Sources\Chinese\NCV\NCV-T";
+            var folder = @"C:\TEMP\temp\ncv-t";
             var converter = new TextFilesConverter(folder, Path.Combine(TempFolderPath, Path.GetFileName(folder)));
             converter.Convert();
 
@@ -218,7 +219,7 @@ namespace TestProject
         private static void CheckHTML()
         {
             XmlNamespaceManager xnm;
-            var pageDoc = OneNoteUtils.GetPageContent(_oneNoteApp, _oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xnm);
+            var pageDoc = OneNoteUtils.GetPageContent(ref _oneNoteApp, _oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xnm);
 
             string s = @"";
 
@@ -280,16 +281,20 @@ namespace TestProject
             {
                 form.ShowDialog();
             }
+
+            MessageBox.Show(string.Format("Не забыть обновить в {0}.structure.xml аттрибуты: XmlDictionaryPagesCount и XmlDictionaryTermsCount", moduleName));                
         }
 
         private static void GenerateRuStrongDictionary()
         {
-            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Словари", "rststrong", "Словарь Стронга", "Еврейский и Греческий лексикон Стронга (с) Bob Jones University",
+            var moduleName = "rststrong";
+
+            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Словари", moduleName, "Словарь Стронга", "Еврейский и Греческий лексикон Стронга (с) Bob Jones University",
                 new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs\HEBREW.HTM"), SectionName = "Ветхий Завет.one", DictionaryPageDescription="Еврейский лексикон Стронга (с) Bob Jones University", TermPrefix = "H" },
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Strongs\GREEK.HTM"), SectionName = "Новый Завет.one", DictionaryPageDescription="Греческий лексикон Стронга (с) Bob Jones University", TermPrefix= "G" }
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\HEBREW.HTM"), SectionName = "Ветхий Завет.one", DictionaryPageDescription="Еврейский лексикон Стронга (с) Bob Jones University", TermPrefix = "H" },
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\GREEK.HTM"), SectionName = "Новый Завет.one", DictionaryPageDescription="Греческий лексикон Стронга (с) Bob Jones University", TermPrefix= "G" }
                 }, BibleQuotaDictionaryConverter.StructureType.Strong, "Стронга",
-                Path.Combine(TempFolderPath, "strong"), "<h4>", "Пользовательские заметки", "Найти все стихи с этим номером", "ru", new Version(2, 0));
+                Path.Combine(TempFolderPath, moduleName), "<h4>", "Пользовательские заметки", "Найти все стихи с этим номером", "ru", new Version(2, 0));
 
             converter.Convert();
 
@@ -297,6 +302,8 @@ namespace TestProject
             {
                 form.ShowDialog();
             }
+
+            MessageBox.Show(string.Format("Не забыть обновить в {0}.structure.xml аттрибуты: XmlDictionaryPagesCount и XmlDictionaryTermsCount", moduleName));                
         }
 
         private static void GenerateDictionary()
@@ -308,11 +315,18 @@ namespace TestProject
             //    Path.Combine(TempFolderPath, "goetze"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0));
 
 
-            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Словари", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
+            //var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Словари", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
+            // new List<DictionaryFile>() { 
+            //        new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
+            //    }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
+            //   Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0));
+
+
+            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Dictionaries", "vine", "Vine's Expository Dictionary", "Vine's Expository Dictionary",
              new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
-                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
-               Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0));
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"vine\Vine_compl.htm"), DictionaryPageDescription="Vine's Expository Dictionary" }                    
+                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Vine",
+               Path.Combine(TempFolderPath, "vine"), "<p><b>", "User Notes", null, "en", new Version(2, 0));
 
             converter.Convert();
 
@@ -332,10 +346,13 @@ namespace TestProject
         {
             DateTime dtStart = DateTime.Now;
 
-            string defaultNotebookFolderPath;
-            _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+            string defaultNotebookFolderPath = null;
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+            });
 
-            SupplementalBibleManager.CreateSupplementalBible(_oneNoteApp, ModulesManager.GetModuleInfo("kjv"), defaultNotebookFolderPath, null);
+            SupplementalBibleManager.CreateSupplementalBible(ref _oneNoteApp, ModulesManager.GetModuleInfo("kjv"), defaultNotebookFolderPath, null);
             var result = SupplementalBibleManager.LinkSupplementalBibleWithPrimaryBible(ref _oneNoteApp, null, null);
 
             DateTime dtEnd = DateTime.Now;
@@ -354,10 +371,13 @@ namespace TestProject
         {
             DateTime dtStart = DateTime.Now;
 
-            string defaultNotebookFolderPath;
-            _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+            string defaultNotebookFolderPath = null;
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+            });
 
-            var result = SupplementalBibleManager.AddParallelBible(_oneNoteApp, ModulesManager.GetModuleInfo("rst"), null, null);
+            var result = SupplementalBibleManager.AddParallelBible(ref _oneNoteApp, ModulesManager.GetModuleInfo("rst"), null, null);
 
             DateTime dtEnd = DateTime.Now;
 
@@ -475,14 +495,14 @@ namespace TestProject
         private static void SearchForEnText()
         {
             var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
-            string notebookId = OneNoteUtils.GetNotebookIdByName(oneNoteApp, "Biblia", false);
+            string notebookId = OneNoteUtils.GetNotebookIdByName(ref oneNoteApp, "Biblia", false);
 
-            var pages = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, false);
+            var pages = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, false);
             foreach (var page in pages.Content.Root.XPathSelectElements("//one:Page", pages.Xnm))
             {
                 string pageId = (string)page.Attribute("ID");
                 XmlNamespaceManager xnm;
-                var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, pageId, out xnm);
+                var pageDoc = OneNoteUtils.GetPageContent(ref oneNoteApp, pageId, out xnm);
                 if (pageDoc.ToString().IndexOf("en-US") != -1)
                 {
                     string pageName = (string)page.Attribute("name");
@@ -496,7 +516,7 @@ namespace TestProject
             var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
 
             XmlNamespaceManager xnm;
-            var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xnm);
+            var pageDoc = OneNoteUtils.GetPageContent(ref oneNoteApp, oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xnm);
 
             foreach (var oe in pageDoc.Root.XPathSelectElements("//one:Cell", xnm))
             {

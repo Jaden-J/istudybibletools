@@ -42,7 +42,7 @@ namespace BibleConfigurator
         protected abstract void ClearSupplementalModules();
         protected abstract bool SupplementalModuleAlreadyAdded(string moduleShortName);
         protected abstract string FormDescription { get; }
-        protected abstract List<string> CommitChanges(ModuleInfo selectedModuleInfo);        
+        protected abstract ErrorsList CommitChanges(ModuleInfo selectedModuleInfo);        
         protected abstract string GetSupplementalModuleName(int index);
         protected abstract bool CanModuleBeDeleted(ModuleInfo moduleInfo, int index);
         protected abstract bool CanModuleBeAdded(ModuleInfo moduleInfo);
@@ -71,12 +71,12 @@ namespace BibleConfigurator
             }
         }
 
-        public BaseSupplementalForm(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
+        public BaseSupplementalForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
         {
             _oneNoteApp = oneNoteApp;
             MainForm = form;
 
-            Modules = ModulesManager.GetModules(true);
+            Modules = ModulesManager.GetModules(true).OrderBy(m => m.DisplayName).ToList();
 
             DictionaryModules = new Dictionary<string, ModuleInfo>();
             foreach (var module in Modules)
@@ -94,7 +94,7 @@ namespace BibleConfigurator
         {
             try
             {
-                if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
+                if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
                 {
                     FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                     Close();
@@ -109,8 +109,11 @@ namespace BibleConfigurator
 
                 LoadFormData();
 
-                string defaultNotebookFolderPath;
-                _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+                string defaultNotebookFolderPath = null;
+                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                {
+                    oneNoteAppSafe.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+                });
                 folderBrowserDialog.SelectedPath = defaultNotebookFolderPath;
                 folderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetNotebookFolder;
                 folderBrowserDialog.ShowNewFolderButton = true;
@@ -204,7 +207,7 @@ namespace BibleConfigurator
         private void LoadExistingNotebooks()
         {
             if (ExistingNotebooks == null)
-                ExistingNotebooks = OneNoteUtils.GetExistingNotebooks(_oneNoteApp);
+                ExistingNotebooks = OneNoteUtils.GetExistingNotebooks(ref _oneNoteApp);
 
             cbExistingNotebooks.DataSource = ExistingNotebooks.Values.ToList();            
         }
@@ -260,7 +263,7 @@ namespace BibleConfigurator
             EnableUI(false);
             InProgress = true;
 
-            BibleCommon.Services.Logger.LogMessage("Start work with supplemental modules");
+            BibleCommon.Services.Logger.LogMessageParams("Start work with supplemental modules");
             var dt = DateTime.Now;
 
             bool doNotClose = false;
@@ -280,23 +283,28 @@ namespace BibleConfigurator
                     errors = TryToUseExistingNotebook(ExistingNotebooks.First(n => n.Value == (string)cbExistingNotebooks.SelectedValue).Key, (string)cbExistingNotebooks.SelectedValue);
                 }
 
-                BibleCommon.Services.Logger.LogMessage("Finish work with supplemental modules. Elapsed time = '{0}'", DateTime.Now - dt);
+                BibleCommon.Services.Logger.LogMessageParams("Finish work with supplemental modules. Elapsed time = '{0}'", DateTime.Now - dt);
 
-                if (errors.Count > 0)
+                if (errors != null && errors.Count > 0)
                 {
                     var showErrors = true;
+                    string preCommitErrorMessage = null;
 
                     if (selectedModuleInfo != null)
                     {
-                        var preCommitErrorMessage = GetPostCommitErrorMessage(selectedModuleInfo);
+                        preCommitErrorMessage = GetPostCommitErrorMessage(selectedModuleInfo);
                         if (!string.IsNullOrEmpty(preCommitErrorMessage))
                             showErrors = MessageBox.Show(preCommitErrorMessage, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes;                    
                     }                    
 
                     if (showErrors)
                     {
-                        using (var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(errors))
-                        {
+                        using (var errorsForm = new BibleCommon.UI.Forms.ErrorsForm())
+                        {   
+                            errorsForm.AllErrors.Add(new ErrorsList(errors)
+                            {
+                                ErrorsDecription = preCommitErrorMessage
+                            });
                             errorsForm.ShowDialog();
                         }
                     }
@@ -310,7 +318,7 @@ namespace BibleConfigurator
             }
             catch (ProcessAbortedByUserException)
             {
-                BibleCommon.Services.Logger.LogMessage("Process aborted by user");
+                BibleCommon.Services.Logger.LogMessageParams("Process aborted by user");
                 MainForm.LongProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
             }
             catch (Exception ex)
@@ -397,7 +405,7 @@ namespace BibleConfigurator
                 }
                 catch (ProcessAbortedByUserException)
                 {
-                    BibleCommon.Services.Logger.LogMessage("Process aborted by user");
+                    BibleCommon.Services.Logger.LogMessageParams("Process aborted by user");
                     MainForm.LongProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
                 }
                 catch (Exception ex)
@@ -521,11 +529,14 @@ namespace BibleConfigurator
         {
             if (InProgress)
             {
-                if (MessageBox.Show(BibleCommon.Resources.Constants.AbortTheOperation, 
+                if (MessageBox.Show(BibleCommon.Resources.Constants.AbortTheOperation,
                         BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)
                     e.Cancel = true;
                 else
+                {
                     Logger.AbortedByUsers = true;
+                    MainForm.StopLongProcess = true;
+                }
             }
         }
 
@@ -556,21 +567,21 @@ namespace BibleConfigurator
             var result = new List<string>();
             ClearSupplementalModules();            
                         
-            var xDoc = OneNoteUtils.GetHierarchyElement(_oneNoteApp, notebookId, HierarchyScope.hsPages, out xnm);
-            var pagesDocs = xDoc.Root.XPathSelectElements("//one:Page", xnm);
-            int pagesCount = pagesDocs.Count();
+            var xDoc = OneNoteUtils.GetHierarchyElement(ref _oneNoteApp, notebookId, HierarchyScope.hsPages, out xnm);
+            var pagesEls = xDoc.Root.XPathSelectElements("//one:Page", xnm);
+            int pagesCount = pagesEls.Count();
 
             Logger.Preffix = BibleCommon.Resources.Constants.ProcessPage + " ";
             MainForm.PrepareForLongProcessing(pagesCount, 1, string.Empty);
 
-            foreach (var pageEl in pagesDocs)
+            foreach (var pageEl in pagesEls)
             {
                 var pageId = (string)pageEl.Attribute("ID");
                 var pageName = (string)pageEl.Attribute("name");
 
                 Logger.LogMessage(pageName);
 
-                var embeddedModulesInfo_string = OneNoteUtils.GetPageMetaData(_oneNoteApp, pageEl, EmbeddedModulesKey, xnm);
+                var embeddedModulesInfo_string = OneNoteUtils.GetPageMetaData(pageEl, EmbeddedModulesKey, xnm);
                 if (!string.IsNullOrEmpty(embeddedModulesInfo_string))
                 {
                     var embeddedModulesInfo = EmbeddedModuleInfo.Deserialize(embeddedModulesInfo_string);

@@ -17,24 +17,26 @@ namespace BibleCommon.Services
 {
     public static class DictionaryManager
     {
-        public static void AddDictionary(Application oneNoteApp, ModuleInfo module, string notebookDirectory, bool waitForFinish)
+        public static void AddDictionary(ref Application oneNoteApp, ModuleInfo moduleInfo, string notebookDirectory, bool waitForFinish, Func<bool> checkIfExternalProcessAborted)
         {
-            if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidDictionariesNotebookId(oneNoteApp, true)))
+            if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidDictionariesNotebookId(ref oneNoteApp, true)))
             {
                 SettingsManager.Instance.NotebookId_Dictionaries
-                    = NotebookGenerator.CreateNotebook(oneNoteApp, Resources.Constants.DictionariesNotebookName, notebookDirectory);
+                    = NotebookGenerator.CreateNotebook(ref oneNoteApp, Resources.Constants.DictionariesNotebookName, notebookDirectory);
                 SettingsManager.Instance.DictionariesModules.Clear();
                 SettingsManager.Instance.Save();
             }
 
-            if (!SettingsManager.Instance.DictionariesModules.Any(m => m.ModuleName == module.ShortName))
-            {
-                //section or sectionGroup Id
-                string dictionarySectionId = null;
-                string dictionarySectionPath = null;
-                XElement dictionarySectionEl = null;
+            var existingDictionaryModuleInfo = SettingsManager.Instance.DictionariesModules.FirstOrDefault(m => m.ModuleName == moduleInfo.ShortName);
 
-                var moduleInfo = ModulesManager.GetModuleInfo(module.ShortName);
+            if (existingDictionaryModuleInfo == null 
+                || !OneNoteUtils.HierarchyElementExists(ref oneNoteApp, existingDictionaryModuleInfo.SectionId))
+            {
+                if (existingDictionaryModuleInfo != null)
+                    SettingsManager.Instance.DictionariesModules.Remove(existingDictionaryModuleInfo);
+
+                //section or sectionGroup Id
+                string dictionarySectionId = null;                
 
                 if (moduleInfo.NotebooksStructure.Sections == null || moduleInfo.NotebooksStructure.Sections.Count == 0)
                     throw new InvalidModuleException("There is no information about dictionary sections.");
@@ -42,74 +44,176 @@ namespace BibleCommon.Services
                 if (string.IsNullOrEmpty(moduleInfo.NotebooksStructure.DictionarySectionGroupName) && moduleInfo.NotebooksStructure.Sections.Count > 1)
                     moduleInfo.NotebooksStructure.DictionarySectionGroupName = moduleInfo.DisplayName;
 
-                if (!string.IsNullOrEmpty(moduleInfo.NotebooksStructure.DictionarySectionGroupName))
+                dictionarySectionId = TryGetExistingDictionarySection(ref oneNoteApp, moduleInfo);
+
+                if (string.IsNullOrEmpty(dictionarySectionId))
                 {
-                    dictionarySectionEl = NotebookGenerator.AddRootSectionGroupToNotebook(oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries, moduleInfo.NotebooksStructure.DictionarySectionGroupName);                                        
-                }
-                else
-                {
-                    XmlNamespaceManager xnm;
-                    dictionarySectionEl = OneNoteUtils.GetHierarchyElement(oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries, HierarchyScope.hsSelf, out xnm).Root;
-                }
+                    dictionarySectionId = AddDictionaryToOneNote(ref oneNoteApp, moduleInfo, checkIfExternalProcessAborted);
+                }           
 
-                dictionarySectionId = (string)dictionarySectionEl.Attribute("ID");
-                dictionarySectionPath = (string)dictionarySectionEl.Attribute("path");
-                
-                oneNoteApp.SyncHierarchy(dictionarySectionId);
-                int attemptsCount = 0;
-                while (!Directory.Exists(dictionarySectionPath) && attemptsCount < 500)
-                {
-                    Thread.Sleep(1000);
-                    System.Windows.Forms.Application.DoEvents();
-                    attemptsCount++;
-                }
-
-                foreach (var sectionInfo in moduleInfo.NotebooksStructure.Sections)
-                {
-                    string sectionElId;                    
-
-                    File.Copy(Path.Combine(ModulesManager.GetModuleDirectory(module.ShortName), sectionInfo.Name), Path.Combine(dictionarySectionPath, sectionInfo.Name), false);
-                    oneNoteApp.OpenHierarchy(sectionInfo.Name, dictionarySectionId, out sectionElId, CreateFileType.cftSection);
-
-                    if (string.IsNullOrEmpty(dictionarySectionId))
-                        dictionarySectionId = sectionElId;
-                }
-
-                oneNoteApp.SyncHierarchy(dictionarySectionId);
-
-                SettingsManager.Instance.DictionariesModules.Add(new StoredModuleInfo(module.ShortName, module.Version, dictionarySectionId));
+                SettingsManager.Instance.DictionariesModules.Add(new StoredModuleInfo(moduleInfo.ShortName, moduleInfo.Version, dictionarySectionId));
                 SettingsManager.Instance.Save();
 
                 if (waitForFinish)                
-                    WaitWhileDictionaryIsCreating(oneNoteApp, dictionarySectionId, moduleInfo.NotebooksStructure.DictionaryPagesCount, 0);                
+                    WaitWhileDictionaryIsCreating(ref oneNoteApp, dictionarySectionId, moduleInfo.NotebooksStructure.DictionaryPagesCount, 0, checkIfExternalProcessAborted);                
             }
         }
 
-        public static void WaitWhileDictionaryIsCreating(Application oneNoteApp, string dictionarySectionId, int? dictionaryPagesCount, int attemptsCount)
+        private static string TryGetExistingDictionarySection(ref Application oneNoteApp, ModuleInfo moduleInfo)
+        {
+            string dictionarySectionId = null;
+            XElement dictionarySectionEl;
+            XmlNamespaceManager xnm;
+
+            if (!string.IsNullOrEmpty(moduleInfo.NotebooksStructure.DictionarySectionGroupName))
+            {
+                dictionarySectionEl = OneNoteUtils.GetHierarchyElementByName(ref oneNoteApp,
+                                                        "SectionGroup", moduleInfo.NotebooksStructure.DictionarySectionGroupName,
+                                                        SettingsManager.Instance.NotebookId_Dictionaries);
+                if (dictionarySectionEl != null)
+                {
+                    dictionarySectionId = (string)dictionarySectionEl.Attribute("ID");
+                    var sectionsDoc = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, dictionarySectionId, HierarchyScope.hsSections, out xnm);
+                    dictionarySectionEl = sectionsDoc.Root;
+                }
+            }
+            else
+            {
+                dictionarySectionEl = OneNoteUtils.GetHierarchyElementByName(ref oneNoteApp,
+                                                        "Section", moduleInfo.NotebooksStructure.Sections.First().Name,
+                                                        SettingsManager.Instance.NotebookId_Dictionaries);
+                if (dictionarySectionEl != null)                
+                    dictionarySectionId = (string)dictionarySectionEl.Attribute("ID");
+            }
+
+            if (dictionarySectionEl != null) // dictionarySectionEl может быть как группа разделов, так и раздел. 
+            {
+                var pagesDoc = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, (string)dictionarySectionEl.Attribute("ID"), HierarchyScope.hsPages, out xnm);                
+
+                foreach (var pageEl in pagesDoc.Root.XPathSelectElements("//one:Page", xnm))
+                {
+                    var pageId = (string)pageEl.Attribute("ID");
+                    var pageName = (string)pageEl.Attribute("name");
+
+                    var embeddedModulesInfo_string = OneNoteUtils.GetPageMetaData(pageEl, BibleCommon.Consts.Constants.Key_EmbeddedDictionaries, xnm);
+                    if (!string.IsNullOrEmpty(embeddedModulesInfo_string))
+                    {
+                        var embeddedModulesInfo = EmbeddedModuleInfo.Deserialize(embeddedModulesInfo_string);
+
+                        foreach (var embeddedModuleInfo in embeddedModulesInfo)
+                        {
+                            if (moduleInfo.ShortName == embeddedModuleInfo.ModuleName)
+                                return dictionarySectionId;
+                        }
+                    }
+                }
+            }
+
+            return null; // иначе если группа секций/раздел и существует, то значит принадлежат другому модулю
+        }
+
+        private static string AddDictionaryToOneNote(ref Application oneNoteApp, ModuleInfo moduleInfo, Func<bool> checkIfExternalProcessAborted)
+        {
+            string dictionarySectionId;
+            string dictionarySectionPath = null;
+            XElement dictionarySectionEl = null;                
+            
+            if (!string.IsNullOrEmpty(moduleInfo.NotebooksStructure.DictionarySectionGroupName))
+            {
+                dictionarySectionEl = NotebookGenerator.AddRootSectionGroupToNotebook(ref oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries,
+                                                            moduleInfo.NotebooksStructure.DictionarySectionGroupName, "." + moduleInfo.ShortName);
+            }
+            else
+            {
+                XmlNamespaceManager xnm;
+                dictionarySectionEl = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries, HierarchyScope.hsSelf, out xnm).Root;
+            }
+
+            dictionarySectionId = (string)dictionarySectionEl.Attribute("ID");
+            dictionarySectionPath = (string)dictionarySectionEl.Attribute("path");
+
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.SyncHierarchy(dictionarySectionId);
+            });
+
+            int attemptsCount = 0;
+            while (!Directory.Exists(dictionarySectionPath) && attemptsCount < 500)
+            {
+                Thread.Sleep(1000);
+
+                if (checkIfExternalProcessAborted != null)
+                {
+                    if (checkIfExternalProcessAborted())
+                        throw new ProcessAbortedByUserException();
+                }
+
+                System.Windows.Forms.Application.DoEvents();
+                attemptsCount++;
+            }
+
+            foreach (var sectionInfo in moduleInfo.NotebooksStructure.Sections) //todo: если у нас нет отдельной группы разделов и такой уже раздел существует, то не понятно что будет
+            {
+                string sectionElId = null;
+
+                File.Copy(Path.Combine(ModulesManager.GetModuleDirectory(moduleInfo.ShortName), sectionInfo.Name), Path.Combine(dictionarySectionPath, sectionInfo.Name), false);
+
+                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                {
+                    oneNoteAppSafe.OpenHierarchy(sectionInfo.Name, dictionarySectionId, out sectionElId, CreateFileType.cftSection);
+                });
+
+                if (string.IsNullOrEmpty(dictionarySectionId))
+                    dictionarySectionId = sectionElId;
+            }
+
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.SyncHierarchy(dictionarySectionId);
+            });
+
+            return dictionarySectionId;
+        }
+
+        public static void WaitWhileDictionaryIsCreating(ref Application oneNoteApp, string dictionarySectionId, int? dictionaryPagesCount, int attemptsCount, Func<bool> checkIfExternalProcessAborted)
         {
             if (dictionaryPagesCount.HasValue)
             {
                 if (attemptsCount < 500)  // 25 минут
                 {
                     XmlNamespaceManager xnm;
-                    var xDoc = OneNoteUtils.GetHierarchyElement(oneNoteApp, dictionarySectionId, HierarchyScope.hsPages, out xnm);
+                    var xDoc = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, dictionarySectionId, HierarchyScope.hsPages, out xnm);
                     int pagesCount = xDoc.Root.XPathSelectElements("//one:Page", xnm).Count();
                     if (pagesCount < dictionaryPagesCount)
                     {
-                        oneNoteApp.SyncHierarchy(dictionarySectionId);
-                        Thread.Sleep(3000);
-                        WaitWhileDictionaryIsCreating(oneNoteApp, dictionarySectionId, dictionaryPagesCount, attemptsCount + 1);
+                        OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                        {
+                            oneNoteAppSafe.SyncHierarchy(dictionarySectionId);
+                        });
+
+                        for (var i = 0; i < 3; i++)
+                        {
+                            Thread.Sleep(1000);
+                            if (checkIfExternalProcessAborted != null)
+                            {
+                                if (checkIfExternalProcessAborted())
+                                    throw new ProcessAbortedByUserException();
+                            }
+                            System.Windows.Forms.Application.DoEvents();
+                        }
+
+                        WaitWhileDictionaryIsCreating(ref oneNoteApp, dictionarySectionId, dictionaryPagesCount, attemptsCount + 1, checkIfExternalProcessAborted);
                     }
                 }
             }
         }
 
-        public static void RemoveDictionary(Application oneNoteApp, string moduleName)
+        public static void RemoveDictionary(ref Application oneNoteApp, string moduleName)
         {
             if (SettingsManager.Instance.DictionariesModules.Count == 1 
                 && SettingsManager.Instance.DictionariesModules.First().ModuleName == moduleName)
             {
-                CloseDictionariesNotebook(oneNoteApp);
+                CloseDictionariesNotebook(ref oneNoteApp);
             }
             else
             {
@@ -118,7 +222,10 @@ namespace BibleCommon.Services
                 {
                     try
                     {
-                        oneNoteApp.DeleteHierarchy(dictionaryModuleInfo.SectionId);
+                        OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                        {
+                            oneNoteAppSafe.DeleteHierarchy(dictionaryModuleInfo.SectionId);
+                        });
                     }
                     catch (COMException ex)
                     {
@@ -134,9 +241,9 @@ namespace BibleCommon.Services
             }
         }
 
-        public static void CloseDictionariesNotebook(Application oneNoteApp)
+        public static void CloseDictionariesNotebook(ref Application oneNoteApp)
         {
-            OneNoteUtils.CloseNotebookSafe(oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries);
+            OneNoteUtils.CloseNotebookSafe(ref oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries);
 
             SettingsManager.Instance.NotebookId_Dictionaries = null;
 
@@ -156,11 +263,14 @@ namespace BibleCommon.Services
         /// <param name="oneNoteApp"></param>
         /// <param name="link"></param>
         /// <returns>если false - надо перестраивать кэш</returns>
-        public static bool GoToTerm(Application oneNoteApp, DictionaryTermLink link)
+        public static bool GoToTerm(ref Application oneNoteApp, DictionaryTermLink link)
         {
             try
             {
-                oneNoteApp.NavigateTo(link.PageId, link.ObjectId);
+                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                {
+                    oneNoteAppSafe.NavigateTo(link.PageId, link.ObjectId);
+                });
                 return true;
             }
             catch (COMException ex)

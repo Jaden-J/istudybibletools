@@ -124,7 +124,7 @@ namespace BibleCommon.Services
             /// <param name="vp"></param>
             /// <param name="versePointerLink"></param>
             /// <param name="findAllVerseObjects">Поиск осуществляется только по текущей главе. Чтобы найти все стихи во всех главах (если например ссылка 3:4-6:8), то надо отдельно вызвать GetAllIncludedVersesExceptFirst</param>
-            public HierarchySearchResult(Application oneNoteApp, string bibleNotebookId, VersePointer vp, VersePointerLink versePointerLink, FindVerseLevel findAllVerseObjects)
+            public HierarchySearchResult(ref Application oneNoteApp, string bibleNotebookId, VersePointer vp, VersePointerLink versePointerLink, FindVerseLevel findAllVerseObjects)
                 : this()
             {                
                 this.ResultType = vp.IsChapter == versePointerLink.IsChapter ? HierarchySearchResultType.Successfully : HierarchySearchResultType.PartlyFound;
@@ -142,10 +142,13 @@ namespace BibleCommon.Services
                 {
                     List<VersePointer> verses;
                     if (findAllVerseObjects == FindVerseLevel.OnlyVersesOfFirstChapter)
-                        verses = vp.GetAllIncludedVersesExceptFirst(null,
+                    {
+                        Application temp = null;
+                        verses = vp.GetAllIncludedVersesExceptFirst(ref temp,
                                                         new GetAllIncludedVersesExceptFirstArgs() { SearchOnlyForFirstChapter = true });
+                    }
                     else
-                        verses = vp.GetAllIncludedVersesExceptFirst(oneNoteApp,
+                        verses = vp.GetAllIncludedVersesExceptFirst(ref oneNoteApp,
                                                         new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = bibleNotebookId });
 
                     foreach (var subVp in verses)
@@ -166,7 +169,21 @@ namespace BibleCommon.Services
         /// <param name="vp"></param>
         /// <param name="findAllVerseObjects">Поиск осуществляется только по текущей главе. Чтобы найти все стихи во всех главах (если например ссылка 3:4-6:8), то надо отдельно вызвать GetAllIncludedVersesExceptFirst</param>
         /// <returns></returns>
-        public static HierarchySearchResult GetHierarchyObject(Application oneNoteApp, string bibleNotebookId, VersePointer vp, FindVerseLevel findAllVerseObjects)
+        public static HierarchySearchResult GetHierarchyObject(ref Application oneNoteApp, string bibleNotebookId, VersePointer vp, FindVerseLevel findAllVerseObjects)
+        {
+            var result = GetHierarchyObjectInternal(ref oneNoteApp, bibleNotebookId, vp, findAllVerseObjects);
+
+            if (!(result.ResultType == HierarchySearchResultType.Successfully && 
+                (result.HierarchyStage == HierarchyStage.ContentPlaceholder || result.HierarchyStage == HierarchyStage.Page )))
+            {
+                BibleCommon.Services.Logger.LogWarning(BibleCommon.Resources.Constants.VerseNotFound, vp.OriginalVerseName);
+            }
+
+            return result;
+        }
+
+
+        private static HierarchySearchResult GetHierarchyObjectInternal(ref Application oneNoteApp, string bibleNotebookId, VersePointer vp, FindVerseLevel findAllVerseObjects)
         {   
             HierarchySearchResult result = new HierarchySearchResult();
             result.ResultType = HierarchySearchResultType.NotFound;
@@ -179,17 +196,17 @@ namespace BibleCommon.Services
                 var simpleVersePointer = vp;
                 var versePointerLink = OneNoteProxy.Instance.GetVersePointerLink(simpleVersePointer);
                 if (versePointerLink != null)
-                    return new HierarchySearchResult(oneNoteApp, bibleNotebookId, simpleVersePointer, versePointerLink, findAllVerseObjects);
+                    return new HierarchySearchResult(ref oneNoteApp, bibleNotebookId, simpleVersePointer, versePointerLink, findAllVerseObjects);
             }
 
-            XElement targetSection = FindBibleBookSection(oneNoteApp, bibleNotebookId, vp.Book.SectionName);
+            XElement targetSection = FindBibleBookSection(ref oneNoteApp, bibleNotebookId, vp.Book.SectionName);
             if (targetSection != null)
             {
                 result.HierarchyObjectInfo.SectionId = (string)targetSection.Attribute("ID");
                 result.ResultType = HierarchySearchResultType.Successfully;
                 result.HierarchyStage = HierarchyStage.Section;                
 
-                XElement targetPage = HierarchySearchManager.FindPage(oneNoteApp, result.HierarchyObjectInfo.SectionId, vp.Chapter.Value);
+                XElement targetPage = HierarchySearchManager.FindPage(ref oneNoteApp, result.HierarchyObjectInfo.SectionId, vp.Chapter.Value);
 
                 if (targetPage != null)
                 {
@@ -197,7 +214,7 @@ namespace BibleCommon.Services
                     result.HierarchyObjectInfo.PageName = (string)targetPage.Attribute("name");
                     result.HierarchyStage = HierarchyStage.Page;
 
-                    var pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, result.HierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);
+                    var pageContent = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, result.HierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);
                     VerseNumber? verseNumber;
                     string verseTextWithoutNumber;
                     XElement targetVerseEl = FindVerse(pageContent.Content, vp.IsChapter, vp.Verse.Value, pageContent.Xnm, out verseNumber, out verseTextWithoutNumber);
@@ -216,7 +233,7 @@ namespace BibleCommon.Services
                             if (vp.IsMultiVerse &&
                                 (findAllVerseObjects == FindVerseLevel.AllVerses || findAllVerseObjects == FindVerseLevel.OnlyVersesOfFirstChapter))
                             {
-                                LoadAdditionalVersesInfo(oneNoteApp, bibleNotebookId, vp, findAllVerseObjects, pageContent, ref result);                              
+                                LoadAdditionalVersesInfo(ref oneNoteApp, bibleNotebookId, vp, findAllVerseObjects, pageContent, ref result);                              
                             }
                         }
                     }
@@ -230,15 +247,18 @@ namespace BibleCommon.Services
             return result;
         }
 
-        private static void LoadAdditionalVersesInfo(Application oneNoteApp, string bibleNotebookId, VersePointer vp, FindVerseLevel findAllVerseObjects,
+        private static void LoadAdditionalVersesInfo(ref Application oneNoteApp, string bibleNotebookId, VersePointer vp, FindVerseLevel findAllVerseObjects,
             OneNoteProxy.PageContent chapterPageContent, ref HierarchySearchResult result)
         {
             List<VersePointer> verses;
             if (findAllVerseObjects == FindVerseLevel.OnlyVersesOfFirstChapter)
-                verses = vp.GetAllIncludedVersesExceptFirst(null,
+            {
+                Application temp = null;
+                verses = vp.GetAllIncludedVersesExceptFirst(ref temp,
                                                 new GetAllIncludedVersesExceptFirstArgs() { SearchOnlyForFirstChapter = true });
+            }
             else
-                verses = vp.GetAllIncludedVersesExceptFirst(oneNoteApp,
+                verses = vp.GetAllIncludedVersesExceptFirst(ref oneNoteApp,
                                                 new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = bibleNotebookId });
 
             foreach (var additionalVerse in verses)
@@ -248,11 +268,11 @@ namespace BibleCommon.Services
                 var additionalPageContent = chapterPageContent;
                 if (additionalVerse.Chapter != vp.Chapter)
                 {
-                    var additionalPageEl = HierarchySearchManager.FindPage(oneNoteApp, result.HierarchyObjectInfo.SectionId, additionalVerse.Chapter.Value);
+                    var additionalPageEl = HierarchySearchManager.FindPage(ref oneNoteApp, result.HierarchyObjectInfo.SectionId, additionalVerse.Chapter.Value);
                     if (additionalPageEl == null)
                         continue;
                     var additionalPageId = (string)additionalPageEl.Attribute("ID");
-                    additionalPageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, additionalPageId, OneNoteProxy.PageType.Bible);
+                    additionalPageContent = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, additionalPageId, OneNoteProxy.PageType.Bible);
                 }
 
                 var additionalVeseEl = FindVerse(additionalPageContent.Content, vp.IsChapter, additionalVerse.Verse.Value, additionalPageContent.Xnm,
@@ -271,12 +291,12 @@ namespace BibleCommon.Services
             }
         }
 
-        internal static XElement FindChapterPage(Application oneNoteApp, string bibleNotebookId, string sectionName, int chapterIndex)
+        internal static XElement FindChapterPage(ref Application oneNoteApp, string bibleNotebookId, string sectionName, int chapterIndex)
         {
-            XElement targetSection = FindBibleBookSection(oneNoteApp, bibleNotebookId, sectionName);
+            XElement targetSection = FindBibleBookSection(ref oneNoteApp, bibleNotebookId, sectionName);
             if (targetSection != null)
             {
-                return HierarchySearchManager.FindPage(oneNoteApp, (string)targetSection.Attribute("ID"), chapterIndex);                
+                return HierarchySearchManager.FindPage(ref oneNoteApp, (string)targetSection.Attribute("ID"), chapterIndex);                
             }
 
             return null;
@@ -344,14 +364,14 @@ namespace BibleCommon.Services
             return null;
         }
 
-        private static XElement FindPage(Application oneNoteApp, string sectionId, int chapter)
+        private static XElement FindPage(ref Application oneNoteApp, string sectionId, int chapter)
         {
-            OneNoteProxy.HierarchyElement sectionDocument = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, sectionId, HierarchyScope.hsPages);
+            OneNoteProxy.HierarchyElement sectionDocument = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, sectionId, HierarchyScope.hsPages);
 
-            return FindChapterPage(oneNoteApp, sectionDocument.Content.Root, chapter, sectionDocument.Xnm);
+            return FindChapterPage(sectionDocument.Content.Root, chapter, sectionDocument.Xnm);
         }
 
-        internal static XElement FindChapterPage(Application oneNoteApp, XElement sectionPagesEl, int chapter, XmlNamespaceManager xnm)
+        internal static XElement FindChapterPage(XElement sectionPagesEl, int chapter, XmlNamespaceManager xnm)
         {
             XElement page = sectionPagesEl.XPathSelectElement(string.Format("one:Page[starts-with(@name,'{0} ') and @pageLevel=2]", chapter), xnm);  // "@pageLevel=2" - это условие нам надо, чтобы найти главу, например, "2 глава. 2 Петра", а не просто "2 Петра", 
             if (page == null)
@@ -364,9 +384,9 @@ namespace BibleCommon.Services
             return page;
         }
 
-        public static XElement FindBibleBookSection(Application oneNoteApp, string notebookId, string bookSectionName)
+        public static XElement FindBibleBookSection(ref Application oneNoteApp, string notebookId, string bookSectionName)
         {
-            OneNoteProxy.HierarchyElement document = OneNoteProxy.Instance.GetHierarchy(oneNoteApp, notebookId, HierarchyScope.hsSections);
+            OneNoteProxy.HierarchyElement document = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsSections);
 
             XElement targetSection = document.Content.Root.XPathSelectElement(
                 string.Format("{0}one:SectionGroup[{2}]/one:Section[@name='{1}']",
@@ -379,7 +399,7 @@ namespace BibleCommon.Services
             return targetSection;
         }
 
-        public static int? GetChapterVersesCount(Application oneNoteApp, string bibleNotebookId, VersePointer versePointer)
+        public static int? GetChapterVersesCount(ref Application oneNoteApp, string bibleNotebookId, VersePointer versePointer)
         {
             int? result = null;
 
@@ -392,11 +412,11 @@ namespace BibleCommon.Services
 
             if (result == null)
             {
-            var chapterPageResult = GetHierarchyObject(oneNoteApp, bibleNotebookId, versePointer, FindVerseLevel.OnlyFirstVerse);
+                var chapterPageResult = GetHierarchyObject(ref oneNoteApp, bibleNotebookId, versePointer, FindVerseLevel.OnlyFirstVerse);
                 if (chapterPageResult.ResultType != HierarchySearchResultType.NotFound 
                     && chapterPageResult.HierarchyStage == HierarchyStage.Page)
             {
-                var pageContent = OneNoteProxy.Instance.GetPageContent(oneNoteApp, chapterPageResult.HierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);
+                    var pageContent = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, chapterPageResult.HierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);
                 var table = pageContent.Content.Root.XPathSelectElement("//one:Table", pageContent.Xnm);
                 if (table != null)
                 {
