@@ -159,9 +159,9 @@ namespace BibleConfigurator.ModuleConverter
             notebook.Root.SetAttributeValue("name", notebookName);
             notebook.Root.SetAttributeValue("nickname", notebookName);
 
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                oneNoteAppSafe.UpdateHierarchy(notebook.ToString(), Constants.CurrentOneNoteSchema);
+                _oneNoteApp.UpdateHierarchy(notebook.ToString(), Constants.CurrentOneNoteSchema);
             });
         }
 
@@ -203,9 +203,9 @@ namespace BibleConfigurator.ModuleConverter
         {
             if (GenerateBibleNotebook)
             {
-                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
                 {
-                    oneNoteAppSafe.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+                    _oneNoteApp.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
                 });
             }
         }

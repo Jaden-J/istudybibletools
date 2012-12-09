@@ -110,9 +110,9 @@ namespace BibleConfigurator
                 LoadFormData();
 
                 string defaultNotebookFolderPath = null;
-                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
                 {
-                    oneNoteAppSafe.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+                    _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
                 });
                 folderBrowserDialog.SelectedPath = defaultNotebookFolderPath;
                 folderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetNotebookFolder;

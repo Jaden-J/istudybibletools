@@ -46,9 +46,9 @@ namespace BibleVerseLinkerEx
             currentObjectId = null;
 
             string pageContentXml = null;
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                oneNoteAppSafe.GetPageContent(pageId, out pageContentXml, PageInfo.piSelection, Constants.CurrentOneNoteSchema);
+                _oneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piSelection, Constants.CurrentOneNoteSchema);
             });
 
             document = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
@@ -68,15 +68,15 @@ namespace BibleVerseLinkerEx
 
         private XElement GetLastPageObject(string pageId, int? position)
         {
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                oneNoteAppSafe.SyncHierarchy(pageId);
+                _oneNoteApp.SyncHierarchy(pageId);
             });
 
             string pageContentXml = null;
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                oneNoteAppSafe.GetPageContent(pageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
+                _oneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
             });
 
             XmlNamespaceManager xnm;
@@ -156,9 +156,9 @@ namespace BibleVerseLinkerEx
                         OneNoteUtils.UpdatePageContentSafe(ref _oneNoteApp, currentPageDocument, xnm);
                     }
 
-                    OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                    OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
                     {
-                        oneNoteAppSafe.NavigateTo(verseLinkPageId, objectId);
+                        _oneNoteApp.NavigateTo(verseLinkPageId, objectId);
                     });
                 }
             }

@@ -42,8 +42,7 @@ namespace BibleConfigurator.ModuleConverter
         }
 
         public Application _oneNoteApp;
-        public bool IsOneNote2010 { get; set; }
-        public bool IsOneNote2010 { get; set; }
+        public bool IsOneNote2010 { get; set; }        
         public string NotebookId { get; set; }        
         public StructureType Type { get; set; }
         public string ManifestFilesFolder { get; set; }
@@ -386,9 +385,9 @@ namespace BibleConfigurator.ModuleConverter
 
         protected void UpdatePage(XDocument pageDoc)
         {
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                oneNoteAppSafe.UpdatePageContent(pageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+                _oneNoteApp.UpdatePageContent(pageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
             });
         }
 
