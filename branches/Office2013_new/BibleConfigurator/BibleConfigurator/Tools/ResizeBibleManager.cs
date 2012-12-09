@@ -83,9 +83,9 @@ namespace BibleConfigurator.Tools
             string pageContentXml = null;
             XDocument notePageDocument;
             XmlNamespaceManager xnm;
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                oneNoteAppSafe.GetPageContent(pageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
+                _oneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
             });
             notePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
 

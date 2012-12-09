@@ -129,9 +129,9 @@ namespace BibleConfigurator.Tools
             XDocument notePageDocument;
             XmlNamespaceManager xnm;
 
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                oneNoteAppSafe.GetPageContent(biblePageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
+                _oneNoteApp.GetPageContent(biblePageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
             });
 
             notePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
@@ -151,9 +151,9 @@ namespace BibleConfigurator.Tools
             XElement chapterNotesLink = FindChapterNotesLink(notePageDocument, xnm);
             if (chapterNotesLink != null)
             {
-                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
                 {
-                    oneNoteAppSafe.DeletePageContent(biblePageId, (string)chapterNotesLink.Attribute("objectID"));
+                    _oneNoteApp.DeletePageContent(biblePageId, (string)chapterNotesLink.Attribute("objectID"));
                 });
                 chapterNotesLink.Remove();
                 wasModified = true;
@@ -168,30 +168,30 @@ namespace BibleConfigurator.Tools
             if (!string.IsNullOrEmpty(notesPageId))
             {
                 string sectionId = null;
-                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
                 {
-                    oneNoteAppSafe.GetHierarchyParent(notesPageId, out sectionId);
+                    _oneNoteApp.GetHierarchyParent(notesPageId, out sectionId);
                 });
 
-                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
                 {
-                    oneNoteAppSafe.DeleteHierarchy(notesPageId, DateTime.MinValue, true);
+                    _oneNoteApp.DeleteHierarchy(notesPageId, DateTime.MinValue, true);
                 });
 
                 string sectionPagesXml = null;
                 XmlNamespaceManager xnm;
 
-                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
                 {
-                    oneNoteAppSafe.GetHierarchy(sectionId, HierarchyScope.hsPages, out sectionPagesXml, Constants.CurrentOneNoteSchema);
+                    _oneNoteApp.GetHierarchy(sectionId, HierarchyScope.hsPages, out sectionPagesXml, Constants.CurrentOneNoteSchema);
                 });
 
                 XDocument sectionPages = OneNoteUtils.GetXDocument(sectionPagesXml, out xnm);
                 if (sectionPages.Root.XPathSelectElements("one:Page", xnm).Count() == 0)
                 {
-                    OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                    OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
                     {
-                        oneNoteAppSafe.DeleteHierarchy(sectionId, DateTime.MinValue, true);  // удаляем раздел, если нет больше в нём страниц
+                        _oneNoteApp.DeleteHierarchy(sectionId, DateTime.MinValue, true);  // удаляем раздел, если нет больше в нём страниц
                     });
                 }
             }
