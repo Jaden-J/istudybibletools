@@ -69,13 +69,13 @@ namespace BibleCommon.Handlers
             {
                 var strongTermLink = OneNoteProxy.Instance.GetDictionaryTermLink(StrongNumber, ModuleShortName);
 
-                return DictionaryManager.GoToTerm(oneNoteApp, strongTermLink);
+                return DictionaryManager.GoToTerm(ref oneNoteApp, strongTermLink);
             }
             catch (Exception)
             {
                 if (!DictionaryTermsCacheManager.CacheIsActive(ModuleShortName))
                 {
-                    if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidDictionariesNotebookId(oneNoteApp, true)))
+                    if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidDictionariesNotebookId(ref oneNoteApp, true)))
                         throw new Exception(BibleCommon.Resources.Constants.DictionariesNotebookNotFound);
 
                     throw new Exception(BibleCommon.Resources.Constants.DictionaryCacheFileNotFound);

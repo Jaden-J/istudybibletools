@@ -234,7 +234,7 @@ namespace BibleCommon.Services
             });
         }     
       
-        public string GenerateHref(Application oneNoteApp, string pageId, string objectId)
+        public string GenerateHref(ref Application oneNoteApp, string pageId, string objectId)
         {
             if (string.IsNullOrEmpty(pageId))
                 throw new ArgumentNullException("pageId");
@@ -249,10 +249,13 @@ namespace BibleCommon.Services
             {
                 //lock (_locker)
                 {
-                    string link;
-                    
-                    oneNoteApp.GetHyperlinkToObject(pageId, objectId, out link);
-                    
+                    string link = null;
+
+                    OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                    {
+                        oneNoteAppSafe.GetHyperlinkToObject(pageId, objectId, out link);
+                    });
+
                     //if (!_linksCache.ContainsKey(key))   // пока в этом нет смысла
                         _linksCache.Add(key, link);
                 }
@@ -311,26 +314,26 @@ namespace BibleCommon.Services
         }
 
 
-        public string GetNotesPageId(Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName,
+        public string GetNotesPageId(ref Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName,
             string notesPageName, out bool pageWasCreated, string notesParentPageName = null, int pageLevel = 1)
         {
-            return GetVerseLinkPageId(oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName, true, 
+            return GetVerseLinkPageId(ref oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName, true, 
                 notesParentPageName, pageLevel, out pageWasCreated, true);
         }
 
-        public string GetCommentPageId(Application oneNoteApp, string bibleSectionId, string biblePageId,
+        public string GetCommentPageId(ref Application oneNoteApp, string bibleSectionId, string biblePageId,
             string biblePageName, string commentPageName, out bool pageWasCreated, bool createNewPageIfNeeded = true)
         {
-            return GetVerseLinkPageId(oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName, false, null, 1, out pageWasCreated, createNewPageIfNeeded);
+            return GetVerseLinkPageId(ref oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName, false, null, 1, out pageWasCreated, createNewPageIfNeeded);
         }
 
-        private string GetVerseLinkPageId(Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName, string commentPageName,
+        private string GetVerseLinkPageId(ref Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName, string commentPageName,
             bool isSummaryNotesPage, string verseLinkParentPageName, int pageLevel, out bool pageWasCreated, bool createNewPageIfNeeded)
         {
             pageWasCreated = false;
             string verseLinkParentPageId = null;
             if (!string.IsNullOrEmpty(verseLinkParentPageName))
-                verseLinkParentPageId = GetVerseLinkPageId(oneNoteApp, bibleSectionId, biblePageId, biblePageName,
+                verseLinkParentPageId = GetVerseLinkPageId(ref oneNoteApp, bibleSectionId, biblePageId, biblePageName,
                     verseLinkParentPageName, isSummaryNotesPage, null, 1, out pageWasCreated, createNewPageIfNeeded);
 
             CommentPageId key = new CommentPageId()
@@ -348,7 +351,7 @@ namespace BibleCommon.Services
             {
                 //lock (_locker)         // пока в этом нет смысла
                 {
-                    string commentPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(oneNoteApp, bibleSectionId, biblePageId, biblePageName,
+                    string commentPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(ref oneNoteApp, bibleSectionId, biblePageId, biblePageName,
                         commentPageName, isSummaryNotesPage, out pageWasCreated, verseLinkParentPageId, pageLevel, createNewPageIfNeeded);
                     //if (!_commentPagesIdsCache.ContainsKey(key))     // пока в этом нет смысла
                         _commentPagesIdsCache.Add(key, commentPageId);
@@ -367,7 +370,7 @@ namespace BibleCommon.Services
         /// <param name="scope"></param>
         /// <param name="refreshCache">Стоит ли загружать данные из OneNote (true) или из кэша (false)</param>
         /// <returns></returns>
-        public HierarchyElement GetHierarchy(Application oneNoteApp, string hierarchyId, HierarchyScope scope, bool refreshCache = false)
+        public HierarchyElement GetHierarchy(ref Application oneNoteApp, string hierarchyId, HierarchyScope scope, bool refreshCache = false)
         {
             OneNoteHierarchyContentId contentId = new OneNoteHierarchyContentId() { ID = hierarchyId, ContentScope = scope };
 
@@ -377,10 +380,13 @@ namespace BibleCommon.Services
             {
                 //lock (_locker)
                 {
-                    string xml;
+                    string xml = null;
                     try
                     {
-                        oneNoteApp.GetHierarchy(hierarchyId, scope, out xml, Constants.CurrentOneNoteSchema);
+                        OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                        {
+                            oneNoteAppSafe.GetHierarchy(hierarchyId, scope, out xml, Constants.CurrentOneNoteSchema);
+                        });
                     }
                     catch (Exception ex)
                     {
@@ -402,12 +408,12 @@ namespace BibleCommon.Services
             return result;
         }
 
-        public PageContent GetPageContent(Application oneNoteApp, string pageId, PageType pageType, PageInfo pageInfo = PageInfo.piBasic)
+        public PageContent GetPageContent(ref Application oneNoteApp, string pageId, PageType pageType, PageInfo pageInfo = PageInfo.piBasic)
         {
-            return GetPageContent(oneNoteApp, pageId, pageType, false, pageInfo);
+            return GetPageContent(ref oneNoteApp, pageId, pageType, false, pageInfo);
         }
 
-        private PageContent GetPageContent(Application oneNoteApp, string pageId, PageType pageType, bool refreshCache, PageInfo pageInfo)
+        private PageContent GetPageContent(ref Application oneNoteApp, string pageId, PageType pageType, bool refreshCache, PageInfo pageInfo)
         {
             PageContent result;
 
@@ -417,10 +423,13 @@ namespace BibleCommon.Services
             {
                 //lock (_locker)
                 {
-                    string xml = string.Empty;
+                    string xml = null;
                     try
                     {
-                        oneNoteApp.GetPageContent(key, out xml, pageInfo, Constants.CurrentOneNoteSchema);
+                        OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                        {
+                            oneNoteAppSafe.GetPageContent(key, out xml, pageInfo, Constants.CurrentOneNoteSchema);
+                        });
                     }
                     catch (COMException ex)
                     {
@@ -445,9 +454,9 @@ namespace BibleCommon.Services
             return result;
         }
 
-        public void RefreshHierarchyCache(Application oneNoteApp, string hierarchyId, HierarchyScope scope)
+        public void RefreshHierarchyCache(ref Application oneNoteApp, string hierarchyId, HierarchyScope scope)
         {
-            GetHierarchy(oneNoteApp, hierarchyId, scope, true);
+            GetHierarchy(ref oneNoteApp, hierarchyId, scope, true);
         }
 
         public void RefreshHierarchyCache()
@@ -467,7 +476,7 @@ namespace BibleCommon.Services
                 try
                 {
                     if (page.AddLatestAnalyzeTimeMetaAttribute)
-                        OneNoteUtils.UpdatePageMetaData(oneNoteApp, page.Content.Root, Constants.Key_LatestAnalyzeTime, DateTime.UtcNow.AddSeconds(10).ToString(), page.Xnm);
+                        OneNoteUtils.UpdatePageMetaData(page.Content.Root, Constants.Key_LatestAnalyzeTime, DateTime.UtcNow.AddSeconds(10).ToString(), page.Xnm);
 
                     OneNoteUtils.UpdatePageContentSafe(ref oneNoteApp, page.Content, page.Xnm);
                 }
@@ -487,7 +496,7 @@ namespace BibleCommon.Services
             }
         }
 
-        public void CommitAllModifiedHierarchy(Application oneNoteApp, Action<int> onAllHierarchyToCommitFound,
+        public void CommitAllModifiedHierarchy(ref Application oneNoteApp, Action<int> onAllHierarchyToCommitFound,
             Action<HierarchyElement> onHierarchyElementProcessed)
         {
             var toCommit = _hierarchyContentCache.Values.Where(h => h.WasModified).ToList();
@@ -497,7 +506,10 @@ namespace BibleCommon.Services
 
             foreach (var hierarchy in toCommit)
             {
-                oneNoteApp.UpdateHierarchy(hierarchy.Content.ToString(), Constants.CurrentOneNoteSchema);
+                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                {
+                    oneNoteAppSafe.UpdateHierarchy(hierarchy.Content.ToString(), Constants.CurrentOneNoteSchema);
+                });
 
                 if (onHierarchyElementProcessed != null)
                     onHierarchyElementProcessed(hierarchy);

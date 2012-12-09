@@ -36,7 +36,7 @@ namespace BibleConfigurator.Tools
 
         public void Backup(string filePath)
         {
-            if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
+            if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
             {
                 FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                 return;
@@ -47,7 +47,7 @@ namespace BibleConfigurator.Tools
                 BibleCommon.Services.Logger.Init("BackupManager");
 
                 _startTime = DateTime.Now;
-                BibleCommon.Services.Logger.LogMessage("{0}: {1}",BibleCommon.Resources.Constants.StartTime,  _startTime.ToLongTimeString());                
+                BibleCommon.Services.Logger.LogMessageParams("{0}: {1}",BibleCommon.Resources.Constants.StartTime,  _startTime.ToLongTimeString());                
 
                 var notebookIds = GetDistinctNotebooksIds();
                 _notebooksCount = notebookIds.Count();
@@ -55,7 +55,7 @@ namespace BibleConfigurator.Tools
                 string initMessage = BibleCommon.Resources.Constants.BackupStartInfo;
                 _form.PrepareForLongProcessing(_notebooksCount + 2, 1, initMessage);
                 _form.PerformProgressStep(initMessage);
-                BibleCommon.Services.Logger.LogMessage(initMessage);
+                BibleCommon.Services.Logger.LogMessageParams(initMessage);
                 System.Windows.Forms.Application.DoEvents();
 
                 _tempFolderPath = Path.Combine(Utils.GetTempFolderPath(), "BackUp");
@@ -71,7 +71,7 @@ namespace BibleConfigurator.Tools
 
                 foreach (string id in notebookIds)
                 {
-                    string notebookName = OneNoteUtils.GetHierarchyElementNickname(_oneNoteApp, id) + OneNotePackageExtension;
+                    string notebookName = OneNoteUtils.GetHierarchyElementNickname(ref _oneNoteApp, id) + OneNotePackageExtension;
 
                     _notebookNames.Add(notebookName);
 
@@ -83,7 +83,7 @@ namespace BibleConfigurator.Tools
             }
             catch (ProcessAbortedByUserException)
             {
-                BibleCommon.Services.Logger.LogMessage("Process aborted by user");
+                BibleCommon.Services.Logger.LogMessageParams("Process aborted by user");
                 CloseResources(false);
             }            
         }
@@ -102,14 +102,14 @@ namespace BibleConfigurator.Tools
                 BibleCommon.Services.Logger.LogError(ex.Message);
             }
 
-            BibleCommon.Services.Logger.LogMessage(" {0}", DateTime.Now.Subtract(_startTime));
+            BibleCommon.Services.Logger.LogMessageParams(" {0}", DateTime.Now.Subtract(_startTime));
             BibleCommon.Services.Logger.Done();
 
             if (successefully)
             {
                 string finalMessage = BibleCommon.Resources.Constants.BackupManagerFinishMessage;
                 _form.LongProcessingDone(finalMessage);
-                BibleCommon.Services.Logger.LogMessage(finalMessage);
+                BibleCommon.Services.Logger.LogMessageParams(finalMessage);
             }
 
             _oneNoteApp = null;
@@ -143,7 +143,7 @@ namespace BibleConfigurator.Tools
                                 string message = string.Format(BibleCommon.Resources.Constants.BackupManagerNotebookCompleted,
                                     Path.GetFileNameWithoutExtension(e.Name));
                                 _form.PerformProgressStep(message);
-                                BibleCommon.Services.Logger.LogMessage(message);
+                                BibleCommon.Services.Logger.LogMessageParams(message);
 
                                 if (++_processedNotebooksCount >= _notebooksCount)
                                 {
@@ -157,7 +157,7 @@ namespace BibleConfigurator.Tools
             }
             catch (ProcessAbortedByUserException)
             {
-                BibleCommon.Services.Logger.LogMessage("Process aborted by user");
+                BibleCommon.Services.Logger.LogMessageParams("Process aborted by user");
 
                 CloseResources(false);
             }
@@ -165,8 +165,11 @@ namespace BibleConfigurator.Tools
 
         private void BackupNotebook(string notebookId, string notebookName)
         {
-            _oneNoteApp.Publish(notebookId, Path.Combine(_tempFolderPath,
-                notebookName), PublishFormat.pfOneNotePackage);
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.Publish(notebookId, Path.Combine(_tempFolderPath,
+                    notebookName), PublishFormat.pfOneNotePackage);
+            });
         }
 
         private IEnumerable<string> GetDistinctNotebooksIds()
@@ -184,7 +187,7 @@ namespace BibleConfigurator.Tools
         {
             string message = BibleCommon.Resources.Constants.BackupManagerToZipArchive;
             _form.PerformProgressStep(message);
-            BibleCommon.Services.Logger.LogMessage(message);
+            BibleCommon.Services.Logger.LogMessageParams(message);
 
             try
             {

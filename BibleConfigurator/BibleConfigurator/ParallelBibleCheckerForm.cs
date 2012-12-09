@@ -86,19 +86,19 @@ namespace BibleConfigurator
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            string baseModule = (string)cbBaseModule.SelectedValue;
-            string parallelModule = (string)cbParallelModule.SelectedValue;
-            
-            FormExtensions.EnableAll(false, this.Controls, btnClose);
-            this.SetFocus();
-            System.Windows.Forms.Application.DoEvents();
-
-            _errorsForm.ClearErrors();
-
-            var allModules = GetModules();
-
             try
             {
+                string baseModule = (string)cbBaseModule.SelectedValue;
+                string parallelModule = (string)cbParallelModule.SelectedValue;
+
+                FormExtensions.EnableAll(false, this.Controls, btnClose);
+                this.SetFocus();
+                System.Windows.Forms.Application.DoEvents();
+
+                _errorsForm.ClearErrors();
+
+                var allModules = GetModules();
+
                 if (rbCheckOneModule.Checked)
                 {
                     if (!chkWithAllModules.Checked)
@@ -122,7 +122,7 @@ namespace BibleConfigurator
 
                             _formLogger.LogMessage("{0} -> {1}", pModule.ShortName, baseModule);
                             CheckModuleAndAddErrors(pModule.ShortName, baseModule);
-                        }                        
+                        }
                     }
                 }
                 else
@@ -136,7 +136,7 @@ namespace BibleConfigurator
                             _formLogger.LogMessage("{0} -> {1}", bModule.ShortName, pModule.ShortName);
                             CheckModuleAndAddErrors(bModule.ShortName, pModule.ShortName);
                         }
-                    }                    
+                    }
                 }
 
                 _mainForm.LongProcessingDone("Checking complete");
@@ -159,6 +159,12 @@ namespace BibleConfigurator
             {
                 _mainForm.LongProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
             }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+                this.Close();
+                _mainForm.LongProcessingDone(ex.Message);
+            }
         }
 
         private void CheckModuleAndAddErrors(string primaryModuleName, string parallelModuleName)
@@ -168,15 +174,13 @@ namespace BibleConfigurator
                 _errorsForm.AllErrors.Add(errorsList);
         }
 
-        public static ErrorsForm.ErrorsList CheckModule(string primaryModuleName, string parallelModuleName)
+        public static ErrorsList CheckModule(string primaryModuleName, string parallelModuleName)
         {
-            var manager = new BibleParallelTranslationManager(null, primaryModuleName, parallelModuleName, SettingsManager.Instance.NotebookId_Bible);
-            manager.ForCheckOnly = true;
-            var result = manager.IterateBaseBible(null, false, true, null, true);
+            var errors = BibleParallelTranslationManager.CheckModules(primaryModuleName, parallelModuleName);
 
-            if (result.Errors.Count > 0)
+            if (errors.Count > 0)
             {
-                return new ErrorsForm.ErrorsList(result.Errors.ConvertAll(ex => ex.Message))
+                return new ErrorsList(errors.ConvertAll(ex => ex.Message))
                 {
                     ErrorsDecription = string.Format("{0} -> {1}", primaryModuleName, parallelModuleName)
                 };

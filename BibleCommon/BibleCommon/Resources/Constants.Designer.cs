@@ -412,7 +412,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Add parallel translation anyway?.
+        ///   Ищет локализованную строку, похожую на Add the parallel translation anyway?.
         /// </summary>
         public static string ContinueAddingParallelBible {
             get {
@@ -421,7 +421,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Create Supplemental Bible anyway?.
+        ///   Ищет локализованную строку, похожую на Create the Supplemental Bible anyway?.
         /// </summary>
         public static string ContinueCreatingSupplementalBible {
             get {
@@ -664,7 +664,11 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на .
+        ///   Ищет локализованную строку, похожую на This form is designed for the Dictionary management.
+        ///
+        ///Please take notice:
+        ///  - It is necessary to download modules of type “Dictionary” to the program;
+        ///  - It takes a few minutes to add a new dictionary..
         /// </summary>
         public static string DictionaryFormDescription {
             get {
@@ -871,7 +875,16 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Found in one dictionary.
+        ///   Ищет локализованную строку, похожую на Completed with warnings..
+        /// </summary>
+        public static string FinishWithWarnings {
+            get {
+                return ResourceManager.GetString("FinishWithWarnings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Found in one dictionary.
         /// </summary>
         public static string FoundInOneDictionary {
             get {
@@ -1375,7 +1388,25 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open a verse.
+        ///   Ищет локализованную строку, похожую на Found passages that are missing in the first module of the Supplemental Bible. These passages will not be added to the Supplemental Bible. If you want this passages to be added to the Supplemental Bible, use this module as the first module of the Supplemental Bible..
+        /// </summary>
+        public static string NotExistingInFirstSupplemenBibleVersesFound {
+            get {
+                return ResourceManager.GetString("NotExistingInFirstSupplemenBibleVersesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Found passages that are not in the primary Bible. These passages will not be analyzed and linked to the Bible. If you want this passages to be analyzed and linked to the Bible, use this module as a primary module..
+        /// </summary>
+        public static string NotExistingInPrimaryBibleVersesFound {
+            get {
+                return ResourceManager.GetString("NotExistingInPrimaryBibleVersesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Open a verse.
         /// </summary>
         public static string OpenVerse {
             get {
@@ -1546,7 +1577,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removing parallel Bible translation start.
+        ///   Ищет локализованную строку, похожую на Removing parallel Bible translation.
         /// </summary>
         public static string RemoveParallelBibleTranslation {
             get {
@@ -1564,7 +1595,16 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Supplemental Bible was closed successfully.
+        ///   Ищет локализованную строку, похожую на Removing parallel Bible translation start.
+        /// </summary>
+        public static string RemoveParallelBibleTranslationStartMessage {
+            get {
+                return ResourceManager.GetString("RemoveParallelBibleTranslationStartMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Supplemental Bible was closed successfully.
         /// </summary>
         public static string RemoveSupplementalBibleFinishMessage {
             get {
@@ -1744,7 +1784,25 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Locking the Bible stored in SkyDrive is not currently supported. Use another kind of internet storage..
+        ///   Ищет локализованную строку, похожую на Show errors.
+        /// </summary>
+        public static string ShowErrors {
+            get {
+                return ResourceManager.GetString("ShowErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Show warnings.
+        /// </summary>
+        public static string ShowWarnings {
+            get {
+                return ResourceManager.GetString("ShowWarnings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Locking the Bible stored in SkyDrive is not currently supported. Use another kind of internet storage..
         /// </summary>
         public static string SkyDriveBibleIsNotSupportedForLock {
             get {
@@ -1780,7 +1838,20 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на .
+        ///   Ищет локализованную строку, похожую на Saved successfully.
+        /// </summary>
+        public static string SuccessfullySaved {
+            get {
+                return ResourceManager.GetString("SuccessfullySaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на This form is designed for the Supplemental Bible management. 
+        ///
+        ///Please take notice:
+        ///  - You can add modules version 2.0 or higher to the Supplemental Bible
+        ///  - It takes about an hour to add a new module to the Supplemental Bible..
         /// </summary>
         public static string SupplementalBibleFormDescription {
             get {
@@ -1969,7 +2040,16 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to verses.
+        ///   Ищет локализованную строку, похожую на Bible verse &apos;{0}&apos; was not found..
+        /// </summary>
+        public static string VerseNotFound {
+            get {
+                return ResourceManager.GetString("VerseNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на verses.
         /// </summary>
         public static string Verses {
             get {

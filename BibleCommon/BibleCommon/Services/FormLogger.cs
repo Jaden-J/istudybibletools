@@ -27,8 +27,11 @@ namespace BibleCommon.Services
             WasErrorLogged = true;
         }
 
-        public static void LogError(string message)
+        public static void LogError(string message, params object[] args)
         {
+            if (args != null && args.Length > 0)
+                message = string.Format(message, args);
+
             BibleCommon.Services.Logger.LogError(message);
 
             using (var form = new BibleCommon.UI.Forms.MessageForm(message, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning))
@@ -39,9 +42,12 @@ namespace BibleCommon.Services
             WasErrorLogged = true;
         }
 
-        public static void LogMessage(string message)
+        public static void LogMessage(string message, params object[] args)
         {
-            BibleCommon.Services.Logger.LogMessage(message);
+            if (args != null && args.Length > 0)
+                message = string.Format(message, args);
+
+            BibleCommon.Services.Logger.LogMessageParams(message);
 
             using (var form = new BibleCommon.UI.Forms.MessageForm(message, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information))
             {

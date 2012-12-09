@@ -14,68 +14,77 @@ namespace BibleCommon.Services
 {
     public static class OneNoteLocker
     {
-        public static void LockBible(Application oneNoteApp)
+        public static void LockBible(ref Application oneNoteApp)
         {
             string bibleHierarchyId = string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_Bible)
                     ? SettingsManager.Instance.NotebookId_Bible : SettingsManager.Instance.SectionGroupId_Bible;
 
-            LockOrUnlockHierarchy(oneNoteApp, bibleHierarchyId, true);
+            LockOrUnlockHierarchy(ref oneNoteApp, bibleHierarchyId, true);
         }
 
-        public static void LockSupplementalBible(Application oneNoteApp)
+        public static void LockSupplementalBible(ref Application oneNoteApp)
         {
-            string supplementalBibleId = SettingsManager.Instance.GetValidSupplementalBibleNotebookId(oneNoteApp);
+            string supplementalBibleId = SettingsManager.Instance.GetValidSupplementalBibleNotebookId(ref oneNoteApp);
 
             if (!string.IsNullOrEmpty(supplementalBibleId))
-                LockOrUnlockHierarchy(oneNoteApp, supplementalBibleId, true);
+                LockOrUnlockHierarchy(ref oneNoteApp, supplementalBibleId, true);
         }
 
 
-        public static void UnlockBible(Application oneNoteApp)
+        public static void UnlockBible(ref Application oneNoteApp)
         {
             string bibleHierarchyId = string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_Bible)
                     ? SettingsManager.Instance.NotebookId_Bible : SettingsManager.Instance.SectionGroupId_Bible;
 
-            LockOrUnlockHierarchy(oneNoteApp, bibleHierarchyId, false);
+            LockOrUnlockHierarchy(ref oneNoteApp, bibleHierarchyId, false);
         }
 
-        public static void UnlockSupplementalBible(Application oneNoteApp)
+        public static void UnlockSupplementalBible(ref Application oneNoteApp)
         {
-            string supplementalBibleId = SettingsManager.Instance.GetValidSupplementalBibleNotebookId(oneNoteApp);
+            string supplementalBibleId = SettingsManager.Instance.GetValidSupplementalBibleNotebookId(ref oneNoteApp);
 
             if (!string.IsNullOrEmpty(supplementalBibleId))
-                LockOrUnlockHierarchy(oneNoteApp, supplementalBibleId, false);
+                LockOrUnlockHierarchy(ref oneNoteApp, supplementalBibleId, false);
         }
 
-        public static void LockCurrentSection(Application oneNoteApp)
+        public static void LockCurrentSection(ref Application oneNoteApp)
         {
-            var currentPageInfo = OneNoteUtils.GetCurrentPageInfo(oneNoteApp);
+            var currentPageInfo = OneNoteUtils.GetCurrentPageInfo(ref oneNoteApp);
 
-            oneNoteApp.SyncHierarchy(currentPageInfo.SectionId);
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.SyncHierarchy(currentPageInfo.SectionId);
+            });
 
-            string sectionFilePath = GetElementPath(oneNoteApp, currentPageInfo.SectionId);
+            string sectionFilePath = GetElementPath(ref oneNoteApp, currentPageInfo.SectionId);
 
             LockSection(sectionFilePath);
 
-            oneNoteApp.SyncHierarchy(currentPageInfo.SectionId);
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.SyncHierarchy(currentPageInfo.SectionId);
+            });
         }
 
-        public static void UnlockCurrentSection(Application oneNoteApp)
+        public static void UnlockCurrentSection(ref Application oneNoteApp)
         {
-            var currentPageInfo = OneNoteUtils.GetCurrentPageInfo(oneNoteApp);
+            var currentPageInfo = OneNoteUtils.GetCurrentPageInfo(ref oneNoteApp);
 
-            string sectionFilePath = GetElementPath(oneNoteApp, currentPageInfo.SectionId);
+            string sectionFilePath = GetElementPath(ref oneNoteApp, currentPageInfo.SectionId);
 
             UnlockSection(sectionFilePath);
 
-            oneNoteApp.SyncHierarchy(currentPageInfo.SectionId);
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.SyncHierarchy(currentPageInfo.SectionId);
+            });
         }
 
-        private static void LockOrUnlockHierarchy(Application oneNoteApp, string hierarchyId, bool toLock)
+        private static void LockOrUnlockHierarchy(ref Application oneNoteApp, string hierarchyId, bool toLock)
         {
-            if (SettingsManager.Instance.IsConfigured(oneNoteApp))
+            if (SettingsManager.Instance.IsConfigured(ref oneNoteApp))
             {
-                string folderPath = GetElementPath(oneNoteApp, hierarchyId);
+                string folderPath = GetElementPath(ref oneNoteApp, hierarchyId);
 
                 foreach (var filePath in Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories))  // will throw NotSupportedException if Bible is stored on SkyDrive
                 {
@@ -85,14 +94,17 @@ namespace BibleCommon.Services
                         UnlockSection(filePath);
                 }
 
-                oneNoteApp.SyncHierarchy(hierarchyId);
+                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                {
+                    oneNoteAppSafe.SyncHierarchy(hierarchyId);
+                });
             }
         }
 
-        private static string GetElementPath(Application oneNoteApp, string elementId)
+        private static string GetElementPath(ref Application oneNoteApp, string elementId)
         {
             XmlNamespaceManager xnm;
-            var xDoc = OneNoteUtils.GetHierarchyElement(oneNoteApp, elementId, HierarchyScope.hsSelf, out xnm);
+            var xDoc = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, elementId, HierarchyScope.hsSelf, out xnm);
             return (string)xDoc.Root.Attribute("path");
         }
 

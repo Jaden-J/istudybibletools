@@ -212,7 +212,7 @@ namespace BibleCommon.Services
                     var parallelVerseToAdd = (SimpleVersePointer)parallelVerses[i].Clone();
 
                     if (!parallelVerseToAdd.IsApocrypha)
-                        parallelVerseToAdd.PartIndex = (isPartParallelVersePointer && getAllVerses != GetAllVersesType.One) ? (int?)partIndex++ : null;
+                        parallelVerseToAdd.PartIndex = (isPartParallelVersePointer && getAllVerses != GetAllVersesType.One) ? (int?)partIndex++ : parallelVerseToAdd.PartIndex;
                     else if (parallelVerseToAdd.PartIndex.HasValue)
                         throw new NotSupportedException(string.Format("Apocrypha part verses are not supported yet. Parallel verse is '{0}'.", parallelVerseToAdd));                    
 

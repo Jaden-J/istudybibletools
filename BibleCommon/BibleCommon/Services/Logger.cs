@@ -11,7 +11,15 @@ namespace BibleCommon.Services
 {
     public static class Logger
     {
-        public static bool ErrorWasLogged = false;        
+        public enum Severity
+        {
+            Info,
+            Warning,
+            Error            
+        }
+
+        public static bool ErrorWasLogged = false;
+        public static bool WarningWasLogged = false;        
         private static int _level = 0;
         private static string _logFilePath;
         private static FileStream _fileStream = null;
@@ -19,6 +27,7 @@ namespace BibleCommon.Services
         private static ListBox _lb = null;
 
         public static List<string> Errors { get; set; }
+        public static List<string> Warnings { get; set; }
 
         private static string _errorText = BibleCommon.Resources.Constants.ErrorUpper + ": ";
 
@@ -54,6 +63,7 @@ namespace BibleCommon.Services
                 _streamWriter = new StreamWriter(_fileStream, Encoding.UTF8);
 
                 Errors = new List<string>();
+                Warnings = new List<string>();
 
                 _isInitialized = true;
             }
@@ -92,20 +102,20 @@ namespace BibleCommon.Services
             }
         }
 
-        public static void LogMessage(string message, bool leveled, bool newLine, bool writeDateTime = true, bool silient = false)
+        public static void LogMessage(string message, bool leveled, bool newLine, bool writeDateTime = true, bool silient = false, Severity severity = Severity.Info)
         {
-            LogMessageToFileAndConsole(false, string.Empty, null, writeDateTime, false, silient);
+            LogMessageToFileAndConsole(false, string.Empty, null, writeDateTime, silient, severity);
 
             if (leveled)
                 for (int i = 0; i < _level; i++)
-                    LogMessageToFileAndConsole(false, "  ", null, false, false, silient);
+                    LogMessageToFileAndConsole(false, "  ", null, false, silient, severity);
 
-            LogMessageToFileAndConsole(newLine, message, null, false, false, silient);
+            LogMessageToFileAndConsole(newLine, message, null, false, silient, severity);
         }
 
 
         private static bool _newLineForListBox = false;
-        private static void LogMessageToFileAndConsole(bool newLine, string message, string messageEx, bool writeDateTime, bool isError, bool silient)
+        private static void LogMessageToFileAndConsole(bool newLine, string message, string messageEx, bool writeDateTime, bool silient, Severity severity)
         {
             if (!_isInitialized)
             {
@@ -162,9 +172,17 @@ namespace BibleCommon.Services
             }
             catch { }
 
-            if (isError)
+            if (severity == Severity.Error)
+            {
                 if (Errors != null)
                     Errors.Add(message);
+            }
+            else if (severity == Severity.Warning)
+            {
+                if (Warnings != null)
+                    if (!string.IsNullOrEmpty(message) && !string.IsNullOrEmpty(message.Trim()))
+                        Warnings.Add(message);
+            }
         }
 
         private static void TryToWriteToFile(string message, bool newLine)
@@ -189,7 +207,8 @@ namespace BibleCommon.Services
 
         public static void LogWarning(string message, params object[] args)
         {
-            LogMessage("Warning: " + FormatString(message, args), true, true);
+            LogMessage("Warning: " + FormatString(message, args), true, true, true, false, Severity.Warning);
+            WarningWasLogged = true;
         }
 
         /// <summary>
@@ -197,19 +216,19 @@ namespace BibleCommon.Services
         /// </summary>
         /// <param name="message"></param>
         /// <param name="args"></param>
-        public static void LogMessageSilient(string message, params object[] args)
+        public static void LogMessageSilientParams(string message, params object[] args)
         {
             LogMessage(FormatString(message, args), true, true, true, true);
         }
 
-        public static void LogMessage(string message, params object[] args)
+        public static void LogMessageParams(string message, params object[] args)
         {
             LogMessage(FormatString(message, args), true, true);
         }
 
         public static void LogError(string message, Exception ex)
         {
-            LogMessageToFileAndConsole(true, string.Format("{0}{1} {2}", _errorText, message, ex.Message), string.Format("{0} {1}", message, ex.ToString()), true, true, false);
+            LogMessageToFileAndConsole(true, string.Format("{0}{1} {2}", _errorText, message, ex.Message), string.Format("{0} {1}", message, ex.ToString()), true, false, Severity.Error);
             ErrorWasLogged = true;   
         }
 
@@ -220,7 +239,7 @@ namespace BibleCommon.Services
 
         public static void LogError(string message, params object[] args)
         {
-            LogMessageToFileAndConsole(true, _errorText + FormatString(message, args), null, true, true, false);
+            LogMessageToFileAndConsole(true, _errorText + FormatString(message, args), null, true, false, Severity.Error);
             ErrorWasLogged = true;
         }
 

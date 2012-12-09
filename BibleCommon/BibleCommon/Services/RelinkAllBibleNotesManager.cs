@@ -23,7 +23,7 @@ namespace BibleCommon.Services
 
         public void RelinkBiblePageNotes(string bibleSectionId, string biblePageId, string biblePageName, VersePointer chapterPointer)
         {   
-            OneNoteProxy.PageContent biblePageDocument = OneNoteProxy.Instance.GetPageContent(_oneNoteApp, biblePageId, OneNoteProxy.PageType.Bible);
+            OneNoteProxy.PageContent biblePageDocument = OneNoteProxy.Instance.GetPageContent(ref _oneNoteApp, biblePageId, OneNoteProxy.PageType.Bible);
             bool wasModified = false;
 
             XElement chapterNotesPageLink = NoteLinkManager.GetChapterNotesPageLink(biblePageDocument.Content, biblePageDocument.Xnm);
@@ -67,13 +67,13 @@ namespace BibleCommon.Services
         {
             bool pageWasCreated;
             string notesPageName = NoteLinkManager.GetDefaultNotesPageName(verseNumber);
-            string notesPageId = OneNoteProxy.Instance.GetNotesPageId(_oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName, out pageWasCreated);
-            string notesRowObjectId = NotesPageManager.GetNotesRowObjectId(_oneNoteApp, notesPageId, verseNumber, !verseNumber.HasValue);
+            string notesPageId = OneNoteProxy.Instance.GetNotesPageId(ref _oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName, out pageWasCreated);
+            string notesRowObjectId = NotesPageManager.GetNotesRowObjectId(ref _oneNoteApp, notesPageId, verseNumber, !verseNumber.HasValue);
 
             if (!string.IsNullOrEmpty(notesRowObjectId))
             {
                 string newNotesPageLink = string.Format("<font size='2pt'>{0}</font>",
-                                    OneNoteUtils.GenerateHref(_oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, notesRowObjectId));
+                                    OneNoteUtils.GenerateHref(ref _oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, notesRowObjectId));
 
                 textElement.Value = newNotesPageLink;
 

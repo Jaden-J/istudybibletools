@@ -10,4 +10,14 @@ namespace BibleCommon.Common
         internal int CursorPosition { get; set; }
         internal bool WasModified { get; set; }
     }
+
+    public class ErrorsList : List<string>
+    {
+        public string ErrorsDecription { get; set; }
+
+        public ErrorsList(IEnumerable<string> collection)
+            : base(collection)
+        {
+        }
+    }
 }

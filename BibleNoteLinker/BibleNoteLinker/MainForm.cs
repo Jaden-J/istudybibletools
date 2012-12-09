@@ -42,7 +42,7 @@ namespace BibleNoteLinker
                 return;
             }
 
-            if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
+            if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
             {
                 MessageBox.Show(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                 return;
@@ -60,14 +60,14 @@ namespace BibleNoteLinker
                 PrepareForAnalyze();
 
                 DateTime dt = DateTime.Now;
-                Logger.LogMessage("{0}: {1}", BibleCommon.Resources.Constants.StartTime, dt.ToLongTimeString());
+                Logger.LogMessageParams("{0}: {1}", BibleCommon.Resources.Constants.StartTime, dt.ToLongTimeString());
                 StartAnalyze();
-                Logger.LogMessage("{0}: {1}", BibleCommon.Resources.Constants.TimeSpent, DateTime.Now.Subtract(dt));
+                Logger.LogMessageParams("{0}: {1}", BibleCommon.Resources.Constants.TimeSpent, DateTime.Now.Subtract(dt));
 
             }
             catch (ProcessAbortedByUserException)
             {
-                Logger.LogMessage(BibleCommon.Resources.Constants.ProcessAbortedByUser);
+                Logger.LogMessageParams(BibleCommon.Resources.Constants.ProcessAbortedByUser);
             }
             catch (Exception ex)
             {
@@ -77,17 +77,27 @@ namespace BibleNoteLinker
             pbMain.Value = pbMain.Maximum = 1;
 
 
-            string message;
-            if (!Logger.ErrorWasLogged)
-                message = BibleCommon.Resources.Constants.FinishSuccessfully;
-            else
+            string message;            
+
+            if (Logger.ErrorWasLogged)
             {
                 message = BibleCommon.Resources.Constants.FinishWithErrors;
                 llblShowErrors.Visible = true;
+                llblShowErrors.Text = BibleCommon.Resources.Constants.ShowErrors;
+            }
+            else if (Logger.WarningWasLogged)
+            {
+                message = BibleCommon.Resources.Constants.FinishWithWarnings;
+                llblShowErrors.Visible = true;
+                llblShowErrors.Text = BibleCommon.Resources.Constants.ShowWarnings;
+            }
+            else
+            {
+                message = BibleCommon.Resources.Constants.FinishSuccessfully;
             }
 
             LogHighLevelMessage(message, null, null);
-            Logger.LogMessage(message);
+            Logger.LogMessageParams(message);
 
             btnOk.Text = BibleCommon.Resources.Constants.Close;
             btnOk.Enabled = true;
@@ -234,7 +244,10 @@ namespace BibleNoteLinker
 
         private void llblShowErrors_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            using (var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(Logger.Errors))
+            var messages = Logger.ErrorWasLogged ? Logger.Errors : Logger.Warnings;
+            messages = messages.Distinct().ToList();
+
+            using (var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(messages))
             {
                 errorsForm.ShowDialog();
             }

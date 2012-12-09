@@ -53,11 +53,11 @@ namespace BibleVersePointer
 
             try
             {
-                if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
+                if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
                 {
                     SettingsManager.Instance.ReLoadSettings();  // так как программа кэшируется в пуле OneNote, то проверим - может уже сконфигурили всё.
 
-                    if (!SettingsManager.Instance.IsConfigured(_oneNoteApp))
+                    if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
                     {
                         Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                     }
@@ -78,8 +78,11 @@ namespace BibleVersePointer
 
                             if (vp.IsValid)
                             {
-                                if (_oneNoteApp.Windows.CurrentWindow == null)
-                                    _oneNoteApp.NavigateTo(string.Empty);
+                                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                                {
+                                    if (oneNoteAppSafe.Windows.CurrentWindow == null)
+                                        oneNoteAppSafe.NavigateTo(string.Empty);
+                                });
 
                                 if (GoToVerse(vp))
                                 {
@@ -102,8 +105,11 @@ namespace BibleVersePointer
 
                 if (!Logger.WasLogged)
                 {
-                    if (_oneNoteApp.Windows.CurrentWindow != null)
-                        SetForegroundWindow(new IntPtr((long)_oneNoteApp.Windows.CurrentWindow.WindowHandle));
+                    OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                    {
+                        if (oneNoteAppSafe.Windows.CurrentWindow != null)
+                            SetForegroundWindow(new IntPtr((long)oneNoteAppSafe.Windows.CurrentWindow.WindowHandle));
+                    });
                     this.Close();
                 }
             }
@@ -115,7 +121,7 @@ namespace BibleVersePointer
 
         private bool GoToVerse(VersePointer vp)
         {   
-            var result = HierarchySearchManager.GetHierarchyObject(_oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);            
+            var result = HierarchySearchManager.GetHierarchyObject(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);            
 
             if (result.ResultType != HierarchySearchManager.HierarchySearchResultType.NotFound 
                 && (result.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder || result.HierarchyStage == HierarchySearchManager.HierarchyStage.Page))
@@ -162,13 +168,16 @@ namespace BibleVersePointer
 
         private static void NavigateTo(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, string pageId, params HierarchySearchManager.VerseObjectInfo[] objectsIds)
         {
-            oneNoteApp.NavigateTo(pageId, objectsIds.Length > 0 ? objectsIds[0].ObjectId : null);            
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.NavigateTo(pageId, objectsIds.Length > 0 ? objectsIds[0].ObjectId : null);
+            });
 
             if (objectsIds.Length > 1)
             {   
                 XmlNamespaceManager xnm;                
-                var pageDoc = OneNoteUtils.GetPageContent(oneNoteApp, pageId, PageInfo.piSelection, out xnm);
-                OneNoteLocker.UnlockCurrentSection(oneNoteApp);
+                var pageDoc = OneNoteUtils.GetPageContent(ref oneNoteApp, pageId, PageInfo.piSelection, out xnm);
+                OneNoteLocker.UnlockCurrentSection(ref oneNoteApp);
                 
                 foreach (var objectId in objectsIds.Skip(1))
                 {
