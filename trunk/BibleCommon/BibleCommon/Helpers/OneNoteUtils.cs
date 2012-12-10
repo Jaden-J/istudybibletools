@@ -236,10 +236,22 @@ namespace BibleCommon.Helpers
         private static void UpdatePageContentSafeInternal(ref Application oneNoteApp, XDocument pageContent, XmlNamespaceManager xnm, int attemptsCount)
         {
             var inkNodes = pageContent.Root.XPathSelectElements("one:InkDrawing", xnm)
-                            //.Union(doc.Root.XPathSelectElements("//one:OE[.//one:InkDrawing]", xnm))    // тогда удалятся все неподдерживаемые элементы. Но тогда у пользователей будут просто удаляться некоторые рисунки
+                            //.Union(pageContent.Root.XPathSelectElements("//one:OE[.//one:InkDrawing]", xnm))    // тогда удалятся все неподдерживаемые элементы. Но тогда у пользователей будут просто удаляться некоторые рисунки
                             .Union(pageContent.Root.XPathSelectElements("one:Outline[.//one:InkWord]", xnm)).ToArray();
+
             foreach (var inkNode in inkNodes)
-                inkNode.Remove();
+            {
+                if (inkNode.XPathSelectElement(".//one:T", xnm) == null)
+                    inkNode.Remove();
+                else
+                {
+                    var inkParagraphs = inkNode.XPathSelectElements(".//one:InkParagraph", xnm);
+                    inkParagraphs.Remove();
+
+                    var inkWords = inkNode.XPathSelectElements(".//one:InkWord", xnm);
+                    inkWords.Remove();                                    
+                }
+            }
 
             try
             {

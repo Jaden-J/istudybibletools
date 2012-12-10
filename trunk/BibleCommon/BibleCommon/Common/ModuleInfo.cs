@@ -313,7 +313,9 @@ namespace BibleCommon.Common
     [Serializable]
     public class NotebookInfo : SectionGroupInfo
     {
-
+        [XmlAttribute]
+        [DefaultValue("")]
+        public string Nickname { get; set; }
     }
 
     [Serializable]
