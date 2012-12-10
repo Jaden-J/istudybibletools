@@ -292,9 +292,9 @@ namespace BibleConfigurator
                                 var notebookId = _notebookFilesToWatch[e.FullPath];
                                 if (!string.IsNullOrEmpty(notebookId))
                                 {
-                                    OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                                    OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
                                     {
-                                        oneNoteAppSafe.CloseNotebook(notebookId);
+                                        _oneNoteApp.CloseNotebook(notebookId);
                                     });
                                 }
                                 _notebookFilesToWatch.Remove(e.FullPath);                                
@@ -340,9 +340,9 @@ namespace BibleConfigurator
 
             File.Copy(MarkingWordsSectionFilePath, Path.Combine(notebookPath, markingWordsSectionName), true);
             string markingWordsSectionId;
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                oneNoteAppSafe.OpenHierarchy(markingWordsSectionName, notebookId, out markingWordsSectionId, CreateFileType.cftSection);
+                _oneNoteApp.OpenHierarchy(markingWordsSectionName, notebookId, out markingWordsSectionId, CreateFileType.cftSection);
             });
         }
 
@@ -353,9 +353,9 @@ namespace BibleConfigurator
 
 
             AddFileForWatching(targetFilePath, closeNotebook ? notebookId : null);
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                oneNoteAppSafe.Publish(notebookId, targetFilePath, PublishFormat.pfOneNotePackage);
+                _oneNoteApp.Publish(notebookId, targetFilePath, PublishFormat.pfOneNotePackage);
             });
         }
 

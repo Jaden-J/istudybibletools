@@ -533,9 +533,9 @@ namespace BibleConfigurator
                     {
                         if (attemptNumber > 5 && string.IsNullOrEmpty(notebookId))  // то есть прошло уже 25 секунд, а записная книжка даже ещё не создалась!!!
                         {
-                            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
                             {
-                                oneNoteAppSafe.OpenHierarchy(notebookFolderPath, null, out notebookId);
+                                _oneNoteApp.OpenHierarchy(notebookFolderPath, null, out notebookId);
                             });
                         }
                     }
@@ -688,9 +688,9 @@ namespace BibleConfigurator
                     FormLogger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.ConfiguratorSectionGroupNotFound, sectionGroupId));
             }
 
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                oneNoteAppSafe.UpdateHierarchy(notebook.Content.ToString(), Constants.CurrentOneNoteSchema);
+                _oneNoteApp.UpdateHierarchy(notebook.Content.ToString(), Constants.CurrentOneNoteSchema);
             });
             OneNoteProxy.Instance.RefreshHierarchyCache(ref _oneNoteApp, notebookId, HierarchyScope.hsSections);     
         }
@@ -711,9 +711,9 @@ namespace BibleConfigurator
                 //if (!string.IsNullOrEmpty(folderPath))
                 //{
                 string notebookFolderPathTemp = notebookFolderPath;
-                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
                 {
-                    oneNoteAppSafe.OpenPackage(packageFilePath, notebookFolderPathTemp, out s);
+                    _oneNoteApp.OpenPackage(packageFilePath, notebookFolderPathTemp, out s);
                 });
 
                 string[] files = Directory.GetFiles(s, "*.onetoc2", SearchOption.TopDirectoryOnly);
@@ -949,9 +949,9 @@ namespace BibleConfigurator
         {
             string defaultNotebookFolderPath = null;
 
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                oneNoteAppSafe.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+                _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
             });
 
             

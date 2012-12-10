@@ -88,20 +88,20 @@ namespace BibleNoteLinker
                 CommitPages(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, 6, null);                
             }
 
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                if (oneNoteAppSafe.Windows.CurrentWindow != null && currentPage != null)
+                if (_oneNoteApp.Windows.CurrentWindow != null && currentPage != null)
                 {
-                    oneNoteAppSafe.NavigateTo(currentPage.Id, null);
+                    _oneNoteApp.NavigateTo(currentPage.Id, null);
                 }
             });
         }
 
         private void SyncNotesPagesContainer()
         {
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                oneNoteAppSafe.SyncHierarchy(!string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_BibleNotesPages)
+                _oneNoteApp.SyncHierarchy(!string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_BibleNotesPages)
                                           ? SettingsManager.Instance.SectionGroupId_BibleNotesPages
                                           : SettingsManager.Instance.NotebookId_BibleNotesPages);
             });

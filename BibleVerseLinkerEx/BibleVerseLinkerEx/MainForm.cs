@@ -62,9 +62,9 @@ namespace BibleVerseLinkerEx
 
                             if (!Logger.WasLogged)
                             {
-                                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, () =>
                                 {
-                                    SetForegroundWindow(new IntPtr((long)oneNoteAppSafe.Windows.CurrentWindow.WindowHandle));
+                                    SetForegroundWindow(new IntPtr((long)oneNoteApp.Windows.CurrentWindow.WindowHandle));
                                 });
                                 this.Visible = false;
                                 vlManager.SortCommentsPages();

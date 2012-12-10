@@ -78,10 +78,10 @@ namespace BibleVersePointer
 
                             if (vp.IsValid)
                             {
-                                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
                                 {
-                                    if (oneNoteAppSafe.Windows.CurrentWindow == null)
-                                        oneNoteAppSafe.NavigateTo(string.Empty);
+                                    if (_oneNoteApp.Windows.CurrentWindow == null)
+                                        _oneNoteApp.NavigateTo(string.Empty);
                                 });
 
                                 if (GoToVerse(vp))
@@ -105,10 +105,10 @@ namespace BibleVersePointer
 
                 if (!Logger.WasLogged)
                 {
-                    OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+                    OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
                     {
-                        if (oneNoteAppSafe.Windows.CurrentWindow != null)
-                            SetForegroundWindow(new IntPtr((long)oneNoteAppSafe.Windows.CurrentWindow.WindowHandle));
+                        if (_oneNoteApp.Windows.CurrentWindow != null)
+                            SetForegroundWindow(new IntPtr((long)_oneNoteApp.Windows.CurrentWindow.WindowHandle));
                     });
                     this.Close();
                 }
@@ -129,7 +129,7 @@ namespace BibleVersePointer
                 string hierarchyObjectId = !string.IsNullOrEmpty(result.HierarchyObjectInfo.PageId)
                     ? result.HierarchyObjectInfo.PageId : result.HierarchyObjectInfo.SectionId;
 
-                NavigateTo(ref _oneNoteApp, hierarchyObjectId, result.HierarchyObjectInfo.GetAllObjectsIds().ToArray());
+                NavigateTo(hierarchyObjectId, result.HierarchyObjectInfo.GetAllObjectsIds().ToArray());
                 return true;
             }
             else
@@ -166,18 +166,18 @@ namespace BibleVersePointer
         }
 
 
-        private static void NavigateTo(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, string pageId, params HierarchySearchManager.VerseObjectInfo[] objectsIds)
-        {
-            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+        private void NavigateTo(string pageId, params HierarchySearchManager.VerseObjectInfo[] objectsIds)
+        {            
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                oneNoteAppSafe.NavigateTo(pageId, objectsIds.Length > 0 ? objectsIds[0].ObjectId : null);
+                _oneNoteApp.NavigateTo(pageId, objectsIds.Length > 0 ? objectsIds[0].ObjectId : null);
             });
 
             if (objectsIds.Length > 1)
             {   
                 XmlNamespaceManager xnm;                
-                var pageDoc = OneNoteUtils.GetPageContent(ref oneNoteApp, pageId, PageInfo.piSelection, out xnm);
-                OneNoteLocker.UnlockCurrentSection(ref oneNoteApp);
+                var pageDoc = OneNoteUtils.GetPageContent(ref _oneNoteApp, pageId, PageInfo.piSelection, out xnm);
+                OneNoteLocker.UnlockCurrentSection(ref _oneNoteApp);
                 
                 foreach (var objectId in objectsIds.Skip(1))
                 {
@@ -186,7 +186,7 @@ namespace BibleVersePointer
                         el.SetAttributeValue("selected", "all");
                 }
                 
-                OneNoteUtils.UpdatePageContentSafe(ref oneNoteApp, pageDoc, xnm);
+                OneNoteUtils.UpdatePageContentSafe(ref _oneNoteApp, pageDoc, xnm);
             }
         }      
     }

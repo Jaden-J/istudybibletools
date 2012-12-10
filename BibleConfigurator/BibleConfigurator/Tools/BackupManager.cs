@@ -165,9 +165,9 @@ namespace BibleConfigurator.Tools
 
         private void BackupNotebook(string notebookId, string notebookName)
         {
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                oneNoteAppSafe.Publish(notebookId, Path.Combine(_tempFolderPath,
+                _oneNoteApp.Publish(notebookId, Path.Combine(_tempFolderPath,
                     notebookName), PublishFormat.pfOneNotePackage);
             });
         }
