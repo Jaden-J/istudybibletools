@@ -330,12 +330,13 @@ namespace BibleConfigurator
         {
             if (createFromTemplateControl.Checked)
             {
-                string notebookTemplateFileName = module.GetNotebook(notebookType).Name;
+                var notebookInfo = module.GetNotebook(notebookType);
+                string notebookTemplateFileName = notebookInfo.Name;
                 string notebookFolderPath;
                 string notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, notebookFromTemplatePath, out notebookFolderPath);
                 if (!string.IsNullOrEmpty(notebookName))
                 {
-                    WaitAndSaveParameters(module, notebookType, notebookName, notebookFolderPath, notebookType == ContainerType.Bible);                         // выйдем из метода только когда OneNote отработает
+                    WaitAndSaveParameters(module, notebookType, notebookName, notebookInfo.Nickname, notebookFolderPath, notebookType == ContainerType.Bible);                         // выйдем из метода только когда OneNote отработает
                     createFromTemplateControl.Checked = false;  // чтоб если ошибки будут потом, он заново не создавал
                     selectedNotebookNameControl.Items.Add(notebookName);
                     selectedNotebookNameControl.SelectedItem = notebookName;
@@ -355,12 +356,13 @@ namespace BibleConfigurator
 
             if (chkCreateSingleNotebookFromTemplate.Checked)
             {
-                string notebookTemplateFileName = module.GetNotebook(ContainerType.Single).Name;
+                var notebookInfo = module.GetNotebook(ContainerType.Single);
+                string notebookTemplateFileName = notebookInfo.Name;
                 string notebookFolderPath;
                 notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, SingleNotebookFromTemplatePath, out notebookFolderPath);
                 if (!string.IsNullOrEmpty(notebookName))
                 {
-                    WaitAndSaveParameters(module, ContainerType.Single, notebookName, notebookFolderPath, false);
+                    WaitAndSaveParameters(module, ContainerType.Single, notebookName, notebookInfo.Nickname, notebookFolderPath, false);
                     SearchForCorrespondenceSectionGroups(module, SettingsManager.Instance.NotebookId_Bible);
                 }
             }
@@ -510,7 +512,7 @@ namespace BibleConfigurator
 
         }
 
-        private void WaitAndSaveParameters(ModuleInfo module, ContainerType notebookType, string notebookName, string notebookFolderPath, bool saveModuleInformationIntoFirstPage)
+        private void WaitAndSaveParameters(ModuleInfo module, ContainerType notebookType, string notebookName, string notebookNickname, string notebookFolderPath, bool saveModuleInformationIntoFirstPage)
         {   
             PrepareForLongProcessing(100, 1, string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ConfiguratorNotebookCreation, notebookName));
             
@@ -555,10 +557,36 @@ namespace BibleConfigurator
 
             if (!parametersWasLoad)
                 throw new SaveParametersException(BibleCommon.Resources.Constants.ConfiguratorCanNotRequestDataFromOneNote, true);
-            else if (saveModuleInformationIntoFirstPage)
+            else
             {
-                if (!string.IsNullOrEmpty(notebookId))
-                    SaveModuleInformationIntoFirstPage(notebookId, module);
+                if (saveModuleInformationIntoFirstPage)
+                {
+                    if (!string.IsNullOrEmpty(notebookId))
+                        SaveModuleInformationIntoFirstPage(notebookId, module);
+                }
+
+                if (!string.IsNullOrEmpty(notebookNickname))
+                    TryToRenameNotebook(notebookId, notebookNickname);
+            }
+        }
+
+        private void TryToRenameNotebook(string notebookId, string notebookNickname)
+        {
+            try
+            {
+                XmlNamespaceManager xnm;
+                var notebook = OneNoteUtils.GetHierarchyElement(ref _oneNoteApp, notebookId, HierarchyScope.hsSelf, out xnm);
+
+                notebook.Root.SetAttributeValue("nickname", notebookNickname);
+
+                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
+                {
+                    _oneNoteApp.UpdateHierarchy(notebook.ToString(), Constants.CurrentOneNoteSchema);
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
             }
         }
 
