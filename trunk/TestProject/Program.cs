@@ -347,9 +347,9 @@ namespace TestProject
             DateTime dtStart = DateTime.Now;
 
             string defaultNotebookFolderPath = null;
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                oneNoteAppSafe.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+                _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
             });
 
             SupplementalBibleManager.CreateSupplementalBible(ref _oneNoteApp, ModulesManager.GetModuleInfo("kjv"), defaultNotebookFolderPath, null);
@@ -372,9 +372,9 @@ namespace TestProject
             DateTime dtStart = DateTime.Now;
 
             string defaultNotebookFolderPath = null;
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                oneNoteAppSafe.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
+                _oneNoteApp.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
             });
 
             var result = SupplementalBibleManager.AddParallelBible(ref _oneNoteApp, ModulesManager.GetModuleInfo("rst"), null, null);

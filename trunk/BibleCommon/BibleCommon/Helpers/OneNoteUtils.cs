@@ -257,12 +257,17 @@ namespace BibleCommon.Helpers
             }
         }
 
-        public static void UseOneNoteAPI(ref Application oneNoteApp, Action<Application> action)
+        public static void UseOneNoteAPI(ref Application oneNoteApp, Action action)
+        {
+            UseOneNoteAPI(ref oneNoteApp, (safeOneNoteApp) => { action(); });
+        }
+
+        public static void UseOneNoteAPI(ref Application oneNoteApp, Action<IApplication> action)
         {
             UseOneNoteAPIInternal(ref oneNoteApp, action, 0);
         }
 
-        private static void UseOneNoteAPIInternal(ref Application oneNoteApp, Action<Application> action, int attemptsCount)
+        private static void UseOneNoteAPIInternal(ref Application oneNoteApp, Action<IApplication> action, int attemptsCount)
         {
             try
             {
