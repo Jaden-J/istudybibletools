@@ -273,7 +273,7 @@ namespace BibleVerseLinkerEx
 
             pageContent.WasModified = true;
 
-            OneNoteProxy.Instance.CommitAllModifiedPages(ref _oneNoteApp, pc => pc.PageType == OneNoteProxy.PageType.CommentPage, null, null);
+            OneNoteProxy.Instance.CommitAllModifiedPages(ref _oneNoteApp, false, pc => pc.PageType == OneNoteProxy.PageType.CommentPage, null, null);
 
             XElement addedObject = GetLastPageObject(pageId, GetOutlinePosition(pageContent.Content, newCommentElement, pageContent.Xnm));
 

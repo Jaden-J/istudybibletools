@@ -88,22 +88,17 @@ namespace BibleCommon.Helpers
             }
         }
 
-        public static void RunSingleInstance(Form form, string messageIfSecondInstance, Action singleAction, bool silent = false)
+        public static void RunSingleInstance(string mutexId, string messageIfSecondInstance, Action singleAction, bool silent = false)
         {
             string appGuid = ((GuidAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute), false).GetValue(0)).Value.ToString();
 
-            using (Mutex mutex = new Mutex(false, "Global\\" + appGuid + (form != null ? form.GetType().FullName : string.Empty)))
+            using (Mutex mutex = new Mutex(false, string.Format("Global\\{0}_{1}", appGuid, mutexId)))
             {
                 if (!mutex.WaitOne(0, false))
                 {
                     if (!silent)                    
                         MessageBox.Show(messageIfSecondInstance, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-                    if (form != null)
-                    {
-                        form.Close();
-                        form.Dispose();
-                    }
+                    
                     BibleCommon.Services.Logger.Done();
                 }
                 else
