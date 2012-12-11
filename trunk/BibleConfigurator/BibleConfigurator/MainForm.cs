@@ -566,29 +566,11 @@ namespace BibleConfigurator
                 }
 
                 if (!string.IsNullOrEmpty(notebookNickname))
-                    TryToRenameNotebook(notebookId, notebookNickname);
+                    NotebookGenerator.TryToRenameNotebookSafe(ref _oneNoteApp, notebookId, notebookNickname);
             }
         }
 
-        private void TryToRenameNotebook(string notebookId, string notebookNickname)
-        {
-            try
-            {
-                XmlNamespaceManager xnm;
-                var notebook = OneNoteUtils.GetHierarchyElement(ref _oneNoteApp, notebookId, HierarchyScope.hsSelf, out xnm);
-
-                notebook.Root.SetAttributeValue("nickname", notebookNickname);
-
-                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
-                {
-                    _oneNoteApp.UpdateHierarchy(notebook.ToString(), Constants.CurrentOneNoteSchema);
-                });
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-            }
-        }
+       
 
         private void SaveModuleInformationIntoFirstPage(string notebookId, ModuleInfo module)
         {

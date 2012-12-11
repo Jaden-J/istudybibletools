@@ -148,9 +148,19 @@ namespace BibleCommon.Services
                                                 prevChar, nextChar, globalChapterResult, localChapterName, prevResult, isLink, isInBrackets, isTitle);
             }
 
+            var tryToSearchSingleVerse = false; 
             if (result.ResultType == VersePointerSearchResult.SearchResultType.Nothing && IsChapterOrVerseWithoutBookName(prevChar, nextChar))
-            {
+            {                
                 result = TryGetChapterOrVerseWithoutBookName(textElement, numberStartIndex, number, nextTextBreakIndex, nextHtmlBreakIndex, prevTextBreakIndex, prevHtmlBreakIndex,
+                                                prevChar, nextChar, globalChapterResult, localChapterName, prevResult, isLink, isInBrackets, isTitle, out tryToSearchSingleVerse);
+            }
+
+            // конечно наверное правильнее просто поставить вызов метода TryToGetSingleVerse в конец и проверять условие 
+            // result.ResultType == VersePointerSearchResult.SearchResultType.Nothing && (IsSingleVerse(prevChar, nextChar) || tryToSearchSingleVerse)
+            // но почему то опасно сейчас менять очерёдность проверок. Вроде как в этом был какой-то смысл
+            if (result.ResultType == VersePointerSearchResult.SearchResultType.Nothing && tryToSearchSingleVerse)
+            {
+                result = TryToGetSingleVerse(textElement, numberStartIndex, number, nextTextBreakIndex, nextHtmlBreakIndex, prevTextBreakIndex, prevHtmlBreakIndex,
                                                 prevChar, nextChar, globalChapterResult, localChapterName, prevResult, isLink, isInBrackets, isTitle);
             }
 
@@ -207,11 +217,12 @@ namespace BibleCommon.Services
         private static VersePointerSearchResult TryGetChapterOrVerseWithoutBookName(XElement textElement, int numberStartIndex, int number, 
             int nextTextBreakIndex, int nextHtmlBreakIndex, int prevTextBreakIndex, int prevHtmlBreakIndex, string prevChar, string nextChar, 
             VersePointerSearchResult globalChapterResult, string localChapterName, 
-            VersePointerSearchResult prevResult, bool isLink, bool isInBrackets, bool isTitle)
+            VersePointerSearchResult prevResult, bool isLink, bool isInBrackets, bool isTitle, out bool tryToSearchSingleVerse)
         {
-            VersePointerSearchResult result = new VersePointerSearchResult();            
+            VersePointerSearchResult result = new VersePointerSearchResult();
+            tryToSearchSingleVerse = false;
 
-            int temp, temp2, endIndex;
+            int temp, temp2, endIndex = 0;
             string prevPrevChar = StringUtils.GetPrevString(textElement.Value, prevHtmlBreakIndex, null, out temp, out temp2, StringSearchIgnorance.None, StringSearchMode.SearchFirstChar);           
 
             if (!string.IsNullOrEmpty(localChapterName))
@@ -247,8 +258,14 @@ namespace BibleCommon.Services
                             resultType = VersePointerSearchResult.SearchResultType.ChapterAndVerseWithoutBookName;
                             verseName = GetVerseName(prevResult.VersePointer.OriginalBookName, number, verseString);
                         }
+                        else  // то есть вроде бы похоже на главу, а на самом деле нет стиха. Скорее всего ссылка типа "Ин 1:5,6: вот"
+                        {
+                            if (prevChar == "," && !prevResult.VersePointer.IsChapter)  
+                                tryToSearchSingleVerse = true;                            
+                        }
                     }
-                    else
+
+                    if (resultType == VersePointerSearchResult.SearchResultType.Nothing && !tryToSearchSingleVerse)
                     {
                         endIndex = nextTextBreakIndex;
                         verseString = GetFullVerseString(textElement.Value, number, isLink, ref endIndex, ref nextHtmlBreakIndex);
@@ -522,7 +539,7 @@ namespace BibleCommon.Services
 
         private static bool IsChapter(string prevChar, string nextChar)
         {
-            string[] endChars = { ")", "]", "}", ",", ".", "?", "!", ";", "-", "&" };
+            string[] endChars = { ")", "]", "}", ",", ".", "?", "!", ";", "-", "&", ":" };   // двоеточие добавлено потому, что могут быть ссылки типа "Ин 1: вот". Всё равно, если это была нормальная ссылка, он до сюда не дойдёт
             return string.IsNullOrEmpty(nextChar.Trim()) || endChars.Contains(nextChar);                
         }
 

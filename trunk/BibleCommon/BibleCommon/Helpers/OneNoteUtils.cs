@@ -236,7 +236,7 @@ namespace BibleCommon.Helpers
         private static void UpdatePageContentSafeInternal(ref Application oneNoteApp, XDocument pageContent, XmlNamespaceManager xnm, int attemptsCount)
         {
             var inkNodes = pageContent.Root.XPathSelectElements("one:InkDrawing", xnm)
-                            //.Union(pageContent.Root.XPathSelectElements("//one:OE[.//one:InkDrawing]", xnm))    // тогда удалятся все неподдерживаемые элементы. Но тогда у пользователей будут просто удаляться некоторые рисунки
+                            .Union(pageContent.Root.XPathSelectElements("//one:OE[.//one:InkDrawing]", xnm))    
                             .Union(pageContent.Root.XPathSelectElements("one:Outline[.//one:InkWord]", xnm)).ToArray();
 
             foreach (var inkNode in inkNodes)
@@ -245,11 +245,8 @@ namespace BibleCommon.Helpers
                     inkNode.Remove();
                 else
                 {
-                    var inkParagraphs = inkNode.XPathSelectElements(".//one:InkParagraph", xnm);
-                    inkParagraphs.Remove();
-
-                    var inkWords = inkNode.XPathSelectElements(".//one:InkWord", xnm);
-                    inkWords.Remove();                                    
+                    var inkWords = inkNode.XPathSelectElements(".//one:InkWord", xnm).Where(ink => ink.XPathSelectElement(".//one:CallbackID", xnm) == null).ToArray();
+                    inkWords.Remove();                 
                 }
             }
 
@@ -262,7 +259,7 @@ namespace BibleCommon.Helpers
             }
             catch (COMException ex)
             {
-                if (ex.ErrorCode == -2147213304)
+                if (ex.Message.Contains(Utils.GetHexError(Error.hrInsertingInk)))
                     throw new Exception(Resources.Constants.Error_UpdateError_InksOnPages);               
                 else
                     throw;

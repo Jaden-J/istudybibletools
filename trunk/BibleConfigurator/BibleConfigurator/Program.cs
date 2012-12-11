@@ -32,30 +32,32 @@ namespace BibleConfigurator
         {
             try
             {
-                LanguageManager.SetThreadUICulture();                
+                LanguageManager.SetThreadUICulture();
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
-                bool silent;                
+                bool silent;
+                Action action;
+                string mutexId;
                 string moreThanSingleInstanceRunMessage;
-                Form form = PrepareForRunning(out silent, out moreThanSingleInstanceRunMessage, args);
+                Form form = PrepareForRunning(out silent, out moreThanSingleInstanceRunMessage, out action, out mutexId, args);
 
-                if (form != null)
+                FormExtensions.RunSingleInstance(mutexId, moreThanSingleInstanceRunMessage, () =>
                 {
-                    FormExtensions.RunSingleInstance(form, moreThanSingleInstanceRunMessage, () =>
+                    try
                     {
-                        try
-                        {
-                            Application.Run(form);
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.LogError(ex);
-                        }
-                    }, silent || args.Contains(Consts.RunOnOneNoteStarts));
-                }
+                        if (action != null)
+                            action();
 
+                        if (form != null)                        
+                            Application.Run(form);                                                
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex);
+                    }
+                }, silent);
             }
             catch (Exception ex)
             {
@@ -81,11 +83,13 @@ namespace BibleConfigurator
             return SettingsManager.Instance.IsConfigured(ref _oneNoteApp);
         }
 
-        private static Form PrepareForRunning(out bool silent, out string moreThanSingleInstanceRunMessage, params string[] args)
+        private static Form PrepareForRunning(out bool silent, out string moreThanSingleInstanceRunMessage, out Action action, out string mutexId, params string[] args)
         {
+            action = null;
             moreThanSingleInstanceRunMessage = BibleCommon.Resources.Constants.MoreThanSingleInstanceRun;
             silent = false;
             Form result = null;
+            mutexId = null;
 
             var strongProtocolHandler = new FindVersesWithStrongNumberHandler();
             var navToStrongHandler = new NavigateToStrongHandler();
@@ -111,32 +115,39 @@ namespace BibleConfigurator
             }            
             else if (args.Contains(Consts.RunOnOneNoteStarts))
             {
+                silent = true;
                 CreateOneNoteAppIfNotExists();
                 if (SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
                 {
-                    try
-                    {
-                        OneNoteLocker.LockBible(ref _oneNoteApp);
-                        OneNoteLocker.LockSupplementalBible(ref _oneNoteApp);
-                    }
-                    catch (NotSupportedException)
-                    {
-                        Logger.LogError("Locking is not supported for this notebook");
-                    }
-
-                    if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible))
-                    {
-                        using (var form = new MessageForm(BibleCommon.Resources.Constants.IndexBibleQuestionAtStartUp, BibleCommon.Resources.Constants.Warning,
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                    action = () =>
                         {
-                            if (form.ShowDialog() == DialogResult.Yes)
+                            try
                             {
-                                result = new MainForm(args);
-                                ((MainForm)result).ToIndexBible = true;
-                                ((MainForm)result).CommitChangesAfterLoad = true;
+                                OneNoteLocker.LockBible(ref _oneNoteApp);
+                                OneNoteLocker.LockSupplementalBible(ref _oneNoteApp);
                             }
-                        }
-                    }
+                            catch (NotSupportedException)
+                            {
+                                Logger.LogError("Locking is not supported for this notebook");
+                            }
+
+                            if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible))
+                            {
+                                using (var form = new MessageForm(BibleCommon.Resources.Constants.IndexBibleQuestionAtStartUp, BibleCommon.Resources.Constants.Warning,
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                                {
+                                    if (form.ShowDialog() == DialogResult.Yes)
+                                    {
+                                        var mainForm = new MainForm(args);
+                                        ((MainForm)mainForm).ToIndexBible = true;
+                                        ((MainForm)mainForm).CommitChangesAfterLoad = true;
+                                        Application.Run(mainForm);
+                                    }
+                                }
+                            }
+                        };
+
+                    mutexId = typeof(MainForm).FullName;                  
                 }
                 else
                 {
@@ -209,6 +220,9 @@ namespace BibleConfigurator
                 result = new MainForm(args);
             }
 
+            if (result != null)
+                mutexId = result.GetType().FullName;
+
             return result;
         }
 
@@ -247,7 +261,12 @@ namespace BibleConfigurator
 
                 bool silent;
                 string moreThanSingleInstanceRunMessage;
-                Form form = PrepareForRunning(out silent, out moreThanSingleInstanceRunMessage, args);
+                Action action;
+                string mutexId;
+                Form form = PrepareForRunning(out silent, out moreThanSingleInstanceRunMessage, out action, out mutexId, args);
+
+                if (action != null)
+                    action();
 
                 if (form != null)
                 {

@@ -1,68 +1,49 @@
-﻿- <one:Page xmlns:one="http://schemas.microsoft.com/office/onenote/2010/onenote" ID="{123C4D81-EB2D-41D6-99BB-24A4089F6F3B}{1}{B0}" name="Test" dateTime="2012-09-22T07:37:12.000Z" lastModifiedTime="2012-09-22T07:47:42.000Z" pageLevel="1" isCurrentlyViewed="true" lang="en-US">
+﻿<one:Page xmlns:one="http://schemas.microsoft.com/office/onenote/2010/onenote" ID="{A3119EC1-D8F5-4EA0-9A3A-6FE816522D6E}{1}{B0}" name="Тест" dateTime="2012-12-10T13:20:25.000Z" lastModifiedTime="2012-12-10T13:21:07.000Z" pageLevel="1" isCurrentlyViewed="true" lang="ru">
   <one:QuickStyleDef index="0" name="PageTitle" fontColor="automatic" highlightColor="automatic" font="Calibri" fontSize="17.0" spaceBefore="0.0" spaceAfter="0.0" />
   <one:QuickStyleDef index="1" name="p" fontColor="automatic" highlightColor="automatic" font="Calibri" fontSize="11.0" spaceBefore="0.0" spaceAfter="0.0" />
-  - <one:PageSettings RTL="false" color="automatic">
-    - <one:PageSize>
+  <one:PageSettings RTL="false" color="automatic">
+    <one:PageSize>
       <one:Automatic />
     </one:PageSize>
     <one:RuleLines visible="false" />
   </one:PageSettings>
-  - <one:Title lang="en-US">
-    - <one:OE author="Alexander.Demko" authorInitials="A" lastModifiedBy="Alexander.Demko" lastModifiedByInitials="A" creationTime="2012-09-22T07:47:24.000Z" lastModifiedTime="2012-09-22T07:47:24.000Z" objectID="{FF19A8C3-349B-41E0-ABD6-9FBD59D9F0E5}{33}{B0}" alignment="left" quickStyleIndex="0">
-      - <one:T>
-        - <![CDATA[ Test
-  ]]>
-      </one:T>
+  <one:Title lang="ru">
+    <one:OE author="Aleksandr Demko(Luxsoft)" authorInitials="AD" lastModifiedBy="Aleksandr Demko(Luxsoft)" lastModifiedByInitials="AD" creationTime="2012-12-10T13:20:27.000Z" lastModifiedTime="2012-12-10T13:20:28.000Z" objectID="{D5E81FD1-ECF6-4161-B295-B9BED75133DC}{34}{B0}" alignment="left" quickStyleIndex="0">
+      <one:T>Тест</one:T>
     </one:OE>
   </one:Title>
-  - <one:Outline author="Alexander.Demko" authorInitials="A" lastModifiedBy="Alexander.Demko" lastModifiedByInitials="A" lastModifiedTime="2012-09-22T07:47:42.000Z" objectID="{FF19A8C3-349B-41E0-ABD6-9FBD59D9F0E5}{107}{B0}">
-    <one:Position x="36.74999618530273" y="91.65000915527344" z="0" />
-    <one:Size width="103.4083480834961" height="13.42771339416504" />
-    - <one:OEChildren>
-      - <one:OE creationTime="2012-09-22T07:47:24.000Z" lastModifiedTime="2012-09-22T07:47:24.000Z" objectID="{FF19A8C3-349B-41E0-ABD6-9FBD59D9F0E5}{108}{B0}" alignment="left" quickStyleIndex="1">
-        - <one:T>
-          - <![CDATA[ <span
-style='color:#76923C'>Test</span><span style='color:black'> </span><a
-href="onenote:#test2&amp;section-id={53C00DFF-C18F-451D-B3CF-1B2287A608BE}&amp;page-id={08B9F398-FA7C-484E-B9AB-71D5821CD49A}&amp;object-id={841C9499-A273-4D06-8D85-3B334CEC012B}&amp;22&amp;base-path=ADEMKO\Users\Alexander.Demko\Documents\Записные%20книжки%20OneNote\test\Новый%20раздел%201.one">test2</a><span
-style='color:black'> </span><span style='color:#B8CCE4'>test</span>
-  ]]>
-        </one:T>
+  <one:Outline author="Aleksandr Demko(Luxsoft)" authorInitials="AD" lastModifiedBy="Aleksandr Demko(Luxsoft)" lastModifiedByInitials="AD" lastModifiedTime="2012-12-10T13:20:58.000Z" objectID="{D5E81FD1-ECF6-4161-B295-B9BED75133DC}{73}{B0}">
+    <one:Position x="65.99054718017578" y="6.009448528289795" z="1" />
+    <one:Size width="226.5165557861328" height="201.0047149658203" isSetByUser="true" />
+    <one:OEChildren>
+      <one:OE creationTime="2012-12-10T13:20:49.000Z" lastModifiedTime="2012-12-10T13:20:58.000Z" objectID="{D5E81FD1-ECF6-4161-B295-B9BED75133DC}{108}{B0}" alignment="left" quickStyleIndex="1">
+        <one:T><![CDATA[<span style='font-weight:normal;'>]]></one:T>
+        <one:T><![CDATA[<a href="onenote:///C:\Users\lux_demko\Desktop\temp\OneNote%20Notebooks\Библия%20(3)\Новый%20Завет\04.%20От%20Иоанна.one#5%20глава.%20От%20Иоанна&section-id={AB7679D1-2633-4BD8-BE8C-A8371D77FCB6}&page-id={D07172E5-034F-47C3-9197-0FABB0DB1725}&object-id={7E962758-3AC7-41CF-A705-57FAE98FFC0A}&7A&qa=1">Ин 5:6</a>]]></one:T>
+        <one:T selected="all"><![CDATA[]]></one:T>
+        <one:T><![CDATA[</span> ]]></one:T>
+        <one:InkWord recognizedText="" style="font-family:Calibri;font-size:11.0pt" x="32.0031509399414" y="0.0" inkOriginX="-65.9905548095703" inkOriginY="-6.009448528289795" width="178.5260009765625" height="152.6173095703125">
+          <one:CallbackID callbackID="{D5E81FD1-ECF6-4161-B295-B9BED75133DC}{109}{C7}" />
+        </one:InkWord>
+      </one:OE>
+      <one:OE creationTime="2012-12-10T13:20:43.000Z" lastModifiedTime="2012-12-10T13:20:52.000Z" objectID="{D5E81FD1-ECF6-4161-B295-B9BED75133DC}{97}{B0}" alignment="left" quickStyleIndex="1" style="font-family:Calibri;font-size:11.0pt">
+        <one:InkWord recognizedText="" x="0.0" y="152.6173095703125" inkOriginX="-65.99054718017578" inkOriginY="-158.6267700195312" width="132.0377960205078" height="48.38740921020508">
+          <one:CallbackID callbackID="{D5E81FD1-ECF6-4161-B295-B9BED75133DC}{98}{C0}" />
+        </one:InkWord>
       </one:OE>
     </one:OEChildren>
   </one:Outline>
-</one:Page>
-
-- <one:Page xmlns:one="http://schemas.microsoft.com/office/onenote/2010/onenote" ID="{123C4D81-EB2D-41D6-99BB-24A4089F6F3B}{1}{B0}" name="Test" dateTime="2012-09-22T07:37:12.000Z" lastModifiedTime="2012-09-22T07:48:35.000Z" pageLevel="1" isCurrentlyViewed="true" lang="en-US">
-  <one:QuickStyleDef index="0" name="PageTitle" fontColor="automatic" highlightColor="automatic" font="Calibri" fontSize="17.0" spaceBefore="0.0" spaceAfter="0.0" />
-  <one:QuickStyleDef index="1" name="p" fontColor="automatic" highlightColor="automatic" font="Calibri" fontSize="11.0" spaceBefore="0.0" spaceAfter="0.0" />
-  - <one:PageSettings RTL="false" color="automatic">
-    - <one:PageSize>
-      <one:Automatic />
-    </one:PageSize>
-    <one:RuleLines visible="false" />
-  </one:PageSettings>
-  - <one:Title lang="en-US">
-    - <one:OE author="Alexander.Demko" authorInitials="A" lastModifiedBy="Alexander.Demko" lastModifiedByInitials="A" creationTime="2012-09-22T07:47:24.000Z" lastModifiedTime="2012-09-22T07:47:24.000Z" objectID="{FF19A8C3-349B-41E0-ABD6-9FBD59D9F0E5}{33}{B0}" alignment="left" quickStyleIndex="0">
-      - <one:T>
-        - <![CDATA[ Test
-  ]]>
-      </one:T>
-    </one:OE>
-  </one:Title>
-  - <one:Outline author="Alexander.Demko" authorInitials="A" lastModifiedBy="Alexander.Demko" lastModifiedByInitials="A" lastModifiedTime="2012-09-22T07:48:34.000Z" objectID="{FF19A8C3-349B-41E0-ABD6-9FBD59D9F0E5}{107}{B0}">
-    <one:Position x="36.74999618530273" y="91.65000915527344" z="0" />
-    <one:Size width="103.4083480834961" height="13.42771339416504" />
-    - <one:OEChildren>
-      - <one:OE creationTime="2012-09-22T07:47:24.000Z" lastModifiedTime="2012-09-22T07:48:34.000Z" objectID="{FF19A8C3-349B-41E0-ABD6-9FBD59D9F0E5}{108}{B0}" alignment="left" quickStyleIndex="1">
-        - <one:T>
-          - <![CDATA[ <span
-style='color:#76923C'>Test</span><span style='color:black'> </span><a
-href="onenote:#test2&amp;section-id={53C00DFF-C18F-451D-B3CF-1B2287A608BE}&amp;page-id={08B9F398-FA7C-484E-B9AB-71D5821CD49A}&amp;object-id={841C9499-A273-4D06-8D85-3B334CEC012B}&amp;22&amp;base-path=ADEMKO\Users\Alexander.Demko\Documents\Записные%20книжки%20OneNote\test\Новый%20раздел%201.one"><span
-style='color:black'>test2</span></a><span style='color:black'> </span><span
-style='color:#B8CCE4'>test</span>
-  ]]>
-        </one:T>
-      </one:OE>
-    </one:OEChildren>
-  </one:Outline>
+  <one:InkDrawing lastModifiedTime="2012-12-10T13:21:07.000Z" objectID="{D5E81FD1-ECF6-4161-B295-B9BED75133DC}{130}{B0}">
+    <one:Position x="378.0" y="86.4000015258789" z="2" />
+    <one:Size width="162.0283508300781" height="126.0283432006836" />
+    <one:ShapeInfo isLine="true">
+      <one:AnchorPoint x="378.0" y="86.4000015258789" />
+      <one:AnchorPoint x="540.0" y="212.4000091552734" />
+    </one:ShapeInfo>
+    <one:CallbackID callbackID="{D5E81FD1-ECF6-4161-B295-B9BED75133DC}{130}{B0}" />
+  </one:InkDrawing>
+  <one:InkDrawing lastModifiedTime="2012-12-10T13:20:38.000Z" objectID="{D5E81FD1-ECF6-4161-B295-B9BED75133DC}{43}{B0}">
+    <one:Position x="279.7511596679687" y="122.9952697753906" z="0" />
+    <one:Size width="96.03779602050781" height="92.29605865478515" />
+    <one:CallbackID callbackID="{D5E81FD1-ECF6-4161-B295-B9BED75133DC}{43}{B0}" />
+  </one:InkDrawing>
 </one:Page>
