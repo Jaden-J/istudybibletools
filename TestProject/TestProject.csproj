@@ -101,7 +101,6 @@
     <Content Include="XMLFile1.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="XMLFile2.xml" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
