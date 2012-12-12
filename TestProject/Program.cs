@@ -63,9 +63,9 @@ namespace TestProject
 
                 //AddColorLink();
 
-                //GenerateDictionary();
+                GenerateDictionary();
 
-                GenerateRuStrongDictionary();
+                //GenerateRuStrongDictionary();
 
                 //GenerateEnStrongDictionary();
                 
