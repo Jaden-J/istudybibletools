@@ -23,7 +23,7 @@ namespace BibleNoteLinker
 
             if (form != null)
             {
-                FormExtensions.RunSingleInstance(form, BibleCommon.Resources.Constants.MoreThanSingleInstanceRun, () =>
+                FormExtensions.RunSingleInstance(form.GetType().FullName, BibleCommon.Resources.Constants.MoreThanSingleInstanceRun, () =>
                 {
                     Application.Run(form);
                 });
@@ -47,7 +47,7 @@ namespace BibleNoteLinker
                         noteLinkManager.LinkPageVerses(currentPage.SectionGroupId, currentPage.SectionId, currentPage.Id, NoteLinkManager.AnalyzeDepth.SetVersesLinks, false);
                         noteLinkManager.SetCursorOnNearestVerse(currentPage.Id);
                     }
-                    OneNoteProxy.Instance.CommitAllModifiedPages(ref _oneNoteApp, null, null, null);
+                    OneNoteProxy.Instance.CommitAllModifiedPages(ref _oneNoteApp, true, null, null, null);
                 }
                 catch (Exception ex)
                 {

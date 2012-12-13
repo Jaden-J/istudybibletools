@@ -321,10 +321,30 @@ namespace BibleCommon.Services
                 oneNoteAppSafe.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
             });
 
-            return CreateNotebook(ref oneNoteApp, notebookName, defaultNotebookFolderPath);
+            return CreateNotebook(ref oneNoteApp, notebookName, defaultNotebookFolderPath, null);
         }
 
-        public static string CreateNotebook(ref Application oneNoteApp, string notebookName, string notebookDirectory)
+        public static void TryToRenameNotebookSafe(ref Application oneNoteApp, string notebookId, string notebookNickname)
+        {
+            try
+            {
+                XmlNamespaceManager xnm;
+                var notebook = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, notebookId, HierarchyScope.hsSelf, out xnm);
+
+                notebook.Root.SetAttributeValue("nickname", notebookNickname);
+
+                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                {
+                    oneNoteAppSafe.UpdateHierarchy(notebook.ToString(), Constants.CurrentOneNoteSchema);
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+        
+        public static string CreateNotebook(ref Application oneNoteApp, string notebookName, string notebookDirectory, string nickname)
         {
             XmlNamespaceManager xnm;
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
@@ -335,6 +355,10 @@ namespace BibleCommon.Services
             var notebookEl = new XElement(nms + "Notebook",
                                 new XAttribute("name", notebookName),
                                 new XAttribute("path", newNotebookPath));
+
+            if (!string.IsNullOrEmpty(nickname))
+                notebookEl.Add(new XAttribute("nickname", nickname));
+
             var notebooksEl = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, null, HierarchyScope.hsNotebooks, out xnm);
 
             var lastNotebook = notebooksEl.Root.XPathSelectElements("one:Notebook", xnm).LastOrDefault();
