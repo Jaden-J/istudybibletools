@@ -214,7 +214,8 @@
     <value>The program is not configured. Open the 'Program parameters' and specify the necessary settings.</value>
   </data>
   <data name="Error_UpdateError_InksOnPages" xml:space="preserve">
-    <value>Unable to update the page. Perhaps on the page there are painted with a brush elements, which are currently not supported. \nDelete  this elements and try again.</value>
+    <value>Unable to update the page. Perhaps on the page there are painted with a brush elements, which are currently not supported. 
+Delete these elements and try again.</value>
   </data>
   <data name="Error_UpdatePage" xml:space="preserve">
     <value>Update page error</value>

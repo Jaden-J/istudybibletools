@@ -23,7 +23,7 @@ namespace BibleCommon.Services
             if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidSupplementalBibleNotebookId(ref oneNoteApp, true)))
             {
                 SettingsManager.Instance.NotebookId_SupplementalBible
-                    = NotebookGenerator.CreateNotebook(ref oneNoteApp, Resources.Constants.SupplementalBibleName, notebookDirectory);                
+                    = NotebookGenerator.CreateNotebook(ref oneNoteApp, Resources.Constants.SupplementalBibleName, notebookDirectory, Resources.Constants.SupplementalBibleName);
             }            
 
             string currentSectionGroupId = null;
@@ -160,7 +160,7 @@ namespace BibleCommon.Services
                 result = bibleTranslationManager.IterateBaseBible(
                     (chapterPageDoc, chapterPointer) =>
                     {
-                        OneNoteProxy.Instance.CommitAllModifiedPages(ref oneNoteTemp, pageContent => pageContent.PageType == OneNoteProxy.PageType.Bible, null, null);
+                        OneNoteProxy.Instance.CommitAllModifiedPages(ref oneNoteTemp, false, pageContent => pageContent.PageType == OneNoteProxy.PageType.Bible, null, null);
 
                         int styleIndex = QuickStyleManager.AddQuickStyleDef(chapterPageDoc, QuickStyleManager.StyleForStrongName, QuickStyleManager.PredefinedStyles.GrayHyperlink, xnm);
 
@@ -183,7 +183,7 @@ namespace BibleCommon.Services
                 result.Errors.AddRange(linkResult);
             }
 
-            OneNoteProxy.Instance.CommitAllModifiedPages(ref oneNoteApp, pageContent => pageContent.PageType == OneNoteProxy.PageType.Bible, null, null);
+            OneNoteProxy.Instance.CommitAllModifiedPages(ref oneNoteApp, false, pageContent => pageContent.PageType == OneNoteProxy.PageType.Bible, null, null);
 
             return result;
         }

@@ -794,7 +794,8 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to update the page. Perhaps on the page there are painted with a brush elements, which are currently not supported. \nDelete  this elements and try again..
+        ///   Ищет локализованную строку, похожую на Unable to update the page. Perhaps on the page there are painted with a brush elements, which are currently not supported. 
+        ///Delete these elements and try again..
         /// </summary>
         public static string Error_UpdateError_InksOnPages {
             get {

@@ -22,7 +22,7 @@ namespace BibleCommon.Services
             if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidDictionariesNotebookId(ref oneNoteApp, true)))
             {
                 SettingsManager.Instance.NotebookId_Dictionaries
-                    = NotebookGenerator.CreateNotebook(ref oneNoteApp, Resources.Constants.DictionariesNotebookName, notebookDirectory);
+                    = NotebookGenerator.CreateNotebook(ref oneNoteApp, Resources.Constants.DictionariesNotebookName, notebookDirectory, Resources.Constants.DictionariesNotebookName);
                 SettingsManager.Instance.DictionariesModules.Clear();
                 SettingsManager.Instance.Save();
             }

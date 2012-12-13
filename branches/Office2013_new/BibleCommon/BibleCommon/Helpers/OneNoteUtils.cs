@@ -236,10 +236,19 @@ namespace BibleCommon.Helpers
         private static void UpdatePageContentSafeInternal(ref Application oneNoteApp, XDocument pageContent, XmlNamespaceManager xnm, int attemptsCount)
         {
             var inkNodes = pageContent.Root.XPathSelectElements("one:InkDrawing", xnm)
-                            //.Union(doc.Root.XPathSelectElements("//one:OE[.//one:InkDrawing]", xnm))    // тогда удалятся все неподдерживаемые элементы. Но тогда у пользователей будут просто удаляться некоторые рисунки
+                            .Union(pageContent.Root.XPathSelectElements("//one:OE[.//one:InkDrawing]", xnm))    
                             .Union(pageContent.Root.XPathSelectElements("one:Outline[.//one:InkWord]", xnm)).ToArray();
+
             foreach (var inkNode in inkNodes)
+            {
+                if (inkNode.XPathSelectElement(".//one:T", xnm) == null)
                 inkNode.Remove();
+                else
+                {
+                    var inkWords = inkNode.XPathSelectElements(".//one:InkWord", xnm).Where(ink => ink.XPathSelectElement(".//one:CallbackID", xnm) == null).ToArray();
+                    inkWords.Remove();                 
+                }
+            }
 
             try
             {
@@ -250,7 +259,7 @@ namespace BibleCommon.Helpers
             }
             catch (COMException ex)
             {
-                if (ex.ErrorCode == -2147213304)
+                if (ex.Message.Contains(Utils.GetHexError(Error.hrInsertingInk)))
                     throw new Exception(Resources.Constants.Error_UpdateError_InksOnPages);               
                 else
                     throw;

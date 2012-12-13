@@ -464,7 +464,7 @@ namespace BibleCommon.Services
             _hierarchyContentCache.Clear();
         }
 
-        public void CommitAllModifiedPages(ref Application oneNoteApp, Func<PageContent, bool> filter, 
+        public void CommitAllModifiedPages(ref Application oneNoteApp, bool throwExceptions, Func<PageContent, bool> filter, 
             Action<int> onAllPagesToCommitFound, Action<PageContent> onPageProcessed)
         {   
             List<PageContent> toCommit = _pageContentCache.Values.Where(pg => pg.WasModified && (filter == null || filter(pg))).ToList();
@@ -483,6 +483,8 @@ namespace BibleCommon.Services
                 catch (Exception ex)
                 {
                     Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.Error_UpdatePage, (string)page.Content.Root.Attribute("name")), ex);
+                    if (throwExceptions)
+                        throw;
                 }
 
                 if (onPageProcessed != null)
