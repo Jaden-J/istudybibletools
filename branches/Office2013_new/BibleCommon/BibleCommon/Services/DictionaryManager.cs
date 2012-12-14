@@ -208,29 +208,32 @@ namespace BibleCommon.Services
             }
         }
 
-        public static void RemoveDictionary(ref Application oneNoteApp, string moduleName)
+        public static void RemoveDictionary(ref Application oneNoteApp, string moduleName, bool removeDictionaryFromNotebook)
         {
             if (SettingsManager.Instance.DictionariesModules.Count == 1 
                 && SettingsManager.Instance.DictionariesModules.First().ModuleName == moduleName)
             {
-                CloseDictionariesNotebook(ref oneNoteApp);
+                CloseDictionariesNotebook(ref oneNoteApp, removeDictionaryFromNotebook);
             }
             else
             {
                 var dictionaryModuleInfo = SettingsManager.Instance.DictionariesModules.FirstOrDefault(m => m.ModuleName == moduleName);
                 if (dictionaryModuleInfo != null)
                 {
-                    try
+                    if (removeDictionaryFromNotebook)
                     {
-                        OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                        try
                         {
-                            oneNoteAppSafe.DeleteHierarchy(dictionaryModuleInfo.SectionId);
-                        });
-                    }
-                    catch (COMException ex)
-                    {
-                        if (!ex.Message.Contains(Utils.GetHexError(Error.hrObjectDoesNotExist)))
-                            throw;
+                            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                            {
+                                oneNoteAppSafe.DeleteHierarchy(dictionaryModuleInfo.SectionId);
+                            });
+                        }
+                        catch (COMException ex)
+                        {
+                            if (!ex.Message.Contains(Utils.GetHexError(Error.hrObjectDoesNotExist)))
+                                throw;
+                        }
                     }
 
                     DictionaryTermsCacheManager.RemoveCache(dictionaryModuleInfo.ModuleName);
@@ -241,11 +244,13 @@ namespace BibleCommon.Services
             }
         }
 
-        public static void CloseDictionariesNotebook(ref Application oneNoteApp)
+        public static void CloseDictionariesNotebook(ref Application oneNoteApp, bool closeNotebookInOneNote)
         {
-            OneNoteUtils.CloseNotebookSafe(ref oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries);
-
-            SettingsManager.Instance.NotebookId_Dictionaries = null;
+            if (closeNotebookInOneNote)
+            {
+                OneNoteUtils.CloseNotebookSafe(ref oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries);
+                SettingsManager.Instance.NotebookId_Dictionaries = null;
+            }
 
             foreach (var dictionaryInfo in SettingsManager.Instance.DictionariesModules)
             {
