@@ -798,4 +798,7 @@
   <data name="VerseNotFound" xml:space="preserve">
     <value>Не удалось найти место Писания '{0}'.</value>
   </data>
+  <data name="RemoveStrongDictionaryFromNotebookQuestion" xml:space="preserve">
+    <value>Удалить группу разделов словаря Стронга из записной книжки "Словари"?</value>
+  </data>
 </root>

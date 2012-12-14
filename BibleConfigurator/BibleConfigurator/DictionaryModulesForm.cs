@@ -77,7 +77,7 @@ namespace BibleConfigurator
 
         protected override void DeleteModule(string moduleShortName)
         {
-            DictionaryManager.RemoveDictionary(ref _oneNoteApp, moduleShortName);            
+            DictionaryManager.RemoveDictionary(ref _oneNoteApp, moduleShortName, true);
         }
 
         protected override string CloseSupplementalNotebookQuestionText
@@ -87,7 +87,7 @@ namespace BibleConfigurator
 
         protected override void CloseSupplementalNotebook()
         {
-            DictionaryManager.CloseDictionariesNotebook(ref _oneNoteApp);
+            DictionaryManager.CloseDictionariesNotebook(ref _oneNoteApp, true);
         }
 
         protected override bool IsModuleSupported(BibleCommon.Common.ModuleInfo moduleInfo)

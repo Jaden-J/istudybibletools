@@ -1605,6 +1605,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Remove the section group of Strong&apos;s dictionary from &apos;Dictionaries&apos; notebook?.
+        /// </summary>
+        public static string RemoveStrongDictionaryFromNotebookQuestion {
+            get {
+                return ResourceManager.GetString("RemoveStrongDictionaryFromNotebookQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Supplemental Bible was closed successfully.
         /// </summary>
         public static string RemoveSupplementalBibleFinishMessage {
