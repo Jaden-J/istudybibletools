@@ -270,8 +270,19 @@ namespace BibleConfigurator
         {
             int chaptersCount = ModulesManager.GetBibleChaptersCount(moduleShortName, false);            
             MainForm.PrepareForLongProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.RemoveParallelBibleTranslationStartMessage);
-            Logger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.RemoveParallelBibleTranslation); 
-            var removeResult = SupplementalBibleManager.RemoveSupplementalBibleModule(ref _oneNoteApp, moduleShortName, Logger);
+            Logger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.RemoveParallelBibleTranslation);
+
+            var removeStrongDictionaryFromNotebook = true;            
+
+            if (DictionaryModules[moduleShortName].Type == ModuleType.Strong)
+            {
+                if (MessageBox.Show(BibleCommon.Resources.Constants.RemoveStrongDictionaryFromNotebookQuestion,
+                    BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1)
+                        == System.Windows.Forms.DialogResult.No)
+                    removeStrongDictionaryFromNotebook = false;
+            }
+
+            var removeResult = SupplementalBibleManager.RemoveSupplementalBibleModule(ref _oneNoteApp, moduleShortName, removeStrongDictionaryFromNotebook, Logger);
             MainForm.LongProcessingDone(
                 removeResult == SupplementalBibleManager.RemoveResult.RemoveModule
                     ? BibleCommon.Resources.Constants.RemoveParallelBibleTranslationFinishMessage
@@ -284,8 +295,23 @@ namespace BibleConfigurator
         }
 
         protected override void CloseSupplementalNotebook()
-        {
-            SupplementalBibleManager.CloseSupplementalBible(ref _oneNoteApp);
+        {            
+            var removeStrongDictionaryFromNotebook = true;
+
+            foreach (var module in SettingsManager.Instance.SupplementalBibleModules)
+            {
+                if (DictionaryModules[module.ModuleName].Type == ModuleType.Strong)
+                {
+                    if (MessageBox.Show(BibleCommon.Resources.Constants.RemoveStrongDictionaryFromNotebookQuestion,
+                        BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1)
+                            == System.Windows.Forms.DialogResult.No)                    
+                        removeStrongDictionaryFromNotebook = false;
+
+                    break;
+                }
+            }
+
+            SupplementalBibleManager.CloseSupplementalBible(ref _oneNoteApp, removeStrongDictionaryFromNotebook);
         }
 
         protected override bool IsModuleSupported(ModuleInfo moduleInfo)

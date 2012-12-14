@@ -298,7 +298,7 @@ namespace BibleCommon.Services
                 return false;
         }
 
-        public static void CloseSupplementalBible(ref Application oneNoteApp)
+        public static void CloseSupplementalBible(ref Application oneNoteApp, bool removeStrongDictionaryFromNotebook)
         {            
             OneNoteUtils.CloseNotebookSafe(ref oneNoteApp, SettingsManager.Instance.NotebookId_SupplementalBible);
 
@@ -308,7 +308,7 @@ namespace BibleCommon.Services
                 var moduleInfo = ModulesManager.GetModuleInfo(parallelModuleName.ModuleName);
                 if (moduleInfo.Type == Common.ModuleType.Strong)
                 {
-                    DictionaryManager.RemoveDictionary(ref oneNoteApp, parallelModuleName.ModuleName);
+                    DictionaryManager.RemoveDictionary(ref oneNoteApp, parallelModuleName.ModuleName, removeStrongDictionaryFromNotebook);
                 }
             }
 
@@ -323,11 +323,11 @@ namespace BibleCommon.Services
             RemoveSupplementalBible
         }
 
-        public static RemoveResult RemoveSupplementalBibleModule(ref Application oneNoteApp, string moduleShortName, ICustomLogger logger)
+        public static RemoveResult RemoveSupplementalBibleModule(ref Application oneNoteApp, string moduleShortName, bool removeStrongDictionaryFromNotebook, ICustomLogger logger)
         {
             if (SettingsManager.Instance.SupplementalBibleModules.Count <= 1)
             {
-                CloseSupplementalBible(ref oneNoteApp);
+                CloseSupplementalBible(ref oneNoteApp, removeStrongDictionaryFromNotebook);
                 return RemoveResult.RemoveSupplementalBible;
             }
             else
@@ -339,7 +339,7 @@ namespace BibleCommon.Services
 
                 var moduleInfo = ModulesManager.GetModuleInfo(moduleShortName);
                 if (moduleInfo.Type == Common.ModuleType.Strong)
-                    DictionaryManager.RemoveDictionary(ref oneNoteApp, moduleShortName);
+                    DictionaryManager.RemoveDictionary(ref oneNoteApp, moduleShortName, removeStrongDictionaryFromNotebook);
 
                 BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(moduleShortName);
 
