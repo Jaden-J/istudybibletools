@@ -484,7 +484,10 @@ namespace BibleCommon.Services
                 {
                     Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.Error_UpdatePage, (string)page.Content.Root.Attribute("name")), ex);
                     if (throwExceptions)
+                    {
+                        _pageContentCache.Remove(page.PageId);  // мы всё равно не смогли обновить эту страницу.
                         throw;
+                    }
                 }
 
                 if (onPageProcessed != null)
