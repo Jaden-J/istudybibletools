@@ -186,6 +186,7 @@ namespace BibleConfigurator.ModuleConverter
         private TermPageInfo AddTermToPage(DictionaryFile file, TermPageInfo pageInfo, string termName, string termDescription,
             int termsInPageCount, string prevTermName, ref int termIndex, bool isLatestTermInSection, bool isOneNote2010, XmlNamespaceManager xnm)
         {
+            Console.WriteLine("Term found: {0}", termName); 
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
             var pageInfoWasChanged = false;
 
@@ -328,15 +329,15 @@ namespace BibleConfigurator.ModuleConverter
         private string ShellText(string text)
         {
             var result = text
-                            .Replace("<br/>", Environment.NewLine)
-                            .Replace("<br />", Environment.NewLine)
-                            .Replace("<br>", Environment.NewLine)
-                            .Replace("<p>", Environment.NewLine + "<span>")
-                            .Replace("</p>", "</span>")
-                            .Replace("<h6>", Environment.NewLine + "<b>")
-                            .Replace("</h6>", "</b>")
-                            .Replace("<h5>", Environment.NewLine + "<b>")
-                            .Replace("</h5>", "</b>")
+                            .ReplaceIgnoreCase("<br/>", Environment.NewLine)
+                            .ReplaceIgnoreCase("<br />", Environment.NewLine)
+                            .ReplaceIgnoreCase("<br>", Environment.NewLine)
+                            .ReplaceIgnoreCase("<p>", Environment.NewLine + "<span>")
+                            .ReplaceIgnoreCase("</p>", "</span>")
+                            .ReplaceIgnoreCase("<h6>", Environment.NewLine + "<b>")
+                            .ReplaceIgnoreCase("</h6>", "</b>")
+                            .ReplaceIgnoreCase("<h5>", Environment.NewLine + "<b>")
+                            .ReplaceIgnoreCase("</h5>", "</b>")
                             .Trim(new char[] { ' ', '\t' });                            
                                 
 
