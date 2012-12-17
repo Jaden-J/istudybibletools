@@ -47,6 +47,10 @@ namespace TestProject
 
             try
             {
+
+                //Console.WriteLine(Regex.Replace("<br>no<", string.Format("(^|[^0-9a-zA-Z]){0}($|[^0-9a-zA-Z<])", "no"), @"$1aeasdasds$2", RegexOptions.IgnoreCase));
+                //return;
+
                 //ConvertChineseModuleFromTextFiles();
                 
                 //GenerateBibleBooks();
@@ -63,7 +67,11 @@ namespace TestProject
 
                 //AddColorLink();
 
-                GenerateDictionary();
+                //GenerateRuDictionary();
+
+                GenerateEnDictionary();
+
+                //CorrectVineOT();
 
                 //GenerateRuStrongDictionary();
 
@@ -105,6 +113,119 @@ namespace TestProject
 
             Console.WriteLine("Finish. Elapsed time: {0}", sw.Elapsed);
             Console.ReadKey();
+        }
+
+        private static void CorrectVineOT()
+        {
+            var vineOTFilePath = Path.Combine(ForGeneratingFolderPath, string.Format("{0}\\{0}.htm", "vineot"));
+            var strongOTFilePath = Path.Combine(ForGeneratingFolderPath, "rststrong\\HEBREW.HTM");
+
+            var vineOT = File.ReadAllText(vineOTFilePath);
+            var strongOT = File.ReadAllText(strongOTFilePath);
+
+            var vineNumberSearchString = "<br>Strong's Number: ";
+            var numberInHebrewSearchString = "<br>Original Word: <font face=\"BQTHeb\">";
+            var endOfFontSearchString = "</font>";
+            var numberInStrongInHebrewSearchString = "<span class=Index> <font face=\"BQTHeb\">";            
+            var cursor = vineOT.IndexOf(vineNumberSearchString);
+            var excludedNumbers = new int[] { 136 };
+
+            var hebrewWordTemplate = "<font face=\"BQTHeb\">{0}</font>";
+            var hebrewWordTemplate2 = "<font face=\"BQTHeb\"> {0}</font>";            
+
+            while (cursor > -1)
+            {
+                var endOfLineIndex = vineOT.IndexOf(Environment.NewLine, cursor + 1);
+                if (endOfLineIndex == -1)
+                    throw new Exception("End of line is not found at " + cursor);
+
+
+                var numberString = vineOT.Substring(cursor + vineNumberSearchString.Length, endOfLineIndex - cursor - vineNumberSearchString.Length);
+
+                if (numberString.IndexOf(",") != -1)
+                {
+                    Console.WriteLine(numberString);
+                    numberString = numberString.Split(new char[] { ',' })[0];
+                }
+
+                int number;
+                if (!int.TryParse(numberString, out number))
+                    throw new Exception("Can not parse " + numberString);
+
+                if (!excludedNumbers.Contains(number))
+                {
+
+                    var numberInHebrewIndex = vineOT.IndexOf(numberInHebrewSearchString, endOfLineIndex);
+                    if (numberInHebrewIndex == -1 || numberInHebrewIndex - endOfLineIndex > 5)
+                        throw new Exception("Can not find numberInHebrewIndex for " + number);
+
+                    var numberInHebrewEndIndex = vineOT.IndexOf(endOfFontSearchString, numberInHebrewIndex);
+                    if (numberInHebrewEndIndex == -1)
+                        throw new Exception("Can not find numberInHebrewEndIndex for " + number);
+
+                    var hebrewWordInVine = vineOT.Substring(numberInHebrewIndex + numberInHebrewSearchString.Length, numberInHebrewEndIndex - numberInHebrewIndex - numberInHebrewSearchString.Length).Trim();
+
+                    var numberInStrongSearchString = string.Format("<h4>{0:00000}</h4>", number);
+                    var numberInStrongIndex = strongOT.IndexOf(numberInStrongSearchString);
+                    if (numberInStrongIndex == -1)
+                        throw new Exception("Strong number can not be found in strongOT: " + number);
+
+                    var numberInStrongInHebrewIndex = strongOT.IndexOf(numberInStrongInHebrewSearchString, numberInStrongIndex);
+                    if (numberInStrongInHebrewIndex == -1)
+                        throw new Exception("Can not find numberInStrongInHebrewIndex for " + number);
+
+                    var numberInStrongInHebrewEndIndex = strongOT.IndexOf(endOfFontSearchString, numberInStrongInHebrewIndex);
+                    if (numberInStrongInHebrewEndIndex == -1)
+                        throw new Exception("Can not find numberInStrongInHebrewEndIndex for " + number);
+
+                    var hebrewWordInStrong = strongOT.Substring(numberInStrongInHebrewIndex + numberInStrongInHebrewSearchString.Length, numberInStrongInHebrewEndIndex - numberInStrongInHebrewIndex - numberInStrongInHebrewSearchString.Length).Trim();
+                    vineOT = vineOT.Replace(hebrewWordInVine, hebrewWordInStrong);
+
+                    vineOT = vineOT.Replace(string.Format(hebrewWordTemplate, hebrewWordInVine), string.Format(hebrewWordTemplate, hebrewWordInStrong));
+                    vineOT = vineOT.Replace(string.Format(hebrewWordTemplate2, hebrewWordInVine), string.Format(hebrewWordTemplate, hebrewWordInStrong));                    
+
+                    //vineOT = ReplaceEx(vineOT, hebrewWordInVine, string.Format(hebrewWordTemplate, hebrewWordInStrong));
+
+                    Regex rgx = new Regex(string.Format("(^|[^0-9a-zA-Z]){0}($|[^0-9a-zA-Z<])",
+                                hebrewWordInVine
+                                    .Replace(@"\", @"\\")
+                                    .Replace("(", @"\(")
+                                    .Replace(")", @"\)")
+                                    .Replace("[", @"\[")
+                                    .Replace("]", @"\]")),
+                                    RegexOptions.IgnoreCase);
+                    vineOT = rgx.Replace(vineOT, string.Format("$1" + hebrewWordTemplate + "$2", hebrewWordInStrong));
+                }
+
+                cursor = vineOT.IndexOf(vineNumberSearchString, cursor + vineNumberSearchString.Length + 1);
+            }
+
+            File.WriteAllText(vineOTFilePath + "_new", vineOT);
+        }
+
+        private static string ReplaceEx(string original,
+                    string pattern, string replacement)
+        {
+            int count, position0, position1;
+            count = position0 = position1 = 0;
+            string upperString = original.ToUpper();
+            string upperPattern = pattern.ToUpper();
+            int inc = (original.Length / pattern.Length) *
+                      (replacement.Length - pattern.Length);
+            char[] chars = new char[original.Length + Math.Max(0, inc)];
+            while ((position1 = upperString.IndexOf(upperPattern,
+                                              position0)) != -1)
+            {
+                for (int i = position0; i < position1; ++i)
+                    chars[count++] = original[i];
+                for (int i = 0; i < replacement.Length; ++i)
+                    chars[count++] = replacement[i];
+                position0 = position1 + pattern.Length;
+            }
+            if (position0 == 0) return original;
+            for (int i = position0; i < original.Length; ++i)
+                chars[count++] = original[i];
+            return new string(chars, 0, count);
         }
 
         private static void ConvertChineseModuleFromTextFiles()
@@ -306,7 +427,7 @@ namespace TestProject
             MessageBox.Show(string.Format("Не забыть обновить в {0}.structure.xml аттрибуты: XmlDictionaryPagesCount и XmlDictionaryTermsCount", moduleName));                
         }
 
-        private static void GenerateDictionary()
+        private static void GenerateRuDictionary()
         {
             //var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "goetze", "Библейский словарь Б.Геце", "Библейский словарь Б.Геце",
             //  new List<DictionaryFile>() { 
@@ -315,18 +436,28 @@ namespace TestProject
             //    Path.Combine(TempFolderPath, "goetze"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0));
 
 
-            //var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Словари", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
-            // new List<DictionaryFile>() { 
-            //        new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
-            //    }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
-            //   Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0));
-
-
-            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Dictionaries", "vine", "Vine's Expository Dictionary", "Vine's Expository Dictionary",
+            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Словари", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
              new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"vine\Vine_compl.htm"), DictionaryPageDescription="Vine's Expository Dictionary" }                    
-                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Vine",
-               Path.Combine(TempFolderPath, "vine"), "<p><b>", "User Notes", null, "en", new Version(2, 0));
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
+                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
+               Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0));
+
+
+            using (var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message)))
+            {
+                form.ShowDialog();
+            }
+        }
+
+        private static void GenerateEnDictionary()
+        {
+            var moduleName = "vinent";
+            var moduleDescription = "Vine's Expository Dictionary of New Testament Words";
+            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Dictionaries", moduleName, moduleDescription, moduleDescription,
+             new List<DictionaryFile>() { 
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, string.Format("{0}\\{0}.htm", moduleName)), DictionaryPageDescription = moduleDescription }
+                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, moduleName,
+              Path.Combine(TempFolderPath, moduleName), "<p><b>", "User Notes", null, "en", new Version(2, 0));
 
             converter.Convert();
 
