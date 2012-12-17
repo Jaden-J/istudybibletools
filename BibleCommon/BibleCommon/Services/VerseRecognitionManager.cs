@@ -615,9 +615,9 @@ namespace BibleCommon.Services
 
             if (firstNextChar == "-" || firstNextChar == anotherKindOfDash)   
             {
-                string nextChar = StringUtils.GetNextString(textElementValue, tempNextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex, StringSearchIgnorance.IgnoreFirstSpaces);
+                string nextString = StringUtils.GetNextString(textElementValue, tempNextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex, StringSearchIgnorance.IgnoreFirstSpaces);
 
-                if (int.TryParse(nextChar, out tempTopVerse))
+                if (int.TryParse(nextString, out tempTopVerse))
                 {
                     if (!(tempTopVerse > MaxVerse))
                     {
@@ -627,17 +627,17 @@ namespace BibleCommon.Services
                         {
                             if (!(afterChar != ChapterVerseDelimiter && spaceWasFound))
                             {
-                                verseString = string.Format("{0}-{1}", verseString, nextChar.Trim());
+                                verseString = string.Format("{0}-{1}", verseString, nextString.Trim());
                                 endIndex = tempEndIndex;
                                 nextHtmlBreakIndex = tempNextHtmlBreakIndex;
 
                                 if (afterChar == ChapterVerseDelimiter)
                                 {
-                                    nextChar = StringUtils.GetNextString(textElementValue, nextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex);
+                                    nextString = StringUtils.GetNextString(textElementValue, nextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex);
 
-                                    if (int.TryParse(nextChar, out tempTopVerse))
+                                    if (int.TryParse(nextString, out tempTopVerse))
                                     {
-                                        verseString += ChapterVerseDelimiter + nextChar;
+                                        verseString += ChapterVerseDelimiter + nextString;
                                         endIndex = tempEndIndex;
                                         nextHtmlBreakIndex = tempNextHtmlBreakIndex;
                                     }
@@ -648,7 +648,7 @@ namespace BibleCommon.Services
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(nextChar) && !spaceWasFound && !nextChar.StartsWith(" ")) // чтобы отсечь варианты типа 1 Кор 2:3; 2-е Кор 3:4
+                    if (!string.IsNullOrEmpty(nextString) && !spaceWasFound && !nextString.StartsWith(" ") && nextString.Length == 1) // чтобы отсечь варианты типа 1 Кор 2:3; 2-е Кор 3:4
                         verseString = string.Empty;
                 }
             }

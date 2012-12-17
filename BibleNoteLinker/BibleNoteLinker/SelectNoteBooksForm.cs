@@ -94,7 +94,13 @@ namespace BibleNoteLinker
 
                 foreach (XElement notebook in notebooks.Content.Root.XPathSelectElements("one:Notebook", notebooks.Xnm))
                 {
-                    result.Add((string)notebook.Attribute("ID"), (string)notebook.Attribute("name"));
+                    var name = (string)notebook.Attribute("name");
+                    var nickname = (string)notebook.Attribute("nickname");
+
+                    if (name != nickname)
+                        name = string.Format("{0} ({1})", nickname, name);
+
+                    result.Add((string)notebook.Attribute("ID"), name);
                 }
             }
 
