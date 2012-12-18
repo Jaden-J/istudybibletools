@@ -84,7 +84,7 @@ namespace BibleNoteLinker
                 OneNoteProxy.HierarchyElement sectionGroups = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, 
                     SettingsManager.Instance.NotebookId_Bible, HierarchyScope.hsChildren);
 
-                foreach (XElement sectionGroup in sectionGroups.Content.Root.XPathSelectElements("one:SectionGroup", sectionGroups.Xnm))
+                foreach (XElement sectionGroup in sectionGroups.Content.Root.XPathSelectElements(string.Format("one:SectionGroup[{0}]", OneNoteUtils.NotInRecycleXPathCondition), sectionGroups.Xnm))
                 {
                     result.Add((string)sectionGroup.Attribute("ID"), (string)sectionGroup.Attribute("name"));
                 }
