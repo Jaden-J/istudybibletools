@@ -44,6 +44,9 @@ namespace BibleConfigurator
 
         protected override ErrorsList CommitChanges(BibleCommon.Common.ModuleInfo selectedModuleInfo)
         {
+            if (!OneNoteUtils.IsNotebookLocal(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries))
+                throw new InvalidNotebookException("Notebook is not local");
+
             MainForm.PrepareForLongProcessing(selectedModuleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
             DictionaryManager.AddDictionary(ref _oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true, () => Logger.AbortedByUsers);
             Logger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexDictionary);
@@ -212,6 +215,14 @@ namespace BibleConfigurator
         protected override string GetPostCommitErrorMessage(ModuleInfo selectedModuleInfo)
         {
             return null;
+        }
+
+        protected override bool CanExistingNotebookBeUsed(string notebookId)
+        {
+            if (!OneNoteUtils.IsNotebookLocal(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries))
+            {
+                throw new InvalidNotebookException("Notebook is not local");
+            }
         }
     }
 }

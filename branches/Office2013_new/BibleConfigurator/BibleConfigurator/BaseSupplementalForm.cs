@@ -61,6 +61,7 @@ namespace BibleConfigurator
         protected abstract List<string> SaveEmbeddedModuleSettings(EmbeddedModuleInfo embeddedModuleInfo, ModuleInfo moduleInfo, XElement pageEl);
         protected abstract bool AreThereModulesToAdd();
         protected abstract string GetPostCommitErrorMessage(ModuleInfo selectedModuleInfo);
+        protected abstract bool CanExistingNotebookBeUsed(string notebookId);
 
 
         protected FolderBrowserDialog FolderBrowserDialog
@@ -570,52 +571,55 @@ namespace BibleConfigurator
         protected List<string> TryToUseExistingNotebook(string notebookId, string notebookName)
         {
             XmlNamespaceManager xnm;
-
             var result = new List<string>();
-            ClearSupplementalModules();            
-                        
-            var xDoc = OneNoteUtils.GetHierarchyElement(ref _oneNoteApp, notebookId, HierarchyScope.hsPages, out xnm);
-            var pagesEls = xDoc.Root.XPathSelectElements("//one:Page", xnm);
-            int pagesCount = pagesEls.Count();
 
-            Logger.Preffix = BibleCommon.Resources.Constants.ProcessPage + " ";
-            MainForm.PrepareForLongProcessing(pagesCount, 1, string.Empty);
+            if (CanExistingNotebookBeUsed(notebookId))
+            {   
+                ClearSupplementalModules();
 
-            foreach (var pageEl in pagesEls)
-            {
-                var pageId = (string)pageEl.Attribute("ID");
-                var pageName = (string)pageEl.Attribute("name");
+                var xDoc = OneNoteUtils.GetHierarchyElement(ref _oneNoteApp, notebookId, HierarchyScope.hsPages, out xnm);
+                var pagesEls = xDoc.Root.XPathSelectElements("//one:Page", xnm);
+                int pagesCount = pagesEls.Count();
 
-                Logger.LogMessage(pageName);
+                Logger.Preffix = BibleCommon.Resources.Constants.ProcessPage + " ";
+                MainForm.PrepareForLongProcessing(pagesCount, 1, string.Empty);
 
-                var embeddedModulesInfo_string = OneNoteUtils.GetPageMetaData(pageEl, EmbeddedModulesKey, xnm);
-                if (!string.IsNullOrEmpty(embeddedModulesInfo_string))
+                foreach (var pageEl in pagesEls)
                 {
-                    var embeddedModulesInfo = EmbeddedModuleInfo.Deserialize(embeddedModulesInfo_string);
+                    var pageId = (string)pageEl.Attribute("ID");
+                    var pageName = (string)pageEl.Attribute("name");
 
-                    foreach (var embeddedModuleInfo in embeddedModulesInfo)
+                    Logger.LogMessage(pageName);
+
+                    var embeddedModulesInfo_string = OneNoteUtils.GetPageMetaData(pageEl, EmbeddedModulesKey, xnm);
+                    if (!string.IsNullOrEmpty(embeddedModulesInfo_string))
                     {
-                        if (!DictionaryModules.ContainsKey(embeddedModuleInfo.ModuleName))
-                            throw new InvalidNotebookException(string.Format(BibleCommon.Resources.Constants.ModuleIsNotInstalled, embeddedModuleInfo.ModuleName));
+                        var embeddedModulesInfo = EmbeddedModuleInfo.Deserialize(embeddedModulesInfo_string);
 
-                        var module = DictionaryModules[embeddedModuleInfo.ModuleName];                        
-
-                        if (!SupplementalModuleAlreadyAdded(embeddedModuleInfo.ModuleName))
+                        foreach (var embeddedModuleInfo in embeddedModulesInfo)
                         {
-                            result.AddRange(SaveEmbeddedModuleSettings(embeddedModuleInfo, module, pageEl));
+                            if (!DictionaryModules.ContainsKey(embeddedModuleInfo.ModuleName))
+                                throw new InvalidNotebookException(string.Format(BibleCommon.Resources.Constants.ModuleIsNotInstalled, embeddedModuleInfo.ModuleName));
+
+                            var module = DictionaryModules[embeddedModuleInfo.ModuleName];
+
+                            if (!SupplementalModuleAlreadyAdded(embeddedModuleInfo.ModuleName))
+                            {
+                                result.AddRange(SaveEmbeddedModuleSettings(embeddedModuleInfo, module, pageEl));
+                            }
                         }
                     }
                 }
-            }
 
-            Logger.Preffix = string.Empty;
+                Logger.Preffix = string.Empty;
 
-            if (GetSupplementalModulesCount() == 0)            
-                throw new InvalidNotebookException(string.Format(NotebookIsNotSupplementalBibleMessage, notebookName));            
-            else
-            {
-                MainForm.LongProcessingDone(SupplementalNotebookWasAddedMessage);
-                SaveSupplementalNotebookSettings(notebookId);                
+                if (GetSupplementalModulesCount() == 0)
+                    throw new InvalidNotebookException(string.Format(NotebookIsNotSupplementalBibleMessage, notebookName));
+                else
+                {
+                    MainForm.LongProcessingDone(SupplementalNotebookWasAddedMessage);
+                    SaveSupplementalNotebookSettings(notebookId);
+                }
             }
 
             return result;
