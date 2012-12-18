@@ -60,9 +60,9 @@ namespace BibleCommon.Helpers
         public static string GetNotebookIdByName(ref Application oneNoteApp, string notebookName, bool refreshCache)
         {
             OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks, refreshCache);
-            XElement bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@nickname='{0}']", notebookName), hierarchy.Xnm);
+            XElement bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@name='{0}']", notebookName), hierarchy.Xnm);
             if (bibleNotebook == null)
-                bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@name='{0}']", notebookName), hierarchy.Xnm);
+                bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@nickname='{0}']", notebookName), hierarchy.Xnm);
             if (bibleNotebook != null)
             {
                 return (string)bibleNotebook.Attribute("ID");
@@ -71,7 +71,7 @@ namespace BibleCommon.Helpers
             return string.Empty;
         }
 
-        public static string GetHierarchyElementNickname(ref Application oneNoteApp, string elementId)
+        public static string GetNotebookElementNickname(ref Application oneNoteApp, string elementId)
         {
             OneNoteProxy.HierarchyElement doc = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, elementId, HierarchyScope.hsSelf);
             return (string)doc.Content.Root.Attribute("nickname");
@@ -370,6 +370,34 @@ namespace BibleCommon.Helpers
             };
         }
 
+
+        private static string MakeNotebookNameWithNickname(XElement el)
+        {
+            var name = (string)el.Attribute("name");
+            var nickname = (string)el.Attribute("nickname");
+
+            if (name != nickname)
+                name = string.Format("{0} [\"{1}\"]", name, nickname);
+
+            return name;
+        }
+
+        public static string GetNotebookElementNameWithNickname(ref Application oneNoteApp, string elementId)
+        {
+            OneNoteProxy.HierarchyElement doc = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, elementId, HierarchyScope.hsSelf);
+            return MakeNotebookNameWithNickname(doc.Content.Root);
+        }
+
+        public static string ParseNotebookName(string s)
+        {   
+            if (!string.IsNullOrEmpty(s))
+            {
+                return s.Split(new string[] { OneNoteUtils.NotebookNameDelimeter }, StringSplitOptions.None)[0];
+            }
+
+            return s;
+        }
+        public static string NotebookNameDelimeter = " [\"";
         public static Dictionary<string, string> GetExistingNotebooks(ref Application oneNoteApp)
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
@@ -378,10 +406,9 @@ namespace BibleCommon.Helpers
 
             foreach (XElement notebook in hierarchy.Content.Root.XPathSelectElements("one:Notebook", hierarchy.Xnm))
             {
-                string name = (string)notebook.Attribute("nickname");
-                if (string.IsNullOrEmpty(name))
-                    name = (string)notebook.Attribute("name");
-                string id = (string)notebook.Attribute("ID");
+                var name = MakeNotebookNameWithNickname(notebook);
+                var id = (string)notebook.Attribute("ID");
+
                 result.Add(id, name);
             }
 

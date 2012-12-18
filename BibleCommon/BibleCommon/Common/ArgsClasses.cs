@@ -20,4 +20,38 @@ namespace BibleCommon.Common
         public bool Force { get; set; }
         public bool SearchOnlyForFirstChapter { get; set; }           
     }
+
+    public class ItemInfo
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Nickname { get; set; }
+
+        public ItemInfo(string id, string name)
+        {
+            this.Id = id;
+            this.Name = name;
+        }
+
+        public override string ToString()
+        {
+            if (!string.IsNullOrEmpty(Nickname))
+                return Nickname;
+            else
+                return Name;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode() ^ Name.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is ItemInfo))
+                return false;
+
+            return ((ItemInfo)obj).Id == this.Id;
+        }
+    }
 }
