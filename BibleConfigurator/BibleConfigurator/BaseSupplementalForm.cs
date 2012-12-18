@@ -257,6 +257,12 @@ namespace BibleConfigurator
             }
         }
 
+        private static string GetNotebookNameFromCombobox(ComboBox cb)
+        {
+            var name = (string)cb.SelectedItem;
+            return OneNoteUtils.ParseNotebookName((string)cb.SelectedItem);
+        }
+
         private void CommitChanges(bool closeAfter)
         {
             bool useExistingNotebook = rbUseExisting.Enabled && rbUseExisting.Checked;
@@ -280,7 +286,8 @@ namespace BibleConfigurator
                 }
                 else
                 {
-                    errors = TryToUseExistingNotebook(ExistingNotebooks.First(n => n.Value == (string)cbExistingNotebooks.SelectedValue).Key, (string)cbExistingNotebooks.SelectedValue);
+                    var notebookName = GetNotebookNameFromCombobox(cbExistingNotebooks);
+                    errors = TryToUseExistingNotebook(ExistingNotebooks.First(n => n.Value == (string)cbExistingNotebooks.SelectedValue).Key, notebookName);
                 }
 
                 BibleCommon.Services.Logger.LogMessageParams("Finish work with supplemental modules. Elapsed time = '{0}'", DateTime.Now - dt);
