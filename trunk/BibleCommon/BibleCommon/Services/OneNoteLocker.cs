@@ -70,7 +70,7 @@ namespace BibleCommon.Services
         {
             var currentPageInfo = OneNoteUtils.GetCurrentPageInfo(ref oneNoteApp);
 
-            string sectionFilePath = GetElementPath(ref oneNoteApp, currentPageInfo.SectionId);
+            string sectionFilePath = OneNoteUtils.GetElementPath(ref oneNoteApp, currentPageInfo.SectionId);
 
             UnlockSection(sectionFilePath);
 
@@ -84,7 +84,7 @@ namespace BibleCommon.Services
         {
             if (SettingsManager.Instance.IsConfigured(ref oneNoteApp))
             {
-                string folderPath = GetElementPath(ref oneNoteApp, hierarchyId);
+                string folderPath = OneNoteUtils.GetElementPath(ref oneNoteApp, hierarchyId);
 
                 foreach (var filePath in Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories))  // will throw NotSupportedException if Bible is stored on SkyDrive
                 {
@@ -101,12 +101,7 @@ namespace BibleCommon.Services
             }
         }
 
-        private static string GetElementPath(ref Application oneNoteApp, string elementId)
-        {
-            XmlNamespaceManager xnm;
-            var xDoc = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, elementId, HierarchyScope.hsSelf, out xnm);
-            return (string)xDoc.Root.Attribute("path");
-        }
+       
 
         private static void LockSection(string sectionFilePath)
         {

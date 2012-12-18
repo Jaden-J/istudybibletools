@@ -384,7 +384,7 @@ namespace BibleConfigurator
                         }
                         catch (InvalidNotebookException)
                         {
-                            FormLogger.LogError(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected);
+                            FormLogger.LogError(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected, notebookName, ContainerType.Single);
                         }
                     }
                 }
@@ -854,8 +854,11 @@ namespace BibleConfigurator
 
             if (module.UseSingleNotebook() || IsModerator)
             {
-                SetNotebookParameters(rbSingleNotebook.Checked, !string.IsNullOrEmpty(singleNotebookId) ? notebooks[singleNotebookId] :
-                    Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.Single).Name),
+                var defaultNotebookName = "";
+                if (module.UseSingleNotebook())
+                    defaultNotebookName = Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.Single).Name);
+                SetNotebookParameters(rbSingleNotebook.Checked, 
+                    !string.IsNullOrEmpty(singleNotebookId) ? notebooks[singleNotebookId] : defaultNotebookName,
                     notebooks, SettingsManager.Instance.NotebookId_Bible, cbSingleNotebook, chkCreateSingleNotebookFromTemplate);
             }            
 
