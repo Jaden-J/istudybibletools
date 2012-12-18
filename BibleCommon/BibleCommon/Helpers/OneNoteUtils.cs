@@ -370,6 +370,35 @@ namespace BibleCommon.Helpers
             };
         }
 
+        public static string GetElementPath(ref Application oneNoteApp, string elementId)
+        {
+            XmlNamespaceManager xnm;
+            var xDoc = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, elementId, HierarchyScope.hsSelf, out xnm);
+            return (string)xDoc.Root.Attribute("path");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oneNoteApp"></param>
+        /// <param name="notebookId"></param>
+        /// <returns>false - если хранится в skydrive</returns>
+        public static bool IsNotebookLocal(ref Application oneNoteApp, string notebookId)
+        {
+            try
+            {
+                string folderPath = GetElementPath(ref oneNoteApp, notebookId);
+
+                Directory.GetCreationTime(folderPath);
+
+                return true;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
+        }
+
 
         private static string MakeNotebookNameWithNickname(XElement el)
         {

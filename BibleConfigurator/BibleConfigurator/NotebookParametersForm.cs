@@ -54,10 +54,13 @@ namespace BibleConfigurator
             if (_firstLoad)
             {
                 RenamedSectionGroups = new Dictionary<string, string>();
+                OneNoteProxy.HierarchyElement notebook = null;
 
                 try
                 {
-                    OriginalSectionGroups = GetAllSectionGroups();
+                    notebook = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, _notebookId, HierarchyScope.hsSections, true);
+
+                    OriginalSectionGroups = GetAllSectionGroups(notebook);
 
                     BindComboBox(cbBibleSection, OriginalSectionGroups[ContainerType.Bible]);                    
 
@@ -69,7 +72,9 @@ namespace BibleConfigurator
                 }
                 catch (InvalidNotebookException)
                 {
-                    FormLogger.LogError(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected);
+                    FormLogger.LogError(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected, 
+                            notebook != null ? (string)notebook.Content.Root.Attribute("name") : null, 
+                            ContainerType.Single);
                     this.Close();
                 }
             }
@@ -81,11 +86,10 @@ namespace BibleConfigurator
             cb.SelectedIndex = 0;
         }
 
-        private Dictionary<ContainerType, SectionGroupDTO> GetAllSectionGroups()
+        private Dictionary<ContainerType, SectionGroupDTO> GetAllSectionGroups(OneNoteProxy.HierarchyElement notebook)
         {
             Dictionary<ContainerType, SectionGroupDTO> result = new Dictionary<ContainerType, SectionGroupDTO>();
-
-            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, _notebookId, HierarchyScope.hsSections, true);
+            
             var module = ModulesManager.GetCurrentModuleInfo();
 
             foreach (XElement sectionGroup in notebook.Content.Root.XPathSelectElements("one:SectionGroup", notebook.Xnm).Where(sg => !OneNoteUtils.IsRecycleBin(sg)))
