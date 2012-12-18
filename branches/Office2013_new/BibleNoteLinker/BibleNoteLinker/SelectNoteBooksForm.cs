@@ -10,6 +10,7 @@ using BibleCommon.Services;
 using Microsoft.Office.Interop.OneNote;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using BibleCommon.Helpers;
 
 namespace BibleNoteLinker
 {
@@ -70,7 +71,7 @@ namespace BibleNoteLinker
             cb.Text = title;
             cb.Font = new System.Drawing.Font(BibleCommon.Consts.Constants.UnicodeFontName, cb.Font.Size, cb.Font.Style);
             cb.Top = 25 * index;
-            cb.Width = 250;
+            cb.Width = 330;
             pnMain.Controls.Add(cb);
         }
 
@@ -83,25 +84,14 @@ namespace BibleNoteLinker
                 OneNoteProxy.HierarchyElement sectionGroups = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, 
                     SettingsManager.Instance.NotebookId_Bible, HierarchyScope.hsChildren);
 
-                foreach (XElement sectionGroup in sectionGroups.Content.Root.XPathSelectElements("one:SectionGroup", sectionGroups.Xnm))
+                foreach (XElement sectionGroup in sectionGroups.Content.Root.XPathSelectElements(string.Format("one:SectionGroup[{0}]", OneNoteUtils.NotInRecycleXPathCondition), sectionGroups.Xnm))
                 {
                     result.Add((string)sectionGroup.Attribute("ID"), (string)sectionGroup.Attribute("name"));
                 }
             }
             else
             {
-                OneNoteProxy.HierarchyElement notebooks = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, null, HierarchyScope.hsNotebooks);
-
-                foreach (XElement notebook in notebooks.Content.Root.XPathSelectElements("one:Notebook", notebooks.Xnm))
-                {
-                    var name = (string)notebook.Attribute("name");
-                    var nickname = (string)notebook.Attribute("nickname");
-
-                    if (name != nickname)
-                        name = string.Format("{0} ({1})", nickname, name);
-
-                    result.Add((string)notebook.Attribute("ID"), name);
-                }
+                result = OneNoteUtils.GetExistingNotebooks(ref _oneNoteApp);                
             }
 
             return result;

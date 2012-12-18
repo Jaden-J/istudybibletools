@@ -238,45 +238,54 @@ namespace BibleCommon.Services
 
         public bool IsConfigured(ref Application oneNoteApp)
         {
-            bool result = !string.IsNullOrEmpty(this.NotebookId_Bible)
-                && !string.IsNullOrEmpty(this.NotebookId_BibleComments)
-                && !string.IsNullOrEmpty(this.NotebookId_BibleNotesPages)
-                && !string.IsNullOrEmpty(this.NotebookId_BibleStudy)
-                && !string.IsNullOrEmpty(this.SectionName_DefaultBookOverview)
-                && !string.IsNullOrEmpty(this.PageName_DefaultComments)
-                && !string.IsNullOrEmpty(this.PageName_Notes)
-                && !string.IsNullOrEmpty(this.ModuleShortName)
-                && ModulesManager.ModuleIsCorrect(this.ModuleShortName, Common.ModuleType.Bible)
-                && _useDefaultSettingsNodeExists;
-
-            if (result)
+            try
             {
-                if (this.IsSingleNotebook)
-                {
-                    result = !string.IsNullOrEmpty(this.SectionGroupId_Bible)
-                          && !string.IsNullOrEmpty(this.SectionGroupId_BibleComments)
-                          && !string.IsNullOrEmpty(this.SectionGroupId_BibleStudy)
-                          && !string.IsNullOrEmpty(this.SectionGroupId_BibleNotesPages);                    
-
-                    if (result)
-                    {
-                        result = OneNoteUtils.RootSectionGroupExists(ref oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_Bible)
-                            && OneNoteUtils.RootSectionGroupExists(ref oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_BibleStudy)
-                            && OneNoteUtils.RootSectionGroupExists(ref oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_BibleComments)
-                            && OneNoteUtils.RootSectionGroupExists(ref oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_BibleNotesPages);
-                    }
-                }
+                bool result = !string.IsNullOrEmpty(this.NotebookId_Bible)
+                    && !string.IsNullOrEmpty(this.NotebookId_BibleComments)
+                    && !string.IsNullOrEmpty(this.NotebookId_BibleNotesPages)
+                    && !string.IsNullOrEmpty(this.NotebookId_BibleStudy)
+                    && !string.IsNullOrEmpty(this.SectionName_DefaultBookOverview)
+                    && !string.IsNullOrEmpty(this.PageName_DefaultComments)
+                    && !string.IsNullOrEmpty(this.PageName_Notes)
+                    && !string.IsNullOrEmpty(this.ModuleShortName)
+                    && ModulesManager.ModuleIsCorrect(this.ModuleShortName, Common.ModuleType.Bible)
+                    && _useDefaultSettingsNodeExists;
 
                 if (result)
                 {
-                    result = OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_Bible)
-                        && OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_BibleComments)
-                        && OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_BibleStudy)
-                        && OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_BibleNotesPages);
-                }
-            }
+                    if (this.IsSingleNotebook)
+                    {
+                        result = !string.IsNullOrEmpty(this.SectionGroupId_Bible)
+                              && !string.IsNullOrEmpty(this.SectionGroupId_BibleComments)
+                              && !string.IsNullOrEmpty(this.SectionGroupId_BibleStudy)
+                              && !string.IsNullOrEmpty(this.SectionGroupId_BibleNotesPages);
 
-            return result;
+                        if (result)
+                        {
+                            result = OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_Bible)
+                                && OneNoteUtils.RootSectionGroupExists(ref oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_Bible)
+                                && OneNoteUtils.RootSectionGroupExists(ref oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_BibleStudy)
+                                && OneNoteUtils.RootSectionGroupExists(ref oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_BibleComments)
+                                && OneNoteUtils.RootSectionGroupExists(ref oneNoteApp, this.NotebookId_Bible, this.SectionGroupId_BibleNotesPages);
+                        }
+                    }
+
+                    if (result)
+                    {
+                        result = OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_Bible)
+                            && OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_BibleComments)
+                            && OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_BibleStudy)
+                            && OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_BibleNotesPages);
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+                return false;
+            }
         }        
 
         public bool IsSingleNotebook

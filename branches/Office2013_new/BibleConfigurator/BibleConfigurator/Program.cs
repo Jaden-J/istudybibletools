@@ -32,6 +32,8 @@ namespace BibleConfigurator
         {
             try
             {
+                //Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+
                 LanguageManager.SetThreadUICulture();
 
                 Application.EnableVisualStyles();
@@ -68,6 +70,11 @@ namespace BibleConfigurator
                 if (_oneNoteApp != null)
                     _oneNoteApp = null;
             }
+        }
+
+        static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            FormLogger.LogError(e.Exception);
         }
 
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
