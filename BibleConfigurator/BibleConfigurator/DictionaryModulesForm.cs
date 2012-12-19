@@ -44,8 +44,9 @@ namespace BibleConfigurator
 
         protected override ErrorsList CommitChanges(BibleCommon.Common.ModuleInfo selectedModuleInfo)
         {
-            if (!OneNoteUtils.IsNotebookLocal(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries))
-                throw new InvalidNotebookException("Notebook is not local");
+            if (!string.IsNullOrEmpty(SettingsManager.Instance.GetValidDictionariesNotebookId(ref _oneNoteApp, true)))
+                if (!OneNoteUtils.IsNotebookLocal(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries))
+                    throw new InvalidNotebookException(BibleCommon.Resources.Constants.NotebookIsLocalAndNotSupportedForDictionaries);
 
             MainForm.PrepareForLongProcessing(selectedModuleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
             DictionaryManager.AddDictionary(ref _oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true, () => Logger.AbortedByUsers);
@@ -217,12 +218,10 @@ namespace BibleConfigurator
             return null;
         }
 
-        protected override bool CanExistingNotebookBeUsed(string notebookId)
+        protected override void CheckIfExistingNotebookCanBeUsed(string notebookId)
         {
-            if (!OneNoteUtils.IsNotebookLocal(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries))
-            {
-                throw new InvalidNotebookException("Notebook is not local");
-            }
+            if (!OneNoteUtils.IsNotebookLocal(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries))            
+                throw new InvalidNotebookException(BibleCommon.Resources.Constants.NotebookIsLocalAndNotSupportedForDictionaries);            
         }
     }
 }
