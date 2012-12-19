@@ -56,7 +56,7 @@ namespace BibleCommon.Services
                 oneNoteAppSafe.SyncHierarchy(currentPageInfo.SectionId);
             });
 
-            string sectionFilePath = GetElementPath(ref oneNoteApp, currentPageInfo.SectionId);
+            string sectionFilePath = OneNoteUtils.GetElementPath(ref oneNoteApp, currentPageInfo.SectionId);
 
             LockSection(sectionFilePath);
 
