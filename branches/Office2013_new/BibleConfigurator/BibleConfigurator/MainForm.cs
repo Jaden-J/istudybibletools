@@ -579,7 +579,7 @@ namespace BibleConfigurator
         private void SaveModuleInformationIntoFirstPage(string notebookId, ModuleInfo module)
         {
             XmlNamespaceManager xnm;
-            var firstNotebookPageEl = NotebookChecker.GetFirstNotebookPageId(ref _oneNoteApp, notebookId, null, out xnm);
+            var firstNotebookPageEl = NotebookChecker.GetFirstNotebookBiblePageId(ref _oneNoteApp, notebookId, null, out xnm);
             if (firstNotebookPageEl != null)
             {
                 var moduleInfo = new EmbeddedModuleInfo(module.ShortName, module.Version);

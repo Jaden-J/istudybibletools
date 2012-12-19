@@ -804,4 +804,7 @@ Please take notice:
   <data name="RemoveStrongDictionaryFromNotebookQuestion" xml:space="preserve">
     <value>Remove the section group of Strong's dictionary from 'Dictionaries' notebook?</value>
   </data>
+  <data name="NotebookIsLocalAndNotSupportedForDictionaries" xml:space="preserve">
+    <value>It is currently not supported managing notebook "Dictionaries" stored in the SkyDrive. Add all dictionaries to local notebook and then publish the notebook "Dictionaries" to the SkyDrive.</value>
+  </data>
 </root>

@@ -1155,7 +1155,16 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The notebook &apos;{0}&apos; is not a Dictionaries notebook..
+        ///   Ищет локализованную строку, похожую на It is currently not supported managing notebook &quot;Dictionaries&quot; stored in the SkyDrive. Add all dictionaries to local notebook and then publish the notebook &quot;Dictionaries&quot; to the SkyDrive..
+        /// </summary>
+        public static string NotebookIsLocalAndNotSupportedForDictionaries {
+            get {
+                return ResourceManager.GetString("NotebookIsLocalAndNotSupportedForDictionaries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на The notebook &apos;{0}&apos; is not a Dictionaries notebook..
         /// </summary>
         public static string NotebookIsNotDictionariesNotebook {
             get {
