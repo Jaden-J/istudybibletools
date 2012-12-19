@@ -419,5 +419,10 @@ namespace BibleConfigurator
                                         BibleCommon.Resources.Constants.WebSiteUrl),
                 BibleCommon.Resources.Constants.ThereAreErrorsAfterParallelModuleWasAdded);
         }
+
+        protected override void CheckIfExistingNotebookCanBeUsed(string notebookId)
+        {
+            // поддерживаем как локальные, так и облачные записные книжки
+        }
     }
 }

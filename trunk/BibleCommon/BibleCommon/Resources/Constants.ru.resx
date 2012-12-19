@@ -801,4 +801,7 @@
   <data name="RemoveStrongDictionaryFromNotebookQuestion" xml:space="preserve">
     <value>Удалить группу разделов словаря Стронга из записной книжки "Словари"?</value>
   </data>
+  <data name="NotebookIsLocalAndNotSupportedForDictionaries" xml:space="preserve">
+    <value>На данный момент не поддерживается управление записной книжкой "Словари", хранящейся в службе SkyDrive. Добавьте все необходимые словари в локальную записную книжку и после этого перенесите записную книжку "Словари" в облачное хранилище SkyDrive.</value>
+  </data>
 </root>
