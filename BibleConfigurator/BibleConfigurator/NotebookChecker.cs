@@ -76,7 +76,7 @@ namespace BibleConfigurator
             }
         }     
 
-        internal static XElement GetFirstNotebookPageId(ref Application oneNoteApp, string notebookId, OneNoteProxy.HierarchyElement containerEl, out XmlNamespaceManager xnm)
+        internal static XElement GetFirstNotebookBiblePageId(ref Application oneNoteApp, string notebookId, OneNoteProxy.HierarchyElement containerEl, out XmlNamespaceManager xnm)
         {   
             XElement sectionsDoc;
 
@@ -88,12 +88,16 @@ namespace BibleConfigurator
                 xnm = containerEl.Xnm;
             }
 
-            var firstSection = sectionsDoc.XPathSelectElement(string.Format("//one:Section[{0}]", OneNoteUtils.NotInRecycleXPathCondition), xnm);
-            if (firstSection != null)
+            var firstSectionGroup = sectionsDoc.XPathSelectElement(string.Format("one:SectionGroup[{0}]", OneNoteUtils.NotInRecycleXPathCondition), xnm);
+            if (firstSectionGroup != null)
             {
-                var pagesDoc = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, (string)firstSection.Attribute("ID"), HierarchyScope.hsPages, out xnm);
-                var firstPage = pagesDoc.Root.XPathSelectElement("one:Page", xnm);
-                return firstPage;
+                var firstSection = firstSectionGroup.XPathSelectElement(string.Format("one:Section[{0}]", OneNoteUtils.NotInRecycleXPathCondition), xnm);
+                if (firstSection != null)
+                {
+                    var pagesDoc = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, (string)firstSection.Attribute("ID"), HierarchyScope.hsPages, out xnm);
+                    var firstPage = pagesDoc.Root.XPathSelectElement("one:Page", xnm);
+                    return firstPage;
+                }
             }
 
             return null;
@@ -104,7 +108,7 @@ namespace BibleConfigurator
             if (notebookType == ContainerType.Bible)
             {
                 XmlNamespaceManager xnm;
-                var firstNotebookPageEl = GetFirstNotebookPageId(ref oneNoteApp, notebookId, containerEl, out xnm);
+                var firstNotebookPageEl = GetFirstNotebookBiblePageId(ref oneNoteApp, notebookId, containerEl, out xnm);
                 if (firstNotebookPageEl != null)
                 {
                     var bibleModuleMetadata = OneNoteUtils.GetPageMetaData(firstNotebookPageEl, BibleCommon.Consts.Constants.Key_EmbeddedBibleModule, xnm);
