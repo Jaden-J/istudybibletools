@@ -289,7 +289,7 @@ namespace BibleNoteLinker
             using (NoteLinkManager noteLinkManager = new NoteLinkManager(_oneNoteApp))
             {
                 noteLinkManager.OnNextVerseProcess += new EventHandler<NoteLinkManager.ProcessVerseEventArgs>(noteLinkManager_OnNextVerseProcess);
-                noteLinkManager.LinkPageVerses(page.SectionGroupId, page.SectionId, page.Id, NoteLinkManager.AnalyzeDepth.Full, chkForce.Checked);
+                noteLinkManager.LinkPageVerses(page.NotebookId, page.Id, NoteLinkManager.AnalyzeDepth.Full, chkForce.Checked);
             }
 
             pbMain.PerformStep();
@@ -357,7 +357,7 @@ namespace BibleNoteLinker
             {
                 DateTime lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value);
 
-                string lastAnalyzeTime = OneNoteUtils.GetPageMetaData(page.PageElement, Constants.Key_LatestAnalyzeTime, page.Xnm);
+                string lastAnalyzeTime = OneNoteUtils.GetElementMetaData(page.PageElement, Constants.Key_LatestAnalyzeTime, page.Xnm);
                 if (!string.IsNullOrEmpty(lastAnalyzeTime) && lastModifiedDate <= DateTime.Parse(lastAnalyzeTime).ToLocalTime())
                     return false;
             }

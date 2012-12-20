@@ -119,7 +119,7 @@ namespace BibleCommon.Services
 
         internal static bool RemoveChapterParallelTranslation(XDocument chapterPageDoc, ModuleInfo moduleInfo, XmlNamespaceManager xnm)
         {
-            var supplementalModulesMetadata = OneNoteUtils.GetPageMetaData(chapterPageDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules, xnm);
+            var supplementalModulesMetadata = OneNoteUtils.GetElementMetaData(chapterPageDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules, xnm);
             if (!string.IsNullOrEmpty(supplementalModulesMetadata))
             {
                 var embeddedModulesInfo = EmbeddedModuleInfo.Deserialize(supplementalModulesMetadata);
@@ -138,7 +138,7 @@ namespace BibleCommon.Services
                     }
 
                     embeddedModulesInfo.Remove(embeddedModuleInfo);
-                    OneNoteUtils.UpdatePageMetaData(chapterPageDoc.Root, 
+                    OneNoteUtils.UpdateElementMetaData(chapterPageDoc.Root, 
                         Consts.Constants.Key_EmbeddedSupplementalModules, EmbeddedModuleInfo.Serialize(embeddedModulesInfo), xnm);
                     return true;
                 }

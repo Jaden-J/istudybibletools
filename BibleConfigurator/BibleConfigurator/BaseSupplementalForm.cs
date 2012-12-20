@@ -591,7 +591,7 @@ namespace BibleConfigurator
 
                 Logger.LogMessage(pageName);
 
-                var embeddedModulesInfo_string = OneNoteUtils.GetPageMetaData(pageEl, EmbeddedModulesKey, xnm);
+                var embeddedModulesInfo_string = OneNoteUtils.GetElementMetaData(pageEl, EmbeddedModulesKey, xnm);
                 if (!string.IsNullOrEmpty(embeddedModulesInfo_string))
                 {
                     var embeddedModulesInfo = EmbeddedModuleInfo.Deserialize(embeddedModulesInfo_string);

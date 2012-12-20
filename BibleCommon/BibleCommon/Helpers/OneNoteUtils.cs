@@ -304,9 +304,9 @@ namespace BibleCommon.Helpers
             }
         }
 
-        public static void UpdatePageMetaData(XElement pageContent, string key, string value, XmlNamespaceManager xnm)
+        public static void UpdateElementMetaData(XElement el, string key, string value, XmlNamespaceManager xnm)
         {
-            var metaElement = pageContent.XPathSelectElement(string.Format("one:Meta[@name='{0}']", key), xnm);
+            var metaElement = el.XPathSelectElement(string.Format("one:Meta[@name='{0}']", key), xnm);
             if (metaElement != null)
             {
                 metaElement.SetAttributeValue("content", value);
@@ -315,7 +315,7 @@ namespace BibleCommon.Helpers
             {
                 XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
-                var pageSettings = pageContent.XPathSelectElement("one:MediaPlaylist", xnm) ?? pageContent.XPathSelectElement("one:PageSettings", xnm);
+                var pageSettings = el.XPathSelectElement("one:MediaPlaylist", xnm) ?? el.XPathSelectElement("one:PageSettings", xnm);
                 
                 var meta = new XElement(nms + "Meta",
                                             new XAttribute("name", key),
@@ -325,14 +325,14 @@ namespace BibleCommon.Helpers
                 if (pageSettings != null)
                     pageSettings.AddBeforeSelf(meta);
                 else
-                    pageContent.AddFirst(meta);
+                    el.AddFirst(meta);
             }
         }
 
 
-        public static string GetPageMetaData(XElement pageContent, string key, XmlNamespaceManager xnm)
+        public static string GetElementMetaData(XElement el, string key, XmlNamespaceManager xnm)
         {
-            var metaElement = pageContent.XPathSelectElement(string.Format("one:Meta[@name='{0}']", key), xnm);
+            var metaElement = el.XPathSelectElement(string.Format("one:Meta[@name='{0}']", key), xnm);
             if (metaElement != null)
             {
                 return (string)metaElement.Attribute("content");
@@ -364,6 +364,7 @@ namespace BibleCommon.Helpers
 
             return new NotebookIterator.PageInfo()
             {
+                NotebookId = currentNotebookId,
                 SectionGroupId = currentSectionGroupId,
                 SectionId = currentSectionId,
                 Id = currentPageId

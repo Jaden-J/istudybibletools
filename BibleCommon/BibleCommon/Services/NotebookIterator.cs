@@ -49,6 +49,7 @@ namespace BibleCommon.Services
 
         public class PageInfo : HierarchyElementInfo
         {
+            public string NotebookId { get; set; }
             public string SectionGroupId { get; set; }
             public string SectionId { get; set; }
             public XElement PageElement { get; set; }
@@ -125,6 +126,7 @@ namespace BibleCommon.Services
                 {
                     var page = new PageInfo()
                                 {
+                                    NotebookId = notebookId,
                                     SectionGroupId = sectionGroupId,
                                     SectionId = section.Id,              
                                     PageElement = pageElement,

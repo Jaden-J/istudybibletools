@@ -584,7 +584,7 @@ namespace BibleConfigurator
             {
                 var moduleInfo = new EmbeddedModuleInfo(module.ShortName, module.Version);
                 var pageContent = OneNoteUtils.GetPageContent(ref _oneNoteApp, (string)firstNotebookPageEl.Attribute("ID"), out xnm);
-                OneNoteUtils.UpdatePageMetaData(pageContent.Root, BibleCommon.Consts.Constants.Key_EmbeddedBibleModule, moduleInfo.ToString(), xnm);
+                OneNoteUtils.UpdateElementMetaData(pageContent.Root, BibleCommon.Consts.Constants.Key_EmbeddedBibleModule, moduleInfo.ToString(), xnm);
                 OneNoteUtils.UpdatePageContentSafe(ref _oneNoteApp, pageContent, xnm);
             }
         }

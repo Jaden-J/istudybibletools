@@ -1398,6 +1398,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Some pages &apos;Summary of Notes&apos; have obsolete structure. Please re-run Notes Analysis of all pages with option &apos;Re-analyze Bible verses&apos;..
+        /// </summary>
+        public static string NotesPagesManagerIsObsolete {
+            get {
+                return ResourceManager.GetString("NotesPagesManagerIsObsolete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Found passages that are missing in the first module of the Supplemental Bible. These passages will not be added to the Supplemental Bible. If you want this passages to be added to the Supplemental Bible, use this module as the first module of the Supplemental Bible..
         /// </summary>
         public static string NotExistingInFirstSupplemenBibleVersesFound {

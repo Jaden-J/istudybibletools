@@ -355,8 +355,11 @@ namespace BibleCommon.Services
 
             if (isSummaryNotesPage)
             {
-                OneNoteUtils.UpdatePageMetaData(pageContent.Content.Root, Constants.Key_IsSummaryNotesPage, isSummaryNotesPage.ToString(), pageContent.Xnm);
-                OneNoteUtils.UpdatePageMetaData(pageEl, Constants.Key_IsSummaryNotesPage, isSummaryNotesPage.ToString(), pageContent.Xnm);
+                OneNoteUtils.UpdateElementMetaData(pageContent.Content.Root, Constants.Key_IsSummaryNotesPage, isSummaryNotesPage.ToString(), pageContent.Xnm);
+                OneNoteUtils.UpdateElementMetaData(pageEl, Constants.Key_IsSummaryNotesPage, isSummaryNotesPage.ToString(), pageContent.Xnm);
+
+                OneNoteUtils.UpdateElementMetaData(pageContent.Content.Root, Constants.Key_NotesPageManagerName, NotesPageManagerEx.Const_ManagerName, pageContent.Xnm);
+                OneNoteUtils.UpdateElementMetaData(pageEl, Constants.Key_NotesPageManagerName, NotesPageManagerEx.Const_ManagerName, pageContent.Xnm);
             }
 
             pageContent.WasModified = true;
