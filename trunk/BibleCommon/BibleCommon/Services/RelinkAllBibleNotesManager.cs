@@ -14,11 +14,13 @@ namespace BibleCommon.Services
 {
     public class RelinkAllBibleNotesManager: IDisposable
     {
-        private Application _oneNoteApp;        
+        private Application _oneNoteApp;
+        private NotesPagesProviderManager _notesPagesProviderManager;
 
         public RelinkAllBibleNotesManager(Application oneNoteApp)
         {
-            _oneNoteApp = oneNoteApp;            
+            _oneNoteApp = oneNoteApp;
+            _notesPagesProviderManager = new NotesPagesProviderManager();
         }
 
         public void RelinkBiblePageNotes(string bibleSectionId, string biblePageId, string biblePageName, VersePointer chapterPointer)
@@ -68,7 +70,7 @@ namespace BibleCommon.Services
             bool pageWasCreated;
             string notesPageName = NoteLinkManager.GetDefaultNotesPageName(verseNumber);
             string notesPageId = OneNoteProxy.Instance.GetNotesPageId(ref _oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName, out pageWasCreated);
-            string notesRowObjectId = NotesPageManager.GetNotesRowObjectId(ref _oneNoteApp, notesPageId, verseNumber, !verseNumber.HasValue);
+            string notesRowObjectId = _notesPagesProviderManager.GetNotesRowObjectId(ref _oneNoteApp, notesPageId, verseNumber, !verseNumber.HasValue);
 
             if (!string.IsNullOrEmpty(notesRowObjectId))
             {

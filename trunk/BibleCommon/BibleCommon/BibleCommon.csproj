@@ -62,6 +62,7 @@
     <Compile Include="Common\VersePointerSearchResult.cs" />
     <Compile Include="Consts\Consts.cs" />
     <Compile Include="Contracts\ICustomLogger.cs" />
+    <Compile Include="Contracts\INotesPageManager.cs" />
     <Compile Include="Contracts\IProtocolHandler.cs" />
     <Compile Include="Handlers\FindVersesWithStrongNumberHandler.cs" />
     <Compile Include="Handlers\NavigateToStrongHandler.cs" />
@@ -97,6 +98,8 @@
     <Compile Include="Services\NotebookIterator.cs" />
     <Compile Include="Services\NoteLinkManager.cs" />
     <Compile Include="Services\NotesPageManager.cs" />
+    <Compile Include="Services\NotesPageManagerEx.cs" />
+    <Compile Include="Services\NotesPagesProviderManager.cs" />
     <Compile Include="Services\OneNoteLocker.cs" />
     <Compile Include="Services\OneNoteProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

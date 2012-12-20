@@ -280,7 +280,7 @@ namespace BibleCommon.Services
         private static bool UpdateSupplementalModulesMetadata(ref Application oneNoteApp, XDocument chapterPageDoc, SimpleVersePointer chapterPointer, ModuleInfo module,
             XmlNamespaceManager xnm)
         {
-            var supplementalModulesMetadata = OneNoteUtils.GetPageMetaData(chapterPageDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules, xnm);
+            var supplementalModulesMetadata = OneNoteUtils.GetElementMetaData(chapterPageDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules, xnm);
             if (string.IsNullOrEmpty(supplementalModulesMetadata))
                 throw new InvalidOperationException(string.Format("Chapter page metadata was not found: {0}", chapterPointer));
 
@@ -289,7 +289,7 @@ namespace BibleCommon.Services
             {
                 supplementalModulesInfo.Add(new EmbeddedModuleInfo(module.ShortName, module.Version, supplementalModulesInfo.Count));
 
-                OneNoteUtils.UpdatePageMetaData(chapterPageDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules,
+                OneNoteUtils.UpdateElementMetaData(chapterPageDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules,
                     EmbeddedModuleInfo.Serialize(supplementalModulesInfo), xnm);
 
                 return true;
@@ -567,7 +567,7 @@ namespace BibleCommon.Services
             XmlNamespaceManager xnm;
             var currentChapterDoc = NotebookGenerator.AddPage(ref oneNoteApp, bookSectionId, chapterPageName, 1, moduleInfo.Locale, out xnm);
 
-            OneNoteUtils.UpdatePageMetaData(currentChapterDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules,
+            OneNoteUtils.UpdateElementMetaData(currentChapterDoc.Root, Consts.Constants.Key_EmbeddedSupplementalModules,
                 EmbeddedModuleInfo.Serialize(new List<EmbeddedModuleInfo>() { new EmbeddedModuleInfo(moduleInfo.ShortName, moduleInfo.Version, 0) }), xnm);
 
             var currentTableElement = NotebookGenerator.AddTableToPage(currentChapterDoc, false, xnm, new CellInfo(SettingsManager.Instance.PageWidth_Bible));

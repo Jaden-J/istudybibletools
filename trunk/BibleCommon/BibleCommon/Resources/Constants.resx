@@ -807,4 +807,7 @@ Please take notice:
   <data name="NotebookIsLocalAndNotSupportedForDictionaries" xml:space="preserve">
     <value>It is currently not supported managing notebook "Dictionaries" stored in the SkyDrive. Add all dictionaries to local notebook and then publish the notebook "Dictionaries" to the SkyDrive.</value>
   </data>
+  <data name="NotesPagesManagerIsObsolete" xml:space="preserve">
+    <value>Some pages 'Summary of Notes' have obsolete structure. Please re-run Notes Analysis of all pages with option 'Re-analyze Bible verses'.</value>
+  </data>
 </root>

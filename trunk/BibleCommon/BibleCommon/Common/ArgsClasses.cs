@@ -5,13 +5,69 @@ using System.Text;
 
 namespace BibleCommon.Common
 {
-    public class PageIdInfo
+    public enum HierarchyElementType
     {
-        public string SectionGroupName { get; set; }
-        public string SectionName { get; set; }
-        public string PageName { get; set; }
-        public string PageId { get; set; }
+        Notebook,
+        SectionGroup,
+        Section,
+        Page
+    }
+
+    public class HierarchyElementInfo
+    {   
+        public string Name { get; set; }
+        public string Id { get; set; }
+        public HierarchyElementType Type { get; set; }
+        
+        public HierarchyElementInfo Parent { get; set; }
         public string PageTitleId { get; set; }
+        public string NotebookId { get; set; }
+
+        public string GetElementName()
+        {
+            return GetElementName(this.Type);
+        }
+
+        public static string GetElementName(HierarchyElementType type)
+        {
+            switch (type)
+            {
+                case HierarchyElementType.Notebook:
+                    return "Notebook";
+                case HierarchyElementType.SectionGroup:
+                    return "SectionGroup";
+                case HierarchyElementType.Section:
+                    return "Section";
+                case HierarchyElementType.Page:
+                    return "Page";
+                default:
+                    throw new NotSupportedException(type.ToString());
+            }
+        }
+
+        [Obsolete]
+        public string SectionName
+        {
+            get
+            {
+                if (Type == HierarchyElementType.Page && Parent != null)
+                    return Parent.Name;
+
+                return null;
+            }
+        }
+
+        [Obsolete]
+        public string SectionGroupName
+        {
+            get
+            {
+                if (Type == HierarchyElementType.Page && Parent != null && Parent.Parent != null)
+                    return Parent.Parent.Name;
+
+                return null;
+            }
+        }        
     }
     
     public struct GetAllIncludedVersesExceptFirstArgs
