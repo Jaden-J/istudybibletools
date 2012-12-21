@@ -46,7 +46,7 @@ namespace BibleCommon.Services
             
             OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);            
 
-            var rootElement = GetRootElementAndCreateIfNotExists(ref oneNoteApp, vp, isChapter, notesPageWidth, verseHierarchyObjectInfo,
+            var rootElement = GetVerseRootElementAndCreateIfNotExists(ref oneNoteApp, vp, isChapter, notesPageWidth, verseHierarchyObjectInfo,
                 notesPageDocument, commonNotesPage, out rowWasAdded);
 
             if (rootElement != null)
@@ -61,11 +61,13 @@ namespace BibleCommon.Services
         }
 
 
-         private XElement GetRootElementAndCreateIfNotExists(ref Application oneNoteApp, VersePointer vp, bool isChapter,
+         private XElement GetVerseRootElementAndCreateIfNotExists(ref Application oneNoteApp, VersePointer vp, bool isChapter,
             int mainColumnWidth, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
             OneNoteProxy.PageContent notesPageDocument, bool commonNotesPage, out bool rowWasAdded)
         {
             rowWasAdded = false;
+
+             //здесь вообще не правильно. Если страница общая - то надо искать соответтсвующий OE и если нет создавать его и возвращать его. Если страница для стиха - то в приципе верно работает.
 
             XElement rootElement = notesPageDocument.Content.XPathSelectElement("//one:Outline/one:OEChildren", notesPageDocument.Xnm);
             if (rootElement == null)
