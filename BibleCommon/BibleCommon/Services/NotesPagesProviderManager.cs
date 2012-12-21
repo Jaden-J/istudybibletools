@@ -34,6 +34,11 @@ namespace BibleCommon.Services
             string notesPageName, int notesPageWidth, bool force, bool processAsExtendedVerse, bool commonNotesPage, out bool rowWasAdded)
         {
             var manager = GetNotesPageProvider(ref oneNoteApp, notesPageId);
+
+            //вставка!! удалить
+            if (commonNotesPage)
+                manager = _defaultManager;
+
             return manager.UpdateNotesPage(ref oneNoteApp, noteLinkManager, vp, isChapter, verseHierarchyObjectInfo, notePageId, notesPageId,
                 notePageContentObjectId, notesPageName, notesPageWidth, force, processAsExtendedVerse, commonNotesPage, out rowWasAdded);
         }
