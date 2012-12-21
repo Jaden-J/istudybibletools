@@ -24,7 +24,7 @@ namespace BibleCommon.Services
         public string UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, bool isChapter,
            HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
            HierarchyElementInfo notePageId, string notesPageId, string notePageContentObjectId,
-           string notesPageName, int notesPageWidth, bool force, bool processAsExtendedVerse, out bool rowWasAdded)
+           string notesPageName, int notesPageWidth, bool force, bool processAsExtendedVerse, bool commonNotesPage, out bool rowWasAdded)
         {
             string targetContentObjectId = string.Empty;
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);

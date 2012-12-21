@@ -16,9 +16,16 @@ namespace BibleCommon.Services
 {
     public class NotesPageManagerEx : INotesPageManager
     {
+        internal class ListNumberInfo
+        {            
+            internal string NumberFormat { get; set; }
+            internal int NumberSequence { get; set; }
+        }
+
         public static readonly string Const_ManagerName = "NotesPageManagerEx";
 
-        private XNamespace _nms;        
+        private XNamespace _nms;
+        private HashSet<string> _processedNodes = new HashSet<string>();  // список актуализированных узлов в рамках текущей сессии анализа заметок
 
         public string ManagerName
         {
@@ -33,14 +40,14 @@ namespace BibleCommon.Services
         public string UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, bool isChapter,
            HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
            HierarchyElementInfo notePageId, string notesPageId, string notePageContentObjectId,
-           string notesPageName, int notesPageWidth, bool force, bool processAsExtendedVerse, out bool rowWasAdded)
+           string notesPageName, int notesPageWidth, bool force, bool processAsExtendedVerse, bool commonNotesPage, out bool rowWasAdded)
         {
             string targetContentObjectId = string.Empty;            
             
             OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);            
 
             var rootElement = GetRootElementAndCreateIfNotExists(ref oneNoteApp, vp, isChapter, notesPageWidth, verseHierarchyObjectInfo,
-                notesPageDocument, out rowWasAdded);
+                notesPageDocument, commonNotesPage, out rowWasAdded);
 
             if (rootElement != null)
             {
@@ -56,18 +63,41 @@ namespace BibleCommon.Services
 
          private XElement GetRootElementAndCreateIfNotExists(ref Application oneNoteApp, VersePointer vp, bool isChapter,
             int mainColumnWidth, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
-            OneNoteProxy.PageContent notesPageDocument, out bool rowWasAdded)
+            OneNoteProxy.PageContent notesPageDocument, bool commonNotesPage, out bool rowWasAdded)
         {
             rowWasAdded = false;
 
             XElement rootElement = notesPageDocument.Content.XPathSelectElement("//one:Outline/one:OEChildren", notesPageDocument.Xnm);
             if (rootElement == null)
             {
-                notesPageDocument.Content.Root.Add(new XElement(_nms + "Outline",
-                                                        new XElement(_nms + "OEChildren",
-                                                            new XAttribute("indent", 2)
-                                                    )));
-                rootElement = notesPageDocument.Content.XPathSelectElement("//one:Outline/one:OEChildren", notesPageDocument.Xnm);
+                XElement rootElParent;
+                if (commonNotesPage)
+                {
+                    rootElParent = new XElement(_nms + "Outline",
+                                    new XElement(_nms + "OEChildren",
+                                        new XElement(_nms + "OE",
+                                            new XElement(_nms + "T",
+                                                new XCData(
+                                                     !isChapter ?
+                                                        OneNoteUtils.GetOrGenerateHref(ref oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseNumber),
+                                                            verseHierarchyObjectInfo.VerseInfo.ObjectHref,
+                                                            verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.VerseContentObjectId,
+                                                            Consts.Constants.QueryParameter_BibleVerse)
+                                                        :
+                                                        string.Empty
+                                                        )),
+                                            new XElement(_nms + "OEChildren")
+                                    )));
+                    rootElement = rootElParent.XPathSelectElement("one:OEChildren/one:OE/one:OEChildren", notesPageDocument.Xnm);
+                }
+                else
+                {
+                    rootElParent = new XElement(_nms + "Outline",
+                                    new XElement(_nms + "OEChildren", new XAttribute("indent", 2)));
+                    rootElement = rootElParent.XPathSelectElement("one:OEChildren", notesPageDocument.Xnm);
+                }
+
+                notesPageDocument.Content.Root.Add(rootElParent);                               
             }
 
             return rootElement;
@@ -75,30 +105,32 @@ namespace BibleCommon.Services
 
         public string GetNotesRowObjectId(ref Application oneNoteApp, string notesPageId, VerseNumber? verseNumber, bool isChapter)
         {
-            string result = string.Empty;
-            OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
-            XElement tableElement = notesPageDocument.Content.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", notesPageDocument.Xnm);
-            XElement targetElement = GetNotesRow(tableElement, verseNumber, isChapter, notesPageDocument.Xnm);
+            var result = string.Empty;
+            var notesPageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
+            var targetElement = notesPageDocument.Content.Root.XPathSelectElement("one:Title/one:OE", notesPageDocument.Xnm);
 
             if (targetElement != null)
-                result = (string)targetElement.XPathSelectElement("one:Cell/one:OEChildren/one:OE", notesPageDocument.Xnm).Attribute("objectID");
+                result = (string)targetElement.Attribute("objectID");
 
             return result;
         }
 
         private XElement _parentElement;
+        private int _level;
 
         private void AddLinkToNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, XElement rootElement,
            HierarchyElementInfo notePageInfo, string notePageContentObjectId,
            OneNoteProxy.PageContent notesPageDocument, string notesPageName, bool force, bool processAsExtendedVerse)
         {
             _parentElement = rootElement;
+            _level = 1;
+
             if (notePageInfo.Parent != null)
-                CreateParentTreeStructure(notePageInfo.Parent, notesPageDocument.Xnm);
+                CreateParentTreeStructure(ref oneNoteApp, notePageInfo.Parent, notesPageDocument.Xnm);
 
             string link = OneNoteUtils.GenerateHref(ref oneNoteApp, notePageInfo.Name, notePageInfo.Id, notePageContentObjectId);
 
-            var suchNoteLink = SearchExistingNoteLink(notesPageDocument, notePageInfo, link);
+            var suchNoteLink = SearchExistingNoteLink(ref oneNoteApp, notesPageDocument, notePageInfo, link);
 
             if (suchNoteLink != null)
             {
@@ -113,43 +145,29 @@ namespace BibleCommon.Services
                 OneNoteUtils.NormalizeTextElement(suchNoteLink);
 
             if (suchNoteLink == null)  // если нет ссылки на такую же заметку
-            {
-                //XNode prevLink = null;
-                //foreach (XElement existingLink in rowElement.XPathSelectElements("one:Cell[2]/one:OEChildren/one:OE/one:T", xnm))
-                //{
-                //    if (existingLink.Parent.XPathSelectElement("one:List", xnm) != null)  // если мы смотрим ссылку с номером, а не строку типа "ссылка1; ссылка2"
-                //    {
-                //        string existingNoteTitle = StringUtils.GetText(existingLink.Value);
-
-                //        if (noteTitle.CompareTo(existingNoteTitle) < 0)
-                //            break;
-                //        prevLink = existingLink.Parent;
-                //    }
-                //}
-
+            {                
+                var listNumberInfo = GetListNumberInfo(_level);
                 XElement linkElement = new XElement(_nms + "OE",
                                             new XElement(_nms + "List",
-                                                        new XElement(_nms + "Number", new XAttribute("numberSequence", 0), new XAttribute("numberFormat", "##."))),
+                                                        new XElement(_nms + "Number",
+                                                            new XAttribute("numberSequence", listNumberInfo.NumberSequence),
+                                                            new XAttribute("numberFormat", listNumberInfo.NumberFormat))),
                                             new XElement(_nms + "T",
                                                 new XCData(
                                                     link + GetMultiVerseString(vp.ParentVersePointer ?? vp))));
                 OneNoteUtils.UpdateElementMetaData(linkElement, Constants.Key_Id, notePageInfo.Id, notesPageDocument.Xnm);
 
-                _parentElement.Add(linkElement);
-
-                //if (prevLink == null)
-                //{
-                //    notesCellElement.AddFirst(linkElement);
-                //}
-                //else
-                //{
-                //    if (prevLink.NextNode != null && prevLink.NextNode.XPathSelectElement("one:List", notesPageDocument.Xnm) == null)  // если следующая строка типа "ссылка1; ссылка2"                    
-                //        prevLink = prevLink.NextNode;
-                //    prevLink.AddAfterSelf(linkElement);
-                //}
+                TryToInsertOrMoveElement(ref oneNoteApp, linkElement, notePageInfo, _parentElement, MoveOperationType.Insert, notesPageDocument.Xnm);
             }
             else if (!processAsExtendedVerse)
-            {
+            {   
+                if (!_processedNodes.Contains(notePageInfo.Id))
+                {
+                    suchNoteLink = TryToInsertOrMoveElement(ref oneNoteApp, suchNoteLink.Parent, notePageInfo, _parentElement, MoveOperationType.MoveWithLinksRow, notesPageDocument.Xnm)
+                                            .XPathSelectElement("one:T", notesPageDocument.Xnm);
+                    _processedNodes.Add(notePageInfo.Id);
+                }
+
                 string pageLink = OneNoteUtils.GenerateHref(ref oneNoteApp, notePageInfo.Name, notePageInfo.Id, notePageInfo.PageTitleId);
 
                 var verseLinksOE = suchNoteLink.Parent.NextNode;
@@ -184,11 +202,16 @@ namespace BibleCommon.Services
                 suchNoteLink.Value = pageLink;
 
                 if (suchNoteLink.Parent.XPathSelectElement("one:List", notesPageDocument.Xnm) == null)  // почему то нет номера у строки
+                {
+                    var listNumberInfo = GetListNumberInfo(_level);
                     suchNoteLink.Parent.AddFirst(new XElement(_nms + "List",
-                                                    new XElement(_nms + "Number", new XAttribute("numberSequence", 0), new XAttribute("numberFormat", "##."))));
+                                                    new XElement(_nms + "Number",
+                                                            new XAttribute("numberSequence", listNumberInfo.NumberSequence),
+                                                            new XAttribute("numberFormat", listNumberInfo.NumberFormat))));
+                }
             }
 
-            OneNoteUtils.UpdatePageContentSafe(ref oneNoteApp, notesPageDocument.Content, notesPageDocument.Xnm);                                  
+            //OneNoteUtils.UpdatePageContentSafe(ref oneNoteApp, notesPageDocument.Content, notesPageDocument.Xnm);                                  
 
             notesPageDocument.WasModified = true;
         }
@@ -203,41 +226,54 @@ namespace BibleCommon.Services
             suchNoteLink = null;
         }
 
-        private XElement SearchExistingNoteLink(OneNoteProxy.PageContent notesPageDocument, HierarchyElementInfo notePageInfo, string notePageLink)
+        private XElement SearchExistingNoteLink(ref Application oneNoteApp, OneNoteProxy.PageContent notesPageDocument, HierarchyElementInfo notePageInfo, string notePageLink)
         {
-            var suchNoteLink = SearchExistingNoteLink(notesPageDocument, notePageLink, _parentElement);                                        
+            var suchNoteLink = SearchExistingNoteLinkInParent(notesPageDocument, notePageLink, _parentElement);                                        
 
             if (suchNoteLink == null)
             {
                 //ищем в других местах
-                suchNoteLink = SearchExistingNoteLink(notesPageDocument, notePageLink, null);                                        
+                suchNoteLink = SearchExistingNoteLinkInParent(notesPageDocument, notePageLink, null);                                        
 
                 if (suchNoteLink != null)  // нашли в другом месте. Переносим
                 {
                     var suchNoteLinkOE = suchNoteLink.Parent;
-                    var suchNodeLinkSubLinks = suchNoteLinkOE.NextNode;
-
                     var suchNoteLinkOEChildren = suchNoteLinkOE.Parent;
 
-                    suchNoteLinkOE.Remove();
-                    _parentElement.Add(suchNoteLinkOE);  //todo: sort
+                    TryToInsertOrMoveElement(ref oneNoteApp, suchNoteLinkOE, notePageInfo, _parentElement, MoveOperationType.MoveWithLinksRow, notesPageDocument.Xnm);
+                    if (!_processedNodes.Contains(notePageInfo.Id))
+                        _processedNodes.Add(notePageInfo.Id);  // чтоб больше не обрабатывали
 
-                    if (suchNodeLinkSubLinks != null)
+                    TryToDeleteTreeStructure(suchNoteLinkOEChildren); // если перенесли последнюю страницу в родителе, рекурсивно смотрим: не надо ли удалять родителей, если они стали пустыми
+
+                    suchNoteLink = SearchExistingNoteLinkInParent(notesPageDocument, notePageLink, _parentElement);
+
+                    // перенесли узел с другого уровня скорее всего. обновляем символ нумерованного списка                    
+                    var number = suchNoteLink.Parent.XPathSelectElement("one:List/one:Number", notesPageDocument.Xnm);
+                    if (number != null)
                     {
-                        suchNodeLinkSubLinks.Remove();
-                        _parentElement.Add(suchNodeLinkSubLinks);
+                        var listNumberInfo = GetListNumberInfo(_level);
+                        number.SetAttributeValue("numberSequence", listNumberInfo.NumberSequence);
+                        number.SetAttributeValue("numberFormat", listNumberInfo.NumberFormat);
                     }
-
-                    TryDeleteTreeStructure(notesPageDocument, suchNoteLinkOEChildren); // если перенесли последнюю страницу в родителе, рекурсивно смотрим: не надо ли удалять родителей, если они стали пустыми
-
-                    suchNoteLink = SearchExistingNoteLink(notesPageDocument, notePageLink, _parentElement);
                 }
             }            
 
             return suchNoteLink;
         }
 
-        private XElement SearchExistingNoteLink(OneNoteProxy.PageContent notesPageDocument, string notePageLink, XElement parentEl)
+        private void TryToDeleteTreeStructure(XElement suchNoteLinkOEChildren)
+        {
+            if (suchNoteLinkOEChildren.Nodes().Count() == 0)
+            {
+                var grandParent = suchNoteLinkOEChildren.Parent.Parent;
+                suchNoteLinkOEChildren.Parent.Remove();
+
+                TryToDeleteTreeStructure(grandParent);
+            }
+        }
+
+        private XElement SearchExistingNoteLinkInParent(OneNoteProxy.PageContent notesPageDocument, string notePageLink, XElement parentEl)
         {
             XElement suchNoteLink = null;
             string pageId;
@@ -271,10 +307,10 @@ namespace BibleCommon.Services
             return suchNoteLink;
         }
 
-        private void CreateParentTreeStructure(HierarchyElementInfo hierarchyElementInfo, XmlNamespaceManager xnm)
+        private void CreateParentTreeStructure(ref Application oneNoteApp, HierarchyElementInfo hierarchyElementInfo, XmlNamespaceManager xnm)
         {
             if (hierarchyElementInfo.Parent != null)
-                CreateParentTreeStructure(hierarchyElementInfo.Parent, xnm);
+                CreateParentTreeStructure(ref oneNoteApp, hierarchyElementInfo.Parent, xnm);
 
             var node = _parentElement.XPathSelectElement(
                                     string.Format("one:OE/one:Meta[@name='{0}' and @content='{1}']", Consts.Constants.Key_Id, hierarchyElementInfo.Id), 
@@ -282,9 +318,12 @@ namespace BibleCommon.Services
 
             if (node == null)
             {
+                var listNumberInfo = GetListNumberInfo(_level);
                 node = new XElement(_nms + "OE",
                                             new XElement(_nms + "List",
-                                                        new XElement(_nms + "Number", new XAttribute("numberSequence", 0), new XAttribute("numberFormat", "##."))),
+                                                        new XElement(_nms + "Number",
+                                                            new XAttribute("numberSequence", listNumberInfo.NumberSequence),
+                                                            new XAttribute("numberFormat", listNumberInfo.NumberFormat))),
                                             new XElement(_nms + "T",
                                                 new XCData(
                                                     hierarchyElementInfo.Name))
@@ -295,20 +334,223 @@ namespace BibleCommon.Services
 
                 OneNoteUtils.UpdateElementMetaData(node, Constants.Key_Id, hierarchyElementInfo.Id, xnm);
 
-                _parentElement.Add(node); //todo: sort
-                _parentElement = childNode;
+                TryToInsertOrMoveElement(ref oneNoteApp, node, hierarchyElementInfo, _parentElement, MoveOperationType.Insert, xnm);
+
+                _parentElement = childNode;                
             }
             else
             {
-                node.Parent.XPathSelectElement("one:T", xnm).Value = hierarchyElementInfo.Name;
-                _parentElement = node.Parent.XPathSelectElement("one:OEChildren", xnm);
+                node = node.Parent;
+                if (!_processedNodes.Contains(hierarchyElementInfo.Id))
+                {
+                    node.XPathSelectElement("one:T", xnm).Value = hierarchyElementInfo.Name;                    
+
+                    TryToInsertOrMoveElement(ref oneNoteApp, node, hierarchyElementInfo, _parentElement, MoveOperationType.Move, xnm);
+
+                    _processedNodes.Add(hierarchyElementInfo.Id);
+                }
+                
+                _parentElement = node.XPathSelectElement("one:OEChildren", xnm);                
                 if (_parentElement == null)  // на всякий пожарный
                 {
                     var childNode = new XElement(_nms + "OEChildren");
-                    node.Parent.Add(childNode);
+                    node.Add(childNode);
                     _parentElement = childNode;
                 }
             }
+            _level++;
+        }
+
+  
+        private enum MoveOperationType
+        {
+            Insert,
+            Move,
+            MoveWithLinksRow
+        }
+        private static XElement TryToInsertOrMoveElement(ref Application oneNoteApp, XElement el, HierarchyElementInfo elInfo, 
+                                                        XElement parentEl, MoveOperationType moveType, XmlNamespaceManager xnm)
+        {
+            bool linkWasFound;
+            var prevLink = GetPrevNoteLink(ref oneNoteApp, elInfo, parentEl, xnm, out linkWasFound);
+
+            var needToMoveOrInsert = !(linkWasFound && prevLink == null);  // иначе ссылка стоит в начале и она должана там стоять
+            if (needToMoveOrInsert && linkWasFound)
+            {
+                var realPrevLink = GetRealPrevLink(el, xnm);
+                if (realPrevLink != null)
+                {
+                    if (realPrevLink == prevLink)  // ссылка и так уже не правильном месте
+                        needToMoveOrInsert = false;
+                }
+            }
+
+            if (needToMoveOrInsert)  // иначе ссылка стоит на правильном месте
+            {   
+                XNode linksRow = null;
+                if (moveType == MoveOperationType.Move || moveType == MoveOperationType.MoveWithLinksRow)  
+                {
+                    if (moveType == MoveOperationType.MoveWithLinksRow)
+                    {
+                        if (el.NextNode != null && el.NextNode.XPathSelectElement("one:List", xnm) == null)  // если следующая строка типа "ссылка1; ссылка2"                                    
+                            linksRow = el.NextNode;
+                    }
+
+                    el.Remove();
+
+                    if (linksRow != null)
+                        linksRow.Remove();
+                }
+
+                el = InsertElement(el, elInfo, parentEl, prevLink, linksRow, moveType == MoveOperationType.MoveWithLinksRow, xnm);                
+            }
+
+            return el;
+        }
+
+        private static XNode GetRealPrevLink(XElement el, XmlNamespaceManager xnm)
+        {
+            var result = el.PreviousNode;
+
+            if (result != null)
+                if (result.XPathSelectElement("one:List", xnm) == null)
+                    result = result.PreviousNode;
+
+            return result;
+        }
+
+        private static XNode GetPrevNoteLink(ref Application oneNoteApp, HierarchyElementInfo elInfo, XElement parentEl, XmlNamespaceManager xnm, out bool linkWasFound)
+        {
+            XElement prevLink = null;
+            linkWasFound = false;
+
+            var notebookHierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, elInfo.NotebookId, HierarchyScope.hsPages);  //from cache
+            XElement parentHierarchy;
+            if (elInfo.Type != HierarchyElementType.Notebook)
+                parentHierarchy = notebookHierarchy.Content.Root.XPathSelectElement(string.Format("//one:{0}[@ID='{1}']", elInfo.GetElementName(), elInfo.Id), xnm).Parent;
+            else
+                parentHierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks).Content.Root;
+
+            var noteLinkInHierarchy = parentHierarchy.XPathSelectElement(string.Format("*[@ID='{0}']", elInfo.Id), xnm);
+
+            var prevNodesInHierarchy = noteLinkInHierarchy.NodesBeforeSelf();
+
+            if (prevNodesInHierarchy.Count() != 0)
+            {
+                foreach (XElement existingLink in parentEl.XPathSelectElements("one:OE/one:List", xnm))
+                {                    
+                    var existingLinkId = OneNoteUtils.GetElementMetaData(existingLink.Parent, Constants.Key_Id, xnm);
+
+                    if (existingLinkId == elInfo.Id)
+                    {
+                        linkWasFound = true;
+                    }
+                    else
+                    {
+                        var existingLinkInHierarchy = parentHierarchy.XPathSelectElement(string.Format("*[@ID='{0}']", existingLinkId), xnm);
+                        if (!prevNodesInHierarchy.Contains(existingLinkInHierarchy))
+                            break;
+
+                        prevLink = existingLink.Parent;
+                    }
+                }
+            }
+
+            return prevLink;
+        }
+
+        private static XElement InsertElement(XElement el, HierarchyElementInfo elInfo, XElement parentElement, XNode prevLink, XNode linksRow, bool updateMetadata, XmlNamespaceManager xnm)
+        { 
+            if (prevLink == null)
+            {
+                if (linksRow != null)
+                    parentElement.AddFirst(linksRow);               
+
+                parentElement.AddFirst(el);                        
+            }
+            else
+            {
+                if (prevLink.NextNode != null && prevLink.NextNode.XPathSelectElement("one:List", xnm) == null)  // если следующая строка типа "ссылка1; ссылка2;"                    
+                    prevLink = prevLink.NextNode;
+
+                if (linksRow != null)
+                    prevLink.AddAfterSelf(linksRow);
+
+                prevLink.AddAfterSelf(el);
+            }
+
+            if (updateMetadata)
+                OneNoteUtils.UpdateElementMetaData(el, Constants.Key_Id, elInfo.Id, xnm);
+
+            return el;
+        }
+
+
+
+        private static ListNumberInfo GetListNumberInfo(int level)
+        {
+            var result = new ListNumberInfo();
+            
+            switch (level)
+            {
+                case 1:
+                    //result.Text = "I.";
+                    result.NumberFormat = "##.";
+                    result.NumberSequence = 1;
+                    break;
+                case 2:
+                    //result.Text = "A.";
+                    result.NumberFormat = "##.";
+                    result.NumberSequence = 3;
+                    break;
+                case 3:
+                    //result.Text = "1.";
+                    result.NumberFormat = "##.";
+                    result.NumberSequence = 0;
+                    break;
+                case 4:
+                    //result.Text = "a.";
+                    result.NumberFormat = "##.";
+                    result.NumberSequence = 4;
+                    break;
+                case 5:
+                    //result.Text = "1)";
+                    result.NumberFormat = "##)";
+                    result.NumberSequence = 0;
+                    break;
+                case 6:
+                    //result.Text = "a)";
+                    result.NumberFormat = "##)";
+                    result.NumberSequence = 4;
+                    break;
+                case 7:
+                    //result.Text = "(1)";
+                    result.NumberFormat = "(##)";
+                    result.NumberSequence = 0;
+                    break;
+                case 8:
+                    //result.Text = "(a)";
+                    result.NumberFormat = "(##)";
+                    result.NumberSequence = 4;
+                    break;
+                case 9:
+                    //result.Text = "1 &gt;";
+                    result.NumberFormat = "## &gt;";
+                    result.NumberSequence = 0;
+                    break;
+                case 10:
+                    //result.Text = "a &gt;";
+                    result.NumberFormat = "## &gt;";
+                    result.NumberSequence = 4;
+                    break;
+                default:
+                    //result.Text = "1.";
+                    result.NumberFormat = "##.";
+                    result.NumberSequence = 0;
+                    break;
+            }
+
+            return result;
         }
 
         private static string GetMultiVerseString(VersePointer vp)
@@ -341,65 +583,6 @@ namespace BibleCommon.Services
                 return string.Format(" <b>{0}</b>", multiVerseString);
 
             return multiVerseString;
-        }       
-
-        private static XElement GetNotesRow(XElement tableElement, VerseNumber? verseNumber, bool isChapter, XmlNamespaceManager xnm)
-        {
-            XElement result = !isChapter ?
-                                tableElement
-                                   .XPathSelectElement(string.Format("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>:{0}<')]", verseNumber), xnm)
-                              : tableElement
-                                   .XPathSelectElement("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[normalize-space(.)='']", xnm)
-                                ;
-
-            if (result != null)
-                result = result.Parent.Parent.Parent.Parent;
-
-            return result;
-        }
-
-        private static void AddNewNotesRow(ref Application oneNoteApp, VersePointer vp, bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
-            XElement tableElement, XmlNamespaceManager xnm, XNamespace nms)
-        {
-            XElement newRow = new XElement(nms + "Row",
-                                    new XElement(nms + "Cell",
-                                        new XElement(nms + "OEChildren",
-                                            new XElement(nms + "OE",
-                                                new XElement(nms + "T",
-                                                    new XCData(
-                                                        !isChapter ?
-                                                            OneNoteUtils.GetOrGenerateHref(ref oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseNumber),
-                                                                verseHierarchyObjectInfo.VerseInfo.ObjectHref,
-                                                                verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.VerseContentObjectId,
-                                                                Consts.Constants.QueryParameter_BibleVerse)
-                                                            :
-                                                            string.Empty
-                                                                ))))),
-                                    new XElement(nms + "Cell",
-                                        new XElement(nms + "OEChildren")));
-
-            XElement prevRow = null;
-
-            if (!isChapter)  // иначе добавляем первым
-            {
-                foreach (var row in tableElement.XPathSelectElements("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
-                {
-                    XText verseData = (XText)row.Nodes().First();
-                    int? verseNumber = StringUtils.GetStringLastNumber(verseData.Value);
-                    if (verseNumber.GetValueOrDefault(0) > vp.Verse)
-                        break;
-
-                    prevRow = row.Parent.Parent.Parent.Parent;
-                }
-            }
-
-            if (prevRow == null)
-                prevRow = tableElement.XPathSelectElement("one:Columns", xnm);
-
-            if (prevRow == null)
-                tableElement.AddFirst(newRow);
-            else
-                prevRow.AddAfterSelf(newRow);
-        }
+        }     
     }
 }
