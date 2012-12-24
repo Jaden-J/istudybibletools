@@ -286,7 +286,7 @@ namespace BibleNoteLinker
 
         private void ProcessPage(NotebookIterator.PageInfo page)
         {
-            using (NoteLinkManager noteLinkManager = new NoteLinkManager(_oneNoteApp))
+            using (NoteLinkManager noteLinkManager = new NoteLinkManager(_oneNoteApp) { AnalyzeAllPages = rbAnalyzeAllPages.Checked })
             {
                 noteLinkManager.OnNextVerseProcess += new EventHandler<NoteLinkManager.ProcessVerseEventArgs>(noteLinkManager_OnNextVerseProcess);
                 noteLinkManager.LinkPageVerses(page.NotebookId, page.Id, NoteLinkManager.AnalyzeDepth.Full, chkForce.Checked);

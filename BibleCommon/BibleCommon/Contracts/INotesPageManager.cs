@@ -12,7 +12,7 @@ namespace BibleCommon.Contracts
     {
         string ManagerName { get; }        
 
-        string UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, bool isChapter,
+        string UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, int versePointeHtmlStartIndex, bool isChapter,
            HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
            HierarchyElementInfo notePageId, string notesPageId, string notePageContentObjectId,
            string notesPageName, int notesPageWidth, bool force, bool processAsExtendedVerse, bool commonNotesPage, out bool rowWasAdded);

@@ -123,6 +123,11 @@ namespace BibleCommon.Services
             {
                 oneNoteAppSafe.UpdateHierarchy(document.ToString(), Constants.CurrentOneNoteSchema);
             });
+
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.SyncHierarchy((string)targetParentSectionGroup.Attribute("ID"));
+            });
         }
 
         private static string FindDescriptionSectionForBiblePage(ref Application oneNoteApp,
@@ -183,7 +188,12 @@ namespace BibleCommon.Services
 
             OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
             {
-                oneNoteAppSafe.UpdateHierarchy(sectionGroupDocument.ToString(), Constants.CurrentOneNoteSchema);
+                oneNoteAppSafe.UpdateHierarchy(sectionGroupDocument.ToString(), Constants.CurrentOneNoteSchema);                
+            });
+
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.SyncHierarchy((string)sectionGroupDocument.Root.Attribute("ID"));
             });
         }
 
