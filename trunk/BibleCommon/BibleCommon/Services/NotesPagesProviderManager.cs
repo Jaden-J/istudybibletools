@@ -4,24 +4,30 @@ using System.Linq;
 using System.Text;
 using BibleCommon.Contracts;
 using BibleCommon.Helpers;
+using System.Xml.XPath;
+using System.Xml.Linq;
+using BibleCommon.Consts;
 
 namespace BibleCommon.Services
 {
     public class NotesPagesProviderManager : INotesPageManager
     {
+        private bool _warningWasLogged = false;
+        private XNamespace _nms;
+
+        public bool ForceUpdateProvider { get; set; }  // если force и анализируем все страницы, то обновляем провайдер и очищаем старые страницы
+        public Dictionary<string, INotesPageManager> _managers = new Dictionary<string, INotesPageManager>();
+        List<INotesPageManager> _registeredManagers = new List<INotesPageManager>() { new NotesPageManager(), new NotesPageManagerEx() };
+        public INotesPageManager _defaultManager;
+
         public string ManagerName
         {
             get { return null; }
         }
 
-        private bool _warningWasLogged = false;
-
-        public Dictionary<string, INotesPageManager> _managers = new Dictionary<string, INotesPageManager>();
-        List<INotesPageManager> _registeredManagers = new List<INotesPageManager>() { new NotesPageManager(), new NotesPageManagerEx() };
-        public INotesPageManager _defaultManager;
-
         public NotesPagesProviderManager()
         {
+            _nms = XNamespace.Get(Constants.OneNoteXmlNs);
             _defaultManager = new NotesPageManager();
             _managers = new Dictionary<string, INotesPageManager>();
 
@@ -29,27 +35,23 @@ namespace BibleCommon.Services
                 _managers.Add(manager.ManagerName, manager);
         }
 
-        public string UpdateNotesPage(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, NoteLinkManager noteLinkManager, Common.VersePointer vp, bool isChapter, 
-            HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo, Common.HierarchyElementInfo notePageId, string notesPageId, string notePageContentObjectId, 
+        public string UpdateNotesPage(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, NoteLinkManager noteLinkManager, Common.VersePointer vp, int versePointeHtmlStartIndex,
+            bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo, Common.HierarchyElementInfo notePageId, string notesPageId, string notePageContentObjectId, 
             string notesPageName, int notesPageWidth, bool force, bool processAsExtendedVerse, bool commonNotesPage, out bool rowWasAdded)
         {
-            var manager = GetNotesPageProvider(ref oneNoteApp, notesPageId);
+            var manager = GetNotesPageProvider(ref oneNoteApp, notesPageId, notesPageWidth);            
 
-            //вставка!! удалить
-            if (commonNotesPage)
-                manager = _defaultManager;
-
-            return manager.UpdateNotesPage(ref oneNoteApp, noteLinkManager, vp, isChapter, verseHierarchyObjectInfo, notePageId, notesPageId,
-                notePageContentObjectId, notesPageName, notesPageWidth, force, processAsExtendedVerse, commonNotesPage, out rowWasAdded);
+            return manager.UpdateNotesPage(ref oneNoteApp, noteLinkManager, vp, versePointeHtmlStartIndex, isChapter, verseHierarchyObjectInfo, notePageId, notesPageId,
+                notePageContentObjectId, notesPageName, notesPageWidth, force, processAsExtendedVerse, true, out rowWasAdded);
         }
 
         public string GetNotesRowObjectId(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, string notesPageId, Common.VerseNumber? verseNumber, bool isChapter)
         {
-            var manager = GetNotesPageProvider(ref oneNoteApp, notesPageId);
+            var manager = GetNotesPageProvider(ref oneNoteApp, notesPageId, null);
             return manager.GetNotesRowObjectId(ref oneNoteApp, notesPageId, verseNumber, isChapter);
         }
 
-        private INotesPageManager GetNotesPageProvider(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, string notesPageId)
+        private INotesPageManager GetNotesPageProvider(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, string notesPageId, int? notesPageWidth)
         {
             var notesPageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
 
@@ -57,7 +59,20 @@ namespace BibleCommon.Services
 
             if (pageMetadata == null)
             {
-                if (!_warningWasLogged)
+                if (ForceUpdateProvider)
+                {
+                    OneNoteUtils.UpdateElementMetaData(notesPageDocument.Content.Root, Consts.Constants.Key_NotesPageManagerName, NotesPageManagerEx.Const_ManagerName, notesPageDocument.Xnm);
+                    foreach (var outlineEl in notesPageDocument.Content.Root.XPathSelectElements("one:Outline", notesPageDocument.Xnm))
+                    {
+                        outlineEl.RemoveNodes();
+
+                        if (notesPageWidth.HasValue)
+                            outlineEl.Add(new XElement(_nms + "Size", new XAttribute("width", notesPageWidth), new XAttribute("height", 15), new XAttribute("isSetByUser", true)));
+                    }
+
+                    return _managers[NotesPageManagerEx.Const_ManagerName];
+                }
+                else if (!_warningWasLogged)
                 {
                     Logger.LogWarning(Resources.Constants.NotesPagesManagerIsObsolete);
                     _warningWasLogged = true;

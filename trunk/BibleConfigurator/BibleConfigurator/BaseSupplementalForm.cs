@@ -61,7 +61,7 @@ namespace BibleConfigurator
         protected abstract List<string> SaveEmbeddedModuleSettings(EmbeddedModuleInfo embeddedModuleInfo, ModuleInfo moduleInfo, XElement pageEl);
         protected abstract bool AreThereModulesToAdd();
         protected abstract string GetPostCommitErrorMessage(ModuleInfo selectedModuleInfo);
-        protected abstract void CheckIfExistingNotebookCanBeUsed(string notebookId);
+        //protected abstract void CheckIfExistingNotebookCanBeUsed(string notebookId);
 
 
         protected FolderBrowserDialog FolderBrowserDialog
@@ -573,7 +573,7 @@ namespace BibleConfigurator
             XmlNamespaceManager xnm;
             var result = new List<string>();
 
-            CheckIfExistingNotebookCanBeUsed(notebookId);
+            //CheckIfExistingNotebookCanBeUsed(notebookId);
 
             ClearSupplementalModules();
 

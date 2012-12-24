@@ -79,7 +79,7 @@ namespace BibleCommon.Services
             Full = 3
         }
 
-       
+        public bool AnalyzeAllPages { get; set; }       
 
         internal bool IsExcludedCurrentNotePage { get; set; }
         private Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>> _notePageProcessedVerses = new Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>>();  
@@ -107,6 +107,8 @@ namespace BibleCommon.Services
         {
             try
             {
+                _notesPagesProviderManager.ForceUpdateProvider = AnalyzeAllPages && force && linkDepth >= AnalyzeDepth.Full;
+
                 bool wasModified = false;
                 OneNoteProxy.PageContent notePageDocument = OneNoteProxy.Instance.GetPageContent(ref _oneNoteApp, pageId, OneNoteProxy.PageType.NotePage);
 
@@ -314,7 +316,7 @@ namespace BibleCommon.Services
 
                     if (!SettingsManager.Instance.ExcludedVersesLinking)   // иначе мы её обработали сразу же, когда встретили
                     {
-                        LinkVerseToNotesPage(ref _oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, true,
+                        LinkVerseToNotesPage(ref _oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, chapterInfo.VersePointerSearchResult.VersePointerHtmlStartIndex, true,
                             chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
                             notePageId, chapterInfo.TextElementObjectId, true,
                             SettingsManager.Instance.PageName_Notes, null, SettingsManager.Instance.PageWidth_Notes, 1, true,
@@ -326,7 +328,7 @@ namespace BibleCommon.Services
                     {
                         if (!SettingsManager.Instance.RubbishPage_ExcludedVersesLinking)   // иначе мы её обработали сразу же, когда встретили
                         {
-                            LinkVerseToNotesPage(ref _oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, true,
+                            LinkVerseToNotesPage(ref _oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, chapterInfo.VersePointerSearchResult.VersePointerHtmlStartIndex, true,
                                 chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
                                 notePageId, chapterInfo.TextElementObjectId, false,
                                 SettingsManager.Instance.PageName_RubbishNotes, null, SettingsManager.Instance.PageWidth_RubbishNotes, 1, true,
@@ -782,7 +784,7 @@ namespace BibleCommon.Services
                 if (processedVerses.Contains(vp.ToSimpleVersePointer()))
                     continue;                
                 
-                if (TryLinkVerseToNotesPage(ref oneNoteApp, vp, searchResult.ResultType,
+                if (TryLinkVerseToNotesPage(ref oneNoteApp, vp, searchResult.ResultType, searchResult.VersePointerHtmlStartIndex,
                         notePageId, notePageContentObjectId, linkDepth,
                         !SettingsManager.Instance.UseDifferentPagesForEachVerse || (vp.IsChapter && !needToQueueIfChapter), SettingsManager.Instance.ExcludedVersesLinking,
                         SettingsManager.Instance.PageName_Notes, null, SettingsManager.Instance.PageWidth_Notes, 1, true,
@@ -865,7 +867,7 @@ namespace BibleCommon.Services
                                     ? (VerseNumber?)hierarchySearchResult.HierarchyObjectInfo.AdditionalObjectsIds[vp].VerseNumber
                                     : hierarchySearchResult.HierarchyObjectInfo.VerseNumber);
 
-                    TryLinkVerseToNotesPage(ref oneNoteApp, vp, searchResult.ResultType,
+                    TryLinkVerseToNotesPage(ref oneNoteApp, vp, searchResult.ResultType, searchResult.VersePointerHtmlStartIndex,
                         notePageId, notePageContentObjectId, linkDepth,
                         true, SettingsManager.Instance.ExcludedVersesLinking,
                         notesPageName, SettingsManager.Instance.PageName_Notes, SettingsManager.Instance.PageWidth_Notes, 2, false,
@@ -895,8 +897,8 @@ namespace BibleCommon.Services
                 }
                 
                 foreach (VersePointer vp in rubbishVerses)
-                {
-                    TryLinkVerseToNotesPage(ref oneNoteApp, vp, searchResult.ResultType, 
+                {                    
+                    TryLinkVerseToNotesPage(ref oneNoteApp, vp, searchResult.ResultType, searchResult.VersePointerHtmlStartIndex,
                         notePageId, notePageContentObjectId, linkDepth,
                         false, SettingsManager.Instance.RubbishPage_ExcludedVersesLinking, 
                         SettingsManager.Instance.PageName_RubbishNotes, null, SettingsManager.Instance.PageWidth_RubbishNotes, 1, true,
@@ -954,7 +956,7 @@ namespace BibleCommon.Services
         /// <param name="commonNotesPage">true - значит создаётся страница "Сводные заметок" для главы (на этой странице будут все стихи). false - значит для одного стиха</param>
         /// <returns></returns>
         private bool TryLinkVerseToNotesPage(ref Application oneNoteApp, VersePointer vp,
-            VersePointerSearchResult.SearchResultType resultType, 
+            VersePointerSearchResult.SearchResultType resultType, int versePointeHtmlStartIndex,
             HierarchyElementInfo notePageId, string notePageContentObjectId, AnalyzeDepth linkDepth,
             bool createLinkToNotesPage, bool excludedVersesLinking, 
             string notesPageName, string notesParentPageName, int notesPageWidth, int notesPageLevel, bool commonNotesPage,
@@ -1044,7 +1046,7 @@ namespace BibleCommon.Services
 
                                 if (canContinue)
                                 {
-                                    var verses = LinkVerseToNotesPage(ref oneNoteApp, vp, isChapter,
+                                    var verses = LinkVerseToNotesPage(ref oneNoteApp, vp, versePointeHtmlStartIndex, isChapter,
                                         hierarchySearchResult.HierarchyObjectInfo,
                                         notePageId,
                                         notePageContentObjectId, createLinkToNotesPage, notesPageName, notesParentPageName, notesPageWidth, 
@@ -1152,7 +1154,7 @@ namespace BibleCommon.Services
         /// <param name="createLinkToNotesPage">Необходримо ли создавать сслыку на страницу сводной заметок. Если например мы обрабатываем RubbishPage, то такая ссылка не нужна</param>
         /// <param name="notesPageName">название страницы "Сводная заметок"</param>
         /// <param name="force"></param>
-        private List<SimpleVersePointer> LinkVerseToNotesPage(ref Application oneNoteApp, VersePointer vp, bool isChapter,
+        private List<SimpleVersePointer> LinkVerseToNotesPage(ref Application oneNoteApp, VersePointer vp, int versePointeHtmlStartIndex, bool isChapter,
             HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
             HierarchyElementInfo notePageId, string notePageContentObjectId, bool createLinkToNotesPage,
             string notesPageName, string notesParentPageName, int notesPageWidth, int notesPageLevel, bool commonNotesPage, bool force, bool processAsExtendedVerse)
@@ -1175,7 +1177,7 @@ namespace BibleCommon.Services
 
             if (!string.IsNullOrEmpty(notesPageId))
             {
-                string targetContentObjectId = _notesPagesProviderManager.UpdateNotesPage(ref oneNoteApp, this, vp, isChapter, verseHierarchyObjectInfo,
+                string targetContentObjectId = _notesPagesProviderManager.UpdateNotesPage(ref oneNoteApp, this, vp, versePointeHtmlStartIndex, isChapter, verseHierarchyObjectInfo,
                         notePageId, notesPageId, notePageContentObjectId, 
                         notesPageName, notesPageWidth, force, processAsExtendedVerse, commonNotesPage, out rowWasAdded);
 
