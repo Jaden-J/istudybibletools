@@ -99,6 +99,10 @@ namespace BibleCommon.Consts
         public static readonly string Key_EmbeddedBibleModule = "BibleModule";
         public static readonly string Key_EmbeddedSupplementalModules = "SupplementalModules";
         public static readonly string Key_EmbeddedDictionaries = "Dictionaries";
+        public static readonly string Key_NotesPageManagerName = "NotesPageManagerName";
+        public static readonly string Key_Id = "ID";
+        public static readonly string Key_Verse = "Verse";
+        public static readonly string Key_IsCommonNotesPage = "IsCommonNotesPage";  // страница сводных заметок для главы
     }   
 }
 

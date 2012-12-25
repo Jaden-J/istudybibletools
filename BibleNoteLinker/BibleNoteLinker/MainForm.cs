@@ -244,7 +244,10 @@ namespace BibleNoteLinker
 
         private void llblShowErrors_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            var messages = Logger.ErrorWasLogged ? Logger.Errors : Logger.Warnings;
+            var messages = new List<string>();   
+            messages.AddRange(Logger.Errors);              // если не было ошибок, то и так будет пустой список
+            messages.AddRange(Logger.Warnings);
+
             messages = messages.Distinct().ToList();
 
             using (var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(messages))

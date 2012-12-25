@@ -476,7 +476,7 @@ namespace BibleCommon.Services
                 try
                 {
                     if (page.AddLatestAnalyzeTimeMetaAttribute)
-                        OneNoteUtils.UpdatePageMetaData(page.Content.Root, Constants.Key_LatestAnalyzeTime, DateTime.UtcNow.AddSeconds(10).ToString(), page.Xnm);
+                        OneNoteUtils.UpdateElementMetaData(page.Content.Root, Constants.Key_LatestAnalyzeTime, DateTime.UtcNow.AddSeconds(10).ToString(), page.Xnm);
 
                     OneNoteUtils.UpdatePageContentSafe(ref oneNoteApp, page.Content, page.Xnm);
                 }
