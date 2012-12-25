@@ -81,7 +81,7 @@ namespace BibleCommon.Services
         public string Serialize()
         {
             if (this.DisplayLevels.HasValue)
-                return string.Join(_separator, this.NotebookId, this.DisplayLevels);
+                return string.Join(_separator, new string[] { this.NotebookId, this.DisplayLevels.Value.ToString() });
             else
                 return this.NotebookId;
         }
