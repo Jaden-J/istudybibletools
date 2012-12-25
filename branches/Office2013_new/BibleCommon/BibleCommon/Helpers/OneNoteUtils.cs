@@ -91,9 +91,9 @@ namespace BibleCommon.Helpers
             return xnm;
         }
 
-        public static XDocument GetXDocument(string xml, out XmlNamespaceManager xnm)
+        public static XDocument GetXDocument(string xml, out XmlNamespaceManager xnm, bool setLineInfo = false)
         {
-            XDocument xd = XDocument.Parse(xml);
+            XDocument xd = !setLineInfo ? XDocument.Parse(xml) : XDocument.Parse(xml, LoadOptions.SetLineInfo);
             xnm = GetOneNoteXNM();
             return xd;
         }
@@ -209,9 +209,9 @@ namespace BibleCommon.Helpers
             return string.Format("<a href=\"{0}\">{1}</a>", link, title);            
         }
 
-        public static string GenerateHref(ref Application oneNoteApp, string title, string pageId, string objectId)        
+        public static string GenerateHref(ref Application oneNoteApp, string title, string pageId, string objectId, params string[] additionalLinkQueryParameters)
         {
-            return GetOrGenerateHref(ref oneNoteApp, title, null, pageId, objectId);
+            return GetOrGenerateHref(ref oneNoteApp, title, null, pageId, objectId, additionalLinkQueryParameters);
         }
 
         public static XElement NormalizeTextElement(XElement textElement)  // must be one:T element

@@ -35,14 +35,14 @@ namespace BibleCommon.Services
                 _managers.Add(manager.ManagerName, manager);
         }
 
-        public string UpdateNotesPage(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, NoteLinkManager noteLinkManager, Common.VersePointer vp, int versePointeHtmlStartIndex,
+        public string UpdateNotesPage(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, NoteLinkManager noteLinkManager, Common.VersePointer vp, int versePosition,
             bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo, Common.HierarchyElementInfo notePageId, string notesPageId, string notePageContentObjectId, 
-            string notesPageName, int notesPageWidth, bool force, bool processAsExtendedVerse, bool commonNotesPage, out bool rowWasAdded)
+            string notesPageName, int notesPageWidth, bool force, bool processAsExtendedVerse, out bool rowWasAdded)
         {
             var manager = GetNotesPageProvider(ref oneNoteApp, notesPageId, notesPageWidth);            
 
-            return manager.UpdateNotesPage(ref oneNoteApp, noteLinkManager, vp, versePointeHtmlStartIndex, isChapter, verseHierarchyObjectInfo, notePageId, notesPageId,
-                notePageContentObjectId, notesPageName, notesPageWidth, force, processAsExtendedVerse, true, out rowWasAdded);
+            return manager.UpdateNotesPage(ref oneNoteApp, noteLinkManager, vp, versePosition, isChapter, verseHierarchyObjectInfo, notePageId, notesPageId,
+                notePageContentObjectId, notesPageName, notesPageWidth, force, processAsExtendedVerse, out rowWasAdded);
         }
 
         public string GetNotesRowObjectId(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, string notesPageId, Common.VerseNumber? verseNumber, bool isChapter)

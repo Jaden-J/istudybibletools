@@ -408,12 +408,12 @@ namespace BibleCommon.Services
             return result;
         }
 
-        public PageContent GetPageContent(ref Application oneNoteApp, string pageId, PageType pageType, PageInfo pageInfo = PageInfo.piBasic)
+        public PageContent GetPageContent(ref Application oneNoteApp, string pageId, PageType pageType, PageInfo pageInfo = PageInfo.piBasic, bool setLineInfo = false)
         {
-            return GetPageContent(ref oneNoteApp, pageId, pageType, false, pageInfo);
+            return GetPageContent(ref oneNoteApp, pageId, pageType, false, pageInfo, setLineInfo);
         }
 
-        private PageContent GetPageContent(ref Application oneNoteApp, string pageId, PageType pageType, bool refreshCache, PageInfo pageInfo)
+        private PageContent GetPageContent(ref Application oneNoteApp, string pageId, PageType pageType, bool refreshCache, PageInfo pageInfo, bool setLineInfo)
         {
             PageContent result;
 
@@ -440,7 +440,7 @@ namespace BibleCommon.Services
                     }
 
                     XmlNamespaceManager xnm;
-                    XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm);
+                    XDocument doc = OneNoteUtils.GetXDocument(xml, out xnm, setLineInfo);
 
                     if (!_pageContentCache.ContainsKey(key))
                         _pageContentCache.Add(key, new PageContent() { PageId = key, Content = doc, Xnm = xnm, PageType = pageType });

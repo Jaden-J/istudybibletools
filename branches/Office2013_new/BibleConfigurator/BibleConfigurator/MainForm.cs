@@ -619,10 +619,12 @@ namespace BibleConfigurator
                                 if (notebookType == ContainerType.BibleComments)
                                     SettingsManager.Instance.NotebookId_BibleComments = notebookId;
                                 else
-                                    SettingsManager.Instance.NotebookId_BibleStudy = notebookId;        
+                                    SettingsManager.Instance.NotebookId_BibleStudy = notebookId;
 
-                                if (SettingsManager.Instance.SelectedNotebooksForAnalyze != null && !SettingsManager.Instance.SelectedNotebooksForAnalyze.Contains(notebookId))
-                                    SettingsManager.Instance.SelectedNotebooksForAnalyze.Add(notebookId);
+                                var notebookIdLocal = notebookId;
+                                if (SettingsManager.Instance.SelectedNotebooksForAnalyze != null 
+                                    && !SettingsManager.Instance.SelectedNotebooksForAnalyze.Exists(notebook => notebook.NotebookId == notebookIdLocal))
+                                    SettingsManager.Instance.SelectedNotebooksForAnalyze.Add(new NotebookForAnalyzeInfo(notebookId));
                             }
                             break;
                         case ContainerType.BibleNotesPages:
