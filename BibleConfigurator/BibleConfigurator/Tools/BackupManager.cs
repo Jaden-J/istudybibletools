@@ -174,7 +174,7 @@ namespace BibleConfigurator.Tools
 
         private IEnumerable<string> GetDistinctNotebooksIds()
         {
-            return new List<string>(SettingsManager.Instance.SelectedNotebooksForAnalyze) 
+            return new List<string>(SettingsManager.Instance.SelectedNotebooksForAnalyze.ConvertAll(notebook => notebook.NotebookId)) 
             {
                 SettingsManager.Instance.NotebookId_Bible,
                 //SettingsManager.Instance.NotebookId_BibleStudy,

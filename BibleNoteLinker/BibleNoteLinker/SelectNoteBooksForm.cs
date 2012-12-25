@@ -28,12 +28,12 @@ namespace BibleNoteLinker
         {
             try
             {
-                Dictionary<string, string> allNotebooks = GetAllNotebooks();
+                Dictionary<string, string> allNotebooks = GetAllNotebooks();                
 
                 int i = 0;
                 foreach (string id in allNotebooks.Keys)
                 {
-                    RenderSelectRow(id, allNotebooks[id], i++);
+                    RenderSelectRow(id, allNotebooks[id],  i++);
                 }
 
                 SetElementsAttributes(i);
@@ -48,31 +48,74 @@ namespace BibleNoteLinker
 
         private void LoadSelectedNotebooks()
         {
-            foreach (CheckBox chk in pnMain.Controls)
+            foreach (Control chk in pnMain.Controls)
             {
-                if (SettingsManager.Instance.SelectedNotebooksForAnalyze.Contains(chk.Name))                
-                    chk.Checked = true;                
+                if (chk is CheckBox)
+                {
+                    if (SettingsManager.Instance.SelectedNotebooksForAnalyze.Exists(notebook => notebook.NotebookId == chk.Name))                                        
+                    {
+                        var notebookInfo = SettingsManager.Instance.SelectedNotebooksForAnalyze.FirstOrDefault(notebook => notebook.NotebookId == chk.Name);
+                        ((CheckBox)chk).Checked = true;
+                        if (notebookInfo.DisplayLevels.HasValue)
+                        {
+                            var cb = ((ComboBox)pnMain.Controls[GetDisplayLevelsControlId(chk.Name)]);
+                            cb.SelectedItem = notebookInfo.DisplayLevels.ToString();
+                        }
+                    }
+                    else
+                        pnMain.Controls[GetDisplayLevelsControlId(chk.Name)].Visible = false;
+                }
             }
+        }
+
+        private string GetDisplayLevelsControlId(string notebookid)
+        {
+            return notebookid + "_";
         }
 
         private void SetElementsAttributes(int notebooksCount)
         {
             int notebooksRowHeight = 25 * notebooksCount;
-            btnOk.Top = notebooksRowHeight + 20;
+            btnOk.Top = notebooksRowHeight + 20 + 13;
             this.Height = btnOk.Top + btnOk.Height + 35;
             pnMain.Height = notebooksRowHeight;
             lblError.Top = notebooksRowHeight + 25;
         }
 
+        private List<string> GetDisplayLevels()
+        {
+            var displayLevels = new List<string>() { BibleCommon.Resources.Constants.All };
+            for (int level = 1; level <= 10; level++)
+                displayLevels.Add(level.ToString());            
+
+            return displayLevels;
+        }
+
         private void RenderSelectRow(string id, string title, int index)
         {
-            CheckBox cb = new CheckBox();
-            cb.Name = id;
-            cb.Text = title;
-            cb.Font = new System.Drawing.Font(BibleCommon.Consts.Constants.UnicodeFontName, cb.Font.Size, cb.Font.Style);
+            CheckBox chk = new CheckBox();
+            chk.Name = id;
+            chk.Text = title;
+            chk.Font = new System.Drawing.Font(BibleCommon.Consts.Constants.UnicodeFontName, chk.Font.Size, chk.Font.Style);
+            chk.Top = 25 * index;
+            chk.Width = 330;
+            chk.CheckedChanged += chk_CheckedChanged;
+            pnMain.Controls.Add(chk);
+
+            ComboBox cb = new ComboBox();
+            cb.Name = GetDisplayLevelsControlId(id);
+            cb.DataSource = GetDisplayLevels();
             cb.Top = 25 * index;
-            cb.Width = 330;
+            cb.Left = 335;
+            cb.Width = 45;
             pnMain.Controls.Add(cb);
+        }
+
+        void chk_CheckedChanged(object sender, EventArgs e)
+        {
+            var chk = (CheckBox)sender;
+            
+            pnMain.Controls[GetDisplayLevelsControlId(chk.Name)].Visible = chk.Checked;
         }
 
         private Dictionary<string, string> GetAllNotebooks()
@@ -99,7 +142,7 @@ namespace BibleNoteLinker
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            List<string> selectedNotebooks = GetSelectedNotebooks();
+            var selectedNotebooks = GetSelectedNotebooks();
             if (selectedNotebooks.Count == 0)
             {
                 lblError.Text = BibleCommon.Resources.Constants.NoteLinkerNoElementSelected;
@@ -114,14 +157,26 @@ namespace BibleNoteLinker
             }
         }
 
-        private List<string> GetSelectedNotebooks()
+        private List<NotebookForAnalyzeInfo> GetSelectedNotebooks()
         {
-            List<string> result = new List<string>();
+            var result = new List<NotebookForAnalyzeInfo>();
 
-            foreach (CheckBox chk in pnMain.Controls)
+            foreach (Control chk in pnMain.Controls)
             {
-                if (chk.Checked)
-                    result.Add(chk.Name);
+                if (chk is CheckBox)
+                {
+                    if (((CheckBox)chk).Checked)
+                    {
+                        var notebookInfo = new NotebookForAnalyzeInfo(chk.Name);
+
+                        var displayLevelsString = (string)((ComboBox)pnMain.Controls[GetDisplayLevelsControlId(chk.Name)]).SelectedItem;
+                        int displayLevels;
+                        if (int.TryParse(displayLevelsString, out displayLevels))
+                            notebookInfo.DisplayLevels = displayLevels;
+
+                        result.Add(notebookInfo);
+                    }
+                }
             }
 
             return result;
