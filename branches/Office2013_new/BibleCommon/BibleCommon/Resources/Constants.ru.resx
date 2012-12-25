@@ -407,7 +407,7 @@
     <value>; </value>
   </data>
   <data name="VerseLinkTemplate" xml:space="preserve">
-    <value>ссылка {0}</value>
+    <value>ссылка{0}</value>
   </data>
   <data name="Warning" xml:space="preserve">
     <value>Внимание!</value>
