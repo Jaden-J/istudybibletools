@@ -2068,7 +2068,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to link {0}.
+        ///   Looks up a localized string similar to link{0}.
         /// </summary>
         public static string VerseLinkTemplate {
             get {

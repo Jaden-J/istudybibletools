@@ -362,7 +362,7 @@ Delete these elements and try again.</value>
     <value>; </value>
   </data>
   <data name="VerseLinkTemplate" xml:space="preserve">
-    <value>link {0}</value>
+    <value>link{0}</value>
   </data>
   <data name="Warning" xml:space="preserve">
     <value>Warning!</value>
