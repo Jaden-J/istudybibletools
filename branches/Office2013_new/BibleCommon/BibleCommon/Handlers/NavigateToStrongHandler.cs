@@ -78,7 +78,7 @@ namespace BibleCommon.Handlers
                     if (string.IsNullOrEmpty(SettingsManager.Instance.GetValidDictionariesNotebookId(ref oneNoteApp, true)))
                         throw new Exception(BibleCommon.Resources.Constants.DictionariesNotebookNotFound);
 
-                    throw new Exception(BibleCommon.Resources.Constants.DictionaryCacheFileNotFound);
+                    throw new Exception(string.Format(BibleCommon.Resources.Constants.DictionaryCacheFileNotFound, ModuleShortName));
                 }
 
                 throw;

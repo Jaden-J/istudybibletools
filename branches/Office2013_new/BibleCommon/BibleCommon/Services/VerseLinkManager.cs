@@ -123,6 +123,11 @@ namespace BibleCommon.Services
             {
                 oneNoteAppSafe.UpdateHierarchy(document.ToString(), Constants.CurrentOneNoteSchema);
             });
+
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.SyncHierarchy((string)targetParentSectionGroup.Attribute("ID"));
+            });
         }
 
         private static string FindDescriptionSectionForBiblePage(ref Application oneNoteApp,
@@ -183,7 +188,12 @@ namespace BibleCommon.Services
 
             OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
             {
-                oneNoteAppSafe.UpdateHierarchy(sectionGroupDocument.ToString(), Constants.CurrentOneNoteSchema);
+                oneNoteAppSafe.UpdateHierarchy(sectionGroupDocument.ToString(), Constants.CurrentOneNoteSchema);                
+            });
+
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.SyncHierarchy((string)sectionGroupDocument.Root.Attribute("ID"));
             });
         }
 
@@ -355,8 +365,11 @@ namespace BibleCommon.Services
 
             if (isSummaryNotesPage)
             {
-                OneNoteUtils.UpdatePageMetaData(pageContent.Content.Root, Constants.Key_IsSummaryNotesPage, isSummaryNotesPage.ToString(), pageContent.Xnm);
-                OneNoteUtils.UpdatePageMetaData(pageEl, Constants.Key_IsSummaryNotesPage, isSummaryNotesPage.ToString(), pageContent.Xnm);
+                OneNoteUtils.UpdateElementMetaData(pageContent.Content.Root, Constants.Key_IsSummaryNotesPage, isSummaryNotesPage.ToString(), pageContent.Xnm);
+                OneNoteUtils.UpdateElementMetaData(pageEl, Constants.Key_IsSummaryNotesPage, isSummaryNotesPage.ToString(), pageContent.Xnm);
+
+                OneNoteUtils.UpdateElementMetaData(pageContent.Content.Root, Constants.Key_NotesPageManagerName, NotesPageManagerEx.Const_ManagerName, pageContent.Xnm);
+                OneNoteUtils.UpdateElementMetaData(pageEl, Constants.Key_NotesPageManagerName, NotesPageManagerEx.Const_ManagerName, pageContent.Xnm);
             }
 
             pageContent.WasModified = true;

@@ -95,7 +95,7 @@ namespace BibleCommon.Services
                     var pageId = (string)pageEl.Attribute("ID");
                     var pageName = (string)pageEl.Attribute("name");
 
-                    var embeddedModulesInfo_string = OneNoteUtils.GetPageMetaData(pageEl, BibleCommon.Consts.Constants.Key_EmbeddedDictionaries, xnm);
+                    var embeddedModulesInfo_string = OneNoteUtils.GetElementMetaData(pageEl, BibleCommon.Consts.Constants.Key_EmbeddedDictionaries, xnm);
                     if (!string.IsNullOrEmpty(embeddedModulesInfo_string))
                     {
                         var embeddedModulesInfo = EmbeddedModuleInfo.Deserialize(embeddedModulesInfo_string);

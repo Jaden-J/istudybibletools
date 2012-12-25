@@ -218,10 +218,10 @@ namespace BibleConfigurator
             return null;
         }
 
-        protected override void CheckIfExistingNotebookCanBeUsed(string notebookId)
-        {
-            if (!OneNoteUtils.IsNotebookLocal(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Dictionaries))            
-                throw new InvalidNotebookException(BibleCommon.Resources.Constants.NotebookIsLocalAndNotSupportedForDictionaries);            
-        }
+        //protected override void CheckIfExistingNotebookCanBeUsed(string notebookId)
+        //{
+        //    //if (!OneNoteUtils.IsNotebookLocal(ref _oneNoteApp, notebookId))            
+        //    //    throw new InvalidNotebookException(BibleCommon.Resources.Constants.NotebookIsLocalAndNotSupportedForDictionaries);            
+        //}
     }
 }

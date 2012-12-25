@@ -420,9 +420,9 @@ namespace BibleConfigurator
                 BibleCommon.Resources.Constants.ThereAreErrorsAfterParallelModuleWasAdded);
         }
 
-        protected override void CheckIfExistingNotebookCanBeUsed(string notebookId)
-        {
-            // поддерживаем как локальные, так и облачные записные книжки
-        }
+        //protected override void CheckIfExistingNotebookCanBeUsed(string notebookId)
+        //{
+        //    // поддерживаем как локальные, так и облачные записные книжки
+        //}
     }
 }

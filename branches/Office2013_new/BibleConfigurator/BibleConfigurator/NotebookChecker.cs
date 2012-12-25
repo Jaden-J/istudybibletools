@@ -111,7 +111,7 @@ namespace BibleConfigurator
                 var firstNotebookPageEl = GetFirstNotebookBiblePageId(ref oneNoteApp, notebookId, containerEl, out xnm);
                 if (firstNotebookPageEl != null)
                 {
-                    var bibleModuleMetadata = OneNoteUtils.GetPageMetaData(firstNotebookPageEl, BibleCommon.Consts.Constants.Key_EmbeddedBibleModule, xnm);
+                    var bibleModuleMetadata = OneNoteUtils.GetElementMetaData(firstNotebookPageEl, BibleCommon.Consts.Constants.Key_EmbeddedBibleModule, xnm);
                     if (!string.IsNullOrEmpty(bibleModuleMetadata))
                     {
                         var bibleModuleInfo = EmbeddedModuleInfo.Deserialize(bibleModuleMetadata);
