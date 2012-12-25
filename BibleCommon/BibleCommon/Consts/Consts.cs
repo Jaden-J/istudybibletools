@@ -30,6 +30,7 @@ namespace BibleCommon.Consts
         public static readonly string QueryParameter_QuickAnalyze = "qa=1";
         public static readonly string QueryParameter_BibleVerse = "bv=1";
         public static readonly string QueryParameter_ExtendedVerse = "ev=1";
+        public static readonly string QueryParameterKey_VersePosition = "vp";
 
         public static readonly Version ModulesWithXmlBibleMinVersion = new Version(1, 9);
         
@@ -101,8 +102,7 @@ namespace BibleCommon.Consts
         public static readonly string Key_EmbeddedDictionaries = "Dictionaries";
         public static readonly string Key_NotesPageManagerName = "NotesPageManagerName";
         public static readonly string Key_Id = "ID";
-        public static readonly string Key_Verse = "Verse";
-        public static readonly string Key_IsCommonNotesPage = "IsCommonNotesPage";  // страница сводных заметок для главы
+        public static readonly string Key_Verse = "Verse";        
     }   
 }
 

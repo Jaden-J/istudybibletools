@@ -32,6 +32,7 @@
             this.btnOk = new System.Windows.Forms.Button();
             this.pnMain = new System.Windows.Forms.Panel();
             this.lblError = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnOk
@@ -52,10 +53,16 @@
             this.lblError.ForeColor = System.Drawing.Color.Red;
             this.lblError.Name = "lblError";
             // 
+            // label1
+            // 
+            resources.ApplyResources(this.label1, "label1");
+            this.label1.Name = "label1";
+            // 
             // SelectNoteBooksForm
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.lblError);
             this.Controls.Add(this.pnMain);
             this.Controls.Add(this.btnOk);
@@ -75,5 +82,6 @@
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Panel pnMain;
         private System.Windows.Forms.Label lblError;
+        private System.Windows.Forms.Label label1;
     }
 }

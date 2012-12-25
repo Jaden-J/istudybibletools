@@ -319,6 +319,29 @@ namespace BibleCommon.Helpers
             return result;
         }
 
+        public static string GetQueryParameterValue(string s, string key)
+        {
+            string result = null;
+
+            string searchString = string.Format("{0}=", key);
+
+            int startIndex = s.IndexOf(searchString);
+
+            if (startIndex > -1)
+            {
+                startIndex = startIndex + searchString.Length;
+
+                var endIndex = s.IndexOfAny(new char[] { '&', '\"', '\'' }, startIndex + 1);
+
+                if (endIndex == -1)
+                    result = s.Substring(startIndex);
+                else
+                    result = s.Substring(startIndex, endIndex - startIndex);
+            }
+
+            return result;
+        }        
+
 
         public static string MultiplyString(string s, int count)
         {

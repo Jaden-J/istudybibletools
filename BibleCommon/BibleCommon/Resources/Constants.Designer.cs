@@ -142,6 +142,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string All {
+            get {
+                return ResourceManager.GetString("All", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All Dictionaries.
         /// </summary>
         public static string AllDictionaries {
@@ -223,7 +232,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Notebook &apos;{0}&apos; is created for module &apos;{1}&apos;, not for &apos;{2}&apos;..
+        ///   Looks up a localized string similar to Notebook &apos;{0}&apos; is created for module &apos;{1}&apos;, not for &apos;{2}&apos;..
         /// </summary>
         public static string BibleNotebookIsForAnotherModule {
             get {
@@ -232,7 +241,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на The passage is not found.
+        ///   Looks up a localized string similar to The passage is not found.
         /// </summary>
         public static string BibleVersePointerCanNotFindPlace {
             get {
@@ -340,7 +349,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Notebook template is not found at.
+        ///   Looks up a localized string similar to Notebook template is not found at.
         /// </summary>
         public static string ConfiguratorNotebookTemplateNotFound {
             get {
@@ -367,7 +376,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Section group is not found.
+        ///   Looks up a localized string similar to Section group is not found.
         /// </summary>
         public static string ConfiguratorSectionGroupNotFound {
             get {
@@ -412,7 +421,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Add the parallel translation anyway?.
+        ///   Looks up a localized string similar to Add the parallel translation anyway?.
         /// </summary>
         public static string ContinueAddingParallelBible {
             get {
@@ -421,7 +430,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Create the Supplemental Bible anyway?.
+        ///   Looks up a localized string similar to Create the Supplemental Bible anyway?.
         /// </summary>
         public static string ContinueCreatingSupplementalBible {
             get {
@@ -430,7 +439,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Creating Supplemental Bible.
+        ///   Looks up a localized string similar to Creating Supplemental Bible.
         /// </summary>
         public static string CreateSupplementalBible {
             get {
@@ -610,7 +619,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Notebook &quot;Dictionaries&quot; cannot be closed if Strong dictionary is installed. First delete module with Strong dictionary from Supplemental Bible on Supplemental Bible management form..
+        ///   Looks up a localized string similar to Notebook &quot;Dictionaries&quot; cannot be closed if Strong dictionary is installed. First delete module with Strong dictionary from Supplemental Bible on Supplemental Bible management form..
         /// </summary>
         public static string DictionariesNotebookCannotBeClosed {
             get {
@@ -619,7 +628,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Dictionaries.
+        ///   Looks up a localized string similar to Dictionaries.
         /// </summary>
         public static string DictionariesNotebookName {
             get {
@@ -628,7 +637,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Dictionaries Notebook is not found.
+        ///   Looks up a localized string similar to Dictionaries Notebook is not found.
         /// </summary>
         public static string DictionariesNotebookNotFound {
             get {
@@ -637,7 +646,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Dictionaries notebook was successfully added.
+        ///   Looks up a localized string similar to Dictionaries notebook was successfully added.
         /// </summary>
         public static string DictionariesNotebookWasAdded {
             get {
@@ -655,7 +664,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Module &apos;{0}&apos; is not installed correctly. Dictionary cache file is not found. Open the &apos;Program parameters&apos; and specify the necessary settings..
+        ///   Looks up a localized string similar to Module &apos;{0}&apos; is not installed correctly. Dictionary cache file is not found. Open the &apos;Program parameters&apos; and specify the necessary settings..
         /// </summary>
         public static string DictionaryCacheFileNotFound {
             get {
@@ -664,7 +673,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на This form is designed for the Dictionary management.
+        ///   Looks up a localized string similar to This form is designed for the Dictionary management.
         ///
         ///Please take notice:
         ///  - It is necessary to download modules of type “Dictionary” to the program;
@@ -677,7 +686,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Can not find term &apos;{0}&apos; in Dictionary cached TermSet &apos;{1}&apos;. Please try to update dictionary module..
+        ///   Looks up a localized string similar to Can not find term &apos;{0}&apos; in Dictionary cached TermSet &apos;{1}&apos;. Please try to update dictionary module..
         /// </summary>
         public static string DictionaryTermNotFoundInCache {
             get {
@@ -686,7 +695,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Some Dictionary terms were not found in OneNote. Please try to update dictionary module..
+        ///   Looks up a localized string similar to Some Dictionary terms were not found in OneNote. Please try to update dictionary module..
         /// </summary>
         public static string DictionaryTermsNotFound {
             get {
@@ -695,7 +704,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на http://IStudyBibleTools.com/download.htm?fromProgram=true.
+        ///   Looks up a localized string similar to http://IStudyBibleTools.com/download.htm?fromProgram=true.
         /// </summary>
         public static string DownloadPageUrl {
             get {
@@ -794,7 +803,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Unable to update the page. Perhaps on the page there are painted with a brush elements, which are currently not supported. 
+        ///   Looks up a localized string similar to Unable to update the page. Perhaps on the page there are painted with a brush elements, which are currently not supported. 
         ///Delete these elements and try again..
         /// </summary>
         public static string Error_UpdateError_InksOnPages {
@@ -822,7 +831,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на The errors are saved in file &apos;{0}&apos;..
+        ///   Looks up a localized string similar to The errors are saved in file &apos;{0}&apos;..
         /// </summary>
         public static string ErrorsAreSavedInFile {
             get {
@@ -831,7 +840,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на ERROR.
+        ///   Looks up a localized string similar to ERROR.
         /// </summary>
         public static string ErrorUpper {
             get {
@@ -876,7 +885,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Completed with warnings..
+        ///   Looks up a localized string similar to Completed with warnings..
         /// </summary>
         public static string FinishWithWarnings {
             get {
@@ -885,7 +894,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Found in one dictionary.
+        ///   Looks up a localized string similar to Found in one dictionary.
         /// </summary>
         public static string FoundInOneDictionary {
             get {
@@ -1155,7 +1164,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на It is currently not supported managing notebook &quot;Dictionaries&quot; stored in the SkyDrive. Add all dictionaries to local notebook and then publish the notebook &quot;Dictionaries&quot; to the SkyDrive..
+        ///   Looks up a localized string similar to It is currently not supported managing notebook &quot;Dictionaries&quot; stored in the SkyDrive. Add all dictionaries to local notebook and then publish the notebook &quot;Dictionaries&quot; to the SkyDrive..
         /// </summary>
         public static string NotebookIsLocalAndNotSupportedForDictionaries {
             get {
@@ -1164,7 +1173,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на The notebook &apos;{0}&apos; is not a Dictionaries notebook..
+        ///   Looks up a localized string similar to The notebook &apos;{0}&apos; is not a Dictionaries notebook..
         /// </summary>
         public static string NotebookIsNotDictionariesNotebook {
             get {
@@ -1200,7 +1209,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на &apos;Bible&apos; pages updating.
+        ///   Looks up a localized string similar to &apos;Bible&apos; pages updating.
         /// </summary>
         public static string NoteLinkerBiblePagesUpdating {
             get {
@@ -1209,7 +1218,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Sort pages error.
+        ///   Looks up a localized string similar to Sort pages error.
         /// </summary>
         public static string NoteLinkerErrorWhilePageSorting {
             get {
@@ -1281,7 +1290,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на &apos;Notes&apos; pages updating.
+        ///   Looks up a localized string similar to &apos;Notes&apos; pages updating.
         /// </summary>
         public static string NoteLinkerNotePagesUpdating {
             get {
@@ -1290,7 +1299,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на &apos;Summary of Notes&apos; pages updating.
+        ///   Looks up a localized string similar to &apos;Summary of Notes&apos; pages updating.
         /// </summary>
         public static string NoteLinkerNotesPagesUpdating {
             get {
@@ -1398,7 +1407,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Some pages &apos;Summary of Notes&apos; have obsolete structure. Please re-run Notes Analysis of all pages with option &apos;Re-analyze Bible verses&apos;..
+        ///   Looks up a localized string similar to Some pages &apos;Summary of Notes&apos; have obsolete structure. Please re-run Notes Analysis of all pages with option &apos;Re-analyze Bible verses&apos;..
         /// </summary>
         public static string NotesPagesManagerIsObsolete {
             get {
@@ -1407,7 +1416,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Found passages that are missing in the first module of the Supplemental Bible. These passages will not be added to the Supplemental Bible. If you want this passages to be added to the Supplemental Bible, use this module as the first module of the Supplemental Bible..
+        ///   Looks up a localized string similar to Found passages that are missing in the first module of the Supplemental Bible. These passages will not be added to the Supplemental Bible. If you want this passages to be added to the Supplemental Bible, use this module as the first module of the Supplemental Bible..
         /// </summary>
         public static string NotExistingInFirstSupplemenBibleVersesFound {
             get {
@@ -1416,7 +1425,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Found passages that are not in the primary Bible. These passages will not be analyzed and linked to the Bible. If you want this passages to be analyzed and linked to the Bible, use this module as a primary module..
+        ///   Looks up a localized string similar to Found passages that are not in the primary Bible. These passages will not be analyzed and linked to the Bible. If you want this passages to be analyzed and linked to the Bible, use this module as a primary module..
         /// </summary>
         public static string NotExistingInPrimaryBibleVersesFound {
             get {
@@ -1425,7 +1434,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Open a verse.
+        ///   Looks up a localized string similar to Open a verse.
         /// </summary>
         public static string OpenVerse {
             get {
@@ -1461,7 +1470,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Finish checking modules.
+        ///   Looks up a localized string similar to Finish checking modules.
         /// </summary>
         public static string ParallelModuleCheckFinish {
             get {
@@ -1470,7 +1479,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Checking modules.
+        ///   Looks up a localized string similar to Checking modules.
         /// </summary>
         public static string ParallelModuleChecking {
             get {
@@ -1479,7 +1488,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Start checking modules.
+        ///   Looks up a localized string similar to Start checking modules.
         /// </summary>
         public static string ParallelModuleCheckStart {
             get {
@@ -1488,7 +1497,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Process aborted by user.
+        ///   Looks up a localized string similar to Process aborted by user.
         /// </summary>
         public static string ProcessAbortedByUser {
             get {
@@ -1569,7 +1578,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Term is not found in OneNote. Update the dictionary cache?.
+        ///   Looks up a localized string similar to Term is not found in OneNote. Update the dictionary cache?.
         /// </summary>
         public static string RebuldDictionaryCache {
             get {
@@ -1578,7 +1587,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на References to Comments to the Bible have been updated..
+        ///   Looks up a localized string similar to References to Comments to the Bible have been updated..
         /// </summary>
         public static string RelinkBibleCommentsManagerFinishMessage {
             get {
@@ -1596,7 +1605,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Removing parallel Bible translation.
+        ///   Looks up a localized string similar to Removing parallel Bible translation.
         /// </summary>
         public static string RemoveParallelBibleTranslation {
             get {
@@ -1614,7 +1623,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Removing parallel Bible translation start.
+        ///   Looks up a localized string similar to Removing parallel Bible translation start.
         /// </summary>
         public static string RemoveParallelBibleTranslationStartMessage {
             get {
@@ -1623,7 +1632,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Remove the section group of Strong&apos;s dictionary from &apos;Dictionaries&apos; notebook?.
+        ///   Looks up a localized string similar to Remove the section group of Strong&apos;s dictionary from &apos;Dictionaries&apos; notebook?.
         /// </summary>
         public static string RemoveStrongDictionaryFromNotebookQuestion {
             get {
@@ -1632,7 +1641,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Supplemental Bible was closed successfully.
+        ///   Looks up a localized string similar to Supplemental Bible was closed successfully.
         /// </summary>
         public static string RemoveSupplementalBibleFinishMessage {
             get {
@@ -1641,7 +1650,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Please close and open the &apos;Program Parameters&apos; window to see changes..
+        ///   Looks up a localized string similar to Please close and open the &apos;Program Parameters&apos; window to see changes..
         /// </summary>
         public static string ReopenParametersToSeeChanges {
             get {
@@ -1650,7 +1659,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Bible pages width have been successfully changed..
+        ///   Looks up a localized string similar to Bible pages width have been successfully changed..
         /// </summary>
         public static string ResizeBibleTableManagerFinishMessage {
             get {
@@ -1812,7 +1821,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Show errors.
+        ///   Looks up a localized string similar to Show errors.
         /// </summary>
         public static string ShowErrors {
             get {
@@ -1821,7 +1830,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Show warnings.
+        ///   Looks up a localized string similar to Show warnings.
         /// </summary>
         public static string ShowWarnings {
             get {
@@ -1830,7 +1839,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Locking the Bible stored in SkyDrive is not currently supported. Use another kind of internet storage..
+        ///   Looks up a localized string similar to Locking the Bible stored in SkyDrive is not currently supported. Use another kind of internet storage..
         /// </summary>
         public static string SkyDriveBibleIsNotSupportedForLock {
             get {
@@ -1866,7 +1875,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Saved successfully.
+        ///   Looks up a localized string similar to Saved successfully.
         /// </summary>
         public static string SuccessfullySaved {
             get {
@@ -1875,7 +1884,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на This form is designed for the Supplemental Bible management. 
+        ///   Looks up a localized string similar to This form is designed for the Supplemental Bible management. 
         ///
         ///Please take notice:
         ///  - You can add modules version 2.0 or higher to the Supplemental Bible
@@ -1888,7 +1897,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Supplemental Bible Management.
+        ///   Looks up a localized string similar to Supplemental Bible Management.
         /// </summary>
         public static string SupplementalBibleManagement {
             get {
@@ -1924,7 +1933,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на After it is necessary to remove the added parallel module and add it again. Show errors that have occurred while adding parallel module?.
+        ///   Looks up a localized string similar to After it is necessary to remove the added parallel module and add it again. Show errors that have occurred while adding parallel module?.
         /// </summary>
         public static string ThereAreErrorsAfterParallelModuleWasAdded {
             get {
@@ -1933,7 +1942,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Inconsistencies are detected in the modules &apos;{0} (version {1})&apos; and &apos;{2} (version {3})&apos;. Probably these modules are not of the latest version. Try to download these modules from the site {4} and to update these modules in the system..
+        ///   Looks up a localized string similar to Inconsistencies are detected in the modules &apos;{0} (version {1})&apos; and &apos;{2} (version {3})&apos;. Probably these modules are not of the latest version. Try to download these modules from the site {4} and to update these modules in the system..
         /// </summary>
         public static string ThereAreErrorsOnModulesMerging {
             get {
@@ -1942,7 +1951,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Time spent.
+        ///   Looks up a localized string similar to Time spent.
         /// </summary>
         public static string TimeSpent {
             get {
@@ -2068,7 +2077,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Bible verse &apos;{0}&apos; was not found..
+        ///   Looks up a localized string similar to Bible verse &apos;{0}&apos; was not found..
         /// </summary>
         public static string VerseNotFound {
             get {
@@ -2077,7 +2086,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на verses.
+        ///   Looks up a localized string similar to verses.
         /// </summary>
         public static string Verses {
             get {

@@ -378,10 +378,17 @@ namespace BibleCommon.Common
         public BibleBookInfo Book { get; set; }
         public int? Chapter { get; set; }
         public int? Verse { get; set; }
-        public string OriginalVerseName { get; set; }   // первоначально переданная строка в конструктор
+
+        /// <summary>
+        /// первоначально переданная строка в конструктор
+        /// </summary>
+        public string OriginalVerseName { get; set; }   
         public string OriginalBookName { get; set; }
 
-        public VersePointer ParentVersePointer { get; set; } // родительская ссылка. Например если мы имеем дело со стихом диапазона, то здесь хранится стих, являющийся диапазоном
+        /// <summary>
+        /// родительская ссылка. Например если мы имеем дело со стихом диапазона, то здесь хранится стих, являющийся диапазоном
+        /// </summary>
+        public VersePointer ParentVersePointer { get; set; } 
 
         public VerseNumber VerseNumber
         {
