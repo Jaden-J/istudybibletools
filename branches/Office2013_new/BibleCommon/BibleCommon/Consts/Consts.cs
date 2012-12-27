@@ -31,6 +31,9 @@ namespace BibleCommon.Consts
         public static readonly string QueryParameter_BibleVerse = "bv=1";
         public static readonly string QueryParameter_ExtendedVerse = "ev=1";
         public static readonly string QueryParameterKey_VersePosition = "vp";
+        public static readonly string QueryParameterKey_VerseWeight = "vw";
+
+        public static readonly decimal ImportantVerseWeight = 2;
 
         public static readonly Version ModulesWithXmlBibleMinVersion = new Version(1, 9);
         

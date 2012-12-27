@@ -47,10 +47,11 @@ namespace BibleCommon.Services
                 _notebooksDisplayLevel.Add(notebookInfo.NotebookId, notebookInfo.DisplayLevels);
         }
 
-        public string UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, int versePosition,
+        public string UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, 
+           decimal verseWeight, XmlCursorPosition versePosition,
            bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
            HierarchyElementInfo notePageInfo, string notesPageId, string notePageContentObjectId,
-           string notesPageName, int notesPageWidth, bool force, bool processAsExtendedVerse, out bool rowWasAdded)
+           string notesPageName, int notesPageWidth, bool isImportantVerse, bool force, bool processAsExtendedVerse, out bool rowWasAdded)
         {
             string targetContentObjectId = string.Empty;
 
@@ -61,8 +62,8 @@ namespace BibleCommon.Services
 
             if (rootElement != null)
             {
-                AddLinkToNotesPage(ref oneNoteApp, noteLinkManager, vp, versePosition, rootElement, notePageInfo,
-                    notePageContentObjectId, notesPageDocument, notesPageName, notePageInfo.NotebookId, force, processAsExtendedVerse);
+                AddLinkToNotesPage(ref oneNoteApp, noteLinkManager, vp, verseWeight, versePosition, rootElement, notePageInfo,
+                    notePageContentObjectId, notesPageDocument, notesPageName, notePageInfo.NotebookId, isImportantVerse, force, processAsExtendedVerse);
 
                 targetContentObjectId = GetNotesRowObjectId(notesPageDocument, notesPageId, verseHierarchyObjectInfo.VerseNumber);
             }
@@ -186,9 +187,9 @@ namespace BibleCommon.Services
         private XElement _parentElement;
         private int _level;
 
-        private void AddLinkToNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, int versePosition,
+        private void AddLinkToNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition,
            XElement rootElement, HierarchyElementInfo notePageInfo, string notePageContentObjectId,
-           OneNoteProxy.PageContent notesPageDocument, string notesPageName, string notebookId, bool force, bool processAsExtendedVerse)
+           OneNoteProxy.PageContent notesPageDocument, string notesPageName, string notebookId, bool isImportantVerse, bool force, bool processAsExtendedVerse)
         {
             _parentElement = rootElement;
             _level = 1;
@@ -196,8 +197,11 @@ namespace BibleCommon.Services
             if (notePageInfo.Parent != null)
                 CreateParentTreeStructure(ref oneNoteApp, notePageInfo.Parent, notebookId, notesPageDocument.Xnm);
 
-            string link = OneNoteUtils.GenerateHref(ref oneNoteApp, notePageInfo.Name, notePageInfo.Id, notePageContentObjectId,
-                string.Format("{0}={1}", Constants.QueryParameterKey_VersePosition, versePosition));
+            string link = OneNoteUtils.GenerateHref(ref oneNoteApp, 
+                            GetVerseLinkTitle(notePageInfo.Name, verseWeight >= Constants.ImportantVerseWeight), 
+                            notePageInfo.Id, notePageContentObjectId,
+                            string.Format("{0}={1}", Constants.QueryParameterKey_VersePosition, versePosition),
+                            string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, verseWeight));
 
             var suchNoteLink = SearchExistingNoteLink(ref oneNoteApp, rootElement, notePageInfo, link, notesPageDocument.Xnm);
 
@@ -221,6 +225,7 @@ namespace BibleCommon.Services
                                             new XElement(_nms + "List",
                                                         new XElement(_nms + "Number",
                                                             new XAttribute("numberSequence", listNumberInfo.NumberSequence),
+                                                            new XAttribute("bold", verseWeight >= Constants.ImportantVerseWeight),
                                                             new XAttribute("numberFormat", listNumberInfo.NumberFormat))),
                                             new XElement(_nms + "T",
                                                 new XCData(
@@ -238,18 +243,22 @@ namespace BibleCommon.Services
                     _processedNodes.Add(notePageInfo.Id);
                 }
 
-                string pageLink = OneNoteUtils.GenerateHref(ref oneNoteApp, notePageInfo.Name, notePageInfo.Id, notePageInfo.PageTitleId);
-
+                var summaryVersesWeight = GetVerseWeight(suchNoteLink.Value);
                 var existingVerseLinksElement = suchNoteLink.Parent.XPathSelectElement("one:OEChildren/one:OE/one:T", notesPageDocument.Xnm);
                 if (existingVerseLinksElement != null)
                 {
-                    InsertAdditionalVerseLink(ref oneNoteApp, existingVerseLinksElement, notePageInfo, notePageContentObjectId, vp, versePosition);
+                    summaryVersesWeight = InsertAdditionalVerseLink(ref oneNoteApp, existingVerseLinksElement, notePageInfo, notePageContentObjectId, vp, verseWeight, versePosition, summaryVersesWeight);
                 }
                 else  // значит мы нашли второе упоминание данной ссылки в заметке
                 {
-                    InsertSecondVerseLink(ref oneNoteApp, suchNoteLink, notePageInfo, notePageContentObjectId, vp, versePosition);                    
+                    summaryVersesWeight = InsertSecondVerseLink(ref oneNoteApp, suchNoteLink, notePageInfo, notePageContentObjectId, vp, verseWeight, versePosition);                    
                 }
 
+                string pageLink = OneNoteUtils.GenerateHref(
+                                                  ref oneNoteApp, 
+                                                  GetVerseLinkTitle(notePageInfo.Name, summaryVersesWeight >= Constants.ImportantVerseWeight),
+                                                  notePageInfo.Id, notePageInfo.PageTitleId,
+                                                  string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, summaryVersesWeight));
                 suchNoteLink.Value = pageLink;
 
                 if (suchNoteLink.Parent.XPathSelectElement("one:List", notesPageDocument.Xnm) == null)  // почему то нет номера у строки
@@ -260,6 +269,11 @@ namespace BibleCommon.Services
                                                             new XAttribute("numberSequence", listNumberInfo.NumberSequence),
                                                             new XAttribute("numberFormat", listNumberInfo.NumberFormat))));
                 }
+
+                if (summaryVersesWeight >= Constants.ImportantVerseWeight)
+                {
+                    suchNoteLink.Parent.XPathSelectElement("one:List/one:Number", notesPageDocument.Xnm).SetAttributeValue("bold", true);
+                }
             }
 
             //OneNoteUtils.UpdatePageContentSafe(ref oneNoteApp, notesPageDocument.Content, notesPageDocument.Xnm);                                  
@@ -267,20 +281,36 @@ namespace BibleCommon.Services
             notesPageDocument.WasModified = true;
         }
 
-        private void InsertSecondVerseLink(ref Application oneNoteApp, XElement suchNoteLink, HierarchyElementInfo notePageInfo,
-            string notePageContentObjectId, VersePointer vp, int versePosition)
+        private static string GetVerseLinkTitle(string title, bool isImportantVerse)
+        {
+            if (isImportantVerse)
+                return string.Format("<span style='font-weight:bold'>{0}</span>", title);
+            else
+                return title;
+        }
+
+        private decimal InsertSecondVerseLink(ref Application oneNoteApp, XElement suchNoteLink, HierarchyElementInfo notePageInfo,
+            string notePageContentObjectId, VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition)
         {
             var firstVerseLink = StringUtils.GetAttributeValue(suchNoteLink.Value, "href");
             var firstVersePosition = GetVersePosition(suchNoteLink.Value);
+            var firstVerseWeight = GetVerseWeight(suchNoteLink.Value);
             
 
-            firstVerseLink = string.Format("<a href='{0}'>{1}</a>", firstVerseLink, string.Format(Resources.Constants.VerseLinkTemplate,
-                firstVersePosition > versePosition ? 2 : 1)) + GetExistingMultiVerseString(suchNoteLink);
+            firstVerseLink = string.Format("<a href='{0}'>{1}</a>", 
+                                firstVerseLink, 
+                                GetVerseLinkTitle(
+                                    string.Format(Resources.Constants.VerseLinkTemplate, firstVersePosition > versePosition ? 2 : 1),
+                                    firstVerseWeight >= Constants.ImportantVerseWeight)) 
+                             + GetExistingMultiVerseString(suchNoteLink);
 
             var verseLink = OneNoteUtils.GenerateHref(ref oneNoteApp,
-                                            string.Format(Resources.Constants.VerseLinkTemplate, firstVersePosition > versePosition ? 1 : 2), 
+                                            GetVerseLinkTitle(
+                                                string.Format(Resources.Constants.VerseLinkTemplate, firstVersePosition > versePosition ? 1 : 2), 
+                                                verseWeight >= Constants.ImportantVerseWeight),
                                             notePageInfo.Id, notePageContentObjectId,
-                                            string.Format("{0}={1}", Constants.QueryParameterKey_VersePosition, versePosition))
+                                            string.Format("{0}={1}", Constants.QueryParameterKey_VersePosition, versePosition),
+                                            string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, verseWeight))
                                         + GetMultiVerseString(vp.ParentVersePointer ?? vp);
 
             var arrayOfLinks = firstVersePosition > versePosition
@@ -296,25 +326,58 @@ namespace BibleCommon.Services
                                                         )))));
 
             suchNoteLink.Parent.Add(verseLinksElement);
+
+            return firstVerseWeight.GetValueOrDefault(0) + verseWeight;
         }
 
-        private static int? GetVersePosition(string href)
+        private static XmlCursorPosition? GetVersePosition(string href)
         {
             var s = StringUtils.GetQueryParameterValue(href, Constants.QueryParameterKey_VersePosition);
             if (!string.IsNullOrEmpty(s))
-                return int.Parse(s);
+                return new XmlCursorPosition(s);
 
             return null;
         }
 
-        private void InsertAdditionalVerseLink(ref Application oneNoteApp, XElement existingVerseLinksElement, HierarchyElementInfo notePageInfo, 
-            string notePageContentObjectId, VersePointer vp, int versePointeHtmlStartIndex)
+        private static decimal? GetVerseWeight(string href)
         {
-            int currentVerseIndex = existingVerseLinksElement.Value.Split(new string[] { "</a>" }, StringSplitOptions.None).Length;
+            var s = StringUtils.GetQueryParameterValue(href, Constants.QueryParameterKey_VerseWeight);
+            if (!string.IsNullOrEmpty(s))
+                return decimal.Parse(s);
+
+            return null;
+        }
+
+        private decimal InsertAdditionalVerseLink(ref Application oneNoteApp, XElement existingVerseLinksElement, HierarchyElementInfo notePageInfo,
+            string notePageContentObjectId, VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition, decimal? summaryVersesWeight)
+        {
+            var existingLinks = existingVerseLinksElement.Value.Split(new string[] { "</a>" }, StringSplitOptions.None).ToList()
+                                        .ConvertAll(link => StringUtils.GetAttributeValue(link, "href"));
+
+            int insertLinkIndex = 0;
+            foreach (var existingLink in existingLinks)
+            {
+                var existingLinkVersePosition = GetVersePosition(existingLink);
+                if (existingLinkVersePosition > versePosition)
+                    break;
+                insertLinkIndex++;
+            }
+
+            existingLinks.Insert(insertLinkIndex, OneNoteUtils.GetOrGenerateHrefLink(
+                                                        ref oneNoteApp, null, notePageInfo.Id, notePageContentObjectId, 
+                                                        string.Format("{0}={1}", Constants.QueryParameterKey_VersePosition, versePosition),
+                                                        string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, verseWeight)));
+
+            for (int index = 1; index < existingLinks.Count; index++)
+            {
+                //здесь надо соединить все existingLinks. Проблемы две: в правильном порядке делать номера ссылок и разделять их точкой с запятой. + не забыть про GetExistingMultiVerseString
+            }
 
             existingVerseLinksElement.Value += Resources.Constants.VerseLinksDelimiter + OneNoteUtils.GenerateHref(ref oneNoteApp,
                         string.Format(Resources.Constants.VerseLinkTemplate, currentVerseIndex), notePageInfo.Id, notePageContentObjectId)
                         + GetMultiVerseString(vp.ParentVersePointer ?? vp);
+
+            return summaryVersesWeight.GetValueOrDefault(0) + verseWeight;
         }
 
         private XElement SearchExistingNoteLink(ref Application oneNoteApp, XElement rootElement, HierarchyElementInfo notePageInfo, string notePageLink, XmlNamespaceManager xnm)

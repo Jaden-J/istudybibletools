@@ -50,7 +50,7 @@ namespace BibleCommon.Services
         /// <param name="isExcluded">Не стоит его по дефолту анализировать</param>
         /// <returns></returns>
         public static bool CanProcessAtNumberPosition(XElement textElement, int numberIndex,
-            out int number, out int textBreakIndex, out int htmlBreakIndex, out LinkInfo linkInfo, out bool isInBrackets, out bool isExcluded)
+            out int number, out int textBreakIndex, out int htmlBreakIndex, out LinkInfo linkInfo, out bool isInBrackets, out bool isExcluded, out bool isImportantVerse)
         {
             linkInfo = new LinkInfo();
             number = -1;
@@ -58,6 +58,7 @@ namespace BibleCommon.Services
             htmlBreakIndex = -1;
             isInBrackets = false;
             isExcluded = false;
+            isImportantVerse = false;
 
             if (numberIndex == 0)  // не может начинаться с цифры
                 return false;
@@ -86,6 +87,7 @@ namespace BibleCommon.Services
 
                         isInBrackets = StringUtils.IsSurroundedBy(textElement.Value, "[", "]", numberIndex, false, out textString);
                         isExcluded = StringUtils.IsSurroundedBy(textElement.Value, "{", "}", numberIndex, false, out textString);
+                        isImportantVerse = StringUtils.IsSurroundedBy(textElement.Value, "*", "*", numberIndex, false, out textString);
 
                         return true;
                     }
@@ -539,7 +541,7 @@ namespace BibleCommon.Services
 
         private static bool IsChapter(string prevChar, string nextChar)
         {
-            string[] endChars = { ")", "]", "}", ",", ".", "?", "!", ";", "-", "&", ":" };   // двоеточие добавлено потому, что могут быть ссылки типа "Ин 1: вот". Всё равно, если это была нормальная ссылка, он до сюда не дойдёт
+            string[] endChars = { ")", "]", "}", ",", ".", "?", "!", ";", "-", "&", ":", "*" };   // двоеточие добавлено потому, что могут быть ссылки типа "Ин 1: вот". Всё равно, если это была нормальная ссылка, он до сюда не дойдёт
             return string.IsNullOrEmpty(nextChar.Trim()) || endChars.Contains(nextChar);                
         }
 

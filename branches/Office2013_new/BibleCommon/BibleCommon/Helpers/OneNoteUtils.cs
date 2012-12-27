@@ -194,7 +194,7 @@ namespace BibleCommon.Helpers
         }
 
 
-        public static string GetOrGenerateHref(ref Application oneNoteApp, string title, string objectHref, string pageId, string objectId, params string[] additionalLinkQueryParameters)
+        public static string GetOrGenerateHrefLink(ref Application oneNoteApp, string objectHref, string pageId, string objectId, params string[] additionalLinkQueryParameters)
         {
             string link;
 
@@ -205,6 +205,13 @@ namespace BibleCommon.Helpers
 
             foreach (var param in additionalLinkQueryParameters)
                 link += "&" + param;
+
+            return link;
+        }
+
+        public static string GetOrGenerateHref(ref Application oneNoteApp, string title, string objectHref, string pageId, string objectId, params string[] additionalLinkQueryParameters)
+        {
+            string link = GetOrGenerateHrefLink(ref oneNoteApp, objectHref, pageId, objectId, additionalLinkQueryParameters);
 
             return string.Format("<a href=\"{0}\">{1}</a>", link, title);            
         }
