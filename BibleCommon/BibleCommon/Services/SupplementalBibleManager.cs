@@ -493,7 +493,7 @@ namespace BibleCommon.Services
                     new InvalidOperationException(
                         string.Format("baseVerseNumber != baseVersePointer (baseVerseNumber = '{0}', baseVersePointer = '{1}')", baseVerseNumber, baseVersePointer)));
 
-            string linkToParallelVerse = OneNoteUtils.GetOrGenerateHref(ref oneNoteApp, baseVerseNumber.ToString(),
+            string linkToParallelVerse = OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, baseVerseNumber.ToString(),
                 primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref,
                 primaryBibleObjectsSearchResult.HierarchyObjectInfo.PageId, primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseContentObjectId, 
                 Consts.Constants.QueryParameter_BibleVerse);
@@ -518,7 +518,7 @@ namespace BibleCommon.Services
                 var parallelChapterPageDoc = PrepareMainBibleTable(ref oneNoteApp, baseBibleObjectsSearchResult.HierarchyObjectInfo.PageId);
 
                 string linkToBaseVerse = string.Format("<font size='2pt'>{0}</font>",
-                                            OneNoteUtils.GenerateHref(ref oneNoteApp, SettingsManager.Instance.SupplementalBibleLinkName, baseChapterPageId, baseVerseElementId));
+                                            OneNoteUtils.GenerateLink(ref oneNoteApp, SettingsManager.Instance.SupplementalBibleLinkName, baseChapterPageId, baseVerseElementId));
 
                 foreach (var parallelVerseElementId in baseBibleObjectsSearchResult.HierarchyObjectInfo.GetAllObjectsIds())
                 {                    

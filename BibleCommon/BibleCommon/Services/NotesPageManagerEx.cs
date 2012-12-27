@@ -130,7 +130,7 @@ namespace BibleCommon.Services
                                 new XElement(_nms + "T",
                                     new XCData(
                                          !isChapter ?
-                                            OneNoteUtils.GetOrGenerateHref(ref oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseNumber),
+                                            OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseNumber),
                                                 verseHierarchyObjectInfo.VerseInfo.ObjectHref,
                                                 verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.VerseContentObjectId,
                                                 Consts.Constants.QueryParameter_BibleVerse)
@@ -197,7 +197,7 @@ namespace BibleCommon.Services
             if (notePageInfo.Parent != null)
                 CreateParentTreeStructure(ref oneNoteApp, notePageInfo.Parent, notebookId, notesPageDocument.Xnm);
 
-            string link = OneNoteUtils.GenerateHref(ref oneNoteApp, 
+            string link = OneNoteUtils.GenerateLink(ref oneNoteApp, 
                             GetVerseLinkTitle(notePageInfo.Name, verseWeight >= Constants.ImportantVerseWeight), 
                             notePageInfo.Id, notePageContentObjectId,
                             string.Format("{0}={1}", Constants.QueryParameterKey_VersePosition, versePosition),
@@ -247,14 +247,15 @@ namespace BibleCommon.Services
                 var existingVerseLinksElement = suchNoteLink.Parent.XPathSelectElement("one:OEChildren/one:OE/one:T", notesPageDocument.Xnm);
                 if (existingVerseLinksElement != null)
                 {
-                    summaryVersesWeight = InsertAdditionalVerseLink(ref oneNoteApp, existingVerseLinksElement, notePageInfo, notePageContentObjectId, vp, verseWeight, versePosition, summaryVersesWeight);
+                    OneNoteUtils.NormalizeTextElement(existingVerseLinksElement);
+                    summaryVersesWeight = InsertAdditionalVerseLink(ref oneNoteApp, ref existingVerseLinksElement, notePageInfo, notePageContentObjectId, vp, verseWeight, versePosition, summaryVersesWeight);
                 }
                 else  // значит мы нашли второе упоминание данной ссылки в заметке
                 {
-                    summaryVersesWeight = InsertSecondVerseLink(ref oneNoteApp, suchNoteLink, notePageInfo, notePageContentObjectId, vp, verseWeight, versePosition);                    
+                    summaryVersesWeight = InsertSecondVerseLink(ref oneNoteApp, ref suchNoteLink, notePageInfo, notePageContentObjectId, vp, verseWeight, versePosition);                    
                 }
 
-                string pageLink = OneNoteUtils.GenerateHref(
+                string pageLink = OneNoteUtils.GenerateLink(
                                                   ref oneNoteApp, 
                                                   GetVerseLinkTitle(notePageInfo.Name, summaryVersesWeight >= Constants.ImportantVerseWeight),
                                                   notePageInfo.Id, notePageInfo.PageTitleId,
@@ -289,7 +290,7 @@ namespace BibleCommon.Services
                 return title;
         }
 
-        private decimal InsertSecondVerseLink(ref Application oneNoteApp, XElement suchNoteLink, HierarchyElementInfo notePageInfo,
+        private decimal InsertSecondVerseLink(ref Application oneNoteApp, ref XElement suchNoteLink, HierarchyElementInfo notePageInfo,
             string notePageContentObjectId, VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition)
         {
             var firstVerseLink = StringUtils.GetAttributeValue(suchNoteLink.Value, "href");
@@ -297,14 +298,14 @@ namespace BibleCommon.Services
             var firstVerseWeight = GetVerseWeight(suchNoteLink.Value);
             
 
-            firstVerseLink = string.Format("<a href='{0}'>{1}</a>", 
-                                firstVerseLink, 
+            firstVerseLink = OneNoteUtils.GetLink(                                
                                 GetVerseLinkTitle(
                                     string.Format(Resources.Constants.VerseLinkTemplate, firstVersePosition > versePosition ? 2 : 1),
-                                    firstVerseWeight >= Constants.ImportantVerseWeight)) 
-                             + GetExistingMultiVerseString(suchNoteLink);
+                                    firstVerseWeight >= Constants.ImportantVerseWeight),
+                                firstVerseLink) 
+                             + GetExistingMultiVerseString(suchNoteLink.Value);
 
-            var verseLink = OneNoteUtils.GenerateHref(ref oneNoteApp,
+            var verseLink = OneNoteUtils.GenerateLink(ref oneNoteApp,
                                             GetVerseLinkTitle(
                                                 string.Format(Resources.Constants.VerseLinkTemplate, firstVersePosition > versePosition ? 1 : 2), 
                                                 verseWeight >= Constants.ImportantVerseWeight),
@@ -348,14 +349,28 @@ namespace BibleCommon.Services
             return null;
         }
 
-        private decimal InsertAdditionalVerseLink(ref Application oneNoteApp, XElement existingVerseLinksElement, HierarchyElementInfo notePageInfo,
+        private decimal InsertAdditionalVerseLink(ref Application oneNoteApp, ref XElement existingVerseLinksElement, HierarchyElementInfo notePageInfo,
             string notePageContentObjectId, VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition, decimal? summaryVersesWeight)
         {
-            var existingLinks = existingVerseLinksElement.Value.Split(new string[] { "</a>" }, StringSplitOptions.None).ToList()
-                                        .ConvertAll(link => StringUtils.GetAttributeValue(link, "href"));
+            var links = new List<string>();
+            var multiVerseStrings = new List<string>();
+            var versesWeight = new List<decimal?>();
+
+            foreach (var existingLink in existingVerseLinksElement.Value.Split(new string[] { ">;" }, StringSplitOptions.None).ToList()
+                                        .ConvertAll(link => link + "</a>"))
+            {
+                var multiVerseString = GetExistingMultiVerseString(existingLink);
+                var href = StringUtils.GetAttributeValue(existingLink, "href");
+                var weight = GetVerseWeight(href);
+
+                links.Add(href);
+                multiVerseStrings.Add(multiVerseString);
+                versesWeight.Add(weight);
+            }
+            
 
             int insertLinkIndex = 0;
-            foreach (var existingLink in existingLinks)
+            foreach (var existingLink in links)
             {
                 var existingLinkVersePosition = GetVersePosition(existingLink);
                 if (existingLinkVersePosition > versePosition)
@@ -363,19 +378,25 @@ namespace BibleCommon.Services
                 insertLinkIndex++;
             }
 
-            existingLinks.Insert(insertLinkIndex, OneNoteUtils.GetOrGenerateHrefLink(
+            links.Insert(insertLinkIndex, OneNoteUtils.GetOrGenerateLinkHref(
                                                         ref oneNoteApp, null, notePageInfo.Id, notePageContentObjectId, 
                                                         string.Format("{0}={1}", Constants.QueryParameterKey_VersePosition, versePosition),
                                                         string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, verseWeight)));
+            multiVerseStrings.Insert(insertLinkIndex, GetMultiVerseString(vp.ParentVersePointer ?? vp));
+            versesWeight.Insert(insertLinkIndex, verseWeight);
 
-            for (int index = 1; index < existingLinks.Count; index++)
+            existingVerseLinksElement.Value = string.Empty;
+            for (int index = 0; index < links.Count; index++)
             {
-                //здесь надо соединить все existingLinks. Проблемы две: в правильном порядке делать номера ссылок и разделять их точкой с запятой. + не забыть про GetExistingMultiVerseString
-            }
-
-            existingVerseLinksElement.Value += Resources.Constants.VerseLinksDelimiter + OneNoteUtils.GenerateHref(ref oneNoteApp,
-                        string.Format(Resources.Constants.VerseLinkTemplate, currentVerseIndex), notePageInfo.Id, notePageContentObjectId)
-                        + GetMultiVerseString(vp.ParentVersePointer ?? vp);
+                existingVerseLinksElement.Value += string.Concat(
+                                                        index == 0 ? string.Empty : Resources.Constants.VerseLinksDelimiter,
+                                                        OneNoteUtils.GetLink(
+                                                                        GetVerseLinkTitle(
+                                                                                string.Format(Resources.Constants.VerseLinkTemplate, index + 1),
+                                                                                versesWeight[index] >= Constants.ImportantVerseWeight),
+                                                                        links[index]),
+                                                        multiVerseStrings[index]);
+            }          
 
             return summaryVersesWeight.GetValueOrDefault(0) + verseWeight;
         }
@@ -692,13 +713,13 @@ namespace BibleCommon.Services
                 return string.Empty;
         }
 
-        private static string GetExistingMultiVerseString(XElement suchNoteLink)
+        private static string GetExistingMultiVerseString(string htmlText)
         {
             var multiVerseString = string.Empty;
             var suchNoteLinkText = string.Empty;
 
-            if (suchNoteLink != null)
-                suchNoteLinkText = StringUtils.GetText(suchNoteLink.Value);
+            if (!string.IsNullOrEmpty(htmlText))
+                suchNoteLinkText = StringUtils.GetText(htmlText);
 
             if (!string.IsNullOrEmpty(suchNoteLinkText))
                 multiVerseString = Regex.Match(suchNoteLinkText, @"\((\d+)?:\d+\-(\d+:)?\d+\)").Value;
