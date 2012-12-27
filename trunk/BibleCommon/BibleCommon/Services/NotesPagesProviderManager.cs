@@ -7,6 +7,7 @@ using BibleCommon.Helpers;
 using System.Xml.XPath;
 using System.Xml.Linq;
 using BibleCommon.Consts;
+using BibleCommon.Common;
 
 namespace BibleCommon.Services
 {
@@ -35,14 +36,15 @@ namespace BibleCommon.Services
                 _managers.Add(manager.ManagerName, manager);
         }
 
-        public string UpdateNotesPage(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, NoteLinkManager noteLinkManager, Common.VersePointer vp, int versePosition,
+        public string UpdateNotesPage(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, NoteLinkManager noteLinkManager, 
+            Common.VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition,
             bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo, Common.HierarchyElementInfo notePageId, string notesPageId, string notePageContentObjectId, 
-            string notesPageName, int notesPageWidth, bool force, bool processAsExtendedVerse, out bool rowWasAdded)
+            string notesPageName, int notesPageWidth, bool isImportantVerse, bool force, bool processAsExtendedVerse, out bool rowWasAdded)
         {
             var manager = GetNotesPageProvider(ref oneNoteApp, notesPageId, notesPageWidth);            
 
-            return manager.UpdateNotesPage(ref oneNoteApp, noteLinkManager, vp, versePosition, isChapter, verseHierarchyObjectInfo, notePageId, notesPageId,
-                notePageContentObjectId, notesPageName, notesPageWidth, force, processAsExtendedVerse, out rowWasAdded);
+            return manager.UpdateNotesPage(ref oneNoteApp, noteLinkManager, vp, verseWeight, versePosition, isChapter, verseHierarchyObjectInfo, notePageId, notesPageId,
+                notePageContentObjectId, notesPageName, notesPageWidth, isImportantVerse, force, processAsExtendedVerse, out rowWasAdded);
         }
 
         public string GetNotesRowObjectId(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, string notesPageId, Common.VerseNumber? verseNumber, bool isChapter)

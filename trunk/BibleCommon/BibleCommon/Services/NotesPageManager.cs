@@ -19,12 +19,13 @@ namespace BibleCommon.Services
         public string ManagerName
         {
             get { return "NotesPageManager"; }
-        }        
+        }
 
-        public string UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, int versePosition,
+        public string UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, 
+           decimal verseWeight, XmlCursorPosition versePosition,
            bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
            HierarchyElementInfo notePageId, string notesPageId, string notePageContentObjectId,
-           string notesPageName, int notesPageWidth, bool force, bool processAsExtendedVerse, out bool rowWasAdded)
+           string notesPageName, int notesPageWidth, bool isImportantVerse, bool force, bool processAsExtendedVerse, out bool rowWasAdded)
         {
             string targetContentObjectId = string.Empty;
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
@@ -70,7 +71,7 @@ namespace BibleCommon.Services
             XElement suchNoteLink = null;
             XElement notesCellElement = rowElement.XPathSelectElement("one:Cell[2]/one:OEChildren", xnm);
 
-            string link = OneNoteUtils.GenerateHref(ref oneNoteApp, noteTitle, notePageId.Id, notePageContentObjectId);
+            string link = OneNoteUtils.GenerateLink(ref oneNoteApp, noteTitle, notePageId.Id, notePageContentObjectId);
             string pageId;
             int pageIdStringIndex = link.IndexOf("page-id={");
             if (pageIdStringIndex == -1)
@@ -143,7 +144,7 @@ namespace BibleCommon.Services
             }
             else if (!processAsExtendedVerse)
             {
-                string pageLink = OneNoteUtils.GenerateHref(ref oneNoteApp, noteTitle, notePageId.Id, notePageId.PageTitleId);
+                string pageLink = OneNoteUtils.GenerateLink(ref oneNoteApp, noteTitle, notePageId.Id, notePageId.PageTitleId);
 
                 var verseLinksOE = suchNoteLink.Parent.NextNode;
                 if (verseLinksOE != null && verseLinksOE.XPathSelectElement("one:List", xnm) == null)  // значит следующая строка без номера, то есть значит идут ссылки
@@ -153,7 +154,7 @@ namespace BibleCommon.Services
 
                     int currentVerseIndex = existingVerseLinksElement.Value.Split(new string[] { "</a>" }, StringSplitOptions.None).Length;
 
-                    existingVerseLinksElement.Value += Resources.Constants.VerseLinksDelimiter + OneNoteUtils.GenerateHref(ref oneNoteApp,
+                    existingVerseLinksElement.Value += Resources.Constants.VerseLinksDelimiter + OneNoteUtils.GenerateLink(ref oneNoteApp,
                                 string.Format(Resources.Constants.VerseLinkTemplate, currentVerseIndex), notePageId.Id, notePageContentObjectId)
                                 + GetMultiVerseString(vp.ParentVersePointer ?? vp);
 
@@ -167,7 +168,7 @@ namespace BibleCommon.Services
                                                         new XCData(StringUtils.MultiplyString("&nbsp;", 8) +
                                                             string.Join(Resources.Constants.VerseLinksDelimiter, new string[] { 
                                                                 firstVerseLink + GetExistingMultiVerseString(suchNoteLink), 
-                                                                OneNoteUtils.GenerateHref(ref oneNoteApp, 
+                                                                OneNoteUtils.GenerateLink(ref oneNoteApp, 
                                                                     string.Format(Resources.Constants.VerseLinkTemplate, 2), notePageId.Id, notePageContentObjectId)
                                                                     + GetMultiVerseString(vp.ParentVersePointer ?? vp) })
                                                             )));
@@ -285,7 +286,7 @@ namespace BibleCommon.Services
                                                 new XElement(nms + "T",
                                                     new XCData(
                                                         !isChapter ?
-                                                            OneNoteUtils.GetOrGenerateHref(ref oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseNumber),
+                                                            OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseNumber),
                                                                 verseHierarchyObjectInfo.VerseInfo.ObjectHref,
                                                                 verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.VerseContentObjectId, 
                                                                 Consts.Constants.QueryParameter_BibleVerse)

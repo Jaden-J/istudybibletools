@@ -396,7 +396,7 @@ namespace BibleCommon.Common
             {
                 return new VerseNumber(this.Verse.GetValueOrDefault(), this.TopChapter.HasValue ? null : this.TopVerse);
             }
-        }
+        }        
 
         public override string ToString()
         {
