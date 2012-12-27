@@ -797,6 +797,8 @@ namespace BibleCommon.Services
 
             if (isImportantVerse)
                 verseWeight = Constants.ImportantVerseWeight;
+            else
+                verseWeight = decimal.Round(verseWeight, 2, MidpointRounding.AwayFromZero);
 
             bool processAsExtendedVerse = linkDepth >= AnalyzeDepth.Full && !force && linkInfo.ExtendedVerse;            
 
@@ -856,7 +858,7 @@ namespace BibleCommon.Services
                             if (linkInfo.IsLink)
                                 prevStyle = StringUtils.GetAttributeValue(prevLinkText, "style");
 
-                            string link = OneNoteUtils.GetOrGenerateHref(ref oneNoteApp, textToChange,                                
+                            string link = OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, textToChange,                                
                                             localHierarchySearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref,
                                             localHierarchySearchResult.HierarchyObjectInfo.PageId, localHierarchySearchResult.HierarchyObjectInfo.VerseContentObjectId, additionalParams.ToArray());
 
@@ -1209,7 +1211,7 @@ namespace BibleCommon.Services
                     OneNoteProxy.PageContent versePageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, verseHierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);       
 
                     string link = string.Format("<font size='2pt'>{0}</font>",
-                                    OneNoteUtils.GenerateHref(ref oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, null)); // здесь всегда передаём null, так как в частых случаях он и так null, потому что страница в кэше, и в OneNote она ещё не обновлялась (то есть идентификаторы ещё не проставлены). Так как эти идентификаторы проставятся в самом конце, то и ссылки обновим в конце.
+                                    OneNoteUtils.GenerateLink(ref oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, null)); // здесь всегда передаём null, так как в частых случаях он и так null, потому что страница в кэше, и в OneNote она ещё не обновлялась (то есть идентификаторы ещё не проставлены). Так как эти идентификаторы проставятся в самом конце, то и ссылки обновим в конце.
 
                     bool wasModified = false;
 

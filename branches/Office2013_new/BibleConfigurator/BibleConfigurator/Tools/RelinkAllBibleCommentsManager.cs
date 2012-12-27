@@ -132,7 +132,7 @@ namespace BibleConfigurator.Tools
                 string commentObjectId = GetComentObjectId(commentPageId, commentText, null, 0);
                 if (!string.IsNullOrEmpty(commentObjectId))
                 {
-                    string newCommentLink = OneNoteUtils.GenerateHref(ref _oneNoteApp, commentText, commentPageId, commentObjectId);
+                    string newCommentLink = OneNoteUtils.GenerateLink(ref _oneNoteApp, commentText, commentPageId, commentObjectId);
 
                     textElement.Value = textElement.Value.Replace(commentLink, newCommentLink);
 

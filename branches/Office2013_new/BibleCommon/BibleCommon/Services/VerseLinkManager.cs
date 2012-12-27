@@ -249,7 +249,7 @@ namespace BibleCommon.Services
 
                     if (vp != null)
                     {   
-                        string linkToBiblePage = OneNoteUtils.GetOrGenerateHref(ref oneNoteApp, vp.ChapterName, null, biblePageId, biblePageTitleId,
+                        string linkToBiblePage = OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, vp.ChapterName, null, biblePageId, biblePageTitleId,
                                                                     Consts.Constants.QueryParameter_BibleVerse, Consts.Constants.QueryParameter_QuickAnalyze);
                         pageName += string.Format(" <span style='font-size:10pt;'>[{0}]</span>", linkToBiblePage);
                     }

@@ -147,7 +147,7 @@ namespace BibleVerseLinkerEx
 
                     if (selectedTextFound)
                     {
-                        string href = OneNoteUtils.GenerateHref(ref _oneNoteApp, selectedHtml, verseLinkPageId, objectId);
+                        string href = OneNoteUtils.GenerateLink(ref _oneNoteApp, selectedHtml, verseLinkPageId, objectId);
 
                         string selectedValue = selectedElement.Value;
                         selectedElement.Value = string.Empty;
