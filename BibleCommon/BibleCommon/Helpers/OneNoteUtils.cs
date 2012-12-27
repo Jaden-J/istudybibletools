@@ -194,7 +194,7 @@ namespace BibleCommon.Helpers
         }
 
 
-        public static string GetOrGenerateHref(ref Application oneNoteApp, string title, string objectHref, string pageId, string objectId, params string[] additionalLinkQueryParameters)
+        public static string GetOrGenerateLinkHref(ref Application oneNoteApp, string objectHref, string pageId, string objectId, params string[] additionalLinkQueryParameters)
         {
             string link;
 
@@ -206,12 +206,24 @@ namespace BibleCommon.Helpers
             foreach (var param in additionalLinkQueryParameters)
                 link += "&" + param;
 
+            return link;
+        }
+
+        public static string GetLink(string title, string link)
+        {
             return string.Format("<a href=\"{0}\">{1}</a>", link, title);            
         }
 
-        public static string GenerateHref(ref Application oneNoteApp, string title, string pageId, string objectId, params string[] additionalLinkQueryParameters)
+        public static string GetOrGenerateLink(ref Application oneNoteApp, string title, string objectHref, string pageId, string objectId, params string[] additionalLinkQueryParameters)
         {
-            return GetOrGenerateHref(ref oneNoteApp, title, null, pageId, objectId, additionalLinkQueryParameters);
+            var link = GetOrGenerateLinkHref(ref oneNoteApp, objectHref, pageId, objectId, additionalLinkQueryParameters);
+
+            return GetLink(title, link);
+        }
+
+        public static string GenerateLink(ref Application oneNoteApp, string title, string pageId, string objectId, params string[] additionalLinkQueryParameters)
+        {
+            return GetOrGenerateLink(ref oneNoteApp, title, null, pageId, objectId, additionalLinkQueryParameters);
         }
 
         public static XElement NormalizeTextElement(XElement textElement)  // must be one:T element
