@@ -59,16 +59,17 @@ namespace BibleCommon.Services
             internal decimal ChapterWeight { get; set; }
         }
 
-        internal class FoundVerseInfo
+        public class FoundVerseInfo
         {
-            internal int Index { get; set; }
-            internal VersePointerSearchResult SearchResult { get; set; }
-            internal VerseRecognitionManager.LinkInfo LinkInfo { get; set; }
-            internal bool IsInBrackets { get; set; }
-            internal bool IsExcluded { get; set; }
-            internal int CursorPosition { get; set; }
-            internal VersePointerSearchResult GlobalChapterSearchResult { get; set; }
-            internal bool IsImportantVerse { get; set; }
+            public int Index { get; set; }
+            public VersePointerSearchResult SearchResult { get; set; }
+            public VerseRecognitionManager.LinkInfo LinkInfo { get; set; }
+            public bool IsInBrackets { get; set; }
+            public bool IsExcluded { get; set; }
+            public int CursorPosition { get; set; }
+            public VersePointerSearchResult GlobalChapterSearchResult { get; set; }
+            public bool IsImportantVerse { get; set; }
+            public XmlCursorPosition VersePosition { get; set; }
         }
 
         #endregion        
@@ -83,7 +84,8 @@ namespace BibleCommon.Services
             Full = 3
         }
 
-        public bool AnalyzeAllPages { get; set; }       
+        public bool AnalyzeAllPages { get; set; }
+        public FoundVerseInfo LastAnalyzedVerse { get; set; }
 
         internal bool IsExcludedCurrentNotePage { get; set; }
         private Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>> _notePageProcessedVerses = new Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>>();  
@@ -229,40 +231,14 @@ namespace BibleCommon.Services
                 LoadHierarchyElementParent(notebookId, fullNotebookHierarchy, ref parent);
                 elementInfo.Parent = parent;
             }
-        }
+        }       
         
-
-        /// <summary>
-        /// Считается, что страница уже загружена к кэш, потому по pageId мы её быстро достанем
-        /// </summary>
-        /// <param name="pageId"></param>
-        public void SetCursorOnNearestVerse(string pageId)
+        public void SetCursorOnNearestVerse(FoundVerseInfo verseInfo)
         {
             try
             {
-                OneNoteProxy.PageContent notePageDocument = OneNoteProxy.Instance.GetPageContent(ref _oneNoteApp, pageId, OneNoteProxy.PageType.NotePage);
-
-                XElement latestTextEl = null;
-                int latestVerseStartIndex = -1;
-
-                foreach (var textEl in notePageDocument.Content.Root.XPathSelectElements("//one:OE/one:T", notePageDocument.Xnm))
-                {                    
-                    var verseStartIndex = textEl.Value.LastIndexOf(Constants.QueryParameter_QuickAnalyze);
-                    if (verseStartIndex != -1)
-                    {
-                        latestTextEl = textEl;
-                        latestVerseStartIndex = verseStartIndex;                        
-                    }
-                }
-
-                if (latestTextEl != null)
-                {
-                    OneNoteUtils.NormalizeTextElement(latestTextEl);                    
-                    if (latestVerseStartIndex != -1)
-                    {
-                        InsertCursorOnPage(latestTextEl, latestVerseStartIndex);
-                    }
-                }
+                if (verseInfo != null)
+                    InsertCursorOnPage(verseInfo.SearchResult.TextElement, verseInfo.SearchResult.VersePointerHtmlEndIndex);
             }
             catch (ProcessAbortedByUserException)
             {
@@ -273,14 +249,14 @@ namespace BibleCommon.Services
             }
         }
 
-        private void InsertCursorOnPage(XElement textEl, int index)
+        private void InsertCursorOnPage(XElement textEl, int endIndex)
         {
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
             var startLinkSearchString = "<a";
             var endLinkSearchString = "</a>";            
 
-            var startLinkIndex = StringUtils.LastIndexOf(textEl.Value, startLinkSearchString, 0, index);
-            var endLinkIndex = textEl.Value.IndexOf(endLinkSearchString, index);         
+            var startLinkIndex = StringUtils.LastIndexOf(textEl.Value, startLinkSearchString, 0, endIndex);
+            var endLinkIndex = textEl.Value.IndexOf(endLinkSearchString, startLinkIndex);         
 
             if (startLinkIndex != -1 && endLinkIndex != -1)
             {
@@ -557,8 +533,12 @@ namespace BibleCommon.Services
                                             verseInfo.LinkInfo, verseInfo.IsInBrackets, verseInfo.IsExcluded, verseInfo.IsImportantVerse, force,
                                             out cursorPosition, out hierarchySearchResult, out needToQueueIfChapter, out verseWeight, out versePosition);
 
-                var tempVerseInfo = verseInfo;
+                verseInfo.VersePosition = versePosition;
 
+                if (LastAnalyzedVerse == null || LastAnalyzedVerse.VersePosition < verseInfo.VersePosition)
+                    LastAnalyzedVerse = verseInfo;
+
+                var tempVerseInfo = verseInfo;
                 if (verseInfo.SearchResult.ResultType == VersePointerSearchResult.SearchResultType.SingleVerseOnly)  // то есть нашли стих без главы, а до этого значит была скорее всего просто глава!
                 {
                     FoundChapterInfo chapterInfo = foundChapters.FirstOrDefault(fch =>
