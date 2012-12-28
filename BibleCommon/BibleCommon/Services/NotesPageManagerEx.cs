@@ -44,7 +44,8 @@ namespace BibleCommon.Services
         {
             _nms = XNamespace.Get(Constants.OneNoteXmlNs);
             foreach (var notebookInfo in SettingsManager.Instance.SelectedNotebooksForAnalyze)
-                _notebooksDisplayLevel.Add(notebookInfo.NotebookId, notebookInfo.DisplayLevels);
+                if (!_notebooksDisplayLevel.ContainsKey(notebookInfo.NotebookId))  // на всякий пожарный
+                    _notebooksDisplayLevel.Add(notebookInfo.NotebookId, notebookInfo.DisplayLevels);
         }
 
         public string UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, 
@@ -700,18 +701,22 @@ namespace BibleCommon.Services
 
         private static string GetMultiVerseString(VersePointer vp)
         {
+            var result = string.Empty;
+
             if (vp.IsMultiVerse)
             {
                 if (vp.TopChapter != null && vp.TopVerse != null)
-                    return string.Format(" <b>({0}:{1}-{2}:{3})</b>", vp.Chapter, vp.Verse, vp.TopChapter, vp.TopVerse);
+                    result = string.Format("({0}:{1}-{2}:{3})", vp.Chapter, vp.Verse, vp.TopChapter, vp.TopVerse);
                 else if (vp.TopChapter != null && vp.IsChapter)
-                    return string.Format(" <b>({0}-{1})</b>", vp.Chapter, vp.TopChapter);
+                    result = string.Format("({0}-{1})", vp.Chapter, vp.TopChapter);
                 else
-                    return string.Format(" <b>(:{0}-{1})</b>", vp.Verse, vp.TopVerse);
+                    result = string.Format("(:{0}-{1})", vp.Verse, vp.TopVerse);
+
+                result = FormatMultiVerseString(result);
             }
-            else
-                return string.Empty;
-        }
+
+            return result;
+        }        
 
         private static string GetExistingMultiVerseString(string htmlText)
         {
@@ -725,9 +730,14 @@ namespace BibleCommon.Services
                 multiVerseString = Regex.Match(suchNoteLinkText, @"\((\d+)?:\d+\-(\d+:)?\d+\)").Value;
 
             if (!string.IsNullOrEmpty(multiVerseString))
-                return string.Format(" <b>{0}</b>", multiVerseString);
+                multiVerseString = FormatMultiVerseString(multiVerseString);
 
             return multiVerseString;
+        }
+
+        private static string FormatMultiVerseString(string multiVerseString)
+        {
+            return string.Format("<span style='font-style:italic'>&nbsp;{0}</span>", multiVerseString);
         }
     }
 }
