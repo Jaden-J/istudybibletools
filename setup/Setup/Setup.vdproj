@@ -141,6 +141,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_79C8C50292AF6643563851DDE7A7FCAC"
+        "OwnerKey" = "8:_3FC71294DAB247EDA89368E781DCDC4E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_830B3D6A545B464F87CF9AA03B88DBEC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -615,7 +621,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=2.4.0.670, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=2.4.1.670, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_2A5471FB20603BC61E97AD88C1B2BF2E"
@@ -711,6 +717,26 @@
             "Register" = "3:5"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_79C8C50292AF6643563851DDE7A7FCAC"
+            {
+            "SourcePath" = "8:RibbonButtons.tlb"
+            "TargetName" = "8:RibbonButtons.tlb"
+            "Tag" = "8:"
+            "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:2"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_94E1AB757EAF4C5A8D864AB3DE806EF5"
@@ -1011,15 +1037,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OneNote IStudyBibleTools"
-        "ProductCode" = "8:{66E96BAD-705E-4CC9-A9B9-2987CDE2F65C}"
-        "PackageCode" = "8:{CCC01643-BDC0-4E99-8B3F-0F00BB9EABE0}"
+        "ProductCode" = "8:{60197E12-FD6A-4585-A650-65A34D612331}"
+        "PackageCode" = "8:{DAB6FF73-08DA-42A2-B38B-62B82E4C3DF0}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.4.1"
+        "ProductVersion" = "8:2.4.2"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://IStudyBibleTools.com"
