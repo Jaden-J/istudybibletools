@@ -276,9 +276,7 @@ namespace BibleCommon.Services
                 {
                     suchNoteLink.Parent.XPathSelectElement("one:List/one:Number", notesPageDocument.Xnm).SetAttributeValue("bold", true);
                 }
-            }
-
-            //OneNoteUtils.UpdatePageContentSafe(ref oneNoteApp, notesPageDocument.Content, notesPageDocument.Xnm);                                  
+            }            
 
             notesPageDocument.WasModified = true;
         }
