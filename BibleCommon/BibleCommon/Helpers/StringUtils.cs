@@ -307,7 +307,14 @@ namespace BibleCommon.Helpers
 
             if (startIndex > -1 && s.Length > symbolIndex)
             {
-                char c = s[symbolIndex];
+                var c = s[symbolIndex];
+                if (c == '{')
+                    c = '}';
+                else if (c == '(')
+                    c = ')';
+                else if (c == '[')
+                    c = ']';
+
                 int endIndex = s.IndexOf(c, symbolIndex + 1);
 
                 if (endIndex > -1)

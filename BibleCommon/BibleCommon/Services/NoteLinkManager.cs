@@ -153,11 +153,34 @@ namespace BibleCommon.Services
 
                 List<XElement> processedTextElements = new List<XElement>();
 
-                foreach (XElement oeChildrenElement in notePageDocument.Content.Root.XPathSelectElements("one:Outline/one:OEChildren", notePageDocument.Xnm))
+                var dictionaryMetaData = OneNoteUtils.GetElementMetaData(notePageDocument.Content.Root, Constants.Key_EmbeddedDictionaries, notePageDocument.Xnm);
+                if (dictionaryMetaData != null)  // значит мы анализируем страницу словаря
                 {
-                    if (ProcessTextElements(ref _oneNoteApp, oeChildrenElement, notePageHierarchyInfo, ref foundChapters, processedTextElements, pageChaptersSearchResult,
-                         notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage))
-                        wasModified = true;
+                    var dictionaryName = dictionaryMetaData.Split(new char[] { ',' })[0];
+
+                    foreach (XElement oeParent in notePageDocument.Content.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row", notePageDocument.Xnm))
+                    {
+                        var termEl = oeParent.XPathSelectElement("one:Cell[1]/one:OEChildren/one:OE/one:T", notePageDocument.Xnm);
+                        var termName = StringUtils.GetText(termEl.Value);
+                        var termId = (string)termEl.Parent.Attribute("objectID");
+
+                        notePageHierarchyInfo.UniqueId = Uri.EscapeUriString(string.Format("{0}_|_{1}", dictionaryName, termName));
+                        notePageHierarchyInfo.UniqueName = termName;
+                        notePageHierarchyInfo.NoteTitleId = termId;
+
+                        if (ProcessTextElements(ref _oneNoteApp, oeParent, notePageHierarchyInfo, ref foundChapters, processedTextElements, pageChaptersSearchResult,
+                             notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage))
+                            wasModified = true;
+                    }
+                }
+                else
+                {
+                    foreach (XElement oeChildrenElement in notePageDocument.Content.Root.XPathSelectElements("one:Outline/one:OEChildren", notePageDocument.Xnm))
+                    {
+                        if (ProcessTextElements(ref _oneNoteApp, oeChildrenElement, notePageHierarchyInfo, ref foundChapters, processedTextElements, pageChaptersSearchResult,
+                             notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage))
+                            wasModified = true;
+                    }
                 }
 
                 if (foundChapters.Count > 0)  // то есть имеются главы, которые указаны в тексте именно как главы, без стихов, и на которые надо делать тоже ссылки
@@ -189,7 +212,7 @@ namespace BibleCommon.Services
                     Name = notePageName,
                     Id = notePageId,
                     Type = HierarchyElementType.Page,
-                    PageTitleId = pageTitleId,
+                    NoteTitleId = pageTitleId,
                     NotebookId = notebookId
                 };
 
