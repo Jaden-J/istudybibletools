@@ -164,9 +164,9 @@ namespace BibleCommon.Services
                         var termName = StringUtils.GetText(termEl.Value);
                         var termId = (string)termEl.Parent.Attribute("objectID");
 
-                        notePageHierarchyInfo.UniqueId = Uri.EscapeUriString(string.Format("{0}_|_{1}", dictionaryName, termName));
+                        notePageHierarchyInfo.UniqueId = string.Format("{{{0}}}", Uri.EscapeUriString(string.Format("{0}_|_{1}", dictionaryName, termName)));
                         notePageHierarchyInfo.UniqueName = termName;
-                        notePageHierarchyInfo.NoteTitleId = termId;
+                        notePageHierarchyInfo.UniqueNoteTitleId = termId;
 
                         if (ProcessTextElements(ref _oneNoteApp, oeParent, notePageHierarchyInfo, ref foundChapters, processedTextElements, pageChaptersSearchResult,
                              notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage))
@@ -212,7 +212,7 @@ namespace BibleCommon.Services
                     Name = notePageName,
                     Id = notePageId,
                     Type = HierarchyElementType.Page,
-                    NoteTitleId = pageTitleId,
+                    PageTitleId = pageTitleId,
                     NotebookId = notebookId
                 };
 
@@ -1239,7 +1239,7 @@ namespace BibleCommon.Services
                     }                    
                 }
 
-                var key = new NotePageProcessedVerseId() { NotePageId = notePageId.Id, NotesPageName = notesPageName };
+                var key = new NotePageProcessedVerseId() { NotePageId = notePageId.UniqueId ?? notePageId.Id, NotesPageName = notesPageName };
                 return AddNotePageProcessedVerse(key, vp, verseHierarchyObjectInfo.VerseNumber);                
             }
 
