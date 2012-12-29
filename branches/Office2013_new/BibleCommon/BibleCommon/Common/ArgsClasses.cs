@@ -120,7 +120,25 @@ namespace BibleCommon.Common
         public HierarchyElementType Type { get; set; }
         
         public HierarchyElementInfo Parent { get; set; }
-        public string NoteTitleId { get; set; }
+        public string PageTitleId { get; set; }
+
+        private string _uniqueNoteTitleId;
+        public string UniqueNoteTitleId
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_uniqueNoteTitleId))
+                    return PageTitleId;
+                else
+                    return _uniqueNoteTitleId;
+            }
+            set
+            {
+                _uniqueNoteTitleId = value;
+            }
+        }    
+   
+
         public string NotebookId { get; set; }
 
         public string GetElementName()
