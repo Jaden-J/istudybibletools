@@ -60,8 +60,8 @@
             // 
             // SelectNoteBooksForm
             // 
-            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            resources.ApplyResources(this, "$this");
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lblError);
             this.Controls.Add(this.pnMain);

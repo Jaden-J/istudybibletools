@@ -91,10 +91,36 @@ namespace BibleCommon.Common
     {   
         public string Name { get; set; }
         public string Id { get; set; }
+
+        private string _uniqueName;
+        /// <summary>
+        /// Имя, используемое на странице сводной заметок
+        /// </summary>
+        public string UniqueName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_uniqueName))
+                    return Name;
+                else
+                    return _uniqueName;
+            }
+            set
+            {
+                _uniqueName = value;
+            }
+        }
+
+        
+        /// <summary>
+        /// Идентификатор, идентифицирующий заметку на странице сводной заметок
+        /// </summary>
+        public string UniqueId { get; set; }        
+
         public HierarchyElementType Type { get; set; }
         
         public HierarchyElementInfo Parent { get; set; }
-        public string PageTitleId { get; set; }
+        public string NoteTitleId { get; set; }
         public string NotebookId { get; set; }
 
         public string GetElementName()

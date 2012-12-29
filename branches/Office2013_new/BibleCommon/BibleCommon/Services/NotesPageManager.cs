@@ -144,7 +144,7 @@ namespace BibleCommon.Services
             }
             else if (!processAsExtendedVerse)
             {
-                string pageLink = OneNoteUtils.GenerateLink(ref oneNoteApp, noteTitle, notePageId.Id, notePageId.PageTitleId);
+                string pageLink = OneNoteUtils.GenerateLink(ref oneNoteApp, noteTitle, notePageId.Id, notePageId.NoteTitleId);
 
                 var verseLinksOE = suchNoteLink.Parent.NextNode;
                 if (verseLinksOE != null && verseLinksOE.XPathSelectElement("one:List", xnm) == null)  // значит следующая строка без номера, то есть значит идут ссылки

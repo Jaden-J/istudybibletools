@@ -198,11 +198,15 @@ namespace BibleCommon.Services
             if (notePageInfo.Parent != null)
                 CreateParentTreeStructure(ref oneNoteApp, notePageInfo.Parent, notebookId, notesPageDocument.Xnm);
 
+            var linkArgs = new List<string>();
+            linkArgs.Add(string.Format("{0}={1}", Constants.QueryParameterKey_VersePosition, versePosition));
+            linkArgs.Add(string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, verseWeight));
+            if (!string.IsNullOrEmpty(notePageInfo.UniqueId))
+                linkArgs.Add(string.Format("{0}={1}", Constants.QueryParameterKey_NotePageId, notePageInfo.UniqueId));
+
             string link = OneNoteUtils.GenerateLink(ref oneNoteApp, 
-                            GetVerseLinkTitle(notePageInfo.Name, verseWeight >= Constants.ImportantVerseWeight), 
-                            notePageInfo.Id, notePageContentObjectId,
-                            string.Format("{0}={1}", Constants.QueryParameterKey_VersePosition, versePosition),
-                            string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, verseWeight));
+                            GetVerseLinkTitle(notePageInfo.UniqueName, verseWeight >= Constants.ImportantVerseWeight), 
+                            notePageInfo.Id, notePageContentObjectId, linkArgs.ToArray());
 
             var suchNoteLink = SearchExistingNoteLink(ref oneNoteApp, rootElement, notePageInfo, link, notesPageDocument.Xnm);
 
@@ -256,11 +260,16 @@ namespace BibleCommon.Services
                     summaryVersesWeight = InsertSecondVerseLink(ref oneNoteApp, ref suchNoteLink, notePageInfo, notePageContentObjectId, vp, verseWeight, versePosition);                    
                 }
 
-                string pageLink = OneNoteUtils.GenerateLink(
+                var pageLinkArgs = new List<string>();
+                pageLinkArgs.Add(string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, summaryVersesWeight));
+                if (!string.IsNullOrEmpty(notePageInfo.UniqueId))
+                    pageLinkArgs.Add(string.Format("{0}={1}", Constants.QueryParameterKey_NotePageId, notePageInfo.UniqueId));
+
+                var pageLink = OneNoteUtils.GenerateLink(
                                                   ref oneNoteApp, 
-                                                  GetVerseLinkTitle(notePageInfo.Name, summaryVersesWeight >= Constants.ImportantVerseWeight),
-                                                  notePageInfo.Id, notePageInfo.PageTitleId,
-                                                  string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, summaryVersesWeight));
+                                                  GetVerseLinkTitle(notePageInfo.UniqueName, summaryVersesWeight >= Constants.ImportantVerseWeight),
+                                                  notePageInfo.Id, notePageInfo.NoteTitleId,
+                                                  pageLinkArgs.ToArray());
                 suchNoteLink.Value = pageLink;
 
                 if (suchNoteLink.Parent.XPathSelectElement("one:List", notesPageDocument.Xnm) == null)  // почему то нет номера у строки
@@ -402,12 +411,12 @@ namespace BibleCommon.Services
 
         private XElement SearchExistingNoteLink(ref Application oneNoteApp, XElement rootElement, HierarchyElementInfo notePageInfo, string notePageLink, XmlNamespaceManager xnm)
         {
-            var suchNoteLink = SearchExistingNoteLinkInParent(_parentElement, rootElement, notePageLink, xnm);
+            var suchNoteLink = SearchExistingNoteLinkInParent(_parentElement, rootElement, notePageInfo, notePageLink, xnm);
 
             if (suchNoteLink == null)
             {
                 //ищем в других местах
-                suchNoteLink = SearchExistingNoteLinkInParent(null, rootElement, notePageLink, xnm);
+                suchNoteLink = SearchExistingNoteLinkInParent(null, rootElement, notePageInfo, notePageLink, xnm);
 
                 if (suchNoteLink != null)  // нашли в другом месте. Переносим
                 {
@@ -420,7 +429,7 @@ namespace BibleCommon.Services
 
                     TryToDeleteTreeStructure(suchNoteLinkOEChildren); // если перенесли последнюю страницу в родителе, рекурсивно смотрим: не надо ли удалять родителей, если они стали пустыми
 
-                    suchNoteLink = SearchExistingNoteLinkInParent(_parentElement, rootElement, notePageLink, xnm);
+                    suchNoteLink = SearchExistingNoteLinkInParent(_parentElement, rootElement, notePageInfo, notePageLink, xnm);
 
                     // перенесли узел с другого уровня скорее всего. обновляем символ нумерованного списка                    
                     var number = suchNoteLink.Parent.XPathSelectElement("one:List/one:Number", xnm);
@@ -447,14 +456,12 @@ namespace BibleCommon.Services
             }
         }
 
-        private XElement SearchExistingNoteLinkInParent(XElement parentEl, XElement rootElement, string notePageLink, XmlNamespaceManager xnm)
+        private XElement SearchExistingNoteLinkInParent(XElement parentEl, XElement rootElement, HierarchyElementInfo notePageInfo, string notePageLink, XmlNamespaceManager xnm)
         {
             XElement suchNoteLink = null;
-            string pageId;
-            int pageIdStringIndex = notePageLink.IndexOf("page-id={");
-            if (pageIdStringIndex == -1)
-                pageIdStringIndex = notePageLink.IndexOf("{");
-
+            var uniqueNoteId = !string.IsNullOrEmpty(notePageInfo.UniqueId)
+                                    ? notePageInfo.UniqueId 
+                                    : StringUtils.GetAttributeValue(notePageLink, "page-id");         
 
             var searchInAllPageString = string.Empty;
             if (parentEl == null)
@@ -463,17 +470,18 @@ namespace BibleCommon.Services
                 parentEl = rootElement;
             }
 
-            if (pageIdStringIndex != -1)
-            {
-                pageId = notePageLink.Substring(pageIdStringIndex, notePageLink.IndexOf('}', pageIdStringIndex) - pageIdStringIndex + 1);
-                suchNoteLink = parentEl.XPathSelectElement(string.Format("{0}one:OE/one:T[contains(.,'{1}')]", searchInAllPageString, pageId), xnm);
+            if (!string.IsNullOrEmpty(uniqueNoteId))
+            {   
+                suchNoteLink = parentEl.XPathSelectElement(string.Format("{0}one:OE/one:T[contains(.,'{1}')]", searchInAllPageString, uniqueNoteId), xnm);
 
                 if (suchNoteLink == null)
                 {
-                    pageId = Uri.EscapeDataString(pageId);
+                    if (string.IsNullOrEmpty(notePageInfo.UniqueId))
+                        uniqueNoteId = Uri.EscapeDataString(uniqueNoteId);
+
                     suchNoteLink = parentEl.XPathSelectElement(
                                         string.Format("{0}one:OE/one:T[contains(translate(.,'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ'),'{1}')]",
-                                                    searchInAllPageString, pageId.ToUpper()),
+                                                    searchInAllPageString, uniqueNoteId.ToUpper()),
                                         xnm);
                 }
             }
