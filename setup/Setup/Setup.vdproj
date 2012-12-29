@@ -547,7 +547,7 @@
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2DFCD76B1C964A5C80A8963AAA930E62"
             {
             "SourcePath" = "8:..\\Instruction (1049).docx"
-            "TargetName" = "8:Instruction v2.3.78 (1049).docx"
+            "TargetName" = "8:Instruction v2.4.3 (1049).docx"
             "Tag" = "8:"
             "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
             "Condition" = "8:"
@@ -568,7 +568,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=2.3.82.652, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=2.4.3.683, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_392C8A8D669C3A5EC964201581CB82CC"
@@ -711,7 +711,7 @@
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_94E1AB757EAF4C5A8D864AB3DE806EF5"
             {
             "SourcePath" = "8:..\\Instruction (1033).docx"
-            "TargetName" = "8:Instruction v2.3.78 (1033).docx"
+            "TargetName" = "8:Instruction v2.4.3 (1033).docx"
             "Tag" = "8:"
             "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
             "Condition" = "8:"
@@ -944,15 +944,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OneNote IStudyBibleTools"
-        "ProductCode" = "8:{04CA4FDA-EC46-46F3-84B7-B5D2CD94C111}"
-        "PackageCode" = "8:{D503AC28-EA9F-43DE-AB00-C1580009D027}"
+        "ProductCode" = "8:{7C76DC22-1ADC-45E9-93FD-24547D60CF91}"
+        "PackageCode" = "8:{229AB89B-B067-4640-A03E-F3105925FC63}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.3.82"
+        "ProductVersion" = "8:2.4.3"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://IStudyBibleTools.com"
