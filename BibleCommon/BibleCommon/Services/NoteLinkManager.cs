@@ -88,7 +88,8 @@ namespace BibleCommon.Services
         public FoundVerseInfo LastAnalyzedVerse { get; set; }
 
         internal bool IsExcludedCurrentNotePage { get; set; }
-        private Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>> _notePageProcessedVerses = new Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>>();  
+        private Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>> _notePageProcessedVerses = new Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>>();
+        private Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>> _notePageProcessedVersesForOldProvider = new Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>>();  
 
         private Application _oneNoteApp;
         private NotesPagesProviderManager _notesPagesProviderManager;
@@ -153,11 +154,34 @@ namespace BibleCommon.Services
 
                 List<XElement> processedTextElements = new List<XElement>();
 
-                foreach (XElement oeChildrenElement in notePageDocument.Content.Root.XPathSelectElements("one:Outline/one:OEChildren", notePageDocument.Xnm))
+                var dictionaryMetaData = OneNoteUtils.GetElementMetaData(notePageDocument.Content.Root, Constants.Key_EmbeddedDictionaries, notePageDocument.Xnm);
+                if (dictionaryMetaData != null)  // значит мы анализируем страницу словаря
                 {
-                    if (ProcessTextElements(ref _oneNoteApp, oeChildrenElement, notePageHierarchyInfo, ref foundChapters, processedTextElements, pageChaptersSearchResult,
-                         notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage))
-                        wasModified = true;
+                    var dictionaryName = dictionaryMetaData.Split(new char[] { ',' })[0];
+
+                    foreach (XElement oeParent in notePageDocument.Content.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row", notePageDocument.Xnm))
+                    {
+                        var termEl = oeParent.XPathSelectElement("one:Cell[1]/one:OEChildren/one:OE/one:T", notePageDocument.Xnm);
+                        var termName = StringUtils.GetText(termEl.Value);
+                        var termId = (string)termEl.Parent.Attribute("objectID");
+
+                        notePageHierarchyInfo.UniqueId = string.Format("{{{0}}}", Uri.EscapeUriString(string.Format("{0}_|_{1}", dictionaryName, termName)));
+                        notePageHierarchyInfo.UniqueName = termName;
+                        notePageHierarchyInfo.UniqueNoteTitleId = termId;
+
+                        if (ProcessTextElements(ref _oneNoteApp, oeParent, notePageHierarchyInfo, ref foundChapters, processedTextElements, pageChaptersSearchResult,
+                             notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage))
+                            wasModified = true;
+                    }
+                }
+                else
+                {
+                    foreach (XElement oeChildrenElement in notePageDocument.Content.Root.XPathSelectElements("one:Outline/one:OEChildren", notePageDocument.Xnm))
+                    {
+                        if (ProcessTextElements(ref _oneNoteApp, oeChildrenElement, notePageHierarchyInfo, ref foundChapters, processedTextElements, pageChaptersSearchResult,
+                             notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage))
+                            wasModified = true;
+                    }
                 }
 
                 if (foundChapters.Count > 0)  // то есть имеются главы, которые указаны в тексте именно как главы, без стихов, и на которые надо делать тоже ссылки
@@ -1216,8 +1240,11 @@ namespace BibleCommon.Services
                     }                    
                 }
 
-                var key = new NotePageProcessedVerseId() { NotePageId = notePageId.Id, NotesPageName = notesPageName };
-                return AddNotePageProcessedVerse(key, vp, verseHierarchyObjectInfo.VerseNumber);                
+                var keyForOldProvider = new NotePageProcessedVerseId() { NotePageId = notePageId.Id, NotesPageName = notesPageName };
+                AddNotePageProcessedVerseForOldProvider(keyForOldProvider, vp, verseHierarchyObjectInfo.VerseNumber);
+
+                var key = new NotePageProcessedVerseId() { NotePageId = notePageId.UniqueId ?? notePageId.Id, NotesPageName = notesPageName };
+                return AddNotePageProcessedVerse(key, vp, verseHierarchyObjectInfo.VerseNumber);
             }
 
             return new List<SimpleVersePointer>();
@@ -1338,6 +1365,40 @@ namespace BibleCommon.Services
             }
 
             return _notePageProcessedVerses[verseId].Contains(vp.ToSimpleVersePointer());
+        }
+
+
+
+
+        public List<SimpleVersePointer> AddNotePageProcessedVerseForOldProvider(NotePageProcessedVerseId verseId, VersePointer vp, VerseNumber? verseNumber)
+        {
+            if (!_notePageProcessedVersesForOldProvider.ContainsKey(verseId))
+            {
+                _notePageProcessedVersesForOldProvider.Add(verseId, new HashSet<SimpleVersePointer>());
+            }
+
+            var svp = vp.ToSimpleVersePointer();
+            if (verseNumber.HasValue)
+                svp.VerseNumber = verseNumber.Value;
+
+            var result = svp.GetAllVerses();
+
+            if (!_notePageProcessedVersesForOldProvider[verseId].Contains(svp))   // отслеживаем обработанные стихи для каждой из страниц сводной заметок
+            {
+                result.ForEach(v => _notePageProcessedVersesForOldProvider[verseId].Add(v));
+            }
+
+            return result;
+        }
+
+        public bool ContainsNotePageProcessedVerseForOldProvider(NotePageProcessedVerseId verseId, VersePointer vp)
+        {
+            if (!_notePageProcessedVersesForOldProvider.ContainsKey(verseId))
+            {
+                _notePageProcessedVersesForOldProvider.Add(verseId, new HashSet<SimpleVersePointer>());
+            }
+
+            return _notePageProcessedVersesForOldProvider[verseId].Contains(vp.ToSimpleVersePointer());
         }
       
         #endregion
