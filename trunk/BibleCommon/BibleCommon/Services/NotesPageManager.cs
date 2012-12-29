@@ -94,7 +94,7 @@ namespace BibleCommon.Services
             if (suchNoteLink != null)
             {
                 var key = new NoteLinkManager.NotePageProcessedVerseId() { NotePageId = notePageId.Id, NotesPageName = notesPageName };
-                if (force && !noteLinkManager.ContainsNotePageProcessedVerse(key, vp) && !processAsExtendedVerse)  // если в первый раз и force и не расширенный стих
+                if (force && !noteLinkManager.ContainsNotePageProcessedVerseForOldProvider(key, vp) && !processAsExtendedVerse)  // если в первый раз и force и не расширенный стих
                 {  // удаляем старые ссылки на текущую странцу, так как мы начали новый анализ с параметром "force" и мы только в первый раз зашли сюда
                     var verseLinks = suchNoteLink.Parent.NextNode;
                     if (verseLinks != null && verseLinks.XPathSelectElement("one:List", xnm) == null)

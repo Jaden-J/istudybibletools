@@ -26,12 +26,7 @@ namespace BibleCommon.Consts
         public static readonly string LogsDirectory = "Logs";        
         public static readonly string DefaultPartVersesAlphabet = "abcdefghijklmnopqrstuvwxyz";
         public static readonly int DefaultStrongNumbersCount = 14700;        
-        public static readonly string UnicodeFontName = "Arial Unicode MS";
-        public static readonly string QueryParameter_QuickAnalyze = "qa=1";
-        public static readonly string QueryParameter_BibleVerse = "bv=1";
-        public static readonly string QueryParameter_ExtendedVerse = "ev=1";
-        public static readonly string QueryParameterKey_VersePosition = "vp";
-        public static readonly string QueryParameterKey_VerseWeight = "vw";
+        public static readonly string UnicodeFontName = "Arial Unicode MS";        
 
         public static readonly decimal ImportantVerseWeight = 2;
 
@@ -95,8 +90,14 @@ namespace BibleCommon.Consts
 
         public static readonly string ParameterName_Language = "Language";        
         
-        public static readonly TimeSpan NewVersionCheckPeriod = new TimeSpan(1, 0, 0, 0);        
-        
+        public static readonly TimeSpan NewVersionCheckPeriod = new TimeSpan(1, 0, 0, 0);
+
+        public static readonly string QueryParameter_QuickAnalyze = "qa=1";
+        public static readonly string QueryParameter_BibleVerse = "bv=1";
+        public static readonly string QueryParameter_ExtendedVerse = "ev=1";
+        public static readonly string QueryParameterKey_VersePosition = "vp";
+        public static readonly string QueryParameterKey_VerseWeight = "vw";
+        public static readonly string QueryParameterKey_NotePageId = "npid";
 
         public static readonly string Key_IsSummaryNotesPage = "IsSummaryNotesPage";
         public static readonly string Key_LatestAnalyzeTime = "LatestAnalyzeTime";
