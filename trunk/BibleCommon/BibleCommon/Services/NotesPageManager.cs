@@ -65,8 +65,8 @@ namespace BibleCommon.Services
            OneNoteProxy.PageContent notesPageDocument, XmlNamespaceManager xnm, XNamespace nms, string notesPageName, bool force, bool processAsExtendedVerse)
         {
             string noteTitle = (notePageId.SectionGroupName != notePageId.SectionName && !string.IsNullOrEmpty(notePageId.SectionGroupName))
-                ? string.Format("{0} / {1} / {2}", notePageId.SectionGroupName, notePageId.SectionName, notePageId.Name)
-                : string.Format("{0} / {1}", notePageId.SectionName, notePageId.Name);
+                ? string.Format("{0} / {1} / {2}", notePageId.SectionGroupName, notePageId.SectionName, notePageId.Title)
+                : string.Format("{0} / {1}", notePageId.SectionName, notePageId.Title);
 
             XElement suchNoteLink = null;
             XElement notesCellElement = rowElement.XPathSelectElement("one:Cell[2]/one:OEChildren", xnm);

@@ -89,25 +89,42 @@ namespace BibleCommon.Common
 
     public class HierarchyElementInfo
     {   
+        /// <summary>
+        /// Отображаемое имя
+        /// </summary>
+        public string Title { get; set; }
+
+        /// <summary>
+        /// Идентификационное имя. Важно для записных книжек
+        /// </summary>
         public string Name { get; set; }
+
         public string Id { get; set; }
 
-        private string _uniqueName;
-        /// <summary>
-        /// Имя, используемое на странице сводной заметок
-        /// </summary>
         public string UniqueName
         {
             get
             {
-                if (string.IsNullOrEmpty(_uniqueName))
-                    return Name;
+                return Parent != null ? Id : Name;  // если это записная книжка, то идентифицируем по Name, так как ID у записных книжек на разных компьютерах разный
+            }
+        }
+
+        private string _uniqueTitle;
+        /// <summary>
+        /// Имя, используемое на странице сводной заметок
+        /// </summary>
+        public string UniqueTitle
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_uniqueTitle))
+                    return Title;
                 else
-                    return _uniqueName;
+                    return _uniqueTitle;
             }
             set
             {
-                _uniqueName = value;
+                _uniqueTitle = value;
             }
         }
 
@@ -169,7 +186,7 @@ namespace BibleCommon.Common
             get
             {
                 if (Type == HierarchyElementType.Page && Parent != null)
-                    return Parent.Name;
+                    return Parent.Title;
 
                 return null;
             }
@@ -181,7 +198,7 @@ namespace BibleCommon.Common
             get
             {
                 if (Type == HierarchyElementType.Page && Parent != null && Parent.Parent != null)
-                    return Parent.Parent.Name;
+                    return Parent.Parent.Title;
 
                 return null;
             }
