@@ -166,7 +166,7 @@ namespace BibleCommon.Services
                         var termId = (string)termEl.Parent.Attribute("objectID");
 
                         notePageHierarchyInfo.UniqueId = string.Format("{{{0}}}", Uri.EscapeUriString(string.Format("{0}_|_{1}", dictionaryName, termName)));
-                        notePageHierarchyInfo.UniqueName = termName;
+                        notePageHierarchyInfo.UniqueTitle = termName;
                         notePageHierarchyInfo.UniqueNoteTitleId = termId;
 
                         if (ProcessTextElements(ref _oneNoteApp, oeParent, notePageHierarchyInfo, ref foundChapters, processedTextElements, pageChaptersSearchResult,
@@ -210,7 +210,7 @@ namespace BibleCommon.Services
 
             var result = new HierarchyElementInfo()
                 {
-                    Name = notePageName,
+                    Title = notePageName,
                     Id = notePageId,
                     Type = HierarchyElementType.Page,
                     PageTitleId = pageTitleId,
@@ -242,16 +242,22 @@ namespace BibleCommon.Services
                 var parentType = (HierarchyElementType)Enum.Parse(typeof(HierarchyElementType), el.Parent.Name.LocalName);
 
                 string parentName;
+                string parentTitle;
                 if (parentType == HierarchyElementType.Notebook)
                 {
-                    parentName = (string)el.Parent.Attribute("nickname");
-                    if (string.IsNullOrEmpty(parentName))
-                        parentName = (string)el.Parent.Attribute("name");
+                    parentTitle = (string)el.Parent.Attribute("nickname");
+                    parentName = (string)el.Parent.Attribute("name");
+
+                    if (string.IsNullOrEmpty(parentTitle))
+                        parentTitle = parentName;
                 }
                 else
-                    parentName = (string)el.Parent.Attribute("name");                
+                {
+                    parentName = (string)el.Parent.Attribute("name");
+                    parentTitle = parentName;
+                }
 
-                var parent = new HierarchyElementInfo() { Id = parentId, Name = parentName, Type = parentType, NotebookId = notebookId };                
+                var parent = new HierarchyElementInfo() { Id = parentId, Title = parentTitle, Name = parentName, Type = parentType, NotebookId = notebookId };                
                 LoadHierarchyElementParent(notebookId, fullNotebookHierarchy, ref parent);
                 elementInfo.Parent = parent;
             }
