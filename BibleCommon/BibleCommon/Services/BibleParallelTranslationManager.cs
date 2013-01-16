@@ -405,12 +405,15 @@ namespace BibleCommon.Services
 
                 if (verseContent == null)
                 {
-                    throw new GetParallelVerseException(                                // значит нет такого стиха, либо такой по счёту части стиха      
-                        string.Format("Can not find verseContent{0}",
-                                        firstParallelVerse.PartIndex.HasValue
-                                            ? string.Format(" (versePart = {0})", firstParallelVerse.PartIndex + 1)
-                                            : string.Empty),
-                                        baseVersePointer, BaseModuleShortName, BaseVersePointerException.Severity.Warning);
+                    if (!parallelVersePointers.Any(pvp => pvp.SkipCheck))
+                    {
+                        throw new GetParallelVerseException(                                // значит нет такого стиха, либо такой по счёту части стиха      
+                            string.Format("Can not find verseContent{0}",
+                                            firstParallelVerse.PartIndex.HasValue
+                                                ? string.Format(" (versePart = {0})", firstParallelVerse.PartIndex + 1)
+                                                : string.Empty),
+                                            baseVersePointer, BaseModuleShortName, BaseVersePointerException.Severity.Warning);
+                    }
                 }
                 else
                 {

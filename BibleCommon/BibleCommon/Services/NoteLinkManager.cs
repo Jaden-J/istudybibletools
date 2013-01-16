@@ -229,7 +229,7 @@ namespace BibleCommon.Services
         private void LoadHierarchyElementParent(string notebookId, OneNoteProxy.HierarchyElement fullNotebookHierarchy, ref HierarchyElementInfo elementInfo)
         {
             var el = fullNotebookHierarchy.Content.Root.XPathSelectElement(
-                                string.Format("//one:{0}[@ID='{1}']", elementInfo.GetElementName(), elementInfo.Id), fullNotebookHierarchy.Xnm);
+                                string.Format("//one:{0}[@ID=\"{1}\"]", elementInfo.GetElementName(), elementInfo.Id), fullNotebookHierarchy.Xnm);
 
             if (el == null)
                 throw new Exception(string.Format("Can not find hierarchyElement '{0}' of type '{1}' in notebook '{2}'", 
@@ -1262,7 +1262,7 @@ namespace BibleCommon.Services
             bool result = false;
 
             //находим ячейку для заметок стиха
-            XElement contentObject = pageDocument.XPathSelectElement(string.Format("//one:OE[@objectID = '{0}']",
+            XElement contentObject = pageDocument.XPathSelectElement(string.Format("//one:OE[@objectID = \"{0}\"]",
                 verseHierarchyObjectInfo.VerseContentObjectId), xnm);
             if (contentObject == null)
             {
