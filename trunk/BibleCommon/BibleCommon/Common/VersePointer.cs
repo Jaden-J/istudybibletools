@@ -92,7 +92,8 @@ namespace BibleCommon.Common
                         topVerse = int.Parse(topVerseString);
                 }                
 
-                verseTextWithoutNumber = verseText.Substring(htmlBreakIndex + 1);
+                if (verseText.Length > htmlBreakIndex + 1)
+                    verseTextWithoutNumber = verseText.Substring(htmlBreakIndex + 1);
 
                 return new VerseNumber(int.Parse(verseIndex), topVerse);
             }

@@ -181,7 +181,7 @@ namespace BibleVersePointer
                 
                 foreach (var objectId in objectsIds.Skip(1))
                 {
-                    var el = pageDoc.Root.XPathSelectElement(string.Format("//one:OE[@objectID='{0}']/one:T", objectId), xnm);
+                    var el = pageDoc.Root.XPathSelectElement(string.Format("//one:OE[@objectID=\"{0}\"]/one:T", objectId), xnm);
                     if (el != null)
                         el.SetAttributeValue("selected", "all");
                 }

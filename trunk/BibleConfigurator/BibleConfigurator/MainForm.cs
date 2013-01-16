@@ -695,7 +695,7 @@ namespace BibleConfigurator
 
             foreach (string sectionGroupId in renamedSectionGroups.Keys)
             {
-                XElement sectionGroup = notebook.Content.Root.XPathSelectElement(string.Format("one:SectionGroup[@ID='{0}']", sectionGroupId), notebook.Xnm);
+                XElement sectionGroup = notebook.Content.Root.XPathSelectElement(string.Format("one:SectionGroup[@ID=\"{0}\"]", sectionGroupId), notebook.Xnm);
 
                 if (sectionGroup != null)
                 {

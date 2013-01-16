@@ -367,13 +367,13 @@ namespace BibleCommon.Services
                 return;
 
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
-            var styleEl = pageDoc.Root.XPathSelectElement(string.Format("one:QuickStyleDef[@name='{0}']", QuickStyleManager.StyleForStrongName), xnm);
+            var styleEl = pageDoc.Root.XPathSelectElement(string.Format("one:QuickStyleDef[@name=\"{0}\"]", QuickStyleManager.StyleForStrongName), xnm);
             if (styleEl != null)  // значит видимо есть Библия Стронга на текущей странице
             {
                 string searchTemplate = "</a>";
-                XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);                
+                XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
-                foreach (var textEl in pageDoc.Root.XPathSelectElements(string.Format("//one:OE[@quickStyleIndex='{0}']/one:T", (string)styleEl.Attribute("index")), xnm))
+                foreach (var textEl in pageDoc.Root.XPathSelectElements(string.Format("//one:OE[@quickStyleIndex=\"{0}\"]/one:T", (string)styleEl.Attribute("index")), xnm))
                 {
                     OneNoteUtils.NormalizeTextElement(textEl);
                     int firstLinkEndIndex = textEl.Value.IndexOf(searchTemplate);
@@ -513,7 +513,9 @@ namespace BibleCommon.Services
         private static void LinkMainBibleVersesToSupplementalBibleVerse(ref Application oneNoteApp, string baseChapterPageId, string baseVerseElementId, 
             SimpleVerse parallelVerse, HierarchySearchManager.HierarchySearchResult baseBibleObjectsSearchResult, XmlNamespaceManager xnm, XNamespace nms)
         {           
-            if (parallelVerse.PartIndex.GetValueOrDefault(0) == 0 && !parallelVerse.IsEmpty && !string.IsNullOrEmpty(parallelVerse.VerseContent))  // если PartIndex > 0, значит этот стих мы уже привязали
+            if (parallelVerse.PartIndex.GetValueOrDefault(0) == 0 && !parallelVerse.IsEmpty 
+                //&& !string.IsNullOrEmpty(parallelVerse.VerseContent)  интересно зачем такое условие сделал? Ведь одно дело он IsEmpty, а другое дело просто пустой...
+                )  // если PartIndex > 0, значит этот стих мы уже привязали
             {
                 var parallelChapterPageDoc = PrepareMainBibleTable(ref oneNoteApp, baseBibleObjectsSearchResult.HierarchyObjectInfo.PageId);
 
@@ -523,7 +525,7 @@ namespace BibleCommon.Services
                 foreach (var parallelVerseElementId in baseBibleObjectsSearchResult.HierarchyObjectInfo.GetAllObjectsIds())
                 {                    
                     var bibleCell = parallelChapterPageDoc.Content.Root
-                                    .XPathSelectElement(string.Format("//one:OE[@objectID='{0}']", parallelVerseElementId.ObjectId), xnm).Parent.Parent;
+                                    .XPathSelectElement(string.Format("//one:OE[@objectID=\"{0}\"]", parallelVerseElementId.ObjectId), xnm).Parent.Parent;
                     var row = bibleCell.Parent;
                     XElement sCell = null;
                     if (row.Elements().Count() == 3)

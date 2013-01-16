@@ -52,7 +52,7 @@ namespace BibleVerseLinkerEx
             });
 
             document = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
-            XElement pointerElement = document.Root.XPathSelectElement("//one:T[@selected='all']", xnm);
+            XElement pointerElement = document.Root.XPathSelectElement("//one:T[@selected=\"all\"]", xnm);
 
             if (pointerElement != null)
             {

@@ -44,7 +44,7 @@ namespace BibleCommon.Services
             });
 
             sectionGroup = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, sectionGroupId, HierarchyScope.hsSections, out xnm);
-            section = sectionGroup.Root.XPathSelectElement(string.Format("one:Section[@name='{0}']", sectionName), xnm);
+            section = sectionGroup.Root.XPathSelectElement(string.Format("one:Section[@name=\"{0}\"]", sectionName), xnm);
             string sectionId = (string)section.Attribute("ID");
 
             return sectionId;
@@ -386,7 +386,7 @@ namespace BibleCommon.Services
             XmlNamespaceManager xnm;
             var notebook = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, notebookId, HierarchyScope.hsChildren, out xnm);
 
-            if (notebook.Root.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", sectionGroupName), xnm) != null)
+            if (notebook.Root.XPathSelectElement(string.Format("one:SectionGroup[@name=\"{0}\"]", sectionGroupName), xnm) != null)
             {
                 if (!string.IsNullOrEmpty(suffixIfSectionGroupExists))  // иначе ошибку выдаст сам OneNote
                     sectionGroupName += suffixIfSectionGroupExists; 
@@ -395,7 +395,7 @@ namespace BibleCommon.Services
             AddSectionGroup(ref oneNoteApp, notebook.Root, sectionGroupName);
 
             notebook = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, notebookId, HierarchyScope.hsChildren, out xnm);
-            var newSectionGroup = notebook.Root.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", sectionGroupName), xnm);
+            var newSectionGroup = notebook.Root.XPathSelectElement(string.Format("one:SectionGroup[@name=\"{0}\"]", sectionGroupName), xnm);
             return newSectionGroup;
         }       
 

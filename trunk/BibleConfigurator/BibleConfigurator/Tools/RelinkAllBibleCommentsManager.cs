@@ -147,8 +147,8 @@ namespace BibleConfigurator.Tools
         {            
             OneNoteProxy.PageContent pageDoc = OneNoteProxy.Instance.GetPageContent(ref _oneNoteApp, commentPageId, OneNoteProxy.PageType.CommentPage);
 
-            foreach (XElement el in pageDoc.Content.Root.XPathSelectElements(string.Format("one:Outline/one:OEChildren/one:OE{0}/one:T", 
-                !string.IsNullOrEmpty(textElementId) ? string.Format("[@objectID='{0}']", textElementId) : string.Empty), pageDoc.Xnm))
+            foreach (XElement el in pageDoc.Content.Root.XPathSelectElements(string.Format("one:Outline/one:OEChildren/one:OE{0}/one:T",
+                !string.IsNullOrEmpty(textElementId) ? string.Format("[@objectID=\"{0}\"]", textElementId) : string.Empty), pageDoc.Xnm))
             {
                 OneNoteUtils.NormalizeTextElement(el);
 

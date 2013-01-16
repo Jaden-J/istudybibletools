@@ -65,9 +65,9 @@ namespace BibleCommon.Services
             OneNoteProxy.HierarchyElement bibleDocument = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, HierarchyScope.hsSections, refreshCache);
             OneNoteProxy.HierarchyElement commentsDocument = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, 
                 isSummaryNotesPage ? SettingsManager.Instance.NotebookId_BibleNotesPages : SettingsManager.Instance.NotebookId_BibleComments, 
-                HierarchyScope.hsSections, refreshCache);             
+                HierarchyScope.hsSections, refreshCache);
 
-            XElement bibleSection = bibleDocument.Content.Root.XPathSelectElement(string.Format("{0}one:SectionGroup/one:Section[@ID='{1}']",
+            XElement bibleSection = bibleDocument.Content.Root.XPathSelectElement(string.Format("{0}one:SectionGroup/one:Section[@ID=\"{1}\"]",
                 !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_Bible) ? "one:SectionGroup/" : string.Empty, bibleSectionId), bibleDocument.Xnm);
 
             if (bibleSection != null && bibleSection.Parent != null && bibleSection.Parent.Parent != null)
@@ -80,9 +80,9 @@ namespace BibleCommon.Services
                                                         : SettingsManager.Instance.SectionGroupId_BibleComments;
 
                 XElement targetParentSectionGroup = commentsDocument.Content.Root.XPathSelectElement(
-                        string.Format("{0}one:SectionGroup[@name='{1}']",                    
-                            !string.IsNullOrEmpty(rootSectionGroupId) 
-                                ? string.Format("one:SectionGroup[@ID='{0}']/", rootSectionGroupId)
+                        string.Format("{0}one:SectionGroup[@name=\"{1}\"]",                    
+                            !string.IsNullOrEmpty(rootSectionGroupId)
+                                ? string.Format("one:SectionGroup[@ID=\"{0}\"]/", rootSectionGroupId)
                                 : string.Empty,
                             sectionGroupName), 
                         commentsDocument.Xnm);                                        // Комментарии к Библии/Новый Завет
@@ -90,7 +90,7 @@ namespace BibleCommon.Services
                 if (targetParentSectionGroup != null)
                 {
                     XElement targetSectionGroup = targetParentSectionGroup.XPathSelectElement(
-                        string.Format("one:SectionGroup[@name='{0}']", sectionName), commentsDocument.Xnm);             // Комментарии к Библии/Новый Завет/01. От Матфея
+                        string.Format("one:SectionGroup[@name=\"{0}\"]", sectionName), commentsDocument.Xnm);             // Комментарии к Библии/Новый Завет/01. От Матфея
 
                     if (targetSectionGroup == null)
                     {
@@ -140,7 +140,7 @@ namespace BibleCommon.Services
                 biblePageName = SettingsManager.Instance.SectionName_DefaultBookOverview;
 
             XElement targetSection = sectionGroupDocument.Content.Root.XPathSelectElement(
-                string.Format("one:Section[@name='{0}']", biblePageName), sectionGroupDocument.Xnm);
+                string.Format("one:Section[@name=\"{0}\"]", biblePageName), sectionGroupDocument.Xnm);
 
             if (targetSection == null)
             {
@@ -227,7 +227,7 @@ namespace BibleCommon.Services
             string pageDisplayName = string.Format("{0}.{1}", descriptionPageName, 
                                                                (vp != null && vp.IsValid) ? string.Format(" [{0}]", vp.ChapterName) : string.Empty);
 
-            XElement page = sectionDocument.Content.Root.XPathSelectElement(string.Format("one:Page[@name='{0}']", pageDisplayName), sectionDocument.Xnm);
+            XElement page = sectionDocument.Content.Root.XPathSelectElement(string.Format("one:Page[@name=\"{0}\"]", pageDisplayName), sectionDocument.Xnm);
 
             string pageId = string.Empty;
 
@@ -271,11 +271,11 @@ namespace BibleCommon.Services
         public static void SortVerseLinkPages(ref Application oneNoteApp, string sectionId, string newPageId, string verseLinkParentPageId, int pageLevel)
         {
             OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, sectionId, HierarchyScope.hsPages);
-            var newPage = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Page[@ID='{0}']", newPageId), hierarchy.Xnm);
+            var newPage = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Page[@ID=\"{0}\"]", newPageId), hierarchy.Xnm);
             string newPageName = (string)newPage.Attribute("name");
 
             XElement prevPage = null;
-            foreach (XElement oldPage in hierarchy.Content.Root.XPathSelectElements(string.Format("one:Page[@ID != '{0}']", newPageId), hierarchy.Xnm))
+            foreach (XElement oldPage in hierarchy.Content.Root.XPathSelectElements(string.Format("one:Page[@ID != \"{0}\"]", newPageId), hierarchy.Xnm))
             {
                 if (prevPage == null)
                 {
@@ -308,7 +308,7 @@ namespace BibleCommon.Services
                         break;
             }
 
-            hierarchy.Content.Root.XPathSelectElement(string.Format("one:Page[@ID='{0}']", newPageId), hierarchy.Xnm).Remove();
+            hierarchy.Content.Root.XPathSelectElement(string.Format("one:Page[@ID=\"{0}\"]", newPageId), hierarchy.Xnm).Remove();
             if (prevPage == null)
             {
                 hierarchy.Content.Root.AddFirst(newPage);

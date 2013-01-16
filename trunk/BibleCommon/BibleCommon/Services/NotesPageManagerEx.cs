@@ -87,7 +87,7 @@ namespace BibleCommon.Services
             rowWasAdded = false;
 
             var rootElement = notesPageDocument.Content.Root.XPathSelectElement(
-                                            string.Format("one:Outline/one:OEChildren/one:OE/one:Meta[@name='{0}' and @content='{1}']", Constants.Key_Verse, vp.Verse.GetValueOrDefault(0)),
+                                            string.Format("one:Outline/one:OEChildren/one:OE/one:Meta[@name=\"{0}\" and @content=\"{1}\"]", Constants.Key_Verse, vp.Verse.GetValueOrDefault(0)),
                                             notesPageDocument.Xnm);
 
 
@@ -145,7 +145,7 @@ namespace BibleCommon.Services
             XElement prevOE = null;
             if (!isChapter)  // иначе добавляем первым
             {
-                foreach (var oeMEta in rootElParent.XPathSelectElements(string.Format("one:OE/one:Meta[@name='{0}']", Constants.Key_Verse), notesPageDocument.Xnm))
+                foreach (var oeMEta in rootElParent.XPathSelectElements(string.Format("one:OE/one:Meta[@name=\"{0}\"]", Constants.Key_Verse), notesPageDocument.Xnm))
                 {
                     var verse = int.Parse((string)oeMEta.Attribute("content"));
                     if (verse > vp.Verse)
@@ -169,7 +169,7 @@ namespace BibleCommon.Services
             XElement targetElement = null;
 
             targetElement = notesPageDocument.Content.Root.XPathSelectElement(
-                                        string.Format("one:Outline/one:OEChildren/one:OE/one:Meta[@name='{0}' and @content='{1}']",
+                                        string.Format("one:Outline/one:OEChildren/one:OE/one:Meta[@name=\"{0}\" and @content=\"{1}\"]",
                                                                 Constants.Key_Verse, verseNumber.GetValueOrDefault(new VerseNumber(0)).Verse),
                                         notesPageDocument.Xnm);
 
@@ -502,7 +502,7 @@ namespace BibleCommon.Services
                 CreateParentTreeStructure(ref oneNoteApp, hierarchyElementInfo.Parent, notebookId, notesPageName, xnm);
 
             var node = _parentElement.XPathSelectElement(
-                                    string.Format("one:OE/one:Meta[@name='{0}' and @content='{1}']", 
+                                    string.Format("one:OE/one:Meta[@name=\"{0}\" and @content=\"{1}\"]", 
                                         Consts.Constants.Key_Id, hierarchyElementInfo.UniqueName), 
                                     xnm);
 
@@ -604,11 +604,11 @@ namespace BibleCommon.Services
             var notebookHierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, elInfo.NotebookId, HierarchyScope.hsPages);  //from cache
             XElement parentHierarchy;
             if (elInfo.Type != HierarchyElementType.Notebook)
-                parentHierarchy = notebookHierarchy.Content.Root.XPathSelectElement(string.Format("//one:{0}[@ID='{1}']", elInfo.GetElementName(), elInfo.Id), xnm).Parent;
+                parentHierarchy = notebookHierarchy.Content.Root.XPathSelectElement(string.Format("//one:{0}[@ID=\"{1}\"]", elInfo.GetElementName(), elInfo.Id), xnm).Parent;
             else
                 parentHierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks).Content.Root;
 
-            var noteLinkInHierarchy = parentHierarchy.XPathSelectElement(string.Format("*[@ID='{0}']", elInfo.Id), xnm);
+            var noteLinkInHierarchy = parentHierarchy.XPathSelectElement(string.Format("*[@ID=\"{0}\"]", elInfo.Id), xnm);
 
             var prevNodesInHierarchy = noteLinkInHierarchy.NodesBeforeSelf();
 
@@ -638,7 +638,7 @@ namespace BibleCommon.Services
                         else
                         {
                             var existingLinkInHierarchy = parentHierarchy.XPathSelectElement(
-                                        string.Format("*[@{0}='{1}']", 
+                                        string.Format("*[@{0}=\"{1}\"]", 
                                             elInfo.Parent != null ? "ID" : "name", 
                                             existingLinkId), 
                                         xnm);
