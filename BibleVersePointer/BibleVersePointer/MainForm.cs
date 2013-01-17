@@ -18,6 +18,7 @@ using BibleCommon.Common;
 using BibleCommon.Services;
 using BibleCommon.Helpers;
 using BibleCommon.Consts;
+using System.Diagnostics;
 
 namespace BibleVersePointer
 {
@@ -78,11 +79,11 @@ namespace BibleVersePointer
 
                             if (vp.IsValid)
                             {
-                                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
-                                {
-                                    if (_oneNoteApp.Windows.CurrentWindow == null)
-                                        _oneNoteApp.NavigateTo(string.Empty);
-                                });
+                                //OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
+                                //{
+                                //    if (_oneNoteApp.Windows.CurrentWindow == null)
+                                //        _oneNoteApp.NavigateTo(string.Empty);
+                                //});
 
                                 if (GoToVerse(vp))
                                 {
@@ -167,11 +168,18 @@ namespace BibleVersePointer
 
 
         private void NavigateTo(string pageId, params HierarchySearchManager.VerseObjectInfo[] objectsIds)
-        {            
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
+        {
+            if (objectsIds.Length > 0)
             {
-                _oneNoteApp.NavigateTo(pageId, objectsIds.Length > 0 ? objectsIds[0].ObjectId : null);
-            });
+                Process.Start(objectsIds[0].ObjectHref);   // иначе, если делать через NavigateTo, то когда, например, дропбокс изменить имя файла секции (сделает маленькими буквами) - ID меняется и выдаётся ошибка.
+            }
+            else
+            {
+                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
+                {
+                    _oneNoteApp.NavigateTo(pageId, objectsIds.Length > 0 ? objectsIds[0].ObjectId : null);
+                });
+            }
 
             if (objectsIds.Length > 1)
             {   
