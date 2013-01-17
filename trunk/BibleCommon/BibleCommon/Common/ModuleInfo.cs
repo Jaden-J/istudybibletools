@@ -566,6 +566,10 @@ namespace BibleCommon.Common
         [DefaultValue(false)]
         public bool SkipCheck { get; set; }
 
+        [XmlAttribute]
+        [DefaultValue(false)]
+        public bool EmptyVerse { get; set; }
+
         /// <summary>
         /// Выравнивание стихов - при несоответствии, 
         /// </summary>

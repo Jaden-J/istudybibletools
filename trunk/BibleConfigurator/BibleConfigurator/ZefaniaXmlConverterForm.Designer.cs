@@ -62,6 +62,8 @@
             this.tbResultDirectory = new System.Windows.Forms.TextBox();
             this.btnResultFilePath = new System.Windows.Forms.Button();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.tbMinProgramVersion = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.gbAdditionalParameters.SuspendLayout();
             this.SuspendLayout();
@@ -89,7 +91,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(412, 41);
+            this.label1.Location = new System.Drawing.Point(350, 41);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(45, 13);
             this.label1.TabIndex = 3;
@@ -124,7 +126,7 @@
             // 
             this.tbDisplayName.Location = new System.Drawing.Point(234, 64);
             this.tbDisplayName.Name = "tbDisplayName";
-            this.tbDisplayName.Size = new System.Drawing.Size(497, 20);
+            this.tbDisplayName.Size = new System.Drawing.Size(465, 20);
             this.tbDisplayName.TabIndex = 7;
             // 
             // label4
@@ -157,7 +159,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(602, 41);
+            this.label9.Location = new System.Drawing.Point(477, 41);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(44, 13);
             this.label9.TabIndex = 25;
@@ -165,9 +167,9 @@
             // 
             // tbVersion
             // 
-            this.tbVersion.Location = new System.Drawing.Point(656, 38);
+            this.tbVersion.Location = new System.Drawing.Point(527, 38);
             this.tbVersion.Name = "tbVersion";
-            this.tbVersion.Size = new System.Drawing.Size(75, 20);
+            this.tbVersion.Size = new System.Drawing.Size(60, 20);
             this.tbVersion.TabIndex = 26;
             // 
             // label10
@@ -343,9 +345,9 @@
             // 
             // tbLocale
             // 
-            this.tbLocale.Location = new System.Drawing.Point(463, 38);
+            this.tbLocale.Location = new System.Drawing.Point(401, 38);
             this.tbLocale.Name = "tbLocale";
-            this.tbLocale.Size = new System.Drawing.Size(100, 20);
+            this.tbLocale.Size = new System.Drawing.Size(60, 20);
             this.tbLocale.TabIndex = 33;
             // 
             // label5
@@ -374,11 +376,29 @@
             this.btnResultFilePath.UseVisualStyleBackColor = true;
             this.btnResultFilePath.Click += new System.EventHandler(this.btnResultFilePath_Click);
             // 
+            // tbMinProgramVersion
+            // 
+            this.tbMinProgramVersion.Location = new System.Drawing.Point(639, 38);
+            this.tbMinProgramVersion.Name = "tbMinProgramVersion";
+            this.tbMinProgramVersion.Size = new System.Drawing.Size(60, 20);
+            this.tbMinProgramVersion.TabIndex = 35;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(603, 41);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(30, 13);
+            this.label6.TabIndex = 34;
+            this.label6.Text = "MPV";
+            // 
             // ZefaniaXmlConverterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(743, 341);
+            this.Controls.Add(this.tbMinProgramVersion);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.tbLocale);
             this.Controls.Add(this.gbAdditionalParameters);
             this.Controls.Add(this.groupBox1);
@@ -452,5 +472,7 @@
         private System.Windows.Forms.Button btnResultFilePath;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.Windows.Forms.CheckBox chkCheckModule;
+        private System.Windows.Forms.TextBox tbMinProgramVersion;
+        private System.Windows.Forms.Label label6;
     }
 }

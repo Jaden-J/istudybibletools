@@ -73,7 +73,7 @@ namespace BibleConfigurator.ModuleConverter
             Version version, bool generateNotebooks, params ReadParameters[] readParameters)
             : base(moduleShortName, manifestFilesFolderPath, locale, notebooksStructure, bookIndexes,
                         translationDifferences, chapterPageNameTemplate, isStrong,  
-                        version, generateNotebooks, true)
+                        version, null, generateNotebooks, true)
         {
             this.ModuleFolder = bqModuleFolder;
             this.AdditionalReadParameters = readParameters;

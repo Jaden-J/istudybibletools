@@ -5,6 +5,7 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.IO;
+using System.Windows.Forms;
 
 namespace ISBTCommandHandler
 {
@@ -26,9 +27,39 @@ namespace ISBTCommandHandler
             }
             else
             {
-                File.WriteAllText("c:\\log.txt", args[0]);                
-                Thread.Sleep(5000);
+                TryToSendMessage();       
             }
         }
+
+        private static void TryToSendMessage()
+        {
+            try
+            {
+                if (AppMessenger.CheckPrevInstance())
+                {
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                File.WriteAllText("c:\\log.txt", ex.ToString());
+            }
+        }
+
+        //protected override void WndProc(ref Message m)
+        //{
+        //    if (m.Msg == AppMessenger.WM_COPYDATA)
+        //    {
+        //        string command =
+        //        AppMessenger.ProcessWM_COPYDATA(m);
+        //        if (command != null)
+        //        {
+
+        //            processCommandLine(command);
+        //            return;
+        //        }
+        //    }
+        //    base.WndProc(ref m);
+        //}
     }
 }

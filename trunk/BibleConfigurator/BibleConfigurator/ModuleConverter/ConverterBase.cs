@@ -61,6 +61,7 @@ namespace BibleConfigurator.ModuleConverter
         protected List<int> BookIndexes { get; set; }  // массив индексов книг. Для KJV - упорядоченный массив цифр от 1 до 66.                 
         protected string ChapterPageNameTemplate { get; set; }        
         protected Version Version { get; set; }
+        protected Version MinProgramVersion { get; set; }
         protected int OldTestamentBooksCount { get; set; }
         protected bool GenerateBibleXml { get; set; }        
         protected bool GenerateBibleNotebook { get; set; }
@@ -81,7 +82,7 @@ namespace BibleConfigurator.ModuleConverter
             string locale, NotebooksStructure notebooksStructure, List<int> bookIndexes, 
             BibleTranslationDifferences translationDifferences, string chapterPageNameTemplate,
             bool isStrong,  
-            Version version, bool generateBibleNotebook, bool generateBibleXml)
+            Version version, Version minProgramVersion, bool generateBibleNotebook, bool generateBibleXml)
         {
             _oneNoteApp = new Application();
             this.IsStrong = isStrong;
@@ -97,6 +98,7 @@ namespace BibleConfigurator.ModuleConverter
             this.BookIndexes = bookIndexes;
             this.ChapterPageNameTemplate = chapterPageNameTemplate;                        
             this.Version = version;
+            this.MinProgramVersion = minProgramVersion;
             this.Errors = new List<ConverterExceptionBase>();            
 
             if (!Directory.Exists(ManifestFilesFolderPath))
@@ -316,6 +318,7 @@ namespace BibleConfigurator.ModuleConverter
                 ShortName = ModuleShortName,
                 DisplayName = extModuleInfo.Name,
                 Version = this.Version,
+                MinProgramVersion = MinProgramVersion,
                 Locale = this.Locale,
                 NotebooksStructure = this.NotebooksStructure,
                 Type = IsStrong ? BibleCommon.Common.ModuleType.Strong : BibleCommon.Common.ModuleType.Bible
