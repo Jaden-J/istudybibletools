@@ -405,7 +405,7 @@ namespace BibleCommon.Services
 
                 if (verseContent == null)
                 {
-                    if (!parallelVersePointers.Any(pvp => pvp.SkipCheck))
+                    if (!parallelVersePointers.All(pvp => pvp.EmptyVerseContent))
                     {
                         throw new GetParallelVerseException(                                // значит нет такого стиха, либо такой по счёту части стиха      
                             string.Format("Can not find verseContent{0}",

@@ -269,7 +269,11 @@ namespace BibleConfigurator
             foreach (var dictionaryInfo in SettingsManager.Instance.DictionariesModules)
             {
                 if (!DictionaryTermsCacheManager.CacheIsActive(dictionaryInfo.ModuleName))
-                    return true;
+                {
+                    var moduleInfo = ModulesManager.GetModuleInfo(dictionaryInfo.ModuleName);
+                    if (moduleInfo != null && moduleInfo.Type != ModuleType.Strong)                        
+                        return true;
+                }
             }
 
             return false;

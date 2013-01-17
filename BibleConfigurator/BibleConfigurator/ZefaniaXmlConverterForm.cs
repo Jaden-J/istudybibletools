@@ -113,7 +113,8 @@ namespace BibleConfigurator
                                                             tbResultDirectory.Text, tbLocale.Text, NotebooksStructure,
                                                             BibleBookDifferences, ChapterPageNameTemplate,
                                                             BibleIsStrong && !chkRemoveStrongNumbers.Checked,
-                                                            new Version(tbVersion.Text),
+                                                            new Version(tbVersion.Text), 
+                                                            !string.IsNullOrEmpty(tbMinProgramVersion.Text) ? new Version(tbMinProgramVersion.Text) : null,
                                                             chkNotebookBibleGenerate.Checked,
                                                             _formLogger,
                                                             chkRemoveStrongNumbers.Checked ? ZefaniaXmlConverter.ReadParameters.RemoveStrongs : ZefaniaXmlConverter.ReadParameters.None);
@@ -534,7 +535,8 @@ namespace BibleConfigurator
 
             tbShortName.Text = ExistingOutputModule != null ? ExistingOutputModule.ShortName : ModuleShortName;
             tbVersion.Text = ExistingOutputModule != null ? ExistingOutputModule.Version.ToString() : "2.0";
-            tbLocale.Text = ExistingOutputModule != null ? ExistingOutputModule.Locale : Locale;
+            tbMinProgramVersion.Text = (ExistingOutputModule != null && ExistingOutputModule.MinProgramVersion != null) ? ExistingOutputModule.MinProgramVersion.ToString() : string.Empty;
+            tbLocale.Text = ExistingOutputModule != null ? ExistingOutputModule.Locale : Locale;            
 
             tbDisplayName.Text = GetModuleDisplayName(BibleContent);
             if (string.IsNullOrEmpty(tbDisplayName.Text))
