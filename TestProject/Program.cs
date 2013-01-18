@@ -32,8 +32,7 @@ namespace TestProject
         private const string ForGeneratingFolderPath = @"E:\Dropbox\Holy Bible\IStudyBibleTools\ForGenerating";
         private const string TempFolderPath = @"E:\temp";
 
-        private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;       
-       
+        private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;   
 
         [STAThread]
         static void Main(string[] args)
@@ -58,7 +57,7 @@ namespace TestProject
                 
                 //GenerateBibleBooks();
 
-                //SearchInNotebook();
+                SearchInNotebook();
 
                 //TestModule();
 
@@ -116,7 +115,7 @@ namespace TestProject
 
             Console.WriteLine("Finish. Elapsed time: {0}", sw.Elapsed);
             Console.ReadKey();
-        }
+        }    
 
         private static void CorrectVineOT()
         {
@@ -294,11 +293,11 @@ namespace TestProject
 
         private static void SearchInNotebook()
         {
-            var xnm = new XmlNamespaceManager(new NameTable());
-            xnm.AddNamespace("one", Constants.OneNoteXmlNs);
-
-            var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
             string xml;
+            var xnm = new XmlNamespaceManager(new NameTable());
+            xnm.AddNamespace("one", "http://schemas.microsoft.com/office/onenote/2013/onenote");
+            var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+
             oneNoteApp.GetHierarchy(null, HierarchyScope.hsNotebooks, out xml);
             var notebookId = (string)XDocument.Parse(xml).Root.XPathSelectElement("one:Notebook", xnm).Attribute("ID");
             oneNoteApp.FindPages(notebookId, "test", out xml, true, true);
