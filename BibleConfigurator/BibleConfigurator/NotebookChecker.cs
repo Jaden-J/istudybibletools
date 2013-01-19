@@ -195,7 +195,7 @@ namespace BibleConfigurator
             {
                 foreach (var subSectionGroup in container.SectionGroups)
                 {
-                    var subSectionGroupEl = containerEl.XPathSelectElement(string.Format("one:SectionGroup[@name='{0}']", subSectionGroup.Name), xnm);
+                    var subSectionGroupEl = containerEl.XPathSelectElement(string.Format("one:SectionGroup[@name=\"{0}\"]", subSectionGroup.Name), xnm);
 
                     if (subSectionGroupEl == null)
                         throw new InvalidNotebookException(Constants.SectionGroupNotFoundInContainer, subSectionGroup.Name, containerName);

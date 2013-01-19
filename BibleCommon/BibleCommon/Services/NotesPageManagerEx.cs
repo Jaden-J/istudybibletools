@@ -87,7 +87,7 @@ namespace BibleCommon.Services
             rowWasAdded = false;
 
             var rootElement = notesPageDocument.Content.Root.XPathSelectElement(
-                                            string.Format("one:Outline/one:OEChildren/one:OE/one:Meta[@name='{0}' and @content='{1}']", Constants.Key_Verse, vp.Verse.GetValueOrDefault(0)),
+                                            string.Format("one:Outline/one:OEChildren/one:OE/one:Meta[@name=\"{0}\" and @content=\"{1}\"]", Constants.Key_Verse, vp.Verse.GetValueOrDefault(0)),
                                             notesPageDocument.Xnm);
 
 
@@ -145,7 +145,7 @@ namespace BibleCommon.Services
             XElement prevOE = null;
             if (!isChapter)  // иначе добавляем первым
             {
-                foreach (var oeMEta in rootElParent.XPathSelectElements(string.Format("one:OE/one:Meta[@name='{0}']", Constants.Key_Verse), notesPageDocument.Xnm))
+                foreach (var oeMEta in rootElParent.XPathSelectElements(string.Format("one:OE/one:Meta[@name=\"{0}\"]", Constants.Key_Verse), notesPageDocument.Xnm))
                 {
                     var verse = int.Parse((string)oeMEta.Attribute("content"));
                     if (verse > vp.Verse)
@@ -169,7 +169,7 @@ namespace BibleCommon.Services
             XElement targetElement = null;
 
             targetElement = notesPageDocument.Content.Root.XPathSelectElement(
-                                        string.Format("one:Outline/one:OEChildren/one:OE/one:Meta[@name='{0}' and @content='{1}']",
+                                        string.Format("one:Outline/one:OEChildren/one:OE/one:Meta[@name=\"{0}\" and @content=\"{1}\"]",
                                                                 Constants.Key_Verse, verseNumber.GetValueOrDefault(new VerseNumber(0)).Verse),
                                         notesPageDocument.Xnm);
 
@@ -205,7 +205,7 @@ namespace BibleCommon.Services
                 linkArgs.Add(string.Format("{0}={1}", Constants.QueryParameterKey_NotePageId, notePageInfo.UniqueId));
 
             string link = OneNoteUtils.GenerateLink(ref oneNoteApp, 
-                            GetVerseLinkTitle(notePageInfo.UniqueName, verseWeight >= Constants.ImportantVerseWeight), 
+                            GetVerseLinkTitle(notePageInfo.UniqueTitle, verseWeight >= Constants.ImportantVerseWeight), 
                             notePageInfo.Id, notePageContentObjectId, linkArgs.ToArray());
 
             var suchNoteLink = SearchExistingNoteLink(ref oneNoteApp, rootElement, notePageInfo, link, notesPageName, notesPageDocument.Xnm);
@@ -235,7 +235,7 @@ namespace BibleCommon.Services
                                             new XElement(_nms + "T",
                                                 new XCData(
                                                     link + GetMultiVerseString(vp.ParentVersePointer ?? vp))));
-                OneNoteUtils.UpdateElementMetaData(linkElement, Constants.Key_Id, notePageInfo.Id, notesPageDocument.Xnm);
+                OneNoteUtils.UpdateElementMetaData(linkElement, Constants.Key_Id, notePageInfo.UniqueName, notesPageDocument.Xnm);
 
                 TryToInsertOrMoveElement(ref oneNoteApp, linkElement, notePageInfo, _parentElement, MoveOperationType.Insert, notesPageDocument.Xnm);
             }
@@ -270,7 +270,7 @@ namespace BibleCommon.Services
 
                 var pageLink = OneNoteUtils.GenerateLink(
                                                   ref oneNoteApp, 
-                                                  GetVerseLinkTitle(notePageInfo.UniqueName, summaryVersesWeight >= Constants.ImportantVerseWeight),
+                                                  GetVerseLinkTitle(notePageInfo.UniqueTitle, summaryVersesWeight >= Constants.ImportantVerseWeight),
                                                   notePageInfo.Id, notePageInfo.UniqueNoteTitleId,
                                                   pageLinkArgs.ToArray());
                 suchNoteLink.Value = pageLink;
@@ -502,7 +502,8 @@ namespace BibleCommon.Services
                 CreateParentTreeStructure(ref oneNoteApp, hierarchyElementInfo.Parent, notebookId, notesPageName, xnm);
 
             var node = _parentElement.XPathSelectElement(
-                                    string.Format("one:OE/one:Meta[@name='{0}' and @content='{1}']", Consts.Constants.Key_Id, hierarchyElementInfo.Id),
+                                    string.Format("one:OE/one:Meta[@name=\"{0}\" and @content=\"{1}\"]", 
+                                        Consts.Constants.Key_Id, hierarchyElementInfo.UniqueName), 
                                     xnm);
 
             if (node == null)
@@ -519,7 +520,7 @@ namespace BibleCommon.Services
                                                             new XAttribute("numberFormat", listNumberInfo.NumberFormat))),
                                             new XElement(_nms + "T",
                                                 new XCData(
-                                                    hierarchyElementInfo.Name))
+                                                    hierarchyElementInfo.Title))
                                     );
 
                 if (displayLevel != null && _level >= displayLevel)
@@ -528,7 +529,7 @@ namespace BibleCommon.Services
                 var childNode = new XElement(_nms + "OEChildren");
                 node.Add(childNode);
 
-                OneNoteUtils.UpdateElementMetaData(node, Constants.Key_Id, hierarchyElementInfo.Id, xnm);
+                OneNoteUtils.UpdateElementMetaData(node, Constants.Key_Id, hierarchyElementInfo.UniqueName, xnm);
 
                 TryToInsertOrMoveElement(ref oneNoteApp, node, hierarchyElementInfo, _parentElement, MoveOperationType.Insert, xnm);
 
@@ -543,7 +544,7 @@ namespace BibleCommon.Services
 
                 if (!_processedNodes[notesPageName].Contains(hierarchyElementInfo.Id))
                 {
-                    node.XPathSelectElement("one:T", xnm).Value = hierarchyElementInfo.Name;
+                    node.XPathSelectElement("one:T", xnm).Value = hierarchyElementInfo.Title;
 
                     TryToInsertOrMoveElement(ref oneNoteApp, node, hierarchyElementInfo, _parentElement, MoveOperationType.Move, xnm);
 
@@ -603,11 +604,11 @@ namespace BibleCommon.Services
             var notebookHierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, elInfo.NotebookId, HierarchyScope.hsPages);  //from cache
             XElement parentHierarchy;
             if (elInfo.Type != HierarchyElementType.Notebook)
-                parentHierarchy = notebookHierarchy.Content.Root.XPathSelectElement(string.Format("//one:{0}[@ID='{1}']", elInfo.GetElementName(), elInfo.Id), xnm).Parent;
+                parentHierarchy = notebookHierarchy.Content.Root.XPathSelectElement(string.Format("//one:{0}[@ID=\"{1}\"]", elInfo.GetElementName(), elInfo.Id), xnm).Parent;
             else
                 parentHierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks).Content.Root;
 
-            var noteLinkInHierarchy = parentHierarchy.XPathSelectElement(string.Format("*[@ID='{0}']", elInfo.Id), xnm);
+            var noteLinkInHierarchy = parentHierarchy.XPathSelectElement(string.Format("*[@ID=\"{0}\"]", elInfo.Id), xnm);
 
             var prevNodesInHierarchy = noteLinkInHierarchy.NodesBeforeSelf();
 
@@ -618,11 +619,11 @@ namespace BibleCommon.Services
                     if (!string.IsNullOrEmpty(elInfo.UniqueId))
                     {
                         var existingTitle = StringUtils.GetText(existingLink.XPathSelectElement("one:T", xnm).Value);
-                        if (existingTitle == elInfo.UniqueName)                        
+                        if (existingTitle == elInfo.UniqueTitle)                        
                             linkWasFound = true;                        
                         else
                         {
-                            if (elInfo.UniqueName.CompareTo(existingTitle) < 0)
+                            if (elInfo.UniqueTitle.CompareTo(existingTitle) < 0)
                                 break;
 
                             prevLink = existingLink;
@@ -632,11 +633,15 @@ namespace BibleCommon.Services
                     {
                         var existingLinkId = OneNoteUtils.GetElementMetaData(existingLink, Constants.Key_Id, xnm);
 
-                        if (existingLinkId == elInfo.Id)                        
+                        if (existingLinkId == elInfo.UniqueName)                        
                             linkWasFound = true;                        
                         else
                         {
-                            var existingLinkInHierarchy = parentHierarchy.XPathSelectElement(string.Format("*[@ID='{0}']", existingLinkId), xnm);
+                            var existingLinkInHierarchy = parentHierarchy.XPathSelectElement(
+                                        string.Format("*[@{0}=\"{1}\"]", 
+                                            elInfo.Parent != null ? "ID" : "name", 
+                                            existingLinkId), 
+                                        xnm);
                             if (!prevNodesInHierarchy.Contains(existingLinkInHierarchy))
                                 break;
 
@@ -657,7 +662,7 @@ namespace BibleCommon.Services
                 prevLink.AddAfterSelf(el);
 
             if (updateMetadata)
-                OneNoteUtils.UpdateElementMetaData(el, Constants.Key_Id, elInfo.Id, xnm);
+                OneNoteUtils.UpdateElementMetaData(el, Constants.Key_Id, elInfo.UniqueName, xnm);
 
             return el;
         }

@@ -389,9 +389,9 @@ namespace BibleCommon.Services
             OneNoteProxy.HierarchyElement document = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsSections);
 
             XElement targetSection = document.Content.Root.XPathSelectElement(
-                string.Format("{0}one:SectionGroup[{2}]/one:Section[@name='{1}']",
+                string.Format("{0}one:SectionGroup[{2}]/one:Section[@name=\"{1}\"]",
                     !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_Bible)
-                        ? string.Format("one:SectionGroup[@ID='{0}']/", SettingsManager.Instance.SectionGroupId_Bible) 
+                        ? string.Format("one:SectionGroup[@ID=\"{0}\"]/", SettingsManager.Instance.SectionGroupId_Bible) 
                         : string.Empty,
                         bookSectionName, OneNoteUtils.NotInRecycleXPathCondition),
                 document.Xnm);

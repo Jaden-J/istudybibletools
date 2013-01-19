@@ -127,7 +127,8 @@ namespace BibleCommon.Services
                                 { 
                                     PartIndex = versePartIndex.HasValue ? versePartIndex++ : null,
                                     IsEmpty = baseVersePointer.IsApocrypha || baseVerseKey.IsEmpty,
-                                    SkipCheck = baseVerseKey.SkipCheck
+                                    SkipCheck = baseVerseKey.SkipCheck,
+                                    EmptyVerseContent = baseVerseKey.EmptyVerseContent
                                 });                            
 
                             var key = (SimpleVersePointer)baseVersePointer.Clone();

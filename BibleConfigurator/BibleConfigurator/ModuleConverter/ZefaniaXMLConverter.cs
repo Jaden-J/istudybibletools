@@ -51,12 +51,12 @@ namespace BibleConfigurator.ModuleConverter
         public ZefaniaXmlConverter(string moduleShortName, string moduleName, XMLBIBLE bibleContent, BibleBooksInfo booksInfo, string manifestFilesFolderPath,
             string locale, NotebooksStructure notebooksStructure, BibleTranslationDifferences translationDifferences, 
             string chapterPageNameTemplate, 
-            bool isStrong, Version version, bool generateBibleNotebook, 
+            bool isStrong, Version version, Version minProgramVersion, bool generateBibleNotebook, 
             ICustomLogger formLogger,
             params ReadParameters[] readParameters)
             : base(moduleShortName, manifestFilesFolderPath, locale, notebooksStructure, null,
                         translationDifferences, chapterPageNameTemplate, isStrong, 
-                        version, generateBibleNotebook, true)
+                        version, minProgramVersion, generateBibleNotebook, true)
         {
             this.ModuleDisplayName = moduleName;            
             this.BooksInfo = booksInfo;
@@ -160,6 +160,7 @@ namespace BibleConfigurator.ModuleConverter
                 ShortName = ModuleShortName,
                 DisplayName = ModuleDisplayName,
                 Version = this.Version,
+                MinProgramVersion = MinProgramVersion,
                 Locale = this.Locale,
                 NotebooksStructure = this.NotebooksStructure,
                 Type = IsStrong ? BibleCommon.Common.ModuleType.Strong : BibleCommon.Common.ModuleType.Bible

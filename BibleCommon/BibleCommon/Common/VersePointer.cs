@@ -92,7 +92,8 @@ namespace BibleCommon.Common
                         topVerse = int.Parse(topVerseString);
                 }                
 
-                verseTextWithoutNumber = verseText.Substring(htmlBreakIndex + 1);
+                if (verseText.Length > htmlBreakIndex + 1)
+                    verseTextWithoutNumber = verseText.Substring(htmlBreakIndex + 1);
 
                 return new VerseNumber(int.Parse(verseIndex), topVerse);
             }
@@ -162,7 +163,8 @@ namespace BibleCommon.Common
         public int Chapter { get; set; }
         public VerseNumber VerseNumber { get; set; }        
         public int? PartIndex { get; set; }        
-        public bool IsEmpty { get; set; }
+        public bool IsEmpty { get; set; }            // если true - то стих весь пустой: и текст и номер. Отображается пустая ячейка.
+        public bool EmptyVerseContent { get; set; }  // если true - то стихи пустые, и это правильно. Если же false и стих пустой, то это ошибка.
         public bool IsApocrypha { get; set; }
         public bool SkipCheck { get; set; }
 
@@ -268,17 +270,18 @@ namespace BibleCommon.Common
         public virtual object Clone()
         {
             var result = new SimpleVersePointer(this);
-            CopyProperties(result);
+            CopyPropertiesTo(result);
 
             return result;
         }
 
-        protected void CopyProperties(SimpleVersePointer verse)
+        protected void CopyPropertiesTo(SimpleVersePointer verse)
         {
             verse.IsApocrypha = this.IsApocrypha;
             verse.IsEmpty = this.IsEmpty;
             verse.PartIndex = this.PartIndex;            
             verse.SkipCheck = this.SkipCheck;
+            verse.EmptyVerseContent = this.EmptyVerseContent;
         }
 
         public SimpleVersePointer GetChapterPointer()
@@ -366,7 +369,7 @@ namespace BibleCommon.Common
         public override object Clone()
         {
             var result = new SimpleVerse(this, this.VerseNumberString, this.VerseContent);
-            CopyProperties(result);
+            CopyPropertiesTo(result);
 
             return result;            
         }

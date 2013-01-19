@@ -269,7 +269,11 @@ namespace BibleConfigurator
             foreach (var dictionaryInfo in SettingsManager.Instance.DictionariesModules)
             {
                 if (!DictionaryTermsCacheManager.CacheIsActive(dictionaryInfo.ModuleName))
+                {
+                    var moduleInfo = ModulesManager.GetModuleInfo(dictionaryInfo.ModuleName);
+                    if (moduleInfo != null && moduleInfo.Type != ModuleType.Strong)                        
                     return true;
+            }
             }
 
             return false;
@@ -695,7 +699,7 @@ namespace BibleConfigurator
 
             foreach (string sectionGroupId in renamedSectionGroups.Keys)
             {
-                XElement sectionGroup = notebook.Content.Root.XPathSelectElement(string.Format("one:SectionGroup[@ID='{0}']", sectionGroupId), notebook.Xnm);
+                XElement sectionGroup = notebook.Content.Root.XPathSelectElement(string.Format("one:SectionGroup[@ID=\"{0}\"]", sectionGroupId), notebook.Xnm);
 
                 if (sectionGroup != null)
                 {
