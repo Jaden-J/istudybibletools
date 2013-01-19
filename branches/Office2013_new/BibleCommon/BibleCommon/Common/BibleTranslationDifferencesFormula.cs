@@ -29,6 +29,7 @@ namespace BibleCommon.Common
         public int BookIndex { get; set; }
         protected VersePointer BaseVersePointer { get; set; }
         protected bool IsEmpty { get; set; }
+        protected bool EmptyVerseContent { get; set; }
         protected bool SkipCheck { get; set; }
 
         internal bool IsMultiVerse
@@ -73,7 +74,7 @@ namespace BibleCommon.Common
             
 
         public BibleTranslationDifferencesBaseVersesFormula(int bookIndex, string baseVersesFormula, string parallelVersesFormula, 
-            BibleBookDifference.CorrespondenceVerseType correspondenceType, bool skipCheck)
+            BibleBookDifference.CorrespondenceVerseType correspondenceType, bool skipCheck, bool emptyVerseContent)
             : base(baseVersesFormula)
         {
             this.BookIndex = bookIndex;
@@ -97,6 +98,7 @@ namespace BibleCommon.Common
                 throw new NotSupportedException("Multi Base Verses are not supported for not strict processing (when correspondenceType != 'All').");
 
             this.SkipCheck = skipCheck;
+            this.EmptyVerseContent = emptyVerseContent;
         }     
 
         private List<SimpleVersePointer> _allVerses;
@@ -116,6 +118,9 @@ namespace BibleCommon.Common
 
                 if (SkipCheck)
                     _allVerses.ForEach(v => v.SkipCheck = SkipCheck);
+
+                if (EmptyVerseContent)
+                    _allVerses.ForEach(v => v.EmptyVerseContent = EmptyVerseContent);
             }
 
             return _allVerses;
@@ -357,12 +362,14 @@ namespace BibleCommon.Common
         protected BibleTranslationDifferencesParallelVersesFormula SecondFormula { get; set; }  // для случаев <Difference BaseVerses="20:42" ParallelVerses="20:42,21:1" />
 
         protected bool IsEmpty { get; set; }
+        protected bool EmptyVerseContent { get; set; }
         protected BibleBookDifference.CorrespondenceVerseType CorrespondenceType { get; set; }
         protected int? ValueVersesCount { get; set; }
         protected bool SkipCheck { get; set; }
 
         public BibleTranslationDifferencesParallelVersesFormula(string parallelVersesFormula,
-            BibleTranslationDifferencesBaseVersesFormula baseVersesFormula, BibleBookDifference.CorrespondenceVerseType correspondenceType, int? valueVersesCount, bool skipCheck)
+            BibleTranslationDifferencesBaseVersesFormula baseVersesFormula, BibleBookDifference.CorrespondenceVerseType correspondenceType, 
+            int? valueVersesCount, bool skipCheck, bool emptyVerseContent)
             : base(parallelVersesFormula)
         {
             if (valueVersesCount.HasValue && valueVersesCount == 0)
@@ -390,7 +397,8 @@ namespace BibleCommon.Common
 
                     var parts = OriginalFormula.Split(new char[] { ',' });
                     this.OriginalFormula = parts[0];
-                    SecondFormula = new BibleTranslationDifferencesParallelVersesFormula(parts[1], this.BaseVersesFormula, this.CorrespondenceType, this.ValueVersesCount, this.SkipCheck);
+                    SecondFormula = new BibleTranslationDifferencesParallelVersesFormula(
+                                            parts[1], this.BaseVersesFormula, this.CorrespondenceType, this.ValueVersesCount, skipCheck, emptyVerseContent);
                 }
 
                 ChapterFormulaPart = new ParallelChapterFormulaPart(OriginalFormula.Substring(0, indexOfColon), this);
@@ -402,6 +410,7 @@ namespace BibleCommon.Common
             }
 
             this.SkipCheck = skipCheck;
+            this.EmptyVerseContent = emptyVerseContent;
         }        
 
         public List<SimpleVersePointer> GetParallelVerses(SimpleVersePointer baseVerse, SimpleVersePointer prevVerse)
@@ -444,6 +453,9 @@ namespace BibleCommon.Common
 
             if (this.SkipCheck)
                 result.ForEach(v => v.SkipCheck = SkipCheck);
+
+            if (this.EmptyVerseContent)
+                result.ForEach(v => v.EmptyVerseContent = EmptyVerseContent);
 
             if (SecondFormula != null)
                 result.AddRange(SecondFormula.GetParallelVerses(baseVerse, prevVerse));

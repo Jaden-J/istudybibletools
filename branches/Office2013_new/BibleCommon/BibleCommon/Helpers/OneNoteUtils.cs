@@ -35,7 +35,7 @@ namespace BibleCommon.Helpers
         public static bool NotebookExists(ref Application oneNoteApp, string notebookId, bool refreshCache = false)
         {
             OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks, refreshCache);
-            XElement bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@ID='{0}']", notebookId), hierarchy.Xnm);
+            XElement bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@ID=\"{0}\"]", notebookId), hierarchy.Xnm);
             return bibleNotebook != null;            
         }
 
@@ -53,16 +53,16 @@ namespace BibleCommon.Helpers
         public static bool RootSectionGroupExists(ref Application oneNoteApp, string notebookId, string sectionGroupId)
         {
             OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsChildren);
-            XElement sectionGroup = hierarchy.Content.Root.XPathSelectElement(string.Format("one:SectionGroup[@ID='{0}']", sectionGroupId), hierarchy.Xnm);
+            XElement sectionGroup = hierarchy.Content.Root.XPathSelectElement(string.Format("one:SectionGroup[@ID=\"{0}\"]", sectionGroupId), hierarchy.Xnm);
             return sectionGroup != null;
         }
 
         public static string GetNotebookIdByName(ref Application oneNoteApp, string notebookName, bool refreshCache)
         {
             OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks, refreshCache);
-            XElement bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@name='{0}']", notebookName), hierarchy.Xnm);
+            XElement bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@name=\"{0}\"]", notebookName), hierarchy.Xnm);
             if (bibleNotebook == null)
-                bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@nickname='{0}']", notebookName), hierarchy.Xnm);
+                bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@nickname=\"{0}\"]", notebookName), hierarchy.Xnm);
             if (bibleNotebook != null)
             {
                 return (string)bibleNotebook.Attribute("ID");
@@ -135,7 +135,7 @@ namespace BibleCommon.Helpers
             XmlNamespaceManager xnm;
             var parentEl = GetHierarchyElement(ref oneNoteApp, parentElementId, HierarchyScope.hsChildren, out xnm);
 
-            return parentEl.Root.XPathSelectElement(string.Format("one:{0}[@name='{1}']", elementTag, elementName), xnm);
+            return parentEl.Root.XPathSelectElement(string.Format("one:{0}[@name=\"{1}\"]", elementTag, elementName), xnm);
         }
 
 
@@ -318,7 +318,7 @@ namespace BibleCommon.Helpers
 
         public static void UpdateElementMetaData(XElement el, string key, string value, XmlNamespaceManager xnm)
         {
-            var metaElement = el.XPathSelectElement(string.Format("one:Meta[@name='{0}']", key), xnm);
+            var metaElement = el.XPathSelectElement(string.Format("one:Meta[@name=\"{0}\"]", key), xnm);
             if (metaElement != null)
             {
                 metaElement.SetAttributeValue("content", value);
@@ -344,7 +344,7 @@ namespace BibleCommon.Helpers
 
         public static string GetElementMetaData(XElement el, string key, XmlNamespaceManager xnm)
         {
-            var metaElement = el.XPathSelectElement(string.Format("one:Meta[@name='{0}']", key), xnm);
+            var metaElement = el.XPathSelectElement(string.Format("one:Meta[@name=\"{0}\"]", key), xnm);
             if (metaElement != null)
             {
                 return (string)metaElement.Attribute("content");
