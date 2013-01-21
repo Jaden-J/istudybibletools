@@ -208,7 +208,7 @@ namespace BibleConfigurator
 
         private void ParallelBibleCheckerForm_FormClosing(object sender, FormClosingEventArgs e)
         {   
-            _formLogger.AbortedByUsers = true;
+            _formLogger.AbortedByUser = true;
         }
 
         private void ParallelBibleCheckerForm_FormClosed(object sender, FormClosedEventArgs e)

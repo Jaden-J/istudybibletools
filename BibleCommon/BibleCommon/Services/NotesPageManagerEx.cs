@@ -506,6 +506,17 @@ namespace BibleCommon.Services
                                         Consts.Constants.Key_Id, hierarchyElementInfo.UniqueName), 
                                     xnm);
 
+            if (node == null && hierarchyElementInfo.UniqueName != hierarchyElementInfo.Id)
+            {
+                node = _parentElement.XPathSelectElement(
+                                    string.Format("one:OE/one:Meta[@name=\"{0}\" and @content=\"{1}\"]",
+                                        Consts.Constants.Key_Id, hierarchyElementInfo.Id),   // для обратной совместимости, так как раньше и записные книжки индентифицировались по ID
+                                    xnm);
+
+                if (node != null)  // если нашли - исправляем                
+                    OneNoteUtils.UpdateElementMetaData(node.Parent, Consts.Constants.Key_Id, hierarchyElementInfo.UniqueName, xnm);                
+            }
+
             if (node == null)
             {
                 var listNumberInfo = GetListNumberInfo(_level);

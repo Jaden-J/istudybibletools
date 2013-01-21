@@ -23,10 +23,10 @@ namespace BibleNoteLinker
 
             if (form != null)
             {
-                FormExtensions.RunSingleInstance(form.GetType().FullName, BibleCommon.Resources.Constants.MoreThanSingleInstanceRun, () =>
-                {
-                    Application.Run(form);
-                });
+                FormExtensions.RunSingleInstance(
+                    BibleCommon.Consts.Constants.AnalyzeAndParametersMutix, 
+                    BibleCommon.Resources.Constants.MoreThanSingleInstanceRun, 
+                    () => Application.Run(form));
             }
 
         }

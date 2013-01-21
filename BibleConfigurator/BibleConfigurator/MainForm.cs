@@ -1184,7 +1184,7 @@ namespace BibleConfigurator
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             StopLongProcess = true;
-            LongProcessLogger.AbortedByUsers = true;
+            LongProcessLogger.AbortedByUser = true;
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)

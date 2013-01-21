@@ -188,11 +188,11 @@ namespace BibleConfigurator
 
         private void RemovePrevModuleFile()
         {
-            var files = Directory.GetFiles(tbResultDirectory.Text, "*" + BibleCommon.Consts.Constants.FileExtensionIsbt);
-            foreach (var file in files)
-            {
-                File.Delete(file);
-            }
+            var files = Directory.GetFiles(tbResultDirectory.Text, "*" + BibleCommon.Consts.Constants.FileExtensionIsbt)
+                            .Concat(Directory.GetFiles(tbResultDirectory.Text, "*.zip"));
+            
+            foreach (var file in files)            
+                File.Delete(file);            
         }
 
         private string CreateZipFile()
@@ -672,7 +672,7 @@ namespace BibleConfigurator
 
         private void ZefaniaXmlConverterForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _formLogger.AbortedByUsers = true;
+            _formLogger.AbortedByUser = true;
         }
 
         private void ZefaniaXmlConverterForm_FormClosed(object sender, FormClosedEventArgs e)

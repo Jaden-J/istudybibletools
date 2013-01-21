@@ -542,7 +542,7 @@ namespace BibleConfigurator
                     e.Cancel = true;
                 else
                 {
-                    Logger.AbortedByUsers = true;
+                    Logger.AbortedByUser = true;
                     MainForm.StopLongProcess = true;
                 }
             }
