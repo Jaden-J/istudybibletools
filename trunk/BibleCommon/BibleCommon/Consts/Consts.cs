@@ -26,7 +26,8 @@ namespace BibleCommon.Consts
         public static readonly string LogsDirectory = "Logs";        
         public static readonly string DefaultPartVersesAlphabet = "abcdefghijklmnopqrstuvwxyz";
         public static readonly int DefaultStrongNumbersCount = 14700;        
-        public static readonly string UnicodeFontName = "Arial Unicode MS";        
+        public static readonly string UnicodeFontName = "Arial Unicode MS";
+        public static readonly string AnalyzeAndParametersMutix = "ISBT_AnalyzeAndParameters";
 
         public static readonly decimal ImportantVerseWeight = 2;
 

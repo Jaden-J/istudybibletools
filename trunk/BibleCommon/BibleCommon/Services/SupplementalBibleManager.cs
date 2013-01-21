@@ -102,15 +102,15 @@ namespace BibleCommon.Services
             }
         }
 
-        private static void UnlockSupplementalBible(ref Application oneNoteApp, bool unlockBible, bool unlockSupplementalBible)
+        private static void UnlockNotebooks(ref Application oneNoteApp, bool unlockBible, bool unlockSupplementalBible, ICustomLogger logger)
         {
             try
             {
-                if (unlockBible)
-                    OneNoteLocker.UnlockBible(ref oneNoteApp);
+                if (unlockBible)                
+                    OneNoteLocker.UnlockBible(ref oneNoteApp, true, () => logger.AbortedByUser);
 
                 if (unlockSupplementalBible)
-                    OneNoteLocker.UnlockSupplementalBible(ref oneNoteApp);  
+                    OneNoteLocker.UnlockSupplementalBible(ref oneNoteApp, true, () => logger.AbortedByUser);
             }
             catch (NotSupportedException)
             {
@@ -139,7 +139,7 @@ namespace BibleCommon.Services
 
             BibleParallelTranslationManager.MergeModuleWithMainBible(supplementalModuleShortName);
 
-            UnlockSupplementalBible(ref oneNoteApp, true, false);
+            UnlockNotebooks(ref oneNoteApp, true, false, logger);
 
             var isOneNote2010 = OneNoteUtils.IsOneNote2010Cached(oneNoteApp);
 
@@ -216,7 +216,7 @@ namespace BibleCommon.Services
                 SettingsManager.Instance.SupplementalBibleModules.First().ModuleName, module.ShortName,
                 SettingsManager.Instance.NotebookId_SupplementalBible))
             {
-                UnlockSupplementalBible(ref oneNoteApp, false, true);
+                UnlockNotebooks(ref oneNoteApp, false, true, logger);
 
                 GetTestamentInfo(bibleTranslationManager.ParallelModuleInfo, ContainerType.OldTestament, out oldTestamentName, out oldTestamentSectionsCount, out oldTestamentStrongPrefix);
                 GetTestamentInfo(bibleTranslationManager.ParallelModuleInfo, ContainerType.NewTestament, out newTestamentName, out newTestamentSectionsCount, out newTestamentStrongPrefix);
@@ -350,7 +350,7 @@ namespace BibleCommon.Services
                    SettingsManager.Instance.SupplementalBibleModules.First().ModuleName, moduleShortName,
                    SettingsManager.Instance.NotebookId_SupplementalBible))
                 {
-                    UnlockSupplementalBible(ref oneNoteApp, false, true);
+                    UnlockNotebooks(ref oneNoteApp, false, true, logger);
 
                     bibleTranslationManager.Logger = logger;
                     bibleTranslationManager.RemoveParallelTranslation(moduleShortName);
@@ -602,6 +602,7 @@ namespace BibleCommon.Services
 
             return currentSectionGroupId;
         }
+
         private static void UpdateChapterPage(ref Application oneNoteApp, XDocument chapterPageDoc, int chapterIndex, BibleBookInfo bibleBookInfo)
         {
             OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>

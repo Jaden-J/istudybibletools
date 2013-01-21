@@ -565,7 +565,7 @@ namespace BibleCommon.Services
 
                 verseInfo.VersePosition = versePosition;
 
-                if (LastAnalyzedVerse == null || LastAnalyzedVerse.VersePosition < verseInfo.VersePosition)
+                if (LastAnalyzedVerse == null || LastAnalyzedVerse.VersePosition <= verseInfo.VersePosition)
                     LastAnalyzedVerse = verseInfo;
 
                 var tempVerseInfo = verseInfo;
@@ -666,9 +666,10 @@ namespace BibleCommon.Services
                     bool isInBrackets;
                     bool isExcluded;
                     bool isImportantVerse;
-                    if (VerseRecognitionManager.CanProcessAtNumberPosition(textElement, cursorPosition,
+                    if (VerseRecognitionManager.CanProcessAtNumberPosition(textElement, cursorPosition, 
                         out number, out textBreakIndex, out htmlBreakIndex, out linkInfo, out isInBrackets, out isExcluded, out isImportantVerse))
                     {
+                        isImportantVerse = isImportantVerse || isTitle;
                         var searchResult = VerseRecognitionManager.GetValidVersePointer(textElement,
                             cursorPosition, textBreakIndex - 1, number,
                             globalChapterSearchResult,
@@ -1203,7 +1204,40 @@ namespace BibleCommon.Services
             {
                 notesPageId = OneNoteProxy.Instance.GetNotesPageId(ref oneNoteApp,
                     verseHierarchyObjectInfo.SectionId,
-                    verseHierarchyObjectInfo.PageId, biblePageName, notesPageName, out pageWasCreated, notesParentPageName, notesPageLevel);                    
+                    verseHierarchyObjectInfo.PageId, biblePageName, notesPageName, out pageWasCreated, notesParentPageName, notesPageLevel);
+            }
+            catch (NotFoundVerseLinkPageExceptions nfvEx)
+            {   
+                // возможно дело в устаревшем кэше
+                Logger.LogError(nfvEx);
+
+                if (verseHierarchyObjectInfo.LoadedFromCache)
+                {
+                    var fullSearchResult = HierarchySearchManager.GetHierarchyObject(
+                                                ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.AllVerses, false);
+
+                    if (fullSearchResult.ResultType == HierarchySearchManager.HierarchySearchResultType.Successfully)
+                    {
+                        if (fullSearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder
+                            || fullSearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.Page)
+                        {
+                            if (fullSearchResult.HierarchyObjectInfo.PageId != notePageId.Id)
+                            {
+                                verseHierarchyObjectInfo = fullSearchResult.HierarchyObjectInfo;
+                                try
+                                {
+                                    notesPageId = OneNoteProxy.Instance.GetNotesPageId(ref oneNoteApp,
+                                              verseHierarchyObjectInfo.SectionId,
+                                              verseHierarchyObjectInfo.PageId, biblePageName, notesPageName, out pageWasCreated, notesParentPageName, notesPageLevel);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.LogError(ex);
+                                }
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
