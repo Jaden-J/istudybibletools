@@ -8,6 +8,7 @@ using System.Xml;
 using System.Xml.XPath;
 using BibleCommon.Common;
 using BibleCommon.Helpers;
+using System.IO;
 
 
 namespace BibleCommon.Services
@@ -395,14 +396,35 @@ namespace BibleCommon.Services
         {
             OneNoteProxy.HierarchyElement document = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsSections);
 
-            XElement targetSection = document.Content.Root.XPathSelectElement(
+            var targetSection = document.Content.Root.XPathSelectElement(
                 string.Format("{0}one:SectionGroup[{2}]/one:Section[@name=\"{1}\"]",
                     !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_Bible)
-                        ? string.Format("one:SectionGroup[@ID=\"{0}\"]/", SettingsManager.Instance.SectionGroupId_Bible) 
+                        ? string.Format("one:SectionGroup[@ID=\"{0}\"]/", SettingsManager.Instance.SectionGroupId_Bible)
                         : string.Empty,
                     bookSectionName,
                     OneNoteUtils.NotInRecycleXPathCondition),
                 document.Xnm);
+
+            if (targetSection == null)  // возможно в другом регистре стало название раздела
+            {
+                var functionsManager = new CustomXPathFunctions(document.Xnm);
+                XmlDocument xd = new XmlDocument();
+                xd.Load(document.Content.CreateReader());
+
+                var node = xd.FirstChild.SelectSingleNode(string.Format("{0}one:SectionGroup[{2}]/one:Section[equals(@name, \"{1}\")]",
+                        !string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_Bible)
+                            ? string.Format("one:SectionGroup[@ID=\"{0}\"]/", SettingsManager.Instance.SectionGroupId_Bible)
+                            : string.Empty,
+                        bookSectionName,
+                        OneNoteUtils.NotInRecycleXPathCondition),
+                    functionsManager);
+
+                if (node != null)
+                {
+                    var sectionId = node.Attributes["ID"].Value;
+                    targetSection = document.Content.Root.XPathSelectElement(string.Format("//one:Section[@ID=\"{0}\"]", sectionId), document.Xnm);
+                }
+            }            
 
             return targetSection;
         }

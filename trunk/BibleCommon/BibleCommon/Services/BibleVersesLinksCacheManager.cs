@@ -35,6 +35,12 @@ namespace BibleCommon.Services
             return SharpSerializationHelper.Deserialize<Dictionary<string, string>>(filePath);
         }
 
+        public static void RemoveCacheFile(string notebookId)
+        {
+            var filePath = GetCacheFilePath(notebookId);            
+            File.Delete(filePath);            
+        }
+
         public static void GenerateBibleVersesLinks(ref Application oneNoteApp, string notebookId, string sectionGroupId, ICustomLogger logger)
         {
             string filePath = GetCacheFilePath(notebookId);
@@ -160,6 +166,6 @@ namespace BibleCommon.Services
 
                 AddItemToResult(ref oneNoteApp, chapterPointer, notebookId, section, pageId, pageName, pageTitleEl, true, ref result);                
             }
-        }
+        }        
     }
 }

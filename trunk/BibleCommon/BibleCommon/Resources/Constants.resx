@@ -347,13 +347,13 @@ Delete these elements and try again.</value>
     <value>Underline text not found</value>
   </data>
   <data name="VerseLinkManagerCommentPageNotFound" xml:space="preserve">
-    <value>Comments page not found</value>
+    <value>Verse page not found</value>
   </data>
   <data name="VerseLinkManagerCommentSectionGroupNotFound" xml:space="preserve">
-    <value>Comments section group not found</value>
+    <value>Verse section group not found</value>
   </data>
   <data name="VerseLinkManagerCommentSectionNotFound" xml:space="preserve">
-    <value>Comments section not found</value>
+    <value>Verse section not found</value>
   </data>
   <data name="VerseLinkManagerOpenNotBiblePage" xml:space="preserve">
     <value>It most likely that not a Bible page is opened in OneNote.</value>
@@ -812,5 +812,8 @@ Please take notice:
   </data>
   <data name="All" xml:space="preserve">
     <value>All</value>
+  </data>
+  <data name="BibleVersesLinksCacheWasCleaned" xml:space="preserve">
+    <value>The Bible cache was found as irrelevant and has been cleared. Next time at OneNote startup you will be asked to reindex the Bible.</value>
   </data>
 </root>

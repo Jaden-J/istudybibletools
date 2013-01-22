@@ -19,7 +19,7 @@ namespace BibleNoteLinker
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Form form = PrepareForRunning(args);
+            var form = PrepareForRunning(args);
 
             if (form != null)
             {

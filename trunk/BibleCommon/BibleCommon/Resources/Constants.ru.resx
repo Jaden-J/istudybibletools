@@ -392,13 +392,13 @@
     <value>Подчёркнутый текст не найден</value>
   </data>
   <data name="VerseLinkManagerCommentPageNotFound" xml:space="preserve">
-    <value>Не найдена страница для комментариев.</value>
+    <value>Не найдена страница для стиха.</value>
   </data>
   <data name="VerseLinkManagerCommentSectionGroupNotFound" xml:space="preserve">
-    <value>Не найдена группа секций для комментариев.</value>
+    <value>Не найдена группа секций для стиха.</value>
   </data>
   <data name="VerseLinkManagerCommentSectionNotFound" xml:space="preserve">
-    <value>Не найдена секция для комментариев.</value>
+    <value>Не найдена секция для стиха.</value>
   </data>
   <data name="VerseLinkManagerOpenNotBiblePage" xml:space="preserve">
     <value>Скорее всего в OneNote открыта не страница Библии.</value>
@@ -809,5 +809,8 @@
   </data>
   <data name="All" xml:space="preserve">
     <value>Все</value>
+  </data>
+  <data name="BibleVersesLinksCacheWasCleaned" xml:space="preserve">
+    <value>Кэш Библии был очищен, так как был признан неактуальным. При следующем запуске OneNote будет предложено переиндексировать Библию.</value>
   </data>
 </root>
