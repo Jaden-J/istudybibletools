@@ -31,7 +31,7 @@ namespace BibleCommon.Consts
 
         public static readonly decimal ImportantVerseWeight = 2;
 
-        public static readonly Version ModulesWithXmlBibleMinVersion = new Version(1, 9);
+        public static readonly Version ModulesWithXmlBibleMinVersion = new Version(1, 9);        
         
         public static readonly int DefaultPageWidth_Notes = 500;
         public static readonly int DefaultPageWidth_RubbishNotes = 500;
@@ -107,7 +107,13 @@ namespace BibleCommon.Consts
         public static readonly string Key_EmbeddedDictionaries = "Dictionaries";
         public static readonly string Key_NotesPageManagerName = "NotesPageManagerName";
         public static readonly string Key_Id = "ID";
-        public static readonly string Key_Verse = "Verse";        
+        public static readonly string Key_Verse = "Verse";
+        public static readonly string Key_NotesPageLink = "NotesPageLink";
+
+
+        public static readonly int ChapterNotesPageLinkOutline_OffsetX = 41;
+        public static readonly int ChapterNotesPageLinkOutline_y = 45;
+        public static readonly int ChapterNotesPageLinkOutline_z = 1;
     }   
 }
 

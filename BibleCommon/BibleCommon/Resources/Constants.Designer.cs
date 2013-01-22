@@ -277,6 +277,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на The Bible cache was found as irrelevant and has been cleared. Next time at OneNote startup you will be asked to reindex the Bible..
+        /// </summary>
+        public static string BibleVersesLinksCacheWasCleaned {
+            get {
+                return ResourceManager.GetString("BibleVersesLinksCacheWasCleaned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на books.
         /// </summary>
         public static string Books {
@@ -2023,7 +2032,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Comments page not found.
+        ///   Ищет локализованную строку, похожую на Verse page not found.
         /// </summary>
         public static string VerseLinkManagerCommentPageNotFound {
             get {
@@ -2032,7 +2041,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Comments section group not found.
+        ///   Ищет локализованную строку, похожую на Verse section group not found.
         /// </summary>
         public static string VerseLinkManagerCommentSectionGroupNotFound {
             get {
@@ -2041,7 +2050,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Comments section not found.
+        ///   Ищет локализованную строку, похожую на Verse section not found.
         /// </summary>
         public static string VerseLinkManagerCommentSectionNotFound {
             get {

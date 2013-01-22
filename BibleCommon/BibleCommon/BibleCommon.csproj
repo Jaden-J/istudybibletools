@@ -71,6 +71,7 @@
     <Compile Include="Helpers\SharpSerializationHelper.cs" />
     <Compile Include="Helpers\StringUtils.cs" />
     <Compile Include="Helpers\Utils.cs" />
+    <Compile Include="Helpers\XmlExtensions.cs" />
     <Compile Include="Resources\Constants.ru.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

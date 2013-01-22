@@ -22,7 +22,7 @@ namespace BibleCommon.Common
         }
 
         public NotConfiguredException(string message)
-            : base(string.Format("{0} {1}", BibleCommon.Resources.Constants.Error_SystemIsNotConfigured, message))
+            : base(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured, message)
         {
         }
     }

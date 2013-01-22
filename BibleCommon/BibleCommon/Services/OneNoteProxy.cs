@@ -543,6 +543,13 @@ namespace BibleCommon.Services
             }            
         }
 
+        public void CleanBibleVersesLinksCache()
+        {
+            _bibleVersesLinks = null;
+            _isBibleVersesLinksCacheActive = false;
+            BibleVersesLinksCacheManager.RemoveCacheFile(SettingsManager.Instance.NotebookId_Bible);            
+        }
+
         public VersePointerLink GetVersePointerLink(VersePointer vp)
         {
             if (_bibleVersesLinks == null)
