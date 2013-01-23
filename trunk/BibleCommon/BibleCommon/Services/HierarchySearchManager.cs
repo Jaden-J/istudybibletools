@@ -112,7 +112,16 @@ namespace BibleCommon.Services
         {
             public HierarchyObjectInfo HierarchyObjectInfo { get; set; } // дополнительная информация о найденном объекте            
             public HierarchyStage HierarchyStage { get; set; }
-            public HierarchySearchResultType ResultType { get; set; }            
+            public HierarchySearchResultType ResultType { get; set; }
+
+            public bool FoundSuccessfully
+            {
+                get
+                {
+                    return ResultType == HierarchySearchResultType.Successfully
+                           && (HierarchyStage == HierarchyStage.Page || HierarchyStage == HierarchyStage.ContentPlaceholder);
+                }
+            }
 
             public HierarchySearchResult()
             {
@@ -177,8 +186,7 @@ namespace BibleCommon.Services
         {
             var result = GetHierarchyObjectInternal(ref oneNoteApp, bibleNotebookId, vp, findAllVerseObjects, useCacheIfAvailable);
 
-            if (!(result.ResultType == HierarchySearchResultType.Successfully && 
-                (result.HierarchyStage == HierarchyStage.ContentPlaceholder || result.HierarchyStage == HierarchyStage.Page )))
+            if (!result.FoundSuccessfully)
             {
                 BibleCommon.Services.Logger.LogWarning(BibleCommon.Resources.Constants.VerseNotFound, vp.OriginalVerseName);
             }
@@ -215,6 +223,23 @@ namespace BibleCommon.Services
                 result.HierarchyStage = HierarchyStage.Section;                
 
                 XElement targetPage = HierarchySearchManager.FindPage(ref oneNoteApp, result.HierarchyObjectInfo.SectionId, vp.Chapter.Value);
+
+                if (targetPage == null && vp.IsChapter)  // возможно стих типа "2Ин 8"
+                {
+                    var chaptersCount = GetBookChaptersCount(ref oneNoteApp, result.HierarchyObjectInfo.SectionId);
+
+                    if (chaptersCount == 1)
+                    {
+                        var modifiedVp = new VersePointer(vp.OriginalVerseName);
+                        modifiedVp.ChangeVerseAsOneChapteredBook();
+                        var changedVerseResult = GetHierarchyObjectInternal(ref oneNoteApp, bibleNotebookId, modifiedVp, findAllVerseObjects, useCacheIfAvailable);
+                        if (changedVerseResult.FoundSuccessfully)
+                        {
+                            vp.ChangeVerseAsOneChapteredBook();
+                            return changedVerseResult;
+                        }
+                    }
+                }
 
                 if (targetPage != null)
                 {                    
@@ -390,6 +415,13 @@ namespace BibleCommon.Services
                     string.Format("one:Page[' {0}'=substring(@name,string-length(@name)-{1})]", chapter, chapter.ToString().Length), xnm);
 
             return page;
+        }
+
+        internal static int GetBookChaptersCount(ref Application oneNoteApp, string sectionId)
+        {
+            OneNoteProxy.HierarchyElement sectionDocument = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, sectionId, HierarchyScope.hsPages);
+
+            return Convert.ToInt32(sectionDocument.Content.Root.XPathEvaluate("count(one:Page)-1", sectionDocument.Xnm));
         }
 
         public static XElement FindBibleBookSection(ref Application oneNoteApp, string notebookId, string bookSectionName)

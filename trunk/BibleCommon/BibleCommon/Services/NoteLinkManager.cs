@@ -373,6 +373,8 @@ namespace BibleCommon.Services
                         }))
                 wasModified = true;
 
+            pageChaptersSearchResult = pageChaptersSearchResult.Where(sr => sr.VersePointer.IsChapter).ToList();  // так как могли быть указаны стихи типа "2Ин 8"
+
             return pageChaptersSearchResult;
         }
 
@@ -583,7 +585,7 @@ namespace BibleCommon.Services
                 else if (VersePointerSearchResult.IsChapter(verseInfo.SearchResult.ResultType) && needToQueueIfChapter)
                 {
                     if (hierarchySearchResult.ResultType == HierarchySearchManager.HierarchySearchResultType.Successfully
-                        && hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.Page)
+                        && hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.Page)  // здесь мы ещё раз проверяем, что это глава. Так как мог быть стих "2Ин 8"
                     {
                         if (!foundChapters.Exists(fch =>
                                 (fch.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
@@ -842,7 +844,7 @@ namespace BibleCommon.Services
                             string textToChange;
                             if (!string.IsNullOrEmpty(searchResult.VerseString))
                                 textToChange = searchResult.VerseString;
-                            else if (VersePointerSearchResult.IsChapter(searchResult.ResultType))
+                            else if (vp.IsChapter)
                                 textToChange = searchResult.ChapterName;
                             else
                                 textToChange = searchResult.VersePointer.OriginalVerseName;
@@ -878,7 +880,7 @@ namespace BibleCommon.Services
                             var htmlTextBefore = textElementValue.Substring(0, startVerseNameIndex);
                             var htmlTextAfter = textElementValue.Substring(endVerseNameIndex);                            
                             var needToAddSpace = false;
-                            if (searchResult.VerseStringStartsWithSpace.GetValueOrDefault(false))
+                            if (searchResult.VerseStringStartsWithSpace.GetValueOrDefault(false) && !vp.WasChangedVerseAsOneChapteredBook)
                             {
                                 var textBefore = StringUtils.GetText(htmlTextBefore);
                                 if (!textBefore.EndsWith(" "))
@@ -1003,99 +1005,96 @@ namespace BibleCommon.Services
         {
             hierarchySearchResult = HierarchySearchManager.GetHierarchyObject(
                                                 ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.AllVerses);
-            if (hierarchySearchResult.ResultType == HierarchySearchManager.HierarchySearchResultType.Successfully)
+            if (hierarchySearchResult.FoundSuccessfully)
             {
-                if (hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder
-                    || hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.Page)
+                if (hierarchySearchResult.HierarchyObjectInfo.PageId != notePageId.Id)
                 {
-                    if (hierarchySearchResult.HierarchyObjectInfo.PageId != notePageId.Id)
-                    {
-                        if (onHierarchyElementFound != null)
-                            onHierarchyElementFound(hierarchySearchResult);
+                    if (onHierarchyElementFound != null)
+                        onHierarchyElementFound(hierarchySearchResult);
 
-                        bool isChapter = VersePointerSearchResult.IsChapter(resultType);
+                    //bool isChapter = VersePointerSearchResult.IsChapter(resultType);
+                    var isChapter = vp.IsChapter;
 
-                        if ((isChapter ^ vp.IsChapter))  // данные расходятся. что-то тут не чисто. запишем варнинг и ничего делать не будем
+                    //if ((isChapter ^ vp.IsChapter))  // данные расходятся. что-то тут не чисто. запишем варнинг и ничего делать не будем
+                    //{
+                    //    Logger.LogWarning("Invalid verse result: '{0}' - '{1}'", vp.OriginalVerseName, resultType);
+                    //}
+                    //else
+                    //{
+                        if ((!isChapter || excludedVersesLinking || forceAnalyzeChapter) && linkDepth >= AnalyzeDepth.Full)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем. Но если у нас стоит excludedVersesLinking, то сразу обрабатываем
                         {
-                            Logger.LogWarning("Invalid verse result: '{0}' - '{1}'", vp.OriginalVerseName, resultType);
-                        }
-                        else
-                        {
-                            if ((!isChapter || excludedVersesLinking || forceAnalyzeChapter) && linkDepth >= AnalyzeDepth.Full)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем. Но если у нас стоит excludedVersesLinking, то сразу обрабатываем
+                            bool canContinue = true;
+
+                            if (!excludedVersesLinking)  // иначе всё равно привязываем
                             {
-                                bool canContinue = true;
+                                if (isExcluded || IsExcludedCurrentNotePage)
+                                    canContinue = false;
 
-                                if (!excludedVersesLinking)  // иначе всё равно привязываем
+                                if (canContinue)
                                 {
-                                    if (isExcluded || IsExcludedCurrentNotePage)
-                                        canContinue = false;
-
-                                    if (canContinue)
+                                    if (!isChapter)
                                     {
-                                        if (VersePointerSearchResult.IsVerse(resultType))
+                                        if (globalChapterSearchResult != null)
                                         {
-                                            if (globalChapterSearchResult != null)
+                                            if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString)
                                             {
-                                                if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString)
+                                                if (!isInBrackets)
                                                 {
-                                                    if (!isInBrackets)
-                                                    {
-                                                        if (globalChapterSearchResult.VersePointer.IsMultiVerse)
-                                                            if (globalChapterSearchResult.VersePointer.IsInVerseRange(vp.Verse.GetValueOrDefault(0)))
-                                                                canContinue = false;    // если указан уже диапазон, а далее идут пояснения, то не отмечаем их заметками
-                                                    }
-                                                }
-                                                //else
-                                                //{
-                                                //    if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter)
-                                                //    {
-                                                //        if (!isInBrackets)
-                                                //        {
-                                                //            canContinue = false;
-                                                //        }
-                                                //    }
-                                                //}
-                                            }
-                                        }
-                                    }
-
-                                    if (canContinue)
-                                    {
-                                        if (pageChaptersSearchResult != null)
-                                        {
-                                            if (!isInBrackets)
-                                            {
-                                                if (pageChaptersSearchResult.Any(pcsr =>
-                                                {
-                                                    return (pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
-                                                                || pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName)
-                                                            && pcsr.VersePointer.Book.Name == vp.Book.Name
-                                                            && IsNumberInRange(vp.Chapter.Value, pcsr.VersePointer.Chapter.Value, pcsr.VersePointer.TopChapter);
-                                                }))
-                                                {
-                                                    canContinue = false;  // то есть среди исключаемых глав есть текущая
+                                                    if (globalChapterSearchResult.VersePointer.IsMultiVerse)
+                                                        if (globalChapterSearchResult.VersePointer.IsInVerseRange(vp.Verse.GetValueOrDefault(0)))
+                                                            canContinue = false;    // если указан уже диапазон, а далее идут пояснения, то не отмечаем их заметками
                                                 }
                                             }
+                                            //else
+                                            //{
+                                            //    if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter)
+                                            //    {
+                                            //        if (!isInBrackets)
+                                            //        {
+                                            //            canContinue = false;
+                                            //        }
+                                            //    }
+                                            //}
                                         }
                                     }
                                 }
 
                                 if (canContinue)
                                 {
-                                    var verses = LinkVerseToNotesPage(ref oneNoteApp, vp, verseWeight, versePosition, isChapter,
-                                        hierarchySearchResult.HierarchyObjectInfo,
-                                        notePageId,
-                                        notePageContentObjectId, createLinkToNotesPage, notesPageName, notesParentPageName, notesPageWidth,
-                                        notesPageLevel, isImportantVerse, force, processAsExtendedVerse);
-
-                                    if (processedVerses != null)
-                                        processedVerses.AddRange(verses);
+                                    if (pageChaptersSearchResult != null)
+                                    {
+                                        if (!isInBrackets)
+                                        {
+                                            if (pageChaptersSearchResult.Any(pcsr =>
+                                            {
+                                                return (pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
+                                                            || pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName)
+                                                        && pcsr.VersePointer.Book.Name == vp.Book.Name
+                                                        && IsNumberInRange(vp.Chapter.Value, pcsr.VersePointer.Chapter.Value, pcsr.VersePointer.TopChapter);
+                                            }))
+                                            {
+                                                canContinue = false;  // то есть среди исключаемых глав есть текущая
+                                            }
+                                        }
+                                    }
                                 }
                             }
 
-                            return true;
+                            if (canContinue)
+                            {
+                                var verses = LinkVerseToNotesPage(ref oneNoteApp, vp, verseWeight, versePosition, isChapter,
+                                    hierarchySearchResult.HierarchyObjectInfo,
+                                    notePageId,
+                                    notePageContentObjectId, createLinkToNotesPage, notesPageName, notesParentPageName, notesPageWidth,
+                                    notesPageLevel, isImportantVerse, force, processAsExtendedVerse);
+
+                                if (processedVerses != null)
+                                    processedVerses.AddRange(verses);
+                            }
                         }
-                    }
+
+                        return true;
+                    //}
                 }
             }
 
@@ -1215,30 +1214,26 @@ namespace BibleCommon.Services
                     var fullSearchResult = HierarchySearchManager.GetHierarchyObject(
                                                 ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.AllVerses, false);
 
-                    if (fullSearchResult.ResultType == HierarchySearchManager.HierarchySearchResultType.Successfully)
+                    if (fullSearchResult.FoundSuccessfully)
                     {
-                        if (fullSearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder
-                            || fullSearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.Page)
+                        if (fullSearchResult.HierarchyObjectInfo.PageId != notePageId.Id)
                         {
-                            if (fullSearchResult.HierarchyObjectInfo.PageId != notePageId.Id)
+                            verseHierarchyObjectInfo = fullSearchResult.HierarchyObjectInfo;
+                            try
                             {
-                                verseHierarchyObjectInfo = fullSearchResult.HierarchyObjectInfo;
-                                try
-                                {
-                                    notesPageId = OneNoteProxy.Instance.GetNotesPageId(ref oneNoteApp,
-                                              verseHierarchyObjectInfo.SectionId,
-                                              verseHierarchyObjectInfo.PageId, biblePageName, notesPageName, out pageWasCreated, notesParentPageName, notesPageLevel);
+                                notesPageId = OneNoteProxy.Instance.GetNotesPageId(ref oneNoteApp,
+                                          verseHierarchyObjectInfo.SectionId,
+                                          verseHierarchyObjectInfo.PageId, biblePageName, notesPageName, out pageWasCreated, notesParentPageName, notesPageLevel);
 
-                                    if (!string.IsNullOrEmpty(notesPageId))  // значит действительно кэш устарел. Надо его удалить и написать об этом предупреждение                                                   
-                                    {
-                                        OneNoteProxy.Instance.CleanBibleVersesLinksCache();
-                                        Logger.LogWarning(BibleCommon.Resources.Constants.BibleVersesLinksCacheWasCleaned);
-                                    }                                    
-                                }
-                                catch (Exception ex)
+                                if (!string.IsNullOrEmpty(notesPageId))  // значит действительно кэш устарел. Надо его удалить и написать об этом предупреждение                                                   
                                 {
-                                    Logger.LogError(ex);
+                                    OneNoteProxy.Instance.CleanBibleVersesLinksCache();
+                                    Logger.LogWarning(BibleCommon.Resources.Constants.BibleVersesLinksCacheWasCleaned);
                                 }
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogError(ex);
                             }
                         }
                     }
