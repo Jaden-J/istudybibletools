@@ -576,6 +576,6 @@ namespace BibleCommon.Services
             }
 
             return null;
-        }       
+        }        
     }
 }
