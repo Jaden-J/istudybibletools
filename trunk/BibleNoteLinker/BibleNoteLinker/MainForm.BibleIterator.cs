@@ -326,24 +326,29 @@ namespace BibleNoteLinker
             if (rbAnalyzeChangedPages.Checked)
                 filter = IsPageWasModifiedAfterLastAnalyze;
 
-            foreach (var notebookInfo in SettingsManager.Instance.SelectedNotebooksForAnalyze.ToArray())
+            if (SettingsManager.Instance.IsSingleNotebook)
             {
-                try
+                result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_BibleStudy, filter));
+                result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_BibleComments, filter));
+            }
+            else
+            {
+                foreach (var notebookInfo in SettingsManager.Instance.SelectedNotebooksForAnalyze.ToArray())
                 {
-                    if (SettingsManager.Instance.IsSingleNotebook)
-                        result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, notebookInfo.NotebookId, filter));
-                    else
+                    try
+                    {                       
                         result.Add(iterator.GetNotebookPages(notebookInfo.NotebookId, null, filter));
-                }
-                catch (Exception ex)
-                {
-                    if (ex.Message.Contains(Utils.GetHexError(Error.hrObjectDoesNotExist)))   
-                    {   
-                        SettingsManager.Instance.SelectedNotebooksForAnalyze.Remove(notebookInfo);
-                        SettingsManager.Instance.Save();
                     }
-                    else
-                        throw;
+                    catch (Exception ex)
+                    {
+                        if (Utils.IsError(ex, Error.hrObjectDoesNotExist))
+                        {
+                            SettingsManager.Instance.SelectedNotebooksForAnalyze.Remove(notebookInfo);
+                            SettingsManager.Instance.Save();
+                        }
+                        else
+                            throw;
+                    }
                 }
             }
 

@@ -33,6 +33,7 @@
             this.btnOk = new System.Windows.Forms.Button();
             this.btnSaveToFile = new System.Windows.Forms.Button();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.btnOpenLog = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lbErrors
@@ -46,7 +47,7 @@
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             resources.ApplyResources(this.btnOk, "btnOk");
             this.btnOk.Name = "btnOk";
-            this.btnOk.UseVisualStyleBackColor = true;            
+            this.btnOk.UseVisualStyleBackColor = true;
             // 
             // btnSaveToFile
             // 
@@ -61,10 +62,18 @@
             this.saveFileDialog.FileName = "errors.txt";
             resources.ApplyResources(this.saveFileDialog, "saveFileDialog");
             // 
+            // btnOpenLog
+            // 
+            resources.ApplyResources(this.btnOpenLog, "btnOpenLog");
+            this.btnOpenLog.Name = "btnOpenLog";
+            this.btnOpenLog.UseVisualStyleBackColor = true;
+            this.btnOpenLog.Click += new System.EventHandler(this.btnOpenLog_Click);
+            // 
             // ErrorsForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
+            this.Controls.Add(this.btnOpenLog);
             this.Controls.Add(this.btnSaveToFile);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.lbErrors);
@@ -83,5 +92,6 @@
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnSaveToFile;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
+        private System.Windows.Forms.Button btnOpenLog;
     }
 }

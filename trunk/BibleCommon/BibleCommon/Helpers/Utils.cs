@@ -150,7 +150,12 @@ namespace BibleCommon.Helpers
             return result;
         }
 
-        public static string GetHexError(Error error)
+        public static bool IsError(Exception ex, Error error)
+        {
+            return ex.Message.Contains(Utils.GetHexError(error));
+        }
+
+        private static string GetHexError(Error error)
         {
             return string.Format("0x{0}", Convert.ToString((int)error, 16));            
         }

@@ -29,6 +29,14 @@ namespace BibleCommon.Services
         public static List<string> Errors { get; set; }
         public static List<string> Warnings { get; set; }
 
+        public static string LogFilePath
+        {
+            get
+            {
+                return _logFilePath;
+            }
+        }
+
         private static string _errorText = BibleCommon.Resources.Constants.ErrorUpper + ": ";
 
         public static void MoveLevel(int levelDiv)

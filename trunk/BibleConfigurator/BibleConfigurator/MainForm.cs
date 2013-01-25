@@ -308,7 +308,7 @@ namespace BibleConfigurator
                     }
                     catch (COMException ex)
                     {
-                        if (ex.Message.Contains(Utils.GetHexError(Error.hrObjectDoesNotExist)))
+                        if (Utils.IsError(ex, Error.hrObjectDoesNotExist))
                         {
                             SettingsManager.Instance.DictionariesModules.Remove(dictionaryInfo);
                             LongProcessingDone(string.Empty);
@@ -603,8 +603,7 @@ namespace BibleConfigurator
                 var module = ModulesManager.GetCurrentModuleInfo();
 
                 string errorText;
-                if ((notebookType == ContainerType.Single && IsModerator) 
-                    || NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, out errorText))
+                if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, out errorText))
                 {
                     switch (notebookType)
                     {
@@ -929,8 +928,7 @@ namespace BibleConfigurator
             foreach (string notebookId in notebooksIds)
             {
                 string errorText;
-                if ((notebookType == ContainerType.Single && IsModerator) 
-                    || NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, out errorText))
+                if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, out errorText))
                 {
                     return notebookId;
                 }
@@ -999,7 +997,7 @@ namespace BibleConfigurator
             cbSingleNotebook.Enabled = rbSingleNotebook.Checked;
             lblSelectSingleNotebook.Enabled = rbSingleNotebook.Checked;
             btnSingleNotebookParameters.Enabled = rbSingleNotebook.Checked;
-            chkCreateSingleNotebookFromTemplate.Enabled = rbSingleNotebook.Checked;
+            chkCreateSingleNotebookFromTemplate.Enabled = false; // rbSingleNotebook.Checked;
             btnSingleNotebookParameters.Enabled = rbSingleNotebook.Checked;
             btnSingleNotebookSetPath.Enabled = rbSingleNotebook.Checked;
 
@@ -1031,9 +1029,9 @@ namespace BibleConfigurator
 
         private void chkCreateSingleNotebookFromTemplate_CheckedChanged(object sender, EventArgs e)
         {
-            cbSingleNotebook.Enabled = chkCreateSingleNotebookFromTemplate.Enabled && !chkCreateSingleNotebookFromTemplate.Checked;
-            btnSingleNotebookParameters.Enabled = chkCreateSingleNotebookFromTemplate.Enabled && !chkCreateSingleNotebookFromTemplate.Checked;
-            btnSingleNotebookSetPath.Enabled = chkCreateSingleNotebookFromTemplate.Enabled && chkCreateSingleNotebookFromTemplate.Checked;
+            cbSingleNotebook.Enabled = !chkCreateSingleNotebookFromTemplate.Checked; // && chkCreateSingleNotebookFromTemplate.Enabled;
+            btnSingleNotebookParameters.Enabled = !chkCreateSingleNotebookFromTemplate.Checked; // && chkCreateSingleNotebookFromTemplate.Enabled;
+            btnSingleNotebookSetPath.Enabled = chkCreateSingleNotebookFromTemplate.Checked; // && chkCreateSingleNotebookFromTemplate.Enabled;
         }
 
         private void chkCreateBibleNotebookFromTemplate_CheckedChanged(object sender, EventArgs e)
@@ -1076,7 +1074,7 @@ namespace BibleConfigurator
                     var notebookId = OneNoteUtils.GetNotebookIdByName(ref _oneNoteApp, notebookName, true);
                     var module = ModulesManager.GetCurrentModuleInfo();
                     string errorText;
-                    if (IsModerator || NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, ContainerType.Single, out errorText))
+                    if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, ContainerType.Single, out errorText))
                     {
                         if (_notebookParametersForm == null)
                             _notebookParametersForm = new NotebookParametersForm(_oneNoteApp, notebookId);
@@ -1566,15 +1564,15 @@ namespace BibleConfigurator
                 lblName.Text = moduleInfo.DisplayName;
             lblName.Top = top + 5;
             lblName.Left = 15;
-            lblName.Width = 310;
+            lblName.Width = 305;
             FormExtensions.SetToolTip(lblName, BibleCommon.Resources.Constants.ModuleDisplayName);
             pnModules.Controls.Add(lblName);
 
             Label lblVersion = new Label();
             lblVersion.Text = moduleInfo.Version.ToString();
             lblVersion.Top = top + 5;
-            lblVersion.Left = 330;
-            lblVersion.Width = 25;
+            lblVersion.Left = 325;
+            lblVersion.Width = 30;
             FormExtensions.SetToolTip(lblVersion, BibleCommon.Resources.Constants.ModuleVersion);
             pnModules.Controls.Add(lblVersion);
 

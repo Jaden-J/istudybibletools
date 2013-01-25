@@ -433,7 +433,7 @@ namespace BibleCommon.Services
                     }
                     catch (COMException ex)
                     {
-                        if (ex.Message.Contains(Utils.GetHexError(Error.hrObjectDoesNotExist)))
+                        if (Utils.IsError(ex, Error.hrObjectDoesNotExist))
                             throw new Exception("Page does not exists.");
                         else
                             throw;
