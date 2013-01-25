@@ -135,7 +135,7 @@ namespace BibleConfigurator
             {
                 FormLogger.Initialize();
 
-                if (rbSingleNotebook.Checked && (module.UseSingleNotebook() || IsModerator))
+                if (rbSingleNotebook.Checked && (module.UseSingleNotebook() || IsModerator || SettingsManager.Instance.IsSingleNotebook))
                 {
                     SaveSingleNotebookParameters(module);
                 }
@@ -825,7 +825,7 @@ namespace BibleConfigurator
             //    lblWarning.Visible = false;
 
             var notebooks = OneNoteUtils.GetExistingNotebooks(ref _oneNoteApp);
-            string singleNotebookId = (IsModerator || module.UseSingleNotebook()) ? SearchForNotebook(module, notebooks.Keys, ContainerType.Single) : string.Empty;
+            string singleNotebookId = (IsModerator || module.UseSingleNotebook() || SettingsManager.Instance.IsSingleNotebook) ? SearchForNotebook(module, notebooks.Keys, ContainerType.Single) : string.Empty;
             string bibleNotebookId = SearchForNotebook(module, notebooks.Keys, ContainerType.Bible);
             string bibleCommentsNotebookId = SearchForNotebook(module, notebooks.Keys, ContainerType.BibleComments);
             string bibleStudyNotebookId = SearchForNotebook(module, notebooks.Keys, ContainerType.BibleStudy);
@@ -857,7 +857,7 @@ namespace BibleConfigurator
                 cbBibleStudyNotebook.Items.Add(notebook);
             }
 
-            if (module.UseSingleNotebook() || IsModerator)
+            if (module.UseSingleNotebook() || IsModerator || SettingsManager.Instance.IsSingleNotebook)
             {
                 var defaultNotebookName = "";
                 if (module.UseSingleNotebook())
