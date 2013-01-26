@@ -10,12 +10,15 @@ using BibleCommon.Services;
 using System.IO;
 using BibleCommon.Helpers;
 using BibleCommon.Common;
+using System.Diagnostics;
 
 namespace BibleCommon.UI.Forms
 {
     public partial class ErrorsForm : Form
     {
         public List<ErrorsList> AllErrors { get; set; }
+
+        public string LogFilePath { get; set; }
 
         public ErrorsForm()
         {
@@ -66,6 +69,9 @@ namespace BibleCommon.UI.Forms
                         lbErrors.Items.Add(string.Empty);
                     }
                 }
+
+                if (string.IsNullOrEmpty(LogFilePath))
+                    btnOpenLog.Visible = false;
             }
             catch (Exception ex)
             {
@@ -104,6 +110,12 @@ namespace BibleCommon.UI.Forms
 
                 MessageBox.Show(BibleCommon.Resources.Constants.SuccessfullySaved);
             }
+        }
+
+        private void btnOpenLog_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(LogFilePath))
+                Process.Start(LogFilePath);
         }        
     }
 }

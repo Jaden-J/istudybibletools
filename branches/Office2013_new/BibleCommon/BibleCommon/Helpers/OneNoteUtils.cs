@@ -113,7 +113,7 @@ namespace BibleCommon.Helpers
             }
             catch (COMException ex)
             {
-                if (ex.Message.Contains(Utils.GetHexError(Error.hrObjectDoesNotExist)))
+                if (Utils.IsError(ex, Error.hrObjectDoesNotExist))
                     return false;
                 else
                     throw;
@@ -271,7 +271,7 @@ namespace BibleCommon.Helpers
             }
             catch (COMException ex)
             {
-                if (ex.Message.Contains(Utils.GetHexError(Error.hrInsertingInk)))
+                if (Utils.IsError(ex, Error.hrInsertingInk))
                     throw new Exception(Resources.Constants.Error_UpdateError_InksOnPages);               
                 else
                     throw;

@@ -75,7 +75,17 @@ namespace BibleCommon.Common
         public static bool operator !=(XmlCursorPosition cp1, XmlCursorPosition cp2)
         {
             return !cp1.Equals(cp2);
-        }        
+        }
+
+        public static bool operator >=(XmlCursorPosition cp1, XmlCursorPosition cp2)
+        {
+            return cp1.CompareTo(cp2) >= 0;
+        }
+
+        public static bool operator <=(XmlCursorPosition cp1, XmlCursorPosition cp2)
+        {
+            return cp1.CompareTo(cp2) <= 0;
+        }
     }
 
 

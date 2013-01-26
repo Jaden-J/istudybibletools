@@ -323,7 +323,8 @@ namespace BibleCommon.Services
             {
                 return this.NotebookId_Bible == this.NotebookId_BibleComments
                     && this.NotebookId_Bible == this.NotebookId_BibleStudy
-                    && this.NotebookId_Bible == this.NotebookId_BibleNotesPages;
+                    && this.NotebookId_Bible == this.NotebookId_BibleNotesPages
+                    && !string.IsNullOrEmpty(this.NotebookId_Bible);
             }
         }        
 

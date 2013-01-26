@@ -433,7 +433,7 @@ namespace BibleCommon.Services
                     }
                     catch (COMException ex)
                     {
-                        if (ex.Message.Contains(Utils.GetHexError(Error.hrObjectDoesNotExist)))
+                        if (Utils.IsError(ex, Error.hrObjectDoesNotExist))
                             throw new Exception("Page does not exists.");
                         else
                             throw;
@@ -543,6 +543,13 @@ namespace BibleCommon.Services
             }            
         }
 
+        public void CleanBibleVersesLinksCache()
+        {
+            _bibleVersesLinks = null;
+            _isBibleVersesLinksCacheActive = false;
+            BibleVersesLinksCacheManager.RemoveCacheFile(SettingsManager.Instance.NotebookId_Bible);            
+        }
+
         public VersePointerLink GetVersePointerLink(VersePointer vp)
         {
             if (_bibleVersesLinks == null)
@@ -569,6 +576,6 @@ namespace BibleCommon.Services
             }
 
             return null;
-        }       
+        }        
     }
 }

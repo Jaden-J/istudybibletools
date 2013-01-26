@@ -63,7 +63,7 @@ namespace BibleConfigurator
                 if (selectedModuleInfo.Type == ModuleType.Strong)
                 {
                     MainForm.PrepareForLongProcessing(1, 1, BibleCommon.Resources.Constants.AddParallelBibleTranslationStart);
-                    DictionaryManager.AddDictionary(ref _oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true, () => Logger.AbortedByUsers);
+                    DictionaryManager.AddDictionary(ref _oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true, () => Logger.AbortedByUser);
                     strongTermLinksCache = RunIndexStrongStage(selectedModuleInfo, 1, stagesCount, false);
                     MainForm.PrepareForLongProcessing(chaptersCount, 1, string.Empty);                
                 }
@@ -90,7 +90,7 @@ namespace BibleConfigurator
                 BibleCommon.Services.Logger.LogMessageParams(Logger.Preffix);
 
                 if (selectedModuleInfo.Type == ModuleType.Strong)
-                    DictionaryManager.AddDictionary(ref _oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, false, () => Logger.AbortedByUsers);                
+                    DictionaryManager.AddDictionary(ref _oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, false, () => Logger.AbortedByUser);                
                 SupplementalBibleManager.CreateSupplementalBible(ref _oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, Logger);
                 
                 if (selectedModuleInfo.Type == ModuleType.Strong)                
@@ -234,7 +234,7 @@ namespace BibleConfigurator
             BibleCommon.Services.Logger.LogMessageParams(Logger.Preffix);
 
             if (checkPagesCount)
-                DictionaryManager.WaitWhileDictionaryIsCreating(ref _oneNoteApp, dictionaryModuleInfo.SectionId, pagesCount, 0, () => Logger.AbortedByUsers);  // повторный раз проверяем, что все страницы загрузились
+                DictionaryManager.WaitWhileDictionaryIsCreating(ref _oneNoteApp, dictionaryModuleInfo.SectionId, pagesCount, 0, () => Logger.AbortedByUser);  // повторный раз проверяем, что все страницы загрузились
 
             Dictionary<string, string> result;
 

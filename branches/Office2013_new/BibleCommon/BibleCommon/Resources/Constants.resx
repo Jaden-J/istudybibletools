@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BackupManagerFinishMessage" xml:space="preserve">
     <value>Backup created successfully.</value>
@@ -347,13 +347,13 @@ Delete these elements and try again.</value>
     <value>Underline text not found</value>
   </data>
   <data name="VerseLinkManagerCommentPageNotFound" xml:space="preserve">
-    <value>Comments page not found</value>
+    <value>Verse page not found</value>
   </data>
   <data name="VerseLinkManagerCommentSectionGroupNotFound" xml:space="preserve">
-    <value>Comments section group not found</value>
+    <value>Verse section group not found</value>
   </data>
   <data name="VerseLinkManagerCommentSectionNotFound" xml:space="preserve">
-    <value>Comments section not found</value>
+    <value>Verse section not found</value>
   </data>
   <data name="VerseLinkManagerOpenNotBiblePage" xml:space="preserve">
     <value>It most likely that not a Bible page is opened in OneNote.</value>
@@ -671,7 +671,7 @@ Delete these elements and try again.</value>
     <value>It is recommended to index the Bible for performance optimization. This operation takes about 30 minutes. Start indexing the Bible now?</value>
   </data>
   <data name="IndexBibleQuestionAtStartUp" xml:space="preserve">
-    <value>The Bible is not indexed. It is recommended to index the Bible for performance optimization. This operation takes about 30 minutes. Start indexing the Bible now?</value>
+    <value>The Bible is not indexed. It is recommended to index the Bible for performance optimization. This operation takes about 30 minutes. Start indexing the Bible now? This message will be displayed each time you start OneNote, while the Bible is not indexed.</value>
   </data>
   <data name="ModuleIsNotSupported" xml:space="preserve">
     <value>Version of this module is not supported. You should upgrade the program up to version '{0}'. The current version of the program is '{1}'.</value>
@@ -812,5 +812,8 @@ Please take notice:
   </data>
   <data name="All" xml:space="preserve">
     <value>All</value>
+  </data>
+  <data name="BibleVersesLinksCacheWasCleaned" xml:space="preserve">
+    <value>The Bible cache was found as irrelevant and has been cleared. Next time at OneNote startup you will be asked to reindex the Bible.</value>
   </data>
 </root>

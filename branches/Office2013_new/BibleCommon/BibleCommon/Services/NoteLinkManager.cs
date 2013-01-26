@@ -373,6 +373,8 @@ namespace BibleCommon.Services
                         }))
                 wasModified = true;
 
+            pageChaptersSearchResult = pageChaptersSearchResult.Where(sr => sr.VersePointer.IsChapter).ToList();  // так как могли быть указаны стихи типа "2Ин 8"
+
             return pageChaptersSearchResult;
         }
 
@@ -565,7 +567,7 @@ namespace BibleCommon.Services
 
                 verseInfo.VersePosition = versePosition;
 
-                if (LastAnalyzedVerse == null || LastAnalyzedVerse.VersePosition < verseInfo.VersePosition)
+                if (LastAnalyzedVerse == null || LastAnalyzedVerse.VersePosition <= verseInfo.VersePosition)
                     LastAnalyzedVerse = verseInfo;
 
                 var tempVerseInfo = verseInfo;
@@ -583,7 +585,7 @@ namespace BibleCommon.Services
                 else if (VersePointerSearchResult.IsChapter(verseInfo.SearchResult.ResultType) && needToQueueIfChapter)
                 {
                     if (hierarchySearchResult.ResultType == HierarchySearchManager.HierarchySearchResultType.Successfully
-                        && hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.Page)
+                        && hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.Page)  // здесь мы ещё раз проверяем, что это глава. Так как мог быть стих "2Ин 8"
                     {
                         if (!foundChapters.Exists(fch =>
                                 (fch.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
@@ -666,9 +668,10 @@ namespace BibleCommon.Services
                     bool isInBrackets;
                     bool isExcluded;
                     bool isImportantVerse;
-                    if (VerseRecognitionManager.CanProcessAtNumberPosition(textElement, cursorPosition,
+                    if (VerseRecognitionManager.CanProcessAtNumberPosition(textElement, cursorPosition, 
                         out number, out textBreakIndex, out htmlBreakIndex, out linkInfo, out isInBrackets, out isExcluded, out isImportantVerse))
                     {
+                        isImportantVerse = isImportantVerse || isTitle;
                         var searchResult = VerseRecognitionManager.GetValidVersePointer(textElement,
                             cursorPosition, textBreakIndex - 1, number,
                             globalChapterSearchResult,
@@ -841,7 +844,7 @@ namespace BibleCommon.Services
                             string textToChange;
                             if (!string.IsNullOrEmpty(searchResult.VerseString))
                                 textToChange = searchResult.VerseString;
-                            else if (VersePointerSearchResult.IsChapter(searchResult.ResultType))
+                            else if (vp.IsChapter)
                                 textToChange = searchResult.ChapterName;
                             else
                                 textToChange = searchResult.VersePointer.OriginalVerseName;
@@ -877,7 +880,7 @@ namespace BibleCommon.Services
                             var htmlTextBefore = textElementValue.Substring(0, startVerseNameIndex);
                             var htmlTextAfter = textElementValue.Substring(endVerseNameIndex);                            
                             var needToAddSpace = false;
-                            if (searchResult.VerseStringStartsWithSpace.GetValueOrDefault(false))
+                            if (searchResult.VerseStringStartsWithSpace.GetValueOrDefault(false) && !vp.WasChangedVerseAsOneChapteredBook)
                             {
                                 var textBefore = StringUtils.GetText(htmlTextBefore);
                                 if (!textBefore.EndsWith(" "))
@@ -1002,99 +1005,96 @@ namespace BibleCommon.Services
         {
             hierarchySearchResult = HierarchySearchManager.GetHierarchyObject(
                                                 ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.AllVerses);
-            if (hierarchySearchResult.ResultType == HierarchySearchManager.HierarchySearchResultType.Successfully)
+            if (hierarchySearchResult.FoundSuccessfully)
             {
-                if (hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder
-                    || hierarchySearchResult.HierarchyStage == HierarchySearchManager.HierarchyStage.Page)
+                if (hierarchySearchResult.HierarchyObjectInfo.PageId != notePageId.Id)
                 {
-                    if (hierarchySearchResult.HierarchyObjectInfo.PageId != notePageId.Id)
-                    {
-                        if (onHierarchyElementFound != null)
-                            onHierarchyElementFound(hierarchySearchResult);
+                    if (onHierarchyElementFound != null)
+                        onHierarchyElementFound(hierarchySearchResult);
 
-                        bool isChapter = VersePointerSearchResult.IsChapter(resultType);
+                    //bool isChapter = VersePointerSearchResult.IsChapter(resultType);
+                    var isChapter = vp.IsChapter;
 
-                        if ((isChapter ^ vp.IsChapter))  // данные расходятся. что-то тут не чисто. запишем варнинг и ничего делать не будем
+                    //if ((isChapter ^ vp.IsChapter))  // данные расходятся. что-то тут не чисто. запишем варнинг и ничего делать не будем
+                    //{
+                    //    Logger.LogWarning("Invalid verse result: '{0}' - '{1}'", vp.OriginalVerseName, resultType);
+                    //}
+                    //else
+                    //{
+                        if ((!isChapter || excludedVersesLinking || forceAnalyzeChapter) && linkDepth >= AnalyzeDepth.Full)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем. Но если у нас стоит excludedVersesLinking, то сразу обрабатываем
                         {
-                            Logger.LogWarning("Invalid verse result: '{0}' - '{1}'", vp.OriginalVerseName, resultType);
-                        }
-                        else
-                        {
-                            if ((!isChapter || excludedVersesLinking || forceAnalyzeChapter) && linkDepth >= AnalyzeDepth.Full)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем. Но если у нас стоит excludedVersesLinking, то сразу обрабатываем
+                            bool canContinue = true;
+
+                            if (!excludedVersesLinking)  // иначе всё равно привязываем
                             {
-                                bool canContinue = true;
+                                if (isExcluded || IsExcludedCurrentNotePage)
+                                    canContinue = false;
 
-                                if (!excludedVersesLinking)  // иначе всё равно привязываем
+                                if (canContinue)
                                 {
-                                    if (isExcluded || IsExcludedCurrentNotePage)
-                                        canContinue = false;
-
-                                    if (canContinue)
+                                    if (!isChapter)
                                     {
-                                        if (VersePointerSearchResult.IsVerse(resultType))
+                                        if (globalChapterSearchResult != null)
                                         {
-                                            if (globalChapterSearchResult != null)
+                                            if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString)
                                             {
-                                                if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString)
+                                                if (!isInBrackets)
                                                 {
-                                                    if (!isInBrackets)
-                                                    {
-                                                        if (globalChapterSearchResult.VersePointer.IsMultiVerse)
-                                                            if (globalChapterSearchResult.VersePointer.IsInVerseRange(vp.Verse.GetValueOrDefault(0)))
-                                                                canContinue = false;    // если указан уже диапазон, а далее идут пояснения, то не отмечаем их заметками
-                                                    }
-                                                }
-                                                //else
-                                                //{
-                                                //    if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter)
-                                                //    {
-                                                //        if (!isInBrackets)
-                                                //        {
-                                                //            canContinue = false;
-                                                //        }
-                                                //    }
-                                                //}
-                                            }
-                                        }
-                                    }
-
-                                    if (canContinue)
-                                    {
-                                        if (pageChaptersSearchResult != null)
-                                        {
-                                            if (!isInBrackets)
-                                            {
-                                                if (pageChaptersSearchResult.Any(pcsr =>
-                                                {
-                                                    return (pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
-                                                                || pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName)
-                                                            && pcsr.VersePointer.Book.Name == vp.Book.Name
-                                                            && IsNumberInRange(vp.Chapter.Value, pcsr.VersePointer.Chapter.Value, pcsr.VersePointer.TopChapter);
-                                                }))
-                                                {
-                                                    canContinue = false;  // то есть среди исключаемых глав есть текущая
+                                                    if (globalChapterSearchResult.VersePointer.IsMultiVerse)
+                                                        if (globalChapterSearchResult.VersePointer.IsInVerseRange(vp.Verse.GetValueOrDefault(0)))
+                                                            canContinue = false;    // если указан уже диапазон, а далее идут пояснения, то не отмечаем их заметками
                                                 }
                                             }
+                                            //else
+                                            //{
+                                            //    if (globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter)
+                                            //    {
+                                            //        if (!isInBrackets)
+                                            //        {
+                                            //            canContinue = false;
+                                            //        }
+                                            //    }
+                                            //}
                                         }
                                     }
                                 }
 
                                 if (canContinue)
                                 {
-                                    var verses = LinkVerseToNotesPage(ref oneNoteApp, vp, verseWeight, versePosition, isChapter,
-                                        hierarchySearchResult.HierarchyObjectInfo,
-                                        notePageId,
-                                        notePageContentObjectId, createLinkToNotesPage, notesPageName, notesParentPageName, notesPageWidth,
-                                        notesPageLevel, isImportantVerse, force, processAsExtendedVerse);
-
-                                    if (processedVerses != null)
-                                        processedVerses.AddRange(verses);
+                                    if (pageChaptersSearchResult != null)
+                                    {
+                                        if (!isInBrackets)
+                                        {
+                                            if (pageChaptersSearchResult.Any(pcsr =>
+                                            {
+                                                return (pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
+                                                            || pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName)
+                                                        && pcsr.VersePointer.Book.Name == vp.Book.Name
+                                                        && IsNumberInRange(vp.Chapter.Value, pcsr.VersePointer.Chapter.Value, pcsr.VersePointer.TopChapter);
+                                            }))
+                                            {
+                                                canContinue = false;  // то есть среди исключаемых глав есть текущая
+                                            }
+                                        }
+                                    }
                                 }
                             }
 
-                            return true;
+                            if (canContinue)
+                            {
+                                var verses = LinkVerseToNotesPage(ref oneNoteApp, vp, verseWeight, versePosition, isChapter,
+                                    hierarchySearchResult.HierarchyObjectInfo,
+                                    notePageId,
+                                    notePageContentObjectId, createLinkToNotesPage, notesPageName, notesParentPageName, notesPageWidth,
+                                    notesPageLevel, isImportantVerse, force, processAsExtendedVerse);
+
+                                if (processedVerses != null)
+                                    processedVerses.AddRange(verses);
+                            }
                         }
-                    }
+
+                        return true;
+                    //}
                 }
             }
 
@@ -1203,7 +1203,41 @@ namespace BibleCommon.Services
             {
                 notesPageId = OneNoteProxy.Instance.GetNotesPageId(ref oneNoteApp,
                     verseHierarchyObjectInfo.SectionId,
-                    verseHierarchyObjectInfo.PageId, biblePageName, notesPageName, out pageWasCreated, notesParentPageName, notesPageLevel);                    
+                    verseHierarchyObjectInfo.PageId, biblePageName, notesPageName, out pageWasCreated, notesParentPageName, notesPageLevel);
+            }
+            catch (NotFoundVerseLinkPageExceptions)
+            {   
+                // возможно дело в устаревшем кэше                
+
+                if (verseHierarchyObjectInfo.LoadedFromCache)
+                {
+                    var fullSearchResult = HierarchySearchManager.GetHierarchyObject(
+                                                ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.AllVerses, false);
+
+                    if (fullSearchResult.FoundSuccessfully)
+                    {
+                        if (fullSearchResult.HierarchyObjectInfo.PageId != notePageId.Id)
+                        {
+                            verseHierarchyObjectInfo = fullSearchResult.HierarchyObjectInfo;
+                            try
+                            {
+                                notesPageId = OneNoteProxy.Instance.GetNotesPageId(ref oneNoteApp,
+                                          verseHierarchyObjectInfo.SectionId,
+                                          verseHierarchyObjectInfo.PageId, biblePageName, notesPageName, out pageWasCreated, notesParentPageName, notesPageLevel);
+
+                                if (!string.IsNullOrEmpty(notesPageId))  // значит действительно кэш устарел. Надо его удалить и написать об этом предупреждение                                                   
+                                {
+                                    OneNoteProxy.Instance.CleanBibleVersesLinksCache();
+                                    Logger.LogWarning(BibleCommon.Resources.Constants.BibleVersesLinksCacheWasCleaned);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogError(ex);
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -1290,18 +1324,52 @@ namespace BibleCommon.Services
         /// <param name="pageDocument"></param>
         /// <param name="xnm"></param>
         /// <returns></returns>
-        internal static XElement GetChapterNotesPageLink(XDocument pageDocument, XmlNamespaceManager xnm)
+        public static XElement GetChapterNotesPageLink(XDocument pageDocument, XmlNamespaceManager xnm)
         {
-            XElement notesLinkElement = pageDocument.Root.XPathSelectElement("one:Outline/one:OEChildren", xnm);
+            XElement notesLinkElement = null;
 
-            if (notesLinkElement != null && notesLinkElement.Nodes().Count() == 1)   // похоже на правду                        
+            var oeElMeta = pageDocument.Root.XPathSelectElement(string.Format("one:Outline/one:OEChildren/one:OE/one:Meta[@name=\"{0}\"]", Constants.Key_NotesPageLink), xnm);
+            if (oeElMeta != null)
             {
-                notesLinkElement = notesLinkElement.XPathSelectElement(string.Format("one:OE/one:T[contains(.,'>{0}<')]",
-                    SettingsManager.Instance.PageName_Notes), xnm);
+                notesLinkElement = oeElMeta.Parent.XPathSelectElement("one:T", xnm);
             }
-            else notesLinkElement = null;
+            else  // пробуем искать по-старому (для обратной совместимости)
+            {
+                notesLinkElement = pageDocument.Root.XPathSelectElement("one:Outline/one:OEChildren", xnm);
+
+                if (notesLinkElement != null && notesLinkElement.Nodes().Count() == 1)   // похоже на правду                        
+                {
+                    notesLinkElement = notesLinkElement.XPathSelectElement(string.Format("one:OE/one:T[contains(.,'>{0}<')]",
+                        SettingsManager.Instance.PageName_Notes), xnm);
+
+                    if (notesLinkElement != null)
+                    {
+                        OneNoteUtils.UpdateElementMetaData(notesLinkElement.Parent, Constants.Key_NotesPageLink, "1", xnm);
+                        UpdateChapterNotesPageLinkPosition(
+                                notesLinkElement, 
+                                SettingsManager.Instance.PageWidth_Bible + Constants.ChapterNotesPageLinkOutline_OffsetX,
+                                Constants.ChapterNotesPageLinkOutline_y,
+                                xnm);
+                    }
+                }
+                else 
+                    notesLinkElement = null;
+            }
 
             return notesLinkElement;
+        }
+
+        public static void UpdateChapterNotesPageLinkPosition(XElement chapterNotesPageLinkEl, int x, int y, XmlNamespaceManager xnm)
+        {
+            if (chapterNotesPageLinkEl != null)
+            {
+                var positionEl = chapterNotesPageLinkEl.Parent.Parent.Parent.XPathSelectElement("one:Position", xnm);
+                if (positionEl != null)
+                {
+                    positionEl.SetAttributeValue("x", x);
+                    positionEl.SetAttributeValue("y", y);
+                }
+            }
         }
 
         private bool SetLinkToNotesPageForChapter(XDocument pageDocument, string link, XmlNamespaceManager xnm)
@@ -1315,15 +1383,21 @@ namespace BibleCommon.Services
                 XElement titleElement = pageDocument.Root.XPathSelectElement("one:Title", xnm);
 
                 XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
-                titleElement.AddAfterSelf(new XElement(nms + "Outline",
+                var outlineEl = new XElement(nms + "Outline",
                                  new XElement(nms + "Position",
-                                        new XAttribute("x", "360.0"),
-                                        new XAttribute("y", "14.40000057220459"),
-                                        new XAttribute("z", "1")),
-                                 new XElement(nms + "OEChildren",
-                                   new XElement(nms + "OE",
-                                       new XElement(nms + "T",
-                                           new XCData(link))))));
+                                        new XAttribute("x", SettingsManager.Instance.PageWidth_Bible + Constants.ChapterNotesPageLinkOutline_OffsetX),
+                                        new XAttribute("y", Constants.ChapterNotesPageLinkOutline_y),
+                                        new XAttribute("z", Constants.ChapterNotesPageLinkOutline_z)));
+                var oeChildrenEl = new XElement(nms + "OEChildren");
+                var oeEl = new XElement(nms + "OE",
+                          new XElement(nms + "T",
+                            new XCData(link)));
+
+                OneNoteUtils.UpdateElementMetaData(oeEl, Constants.Key_NotesPageLink, "1", xnm);
+
+                oeChildrenEl.Add(oeEl);
+                outlineEl.Add(oeChildrenEl);
+                titleElement.AddAfterSelf(outlineEl);
 
                 result = true;
             }

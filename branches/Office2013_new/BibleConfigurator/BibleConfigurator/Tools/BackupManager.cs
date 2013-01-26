@@ -71,14 +71,17 @@ namespace BibleConfigurator.Tools
 
                 foreach (string id in notebookIds)
                 {
-                    string notebookName = OneNoteUtils.GetNotebookElementNickname(ref _oneNoteApp, id) + OneNotePackageExtension;
+                    if (OneNoteUtils.NotebookExists(ref _oneNoteApp, id))
+                    {
+                        string notebookName = OneNoteUtils.GetNotebookElementNickname(ref _oneNoteApp, id) + OneNotePackageExtension;
 
-                    _notebookNames.Add(notebookName);
+                        _notebookNames.Add(notebookName);
 
-                    BackupNotebook(id, notebookName);                    
-                    
-                    if (_form.StopLongProcess)
-                        throw new ProcessAbortedByUserException();
+                        BackupNotebook(id, notebookName);
+
+                        if (_form.StopLongProcess)
+                            throw new ProcessAbortedByUserException();
+                    }
                 }                
             }
             catch (ProcessAbortedByUserException)
@@ -177,10 +180,11 @@ namespace BibleConfigurator.Tools
             return new List<string>(SettingsManager.Instance.SelectedNotebooksForAnalyze.ConvertAll(notebook => notebook.NotebookId)) 
             {
                 SettingsManager.Instance.NotebookId_Bible,
-                //SettingsManager.Instance.NotebookId_BibleStudy,
-                //SettingsManager.Instance.NotebookId_BibleComments //,
-                //SettingsManager.Instance.NotebookId_BibleNotesPages                
-            }.Distinct();
+                SettingsManager.Instance.NotebookId_BibleStudy,
+                SettingsManager.Instance.NotebookId_BibleComments,
+                SettingsManager.Instance.NotebookId_SupplementalBible,
+                SettingsManager.Instance.NotebookId_Dictionaries                
+            }.Where(n => n != null).Distinct();
         }
 
         private void PackfilesToZip()

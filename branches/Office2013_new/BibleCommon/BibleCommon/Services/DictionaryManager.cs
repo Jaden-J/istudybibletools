@@ -191,16 +191,7 @@ namespace BibleCommon.Services
                             oneNoteAppSafe.SyncHierarchy(dictionarySectionId);
                         });
 
-                        for (var i = 0; i < 3; i++)
-                        {
-                            Thread.Sleep(1000);
-                            if (checkIfExternalProcessAborted != null)
-                            {
-                                if (checkIfExternalProcessAborted())
-                                    throw new ProcessAbortedByUserException();
-                            }
-                            System.Windows.Forms.Application.DoEvents();
-                        }
+                        Utils.Wait(checkIfExternalProcessAborted);
 
                         WaitWhileDictionaryIsCreating(ref oneNoteApp, dictionarySectionId, dictionaryPagesCount, attemptsCount + 1, checkIfExternalProcessAborted);
                     }
@@ -231,7 +222,7 @@ namespace BibleCommon.Services
                         }
                         catch (COMException ex)
                         {
-                            if (!ex.Message.Contains(Utils.GetHexError(Error.hrObjectDoesNotExist)))
+                            if (!Utils.IsError(ex, Error.hrObjectDoesNotExist))
                                 throw;
                         }
                     }
@@ -280,7 +271,7 @@ namespace BibleCommon.Services
             }
             catch (COMException ex)
             {
-                if (ex.Message.Contains(Utils.GetHexError(Error.hrObjectDoesNotExist)))
+                if (Utils.IsError(ex, Error.hrObjectDoesNotExist))
                 {
                     using (var form = new MessageForm(BibleCommon.Resources.Constants.RebuldDictionaryCache, BibleCommon.Resources.Constants.Warning,
                             System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question))

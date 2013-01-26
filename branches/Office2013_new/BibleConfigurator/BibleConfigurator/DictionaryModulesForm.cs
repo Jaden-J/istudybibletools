@@ -49,7 +49,7 @@ namespace BibleConfigurator
                     throw new InvalidNotebookException(BibleCommon.Resources.Constants.NotebookIsLocalAndNotSupportedForDictionaries);
 
             MainForm.PrepareForLongProcessing(selectedModuleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
-            DictionaryManager.AddDictionary(ref _oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true, () => Logger.AbortedByUsers);
+            DictionaryManager.AddDictionary(ref _oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, true, () => Logger.AbortedByUser);
             Logger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexDictionary);
 
             List<string> notFoundTerms;
@@ -181,6 +181,8 @@ namespace BibleConfigurator
 
             if (!DictionaryTermsCacheManager.CacheIsActive(moduleInfo.ShortName))
             {
+                DictionaryManager.WaitWhileDictionaryIsCreating(ref _oneNoteApp, sectionId, moduleInfo.NotebooksStructure.DictionaryPagesCount, 0, () => Logger.AbortedByUser);
+
                 MainForm.PrepareForLongProcessing(moduleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
                 Logger.Preffix = string.Format("{0} {1}: ", BibleCommon.Resources.Constants.IndexDictionary, moduleInfo.ShortName);
 
