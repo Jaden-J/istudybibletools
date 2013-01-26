@@ -75,7 +75,7 @@ namespace BibleCommon.Services
             CheckModules();
 
             _oneNoteApp = oneNoteApp;
-            _isOneNote2010 = OneNoteUtils.IsOneNote2010Cached(_oneNoteApp);
+            _isOneNote2010 = true; // OneNoteUtils.IsOneNote2010Cached(_oneNoteApp);
         }
 
         public static bool IsModuleSupported(ModuleInfo moduleInfo)
