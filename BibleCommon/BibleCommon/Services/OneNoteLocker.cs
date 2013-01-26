@@ -9,6 +9,8 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Threading;
 using Microsoft.Office.Interop.OneNote;
+using BibleCommon.Contracts;
+using BibleCommon.Common;
 
 namespace BibleCommon.Services
 {
@@ -31,20 +33,26 @@ namespace BibleCommon.Services
         }
 
 
-        public static void UnlockBible(ref Application oneNoteApp)
+        public static void UnlockBible(ref Application oneNoteApp, bool wait = false, Func<bool> checkIfExternalProcessAborted = null)
         {
             string bibleHierarchyId = string.IsNullOrEmpty(SettingsManager.Instance.SectionGroupId_Bible)
                     ? SettingsManager.Instance.NotebookId_Bible : SettingsManager.Instance.SectionGroupId_Bible;
 
             LockOrUnlockHierarchy(ref oneNoteApp, bibleHierarchyId, false);
+
+            if (wait)
+                WaitForHierarchyIsUnlocked(ref oneNoteApp, bibleHierarchyId, 0, checkIfExternalProcessAborted);            
         }
 
-        public static void UnlockSupplementalBible(ref Application oneNoteApp)
+        public static void UnlockSupplementalBible(ref Application oneNoteApp, bool wait = false, Func<bool> checkIfExternalProcessAborted = null)
         {
             string supplementalBibleId = SettingsManager.Instance.GetValidSupplementalBibleNotebookId(ref oneNoteApp);
 
             if (!string.IsNullOrEmpty(supplementalBibleId))
                 LockOrUnlockHierarchy(ref oneNoteApp, supplementalBibleId, false);
+
+            if (wait)
+                WaitForHierarchyIsUnlocked(ref oneNoteApp, supplementalBibleId, 0, checkIfExternalProcessAborted);
         }
 
         public static void LockCurrentSection(ref Application oneNoteApp)
@@ -111,6 +119,37 @@ namespace BibleCommon.Services
         private static void UnlockSection(string sectionFilePath)
         {
             File.SetAttributes(sectionFilePath, FileAttributes.Normal);    // will throw NotSupportedException if Bible is stored in SkyDrive         
+        }
+
+        public static void WaitForHierarchyIsUnlocked(ref Application oneNoteApp, string hierarchyId, int attemptsCount, Func<bool> checkIfExternalProcessAborted)
+        {
+            string folderPath = OneNoteUtils.GetElementPath(ref oneNoteApp, hierarchyId);
+
+            if (attemptsCount < 10)   // 30 секунд
+            {
+
+                try
+                {
+                    var success = true;
+                    foreach (var filePath in Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories))
+                    {
+                        if ((File.GetAttributes(filePath) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                        {
+                            success = false;
+                            break;
+                        }
+                    }
+
+                    if (!success)
+                    {
+                        Utils.Wait(checkIfExternalProcessAborted);
+                        WaitForHierarchyIsUnlocked(ref oneNoteApp, hierarchyId, attemptsCount + 1, checkIfExternalProcessAborted);
+                    }
+                }
+                catch (NotSupportedException)
+                {
+                }                
+            }
         }
     }
 }

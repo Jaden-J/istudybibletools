@@ -22,5 +22,10 @@ namespace TestProject
         {
             Console.WriteLine(message, args);
         }
+
+        public bool AbortedByUser
+        {
+            get { return false; }
+        }
     }
 }

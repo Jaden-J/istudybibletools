@@ -7,6 +7,8 @@ using System.IO;
 using BibleCommon.Consts;
 using System.Xml.Serialization;
 using Microsoft.Office.Interop.OneNote;
+using BibleCommon.Common;
+using System.Threading;
 
 
 namespace BibleCommon.Helpers
@@ -148,9 +150,28 @@ namespace BibleCommon.Helpers
             return result;
         }
 
-        public static string GetHexError(Error error)
+        public static bool IsError(Exception ex, Error error)
+        {
+            return ex.Message.Contains(Utils.GetHexError(error));
+        }
+
+        private static string GetHexError(Error error)
         {
             return string.Format("0x{0}", Convert.ToString((int)error, 16));            
+        }
+
+        public static void Wait(Func<bool> checkIfExternalProcessAborted)
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                Thread.Sleep(1000);
+                if (checkIfExternalProcessAborted != null)
+                {
+                    if (checkIfExternalProcessAborted())
+                        throw new ProcessAbortedByUserException();
+                }
+                System.Windows.Forms.Application.DoEvents();
+            }
         }
     }
 }

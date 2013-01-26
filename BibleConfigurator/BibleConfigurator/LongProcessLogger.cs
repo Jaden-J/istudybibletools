@@ -12,7 +12,7 @@ namespace BibleConfigurator
     {
         private MainForm _form;
         public string Preffix { get; set; }
-        public bool AbortedByUsers { get; set; }
+        public bool AbortedByUser { get; set; }
 
         public LongProcessLogger(MainForm form)        
         {
@@ -37,7 +37,7 @@ namespace BibleConfigurator
 
         private void LogMessageInternal(string message, params object[] args)        
         {
-            if (AbortedByUsers)
+            if (AbortedByUser)
                 throw new ProcessAbortedByUserException();
 
             _form.PerformProgressStep(FormatMessage(message, args));

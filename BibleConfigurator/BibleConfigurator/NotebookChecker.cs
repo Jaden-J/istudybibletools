@@ -22,17 +22,20 @@ namespace BibleConfigurator
 
             if (!string.IsNullOrEmpty(notebookId))
             {
-                OneNoteProxy.HierarchyElement notebookEl = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsSections, true);
-                var notebook = module.GetNotebook(notebookType);
+                OneNoteProxy.HierarchyElement notebookEl = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsSections, true);                
 
                 try
                 {
                     switch (notebookType)
                     {   
+                        case ContainerType.Single:
+                            CheckNotebookIsSingle(ref oneNoteApp, module, notebookEl.Content.Root, notebookEl.Xnm);
+                            break;
                         case ContainerType.BibleStudy:
                             CheckElementIsBibleStudy(module, notebookEl.Content.Root, notebookEl.Xnm);
                             break;
                         default:
+                            var notebook = module.GetNotebook(notebookType);
                             CheckContainer(notebook, notebookEl.Content.Root, notebookEl.Xnm);
                             CheckNotebookMetadata(ref oneNoteApp, module, notebookId, notebookType, notebookEl);     // то есть проверка показала, что записная книжка похожа на Библию. Теперь посмотрим, есть ли информация в метаданных                       
                             break;
@@ -49,6 +52,27 @@ namespace BibleConfigurator
             return false;
         }
 
+        private static void CheckNotebookIsSingle(ref Application oneNoteApp, ModuleInfo module, XElement notebookEl, XmlNamespaceManager xnm)
+        {
+            var sectionGroups = notebookEl.XPathSelectElements(string.Format("one:SectionGroup[{0}]", OneNoteUtils.NotInRecycleXPathCondition), xnm).ToArray();
+            if (sectionGroups.Count() != 3)
+                throw new InvalidNotebookException("SectionGroup count != 3");
+
+            var bibleExists = ElementIsBible(module, sectionGroups[0], xnm)
+                || ElementIsBible(module, sectionGroups[1], xnm)
+                || ElementIsBible(module, sectionGroups[2], xnm);
+
+            if (!bibleExists)
+                throw new InvalidNotebookException("Bible SectionGroup not found");
+
+            var bibleCommentsExists = ElementIsBibleComments(module, sectionGroups[0], xnm)
+                || ElementIsBibleComments(module, sectionGroups[1], xnm)
+                || ElementIsBibleComments(module, sectionGroups[2], xnm);
+
+            if (!bibleCommentsExists)
+                throw new InvalidNotebookException("BibleComments SectionGroup not found");
+        }
+
         public static bool ElementIsBible(ModuleInfo module, XElement element, XmlNamespaceManager xnm)
         {
             try
@@ -60,7 +84,6 @@ namespace BibleConfigurator
             {
                 return false;
             }
-
         }
 
         public static bool ElementIsBibleComments(ModuleInfo module, XElement element, XmlNamespaceManager xnm)

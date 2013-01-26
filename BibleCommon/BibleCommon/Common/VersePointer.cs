@@ -388,6 +388,8 @@ namespace BibleCommon.Common
         public string OriginalVerseName { get; set; }   
         public string OriginalBookName { get; set; }
 
+        public bool WasChangedVerseAsOneChapteredBook { get; set; }
+
         /// <summary>
         /// родительская ссылка. Например если мы имеем дело со стихом диапазона, то здесь хранится стих, являющийся диапазоном
         /// </summary>
@@ -670,6 +672,17 @@ namespace BibleCommon.Common
             }
 
             return s;
+        }
+
+        public void ChangeVerseAsOneChapteredBook()
+        {
+            Verse = Chapter;
+            _topVerse = TopChapter;
+
+            Chapter = 1;
+            _topChapter = null;
+
+            WasChangedVerseAsOneChapteredBook = true;
         }
 
         private static string TrimBookName(string bookName, out bool endsWithDot)

@@ -163,6 +163,9 @@ namespace BibleNoteLinker
                 _originalFormHeight = this.Height;
                 this.Height = FirstFormHeight;
 
+                if (SettingsManager.Instance.IsSingleNotebook)
+                    tsmiSeelctNotebooks.Enabled = false;
+
                 new Thread(CheckForNewerVersion).Start();
             }
             catch (Exception ex)
@@ -252,6 +255,7 @@ namespace BibleNoteLinker
 
             using (var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(messages))
             {
+                errorsForm.LogFilePath = Logger.LogFilePath;
                 errorsForm.ShowDialog();
             }
         }

@@ -141,7 +141,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;lbErrors.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="btnOk.Location" type="System.Drawing.Point, System.Drawing">
     <value>417, 227</value>
@@ -165,10 +165,10 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnOk.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="btnSaveToFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 226</value>
+    <value>13, 227</value>
   </data>
   <data name="btnSaveToFile.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 23</value>
@@ -189,13 +189,37 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnSaveToFile.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <metadata name="saveFileDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
   <data name="saveFileDialog.Filter" xml:space="preserve">
     <value>.txt files|*.txt</value>
+  </data>
+  <data name="btnOpenLog.Location" type="System.Drawing.Point, System.Drawing">
+    <value>94, 227</value>
+  </data>
+  <data name="btnOpenLog.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="btnOpenLog.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="btnOpenLog.Text" xml:space="preserve">
+    <value>Open Log</value>
+  </data>
+  <data name="&gt;&gt;btnOpenLog.Name" xml:space="preserve">
+    <value>btnOpenLog</value>
+  </data>
+  <data name="&gt;&gt;btnOpenLog.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnOpenLog.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;btnOpenLog.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>

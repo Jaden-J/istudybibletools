@@ -90,7 +90,7 @@ namespace BibleConfigurator.Tools
             notePageDocument = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
 
             XElement columns = notePageDocument.Root.XPathSelectElement("//one:Table/one:Columns", xnm);
-            if (columns != null)
+            if (columns != null)  // значит страницы главы Библии, а не, например, начальная страница книги
             {
 
                 XElement column1 = columns.XPathSelectElement("one:Column[1]", xnm);
@@ -102,7 +102,22 @@ namespace BibleConfigurator.Tools
                 SetWidthAttribute(column2, 37);
                 SetLockedAttribute(column2);
 
+                UpdateChapterNotesPageLink(notePageDocument, width, xnm);              
+
                 OneNoteUtils.UpdatePageContentSafe(ref _oneNoteApp, notePageDocument, xnm);
+            }
+        }
+
+        private void UpdateChapterNotesPageLink(XDocument notePageDocument, int width, XmlNamespaceManager xnm)
+        {
+            var chapterNotesPageLinkEl = NoteLinkManager.GetChapterNotesPageLink(notePageDocument, xnm);
+            if (chapterNotesPageLinkEl != null)
+            {
+                NoteLinkManager.UpdateChapterNotesPageLinkPosition(
+                    chapterNotesPageLinkEl,
+                    width + Constants.ChapterNotesPageLinkOutline_OffsetX,
+                    Constants.ChapterNotesPageLinkOutline_y,
+                    xnm);
             }
         }
 
