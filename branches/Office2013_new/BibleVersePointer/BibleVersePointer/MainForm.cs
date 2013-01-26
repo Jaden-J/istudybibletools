@@ -169,7 +169,7 @@ namespace BibleVersePointer
 
         private void NavigateTo(string pageId, params HierarchySearchManager.VerseObjectInfo[] objectsIds)
         {
-            if (objectsIds.Length > 0)
+            if (objectsIds.Length > 0 && !string.IsNullOrEmpty(objectsIds[0].ObjectHref))
             {
                 Process.Start(objectsIds[0].ObjectHref);   // иначе, если делать через NavigateTo, то когда, например, дропбокс изменить имя файла секции (сделает маленькими буквами) - ID меняется и выдаётся ошибка.
             }
