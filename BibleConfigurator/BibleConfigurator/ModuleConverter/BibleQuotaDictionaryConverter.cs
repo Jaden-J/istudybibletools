@@ -41,8 +41,7 @@ namespace BibleConfigurator.ModuleConverter
             Dictionary
         }
 
-        public Application _oneNoteApp;
-        public bool IsOneNote2010 { get; set; }        
+        public Application _oneNoteApp;        
         public string NotebookId { get; set; }        
         public StructureType Type { get; set; }
         public string ManifestFilesFolder { get; set; }
@@ -83,9 +82,7 @@ namespace BibleConfigurator.ModuleConverter
             this.DictionaryName = dictionaryName;
             this.DictionaryDescription = dictionaryDescription;            
             this.DictionarySectionGroupName = dictionarySectionGroupName;
-            this._oneNoteApp = oneNoteApp;
-            IsOneNote2010 = OneNoteUtils.IsOneNote2010Cached(oneNoteApp);
-            IsOneNote2010 = OneNoteUtils.IsOneNote2010Cached(oneNoteApp);
+            this._oneNoteApp = oneNoteApp;            
             this.ManifestFilesFolder = manifestFilesFolder;
             this.NotebookId = OneNoteUtils.GetNotebookIdByName(ref _oneNoteApp, notebookName, true);
             if (string.IsNullOrEmpty(this.NotebookId))
@@ -137,7 +134,7 @@ namespace BibleConfigurator.ModuleConverter
                             termsInPageCount++;
                             termIndex++;
 
-                            var newPageInfo = AddTermToPage(file, pageInfo, termName, termDescription.ToString(), termsInPageCount, prevTerm, ref termIndex, false, IsOneNote2010, xnm);
+                            var newPageInfo = AddTermToPage(file, pageInfo, termName, termDescription.ToString(), termsInPageCount, prevTerm, ref termIndex, false, xnm);
                             if (newPageInfo != null)
                             {
                                 termsInPageCount = Type == StructureType.Strong ? 0 : 1;
@@ -159,7 +156,7 @@ namespace BibleConfigurator.ModuleConverter
                 if (!string.IsNullOrEmpty(termName))
                 {                    
                     termIndex++;
-                    AddTermToPage(file, pageInfo, termName, termDescription.ToString(), termsInPageCount, prevTerm, ref termIndex, true, IsOneNote2010, xnm);
+                    AddTermToPage(file, pageInfo, termName, termDescription.ToString(), termsInPageCount, prevTerm, ref termIndex, true, xnm);
                 }
             }
 
@@ -185,7 +182,7 @@ namespace BibleConfigurator.ModuleConverter
         }
 
         private TermPageInfo AddTermToPage(DictionaryFile file, TermPageInfo pageInfo, string termName, string termDescription,
-            int termsInPageCount, string prevTermName, ref int termIndex, bool isLatestTermInSection, bool isOneNote2010, XmlNamespaceManager xnm)
+            int termsInPageCount, string prevTermName, ref int termIndex, bool isLatestTermInSection, XmlNamespaceManager xnm)
         {
             Console.WriteLine("Term found: {0}", termName); 
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
