@@ -57,7 +57,7 @@ namespace TestProject
                 
                 //GenerateBibleBooks();
 
-                SearchInNotebook();
+                //SearchInNotebook();
 
                 //TestModule();
 
@@ -67,7 +67,7 @@ namespace TestProject
 
                 //SearchStrongTerm(args);
 
-                //AddColorLink();
+                AddColorLink();
 
                 //GenerateRuDictionary();
 
@@ -351,7 +351,7 @@ namespace TestProject
             oneNoteApp.GetPageContent(_oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xml);
             var currentPageDoc = XDocument.Parse(xml);
 
-            var nms = XNamespace.Get("http://schemas.microsoft.com/office/onenote/2010/onenote");
+            var nms = XNamespace.Get("http://schemas.microsoft.com/office/onenote/2013/onenote");
 
             var textEl = new XElement(nms + "Outline",
                             new XElement(nms + "OEChildren",

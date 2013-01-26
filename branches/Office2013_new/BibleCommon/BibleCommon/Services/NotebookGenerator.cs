@@ -231,7 +231,7 @@ namespace BibleCommon.Services
             return AddParallelVerseCellToBibleRow(tableElement, verseRow, verse.GetVerseFullString(), translationIndex, locale);            
         }
 
-        public static void AddParallelBibleTitle(XDocument pageDoc, XElement tableElement, string parallelTranslationModuleName, int bibleIndex, string locale, bool isOneNote2010, XmlNamespaceManager xnm)
+        public static void AddParallelBibleTitle(XDocument pageDoc, XElement tableElement, string parallelTranslationModuleName, int bibleIndex, string locale, XmlNamespaceManager xnm)
         {
             var styleIndex = QuickStyleManager.AddQuickStyleDef(pageDoc, QuickStyleManager.StyleNameH2, QuickStyleManager.PredefinedStyles.H2, xnm);
             var cell = AddParallelVerseCellToBibleRow(tableElement, tableElement.XPathSelectElement("one:Row", xnm), parallelTranslationModuleName, bibleIndex, locale);

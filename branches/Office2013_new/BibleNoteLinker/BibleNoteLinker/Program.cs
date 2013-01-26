@@ -45,7 +45,7 @@ namespace BibleNoteLinker
                     using (NoteLinkManager noteLinkManager = new NoteLinkManager(_oneNoteApp))
                     {
                         noteLinkManager.LinkPageVerses(currentPage.NotebookId, currentPage.Id, NoteLinkManager.AnalyzeDepth.SetVersesLinks, false);
-                        noteLinkManager.SetCursorOnNearestVerse(noteLinkManager.LastAnalyzedVerse);
+                        noteLinkManager.SetCursorOnNearestVerse(noteLinkManager.LastAnalyzedVerse);                        
                     }
                     OneNoteProxy.Instance.CommitAllModifiedPages(ref _oneNoteApp, true, null, null, null);
                 }
