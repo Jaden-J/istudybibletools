@@ -2,7 +2,7 @@
 <customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" loadImage="GetImage">
 	<ribbon>
 		<tabs>
-			<tab id="tabCustom" label="IStudyBibleTools">
+			<tab id="tabCustom" label="ISTUDYBIBLETOOLS">
 				<group id="Tools" label="Инструменты">
 					<button id="VersePointerButton" label="Открыть стих" size="large" screentip="Нажмите, чтобы перейти к нужному месту Писания" onAction="ButtonClick" image="VersePointerButton.png"/>
           <button id="VerseLinkerButton" label="Написать комментарий" size="large" screentip="Нажмите, чтобы оставить комментарий" onAction="ButtonClick" image="VerseLinkerButton.png"/>
