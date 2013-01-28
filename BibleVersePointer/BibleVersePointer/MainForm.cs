@@ -171,7 +171,7 @@ namespace BibleVersePointer
         {
             if (objectsIds.Length > 0 && !string.IsNullOrEmpty(objectsIds[0].ObjectHref))
             {
-                Process.Start(objectsIds[0].ObjectHref);   // иначе, если делать через NavigateTo, то когда, например, дропбокс изменить имя файла секции (сделает маленькими буквами) - ID меняется и выдаётся ошибка.
+                Process.Start(objectsIds[0].ObjectHref);   // иначе, если делать через NavigateTo, то когда, например, дропбокс изменит имя файла секции (сделает маленькими буквами) - ID меняется и выдаётся ошибка.
             }
             else
             {
