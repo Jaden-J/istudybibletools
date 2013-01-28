@@ -27,6 +27,10 @@ namespace BibleCommon.Services
         {            
             public string ObjectId { get; set; }
             public VerseNumber? VerseNumber { get; set; } // Мы, например, искали Быт 4:4 (модуль IBS). А нам вернули Быт 4:3. Здесь будем хранить "3-4".
+
+            /// <summary>
+            /// Важно! Если нет кэша Библии, то это свойство пустое
+            /// </summary>
             public string ObjectHref { get; set; }
 
             public VerseObjectInfo()
