@@ -1200,6 +1200,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на The Notebook type is &apos;Supplemental Bible&apos;.
+        /// </summary>
+        public static string NotebookIsSupplementalBible {
+            get {
+                return ResourceManager.GetString("NotebookIsSupplementalBible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Section group can not be found.
         /// </summary>
         public static string NotebookIteratorCanNotFindSectionGroup {

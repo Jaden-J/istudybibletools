@@ -816,4 +816,7 @@ Please take notice:
   <data name="BibleVersesLinksCacheWasCleaned" xml:space="preserve">
     <value>The Bible cache was found as irrelevant and has been cleared. Next time at OneNote startup you will be asked to reindex the Bible.</value>
   </data>
+  <data name="NotebookIsSupplementalBible" xml:space="preserve">
+    <value>The Notebook type is 'Supplemental Bible'</value>
+  </data>
 </root>
