@@ -115,6 +115,8 @@ namespace BibleVerseLinkerEx
                     try
                     {
                         BibleCommon.Services.OneNoteLocker.UnlockCurrentSection(ref _oneNoteApp);
+                        if (OneNoteUtils.IsOneNote2010Cached(_oneNoteApp))                        
+                            Thread.Sleep(100);                        
                     }
                     catch (NotSupportedException)
                     {
