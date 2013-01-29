@@ -226,6 +226,12 @@ namespace BibleConfigurator
                     CheckContainer(subSectionGroup, subSectionGroupEl, xnm);
                 }
             }
+
+            if (container.Type == ContainerType.Bible)
+            {
+                if ((string)containerEl.Attribute("ID") == SettingsManager.Instance.NotebookId_SupplementalBible)
+                    throw new InvalidNotebookException(Constants.NotebookIsSupplementalBible);                
+            }
         }
 
         private static void CheckSection(SectionInfo section, XElement sectionEl, XmlNamespaceManager xnm)

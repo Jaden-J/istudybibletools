@@ -813,4 +813,7 @@
   <data name="BibleVersesLinksCacheWasCleaned" xml:space="preserve">
     <value>Кэш Библии был очищен, так как был признан неактуальным. При следующем запуске OneNote будет предложено переиндексировать Библию.</value>
   </data>
+  <data name="NotebookIsSupplementalBible" xml:space="preserve">
+    <value>Указанная записная книжка является Справочной Библией</value>
+  </data>
 </root>
