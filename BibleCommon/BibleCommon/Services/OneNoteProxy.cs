@@ -390,7 +390,7 @@ namespace BibleCommon.Services
                     }
                     catch (Exception ex)
                     {
-                        throw new Exception(string.Format(BibleCommon.Resources.Constants.Error_CanNotFindHierarchy, scope, hierarchyId, ex.Message));
+                        throw new Exception(string.Format(BibleCommon.Resources.Constants.Error_CanNotFindHierarchy, scope, hierarchyId, OneNoteUtils.ParseError(ex.Message)));
                     }
 
                     XmlNamespaceManager xnm;
@@ -433,7 +433,7 @@ namespace BibleCommon.Services
                     }
                     catch (COMException ex)
                     {
-                        if (Utils.IsError(ex, Error.hrObjectDoesNotExist))
+                        if (OneNoteUtils.IsError(ex, Error.hrObjectDoesNotExist))
                             throw new Exception("Page does not exists.");
                         else
                             throw;

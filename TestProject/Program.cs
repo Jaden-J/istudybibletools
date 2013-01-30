@@ -23,6 +23,7 @@ using BibleCommon.Scheme;
 using TestProject.Properties;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Globalization;
 
 
 namespace TestProject
@@ -40,6 +41,13 @@ namespace TestProject
             Stopwatch sw = new Stopwatch();
 
             sw.Start();
+
+
+
+
+
+            
+
 
 
             _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
