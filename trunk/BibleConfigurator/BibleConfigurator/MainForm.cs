@@ -308,7 +308,7 @@ namespace BibleConfigurator
                     }
                     catch (COMException ex)
                     {
-                        if (Utils.IsError(ex, Error.hrObjectDoesNotExist))
+                        if (OneNoteUtils.IsError(ex, Error.hrObjectDoesNotExist))
                         {
                             SettingsManager.Instance.DictionariesModules.Remove(dictionaryInfo);
                             LongProcessingDone(string.Empty);
@@ -650,7 +650,7 @@ namespace BibleConfigurator
             catch (Exception ex)
             {
                 if (!silientMode)
-                    throw new SaveParametersException(ex.Message, false);
+                    throw new SaveParametersException(OneNoteUtils.ParseError(ex.Message), false);
                 else
                     BibleCommon.Services.Logger.LogError(ex);
             }

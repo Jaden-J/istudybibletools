@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using BibleCommon.Helpers;
 
 namespace BibleCommon.Services
 {
@@ -19,7 +20,7 @@ namespace BibleCommon.Services
         {
             BibleCommon.Services.Logger.LogError(ex);
 
-            using (var form = new BibleCommon.UI.Forms.MessageForm(ex.Message, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning))
+            using (var form = new BibleCommon.UI.Forms.MessageForm(OneNoteUtils.ParseError(ex.Message), BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning))
             {
                 form.ShowDialog();
             }            
