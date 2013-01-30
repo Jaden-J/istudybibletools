@@ -114,9 +114,7 @@ namespace BibleVerseLinkerEx
                 {
                     try
                     {
-                        BibleCommon.Services.OneNoteLocker.UnlockCurrentSection(ref _oneNoteApp);
-                        if (OneNoteUtils.IsOneNote2010Cached(_oneNoteApp))                        
-                            Thread.Sleep(100);                        
+                        BibleCommon.Services.OneNoteLocker.UnlockCurrentSection(ref _oneNoteApp);                                             
                     }
                     catch (NotSupportedException)
                     {
@@ -136,7 +134,7 @@ namespace BibleVerseLinkerEx
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex.Message);
+                    Logger.LogError(OneNoteUtils.ParseError(ex.Message));
                 }
 
                 if (!string.IsNullOrEmpty(verseLinkPageId))

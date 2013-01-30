@@ -97,7 +97,7 @@ namespace BibleVersePointer
                         }
                         catch (Exception ex)
                         {
-                            Logger.LogError(ex.Message);
+                            Logger.LogError(OneNoteUtils.ParseError(ex.Message));
                         }
                     }
 

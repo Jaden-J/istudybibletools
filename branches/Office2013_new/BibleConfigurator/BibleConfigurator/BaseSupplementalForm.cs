@@ -332,7 +332,7 @@ namespace BibleConfigurator
             catch (Exception ex)
             {
                 BibleCommon.Services.Logger.LogError(ex.ToString());
-                MainForm.LongProcessingDone(string.Format("{0}: {1}", BibleCommon.Resources.Constants.ErrorOccurred, ex.Message));
+                MainForm.LongProcessingDone(string.Format("{0}: {1}", BibleCommon.Resources.Constants.ErrorOccurred, OneNoteUtils.ParseError(ex.Message)));
             }                        
 
             EnableUI(true);
@@ -419,7 +419,7 @@ namespace BibleConfigurator
                 catch (Exception ex)
                 {
                     BibleCommon.Services.Logger.LogError(ex.ToString());
-                    MainForm.LongProcessingDone(string.Format("{0}: {1}", BibleCommon.Resources.Constants.ErrorOccurred, ex.Message));
+                    MainForm.LongProcessingDone(string.Format("{0}: {1}", BibleCommon.Resources.Constants.ErrorOccurred, OneNoteUtils.ParseError(ex.Message)));
                 }
 
                 LoadFormData();

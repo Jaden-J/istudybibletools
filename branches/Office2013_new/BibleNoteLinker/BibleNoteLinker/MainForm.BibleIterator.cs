@@ -341,7 +341,7 @@ namespace BibleNoteLinker
                     }
                     catch (Exception ex)
                     {
-                        if (Utils.IsError(ex, Error.hrObjectDoesNotExist))
+                        if (OneNoteUtils.IsError(ex, Error.hrObjectDoesNotExist))
                         {
                             SettingsManager.Instance.SelectedNotebooksForAnalyze.Remove(notebookInfo);
                             SettingsManager.Instance.Save();

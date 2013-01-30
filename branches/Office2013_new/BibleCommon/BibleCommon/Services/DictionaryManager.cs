@@ -222,7 +222,7 @@ namespace BibleCommon.Services
                         }
                         catch (COMException ex)
                         {
-                            if (!Utils.IsError(ex, Error.hrObjectDoesNotExist))
+                            if (!OneNoteUtils.IsError(ex, Error.hrObjectDoesNotExist))
                                 throw;
                         }
                     }
@@ -271,7 +271,7 @@ namespace BibleCommon.Services
             }
             catch (COMException ex)
             {
-                if (Utils.IsError(ex, Error.hrObjectDoesNotExist))
+                if (OneNoteUtils.IsError(ex, Error.hrObjectDoesNotExist))
                 {
                     using (var form = new MessageForm(BibleCommon.Resources.Constants.RebuldDictionaryCache, BibleCommon.Resources.Constants.Warning,
                             System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question))
