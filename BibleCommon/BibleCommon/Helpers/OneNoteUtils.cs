@@ -13,6 +13,8 @@ using System.Xml.XPath;
 using System.Runtime.InteropServices;
 using System.Threading;
 using BibleCommon.Common;
+using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace BibleCommon.Helpers
 {
@@ -113,7 +115,7 @@ namespace BibleCommon.Helpers
             }
             catch (COMException ex)
             {
-                if (Utils.IsError(ex, Error.hrObjectDoesNotExist))
+                if (OneNoteUtils.IsError(ex, Error.hrObjectDoesNotExist))
                     return false;
                 else
                     throw;
@@ -240,12 +242,12 @@ namespace BibleCommon.Helpers
         }
 
 
-        public static void UpdatePageContentSafe(ref Application oneNoteApp, XDocument pageContent, XmlNamespaceManager xnm)
+        public static void UpdatePageContentSafe(ref Application oneNoteApp, XDocument pageContent, XmlNamespaceManager xnm, bool repeatIfPageIsReadOnly = true)
         {
-            UpdatePageContentSafeInternal(ref oneNoteApp, pageContent, xnm, 0);
+            UpdatePageContentSafeInternal(ref oneNoteApp, pageContent, xnm, repeatIfPageIsReadOnly ? (int?)0 : null);
         }
 
-        private static void UpdatePageContentSafeInternal(ref Application oneNoteApp, XDocument pageContent, XmlNamespaceManager xnm, int attemptsCount)
+        private static void UpdatePageContentSafeInternal(ref Application oneNoteApp, XDocument pageContent, XmlNamespaceManager xnm, int? attemptsCount)
         {
             var inkNodes = pageContent.Root.XPathSelectElements("one:InkDrawing", xnm)
                             .Union(pageContent.Root.XPathSelectElements("//one:OE[.//one:InkDrawing]", xnm))    
@@ -264,14 +266,30 @@ namespace BibleCommon.Helpers
 
             try
             {
-                UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                try
                 {
-                    oneNoteAppSafe.UpdatePageContent(pageContent.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
-                });
+                    UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                    {
+                        oneNoteAppSafe.UpdatePageContent(pageContent.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+                    });
+                }
+                catch (COMException ex)
+                {
+                    if (attemptsCount.GetValueOrDefault(int.MaxValue) < 20)  // 10 секунд - но каждое обновление требует времени. потому на самом деле дольше
+                    {
+                        if (OneNoteUtils.IsError(ex, Error.hrPageReadOnly) || OneNoteUtils.IsError(ex, Error.hrSectionReadOnly))
+                        {
+                            Thread.Sleep(500);
+                            UpdatePageContentSafeInternal(ref oneNoteApp, pageContent, xnm, attemptsCount + 1);
+                        }
+                    }
+                    else
+                        throw;
+                }
             }
             catch (COMException ex)
             {
-                if (Utils.IsError(ex, Error.hrInsertingInk))
+                if (OneNoteUtils.IsError(ex, Error.hrInsertingInk))
                     throw new Exception(Resources.Constants.Error_UpdateError_InksOnPages);               
                 else
                     throw;
@@ -455,6 +473,30 @@ namespace BibleCommon.Helpers
             }
 
             return result;
+        }
+
+        public static bool IsError(Exception ex, Error error)
+        {
+            return ex.Message.IndexOf(GetHexError(error), StringComparison.InvariantCultureIgnoreCase) > -1;
+        }
+
+        private static string GetHexError(Error error)
+        {
+            return string.Format("0x{0}", Convert.ToString((int)error, 16));
+        }
+
+        public static string ParseError(string exceptionMessage)
+        {
+            var originalHexValue = Regex.Match(exceptionMessage, @"0x800[A-F\d]+").Value;
+            if (!string.IsNullOrEmpty(originalHexValue))
+            {
+                var hexValue = originalHexValue.Replace("0x", "FFFFFFFF");
+                long decValue;
+                if (long.TryParse(hexValue, System.Globalization.NumberStyles.HexNumber, CultureInfo.CurrentCulture.NumberFormat, out decValue))
+                    exceptionMessage = exceptionMessage.Replace(originalHexValue, ((Error)decValue).ToString());
+            }
+
+            return exceptionMessage;
         }
     }
 }

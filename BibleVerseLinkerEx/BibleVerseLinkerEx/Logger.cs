@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using BibleCommon.Helpers;
 
 namespace BibleVerseLinkerEx
 {
@@ -16,7 +17,7 @@ namespace BibleVerseLinkerEx
         }
 
         public static void LogError(string message)
-        {
+        {            
             MessageBox.Show(message);
             WasLogged = true;
         }

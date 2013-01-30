@@ -9,6 +9,8 @@ using System.Xml.Serialization;
 using Microsoft.Office.Interop.OneNote;
 using BibleCommon.Common;
 using System.Threading;
+using System.Text.RegularExpressions;
+using System.Globalization;
 
 
 namespace BibleCommon.Helpers
@@ -150,16 +152,6 @@ namespace BibleCommon.Helpers
             return result;
         }
 
-        public static bool IsError(Exception ex, Error error)
-        {
-            return ex.Message.Contains(Utils.GetHexError(error));
-        }
-
-        private static string GetHexError(Error error)
-        {
-            return string.Format("0x{0}", Convert.ToString((int)error, 16));            
-        }
-
         public static void Wait(Func<bool> checkIfExternalProcessAborted)
         {
             for (var i = 0; i < 3; i++)
@@ -172,6 +164,6 @@ namespace BibleCommon.Helpers
                 }
                 System.Windows.Forms.Application.DoEvents();
             }
-        }
+        }   
     }
 }
