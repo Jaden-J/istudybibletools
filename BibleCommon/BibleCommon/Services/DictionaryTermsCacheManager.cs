@@ -21,7 +21,7 @@ namespace BibleCommon.Services
         {
             var dictionaryModuleInfo = SettingsManager.Instance.DictionariesModules.FirstOrDefault(m => m.ModuleName == moduleShortName);
             if (dictionaryModuleInfo == null)
-                throw new ArgumentException("The dictionary '{0}' is not installed", moduleShortName);
+                throw new Exception(string.Format("The dictionary '{0}' is not installed", moduleShortName));
 
             return Path.Combine(Utils.GetCacheFolderPath(), dictionaryModuleInfo.ToString()) + "_terms.cache";
         }
