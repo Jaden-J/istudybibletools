@@ -80,7 +80,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="HTMLPage1.htm" />
     <Content Include="Resources\BibleBooskInfo\kjv.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
