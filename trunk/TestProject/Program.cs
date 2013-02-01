@@ -62,6 +62,9 @@ namespace TestProject
                 //Console.WriteLine(StringUtils.GetQueryParameterValue("http://adjhdjkhsadsd.rudasd&sdsd=adsadasd&dsfsdf=sgfdsdfdsf&key=value", "key"));
                 //return;
 
+
+                ChangeLinksProtocol();
+
                 //ConvertChineseModuleFromTextFiles();
                 
                 //GenerateBibleBooks();
@@ -76,7 +79,7 @@ namespace TestProject
 
                 //SearchStrongTerm(args);
 
-                AddColorLink();
+                //AddColorLink();
 
                 //GenerateRuDictionary();
 
@@ -124,6 +127,14 @@ namespace TestProject
 
             Console.WriteLine("Finish. Elapsed time: {0}", sw.Elapsed);
             Console.ReadKey();
+        }
+
+        private static void ChangeLinksProtocol()
+        {            
+            string currentPageXml;
+             _oneNoteApp.GetPageContent(_oneNoteApp.Windows.CurrentWindow.CurrentPageId, out currentPageXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
+             currentPageXml = currentPageXml.Replace("href=\"onenote://", "href=\"isbtstrongopen:");
+            _oneNoteApp.UpdatePageContent(currentPageXml);
         }
 
         private static void CorrectVineOT()
