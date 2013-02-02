@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading;
+﻿using Microsoft.Office.Interop.OneNote;
+using System;
 using System.IO;
-using System.Windows.Forms;
 
 namespace ISBTCommandHandler
 {
@@ -16,50 +11,30 @@ namespace ISBTCommandHandler
         /// </summary>
         static void Main(params string[] args)
         {
-            if (args.Length == 0)
+            if (args.Length == 1)
             {
-                ServiceBase[] ServicesToRun;
-                ServicesToRun = new ServiceBase[] 
-			    { 
-				    new LinkHandler() 
-			    };
-                ServiceBase.Run(ServicesToRun);
-            }
-            else
-            {
-                TryToSendMessage();       
-            }
-        }
-
-        private static void TryToSendMessage()
-        {
-            try
-            {
-                if (AppMessenger.CheckPrevInstance())
+                try
                 {
-                    
+                    Application oneNoteApp = new Application();
+
+                    var parts = Uri.UnescapeDataString(args[0].Split(new char[] { ':' })[1]).Split(new char[] { ';' });
+
+                    oneNoteApp.NavigateTo(parts[0], parts[1]);
+                }
+                catch (Exception ex)
+                {
+                    string directoryPath = Path.Combine(
+                                                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "IStudyBibleTools"),
+                                                "Logs");
+
+                    if (!Directory.Exists(directoryPath))
+                        Directory.CreateDirectory(directoryPath);
+
+                    var logFilePath = Path.Combine(directoryPath, "ISBTCommandHandler.txt");
+
+                    File.AppendAllText(logFilePath, string.Format("args: {0}, \nException: {1}", string.Join(";\t", args),  ex.ToString()));
                 }
             }
-            catch (Exception ex)
-            {
-                File.WriteAllText("c:\\log.txt", ex.ToString());
-            }
         }
-
-        //protected override void WndProc(ref Message m)
-        //{
-        //    if (m.Msg == AppMessenger.WM_COPYDATA)
-        //    {
-        //        string command =
-        //        AppMessenger.ProcessWM_COPYDATA(m);
-        //        if (command != null)
-        //        {
-
-        //            processCommandLine(command);
-        //            return;
-        //        }
-        //    }
-        //    base.WndProc(ref m);
-        //}
     }
 }

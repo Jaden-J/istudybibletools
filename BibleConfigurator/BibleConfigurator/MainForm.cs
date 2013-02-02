@@ -428,7 +428,7 @@ namespace BibleConfigurator
             SettingsManager.Instance.RubbishPage_Use = chkUseRubbishPage.Checked;
             SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking = chkRubbishExpandMultiVersesLinking.Checked;
             SettingsManager.Instance.RubbishPage_ExcludedVersesLinking = chkRubbishExcludedVersesLinking.Checked;
-            SettingsManager.Instance.UseMiddleStrongLinks = chkNotOneNoteControls.Checked;
+            SettingsManager.Instance.UseProxyLinks = chkUseProxyLinks.Checked;
         }
 
         private void SaveIntegerSettings()
@@ -514,7 +514,7 @@ namespace BibleConfigurator
                 || SettingsManager.Instance.RubbishPage_ExcludedVersesLinking != chkRubbishExcludedVersesLinking.Checked
                 || SettingsManager.Instance.PageWidth_Notes.ToString() != tbNotesPageWidth.Text
                 || SettingsManager.Instance.PageWidth_RubbishNotes.ToString() != tbRubbishNotesPageWidth.Text
-                || SettingsManager.Instance.UseMiddleStrongLinks != chkNotOneNoteControls.Checked;
+                || SettingsManager.Instance.UseProxyLinks != chkUseProxyLinks.Checked;
 
         }
 
@@ -554,26 +554,27 @@ namespace BibleConfigurator
                         Thread.Sleep(LoadParametersPauseBetweenAttempts / freq);
                         System.Windows.Forms.Application.DoEvents();
                     }
-                }                
+                }
+
+                if (!parametersWasLoad)
+                    throw new SaveParametersException(BibleCommon.Resources.Constants.ConfiguratorCanNotRequestDataFromOneNote, true);
+                else
+                {
+                    if (saveModuleInformationIntoFirstPage)
+                    {
+                        if (!string.IsNullOrEmpty(notebookId))
+                            SaveModuleInformationIntoFirstPage(notebookId, module);
+                    }
+
+                    if (!string.IsNullOrEmpty(notebookNickname))
+                        NotebookGenerator.TryToRenameNotebookSafe(ref _oneNoteApp, notebookId, notebookNickname);
+                }
+
             }
             finally
             {
                 LongProcessingDone(string.Empty);                
-            }
-
-            if (!parametersWasLoad)
-                throw new SaveParametersException(BibleCommon.Resources.Constants.ConfiguratorCanNotRequestDataFromOneNote, true);
-            else
-            {
-                if (saveModuleInformationIntoFirstPage)
-                {
-                    if (!string.IsNullOrEmpty(notebookId))
-                        SaveModuleInformationIntoFirstPage(notebookId, module);
-                }
-
-                if (!string.IsNullOrEmpty(notebookNickname))
-                    NotebookGenerator.TryToRenameNotebookSafe(ref _oneNoteApp, notebookId, notebookNickname);
-            }
+            }        
 
             return notebookId;
         }
@@ -897,7 +898,7 @@ namespace BibleConfigurator
             chkRubbishExpandMultiVersesLinking.Checked = SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking;
             chkRubbishExcludedVersesLinking.Checked = SettingsManager.Instance.RubbishPage_ExcludedVersesLinking;
 
-            chkNotOneNoteControls.Checked = SettingsManager.Instance.UseMiddleStrongLinks;
+            chkUseProxyLinks.Checked = SettingsManager.Instance.UseProxyLinks;
 
             chkUseRubbishPage_CheckedChanged(this, new EventArgs());
 
@@ -1174,7 +1175,7 @@ namespace BibleConfigurator
             tbRubbishNotesPageWidth.Enabled = !chkDefaultParameters.Checked;
             chkRubbishExpandMultiVersesLinking.Enabled = !chkDefaultParameters.Checked;
             chkRubbishExcludedVersesLinking.Enabled = !chkDefaultParameters.Checked;
-            chkNotOneNoteControls.Enabled = !chkDefaultParameters.Checked;
+            chkUseProxyLinks.Enabled = !chkDefaultParameters.Checked;
 
             chkUseRubbishPage_CheckedChanged(this, new EventArgs());            
         }
