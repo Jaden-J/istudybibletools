@@ -251,20 +251,18 @@ namespace BibleCommon.Services
                 {
                     string link = null;
 
-                    if (SettingsManager.Instance.UseProxyLinks)
+                    OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
                     {
-                        link = string.Format("{0}:{1};{2}", Constants.ISBTOpenProtocol, pageId, objectId);
-                    }
-                    else
-                    {
-                        OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
-                        {
-                            oneNoteAppSafe.GetHyperlinkToObject(pageId, objectId, out link);
-                        });
-                    }
+                        oneNoteAppSafe.GetHyperlinkToObject(pageId, objectId, out link);
+                    });
+
+                    //if (SettingsManager.Instance.UseProxyLinks)
+                    //{
+                    //    link = link.Replace("onenote:", string.Format("{0}:_", Constants.ISBTOpenProtocol));                            
+                    //}
 
                     //if (!_linksCache.ContainsKey(key))   // пока в этом нет смысла
-                        _linksCache.Add(key, link);
+                    _linksCache.Add(key, link);
                 }
             }
 
