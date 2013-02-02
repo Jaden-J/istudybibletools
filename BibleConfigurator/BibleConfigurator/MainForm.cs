@@ -428,7 +428,7 @@ namespace BibleConfigurator
             SettingsManager.Instance.RubbishPage_Use = chkUseRubbishPage.Checked;
             SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking = chkRubbishExpandMultiVersesLinking.Checked;
             SettingsManager.Instance.RubbishPage_ExcludedVersesLinking = chkRubbishExcludedVersesLinking.Checked;
-            SettingsManager.Instance.UseMiddleStrongLinks = chkNotOneNoteControls.Checked;
+            SettingsManager.Instance.UseProxyLinks = chkUseProxyLinks.Checked;
         }
 
         private void SaveIntegerSettings()
@@ -514,7 +514,7 @@ namespace BibleConfigurator
                 || SettingsManager.Instance.RubbishPage_ExcludedVersesLinking != chkRubbishExcludedVersesLinking.Checked
                 || SettingsManager.Instance.PageWidth_Notes.ToString() != tbNotesPageWidth.Text
                 || SettingsManager.Instance.PageWidth_RubbishNotes.ToString() != tbRubbishNotesPageWidth.Text
-                || SettingsManager.Instance.UseMiddleStrongLinks != chkNotOneNoteControls.Checked;
+                || SettingsManager.Instance.UseProxyLinks != chkUseProxyLinks.Checked;
 
         }
 
@@ -897,7 +897,7 @@ namespace BibleConfigurator
             chkRubbishExpandMultiVersesLinking.Checked = SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking;
             chkRubbishExcludedVersesLinking.Checked = SettingsManager.Instance.RubbishPage_ExcludedVersesLinking;
 
-            chkNotOneNoteControls.Checked = SettingsManager.Instance.UseMiddleStrongLinks;
+            chkUseProxyLinks.Checked = SettingsManager.Instance.UseProxyLinks;
 
             chkUseRubbishPage_CheckedChanged(this, new EventArgs());
 
@@ -1174,7 +1174,7 @@ namespace BibleConfigurator
             tbRubbishNotesPageWidth.Enabled = !chkDefaultParameters.Checked;
             chkRubbishExpandMultiVersesLinking.Enabled = !chkDefaultParameters.Checked;
             chkRubbishExcludedVersesLinking.Enabled = !chkDefaultParameters.Checked;
-            chkNotOneNoteControls.Enabled = !chkDefaultParameters.Checked;
+            chkUseProxyLinks.Enabled = !chkDefaultParameters.Checked;
 
             chkUseRubbishPage_CheckedChanged(this, new EventArgs());            
         }
