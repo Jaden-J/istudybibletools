@@ -131,11 +131,11 @@ namespace TestProject
         private static void ChangeLinksProtocol()
         {            
             string currentPageXml;
-             _oneNoteApp.GetPageContent(_oneNoteApp.Windows.CurrentWindow.CurrentPageId, out currentPageXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
-             currentPageXml = currentPageXml.Replace("href=\"onenote://", "href=\"isbtstrongopen:");
+            _oneNoteApp.GetPageContent(_oneNoteApp.Windows.CurrentWindow.CurrentPageId, out currentPageXml, PageInfo.piBasic, XMLSchema.xs2013);
+            currentPageXml = currentPageXml.Replace("href=\"onenote:http", "href=\"isbtopen:http").Replace("href=\"onenote://", "href=\"isbtopen:");
             _oneNoteApp.UpdatePageContent(currentPageXml);
         }
-
+         
         private static void CorrectVineOT()
         {
             var vineOTFilePath = Path.Combine(ForGeneratingFolderPath, string.Format("{0}\\{0}.htm", "vineot"));

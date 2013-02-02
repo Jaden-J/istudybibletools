@@ -37,12 +37,13 @@ namespace BibleCommon.Consts
         public static readonly int DefaultPageWidth_Notes = 500;
         public static readonly int DefaultPageWidth_RubbishNotes = 500;
         public static readonly int DefaultPageWidth_Bible = 500;
+        public static readonly bool Default_UseProxyLinks = false;
         public static readonly bool DefaultExpandMultiVersesLinking = true;
         public static readonly bool DefaultExcludedVersesLinking = false;
         public static readonly bool DefaultUseDifferentPagesForEachVerse = true;
         public static readonly bool DefaultRubbishPage_Use = false;
         public static readonly bool DefaultRubbishPage_ExpandMultiVersesLinking = true;
-        public static readonly bool DefaultRubbishPage_ExcludedVersesLinking = true;                
+        public static readonly bool DefaultRubbishPage_ExcludedVersesLinking = true;        
 
         public static readonly string ResourceName_DefaultPageNameDefaultBookOverview = "DefaultPageNameDefaultBookOverview";
         public static readonly string ResourceName_DefaultPageNameDefaultComments = "DefaultPageNameDefaultComments";

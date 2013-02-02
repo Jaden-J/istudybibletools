@@ -450,7 +450,7 @@ namespace BibleCommon.Services
             this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
             this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking);
             this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking);
-            this.UseProxyLinks = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseProxyLinks, !OneNoteUtils.IsOneNote2010Cached);
+            this.UseProxyLinks = Consts.Constants.Default_UseProxyLinks; // GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseProxyLinks, !OneNoteUtils.IsOneNote2010Cached);
 
             this.SupplementalBibleLinkName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SupplementalBibleLinkName,
                                                   GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName));
@@ -526,7 +526,7 @@ namespace BibleCommon.Services
             this.PageWidth_RubbishNotes = Consts.Constants.DefaultPageWidth_RubbishNotes;
             this.RubbishPage_ExpandMultiVersesLinking = Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking;
             this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
-            this.UseProxyLinks = !OneNoteUtils.IsOneNote2010Cached;
+            this.UseProxyLinks = Consts.Constants.Default_UseProxyLinks; // !OneNoteUtils.IsOneNote2010Cached;
 
             LoadDefaultLocalazibleSettings();
         }
@@ -550,11 +550,11 @@ namespace BibleCommon.Services
                 && this.ExpandMultiVersesLinking == false
                 && this.ExcludedVersesLinking == Consts.Constants.DefaultExcludedVersesLinking
                 && this.UseDifferentPagesForEachVerse == false
-                && this.RubbishPage_Use == Consts.Constants.DefaultRubbishPage_Use                
+                && this.RubbishPage_Use == Consts.Constants.DefaultRubbishPage_Use
                 && this.PageWidth_RubbishNotes == Consts.Constants.DefaultPageWidth_RubbishNotes
                 && this.RubbishPage_ExpandMultiVersesLinking == Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking
                 && this.RubbishPage_ExcludedVersesLinking == Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking
-                && this.UseProxyLinks == !OneNoteUtils.IsOneNote2010Cached
+                && this.UseProxyLinks == Consts.Constants.Default_UseProxyLinks // !OneNoteUtils.IsOneNote2010Cached
                 && this.SupplementalBibleLinkName == GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName);
         }
 
