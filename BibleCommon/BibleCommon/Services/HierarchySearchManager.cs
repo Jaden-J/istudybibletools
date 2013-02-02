@@ -230,13 +230,13 @@ namespace BibleCommon.Services
                     return new HierarchySearchResult(ref oneNoteApp, bibleNotebookId, vp, versePointerLink, findAllVerseObjects, true);
                 else if (vp.IsChapter) // возможно стих типа "2Ин 8"
                 {
-                    if (BookHasOnlyOneChapter(ref oneNoteApp, vp, result.HierarchyObjectInfo, useCacheIfAvailable))                        
+                    if (BookHasOnlyOneChapter(ref oneNoteApp, vp, result.HierarchyObjectInfo, useCacheIfAvailable))
                     {
                         var changedVerseResult = TryToChangeVerseAsOneChapteredBookAndSearchInHierarchy(
                             ref oneNoteApp, bibleNotebookId, ref vp, findAllVerseObjects, useCacheIfAvailable, false);
                         if (changedVerseResult != null)
-                            return changedVerseResult;                     
-            }
+                            return changedVerseResult;
+                    }
                 }
             }
             else
