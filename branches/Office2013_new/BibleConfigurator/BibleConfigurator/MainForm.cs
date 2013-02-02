@@ -554,26 +554,27 @@ namespace BibleConfigurator
                         Thread.Sleep(LoadParametersPauseBetweenAttempts / freq);
                         System.Windows.Forms.Application.DoEvents();
                     }
-                }                
+                }
+
+                if (!parametersWasLoad)
+                    throw new SaveParametersException(BibleCommon.Resources.Constants.ConfiguratorCanNotRequestDataFromOneNote, true);
+                else
+                {
+                    if (saveModuleInformationIntoFirstPage)
+                    {
+                        if (!string.IsNullOrEmpty(notebookId))
+                            SaveModuleInformationIntoFirstPage(notebookId, module);
+                    }
+
+                    if (!string.IsNullOrEmpty(notebookNickname))
+                        NotebookGenerator.TryToRenameNotebookSafe(ref _oneNoteApp, notebookId, notebookNickname);
+                }
+
             }
             finally
             {
                 LongProcessingDone(string.Empty);                
-            }
-
-            if (!parametersWasLoad)
-                throw new SaveParametersException(BibleCommon.Resources.Constants.ConfiguratorCanNotRequestDataFromOneNote, true);
-            else
-            {
-                if (saveModuleInformationIntoFirstPage)
-                {
-                if (!string.IsNullOrEmpty(notebookId))
-                    SaveModuleInformationIntoFirstPage(notebookId, module);
-            }
-
-                if (!string.IsNullOrEmpty(notebookNickname))
-                    NotebookGenerator.TryToRenameNotebookSafe(ref _oneNoteApp, notebookId, notebookNickname);
-        }
+            }        
 
             return notebookId;
         }

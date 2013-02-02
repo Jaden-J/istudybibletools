@@ -251,10 +251,17 @@ namespace BibleCommon.Services
                 {
                     string link = null;
 
-                    OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                    if (SettingsManager.Instance.UseProxyLinks)
                     {
-                        oneNoteAppSafe.GetHyperlinkToObject(pageId, objectId, out link);
-                    });
+                        link = string.Format("{0}:{1};{2}", Constants.ISBTOpenProtocol, pageId, objectId);
+                    }
+                    else
+                    {
+                        OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                        {
+                            oneNoteAppSafe.GetHyperlinkToObject(pageId, objectId, out link);
+                        });
+                    }
 
                     //if (!_linksCache.ContainsKey(key))   // пока в этом нет смысла
                         _linksCache.Add(key, link);
