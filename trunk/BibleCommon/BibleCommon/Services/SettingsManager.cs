@@ -161,7 +161,7 @@ namespace BibleCommon.Services
         /// <summary>
         /// Использовать ли промежуточные ссылки, которые открываются комманд-хэндлером OpenVerseHandler
         /// </summary>
-        public bool UseMiddleStrongLinks { get; set; }
+        public bool UseProxyLinks { get; set; }
         
 
         /// <summary>
@@ -450,7 +450,7 @@ namespace BibleCommon.Services
             this.PageWidth_RubbishNotes = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_PageWidthRubbishNotes, 500);
             this.RubbishPage_ExpandMultiVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExpandMultiVersesLinking, Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking);
             this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking);
-            this.UseMiddleStrongLinks = Consts.Constants.DefaultUseMiddleStrongLinks; // GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseMiddleStrongLinks, Consts.Constants.DefaultUseMiddleStrongLinks);
+            this.UseProxyLinks = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseProxyLinks, !OneNoteUtils.IsOneNote2010Cached);
 
             this.SupplementalBibleLinkName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SupplementalBibleLinkName,
                                                   GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName));
@@ -526,7 +526,7 @@ namespace BibleCommon.Services
             this.PageWidth_RubbishNotes = Consts.Constants.DefaultPageWidth_RubbishNotes;
             this.RubbishPage_ExpandMultiVersesLinking = Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking;
             this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
-            this.UseMiddleStrongLinks = Consts.Constants.DefaultUseMiddleStrongLinks;
+            this.UseProxyLinks = !OneNoteUtils.IsOneNote2010Cached;
 
             LoadDefaultLocalazibleSettings();
         }
@@ -554,7 +554,7 @@ namespace BibleCommon.Services
                 && this.PageWidth_RubbishNotes == Consts.Constants.DefaultPageWidth_RubbishNotes
                 && this.RubbishPage_ExpandMultiVersesLinking == Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking
                 && this.RubbishPage_ExcludedVersesLinking == Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking
-                && this.UseMiddleStrongLinks == Consts.Constants.DefaultUseMiddleStrongLinks
+                && this.UseProxyLinks == !OneNoteUtils.IsOneNote2010Cached
                 && this.SupplementalBibleLinkName == GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName);
         }
 
@@ -598,7 +598,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleModules, string.Join(";", this.SupplementalBibleModules.ConvertAll(dm => dm.ToString()).ToArray())),
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleLinkName, this.SupplementalBibleLinkName),                                  
                                   new XElement(Consts.Constants.ParameterName_DictionariesModules, string.Join(";", this.DictionariesModules.ConvertAll(dm => dm.ToString()).ToArray())),
-                                  new XElement(Consts.Constants.ParameterName_UseMiddleStrongLinks, UseMiddleStrongLinks)                                  
+                                  new XElement(Consts.Constants.ParameterName_UseProxyLinks, UseProxyLinks)                                  
                                   );
 
                     if (SelectedNotebooksForAnalyze != null && SelectedNotebooksForAnalyzeIsNotAsDefault())
