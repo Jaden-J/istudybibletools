@@ -149,16 +149,20 @@ namespace BibleCommon.Services
 
         public static List<Exception> CheckModules(string primaryModuleName, string parallelModuleName)
         {
-            var manager = new BibleParallelTranslationManager(null, primaryModuleName, parallelModuleName, SettingsManager.Instance.NotebookId_Bible);
-            manager.ForCheckOnly = true;
-            return manager.IterateBaseBible(null, false, true, null, true).Errors;
+            using (var manager = new BibleParallelTranslationManager(null, primaryModuleName, parallelModuleName, SettingsManager.Instance.NotebookId_Bible))
+            {
+                manager.ForCheckOnly = true;
+                return manager.IterateBaseBible(null, false, true, null, true).Errors;
+            }
         }
 
         public static List<string> CheckForInconsistencies(string baseModuleName, string parallelModuleName)
         {
-            var manager = new BibleParallelTranslationManager(null, baseModuleName, parallelModuleName, SettingsManager.Instance.NotebookId_Bible);
-            manager.ForCheckOnly = true;
-            return manager.IterateBaseBible(null, false, false, null, true).NotFoundBibleVerses;
+            using (var manager = new BibleParallelTranslationManager(null, baseModuleName, parallelModuleName, SettingsManager.Instance.NotebookId_Bible))
+            {
+                manager.ForCheckOnly = true;
+                return manager.IterateBaseBible(null, false, false, null, true).NotFoundBibleVerses;
+            }
         }
 
         /// <summary>

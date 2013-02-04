@@ -615,16 +615,23 @@ namespace BibleCommon.Common
         }
 
         /// <summary>
-        /// Принадлежит ли указанный стих текущему диапазону стихов
+        /// Принадлежит ли указанный стих текущему диапазону стихов. Работает только если текущий стих IsMultiVerse, а передаваемый стих - не IsMultiVerse
         /// </summary>
         /// <param name="verse"></param>
         /// <returns></returns>
-        public bool IsInVerseRange(int verse)
+        public bool IsInVerseRange(VersePointer vp)
         {
-            if (IsMultiVerse)
-                return verse >= this.Verse && verse <= this.TopVerse;
+            if (!(this.IsMultiVerse && !vp.IsMultiVerse))
+                throw new InvalidOperationException("!(this.IsMultiVerse && !vp.IsMultiVerse)");
 
-            return false;
+            if (this.TopChapter.HasValue)
+            {
+                return (this.Chapter < vp.Chapter && vp.Chapter < this.TopChapter)
+                    || (this.Chapter == vp.Chapter && this.Verse <= vp.Verse.GetValueOrDefault(0))
+                    || (this.TopChapter == vp.Chapter && vp.Verse.GetValueOrDefault(0) <= this.TopVerse);
+            }
+            else
+                return this.Verse <= vp.Verse.GetValueOrDefault(0) && vp.Verse.GetValueOrDefault(0) <= this.TopVerse;
         }
 
 
