@@ -60,10 +60,9 @@ namespace TestProject
                 //return;
 
                 //Console.WriteLine(StringUtils.GetQueryParameterValue("http://adjhdjkhsadsd.rudasd&sdsd=adsadasd&dsfsdf=sgfdsdfdsf&key=value", "key"));
-                //return;
+                //return;                
 
-
-                ChangeLinksProtocol();
+                //ChangeLinksProtocol();
 
                 //ConvertChineseModuleFromTextFiles();
                 
@@ -132,7 +131,7 @@ namespace TestProject
         private static void ChangeLinksProtocol()
         {            
             string currentPageXml;
-            _oneNoteApp.GetPageContent(_oneNoteApp.Windows.CurrentWindow.CurrentPageId, out currentPageXml, PageInfo.piBasic, XMLSchema.xs2013);
+            _oneNoteApp.GetPageContent(_oneNoteApp.Windows.CurrentWindow.CurrentPageId, out currentPageXml, PageInfo.piBasic, XMLSchema.xs2010);
             currentPageXml = currentPageXml.Replace("href=\"onenote:http", "href=\"isbtopen:http").Replace("href=\"onenote://", "href=\"isbtopen:");
             _oneNoteApp.UpdatePageContent(currentPageXml);
         }
