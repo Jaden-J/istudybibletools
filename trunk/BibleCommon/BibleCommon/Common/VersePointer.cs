@@ -621,8 +621,8 @@ namespace BibleCommon.Common
         /// <returns></returns>
         public bool IsInVerseRange(VersePointer vp)
         {
-            if (!(this.IsMultiVerse && !vp.IsMultiVerse))
-                throw new InvalidOperationException("!(this.IsMultiVerse && !vp.IsMultiVerse)");
+            if (!this.IsMultiVerse)
+                return false;
 
             if (this.TopChapter.HasValue)
             {
