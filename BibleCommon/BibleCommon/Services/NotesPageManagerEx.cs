@@ -479,7 +479,7 @@ namespace BibleCommon.Services
 
             if (!string.IsNullOrEmpty(uniqueNoteId))
             {   
-                suchNoteLink = parentEl.XPathSelectElement(string.Format("{0}one:OE/one:T[contains(.,'{1}')]", searchInAllPageString, uniqueNoteId), xnm);
+                suchNoteLink = parentEl.XPathSelectElement(string.Format("{0}one:OE/one:T[contains(.,\"{1}\")]", searchInAllPageString, uniqueNoteId), xnm);
 
                 if (suchNoteLink == null)
                 {
@@ -487,7 +487,7 @@ namespace BibleCommon.Services
                         uniqueNoteId = Uri.EscapeDataString(uniqueNoteId);
 
                     suchNoteLink = parentEl.XPathSelectElement(
-                                        string.Format("{0}one:OE/one:T[contains(translate(.,'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ'),'{1}')]",
+                                        string.Format("{0}one:OE/one:T[contains(translate(.,'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ'),\"{1}\")]",
                                                     searchInAllPageString, uniqueNoteId.ToUpper()),
                                         xnm);
                 }

@@ -25,7 +25,7 @@ namespace BibleCommon.Common
                 || resultType == SearchResultType.ExcludableChapterWithoutBookName;
         }
 
-        public static bool IsVerse(SearchResultType resultType)
+        public static bool IsVerseWithoutChapter(SearchResultType resultType)
         {
             return resultType == SearchResultType.SingleVerseOnly
                     || resultType == SearchResultType.FollowingVerseOnly;

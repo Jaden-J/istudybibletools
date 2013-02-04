@@ -478,7 +478,8 @@ namespace BibleCommon.Helpers
 
         public static bool IsError(Exception ex, Error error)
         {
-            return ex.Message.IndexOf(GetHexError(error), StringComparison.InvariantCultureIgnoreCase) > -1;
+            return ex.Message.IndexOf(error.ToString(), StringComparison.InvariantCultureIgnoreCase) > -1
+                || ex.Message.IndexOf(GetHexError(error), StringComparison.InvariantCultureIgnoreCase) > -1;                
     }
 
         private static string GetHexError(Error error)

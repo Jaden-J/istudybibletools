@@ -409,7 +409,7 @@ namespace BibleCommon.Services
                         else
                         {
                             if (!(VersePointerSearchResult.IsChapterAndVerse(prevResult.ResultType)
-                                   || VersePointerSearchResult.IsVerse(prevResult.ResultType)))  // если только что до этого мы нашли стих, тогда запятая - это разделитель стихов, иначе здесь может иметься ввиду разделение глав, которое пока не поддерживаем
+                                   || VersePointerSearchResult.IsVerseWithoutChapter(prevResult.ResultType)))  // если только что до этого мы нашли стих, тогда запятая - это разделитель стихов, иначе здесь может иметься ввиду разделение глав, которое пока не поддерживаем
                             {
                                 canContinue = false;
                             }

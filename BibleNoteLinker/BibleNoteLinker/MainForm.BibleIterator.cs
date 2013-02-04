@@ -319,40 +319,42 @@ namespace BibleNoteLinker
 
         private List<NotebookIterator.NotebookInfo> GetNotebooksInfo()
         {
-            NotebookIterator iterator = new NotebookIterator(_oneNoteApp);
-            List<NotebookIterator.NotebookInfo> result = new List<NotebookIterator.NotebookInfo>();
-
-            Func<NotebookIterator.PageInfo, bool> filter = null;
-            if (rbAnalyzeChangedPages.Checked)
-                filter = IsPageWasModifiedAfterLastAnalyze;
-
-            if (SettingsManager.Instance.IsSingleNotebook)
+            using (NotebookIterator iterator = new NotebookIterator(_oneNoteApp))
             {
-                result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_BibleStudy, filter));
-                result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_BibleComments, filter));
-            }
-            else
-            {
-                foreach (var notebookInfo in SettingsManager.Instance.SelectedNotebooksForAnalyze.ToArray())
+                List<NotebookIterator.NotebookInfo> result = new List<NotebookIterator.NotebookInfo>();
+
+                Func<NotebookIterator.PageInfo, bool> filter = null;
+                if (rbAnalyzeChangedPages.Checked)
+                    filter = IsPageWasModifiedAfterLastAnalyze;
+
+                if (SettingsManager.Instance.IsSingleNotebook)
                 {
-                    try
-                    {                       
-                        result.Add(iterator.GetNotebookPages(notebookInfo.NotebookId, null, filter));
-                    }
-                    catch (Exception ex)
+                    result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_BibleStudy, filter));
+                    result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_BibleComments, filter));
+                }
+                else
+                {
+                    foreach (var notebookInfo in SettingsManager.Instance.SelectedNotebooksForAnalyze.ToArray())
                     {
-                        if (OneNoteUtils.IsError(ex, Error.hrObjectDoesNotExist))
+                        try
                         {
-                            SettingsManager.Instance.SelectedNotebooksForAnalyze.Remove(notebookInfo);
-                            SettingsManager.Instance.Save();
+                            result.Add(iterator.GetNotebookPages(notebookInfo.NotebookId, null, filter));
                         }
-                        else
-                            throw;
+                        catch (Exception ex)
+                        {
+                            if (OneNoteUtils.IsError(ex, Error.hrObjectDoesNotExist))
+                            {
+                                SettingsManager.Instance.SelectedNotebooksForAnalyze.Remove(notebookInfo);
+                                SettingsManager.Instance.Save();
+                            }
+                            else
+                                throw;
+                        }
                     }
                 }
-            }
 
-            return result;
+                return result;
+            }
         }
 
         private bool IsPageWasModifiedAfterLastAnalyze(NotebookIterator.PageInfo page)

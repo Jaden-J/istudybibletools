@@ -984,7 +984,7 @@ namespace BibleCommon.Services
         /// <param name="notePageContentObjectId"></param>
         /// <param name="linkDepth"></param>
         /// <param name="createLinkToNotesPage">Необходримо ли создавать сслыку на страницу сводной заметок. Если например мы обрабатываем RubbishPage, то такая ссылка не нужна</param>
-        /// <param name="excludedVersesLinking">Привязываем ли стихи, даже если они входятв главу, являющуюся ExcludableChapter</param>
+        /// <param name="excludedVersesLinking">Привязываем ли стихи, даже если они входят в главу, являющуюся ExcludableChapter</param>
         /// <param name="globalChapterSearchResult"></param>
         /// <param name="pageChaptersSearchResult"></param>
         /// <param name="isInBrackets"></param>
@@ -1031,8 +1031,8 @@ namespace BibleCommon.Services
                                     canContinue = false;
 
                                 if (canContinue)
-                                {
-                                    if (!isChapter)
+                                {                                    
+                                    if (VersePointerSearchResult.IsVerseWithoutChapter(resultType))
                                     {
                                         if (globalChapterSearchResult != null)
                                         {
@@ -1041,7 +1041,7 @@ namespace BibleCommon.Services
                                                 if (!isInBrackets)
                                                 {
                                                     if (globalChapterSearchResult.VersePointer.IsMultiVerse)
-                                                        if (globalChapterSearchResult.VersePointer.IsInVerseRange(vp.Verse.GetValueOrDefault(0)))
+                                                        if (globalChapterSearchResult.VersePointer.IsInVerseRange(vp))
                                                             canContinue = false;    // если указан уже диапазон, а далее идут пояснения, то не отмечаем их заметками
                                                 }
                                             }

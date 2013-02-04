@@ -36,21 +36,14 @@ namespace TestProject
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;   
 
         [STAThread]
-        static void Main(string[] args)
+        unsafe static void Main(string[] args)
         {
             Stopwatch sw = new Stopwatch();
 
             sw.Start();
 
-
-
-
-
-            
-
-
-
             _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            
 
             try
             {
@@ -59,10 +52,9 @@ namespace TestProject
                 //return;
 
                 //Console.WriteLine(StringUtils.GetQueryParameterValue("http://adjhdjkhsadsd.rudasd&sdsd=adsadasd&dsfsdf=sgfdsdfdsf&key=value", "key"));
-                //return;
+                //return;                
 
-
-                ChangeLinksProtocol();
+                //ChangeLinksProtocol();
 
                 //ConvertChineseModuleFromTextFiles();
                 
