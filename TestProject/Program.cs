@@ -37,21 +37,14 @@ namespace TestProject
        
 
         [STAThread]
-        static void Main(string[] args)
+        unsafe static void Main(string[] args)
         {
             Stopwatch sw = new Stopwatch();
 
             sw.Start();
 
-
-
-
-
-            
-
-
-
             _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            
 
             try
             {
