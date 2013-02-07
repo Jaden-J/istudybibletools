@@ -193,6 +193,8 @@ namespace BibleCommon.Services
                     notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
 
                 notePageDocument.WasModified = true;
+
+                OneNoteProxy.Instance.CommitModifiedPage(ref _oneNoteApp, notePageDocument, false);
             }
             catch (ProcessAbortedByUserException)
             {                
@@ -481,7 +483,7 @@ namespace BibleCommon.Services
             {
                 OneNoteUtils.NormalizeTextElement(textElement);                
                 var foundVerses = new List<FoundVerseInfo>();
-                var correctVerses = new List<FoundVerseInfo>();
+                var correctVerses = new Dictionary<int, FoundVerseInfo>();
 
                 var globalChapterSearchResultTemp = globalChapterSearchResult;
                 var prevResultTemp = prevResult;
@@ -497,10 +499,10 @@ namespace BibleCommon.Services
                     if (i < foundVerses.Count - 1)
                     {
                         if (foundVerses[i].SearchResult.VersePointerHtmlEndIndex <= foundVerses[i + 1].SearchResult.VersePointerHtmlStartIndex)   // если не пересекаются стихи
-                            correctVerses.Add(foundVerses[i]);
+                            correctVerses.Add(foundVerses[i].Index, foundVerses[i]);
                     }
                     else
-                        correctVerses.Add(foundVerses[i]);
+                        correctVerses.Add(foundVerses[i].Index, foundVerses[i]);
                 }
 
                 var foundChaptersLocal = foundChapters;
@@ -508,7 +510,7 @@ namespace BibleCommon.Services
                 {
                     int cursorPosition = verseInfo.CursorPosition;
 
-                    if (correctVerses.Any(cv => cv.Index == verseInfo.Index))
+                    if (correctVerses.ContainsKey(verseInfo.Index))
                     {
                         var processVerseResult = ProcessFoundVerse(cursorPosition, ref verseInfo, textElement, notePageId, ref foundChaptersLocal, pageChaptersSearchResult, linkDepth, force, isTitle, onVersePointerFound);
                         cursorPosition = processVerseResult.CursorPosition;
@@ -519,7 +521,10 @@ namespace BibleCommon.Services
                         prevResultTemp = verseInfo.SearchResult;                        
                     }
                     else
-                        cursorPosition = verseInfo.SearchResult.VersePointerHtmlEndIndex; 
+                        cursorPosition = verseInfo.SearchResult.VersePointerHtmlEndIndex;
+
+
+                    System.Windows.Forms.Application.DoEvents();
 
                     return cursorPosition;
                 });
