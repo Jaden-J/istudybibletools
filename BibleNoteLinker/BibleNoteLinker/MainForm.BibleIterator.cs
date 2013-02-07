@@ -13,7 +13,7 @@ namespace BibleNoteLinker
 {
     public partial class MainForm
     {
-        private const int StagesCount = 6;
+        private const int StagesCount = 5;
         private const int ApproximatePageVersesCount = 100;
         private int _pagesForAnalyzeCount;
 
@@ -73,19 +73,19 @@ namespace BibleNoteLinker
 
             if (_pagesForAnalyzeCount > 0)
             {
-                CommitPages(BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating, 2, OneNoteProxy.PageType.NotesPage);
+                //CommitPages(BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating, 2, OneNoteProxy.PageType.NotesPage);
 
                 SyncNotesPagesContainer();   // эта задача асинхронная, поэтому не выделаем как отдельный этап
 
                 SortNotesPages();  // это происходит очень быстро, поэтому не выделяем как отдельный этап
 
-                CommitNotesPagesHierarchy(3);
+                CommitNotesPagesHierarchy(2);
 
-                CommitPages(BibleCommon.Resources.Constants.NoteLinkerNotePagesUpdating, 4, OneNoteProxy.PageType.NotePage);
+                CommitPages(BibleCommon.Resources.Constants.NoteLinkerNotePagesUpdating, 3, OneNoteProxy.PageType.NotePage);
 
-                UpdateLinksToNotesPages(5);
+                UpdateLinksToNotesPages(4);
 
-                CommitPages(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, 6, null);                
+                CommitPages(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, 5, null);                
             }
 
             OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
