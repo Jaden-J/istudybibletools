@@ -219,8 +219,15 @@ namespace BibleCommon.Services
                     NotebookId = notebookId
                 };
 
-            if (loadFullHierarchy)
+            if (loadFullHierarchy) 
             {
+                result.SyncPageId = OneNoteUtils.GetElementMetaData(notePageDocument.Content.Root, Constants.Key_SyncId, notePageDocument.Xnm);
+                if (result.SyncPageId == null)
+                {
+                    result.SyncPageId = notePageId;
+                    OneNoteUtils.UpdateElementMetaData(notePageDocument.Content.Root, Constants.Key_SyncId, result.SyncPageId, notePageDocument.Xnm);                    
+                }                
+
                 var fullNotebookHierarchy = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, notebookId, HierarchyScope.hsPages, false);
                 LoadHierarchyElementParent(notebookId, fullNotebookHierarchy, ref result);
             }

@@ -21,23 +21,25 @@ namespace ISBTCommandHandler
                 try
                 {
                     oneNoteApp = new Application();
-                    newPath = args[0].Replace("isbtopen:_", "onenote:");                    
+                    newPath = args[0].Replace("isbtopen:_", "onenote:");
+                    var parts = args[0].Split(new string[] { "&pageId=" }, StringSplitOptions.RemoveEmptyEntries);
 
-                    for (int i = 0; i < 10; i++)
+                    if (parts.Length > 1)
                     {
+                        var pageId = parts[1];
                         try
                         {
-                            oneNoteApp.NavigateToUrl(newPath);
-                            break;
+                            string xml;
+                            oneNoteApp.GetPageContent(pageId, out xml, PageInfo.piBasic, XMLSchema.xs2013);
                         }
                         catch (COMException)
                         {
-                            Thread.Sleep(1000);
-                        }                        
-                    }
 
-                    var currentPageId = oneNoteApp.Windows.CurrentWindow.CurrentPageId;
-                    Thread.Sleep(500);
+                        }
+                    }
+                    
+
+                    var currentPageId = oneNoteApp.Windows.CurrentWindow.CurrentPageId;                   
 
                     for (int i = 0; i < 10; i++)
                     {

@@ -110,6 +110,7 @@ namespace BibleCommon.Consts
         public static readonly string Key_Id = "ID";
         public static readonly string Key_Verse = "Verse";
         public static readonly string Key_NotesPageLink = "NotesPageLink";
+        public static readonly string Key_SyncId = "SyncID";
 
 
         public static readonly int ChapterNotesPageLinkOutline_OffsetX = 41;
