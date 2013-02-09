@@ -100,6 +100,8 @@ namespace BibleCommon.Consts
         public static readonly string QueryParameterKey_VersePosition = "vp";
         public static readonly string QueryParameterKey_VerseWeight = "vw";
         public static readonly string QueryParameterKey_NotePageId = "npid";
+        public static readonly string QueryParameterKey_CustomPageId = "cpId";
+        public static readonly string QueryParameterKey_CustomObjectId = "coId";
 
         public static readonly string Key_IsSummaryNotesPage = "IsSummaryNotesPage";
         public static readonly string Key_LatestAnalyzeTime = "LatestAnalyzeTime";

@@ -258,7 +258,10 @@ namespace BibleCommon.Services
 
                     if (SettingsManager.Instance.UseProxyLinks)
                     {
-                        link = link.Replace("onenote:", string.Format("{0}:_", Constants.ISBTOpenProtocol)) + "&pageId=" + pageId;
+                        link = string.Concat(
+                                    link.Replace("onenote:", string.Format("{0}:_", Constants.ISBTOpenProtocol)),
+                                    "&", Constants.QueryParameterKey_CustomPageId, "=", pageId,
+                                    "&", Constants.QueryParameterKey_CustomObjectId, "=", objectId);
                     }
 
                     //if (!_linksCache.ContainsKey(key))   // пока в этом нет смысла
