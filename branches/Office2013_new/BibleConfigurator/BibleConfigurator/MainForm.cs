@@ -797,7 +797,7 @@ namespace BibleConfigurator
                         btnModuleChecker.Visible = false;
                     }
 
-                    chkUseProxyLinks.Visible = false;
+                    //chkUseProxyLinks.Visible = false;
 
                     this.Text += string.Format(" v{0}", SettingsManager.Instance.CurrentVersion);
                     this.SetFocus();
