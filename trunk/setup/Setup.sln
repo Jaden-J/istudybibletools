@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibleNoteLinker", "..\BibleNoteLinker\BibleNoteLinker\BibleNoteLinker.csproj", "{8CF73E04-14AA-4510-B3E0-44934DDC5726}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISBTCommandHandler", "..\ISBTCommandHandler\ISBTCommandHandler.csproj", "{00C5F241-D93E-453B-A42A-9110514E835A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +105,16 @@ Global
 		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Release|Mixed Platforms.Build.0 = Release|x86
 		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Release|x86.ActiveCfg = Release|x86
 		{8CF73E04-14AA-4510-B3E0-44934DDC5726}.Release|x86.Build.0 = Release|x86
+		{00C5F241-D93E-453B-A42A-9110514E835A}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{00C5F241-D93E-453B-A42A-9110514E835A}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{00C5F241-D93E-453B-A42A-9110514E835A}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{00C5F241-D93E-453B-A42A-9110514E835A}.Debug|x86.ActiveCfg = Debug|x86
+		{00C5F241-D93E-453B-A42A-9110514E835A}.Debug|x86.Build.0 = Debug|x86
+		{00C5F241-D93E-453B-A42A-9110514E835A}.Release|Any CPU.ActiveCfg = Release|x86
+		{00C5F241-D93E-453B-A42A-9110514E835A}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{00C5F241-D93E-453B-A42A-9110514E835A}.Release|Mixed Platforms.Build.0 = Release|x86
+		{00C5F241-D93E-453B-A42A-9110514E835A}.Release|x86.ActiveCfg = Release|x86
+		{00C5F241-D93E-453B-A42A-9110514E835A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,5 +125,6 @@ Global
 		{D2E40D0E-9786-49E9-B2A7-54088B42EAC5} = {98750266-722F-469D-943F-9D38CB36AA2D}
 		{11828968-B062-4A9D-BF56-60A008E8CBEE} = {98750266-722F-469D-943F-9D38CB36AA2D}
 		{8CF73E04-14AA-4510-B3E0-44934DDC5726} = {98750266-722F-469D-943F-9D38CB36AA2D}
+		{00C5F241-D93E-453B-A42A-9110514E835A} = {98750266-722F-469D-943F-9D38CB36AA2D}
 	EndGlobalSection
 EndGlobal
