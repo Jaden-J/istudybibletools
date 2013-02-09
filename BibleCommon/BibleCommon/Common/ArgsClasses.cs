@@ -108,14 +108,26 @@ namespace BibleCommon.Common
         /// Идентификационное имя. Важно для записных книжек
         /// </summary>
         public string Name { get; set; }
+        
+        public string SyncPageId { get; set; }  // уникальный ID страницы, который синхронизируется! (хранится в метаданных). Относится только к странице.        
 
         public string Id { get; set; }
 
-        public string UniqueName
+        public string UniqueName   //  уникальный идентификатор
         {
             get
             {
-                return Parent != null ? Id : Name;  // если это записная книжка, то идентифицируем по Name, так как ID у записных книжек на разных компьютерах разный
+                switch (Type)
+                {
+                    case HierarchyElementType.Notebook:
+                    case HierarchyElementType.SectionGroup:
+                    case HierarchyElementType.Section:
+                        return Name;   // идентифицируем по Name, так как ID на разных компьютерах разный
+                    case HierarchyElementType.Page:
+                        return SyncPageId ?? Id;                    
+                }
+
+                throw new NotSupportedException(Type.ToString());
             }
         }
 
@@ -140,7 +152,7 @@ namespace BibleCommon.Common
 
         
         /// <summary>
-        /// Идентификатор, идентифицирующий заметку на странице сводной заметок
+        /// Идентификатор, идентифицирующий заметку на странице сводной заметок. Если не задан - используется Id.
         /// </summary>
         public string UniqueId { get; set; }        
 
