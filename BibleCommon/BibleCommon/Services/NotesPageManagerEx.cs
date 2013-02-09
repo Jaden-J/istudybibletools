@@ -603,7 +603,6 @@ namespace BibleCommon.Services
         {
             var result = el.PreviousNode;
 
-
             return result;
         }
 
@@ -648,11 +647,22 @@ namespace BibleCommon.Services
                             linkWasFound = true;                        
                         else
                         {
-                            var existingLinkInHierarchy = parentHierarchy.XPathSelectElement(
-                                        string.Format("*[@{0}=\"{1}\"]", 
-                                            elInfo.Parent != null ? "ID" : "name", 
-                                            existingLinkId), 
-                                        xnm);
+                            XElement existingLinkInHierarchy;
+
+                            if (elInfo.Type == HierarchyElementType.Page)
+                            {
+                                existingLinkInHierarchy = parentHierarchy.XPathSelectElement(
+                                            string.Format("one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]",
+                                                Constants.Key_SyncId, existingLinkId),
+                                            xnm);                                
+                            }
+                            else
+                            {
+                                existingLinkInHierarchy = parentHierarchy.XPathSelectElement(
+                                            string.Format("*[@name=\"{0}\"]", existingLinkId),
+                                            xnm);
+                            }
+
                             if (!prevNodesInHierarchy.Contains(existingLinkInHierarchy))
                                 break;
 
