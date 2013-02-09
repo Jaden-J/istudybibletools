@@ -256,10 +256,10 @@ namespace BibleCommon.Services
                         oneNoteAppSafe.GetHyperlinkToObject(pageId, objectId, out link);
                     });
 
-                    //if (SettingsManager.Instance.UseProxyLinks)
-                    //{
-                    //    link = link.Replace("onenote:", string.Format("{0}:_", Constants.ISBTOpenProtocol));                            
-                    //}
+                    if (SettingsManager.Instance.UseProxyLinks)
+                    {
+                        link = link.Replace("onenote:", string.Format("{0}:_", Constants.ISBTOpenProtocol)) + "&pageId=" + pageId;
+                    }
 
                     //if (!_linksCache.ContainsKey(key))   // пока в этом нет смысла
                     _linksCache.Add(key, link);

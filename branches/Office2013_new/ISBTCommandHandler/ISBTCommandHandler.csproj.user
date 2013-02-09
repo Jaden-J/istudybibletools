@@ -11,7 +11,6 @@
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>
-    </StartArguments>
+    <StartArguments>"isbtopen:_///C:\Users\Alexander\Documents\Записные%2520книжки%2520OneNote\Библия\Новый%2520Завет\01.%2520От%2520Матфея.one#2%2520глава.%2520От%2520Матфея&amp;section-id={187D682C-3557-4D72-8ED1-7C0C44749CAC}&amp;page-id={161FFA6C-FDB9-4F69-B571-5B3954C96CBC}&amp;object-id={E853613B-C8FC-4025-BB0A-5B13F4E60DC3}&amp;70&amp;pageId={51619CAA-7219-4C11-A469-E1E96F407334}{1}{E183228263594138262261954590708827390564271}"</StartArguments>
   </PropertyGroup>
 </Project>
