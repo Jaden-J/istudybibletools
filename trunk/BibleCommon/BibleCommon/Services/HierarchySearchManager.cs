@@ -41,7 +41,7 @@ namespace BibleCommon.Services
             {
                 this.ObjectId = link.ObjectId;
                 this.VerseNumber = link.VerseNumber;
-                this.ObjectHref = link.Href;
+                this.ObjectHref = link.GetFullHref();
             }
 
             public bool IsVerse { get { return VerseNumber != null; } }
@@ -196,7 +196,7 @@ namespace BibleCommon.Services
             }
             else
             {
-                //ответ на вопрос "почему для разных ситуаций (есть кэш/нет кэша; Иуд 1-3/Иуд 2-3) используется разный подход". Потому что, если в кэше ничего не нашли (Иуд 2-3), то начинаем искать в структуре, а это долго. Если же в кэше нашли, а дополнительные ссылки не нашли (Иуд 1-3), то в структуре уже ничего не ищем, потому здесь можно использовать общий подход
+                //ответ на вопрос "почему для разных ситуаций (есть кэш/нет кэша; Иуд 1-3/Иуд 2-3) используется разный подход?". Потому что, если в кэше ничего не нашли (Иуд 2-3), то начинаем искать в структуре, а это долго. Если же в кэше нашли, а дополнительные ссылки не нашли (Иуд 1-3), то в структуре уже ничего не ищем, потому здесь можно использовать общий подход
                 if (vp.IsChapter && vp.TopChapter.HasValue 
                     && (findAllVerseObjects == FindVerseLevel.AllVerses || findAllVerseObjects == FindVerseLevel.OnlyVersesOfFirstChapter)
                     && result.HierarchyObjectInfo.AdditionalObjectsIds.Count == 0)

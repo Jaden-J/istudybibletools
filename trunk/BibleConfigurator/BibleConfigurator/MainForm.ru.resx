@@ -221,11 +221,17 @@
   <data name="tabPage2.Text" xml:space="preserve">
     <value>Параметры программы</value>
   </data>
-  <data name="chkNotOneNoteControls.Size" type="System.Drawing.Size, System.Drawing">
-    <value>244, 17</value>
+  <data name="chkUseProxyLinksForLinks.Size" type="System.Drawing.Size, System.Drawing">
+    <value>179, 17</value>
   </data>
-  <data name="chkNotOneNoteControls.Text" xml:space="preserve">
-    <value>Разрешено использование прокси-ссылок</value>
+  <data name="chkUseProxyLinksForLinks.Text" xml:space="preserve">
+    <value>Использовать прокси-ссылки</value>
+  </data>
+  <data name="chkUseProxyLinksForStrong.Size" type="System.Drawing.Size, System.Drawing">
+    <value>291, 17</value>
+  </data>
+  <data name="chkUseProxyLinksForStrong.Text" xml:space="preserve">
+    <value>Использовать прокси-ссылки для номеров Стронга</value>
   </data>
   <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
     <value>99, 13</value>
@@ -363,13 +369,13 @@
     <value>http://IStudyBibleTools.ru</value>
   </data>
   <data name="lblModulesLink.Location" type="System.Drawing.Point, System.Drawing">
-    <value>290, 7</value>
+    <value>314, 7</value>
   </data>
   <data name="lblModulesLink.Size" type="System.Drawing.Size, System.Drawing">
-    <value>223, 13</value>
+    <value>194, 13</value>
   </data>
   <data name="lblModulesLink.Text" xml:space="preserve">
-    <value>Скачать дополнительные модули на сайте</value>
+    <value>Вы можете скачать модули на сайте</value>
   </data>
   <data name="lblMustSelectModule.Size" type="System.Drawing.Size, System.Drawing">
     <value>285, 13</value>

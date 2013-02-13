@@ -37,7 +37,7 @@ namespace BibleCommon.Consts
         public static readonly int DefaultPageWidth_Notes = 500;
         public static readonly int DefaultPageWidth_RubbishNotes = 500;
         public static readonly int DefaultPageWidth_Bible = 500;
-        public static readonly bool Default_UseProxyLinks = false;
+        public static readonly bool Default_UseProxyLinksForStrong = true;
         public static readonly bool DefaultExpandMultiVersesLinking = true;
         public static readonly bool DefaultExcludedVersesLinking = false;
         public static readonly bool DefaultUseDifferentPagesForEachVerse = true;
@@ -86,7 +86,8 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_RubbishPageExpandMultiVersesLinking = "RubbishPage_ExpandMultiVersesLinking";
         public static readonly string ParameterName_RubbishPageExcludedVersesLinking = "RubbishPage_ExcludedVersesLinking";
 
-        public static readonly string ParameterName_UseProxyLinks = "UseProxyLinks";
+        public static readonly string ParameterName_UseProxyLinksForStrong = "UseProxyLinksForStrong";
+        public static readonly string ParameterName_UseProxyLinksForLinks = "UseProxyLinksForLinks";
 
         public static readonly string ParameterName_UseDefaultSettings = "UseDefaultSettings";        
 

@@ -11,6 +11,6 @@
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>"isbtopen:_///E:\Dropbox\Holy%2520Bible\Библия\Ветхий%2520Завет\30.%2520Амос.one#1%2520глава.%2520Амос&amp;section-id={2BE75A9F-7CDE-4C2A-AA62-85F120EA7038}&amp;page-id={7E978CD8-F3A0-47AF-B874-CE291FF940FA}&amp;object-id={C19C7986-9507-4DC0-AACF-4B3AEC3400A6}&amp;28&amp;cpId={27512122-8F06-034A-1B88-22A767EA4AC0}{1}{E184811924129145043131963520117764757417271}&amp;coId={435DE7B1-1D30-01E9-28D6-EC0EDFB0297E}{40}{B0}"</StartArguments>
+    <StartArguments>"isbtopen:_///E:\Dropbox\Holy%20Bible\Библия\Ветхий%20Завет\30.%20Амос.one#1%20глава.%20Амос&amp;section-id={2BE75A9F-7CDE-4C2A-AA62-85F120EA7038}&amp;page-id={7E978CD8-F3A0-47AF-B874-CE291FF940FA}&amp;object-id={C19C7986-9507-4DC0-AACF-4B3AEC3400A6}&amp;28&amp;cpId={27512122-8F06-034A-1B88-22A767EA4AC0}{1}{E184811924129145043131963520117764757417271}&amp;coId={435DE7B1-1D30-01E9-28D6-EC0EDFB0297E}{40}{B0}"</StartArguments>
   </PropertyGroup>
 </Project>

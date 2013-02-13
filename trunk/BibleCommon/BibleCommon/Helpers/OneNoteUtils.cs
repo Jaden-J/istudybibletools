@@ -25,6 +25,7 @@ namespace BibleCommon.Helpers
         {
             get
             {
+                return false;
                 if (!_isOneNote2010.HasValue)
                 {
                     var assembly = new Application().GetType().Assembly;
@@ -315,7 +316,11 @@ namespace BibleCommon.Helpers
             }
             catch (COMException ex)
             {
-                if (ex.Message.Contains("0x80010100") || ex.Message.Contains("0x800706BA") || ex.Message.Contains("0x800706BE"))  // "System.Runtime.InteropServices.COMException (0x80010100): System call failed. (Exception from HRESULT: 0x80010100 (RPC_E_SYS_CALL_FAILED))"
+                if (ex.Message.Contains("0x80010100")                                           // "System.Runtime.InteropServices.COMException (0x80010100): System call failed. (Exception from HRESULT: 0x80010100 (RPC_E_SYS_CALL_FAILED))";
+                    || ex.Message.Contains("0x800706BA") 
+                    || ex.Message.Contains("0x800706BE")
+                    || ex.Message.Contains("0x80010001")                                        // System.Runtime.InteropServices.COMException (0x80010001): Вызов был отклонен. (Исключение из HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+                    )  
                 {
                     Logger.LogMessageSilientParams("UseOneNoteAPI. Attempt {0}: {1}", attemptsCount, ex.Message);
                     if (attemptsCount <= 15)

@@ -256,13 +256,8 @@ namespace BibleCommon.Services
                         oneNoteAppSafe.GetHyperlinkToObject(pageId, objectId, out link);
                     });
 
-                    if (SettingsManager.Instance.UseProxyLinks)
-                    {
-                        link = string.Concat(
-                                    link.Replace("onenote:", string.Format("{0}:_", Constants.ISBTOpenProtocol)),
-                                    "&", Constants.QueryParameterKey_CustomPageId, "=", pageId,
-                                    "&", Constants.QueryParameterKey_CustomObjectId, "=", objectId);
-                    }
+                    if (SettingsManager.Instance.UseProxyLinksForLinks)
+                        link = GetProxyLink(link, pageId, objectId);                    
 
                     //if (!_linksCache.ContainsKey(key))   // пока в этом нет смысла
                     _linksCache.Add(key, link);
@@ -270,6 +265,21 @@ namespace BibleCommon.Services
             }
 
             return _linksCache[key];
+        }
+
+        public static bool IsProxyLink(string link)
+        {
+            return link.IndexOf("&" + Constants.QueryParameterKey_CustomPageId + "=") > -1;
+        }
+
+        public static string GetProxyLink(string link, string pageId, string objectId)
+        {
+            link = string.Concat(
+                        link.Replace("onenote:", string.Format("{0}:_", Constants.ISBTOpenProtocol)),
+                        "&", Constants.QueryParameterKey_CustomPageId, "=", pageId,
+                        "&", Constants.QueryParameterKey_CustomObjectId, "=", objectId);
+
+            return link;
         }
 
         public Dictionary<string, OneNoteProxy.BiblePageId> BiblePagesWithUpdatedLinksToNotesPages
