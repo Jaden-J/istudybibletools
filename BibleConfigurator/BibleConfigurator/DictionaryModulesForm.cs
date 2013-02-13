@@ -179,7 +179,8 @@ namespace BibleConfigurator
                     result.Add(BibleCommon.Resources.Constants.NeedToAddSupplementalNotebookWithStrongsNumber);
             }
 
-            if (!DictionaryTermsCacheManager.CacheIsActive(moduleInfo.ShortName))
+            if (!DictionaryTermsCacheManager.CacheIsActive(moduleInfo.ShortName)
+                && (moduleInfo.Type == ModuleType.Dictionary || SettingsManager.Instance.UseProxyLinksForStrong))  // если у нас стронг и не используются прокси для стронга - то и не нужен кэш
             {
                 DictionaryManager.WaitWhileDictionaryIsCreating(ref _oneNoteApp, sectionId, moduleInfo.NotebooksStructure.DictionaryPagesCount, 0, () => Logger.AbortedByUser);
 

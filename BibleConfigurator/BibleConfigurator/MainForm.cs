@@ -428,7 +428,8 @@ namespace BibleConfigurator
             SettingsManager.Instance.RubbishPage_Use = chkUseRubbishPage.Checked;
             SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking = chkRubbishExpandMultiVersesLinking.Checked;
             SettingsManager.Instance.RubbishPage_ExcludedVersesLinking = chkRubbishExcludedVersesLinking.Checked;
-            SettingsManager.Instance.UseProxyLinks = chkUseProxyLinks.Checked;
+            SettingsManager.Instance.UseProxyLinksForStrong = chkUseProxyLinksForStrong.Checked;
+            SettingsManager.Instance.UseProxyLinksForLinks = chkUseProxyLinksForLinks.Checked;
         }
 
         private void SaveIntegerSettings()
@@ -514,7 +515,8 @@ namespace BibleConfigurator
                 || SettingsManager.Instance.RubbishPage_ExcludedVersesLinking != chkRubbishExcludedVersesLinking.Checked
                 || SettingsManager.Instance.PageWidth_Notes.ToString() != tbNotesPageWidth.Text
                 || SettingsManager.Instance.PageWidth_RubbishNotes.ToString() != tbRubbishNotesPageWidth.Text
-                || SettingsManager.Instance.UseProxyLinks != chkUseProxyLinks.Checked;
+                || SettingsManager.Instance.UseProxyLinksForStrong != chkUseProxyLinksForStrong.Checked
+                || SettingsManager.Instance.UseProxyLinksForLinks != chkUseProxyLinksForLinks.Checked;
 
         }
 
@@ -900,7 +902,8 @@ namespace BibleConfigurator
             chkRubbishExpandMultiVersesLinking.Checked = SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking;
             chkRubbishExcludedVersesLinking.Checked = SettingsManager.Instance.RubbishPage_ExcludedVersesLinking;
 
-            chkUseProxyLinks.Checked = SettingsManager.Instance.UseProxyLinks;
+            chkUseProxyLinksForStrong.Checked = SettingsManager.Instance.UseProxyLinksForStrong;
+            chkUseProxyLinksForLinks.Checked = SettingsManager.Instance.UseProxyLinksForLinks;
 
             chkUseRubbishPage_CheckedChanged(this, new EventArgs());
 
@@ -1177,7 +1180,7 @@ namespace BibleConfigurator
             tbRubbishNotesPageWidth.Enabled = !chkDefaultParameters.Checked;
             chkRubbishExpandMultiVersesLinking.Enabled = !chkDefaultParameters.Checked;
             chkRubbishExcludedVersesLinking.Enabled = !chkDefaultParameters.Checked;
-            chkUseProxyLinks.Enabled = !chkDefaultParameters.Checked;
+            chkUseProxyLinksForStrong.Enabled = !chkDefaultParameters.Checked;
 
             chkUseRubbishPage_CheckedChanged(this, new EventArgs());            
         }
