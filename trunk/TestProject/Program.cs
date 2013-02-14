@@ -55,7 +55,7 @@ namespace TestProject
                 //Console.WriteLine(StringUtils.GetQueryParameterValue("http://adjhdjkhsadsd.rudasd&sdsd=adsadasd&dsfsdf=sgfdsdfdsf&key=value", "key"));
                 //return;                
 
-                LoadAllPagesToCache();
+                //LoadAllPagesToCache();
 
                 //ChangeLinksProtocol();
 
