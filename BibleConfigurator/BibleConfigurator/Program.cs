@@ -209,16 +209,24 @@ namespace BibleConfigurator
                     if (File.Exists(moduleFilePath))
                     {
                         bool moduleWasAdded;
-                        bool needToReload = ((MainForm)result).AddNewModule(moduleFilePath, out moduleWasAdded);
-                        if (moduleWasAdded)
+                        using (var loadForm = new LoadForm())
                         {
-                            ((MainForm)result).ShowModulesTabAtStartUp = true;
-                            ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;                            
-                            moreThanSingleInstanceRunMessage = BibleCommon.Resources.Constants.ReopenParametersToSeeChanges;
-                            //silent = true;
+                            loadForm.Show();
+                            Application.DoEvents();
+
+                            bool needToReload = ((MainForm)result).AddNewModule(moduleFilePath, out moduleWasAdded);
+                            if (moduleWasAdded)
+                            {
+                                ((MainForm)result).ShowModulesTabAtStartUp = true;
+                                ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
+                                moreThanSingleInstanceRunMessage = BibleCommon.Resources.Constants.ReopenParametersToSeeChanges;
+                                //silent = true;
+                            }
+                            else
+                                result = null;
+
+                            loadForm.Close();
                         }
-                        else
-                            result = null;
                     }
                 }
             }
