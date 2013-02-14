@@ -219,7 +219,7 @@ namespace BibleCommon.Common
 
             var result = GetBibleBookByExactMatch(s, endsWithDot, out moduleName);
 
-            if (result == null && s.Length > 0 && StringUtils.IsDigit(s[0]))
+            if (result == null && s.Length > 0 && (StringUtils.IsDigit(s[0]) || s[0] == 'i'))  // может быть I Cor 4:6
             {
                 s = s.Replace(" ", string.Empty); // чтоб находил "1 John", когда в списке сокращений только "1John"
                 result = GetBibleBookByExactMatch(s, endsWithDot, out moduleName);
@@ -234,7 +234,7 @@ namespace BibleCommon.Common
 
             foreach (var book in BibleStructure.BibleBooks)
             {
-                if (book.Name.ToLowerInvariant() == s || book.SectionName.ToLowerInvariant() == s)
+                if (book.Name.Equals(s, StringComparison.OrdinalIgnoreCase) || book.SectionName.Equals(s, StringComparison.OrdinalIgnoreCase))
                 {
                     if (endsWithDot)
                         return null;
@@ -242,7 +242,7 @@ namespace BibleCommon.Common
                     return book;
                 }
 
-                var abbreviation = book.Abbreviations.FirstOrDefault(abbr => abbr.Value == s
+                var abbreviation = book.Abbreviations.FirstOrDefault(abbr => abbr.Value.Equals(s, StringComparison.OrdinalIgnoreCase)
                                                         && (!endsWithDot || !abbr.IsFullBookName));
                 if (abbreviation != null)
                 {
