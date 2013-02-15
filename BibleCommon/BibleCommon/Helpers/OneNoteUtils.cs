@@ -75,6 +75,20 @@ namespace BibleCommon.Helpers
             return string.Empty;
         }
 
+        public static string GetNotebookIdByPath(ref Application oneNoteApp, string localPath, bool refreshCache, out string notebookName)
+        {
+            notebookName = null;
+            var hierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks, refreshCache);
+            var bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@path=\"{0}\"]", localPath), hierarchy.Xnm);            
+            if (bibleNotebook != null)
+            {
+                notebookName = (string)bibleNotebook.Attribute("name");
+                return (string)bibleNotebook.Attribute("ID");
+            }
+
+            return string.Empty;
+        }
+
         public static string GetNotebookElementNickname(ref Application oneNoteApp, string elementId)
         {
             OneNoteProxy.HierarchyElement doc = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, elementId, HierarchyScope.hsSelf);
@@ -434,25 +448,7 @@ namespace BibleCommon.Helpers
             {
                 return false;
             }
-        }
-
-
-        private static string MakeNotebookNameWithNickname(XElement el)
-        {
-            var name = (string)el.Attribute("name");
-            var nickname = (string)el.Attribute("nickname");
-
-            if (name != nickname)
-                name = string.Format("{0} [\"{1}\"]", name, nickname);
-
-            return name;
-        }
-
-        public static string GetNotebookElementNameWithNickname(ref Application oneNoteApp, string elementId)
-        {
-            OneNoteProxy.HierarchyElement doc = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, elementId, HierarchyScope.hsSelf);
-            return MakeNotebookNameWithNickname(doc.Content.Root);
-        }
+        }     
 
         public static string ParseNotebookName(string s)
         {   
@@ -472,7 +468,7 @@ namespace BibleCommon.Helpers
 
             foreach (XElement notebook in hierarchy.Content.Root.XPathSelectElements("one:Notebook", hierarchy.Xnm))
             {
-                var name = MakeNotebookNameWithNickname(notebook);
+                var name = (string)notebook.Attribute("nickname");
                 var id = (string)notebook.Attribute("ID");
 
                 result.Add(id, name);

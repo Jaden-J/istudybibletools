@@ -33,9 +33,39 @@ namespace BibleConfigurator
             public string Value { get; set; }
             public object Key { get; set; }
 
+            public ComboBoxItem(object key)
+            {
+                this.Key = key;                
+            }
+
+            public ComboBoxItem(object key, string value)
+                : this(key)
+            {                
+                this.Value = value;
+            }
+
             public override string ToString()
             {
                 return Value;
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj == null)
+                    return false;
+
+                if (obj is string)
+                    return this.Key.ToString() == (string)obj;
+
+                if (!(obj is ComboBoxItem))
+                    return false;                
+
+                return this.Key == ((ComboBoxItem)obj).Key;                    
+            }
+
+            public override int GetHashCode()
+            {
+                return this.Key.GetHashCode();
             }
         }
 
@@ -68,6 +98,8 @@ namespace BibleConfigurator
         public string ForceIndexDictionaryModuleName { get; set; }
 
         public bool IsModerator { get; set; }
+
+        private Dictionary<string, string> _notebooks;
 
         public MainForm(params string[] args)
         {
@@ -242,7 +274,8 @@ namespace BibleConfigurator
         {
             if (!chkCreateNotebookFromTemplate.Checked)
             {
-                var notebookId = OneNoteUtils.GetNotebookIdByName(ref _oneNoteApp, GetNotebookNameFromCombobox(cbNotebook), true);
+                string notebookName;
+                var notebookId = GetNotebookIdFromCombobox(cbNotebook, out notebookName);
                 if (notebookId == currentNotebookId)  // то есть если пользователь уже сам поменял, то не трогаем
                 {                    
                     notebookId = SearchForNotebook(module, notebooks.Keys, containerType);
@@ -254,7 +287,7 @@ namespace BibleConfigurator
                         chkCreateNotebookFromTemplate.Checked = true;
                     else
                     {
-                        cbNotebook.SelectedItem = OneNoteUtils.GetNotebookElementNameWithNickname(ref _oneNoteApp, notebookId);
+                        cbNotebook.SelectedItem = notebookId;
                         notebooks.Remove(notebookId);
                         return notebookId;
                     }
@@ -341,17 +374,17 @@ namespace BibleConfigurator
                 string notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, notebookFromTemplatePath, out notebookFolderPath);
                 if (!string.IsNullOrEmpty(notebookName))
                 {
-                    var notebookId = WaitAndSaveParameters(module, notebookType, notebookName, notebookInfo.Nickname, notebookFolderPath, notebookType == ContainerType.Bible);                         // выйдем из метода только когда OneNote отработает
-                    createFromTemplateControl.Checked = false;  // чтоб если ошибки будут потом, он заново не создавал
-                    var notebookNameWithNickname = OneNoteUtils.GetNotebookElementNameWithNickname(ref _oneNoteApp, notebookId);
-                    selectedNotebookNameControl.Items.Add(notebookNameWithNickname);
-                    selectedNotebookNameControl.SelectedItem = notebookNameWithNickname;
+                    var notebookId = WaitAndSaveParameters(module, notebookType, notebookFolderPath, notebookName, notebookInfo.Nickname, notebookFolderPath, notebookType == ContainerType.Bible);                         // выйдем из метода только когда OneNote отработает
+                    createFromTemplateControl.Checked = false;  // чтоб если ошибки будут потом, он заново не создавал                    
+                    selectedNotebookNameControl.Items.Add(new ComboBoxItem(notebookId, notebookInfo.Nickname));
+                    selectedNotebookNameControl.SelectedItem = notebookId;
                 }
             }
             else
             {
-                string notebookId;
-                TryToSaveNotebookParameters(notebookType, GetNotebookNameFromCombobox(selectedNotebookNameControl), false, out notebookId);
+                string notebookName;
+                var notebookId = GetNotebookIdFromCombobox(selectedNotebookNameControl, out notebookName);
+                TryToSaveNotebookParameters(notebookType, notebookId, notebookName, false);
             }
         }
 
@@ -368,14 +401,15 @@ namespace BibleConfigurator
                 notebookName = CreateNotebookFromTemplate(notebookTemplateFileName, SingleNotebookFromTemplatePath, out notebookFolderPath);
                 if (!string.IsNullOrEmpty(notebookName))
                 {
-                    WaitAndSaveParameters(module, ContainerType.Single, notebookName, notebookInfo.Nickname, notebookFolderPath, false);
+                    WaitAndSaveParameters(module, ContainerType.Single, notebookFolderPath, notebookName, notebookInfo.Nickname, notebookFolderPath, false);
                     SearchForCorrespondenceSectionGroups(module, SettingsManager.Instance.NotebookId_Bible);
                 }
             }
             else
             {
-                notebookName = GetNotebookNameFromCombobox(cbSingleNotebook);
-                if (TryToSaveNotebookParameters(ContainerType.Single, notebookName, false, out notebookId))
+                
+                notebookId = GetNotebookIdFromCombobox(cbSingleNotebook, out notebookName);
+                if (TryToSaveNotebookParameters(ContainerType.Single, notebookId, notebookName, false))
                 {
                     if (_notebookParametersForm != null && _notebookParametersForm.RenamedSectionGroups.Count > 0)
                         RenameSectionGroupsForm(notebookId, _notebookParametersForm.RenamedSectionGroups);
@@ -520,8 +554,8 @@ namespace BibleConfigurator
 
         }
 
-        private string WaitAndSaveParameters(ModuleInfo module, ContainerType notebookType, string notebookName, string notebookNickname, string notebookFolderPath, bool saveModuleInformationIntoFirstPage)
-        {   
+        private string WaitAndSaveParameters(ModuleInfo module, ContainerType notebookType, string notebookPath, string notebookName, string notebookNickname, string notebookFolderPath, bool saveModuleInformationIntoFirstPage)
+        {
             PrepareForLongProcessing(100, 1, string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ConfiguratorNotebookCreation, notebookName));
             
             bool parametersWasLoad = false;
@@ -534,7 +568,7 @@ namespace BibleConfigurator
                     pbMain.PerformStep();
                     System.Windows.Forms.Application.DoEvents();
 
-                    if (TryToSaveNotebookParameters(notebookType, notebookName, true, out notebookId))
+                    if (TryToSaveNotebookParameters(notebookType, notebookPath, true, out notebookId))
                     {
                         parametersWasLoad = true;
                         break;
@@ -596,13 +630,21 @@ namespace BibleConfigurator
             }
         }
 
-        private bool TryToSaveNotebookParameters(ContainerType notebookType, string notebookName, bool silientMode, out string notebookId)
-        {
-            notebookId = string.Empty;
+        private bool TryToSaveNotebookParameters(ContainerType notebookType, string notebookFolderPath, bool silientMode, out string notebookId)
+        {                
+            string notebookName;
+            notebookId = OneNoteUtils.GetNotebookIdByPath(ref _oneNoteApp, notebookFolderPath, true, out notebookName);
 
+            if (!string.IsNullOrEmpty(notebookId))
+                return TryToSaveNotebookParameters(notebookType, notebookId, notebookName, silientMode);
+
+            return false;
+        }
+
+        private bool TryToSaveNotebookParameters(ContainerType notebookType, string notebookId, string notebookName, bool silientMode)
+        {
             try
-            {
-                notebookId = OneNoteUtils.GetNotebookIdByName(ref _oneNoteApp, notebookName, true);
+            {                
                 var module = ModulesManager.GetCurrentModuleInfo();
 
                 string errorText;
@@ -829,12 +871,12 @@ namespace BibleConfigurator
             //else  // пусть лучше будет так, чтобы если пользователь что-то поменял - его программа просила всегда сохранить изменения, пока он не сохранит
             //    lblWarning.Visible = false;
 
-            var notebooks = OneNoteUtils.GetExistingNotebooks(ref _oneNoteApp);
-            string singleNotebookId = (IsModerator || module.UseSingleNotebook() || SettingsManager.Instance.IsSingleNotebook) ? SearchForNotebook(module, notebooks.Keys, ContainerType.Single) : string.Empty;
-            string bibleNotebookId = SearchForNotebook(module, notebooks.Keys, ContainerType.Bible);
-            string bibleCommentsNotebookId = SearchForNotebook(module, notebooks.Keys, ContainerType.BibleComments);
-            string bibleStudyNotebookId = SearchForNotebook(module, notebooks.Keys, ContainerType.BibleStudy);
-            string bibleNotesPagesNotebookId = SearchForNotebook(module, notebooks.Keys.ToList().Where(s => s != bibleCommentsNotebookId), ContainerType.BibleNotesPages);
+            _notebooks = OneNoteUtils.GetExistingNotebooks(ref _oneNoteApp);
+            string singleNotebookId = (IsModerator || module.UseSingleNotebook() || SettingsManager.Instance.IsSingleNotebook) ? SearchForNotebook(module, _notebooks.Keys, ContainerType.Single) : string.Empty;
+            string bibleNotebookId = SearchForNotebook(module, _notebooks.Keys, ContainerType.Bible);
+            string bibleCommentsNotebookId = SearchForNotebook(module, _notebooks.Keys, ContainerType.BibleComments);
+            string bibleStudyNotebookId = SearchForNotebook(module, _notebooks.Keys, ContainerType.BibleStudy);
+            string bibleNotesPagesNotebookId = SearchForNotebook(module, _notebooks.Keys.ToList().Where(s => s != bibleCommentsNotebookId), ContainerType.BibleNotesPages);
             if (string.IsNullOrEmpty(bibleNotesPagesNotebookId))
                 bibleNotesPagesNotebookId = bibleCommentsNotebookId;
 
@@ -853,13 +895,14 @@ namespace BibleConfigurator
             cbBibleNotesPagesNotebook.Items.Clear();
             cbBibleStudyNotebook.Items.Clear();
 
-            foreach (var notebook in notebooks.Values)
+            foreach (var notebookId in _notebooks.Keys)
             {
-                cbSingleNotebook.Items.Add(notebook);
-                cbBibleNotebook.Items.Add(notebook);
-                cbBibleCommentsNotebook.Items.Add(notebook);
-                cbBibleNotesPagesNotebook.Items.Add(notebook);
-                cbBibleStudyNotebook.Items.Add(notebook);
+                var cbItem = new ComboBoxItem(notebookId, _notebooks[notebookId]);
+                cbSingleNotebook.Items.Add(cbItem);
+                cbBibleNotebook.Items.Add(cbItem);
+                cbBibleCommentsNotebook.Items.Add(cbItem);
+                cbBibleNotesPagesNotebook.Items.Add(cbItem);
+                cbBibleStudyNotebook.Items.Add(cbItem);
             }
 
             if (module.UseSingleNotebook() || IsModerator || SettingsManager.Instance.IsSingleNotebook)
@@ -867,26 +910,26 @@ namespace BibleConfigurator
                 var defaultNotebookName = "";
                 if (module.UseSingleNotebook())
                     defaultNotebookName = Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.Single).Name);
-                SetNotebookParameters(rbSingleNotebook.Checked, 
-                    !string.IsNullOrEmpty(singleNotebookId) ? notebooks[singleNotebookId] : defaultNotebookName,
-                    notebooks, SettingsManager.Instance.NotebookId_Bible, cbSingleNotebook, chkCreateSingleNotebookFromTemplate);
-            }            
+                SetNotebookParameters(rbSingleNotebook.Checked,
+                    !string.IsNullOrEmpty(singleNotebookId) ? _notebooks[singleNotebookId] : defaultNotebookName,
+                    _notebooks, SettingsManager.Instance.NotebookId_Bible, cbSingleNotebook, chkCreateSingleNotebookFromTemplate);
+            }
 
-            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotebookId) ? notebooks[bibleNotebookId] :
-                Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.Bible).Name), 
-                notebooks, SettingsManager.Instance.NotebookId_Bible, cbBibleNotebook, chkCreateBibleNotebookFromTemplate);
+            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotebookId) ? _notebooks[bibleNotebookId] :
+                Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.Bible).Name),
+                _notebooks, SettingsManager.Instance.NotebookId_Bible, cbBibleNotebook, chkCreateBibleNotebookFromTemplate);
 
-            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleStudyNotebookId) ? notebooks[bibleStudyNotebookId] :
+            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleStudyNotebookId) ? _notebooks[bibleStudyNotebookId] :
                 Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.BibleStudy).Name),
-                notebooks, SettingsManager.Instance.NotebookId_BibleStudy, cbBibleStudyNotebook, chkCreateBibleStudyNotebookFromTemplate);
+                _notebooks, SettingsManager.Instance.NotebookId_BibleStudy, cbBibleStudyNotebook, chkCreateBibleStudyNotebookFromTemplate);
 
-            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleCommentsNotebookId) ? notebooks[bibleCommentsNotebookId] :
-                Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.BibleComments).Name), 
-                notebooks, SettingsManager.Instance.NotebookId_BibleComments, cbBibleCommentsNotebook, chkCreateBibleCommentsNotebookFromTemplate);
+            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleCommentsNotebookId) ? _notebooks[bibleCommentsNotebookId] :
+                Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.BibleComments).Name),
+                _notebooks, SettingsManager.Instance.NotebookId_BibleComments, cbBibleCommentsNotebook, chkCreateBibleCommentsNotebookFromTemplate);
 
-            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotesPagesNotebookId) ? notebooks[bibleNotesPagesNotebookId] :
-                Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.BibleNotesPages).Name), 
-                notebooks, SettingsManager.Instance.NotebookId_BibleNotesPages, cbBibleNotesPagesNotebook, chkCreateBibleNotesPagesNotebookFromTemplate);            
+            SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotesPagesNotebookId) ? _notebooks[bibleNotesPagesNotebookId] :
+                Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.BibleNotesPages).Name),
+                _notebooks, SettingsManager.Instance.NotebookId_BibleNotesPages, cbBibleNotesPagesNotebook, chkCreateBibleNotesPagesNotebookFromTemplate);            
 
             tbBookOverviewName.Text = SettingsManager.Instance.SectionName_DefaultBookOverview;
             tbNotesPageName.Text = SettingsManager.Instance.PageName_Notes;
@@ -922,7 +965,7 @@ namespace BibleConfigurator
             cbLanguage.Items.Clear();
             foreach (var pair in languages)
             {
-                cbLanguage.Items.Add(new ComboBoxItem() { Key = pair.Key, Value = pair.Value });
+                cbLanguage.Items.Add(new ComboBoxItem(pair.Key, pair.Value));
                 if (pair.Key == currentLanguage.LCID)
                     cbLanguage.SelectedIndex = cbLanguage.Items.Count - 1;
 
@@ -947,22 +990,18 @@ namespace BibleConfigurator
             string notebookIdFromSettings, ComboBox cb, CheckBox chk)
         {
             chk.Checked = false;
-            string notebookName = (loadNameFromSettings && !string.IsNullOrEmpty(notebookIdFromSettings)) ? TryToGetNotebookName(notebooks, notebookIdFromSettings) : string.Empty;
-            if (!string.IsNullOrEmpty(notebookName) && cb.Items.Contains(notebookName))
-                cb.SelectedItem = notebookName;
-            else if (cb.Items.Contains(defaultName))
-                cb.SelectedItem = defaultName;
+            var notebookId = loadNameFromSettings ? notebookIdFromSettings : string.Empty;
+            if (!string.IsNullOrEmpty(notebookId) && cb.Items.Contains(notebookId))
+                cb.SelectedItem = notebookId;
             else
-                chk.Checked = true;
-        }
-
-        private static string TryToGetNotebookName(Dictionary<string, string> notebooks, string notebookId)
-        {
-            if (notebooks.ContainsKey(notebookId))
-                return notebooks[notebookId];
-
-            return string.Empty;
-        }
+            {
+                var defaultNotebook = cb.Items.Cast<ComboBoxItem>().FirstOrDefault(item => item.Value.IndexOf(defaultName) > -1);
+                if (defaultNotebook != null)
+                    cb.SelectedItem = defaultNotebook;
+                else
+                    chk.Checked = true;
+            }
+        }      
 
         private void SetNotebooksDefaultPaths()
         {
@@ -1064,20 +1103,27 @@ namespace BibleConfigurator
             btnBibleStudyNotebookSetPath.Enabled = chkCreateBibleStudyNotebookFromTemplate.Enabled && chkCreateBibleStudyNotebookFromTemplate.Checked;
         }
 
-        private static string GetNotebookNameFromCombobox(ComboBox cb)
+        private static string GetNotebookIdFromCombobox(ComboBox cb, out string notebookName)
         {
-            var name = (string)cb.SelectedItem;
-            return OneNoteUtils.ParseNotebookName(name);
+            notebookName = null;
+            if (cb.SelectedItem != null)
+            {
+                notebookName = cb.SelectedItem.ToString();
+                return ((ComboBoxItem)cb.SelectedItem).Key.ToString();
+            }
+
+            return null;
         }
 
         private void btnSingleNotebookParameters_Click(object sender, EventArgs e)
         {
             try
             {
-                var notebookName = GetNotebookNameFromCombobox(cbSingleNotebook);
-                if (!string.IsNullOrEmpty(notebookName))
-                {                    
-                    var notebookId = OneNoteUtils.GetNotebookIdByName(ref _oneNoteApp, notebookName, true);
+                string notebookName;
+                var notebookId = GetNotebookIdFromCombobox(cbSingleNotebook, out notebookName);
+                if (!string.IsNullOrEmpty(notebookId))
+                {                   
+                    
                     var module = ModulesManager.GetCurrentModuleInfo();
                     string errorText;
                     if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, ContainerType.Single, out errorText))
