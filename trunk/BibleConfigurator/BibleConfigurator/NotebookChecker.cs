@@ -269,7 +269,7 @@ namespace BibleConfigurator
                 throw new InvalidNotebookException(Constants.NotebookIsSupplementalBible);
 
             if (elementId == SettingsManager.Instance.NotebookId_Dictionaries)
-                throw new InvalidNotebookException(Constants.NotebookIsDictionaries);
+                throw new InvalidNotebookException(Constants.NotebookIsDictionaries);            
         }      
     }
 }

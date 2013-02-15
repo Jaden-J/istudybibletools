@@ -24,7 +24,7 @@ namespace BibleNoteLinker
             if (form != null)
             {
                 FormExtensions.RunSingleInstance(
-                    BibleCommon.Consts.Constants.AnalyzeAndParametersMutix, 
+                    BibleCommon.Consts.Constants.AnalyzeMutix, 
                     BibleCommon.Resources.Constants.MoreThanSingleInstanceRun, 
                     () => Application.Run(form));
             }
