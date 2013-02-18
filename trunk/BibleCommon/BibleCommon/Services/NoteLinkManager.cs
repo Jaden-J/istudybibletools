@@ -189,8 +189,8 @@ namespace BibleCommon.Services
                     ProcessChapters(foundChapters, notePageHierarchyInfo, linkDepth, force);                                       
                 }
 
-                if (linkDepth >= AnalyzeDepth.Full)                
-                    notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
+                if (linkDepth >= AnalyzeDepth.Full)
+                    OneNoteProxy.Instance.AddNotesPageProcessed(notebookId, pageId);                    
 
                 notePageDocument.WasModified = true;
 

@@ -13,7 +13,7 @@ namespace BibleNoteLinker
 {
     public partial class MainForm
     {
-        private const int StagesCount = 5;
+        private const int StagesCount = 6;
         private const int ApproximatePageVersesCount = 100;
         private int _pagesForAnalyzeCount;
 
@@ -73,19 +73,21 @@ namespace BibleNoteLinker
 
             if (_pagesForAnalyzeCount > 0)
             {
-                //CommitPages(BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating, 2, OneNoteProxy.PageType.NotesPage);
+                CommitPages(BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating, 2, OneNoteProxy.PageType.NotesPage);
 
                 SyncNotesPagesContainer();   // эта задача асинхронная, поэтому не выделаем как отдельный этап
 
                 SortNotesPages();  // это происходит очень быстро, поэтому не выделяем как отдельный этап
 
-                CommitNotesPagesHierarchy(2);
+                CommitNotesPagesHierarchy(3);
 
-                CommitPages(BibleCommon.Resources.Constants.NoteLinkerNotePagesUpdating, 3, OneNoteProxy.PageType.NotePage);
+                //CommitPages(BibleCommon.Resources.Constants.NoteLinkerNotePagesUpdating, 3, OneNoteProxy.PageType.NotePage);
 
-                UpdateLinksToNotesPages(4);
+                UpdateNotePagesMetadata(4);
 
-                CommitPages(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, 5, null);                
+                UpdateLinksToNotesPages(5);
+
+                CommitPages(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, 6, null);                
             }
 
             OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
@@ -95,6 +97,20 @@ namespace BibleNoteLinker
                     _oneNoteApp.NavigateTo(currentPage.Id, null);
                 }
             });
+        }
+
+        private void UpdateNotePagesMetadata(int stage)
+        {
+            foreach (var notebookId in OneNoteProxy.Instance.ProcessedNotesPages.Keys)
+            {
+                var hierarchy = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, notebookId, HierarchyScope.hsPages);
+
+                foreach (var pageId in OneNoteProxy.Instance.ProcessedNotesPages[notebookId])
+                {
+                     и здесь обновляем метаданные
+                    OneNoteUtils.UpdateElementMetaData(page.Content.Root, Constants.Key_LatestAnalyzeTime, DateTime.UtcNow.AddSeconds(10).ToString(), page.Xnm);
+                }
+            }
         }
 
         private void SyncNotesPagesContainer()
