@@ -14,7 +14,7 @@ namespace BibleCommon.Handlers
 {
     public class NavigateToHandler : IProtocolHandler
     {
-        private const string _protocolName = "isbtopen:";
+        private const string _protocolName = "isbtOpen:";
         private const int NavigateAttemptsCount = 10;
 
         private static string ProtocolFullString

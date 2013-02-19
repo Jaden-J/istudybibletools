@@ -11,7 +11,7 @@ namespace BibleCommon.Handlers
 {
     public class NavigateToStrongHandler : IProtocolHandler
     {
-        private const string _protocolName = "isbtstrongopen:";
+        private const string _protocolName = "isbtStrongOpen:";
 
         public string ProtocolName
         {
