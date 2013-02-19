@@ -275,12 +275,7 @@ namespace BibleCommon.Services
 
         public static string GetProxyLink(string link, string pageId, string objectId)
         {
-            link = string.Concat(
-                        link.Replace("onenote:", string.Format("{0}:_", Constants.ISBTOpenProtocol)),
-                        "&", Constants.QueryParameterKey_CustomPageId, "=", pageId,
-                        "&", Constants.QueryParameterKey_CustomObjectId, "=", objectId);
-
-            return link;
+            return NavigateToHandler.GetCommandUrlStatic(link, pageId, objectId);            
         }
 
         public Dictionary<string, OneNoteProxy.BiblePageId> BiblePagesWithUpdatedLinksToNotesPages

@@ -65,7 +65,9 @@
     <Compile Include="Contracts\INotesPageManager.cs" />
     <Compile Include="Contracts\IProtocolHandler.cs" />
     <Compile Include="Handlers\FindVersesWithStrongNumberHandler.cs" />
+    <Compile Include="Handlers\NavigateToHandler.cs" />
     <Compile Include="Handlers\NavigateToStrongHandler.cs" />
+    <Compile Include="Handlers\RebuildDictionaryFileCacheHandler.cs" />
     <Compile Include="Helpers\CollectionHelper.cs" />
     <Compile Include="Helpers\FormExtensions.cs" />
     <Compile Include="Helpers\SharpSerializationHelper.cs" />
