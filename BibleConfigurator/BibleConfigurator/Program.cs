@@ -69,7 +69,9 @@ namespace BibleConfigurator
             finally
             {
                 if (_oneNoteApp != null)
+                {                    
                     _oneNoteApp = null;
+                }
             }
         }
 
@@ -297,7 +299,9 @@ namespace BibleConfigurator
             finally
             {
                 if (_oneNoteApp != null)
+                {                    
                     _oneNoteApp = null;
+                }
             }
         }        
 

@@ -6,6 +6,7 @@ using Microsoft.Office.Interop.OneNote;
 using System.Diagnostics;
 using BibleCommon.Contracts;
 using BibleCommon.Services;
+using System.Runtime.InteropServices;
 
 namespace BibleCommon.Handlers
 {
@@ -66,7 +67,7 @@ namespace BibleCommon.Handlers
             StrongNumber = verseArgs[0];
             ModuleShortName = verseArgs[1];
 
-            Application oneNoteApp = new Application();
+            var oneNoteApp = new Application();
 
             try
             {
@@ -88,6 +89,7 @@ namespace BibleCommon.Handlers
             }
             finally
             {
+                Marshal.ReleaseComObject(oneNoteApp);
                 oneNoteApp = null;
             }
         }

@@ -61,12 +61,22 @@ namespace BibleCommon.Handlers
                 throw new ArgumentNullException("args");
 
             var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
-            var newPath = args[0].Replace(ProtocolFullString, Constants.OneNoteProtocol);
 
-            if (!TryToRedirectByIds(oneNoteApp, newPath))
+            try
             {
-                if (!TryToRedirectByUrl(oneNoteApp, newPath))
-                    throw new Exception(string.Format("The {0} attempts of NavigateToUrl() were unsuccessful.", NavigateAttemptsCount));
+
+                var newPath = args[0].Replace(ProtocolFullString, Constants.OneNoteProtocol);
+
+                if (!TryToRedirectByIds(oneNoteApp, newPath))
+                {
+                    if (!TryToRedirectByUrl(oneNoteApp, newPath))
+                        throw new Exception(string.Format("The {0} attempts of NavigateToUrl() were unsuccessful.", NavigateAttemptsCount));
+                }
+            }
+            finally
+            {
+                Marshal.ReleaseComObject(oneNoteApp);
+                oneNoteApp = null;
             }
         }
 

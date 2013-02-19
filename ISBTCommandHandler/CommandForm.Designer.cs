@@ -40,8 +40,8 @@
             this.Opacity = 0D;
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.Text = "CommandForm";
-            this.Shown += new System.EventHandler(this.CommandForm_Shown);
+            this.Text = "CommandForm";            
+            this.Enter += new System.EventHandler(this.CommandForm_Enter);
             this.ResumeLayout(false);
 
         }
