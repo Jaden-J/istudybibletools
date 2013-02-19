@@ -10,6 +10,6 @@ namespace BibleCommon.Contracts
         string ProtocolName { get; }
         string GetCommandUrl(string args);
         bool IsProtocolCommand(string[] args);
-        bool ExecuteCommand(string[] args);
+        void ExecuteCommand(string[] args);
     }
 }

@@ -29,7 +29,7 @@ namespace BibleCommon.Consts
         public static readonly string UnicodeFontName = "Arial Unicode MS";
         public static readonly string AnalyzeMutix = "ISBT_Analyze";
         public static readonly string ParametersMutix = "ISBT_Parameters";
-        public static readonly string ISBTOpenProtocol = "isbtopen";
+        public static readonly string OneNoteProtocol = "onenote:";
 
         public static readonly decimal ImportantVerseWeight = 2;
 
@@ -103,7 +103,7 @@ namespace BibleCommon.Consts
         public static readonly string QueryParameterKey_VerseWeight = "vw";
         public static readonly string QueryParameterKey_NotePageId = "npid";
         public static readonly string QueryParameterKey_CustomPageId = "cpId";
-        public static readonly string QueryParameterKey_CustomObjectId = "coId";
+        public static readonly string QueryParameterKey_CustomObjectId = "coId";        
 
         public static readonly string Key_IsSummaryNotesPage = "IsSummaryNotesPage";
         public static readonly string Key_LatestAnalyzeTime = "LatestAnalyzeTime";
