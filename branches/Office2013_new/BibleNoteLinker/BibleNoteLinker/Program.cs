@@ -33,31 +33,7 @@ namespace BibleNoteLinker
 
         private static Form PrepareForRunning(params string[] args)
         {
-            Form result = null;
-
-            if (args.Contains(Consts.QuickAnalyze))
-            {
-                try
-                {
-                    Logger.Init("QuickAnalyze");
-                    var _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
-                    var currentPage = OneNoteUtils.GetCurrentPageInfo(ref _oneNoteApp);
-                    using (NoteLinkManager noteLinkManager = new NoteLinkManager(_oneNoteApp))
-                    {
-                        noteLinkManager.LinkPageVerses(currentPage.NotebookId, currentPage.Id, NoteLinkManager.AnalyzeDepth.SetVersesLinks, false);
-                        noteLinkManager.SetCursorOnNearestVerse(noteLinkManager.LastAnalyzedVerse);                        
-                    }
-                    OneNoteProxy.Instance.CommitAllModifiedPages(ref _oneNoteApp, true, null, null, null);
-                }
-                catch (Exception ex)
-                {
-                    FormLogger.LogError(ex);
-                }
-            }
-            else
-            {
-                result = new MainForm();
-            }
+            var result = new MainForm();            
 
             return result;
         }
