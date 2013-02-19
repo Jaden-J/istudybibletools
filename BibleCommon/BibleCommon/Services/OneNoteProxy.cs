@@ -176,17 +176,7 @@ namespace BibleCommon.Services
         private List<SortPageInfo> _sortVerseLinkPagesInfo = new List<SortPageInfo>();
         private Dictionary<string, string> _bibleVersesLinks = null;
         private Dictionary<string, ModuleDictionaryInfo> _moduleDictionaries = new Dictionary<string, ModuleDictionaryInfo>();
-        private Dictionary<string, Dictionary<string, string>> _dictionariesTermsLinks = new Dictionary<string, Dictionary<string, string>>();
-        private Dictionary<string, List<string>> _processedNotesPages = new Dictionary<string,List<string>>();  // notebookId, List<pageId>
-
-
-        public Dictionary<string, List<string>> ProcessedNotesPages
-        {
-            get
-            {
-                return _processedNotesPages;
-            }
-        }
+        private Dictionary<string, Dictionary<string, string>> _dictionariesTermsLinks = new Dictionary<string, Dictionary<string, string>>();        
 
         private bool? _isBibleVersesLinksCacheActive;
 
@@ -630,14 +620,6 @@ namespace BibleCommon.Services
             }
 
             return null;
-        }
-
-        public void AddNotesPageProcessed(string notebookId, string pageId)
-        {
-            if (!_processedNotesPages.ContainsKey(notebookId))
-                _processedNotesPages.Add(notebookId, new List<string>());
-
-            _processedNotesPages[notebookId].Add(pageId);
-        }
+        }      
     }
 }
