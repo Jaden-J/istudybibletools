@@ -190,7 +190,7 @@ namespace BibleCommon.Services
                 }
 
                 if (linkDepth >= AnalyzeDepth.Full)
-                    OneNoteProxy.Instance.AddNotesPageProcessed(notebookId, pageId);                    
+                    notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
 
                 notePageDocument.WasModified = true;
 
