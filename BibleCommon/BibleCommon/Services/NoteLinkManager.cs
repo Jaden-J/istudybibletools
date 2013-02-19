@@ -189,14 +189,16 @@ namespace BibleCommon.Services
                     ProcessChapters(foundChapters, notePageHierarchyInfo, linkDepth, force);                                       
                 }
 
-                if (linkDepth >= AnalyzeDepth.Full)
-                    notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
-
                 notePageDocument.WasModified = true;
 
-                Logger.LogMessageParams(Resources.Constants.UpdatingPageInOneNote);
-                System.Windows.Forms.Application.DoEvents();
-                OneNoteProxy.Instance.CommitModifiedPage(ref _oneNoteApp, notePageDocument, false);
+                if (linkDepth >= AnalyzeDepth.Full)
+                {
+                    notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
+
+                    Logger.LogMessageParams(Resources.Constants.UpdatingPageInOneNote);
+                    System.Windows.Forms.Application.DoEvents();
+                    OneNoteProxy.Instance.CommitModifiedPage(ref _oneNoteApp, notePageDocument, false);
+                }
             }
             catch (ProcessAbortedByUserException)
             {                
