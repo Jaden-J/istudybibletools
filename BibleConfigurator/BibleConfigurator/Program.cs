@@ -69,7 +69,9 @@ namespace BibleConfigurator
             finally
             {
                 if (_oneNoteApp != null)
+                {                    
                     _oneNoteApp = null;
+                }
             }
         }
 
@@ -101,8 +103,7 @@ namespace BibleConfigurator
             mutexId = null;
             additionalMutexId = null;
 
-            var strongProtocolHandler = new FindVersesWithStrongNumberHandler();
-            var navToStrongHandler = new NavigateToStrongHandler();
+            var rebuildDictionaryCacheHandler = new RebuildDictionaryFileCacheHandler();
 
             if (args.Contains(Consts.ShowModuleInfo) && IsSystemConfigured())
                 result = new AboutModuleForm(SettingsManager.Instance.ModuleShortName, true);
@@ -112,17 +113,14 @@ namespace BibleConfigurator
                 result = new SearchInDictionariesForm();
             else if (args.Contains(Consts.ShowManual))
                 OpenManual();
-            else if (strongProtocolHandler.IsProtocolCommand(args))
-                strongProtocolHandler.ExecuteCommand(args);
-            else if (navToStrongHandler.IsProtocolCommand(args))
+            else if (rebuildDictionaryCacheHandler.IsProtocolCommand(args))
             {
-                if (!navToStrongHandler.ExecuteCommand(args))
-                {
-                    result = new MainForm(args);
-                    ((MainForm)result).ForceIndexDictionaryModuleName = navToStrongHandler.ModuleShortName;
-                    ((MainForm)result).CommitChangesAfterLoad = true;
-                }
-            }            
+                rebuildDictionaryCacheHandler.ExecuteCommand(args);
+
+                result = new MainForm(args);
+                ((MainForm)result).ForceIndexDictionaryModuleName = rebuildDictionaryCacheHandler.ModuleShortName;
+                ((MainForm)result).CommitChangesAfterLoad = true;
+            }
             else if (args.Contains(Consts.RunOnOneNoteStarts))
             {
                 silent = true;
@@ -301,7 +299,9 @@ namespace BibleConfigurator
             finally
             {
                 if (_oneNoteApp != null)
+                {                    
                     _oneNoteApp = null;
+                }
             }
         }        
 

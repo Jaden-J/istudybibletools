@@ -153,7 +153,7 @@ namespace BibleCommon.Services
 
 
         public void Dispose()
-        {
+        {            
             _oneNoteApp = null;
         }
     }

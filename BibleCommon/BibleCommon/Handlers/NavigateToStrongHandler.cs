@@ -6,12 +6,13 @@ using Microsoft.Office.Interop.OneNote;
 using System.Diagnostics;
 using BibleCommon.Contracts;
 using BibleCommon.Services;
+using System.Runtime.InteropServices;
 
 namespace BibleCommon.Handlers
 {
     public class NavigateToStrongHandler : IProtocolHandler
     {
-        private static string _protocolName = "isbtStrongOpen";
+        private const string _protocolName = "isbtStrongOpen:";
 
         public string ProtocolName
         {
@@ -30,7 +31,7 @@ namespace BibleCommon.Handlers
 
         public static string GetCommandUrlStatic(string strongNumber, string moduleShortName)
         {
-            return string.Format("{0}:{1};{2}", _protocolName, strongNumber, moduleShortName);
+            return string.Format("{0}{1};{2}", _protocolName, strongNumber, moduleShortName);
         }      
 
         public bool IsProtocolCommand(string[] args)
@@ -38,16 +39,19 @@ namespace BibleCommon.Handlers
             return args.Length > 0 && args[0].StartsWith(ProtocolName, StringComparison.OrdinalIgnoreCase);
         }
 
-        public bool ExecuteCommand(string[] args)
+        public void ExecuteCommand(string[] args)
         {
             try
             {
-                return TryExecuteCommand(args);
+                if (!TryExecuteCommand(args))
+                {
+                    var rebuildCacheHandler = new RebuildDictionaryFileCacheHandler();
+                    Process.Start(rebuildCacheHandler.GetCommandUrl(ModuleShortName));
+                }
             }
             catch (Exception ex)
             {
-                FormLogger.LogError(ex);
-                return true;
+                FormLogger.LogError(ex);                
             }           
         }
 
@@ -63,7 +67,7 @@ namespace BibleCommon.Handlers
             StrongNumber = verseArgs[0];
             ModuleShortName = verseArgs[1];
 
-            Application oneNoteApp = new Application();
+            var oneNoteApp = new Application();
 
             try
             {
@@ -85,6 +89,7 @@ namespace BibleCommon.Handlers
             }
             finally
             {
+                Marshal.ReleaseComObject(oneNoteApp);
                 oneNoteApp = null;
             }
         }

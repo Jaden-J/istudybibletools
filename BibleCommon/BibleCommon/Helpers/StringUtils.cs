@@ -326,6 +326,37 @@ namespace BibleCommon.Helpers
             return result;
         }
 
+        /// <summary>
+        /// Получить значение аттрибута, не обрамлённого символами
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="attributeName"></param>
+        /// <returns></returns>
+        public static string GetNotFramedAttributeValue(string s, string attributeName)
+        {
+            string result = null;
+
+            var searchString = string.Format("&{0}=", attributeName);
+
+            var startIndex = s.IndexOf(searchString);
+
+            if (startIndex > -1)
+            {
+                startIndex = startIndex + searchString.Length;
+
+                if (s.Length > startIndex)
+                {
+                    int endIndex = s.IndexOf("&", startIndex + 1);
+
+                    if (endIndex > -1)
+                        result = s.Substring(startIndex, endIndex - startIndex);
+                    else
+                        result = s.Substring(startIndex);
+                }
+            }
+            return result;
+        }
+
         public static string GetQueryParameterValue(string s, string key)
         {
             string result = null;
