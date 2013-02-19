@@ -22,7 +22,6 @@ namespace ISBTCommandHandler
         {
             try
             {
-
                 if (!CommandProcessedWithSimpleHandler(args))
                 {
                     if (!ApplicationInstanceManager.CreateSingleInstance(

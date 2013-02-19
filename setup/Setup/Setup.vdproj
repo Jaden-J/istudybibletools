@@ -58,6 +58,12 @@
         "Entry"
         {
         "MsmKey" = "8:_54589C2C9D9432E23BFDC86EC0B41D83"
+        "OwnerKey" = "8:_9B0F10C6DE324711B2DB7288CC89C606"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_54589C2C9D9432E23BFDC86EC0B41D83"
         "OwnerKey" = "8:_FFEA549306074C1F816582BF2A48D211"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -123,12 +129,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6F3B04236BD48FDA862AA157F067E950"
-        "OwnerKey" = "8:_3FC71294DAB247EDA89368E781DCDC4E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_830B3D6A545B464F87CF9AA03B88DBEC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -142,6 +142,12 @@
         "Entry"
         {
         "MsmKey" = "8:_94E1AB757EAF4C5A8D864AB3DE806EF5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9B0F10C6DE324711B2DB7288CC89C606"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -256,6 +262,12 @@
         "Entry"
         {
         "MsmKey" = "8:_F3C42677E08394B36D25DC3D3431C6FD"
+        "OwnerKey" = "8:_9B0F10C6DE324711B2DB7288CC89C606"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F3C42677E08394B36D25DC3D3431C6FD"
         "OwnerKey" = "8:_FFEA549306074C1F816582BF2A48D211"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -323,6 +335,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_3FC71294DAB247EDA89368E781DCDC4E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_9B0F10C6DE324711B2DB7288CC89C606"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -724,26 +742,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6F3B04236BD48FDA862AA157F067E950"
-            {
-            "SourcePath" = "8:RibbonButtons.tlb"
-            "TargetName" = "8:RibbonButtons.tlb"
-            "Tag" = "8:"
-            "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:2"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_94E1AB757EAF4C5A8D864AB3DE806EF5"
             {
             "SourcePath" = "8:..\\Instruction (1033).docx"
@@ -768,7 +766,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=2.6.3.800, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=2.6.5.800, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_AC6B52A869AD46AD05B0ED89653F468F"
@@ -1084,15 +1082,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OneNote IStudyBibleTools"
-        "ProductCode" = "8:{9B275056-1AE8-48CC-9611-99D5100CDDE2}"
-        "PackageCode" = "8:{285F7503-DEDD-4B24-A5FB-216A13EE442A}"
+        "ProductCode" = "8:{F74CB992-4877-4FAB-B7B9-E3C9B22016D2}"
+        "PackageCode" = "8:{B635D67A-8B7F-47EB-A228-7ACCF1063BE1}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.6.4"
+        "ProductVersion" = "8:2.6.6"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://IStudyBibleTools.com"
@@ -1596,7 +1594,7 @@
                                                     "Condition" = "8:"
                                                     "Transitive" = "11:FALSE"
                                                     "ValueTypes" = "3:1"
-                                                    "Value" = "8:\"[TARGETDIR]tools\\ISBTCommandHandler\\ISBTCommandHandler\" \"%1\""
+                                                    "Value" = "8:\"[TARGETDIR]tools\\ISBTCommandHandler\\ISBTCommandHandler.exe\" \"%1\""
                                                     }
                                                 }
                                             }
@@ -1633,7 +1631,7 @@
                     }
                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_9B582206895D47679D9D0749F0BA4120"
                     {
-                    "Name" = "8:isbtrdc"
+                    "Name" = "8:isbtRDC"
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:FALSE"
                     "DeleteAtUninstall" = "11:FALSE"
@@ -1711,7 +1709,7 @@
                     }
                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_BE914F89CFB645FA84BC83B7B93B3171"
                     {
-                    "Name" = "8:isbtopen"
+                    "Name" = "8:isbtOpen"
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:FALSE"
                     "DeleteAtUninstall" = "11:FALSE"
@@ -1768,7 +1766,7 @@
                                                     "Condition" = "8:"
                                                     "Transitive" = "11:FALSE"
                                                     "ValueTypes" = "3:1"
-                                                    "Value" = "8:\"[TARGETDIR]tools\\ISBTCommandHandler\\ISBTCommandHandler\" \"%1\""
+                                                    "Value" = "8:\"[TARGETDIR]tools\\ISBTCommandHandler\\ISBTCommandHandler.exe\" \"%1\""
                                                     }
                                                 }
                                             }
@@ -1846,7 +1844,7 @@
                                                     "Condition" = "8:"
                                                     "Transitive" = "11:FALSE"
                                                     "ValueTypes" = "3:1"
-                                                    "Value" = "8:\"[TARGETDIR]tools\\ISBTCommandHandler\\ISBTCommandHandler\" \"%1\""
+                                                    "Value" = "8:\"[TARGETDIR]tools\\ISBTCommandHandler\\ISBTCommandHandler.exe\" \"%1\""
                                                     }
                                                 }
                                             }
@@ -2639,6 +2637,34 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:LocalizedResourceDlls"
             "OutputProjectGuid" = "8:{8CF73E04-14AA-4510-B3E0-44934DDC5726}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9B0F10C6DE324711B2DB7288CC89C606"
+            {
+            "SourcePath" = "8:..\\..\\BibleCommon\\BibleCommon\\obj\\Release\\BibleCommon.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_8CDA068DB4214B35B75EC118CDD932ED"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{D2E40D0E-9786-49E9-B2A7-54088B42EAC5}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {

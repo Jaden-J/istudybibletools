@@ -17,12 +17,7 @@ namespace ISBTCommandHandler
 
         public CommandForm()
         {   
-            InitializeComponent();            
-
-            //Command-Line            
-            var args = Environment.GetCommandLineArgs();
-            if (args.Length > 0)
-                ProcessCommandLine(args);
+            InitializeComponent();                        
         }
 
         protected override CreateParams CreateParams
@@ -36,7 +31,10 @@ namespace ISBTCommandHandler
         }       
 
         internal void ProcessCommandLine(params string[] args)
-        {
+        {   
+            if (args.Length > 1)
+                args = args.ToList().Skip(1).ToArray();            
+
             foreach (var handler in _handlers)
             {
                 if (handler.IsProtocolCommand(args))
@@ -44,6 +42,19 @@ namespace ISBTCommandHandler
                     handler.ExecuteCommand(args);
                     break;
                 }
+            }
+        }
+
+        private bool _firstShown = true;
+        private void CommandForm_Shown(object sender, EventArgs e)
+        {
+            if (_firstShown)
+            {
+                _firstShown = false;
+                
+                var args = Environment.GetCommandLineArgs();
+                if (args.Length > 0)
+                    ProcessCommandLine(args);                
             }
         }
     }

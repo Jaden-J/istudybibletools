@@ -10,7 +10,7 @@ namespace BibleCommon.Handlers
     {
         public string ProtocolName
         {
-            get { return "isbtrdc:"; }
+            get { return "isbtRDC:"; }
         }
 
         /// <summary>
