@@ -68,9 +68,9 @@ namespace BibleNoteLinker
             }
         }
 
-        private string GetDisplayLevelsControlId(string notebookid)
+        private string GetDisplayLevelsControlId(string notebookId)
         {
-            return notebookid + "_";
+            return notebookId + "_";
         }
 
         private void SetElementsAttributes(int notebooksCount)

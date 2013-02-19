@@ -12,6 +12,7 @@ namespace ISBTCommandHandler
         const string QueryParameterKey_CustomPageId = "cpId";
         const string QueryParameterKey_CustomObjectId = "coId";
         const int NavigateAttemptsCount = 10;
+        const string OneNoteProtocol = "onenote:";
 
         /// <summary>
         /// The main entry point for the application.
@@ -25,46 +26,72 @@ namespace ISBTCommandHandler
                 try
                 {
                     oneNoteApp = new Application();
-                    newPath = args[0].Replace("isbtopen:_", "onenote:");
-                    var pageId = GetAttributeValue(newPath, QueryParameterKey_CustomPageId);
-                    var objectId = !string.IsNullOrEmpty(pageId) ? GetAttributeValue(newPath, QueryParameterKey_CustomObjectId) : string.Empty;
+                    newPath = args[0].Replace("isbtopen:_", OneNoteProtocol);
 
-                    if (!string.IsNullOrEmpty(pageId))
+                    if (!TryToRedirectByIds(oneNoteApp, newPath))
                     {
-                        try
-                        {
-                            oneNoteApp.NavigateTo(pageId, objectId);
-                            return;
-                        }
-                        catch (COMException)
-                        {
-                        }
+                        if (!TryToRedirectByUrl(oneNoteApp, newPath))
+                            throw new Exception(string.Format("The {0} attempts of NavigateToUrl() were unsuccessful.", NavigateAttemptsCount));                        
                     }
-
-                    //если дошли до сюда, значит не удалось перейти выше
-                    var currentPageId = oneNoteApp.Windows.CurrentWindow.CurrentPageId;
-                    for (int i = 0; i < NavigateAttemptsCount; i++)
-                    {
-                        try
-                        {
-                            if (currentPageId == oneNoteApp.Windows.CurrentWindow.CurrentPageId)                                
-                                oneNoteApp.NavigateToUrl(newPath);
-
-                            break;
-                        }
-                        catch (COMException)
-                        {
-                            Thread.Sleep(1000);
-                        }                        
-                    }
-
-                    throw new Exception(string.Format("The {0} attempts of NavigateToUrl() were unsuccessful.", NavigateAttemptsCount));
                 }                
                 catch (Exception ex)
                 {
                     LogError(ex, args);                    
                 }
+            }            
+        }
+
+        private static bool TryToRedirectByUrl(Application oneNoteApp, string newPath)
+        {
+            var currentPageId = oneNoteApp.Windows.CurrentWindow.CurrentPageId;
+            newPath = GetValidPath(newPath);
+            for (int i = 0; i < NavigateAttemptsCount; i++)
+            {
+                try
+                {
+                    if (currentPageId == oneNoteApp.Windows.CurrentWindow.CurrentPageId)
+                        oneNoteApp.NavigateToUrl(newPath);
+
+                    return true;
+                }
+                catch (COMException ex)
+                {
+                    if (ex.Message.IndexOf("0x80042014") != -1)  //hrObjectDoesNotExist
+                        return true;
+
+                    Thread.Sleep(1000);
+                }
             }
+
+            return false;
+        }
+
+        private static bool TryToRedirectByIds(Application oneNoteApp, string newPath)
+        {
+            var pageId = GetAttributeValue(newPath, QueryParameterKey_CustomPageId);
+
+            if (!string.IsNullOrEmpty(pageId))
+            {
+                var objectId = !string.IsNullOrEmpty(pageId) ? GetAttributeValue(newPath, QueryParameterKey_CustomObjectId) : string.Empty;
+                try
+                {
+                    oneNoteApp.NavigateTo(pageId, objectId);
+                    return true;
+                }
+                catch (COMException)
+                {
+                }
+            }
+
+            return false;
+        }
+
+        private static string GetValidPath(string newPath)
+        {
+            return string.Format("{0}//{1}{2}", 
+                OneNoteProtocol, 
+                Path.GetPathRoot(Environment.SystemDirectory),
+                newPath.Substring(OneNoteProtocol.Length + 5));                
         }
 
         private static void LogError(Exception ex, params string[] args)
@@ -85,20 +112,23 @@ namespace ISBTCommandHandler
         {
             string result = null;
 
-            string searchString = string.Format("{0}=", attributeName);
+            var searchString = string.Format("&{0}=", attributeName);
 
-            int startIndex = s.IndexOf(searchString);
+            var startIndex = s.IndexOf(searchString);
 
-            startIndex = startIndex + searchString.Length;
-
-            if (s.Length > startIndex)
+            if (startIndex > -1)
             {
-                int endIndex = s.IndexOf("&", startIndex + 1);
+                startIndex = startIndex + searchString.Length;
 
-                if (endIndex > -1)                
-                    result = s.Substring(startIndex, endIndex - startIndex);
-                else
-                    result = s.Substring(startIndex);                
+                if (s.Length > startIndex)
+                {
+                    int endIndex = s.IndexOf("&", startIndex + 1);
+
+                    if (endIndex > -1)
+                        result = s.Substring(startIndex, endIndex - startIndex);
+                    else
+                        result = s.Substring(startIndex);
+                }
             }
             return result;
         }           

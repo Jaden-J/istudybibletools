@@ -88,21 +88,38 @@ namespace BibleCommon.Helpers
             }
         }
 
-        public static void RunSingleInstance(string mutexId, string messageIfSecondInstance, Action singleAction, bool silent = false)
+        public static void RunSingleInstance(string mutexId, string messageIfSecondInstance, Action singleAction, bool silent = false, string additionalMutexId = null)
         {
             string appGuid = ((GuidAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute), false).GetValue(0)).Value.ToString();
 
-            using (Mutex mutex = new Mutex(false, string.Format("Global\\{0}_{1}", appGuid, mutexId)))
+            Mutex mutex = null;
+            Mutex additionalMutex = null;
+
+            try
             {
-                if (!mutex.WaitOne(0, false))
+                mutex = new Mutex(false, string.Format("Global\\{0}_{1}", appGuid, mutexId));
+                if (!string.IsNullOrEmpty(additionalMutexId))
+                    additionalMutex = new Mutex(false, string.Format("Global\\{0}_{1}", appGuid, additionalMutexId));
+                
+                if (mutex.WaitOne(0, false) && (additionalMutex == null || additionalMutex.WaitOne(0, false)))
                 {
-                    if (!silent)                    
-                        MessageBox.Show(messageIfSecondInstance, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    
-                    BibleCommon.Services.Logger.Done();
+                    singleAction();                    
                 }
                 else
-                    singleAction();
+                {
+                    if (!silent)
+                        MessageBox.Show(messageIfSecondInstance, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                    BibleCommon.Services.Logger.Done();
+                }
+            }
+            finally
+            {
+                if (mutex != null)
+                    mutex.Close();
+
+                if (additionalMutex != null)
+                    additionalMutex.Close();
             }
         }
 

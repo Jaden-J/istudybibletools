@@ -819,4 +819,10 @@ Please take notice:
   <data name="NotebookIsSupplementalBible" xml:space="preserve">
     <value>The Notebook type is 'Supplemental Bible'</value>
   </data>
+  <data name="NotebookIsDictionaries" xml:space="preserve">
+    <value>The Notebook type is 'Dictionaries'</value>
+  </data>
+  <data name="UpdatingPageInOneNote" xml:space="preserve">
+    <value>Updating the page in OneNote</value>
+  </data>
 </root>

@@ -227,11 +227,8 @@ namespace BibleConfigurator
                 }
             }
 
-            if (container.Type == ContainerType.Bible)
-            {
-                if ((string)containerEl.Attribute("ID") == SettingsManager.Instance.NotebookId_SupplementalBible)
-                    throw new InvalidNotebookException(Constants.NotebookIsSupplementalBible);                
-            }
+            if ((string)containerEl.Attribute("ID") == SettingsManager.Instance.NotebookId_SupplementalBible)
+                throw new InvalidNotebookException(Constants.NotebookIsSupplementalBible);
         }
 
         private static void CheckSection(SectionInfo section, XElement sectionEl, XmlNamespaceManager xnm)
@@ -264,8 +261,15 @@ namespace BibleConfigurator
                 throw new InvalidNotebookException(Constants.SelectedNotebookForType, ContainerType.Bible);
 
             if (ElementIsBibleComments(module, element, xnm))
-                throw new InvalidNotebookException(Constants.SelectedNotebookForType, ContainerType.BibleComments);            
-        }      
+                throw new InvalidNotebookException(Constants.SelectedNotebookForType, ContainerType.BibleComments);
+            
+            var elementId = (string)element.Attribute("ID").Value;
 
+            if (elementId == SettingsManager.Instance.NotebookId_SupplementalBible)
+                throw new InvalidNotebookException(Constants.NotebookIsSupplementalBible);
+
+            if (elementId == SettingsManager.Instance.NotebookId_Dictionaries)
+                throw new InvalidNotebookException(Constants.NotebookIsDictionaries);            
+        }      
     }
 }

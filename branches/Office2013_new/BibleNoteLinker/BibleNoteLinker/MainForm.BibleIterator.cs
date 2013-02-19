@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using BibleCommon.Consts;
 using BibleCommon.Helpers;
 using BibleCommon.Common;
+using System.Xml.XPath;
 
 namespace BibleNoteLinker
 {
@@ -73,15 +74,13 @@ namespace BibleNoteLinker
 
             if (_pagesForAnalyzeCount > 0)
             {
-                //CommitPages(BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating, 2, OneNoteProxy.PageType.NotesPage);
+                CommitPages(BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating, 2, OneNoteProxy.PageType.NotesPage);
 
                 SyncNotesPagesContainer();   // эта задача асинхронная, поэтому не выделаем как отдельный этап
 
-                SortNotesPages();  // это происходит очень быстро, поэтому не выделяем как отдельный этап
+                SortNotesPages();  // это происходит очень быстро, поэтому не выделяем как отдельный этап                
 
-                CommitNotesPagesHierarchy(2);
-
-                CommitPages(BibleCommon.Resources.Constants.NoteLinkerNotePagesUpdating, 3, OneNoteProxy.PageType.NotePage);
+                CommitNotesPagesHierarchy(3);                
 
                 UpdateLinksToNotesPages(4);
 
@@ -95,7 +94,7 @@ namespace BibleNoteLinker
                     _oneNoteApp.NavigateTo(currentPage.Id, null);
                 }
             });
-        }
+        }     
 
         private void SyncNotesPagesContainer()
         {
@@ -330,7 +329,7 @@ namespace BibleNoteLinker
                 if (SettingsManager.Instance.IsSingleNotebook)
                 {
                     result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_BibleStudy, filter));
-                    result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_BibleComments, filter));
+                    //result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_BibleComments, filter));
                 }
                 else
                 {

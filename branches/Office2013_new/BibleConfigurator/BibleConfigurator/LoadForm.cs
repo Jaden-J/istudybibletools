@@ -13,6 +13,10 @@ namespace BibleConfigurator
 {
     public partial class LoadForm : Form
     {        
+
+        // todo: надо бы добавить картинку на эту форму, но учитывать, что эта форма используется в двух случаях:
+            // - при загрузке BibleConfigurator
+            // - при загрузке модуля
         public LoadForm()
         {
             InitializeComponent();            

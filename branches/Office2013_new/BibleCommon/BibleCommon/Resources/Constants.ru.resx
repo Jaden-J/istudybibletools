@@ -816,4 +816,10 @@
   <data name="NotebookIsSupplementalBible" xml:space="preserve">
     <value>Указанная записная книжка является Справочной Библией</value>
   </data>
+  <data name="NotebookIsDictionaries" xml:space="preserve">
+    <value>Указанная записная книжка является записной книжкой Словарей</value>
+  </data>
+  <data name="UpdatingPageInOneNote" xml:space="preserve">
+    <value>Обновление страницы в OneNote</value>
+  </data>
 </root>

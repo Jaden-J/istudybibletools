@@ -43,7 +43,8 @@ namespace BibleConfigurator
                 Action action;
                 string mutexId;
                 string moreThanSingleInstanceRunMessage;
-                Form form = PrepareForRunning(out silent, out moreThanSingleInstanceRunMessage, out action, out mutexId, args);
+                string additionalMutexId;
+                Form form = PrepareForRunning(out silent, out moreThanSingleInstanceRunMessage, out action, out mutexId, out additionalMutexId, args);
 
                 FormExtensions.RunSingleInstance(mutexId, moreThanSingleInstanceRunMessage, () =>
                 {
@@ -59,7 +60,7 @@ namespace BibleConfigurator
                     {
                         Logger.LogError(ex);
                     }
-                }, silent);
+                }, silent, additionalMutexId);
             }
             catch (Exception ex)
             {
@@ -90,13 +91,15 @@ namespace BibleConfigurator
             return SettingsManager.Instance.IsConfigured(ref _oneNoteApp);
         }
 
-        private static Form PrepareForRunning(out bool silent, out string moreThanSingleInstanceRunMessage, out Action action, out string mutexId, params string[] args)
+        private static Form PrepareForRunning(out bool silent, out string moreThanSingleInstanceRunMessage, out Action action, 
+            out string mutexId, out string additionalMutexId, params string[] args)
         {
             action = null;
             moreThanSingleInstanceRunMessage = BibleCommon.Resources.Constants.MoreThanSingleInstanceRun;
             silent = false;
             Form result = null;
             mutexId = null;
+            additionalMutexId = null;
 
             var strongProtocolHandler = new FindVersesWithStrongNumberHandler();
             var navToStrongHandler = new NavigateToStrongHandler();
@@ -154,7 +157,8 @@ namespace BibleConfigurator
                             }
                         };
 
-                    mutexId = BibleCommon.Consts.Constants.AnalyzeAndParametersMutix;                  
+                    mutexId = BibleCommon.Consts.Constants.AnalyzeMutix;
+                    additionalMutexId = BibleCommon.Consts.Constants.ParametersMutix;
                 }
                 else
                 {
@@ -209,16 +213,24 @@ namespace BibleConfigurator
                     if (File.Exists(moduleFilePath))
                     {
                         bool moduleWasAdded;
-                        bool needToReload = ((MainForm)result).AddNewModule(moduleFilePath, out moduleWasAdded);
-                        if (moduleWasAdded)
+                        using (var loadForm = new LoadForm())
                         {
-                            ((MainForm)result).ShowModulesTabAtStartUp = true;
-                            ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;                            
-                            moreThanSingleInstanceRunMessage = BibleCommon.Resources.Constants.ReopenParametersToSeeChanges;
-                            //silent = true;
+                            loadForm.Show();
+                            Application.DoEvents();
+
+                            bool needToReload = ((MainForm)result).AddNewModule(moduleFilePath, out moduleWasAdded);
+                            if (moduleWasAdded)
+                            {
+                                ((MainForm)result).ShowModulesTabAtStartUp = true;
+                                ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
+                                moreThanSingleInstanceRunMessage = BibleCommon.Resources.Constants.ReopenParametersToSeeChanges;
+                                //silent = true;
+                            }
+                            else
+                                result = null;
+
+                            loadForm.Close();
                         }
-                        else
-                            result = null;
                     }
                 }
             }
@@ -228,7 +240,7 @@ namespace BibleConfigurator
             }
 
             if (result != null)
-                mutexId = result.GetType().FullName;
+                mutexId = BibleCommon.Consts.Constants.ParametersMutix;
 
             return result;
         }
@@ -270,7 +282,8 @@ namespace BibleConfigurator
                 string moreThanSingleInstanceRunMessage;
                 Action action;
                 string mutexId;
-                Form form = PrepareForRunning(out silent, out moreThanSingleInstanceRunMessage, out action, out mutexId, args);
+                string additionalMutexId;
+                Form form = PrepareForRunning(out silent, out moreThanSingleInstanceRunMessage, out action, out mutexId, out additionalMutexId, args);
 
                 if (action != null)
                     action();

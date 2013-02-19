@@ -1173,6 +1173,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на The Notebook type is &apos;Dictionaries&apos;.
+        /// </summary>
+        public static string NotebookIsDictionaries {
+            get {
+                return ResourceManager.GetString("NotebookIsDictionaries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на It is currently not supported managing notebook &quot;Dictionaries&quot; stored in the SkyDrive. Add all dictionaries to local notebook and then publish the notebook &quot;Dictionaries&quot; to the SkyDrive..
         /// </summary>
         public static string NotebookIsLocalAndNotSupportedForDictionaries {
@@ -1978,7 +1987,16 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use notebook &quot;Dictionaries&quot;.
+        ///   Ищет локализованную строку, похожую на Updating the page in OneNote.
+        /// </summary>
+        public static string UpdatingPageInOneNote {
+            get {
+                return ResourceManager.GetString("UpdatingPageInOneNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Use notebook &quot;Dictionaries&quot;.
         /// </summary>
         public static string UseDictionaries {
             get {
