@@ -45,16 +45,17 @@ namespace ISBTCommandHandler
             }
         }
 
-        private bool _firstShown = true;
-        private void CommandForm_Shown(object sender, EventArgs e)
+        private bool _firstShown = true;      
+
+        private void CommandForm_Enter(object sender, EventArgs e)
         {
             if (_firstShown)
             {
                 _firstShown = false;
-                
+
                 var args = Environment.GetCommandLineArgs();
                 if (args.Length > 0)
-                    ProcessCommandLine(args);                
+                    ProcessCommandLine(args);
             }
         }
     }

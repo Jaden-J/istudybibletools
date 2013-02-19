@@ -47,7 +47,7 @@ namespace BibleCommon.Handlers
             if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_SupplementalBible))
             {
                 string strongNumber = args[0].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries)[1];
-                Application oneNoteApp = new Application();
+                var oneNoteApp = new Application();
                 string result;
                 try
                 {
@@ -65,6 +65,7 @@ namespace BibleCommon.Handlers
                 }
                 finally
                 {
+                    Marshal.ReleaseComObject(oneNoteApp);
                     oneNoteApp = null;
                 }
             }

@@ -10,7 +10,7 @@ namespace BibleCommon.Handlers
     {
         public string ProtocolName
         {
-            get { return "isbtRDC:"; }
+            get { return "isbtRebuildDictCache:"; }
         }
 
         /// <summary>
