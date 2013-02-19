@@ -25,7 +25,6 @@ namespace BibleCommon.Helpers
         {
             get
             {
-                return false;
                 if (!_isOneNote2010.HasValue)
                 {
                     var assembly = new Application().GetType().Assembly;
