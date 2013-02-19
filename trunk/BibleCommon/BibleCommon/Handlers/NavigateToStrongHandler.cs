@@ -11,7 +11,7 @@ namespace BibleCommon.Handlers
 {
     public class NavigateToStrongHandler : IProtocolHandler
     {
-        private static string _protocolName = "isbtStrongOpen";
+        private const string _protocolName = "isbtstrongopen:";
 
         public string ProtocolName
         {
@@ -30,7 +30,7 @@ namespace BibleCommon.Handlers
 
         public static string GetCommandUrlStatic(string strongNumber, string moduleShortName)
         {
-            return string.Format("{0}:{1};{2}", _protocolName, strongNumber, moduleShortName);
+            return string.Format("{0}{1};{2}", _protocolName, strongNumber, moduleShortName);
         }      
 
         public bool IsProtocolCommand(string[] args)
@@ -38,16 +38,19 @@ namespace BibleCommon.Handlers
             return args.Length > 0 && args[0].StartsWith(ProtocolName, StringComparison.OrdinalIgnoreCase);
         }
 
-        public bool ExecuteCommand(string[] args)
+        public void ExecuteCommand(string[] args)
         {
             try
             {
-                return TryExecuteCommand(args);
+                if (!TryExecuteCommand(args))
+                {
+                    var rebuildCacheHandler = new RebuildDictionaryFileCacheHandler();
+                    Process.Start(rebuildCacheHandler.GetCommandUrl(ModuleShortName));
+                }
             }
             catch (Exception ex)
             {
-                FormLogger.LogError(ex);
-                return true;
+                FormLogger.LogError(ex);                
             }           
         }
 

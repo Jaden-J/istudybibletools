@@ -14,12 +14,12 @@ namespace BibleCommon.Handlers
     {
         public string ProtocolName
         {
-            get { return "isbtStrongUsage"; }
+            get { return "isbtstrongusage:"; }
         }
 
         public string GetCommandUrl(string strongNumber)
         {
-            return string.Format("{0}:{1}", ProtocolName, strongNumber);
+            return string.Format("{0}{1}", ProtocolName, strongNumber);
         }
 
         public bool IsProtocolCommand(string[] args)
@@ -27,7 +27,7 @@ namespace BibleCommon.Handlers
             return args.Length > 0 && args[0].StartsWith(ProtocolName, StringComparison.OrdinalIgnoreCase);
         }
 
-        public bool ExecuteCommand(string[] args)
+        public void ExecuteCommand(string[] args)
         {
             try
             {
@@ -36,9 +36,7 @@ namespace BibleCommon.Handlers
             catch (Exception ex)
             {
                 FormLogger.LogError(ex);
-            }
-
-            return true;
+            }            
         }
 
         private void TryExecuteCommand(string[] args)
