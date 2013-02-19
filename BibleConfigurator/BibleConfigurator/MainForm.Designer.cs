@@ -56,7 +56,8 @@
             this.rbMultiNotebook = new System.Windows.Forms.RadioButton();
             this.rbSingleNotebook = new System.Windows.Forms.RadioButton();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.chkUseProxyLinks = new System.Windows.Forms.CheckBox();
+            this.chkUseProxyLinksForLinks = new System.Windows.Forms.CheckBox();
+            this.chkUseProxyLinksForStrong = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
             this.cbLanguage = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -105,7 +106,6 @@
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -332,7 +332,8 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage2.Controls.Add(this.chkUseProxyLinks);
+            this.tabPage2.Controls.Add(this.chkUseProxyLinksForLinks);
+            this.tabPage2.Controls.Add(this.chkUseProxyLinksForStrong);
             this.tabPage2.Controls.Add(this.label9);
             this.tabPage2.Controls.Add(this.cbLanguage);
             this.tabPage2.Controls.Add(this.groupBox2);
@@ -346,12 +347,18 @@
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Enter += new System.EventHandler(this.tabPage1_Enter);
             // 
-            // chkUseProxyLinks
+            // chkUseProxyLinksForLinks
             // 
-            resources.ApplyResources(this.chkUseProxyLinks, "chkUseProxyLinks");
-            this.chkUseProxyLinks.Name = "chkUseProxyLinks";
-            this.chkUseProxyLinks.UseVisualStyleBackColor = true;
-            this.chkUseProxyLinks.CheckedChanged += new System.EventHandler(this.chkNotOneNoteControls_CheckedChanged);
+            resources.ApplyResources(this.chkUseProxyLinksForLinks, "chkUseProxyLinksForLinks");
+            this.chkUseProxyLinksForLinks.Name = "chkUseProxyLinksForLinks";
+            this.chkUseProxyLinksForLinks.UseVisualStyleBackColor = true;
+            // 
+            // chkUseProxyLinksForStrong
+            // 
+            resources.ApplyResources(this.chkUseProxyLinksForStrong, "chkUseProxyLinksForStrong");
+            this.chkUseProxyLinksForStrong.Name = "chkUseProxyLinksForStrong";
+            this.chkUseProxyLinksForStrong.UseVisualStyleBackColor = true;
+            this.chkUseProxyLinksForStrong.CheckedChanged += new System.EventHandler(this.chkNotOneNoteControls_CheckedChanged);
             // 
             // label9
             // 
@@ -678,7 +685,6 @@
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.tbcMain.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -773,7 +779,8 @@
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button btnModuleChecker;
         private System.Windows.Forms.Button btnConverter;
-        private System.Windows.Forms.CheckBox chkUseProxyLinks;
+        private System.Windows.Forms.CheckBox chkUseProxyLinksForStrong;
+        private System.Windows.Forms.CheckBox chkUseProxyLinksForLinks;
 
     }
 }

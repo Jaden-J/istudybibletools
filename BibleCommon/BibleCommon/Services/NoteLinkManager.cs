@@ -189,11 +189,13 @@ namespace BibleCommon.Services
                     ProcessChapters(foundChapters, notePageHierarchyInfo, linkDepth, force);                                       
                 }
 
-                if (linkDepth >= AnalyzeDepth.Full)                
+                if (linkDepth >= AnalyzeDepth.Full)
                     notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
 
                 notePageDocument.WasModified = true;
 
+                Logger.LogMessageParams(Resources.Constants.UpdatingPageInOneNote);
+                System.Windows.Forms.Application.DoEvents();
                 OneNoteProxy.Instance.CommitModifiedPage(ref _oneNoteApp, notePageDocument, false);
             }
             catch (ProcessAbortedByUserException)
@@ -1262,7 +1264,7 @@ namespace BibleCommon.Services
                         notePageId, notesPageId, notePageContentObjectId, 
                         notesPageName, notesPageWidth, isImportantVerse, force, processAsExtendedVerse, out rowWasAdded);
 
-                if (createLinkToNotesPage && (pageWasCreated || rowWasAdded))
+                if (createLinkToNotesPage && (pageWasCreated || rowWasAdded || force))
                 {
                     OneNoteProxy.PageContent versePageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, verseHierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);       
 

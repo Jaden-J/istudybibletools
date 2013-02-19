@@ -25,6 +25,7 @@ namespace BibleCommon.Helpers
         {
             get
             {
+                return false;
                 if (!_isOneNote2010.HasValue)
                 {
                     var assembly = new Application().GetType().Assembly;
@@ -68,6 +69,20 @@ namespace BibleCommon.Helpers
                 bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@nickname=\"{0}\"]", notebookName), hierarchy.Xnm);
             if (bibleNotebook != null)
             {
+                return (string)bibleNotebook.Attribute("ID");
+            }
+
+            return string.Empty;
+        }
+
+        public static string GetNotebookIdByPath(ref Application oneNoteApp, string localPath, bool refreshCache, out string notebookName)
+        {
+            notebookName = null;
+            var hierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks, refreshCache);
+            var bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@path=\"{0}\"]", localPath), hierarchy.Xnm);            
+            if (bibleNotebook != null)
+            {
+                notebookName = (string)bibleNotebook.Attribute("name");
                 return (string)bibleNotebook.Attribute("ID");
             }
 
@@ -315,7 +330,11 @@ namespace BibleCommon.Helpers
             }
             catch (COMException ex)
             {
-                if (ex.Message.Contains("0x80010100") || ex.Message.Contains("0x800706BA") || ex.Message.Contains("0x800706BE"))  // "System.Runtime.InteropServices.COMException (0x80010100): System call failed. (Exception from HRESULT: 0x80010100 (RPC_E_SYS_CALL_FAILED))"
+                if (ex.Message.Contains("0x80010100")                                           // "System.Runtime.InteropServices.COMException (0x80010100): System call failed. (Exception from HRESULT: 0x80010100 (RPC_E_SYS_CALL_FAILED))";
+                    || ex.Message.Contains("0x800706BA") 
+                    || ex.Message.Contains("0x800706BE")
+                    || ex.Message.Contains("0x80010001")                                        // System.Runtime.InteropServices.COMException (0x80010001): Вызов был отклонен. (Исключение из HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+                    )  
                 {
                     Logger.LogMessageSilientParams("UseOneNoteAPI. Attempt {0}: {1}", attemptsCount, ex.Message);
                     if (attemptsCount <= 15)
@@ -429,25 +448,7 @@ namespace BibleCommon.Helpers
             {
                 return false;
             }
-        }
-
-
-        private static string MakeNotebookNameWithNickname(XElement el)
-        {
-            var name = (string)el.Attribute("name");
-            var nickname = (string)el.Attribute("nickname");
-
-            if (name != nickname)
-                name = string.Format("{0} [\"{1}\"]", name, nickname);
-
-            return name;
-        }
-
-        public static string GetNotebookElementNameWithNickname(ref Application oneNoteApp, string elementId)
-        {
-            OneNoteProxy.HierarchyElement doc = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, elementId, HierarchyScope.hsSelf);
-            return MakeNotebookNameWithNickname(doc.Content.Root);
-        }
+        }     
 
         public static string ParseNotebookName(string s)
         {   
@@ -467,7 +468,7 @@ namespace BibleCommon.Helpers
 
             foreach (XElement notebook in hierarchy.Content.Root.XPathSelectElements("one:Notebook", hierarchy.Xnm))
             {
-                var name = MakeNotebookNameWithNickname(notebook);
+                var name = (string)notebook.Attribute("nickname");
                 var id = (string)notebook.Attribute("ID");
 
                 result.Add(id, name);

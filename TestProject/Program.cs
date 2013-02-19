@@ -54,6 +54,8 @@ namespace TestProject
                 //Console.WriteLine(StringUtils.GetQueryParameterValue("http://adjhdjkhsadsd.rudasd&sdsd=adsadasd&dsfsdf=sgfdsdfdsf&key=value", "key"));
                 //return;                
 
+                //LoadAllPagesToCache();
+
                 //ChangeLinksProtocol();
 
                 //ConvertChineseModuleFromTextFiles();
@@ -119,6 +121,24 @@ namespace TestProject
             Console.WriteLine("Finish. Elapsed time: {0}", sw.Elapsed);
             Console.ReadKey();
         }    
+
+        private static void LoadAllPagesToCache()
+        {
+            XmlNamespaceManager xnm;
+            var pagesDoc = OneNoteUtils.GetHierarchyElement(ref _oneNoteApp, null, HierarchyScope.hsPages, out xnm);
+            var pagesEls = pagesDoc.XPathSelectElements("//one:Page", xnm);
+            Console.WriteLine(pagesEls.Count());
+            foreach (var pageEl in pagesEls)
+            {
+                var pageId = (string)pageEl.Attribute("ID");
+                OneNoteProxy.Instance.GetPageContent(ref _oneNoteApp, pageId, OneNoteProxy.PageType.NotePage);
+
+                Console.Write(".");
+            }
+
+            Console.WriteLine("");
+            Console.WriteLine("All done");
+        }
 
         private static void ChangeLinksProtocol()
         {            

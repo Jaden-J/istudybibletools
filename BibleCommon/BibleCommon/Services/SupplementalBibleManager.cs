@@ -460,7 +460,7 @@ namespace BibleCommon.Services
                         {
                             var termLink = new DictionaryTermLink(strongTermLinksCache[strongTerm]).Href;
                             string link = string.Format("<a href=\"{0}\"><span style='vertical-align:super;'>{1}</span></a>",
-                                SettingsManager.Instance.UseProxyLinks || string.IsNullOrEmpty(termLink)
+                                SettingsManager.Instance.UseProxyLinksForStrong || string.IsNullOrEmpty(termLink)
                                     ? NavigateToStrongHandler.GetCommandUrlStatic(strongTerm, strongModuleShortName)
                                     : termLink,
                                 strongTerm);

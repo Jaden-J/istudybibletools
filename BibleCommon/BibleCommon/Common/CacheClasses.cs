@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using BibleCommon.Services;
 
 namespace BibleCommon.Common
 {
@@ -46,6 +47,19 @@ namespace BibleCommon.Common
         public string Href { get; set; }
         public VerseNumber? VerseNumber { get; set; }     // Мы, например, искали Быт 4:4 (модуль IBS). А нам вернули Быт 4:3. Здесь будем хранить "3-4".
         public bool IsChapter { get; set; }
+
+
+        /// <summary>
+        /// Если используются ProxyLinks, а текущая Href не является ProxyLink, то данный метод исправит это
+        /// </summary>
+        /// <returns></returns>
+        public string GetFullHref()   
+        {
+            if (SettingsManager.Instance.UseProxyLinksForLinks && !OneNoteProxy.IsProxyLink(Href))
+                return OneNoteProxy.GetProxyLink(Href, PageId, ObjectId);
+
+            return Href;
+        }
 
         public VersePointerLink()
         {

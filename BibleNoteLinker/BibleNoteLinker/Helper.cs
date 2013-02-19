@@ -13,7 +13,7 @@ namespace BibleNoteLinker
         {
             string firstPart = pagesCount == 1 ? BibleCommon.Resources.Constants.NoteLinkerOneFound : BibleCommon.Resources.Constants.NoteLinkerManyFound;
 
-            return string.Format("{0} {1}", firstPart, GetRightPagesString(pagesCount));
+            return string.Format("{0}: {1}", firstPart, GetRightPagesString(pagesCount));
         }
 
 
