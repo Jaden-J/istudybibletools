@@ -53,6 +53,6 @@ namespace BibleCommon.Handlers
                     oneNoteApp = null;
                 }
             }
-        } 
+        }  
     }
 }
