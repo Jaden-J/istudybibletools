@@ -64,7 +64,6 @@ namespace BibleCommon.Handlers
 
             try
             {
-
                 var newPath = args[0].Replace(ProtocolFullString, Constants.OneNoteProtocol);
 
                 if (!TryToRedirectByIds(oneNoteApp, newPath))
@@ -116,7 +115,7 @@ namespace BibleCommon.Handlers
                                     : string.Empty;
                 try
                 {
-                    oneNoteApp.NavigateTo(pageId, objectId);
+                    oneNoteApp.NavigateTo(pageId.Replace("1","2"), objectId.Replace("1","2"));
                     return true;
                 }
                 catch (COMException)

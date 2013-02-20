@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Office.Interop.OneNote;
+using BibleCommon.Common;
 
 namespace BibleCommon.Handlers
 {
@@ -27,25 +28,18 @@ namespace BibleCommon.Handlers
         }
 
         public void ExecuteCommand(string[] args)
-        {
-            Application oneNoteApp = null;
+        {            
             try
             {
                 SettingsManager.Initialize();
-                OneNoteProxy.Initialize();
+                OneNoteProxy.Initialize();                
             }
+            catch (NotConfiguredException)
+            { }
             catch (Exception ex)
             {
                 FormLogger.LogError(ex);
-            }
-            finally
-            {
-                if (oneNoteApp != null)
-                {
-                    Marshal.ReleaseComObject(oneNoteApp);
-                    oneNoteApp = null;
-                }
-            }
+            }            
         }
     }
 }

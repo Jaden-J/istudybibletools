@@ -192,7 +192,8 @@ namespace BibleCommon.Services
                 _instance = new OneNoteProxy();
 
                 _instance._isBibleVersesLinksCacheActive = BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible);
-                _instance._bibleVersesLinks = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
+                if (_instance._isBibleVersesLinksCacheActive.GetValueOrDefault(false))                
+                    _instance._bibleVersesLinks = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);                                    
 
                 foreach (var dictionaryModule in SettingsManager.Instance.DictionariesModules)
                 {

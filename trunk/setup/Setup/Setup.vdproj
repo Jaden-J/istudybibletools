@@ -135,12 +135,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6F3B04236BD48FDA862AA157F067E950"
-        "OwnerKey" = "8:_3FC71294DAB247EDA89368E781DCDC4E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_830B3D6A545B464F87CF9AA03B88DBEC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -791,26 +785,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6F3B04236BD48FDA862AA157F067E950"
-            {
-            "SourcePath" = "8:RibbonButtons.tlb"
-            "TargetName" = "8:RibbonButtons.tlb"
-            "Tag" = "8:"
-            "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:2"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_94E1AB757EAF4C5A8D864AB3DE806EF5"
             {
             "SourcePath" = "8:..\\Instruction (1033).docx"
@@ -835,7 +809,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=2.6.10.800, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=2.6.22.800, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_AC6B52A869AD46AD05B0ED89653F468F"
@@ -1151,15 +1125,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OneNote IStudyBibleTools"
-        "ProductCode" = "8:{B86B9C6D-7448-4723-B85D-D3F138521A84}"
-        "PackageCode" = "8:{7A7D0551-A9F1-4555-8C80-2D7CD19108CB}"
+        "ProductCode" = "8:{FB08BA28-8E16-41BF-AB4E-20F4C2BE2FE1}"
+        "PackageCode" = "8:{687F591D-07CC-44EC-99FF-66108B6AE9AF}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.6.12"
+        "ProductVersion" = "8:2.6.22"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://IStudyBibleTools.com"
@@ -1680,6 +1654,22 @@
                         }
                         "Values"
                         {
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_20C9A1778687421CA3CB7E509DE02151"
+                            {
+                            "Name" = "8:"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:\"URL:Open Bible Verse\""
+                            }
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_A3C7BEDEEA8047CFA7DF67AB6CD2B60F"
+                            {
+                            "Name" = "8:URL Protocol"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:"
+                            }
                         }
                     }
                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_5AE88EE57BFF4665BC59A5A23F177176"
@@ -1776,6 +1766,100 @@
                             }
                         }
                     }
+                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_94D9DE288A76499FBD8892385BC38A45"
+                    {
+                    "Name" = "8:isbtExitApplication"
+                    "Condition" = "8:"
+                    "AlwaysCreate" = "11:FALSE"
+                    "DeleteAtUninstall" = "11:FALSE"
+                    "Transitive" = "11:FALSE"
+                        "Keys"
+                        {
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_FDC6F76114484F7BA658709F04AB941E"
+                            {
+                            "Name" = "8:DefaultIcon"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                }
+                                "Values"
+                                {
+                                }
+                            }
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_FEECAF0392834515894693AE52305590"
+                            {
+                            "Name" = "8:shell"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_2E95502E9F944BFFB80451BDDBD68FB7"
+                                    {
+                                    "Name" = "8:open"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_B69BE576A16243EA90BE0854E5DD0687"
+                                            {
+                                            "Name" = "8:command"
+                                            "Condition" = "8:"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "DeleteAtUninstall" = "11:FALSE"
+                                            "Transitive" = "11:FALSE"
+                                                "Keys"
+                                                {
+                                                }
+                                                "Values"
+                                                {
+                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_B438CC4EFE95499594FD2CCD25566C06"
+                                                    {
+                                                    "Name" = "8:"
+                                                    "Condition" = "8:"
+                                                    "Transitive" = "11:FALSE"
+                                                    "ValueTypes" = "3:1"
+                                                    "Value" = "8:\"[TARGETDIR]tools\\ISBTCommandHandler\\ISBTCommandHandler.exe\" \"%1\""
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        "Values"
+                                        {
+                                        }
+                                    }
+                                }
+                                "Values"
+                                {
+                                }
+                            }
+                        }
+                        "Values"
+                        {
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_0601F33258254199B4D2C1C5E9BF79A8"
+                            {
+                            "Name" = "8:"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:\"URL:Exit Application\""
+                            }
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_244EA2503A7049BCA08997F82ED92C9B"
+                            {
+                            "Name" = "8:URL Protocol"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:"
+                            }
+                        }
+                    }
                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_9B582206895D47679D9D0749F0BA4120"
                     {
                     "Name" = "8:isbtRebuildDictCache"
@@ -1852,6 +1936,22 @@
                         }
                         "Values"
                         {
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_4C68CFA33B4E4126A176AA4175148F09"
+                            {
+                            "Name" = "8:"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:\"URL:Rebuild Dictionary Cache\""
+                            }
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_D84F0AFF4FD24BC59A8695A0608D4A34"
+                            {
+                            "Name" = "8:URL Protocol"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:"
+                            }
                         }
                     }
                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_A3D243D0D51A42FB835F6F19696C4FC0"
@@ -1930,6 +2030,22 @@
                         }
                         "Values"
                         {
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_092C6EEF3C2D40AF92EED06C8A8FACE7"
+                            {
+                            "Name" = "8:"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:\"URL:Quick Analyze\""
+                            }
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_84A4BC2379EB43628472C63AE812D259"
+                            {
+                            "Name" = "8:URL Protocol"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:"
+                            }
                         }
                     }
                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_B8D54DBBF1E04AAABCE70D6E0A9FE145"
@@ -2008,6 +2124,22 @@
                         }
                         "Values"
                         {
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_7670D5CD97F34AF890D60336402C4C69"
+                            {
+                            "Name" = "8:"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:\"URL:Refresh Cache\""
+                            }
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_9C0E20B40F4F4BB3B614EFA95B0EB5D2"
+                            {
+                            "Name" = "8:URL Protocol"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:"
+                            }
                         }
                     }
                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_BE914F89CFB645FA84BC83B7B93B3171"
@@ -2086,6 +2218,22 @@
                         }
                         "Values"
                         {
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_24EB369441AF4E8CBC31F6EBE1A1F842"
+                            {
+                            "Name" = "8:URL Protocol"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:"
+                            }
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_620A427EDCA14F03985A2FABA25FB668"
+                            {
+                            "Name" = "8:"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:\"URL:Open Link\""
+                            }
                         }
                     }
                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_C565DD3B169C4B1F9C6E4D8EA2EBBAD7"
