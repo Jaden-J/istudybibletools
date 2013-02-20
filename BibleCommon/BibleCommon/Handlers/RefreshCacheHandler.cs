@@ -32,7 +32,9 @@ namespace BibleCommon.Handlers
             try
             {
                 SettingsManager.Initialize();
-                OneNoteProxy.Initialize();                
+                OneNoteProxy.Initialize();
+                
+                //BibleCommon.Resources.Constants.Culture = LanguageManager.UserLanguage;
             }
             catch (NotConfiguredException)
             { }

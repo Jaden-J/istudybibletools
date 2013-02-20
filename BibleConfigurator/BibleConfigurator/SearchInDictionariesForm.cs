@@ -10,6 +10,7 @@ using BibleCommon.Common;
 using BibleCommon.Services;
 using BibleCommon.Helpers;
 using System.Threading;
+using System.Runtime.InteropServices;
 
 namespace BibleConfigurator
 {
@@ -209,6 +210,7 @@ namespace BibleConfigurator
 
         private void SearchInDictionariesForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            Marshal.ReleaseComObject(_oneNoteApp);
             _oneNoteApp = null;
         }
 

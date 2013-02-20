@@ -42,14 +42,19 @@ namespace BibleCommon.Handlers
             Application oneNoteApp = null;
             try
             {
-                var verseArgs = Uri.UnescapeDataString(args[0]
-                                    .Split(new char[] { ':' })[1])
-                                    .Split(new char[] { ';' });
+                var index = args[0].IndexOf(";");
+                if (index == -1)
+                    throw new ArgumentException(string.Format("Ivalid versePointer args: {0}", args[0]));
 
-                var vp = new VersePointer(verseArgs[1]);
+                var verseString = Uri.UnescapeDataString(args[0].Substring(index + 1));
+
+                var vp = new VersePointer(verseString);
 
                 if (vp.IsValid)
+                {
+                    oneNoteApp = new Application();
                     GoToVerse(ref oneNoteApp, vp);
+                }
                 else
                     throw new Exception(BibleCommon.Resources.Constants.BibleVersePointerCanNotParseString);
             }
