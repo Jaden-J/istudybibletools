@@ -89,6 +89,7 @@ namespace BibleVerseLinkerEx
             }
             finally
             {
+                Marshal.ReleaseComObject(oneNoteApp);
                 oneNoteApp = null;
             }
         }

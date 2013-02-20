@@ -61,7 +61,7 @@ namespace BibleCommon.Services
         public static void SetFormUICulture(this Form form)
         {
             // настройки не влияют на работу в дизайнере
-            if (form.Site == null || !form.Site.DesignMode)
+            if (form == null || form.Site == null || !form.Site.DesignMode)
             {
                 // устанавливаем культуру обязательно до InitializeComponent();
                 SetThreadUICulture();
