@@ -13,6 +13,7 @@ using BibleCommon.Common;
 using System.IO;
 using System.Xml.Serialization;
 using BibleCommon.Scheme;
+using System.Runtime.InteropServices;
 
 namespace BibleConfigurator.ModuleConverter
 {
@@ -348,6 +349,7 @@ namespace BibleConfigurator.ModuleConverter
 
         public void Dispose()
         {
+            Marshal.ReleaseComObject(_oneNoteApp);
             _oneNoteApp = null;
         }
     }

@@ -341,6 +341,16 @@ namespace BibleCommon.Helpers
                         attemptsCount++;
                         Thread.Sleep(1000 * attemptsCount);
                         System.Windows.Forms.Application.DoEvents();
+
+                        try
+                        {
+                            Marshal.ReleaseComObject(oneNoteApp);
+                        }
+                        catch (Exception releaseEx)
+                        {
+                            Logger.LogError(releaseEx);
+                        }
+
                         oneNoteApp = null;
                         oneNoteApp = new Application();
                         UseOneNoteAPIInternal(ref oneNoteApp, action, attemptsCount);

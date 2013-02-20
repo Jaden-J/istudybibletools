@@ -165,7 +165,7 @@ namespace BibleCommon.Services
 
                 return _instance;
             }
-        }
+        }       
 
         private Dictionary<OneNoteHierarchyContentId, HierarchyElement> _hierarchyContentCache = new Dictionary<OneNoteHierarchyContentId, HierarchyElement>();
         private Dictionary<string, PageContent> _pageContentCache = new Dictionary<string, PageContent>();
@@ -183,6 +183,24 @@ namespace BibleCommon.Services
         protected OneNoteProxy()
         {
 
+        }
+
+        public static void Initialize()
+        {
+            lock (_locker)
+            {
+                _instance = new OneNoteProxy();
+
+                _instance._isBibleVersesLinksCacheActive = BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible);
+                if (_instance._isBibleVersesLinksCacheActive.GetValueOrDefault(false))                
+                    _instance._bibleVersesLinks = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);                                    
+
+                foreach (var dictionaryModule in SettingsManager.Instance.DictionariesModules)
+                {
+                    var cachedLinks = DictionaryTermsCacheManager.LoadCachedDictionary(dictionaryModule.ModuleName);
+                    _instance._dictionariesTermsLinks.Add(dictionaryModule.ModuleName, cachedLinks);
+                }
+            }
         }
 
         public DictionaryTermLink GetDictionaryTermLink(string term, string dictionaryModuleShortName)

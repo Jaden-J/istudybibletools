@@ -64,13 +64,12 @@ namespace BibleCommon.Handlers
 
             try
             {
-
                 var newPath = args[0].Replace(ProtocolFullString, Constants.OneNoteProtocol);
 
                 if (!TryToRedirectByIds(oneNoteApp, newPath))
                 {
                     if (!TryToRedirectByUrl(oneNoteApp, newPath))
-                        throw new Exception(string.Format("The {0} attempts of NavigateToUrl() were unsuccessful.", NavigateAttemptsCount));
+                        throw new Exception(string.Format("The {0} attempts of NavigateToUrl() were unsuccessful.", NavigateAttemptsCount));         
                 }
             }
             finally
@@ -95,8 +94,8 @@ namespace BibleCommon.Handlers
                 }
                 catch (COMException ex)
                 {
-                    if (ex.Message.IndexOf("0x80042014") != -1)  //hrObjectDoesNotExist
-                        return true;
+                    //if (ex.Message.IndexOf("0x80042014") != -1)  //hrObjectDoesNotExist
+                    //    return true;
 
                     Thread.Sleep(1000);
                 }
