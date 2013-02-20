@@ -31,6 +31,9 @@ namespace BibleCommon.Consts
         public static readonly string ParametersMutix = "ISBT_Parameters";
         public static readonly string OneNoteProtocol = "onenote:";
 
+        public static readonly string CommandToRefreshCache = "isbtRefreshCache:refreshCache";
+        public static readonly string CommandToCloseCache = "isbtExitApplication:exit";
+
         public static readonly decimal ImportantVerseWeight = 2;
 
         public static readonly Version ModulesWithXmlBibleMinVersion = new Version(1, 9);        

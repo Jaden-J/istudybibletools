@@ -53,6 +53,8 @@ namespace RibbonButtons
 
                 AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 RunProgram(Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath), BibleConfiguratorProgramClassName, "-runOnOneNoteStarts", false);
+
+                RunProgram("isbtRefreshCache:refreshCache", null, null, false);  // инициализируем кэш
             }
             catch (Exception ex)
             {
@@ -79,6 +81,7 @@ namespace RibbonButtons
 
 		public void OnDisconnection(Extensibility.ext_DisconnectMode disconnectMode, ref System.Array custom)
 		{
+            RunProgram("isbtExitApplication:exit", null, null, false);  // закрываем кэш
 			//Clean up. Application is closing
 			//onApp = null;
 			GC.Collect();

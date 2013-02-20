@@ -222,6 +222,10 @@ namespace BibleConfigurator
                     SetProgramParameters();
 
                     SettingsManager.Instance.Save();
+
+                    if (_oneNoteApp.Windows.CurrentWindow != null)
+                        Process.Start(Constants.CommandToRefreshCache);   // если текущее окно закрыто, то и кэш скорее всего закрыт. Если же кэш открыт, то когда окно откроют, то кэш обновится
+
                     if (closeForm)
                         Close();
                     else

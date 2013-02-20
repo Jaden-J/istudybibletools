@@ -117,9 +117,10 @@ namespace BibleConfigurator
             {
                 rebuildDictionaryCacheHandler.ExecuteCommand(args);
 
-                result = new MainForm(args);
+                result = new MainForm(args);                
                 ((MainForm)result).ForceIndexDictionaryModuleName = rebuildDictionaryCacheHandler.ModuleShortName;
                 ((MainForm)result).CommitChangesAfterLoad = true;
+                ((MainForm)result).ToIndexBible = false;   // а то выглядит непонятно, когда нас попросили перестроить кэш словаря и тут же сразу просят проиндексировать Библию
             }
             else if (args.Contains(Consts.RunOnOneNoteStarts))
             {
@@ -299,7 +300,8 @@ namespace BibleConfigurator
             finally
             {
                 if (_oneNoteApp != null)
-                {                    
+                {
+                    Marshal.ReleaseComObject(_oneNoteApp);
                     _oneNoteApp = null;
                 }
             }

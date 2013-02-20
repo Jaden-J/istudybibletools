@@ -64,9 +64,11 @@
     <Compile Include="Contracts\ICustomLogger.cs" />
     <Compile Include="Contracts\INotesPageManager.cs" />
     <Compile Include="Contracts\IProtocolHandler.cs" />
+    <Compile Include="Handlers\ExitApplicationHandler.cs" />
     <Compile Include="Handlers\FindVersesWithStrongNumberHandler.cs" />
     <Compile Include="Handlers\NavigateToHandler.cs" />
     <Compile Include="Handlers\NavigateToStrongHandler.cs" />
+    <Compile Include="Handlers\OpenBibleVerseHandler.cs" />
     <Compile Include="Handlers\QuickAnalyzeHandler.cs" />
     <Compile Include="Handlers\RebuildDictionaryFileCacheHandler.cs" />
     <Compile Include="Handlers\RefreshCacheHandler.cs" />

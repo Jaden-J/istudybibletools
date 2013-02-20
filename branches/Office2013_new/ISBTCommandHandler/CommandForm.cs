@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using BibleCommon.Contracts;
 using BibleCommon.Handlers;
+using System.Threading;
 
 namespace ISBTCommandHandler
 {
@@ -16,14 +17,20 @@ namespace ISBTCommandHandler
         private IProtocolHandler[] _handlers = new IProtocolHandler[] 
                                                     { 
                                                         new QuickAnalyzeHandler(), 
+                                                        new OpenBibleVerseHandler(),
                                                         new NavigateToStrongHandler(), 
                                                         new FindVersesWithStrongNumberHandler(),
-                                                        new RefreshCacheHandler()
+                                                        new RefreshCacheHandler(),
+                                                        new ExitApplicationHandler()
                                                     };
 
         public CommandForm()
         {   
-            InitializeComponent();                        
+            InitializeComponent();
+
+            var args = Environment.GetCommandLineArgs();
+            if (args.Length > 0)
+                ProcessCommandLine(args);
         }
 
         protected override CreateParams CreateParams
@@ -34,10 +41,10 @@ namespace ISBTCommandHandler
                 cp.ExStyle |= 0x80;  // Turn on WS_EX_TOOLWINDOW
                 return cp;
             }
-        }       
+        }               
 
         internal void ProcessCommandLine(params string[] args)
-        {   
+        {
             if (args.Length > 1)
                 args = args.ToList().Skip(1).ToArray();            
 
@@ -49,20 +56,6 @@ namespace ISBTCommandHandler
                     break;
                 }
             }
-        }
-
-        private bool _firstShown = true;      
-
-        private void CommandForm_Enter(object sender, EventArgs e)
-        {
-            if (_firstShown)
-            {
-                _firstShown = false;
-
-                var args = Environment.GetCommandLineArgs();
-                if (args.Length > 0)
-                    ProcessCommandLine(args);
-            }
-        }
+        }       
     }
 }

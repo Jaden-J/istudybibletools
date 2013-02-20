@@ -22,7 +22,7 @@ namespace ISBTCommandHandler
         {
             try
             {
-                if (!CommandProcessedWithSimpleHandler(args))
+                if (!ProcessCommandWithSimpleHandler(args))
                 {
                     if (!ApplicationInstanceManager.CreateSingleInstance(
                                                         Assembly.GetExecutingAssembly().GetName().Name,
@@ -39,8 +39,8 @@ namespace ISBTCommandHandler
             }           
         }
 
-        private static bool CommandProcessedWithSimpleHandler(string[] args)
-        {
+        private static bool ProcessCommandWithSimpleHandler(string[] args)
+        {            
             var simpleHandlers = new IProtocolHandler[] { new NavigateToHandler() };   // то есть хэндлеры, для которых не нужен кэш
 
             foreach (var simpleHandler in simpleHandlers)
@@ -70,7 +70,7 @@ namespace ISBTCommandHandler
             _mainForm.Invoke(d, true);
         }
 
-        private static void LogError(Exception ex, params string[] args)
+        internal static void LogError(Exception ex, params string[] args)
         {
             var directoryPath = Path.Combine(
                                             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "IStudyBibleTools"),
