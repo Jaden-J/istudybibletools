@@ -13,7 +13,13 @@ namespace ISBTCommandHandler
 {
     public partial class CommandForm : Form
     {
-        private IProtocolHandler[] _handlers = new IProtocolHandler[] { new NavigateToStrongHandler(), new FindVersesWithStrongNumberHandler() };
+        private IProtocolHandler[] _handlers = new IProtocolHandler[] 
+                                                    { 
+                                                        new QuickAnalyzeHandler(), 
+                                                        new NavigateToStrongHandler(), 
+                                                        new FindVersesWithStrongNumberHandler(),
+                                                        new RefreshCacheHandler()
+                                                    };
 
         public CommandForm()
         {   
