@@ -19,6 +19,7 @@ using BibleCommon.Services;
 using BibleCommon.Helpers;
 using BibleCommon.Consts;
 using System.Diagnostics;
+using BibleCommon.Handlers;
 
 namespace BibleVersePointer
 {
@@ -54,17 +55,17 @@ namespace BibleVersePointer
 
             try
             {
-                if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
-                {
-                    SettingsManager.Instance.ReLoadSettings();  // так как программа кэшируется в пуле OneNote, то проверим - может уже сконфигурили всё.
+                //if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
+                //{
+                //    SettingsManager.Instance.ReLoadSettings();  // так как программа кэшируется в пуле OneNote, то проверим - может уже сконфигурили всё.
 
-                    if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
-                    {
-                        Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
-                    }
-                }
-                else
-                {
+                //    if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
+                //    {
+                //        Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
+                //    }
+                //}
+                //else
+                //{
                     if (!string.IsNullOrEmpty(tbVerse.Text))
                     {
                         btnOk.Enabled = false;
@@ -79,18 +80,23 @@ namespace BibleVersePointer
 
                             if (vp.IsValid)
                             {
+                                var handler = new OpenBibleVerseHandler();
+                                var url = handler.GetCommandUrl(vp, null);
+                                Process.Start(url);
+
+
                                 //OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
                                 //{
                                 //    if (_oneNoteApp.Windows.CurrentWindow == null)
                                 //        _oneNoteApp.NavigateTo(string.Empty);
                                 //});
 
-                                if (GoToVerse(vp))
-                                {
+                                //if (GoToVerse(vp))
+                                //{
                                     this.Visible = false;
                                     Properties.Settings.Default.LastVerse = tbVerse.Text;
                                     Properties.Settings.Default.Save();
-                                }
+                                //}
                             }
                             else
                                 throw new Exception(BibleCommon.Resources.Constants.BibleVersePointerCanNotParseString);
@@ -102,7 +108,7 @@ namespace BibleVersePointer
                     }
 
                     btnOk.Enabled = true;
-                }
+                //}
 
                 if (!Logger.WasLogged)
                 {
@@ -118,26 +124,7 @@ namespace BibleVersePointer
             {
                 BibleCommon.Services.Logger.Done();
             }
-        }
-
-        private bool GoToVerse(VersePointer vp)
-        {   
-            var result = HierarchySearchManager.GetHierarchyObject(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);            
-
-            if (result.ResultType != HierarchySearchManager.HierarchySearchResultType.NotFound 
-                && (result.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder || result.HierarchyStage == HierarchySearchManager.HierarchyStage.Page))
-            {
-                string hierarchyObjectId = !string.IsNullOrEmpty(result.HierarchyObjectInfo.PageId)
-                    ? result.HierarchyObjectInfo.PageId : result.HierarchyObjectInfo.SectionId;
-
-                NavigateTo(hierarchyObjectId, result.HierarchyObjectInfo.GetAllObjectsIds().ToArray());
-                return true;
-            }
-            else
-                Logger.LogError(BibleCommon.Resources.Constants.BibleVersePointerCanNotFindPlace);
-
-            return false;
-        }
+        }     
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -166,6 +153,24 @@ namespace BibleVersePointer
             _oneNoteApp = null;
         }
 
+        private bool GoToVerse(VersePointer vp)
+        {
+            var result = HierarchySearchManager.GetHierarchyObject(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);
+
+            if (result.ResultType != HierarchySearchManager.HierarchySearchResultType.NotFound
+                && (result.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder || result.HierarchyStage == HierarchySearchManager.HierarchyStage.Page))
+            {
+                string hierarchyObjectId = !string.IsNullOrEmpty(result.HierarchyObjectInfo.PageId)
+                    ? result.HierarchyObjectInfo.PageId : result.HierarchyObjectInfo.SectionId;
+
+                NavigateTo(hierarchyObjectId, result.HierarchyObjectInfo.GetAllObjectsIds().ToArray());
+                return true;
+            }
+            else
+                Logger.LogError(BibleCommon.Resources.Constants.BibleVersePointerCanNotFindPlace);
+
+            return false;
+        }
 
         private void NavigateTo(string pageId, params HierarchySearchManager.VerseObjectInfo[] objectsIds)
         {

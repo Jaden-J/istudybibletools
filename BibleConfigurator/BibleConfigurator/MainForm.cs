@@ -222,6 +222,7 @@ namespace BibleConfigurator
                     SetProgramParameters();
 
                     SettingsManager.Instance.Save();
+                    Process.Start("isbtRefreshCache:refreshCache");
                     if (closeForm)
                         Close();
                     else
