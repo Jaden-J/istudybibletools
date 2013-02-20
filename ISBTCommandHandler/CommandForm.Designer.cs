@@ -41,7 +41,6 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.Text = "CommandForm";            
-            this.Enter += new System.EventHandler(this.CommandForm_Enter);
             this.ResumeLayout(false);
 
         }
