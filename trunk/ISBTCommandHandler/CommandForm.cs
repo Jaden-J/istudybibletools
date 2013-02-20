@@ -16,6 +16,7 @@ namespace ISBTCommandHandler
         private IProtocolHandler[] _handlers = new IProtocolHandler[] 
                                                     { 
                                                         new QuickAnalyzeHandler(), 
+                                                        new OpenBibleVerseHandler(),
                                                         new NavigateToStrongHandler(), 
                                                         new FindVersesWithStrongNumberHandler(),
                                                         new RefreshCacheHandler()

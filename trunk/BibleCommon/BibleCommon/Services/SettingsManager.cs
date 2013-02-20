@@ -113,7 +113,7 @@ namespace BibleCommon.Services
 
                 return _instance;
             }
-        }
+        }        
         
         public string NotebookId_Bible { get; set; }
         public string NotebookId_BibleComments { get; set; }
@@ -206,8 +206,6 @@ namespace BibleCommon.Services
             }
         }
 
-
-
         /// <summary>
         /// Значение данного свойства сохраняется в памяти и не обновляется! нельзя использовать в коде, где текущий модуль может измениться
         /// </summary>
@@ -239,6 +237,20 @@ namespace BibleCommon.Services
         }
 
         #endregion
+
+        /// <summary>
+        /// Загрузить, елси в первый раз, либо обновить данные в кэше
+        /// </summary>
+        public static void Initialize()
+        {
+            lock (_locker)
+            {
+                if (_instance == null)
+                    _instance = new SettingsManager();
+                else
+                    Instance.ReLoadSettings();
+            }
+        }
 
         public string GetValidSupplementalBibleNotebookId(ref Application oneNoteApp, bool refreshCache = false)
         {
@@ -330,7 +342,7 @@ namespace BibleCommon.Services
                     && this.NotebookId_Bible == this.NotebookId_BibleNotesPages
                     && !string.IsNullOrEmpty(this.NotebookId_Bible);
             }
-        }        
+        }    
 
         public void ReLoadSettings()
         {
