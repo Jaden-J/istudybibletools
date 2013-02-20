@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using Microsoft.Office.Interop.OneNote;
+using BibleCommon.Common;
 
 namespace BibleCommon.Handlers
 {
@@ -26,25 +28,20 @@ namespace BibleCommon.Handlers
         }
 
         public void ExecuteCommand(string[] args)
-        {
-            Microsoft.Office.Interop.OneNote.Application oneNoteApp = null;
+        {            
             try
             {
-                 вот здесь надо добавить обновление кэша
-                 + добавит в сетап два новых протокола
+                SettingsManager.Initialize();
+                OneNoteProxy.Initialize();
+                
+                //BibleCommon.Resources.Constants.Culture = LanguageManager.UserLanguage;
             }
+            catch (NotConfiguredException)
+            { }
             catch (Exception ex)
             {
                 FormLogger.LogError(ex);
-            }
-            finally
-            {
-                if (oneNoteApp != null)
-                {
-                    Marshal.ReleaseComObject(oneNoteApp);
-                    oneNoteApp = null;
-                }
-            }
-        }
+            }            
+        }  
     }
 }
