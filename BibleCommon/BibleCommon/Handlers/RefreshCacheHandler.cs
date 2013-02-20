@@ -42,6 +42,6 @@ namespace BibleCommon.Handlers
             {
                 FormLogger.LogError(ex);
             }            
-        }
+        } 
     }
 }
