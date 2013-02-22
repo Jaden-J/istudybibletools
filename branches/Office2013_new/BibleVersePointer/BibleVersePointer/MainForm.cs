@@ -25,7 +25,9 @@ namespace BibleVersePointer
 {
     public partial class MainForm : Form
     {   
-        private Microsoft.Office.Interop.OneNote.Application _oneNoteApp = null;       
+        private Microsoft.Office.Interop.OneNote.Application _oneNoteApp = null;
+        private bool _systemIsConfigured;
+        private object _locker = new object();
 
         public MainForm()
         {
@@ -37,10 +39,25 @@ namespace BibleVersePointer
             
             this.Text = BibleCommon.Resources.Constants.OpenVerse; 
             lblDescription.Text = BibleCommon.Resources.Constants.SpecifyBibleVerse;
+
+            new Thread(InitializeWithLock).Start();
         }
 
         [DllImport("user32.dll")]
         static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        public void InitializeWithLock()
+        {
+            lock (_locker)
+            {
+                Initialize();
+            }
+        }
+
+        public void Initialize()
+        {
+            _systemIsConfigured = SettingsManager.Instance.IsConfigured(ref _oneNoteApp); // разгоняем
+        }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
@@ -55,60 +72,54 @@ namespace BibleVersePointer
 
             try
             {
-                //if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
-                //{
-                //    SettingsManager.Instance.ReLoadSettings();  // так как программа кэшируется в пуле OneNote, то проверим - может уже сконфигурили всё.
-
-                //    if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
-                //    {
-                //        Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
-                //    }
-                //}
-                //else
-                //{
-                    if (!string.IsNullOrEmpty(tbVerse.Text))
+                lock (_locker)
+                {
+                    if (!_systemIsConfigured)
                     {
-                        btnOk.Enabled = false;
-                        System.Windows.Forms.Application.DoEvents();
+                        SettingsManager.Instance.ReLoadSettings();  // так как программа кэшируется в пуле OneNote, то проверим - может уже сконфигурили всё.
 
-                        try
+                        Initialize();
+
+                        if (!_systemIsConfigured)
                         {
-                            VersePointer vp = new VersePointer(tbVerse.Text);
+                            Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
+                        }
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(tbVerse.Text))
+                        {
+                            btnOk.Enabled = false;
+                            System.Windows.Forms.Application.DoEvents();
 
-                            if (!vp.IsValid)
-                                vp = new VersePointer(tbVerse.Text + " 1:0");  // может только название книги
-
-                            if (vp.IsValid)
+                            try
                             {
-                                var handler = new OpenBibleVerseHandler();
-                                var url = handler.GetCommandUrl(vp, null);
-                                Process.Start(url);
+                                VersePointer vp = new VersePointer(tbVerse.Text);
 
+                                if (!vp.IsValid)
+                                    vp = new VersePointer(tbVerse.Text + " 1:0");  // может только название книги
 
-                                //OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
-                                //{
-                                //    if (_oneNoteApp.Windows.CurrentWindow == null)
-                                //        _oneNoteApp.NavigateTo(string.Empty);
-                                //});
+                                if (vp.IsValid)
+                                {
+                                    var url = OpenBibleVerseHandler.GetCommandUrlStatic(vp, null);
+                                    Process.Start(url);
 
-                                //if (GoToVerse(vp))
-                                //{
                                     this.Visible = false;
                                     Properties.Settings.Default.LastVerse = tbVerse.Text;
                                     Properties.Settings.Default.Save();
-                                //}
+                                }
+                                else
+                                    throw new Exception(BibleCommon.Resources.Constants.BibleVersePointerCanNotParseString);
                             }
-                            else
-                                throw new Exception(BibleCommon.Resources.Constants.BibleVersePointerCanNotParseString);
+                            catch (Exception ex)
+                            {
+                                Logger.LogError(OneNoteUtils.ParseError(ex.Message));
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            Logger.LogError(OneNoteUtils.ParseError(ex.Message));
-                        }
-                    }
 
-                    btnOk.Enabled = true;
-                //}
+                        btnOk.Enabled = true;
+                    }
+                }
 
                 if (!Logger.WasLogged)
                 {
@@ -151,56 +162,6 @@ namespace BibleVersePointer
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             _oneNoteApp = null;
-        }
-
-        private bool GoToVerse(VersePointer vp)
-        {
-            var result = HierarchySearchManager.GetHierarchyObject(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);
-
-            if (result.ResultType != HierarchySearchManager.HierarchySearchResultType.NotFound
-                && (result.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder || result.HierarchyStage == HierarchySearchManager.HierarchyStage.Page))
-            {
-                string hierarchyObjectId = !string.IsNullOrEmpty(result.HierarchyObjectInfo.PageId)
-                    ? result.HierarchyObjectInfo.PageId : result.HierarchyObjectInfo.SectionId;
-
-                NavigateTo(hierarchyObjectId, result.HierarchyObjectInfo.GetAllObjectsIds().ToArray());
-                return true;
-            }
-            else
-                Logger.LogError(BibleCommon.Resources.Constants.BibleVersePointerCanNotFindPlace);
-
-            return false;
-        }
-
-        private void NavigateTo(string pageId, params HierarchySearchManager.VerseObjectInfo[] objectsIds)
-        {
-            if (objectsIds.Length > 0 && !string.IsNullOrEmpty(objectsIds[0].ObjectHref))
-            {
-                Process.Start(objectsIds[0].ObjectHref);   // иначе, если делать через NavigateTo, то когда, например, дропбокс изменит имя файла секции (сделает маленькими буквами) - ID меняется и выдаётся ошибка.
-            }
-            else
-            {
-                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
-                {
-                    _oneNoteApp.NavigateTo(pageId, objectsIds.Length > 0 ? objectsIds[0].ObjectId : null);
-                });
-            }
-
-            if (objectsIds.Length > 1)
-            {   
-                XmlNamespaceManager xnm;                
-                var pageDoc = OneNoteUtils.GetPageContent(ref _oneNoteApp, pageId, PageInfo.piSelection, out xnm);
-                OneNoteLocker.UnlockCurrentSection(ref _oneNoteApp);
-                
-                foreach (var objectId in objectsIds.Skip(1))
-                {
-                    var el = pageDoc.Root.XPathSelectElement(string.Format("//one:OE[@objectID=\"{0}\"]/one:T", objectId), xnm);
-                    if (el != null)
-                        el.SetAttributeValue("selected", "all");
-                }
-                
-                OneNoteUtils.UpdatePageContentSafe(ref _oneNoteApp, pageDoc, xnm);
-            }
-        }      
+        }   
     }
 }

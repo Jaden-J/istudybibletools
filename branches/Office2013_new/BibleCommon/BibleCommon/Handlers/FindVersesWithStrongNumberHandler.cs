@@ -22,12 +22,12 @@ namespace BibleCommon.Handlers
             return string.Format("{0}{1}", ProtocolName, strongNumber);
         }
 
-        public bool IsProtocolCommand(string[] args)
+        public bool IsProtocolCommand(params string[] args)
         {
             return args.Length > 0 && args[0].StartsWith(ProtocolName, StringComparison.OrdinalIgnoreCase);
         }
 
-        public void ExecuteCommand(string[] args)
+        public void ExecuteCommand(params string[] args)
         {
             try
             {
@@ -44,8 +44,8 @@ namespace BibleCommon.Handlers
             if (args.Length == 0)
                 throw new ArgumentNullException("args");
 
-            if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_SupplementalBible))
-            {
+            //if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_SupplementalBible))   // вроде бы как, какая разница. Если нет - то пусть везде ищет.
+            //{
                 string strongNumber = args[0].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries)[1];
                 var oneNoteApp = new Application();
                 string result;
@@ -68,7 +68,7 @@ namespace BibleCommon.Handlers
                     Marshal.ReleaseComObject(oneNoteApp);
                     oneNoteApp = null;
                 }
-            }
+            //}            
         }        
     }
 }

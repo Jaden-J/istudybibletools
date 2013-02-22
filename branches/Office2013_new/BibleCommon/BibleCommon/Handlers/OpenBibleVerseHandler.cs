@@ -16,9 +16,11 @@ namespace BibleCommon.Handlers
 {
     public class OpenBibleVerseHandler : IProtocolHandler
     {
+        private const string _protocolName = "isbtBibleVerse:";
+
         public string ProtocolName
         {
-            get { return "isbtBibleVerse:"; }
+            get { return _protocolName; }
         }
 
         /// <summary>
@@ -29,34 +31,42 @@ namespace BibleCommon.Handlers
         /// <returns></returns>
         public string GetCommandUrl(VersePointer vp, string moduleName)
         {
-            return string.Format("{0}{1}/{2} {3};{4}", ProtocolName, moduleName, vp.Book.Index, vp.VerseNumber, vp.OriginalVerseName);
+            return GetCommandUrlStatic(vp, moduleName);
         }
 
-        public bool IsProtocolCommand(string[] args)
+        public static string GetCommandUrlStatic(VersePointer vp, string moduleName)
+        {
+            return string.Format("{0}{1}/{2} {3};{4}", _protocolName, moduleName, vp.Book.Index, vp.VerseNumber, vp.OriginalVerseName);
+        }
+
+        public bool IsProtocolCommand(params string[] args)
         {
             return args.Length > 0 && args[0].StartsWith(ProtocolName, StringComparison.OrdinalIgnoreCase);
         }
 
-        public void ExecuteCommand(string[] args)
+        public void ExecuteCommand(params string[] args)
         {
             Application oneNoteApp = null;
             try
             {
-                var index = args[0].IndexOf(";");
-                if (index == -1)
+                var parts = args[0].Split(new char[] { ';', '&' });
+                if (parts.Length < 2)
                     throw new ArgumentException(string.Format("Ivalid versePointer args: {0}", args[0]));
 
-                var verseString = Uri.UnescapeDataString(args[0].Substring(index + 1));
+                oneNoteApp = new Application();
+
+                var verseString = Uri.UnescapeDataString(parts[1]);
 
                 var vp = new VersePointer(verseString);
 
                 if (vp.IsValid)
-                {
-                    oneNoteApp = new Application();
                     GoToVerse(ref oneNoteApp, vp);
-                }
                 else
                     throw new Exception(BibleCommon.Resources.Constants.BibleVersePointerCanNotParseString);
+            }
+            catch (InvalidModuleException imEx)
+            {
+                FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured + Environment.NewLine + imEx.Message);
             }
             catch (Exception ex)
             {
@@ -93,16 +103,25 @@ namespace BibleCommon.Handlers
 
         private void NavigateTo(ref Application oneNoteApp, string pageId, params HierarchySearchManager.VerseObjectInfo[] objectsIds)
         {
-            if (objectsIds.Length > 0 && !string.IsNullOrEmpty(objectsIds[0].ObjectHref))
+            if (!TryToRedirectByIds(oneNoteApp, pageId, objectsIds.Length > 0 ? objectsIds[0].ObjectId : null))
             {
-                Process.Start(objectsIds[0].ObjectHref);   // иначе, если делать через NavigateTo, то когда, например, дропбокс изменит имя файла секции (сделает маленькими буквами) - ID меняется и выдаётся ошибка.
-            }
-            else
-            {
-                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                if (objectsIds.Length > 0)
                 {
-                    oneNoteAppSafe.NavigateTo(pageId, objectsIds.Length > 0 ? objectsIds[0].ObjectId : null);
-                });
+                    var linkHref = objectsIds[0].ObjectHref;
+                    if (!string.IsNullOrEmpty(linkHref))
+                    {
+                        var linksHandler = new NavigateToHandler();
+                        if (linksHandler.IsProtocolCommand(linkHref))
+                            linksHandler.ExecuteCommand(linkHref);
+                        else
+                        {
+                            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                            {
+                                oneNoteAppSafe.NavigateToUrl(linkHref);   
+                            });
+                        }
+                    }
+                }
             }
 
             if (objectsIds.Length > 1)
@@ -119,6 +138,23 @@ namespace BibleCommon.Handlers
                 }
 
                 OneNoteUtils.UpdatePageContentSafe(ref oneNoteApp, pageDoc, xnm);
+            }
+        }
+
+        private bool TryToRedirectByIds(Application oneNoteApp, string pageId, string objectId)
+        {
+            try
+            {
+                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                {
+                    oneNoteAppSafe.NavigateTo(pageId, objectId);
+                });
+
+                return true;
+            }
+            catch (COMException)
+            {
+                return false;
             }
         }
 

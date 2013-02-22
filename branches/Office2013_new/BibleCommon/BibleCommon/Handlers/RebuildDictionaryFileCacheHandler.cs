@@ -23,12 +23,12 @@ namespace BibleCommon.Handlers
             return string.Format("{0}{1}", ProtocolName, moduleName);
         }
 
-        public bool IsProtocolCommand(string[] args)
+        public bool IsProtocolCommand(params string[] args)
         {
             return args.Length > 0 && args[0].StartsWith(ProtocolName, StringComparison.OrdinalIgnoreCase);
         }
 
-        public void ExecuteCommand(string[] args)
+        public void ExecuteCommand(params string[] args)
         {
             if (args.Length == 0)
                 throw new ArgumentNullException("args");

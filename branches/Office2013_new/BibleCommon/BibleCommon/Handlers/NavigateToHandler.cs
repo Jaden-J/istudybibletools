@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Threading;
 using BibleCommon.Helpers;
+using Microsoft.Office.Interop.OneNote;
 
 namespace BibleCommon.Handlers
 {
@@ -38,12 +39,12 @@ namespace BibleCommon.Handlers
             get { return _protocolName; }
         }
 
-        public bool IsProtocolCommand(string[] args)
+        public bool IsProtocolCommand(params string[] args)
         {
             return args.Length > 0 && args[0].StartsWith(ProtocolName, StringComparison.OrdinalIgnoreCase);
         }
 
-        public void ExecuteCommand(string[] args)
+        public void ExecuteCommand(params string[] args)
         {
             try
             {
@@ -64,11 +65,11 @@ namespace BibleCommon.Handlers
 
             try
             {
-                var newPath = args[0].Replace(ProtocolFullString, Constants.OneNoteProtocol);
+                var newPath = args[0].Replace(ProtocolFullString, Constants.OneNoteProtocol);                
 
-                if (!TryToRedirectByIds(oneNoteApp, newPath))
+                if (!TryToRedirectByIds(ref oneNoteApp, newPath))
                 {
-                    if (!TryToRedirectByUrl(oneNoteApp, newPath))
+                    if (!TryToRedirectByUrl(ref oneNoteApp, newPath))
                         throw new Exception(string.Format("The {0} attempts of NavigateToUrl() were unsuccessful.", NavigateAttemptsCount));         
                 }
             }
@@ -79,7 +80,7 @@ namespace BibleCommon.Handlers
             }
         }
 
-        private static bool TryToRedirectByUrl(Microsoft.Office.Interop.OneNote.Application oneNoteApp, string newPath)
+        private static bool TryToRedirectByUrl(ref Application oneNoteApp, string newPath)
         {
             var currentPageId = oneNoteApp.Windows.CurrentWindow.CurrentPageId;
             newPath = GetValidPath(newPath);
@@ -88,7 +89,12 @@ namespace BibleCommon.Handlers
                 try
                 {
                     if (currentPageId == oneNoteApp.Windows.CurrentWindow.CurrentPageId)
-                        oneNoteApp.NavigateToUrl(newPath);
+                    {
+                        OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                        {
+                            oneNoteAppSafe.NavigateToUrl(newPath);
+                        });
+                    }
 
                     return true;
                 }
@@ -104,7 +110,7 @@ namespace BibleCommon.Handlers
             return false;
         }
 
-        private static bool TryToRedirectByIds(Microsoft.Office.Interop.OneNote.Application oneNoteApp, string newPath)
+        private static bool TryToRedirectByIds(ref Application oneNoteApp, string newPath)
         {
             var pageId = StringUtils.GetNotFramedAttributeValue(newPath, Constants.QueryParameterKey_CustomPageId);
 
@@ -115,7 +121,10 @@ namespace BibleCommon.Handlers
                                     : string.Empty;
                 try
                 {
-                    oneNoteApp.NavigateTo(pageId, objectId);
+                    OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                    {
+                        oneNoteAppSafe.NavigateTo(pageId, objectId);
+                    });
                     return true;
                 }
                 catch (COMException)
