@@ -253,7 +253,7 @@ namespace BibleCommon.Services
             });
         }     
       
-        public string GenerateHref(ref Application oneNoteApp, string pageId, string objectId)
+        public string GenerateHref(ref Application oneNoteApp, string pageId, string objectId, bool useProxyLinkIfAvailable = true)
         {
             if (string.IsNullOrEmpty(pageId))
                 throw new ArgumentNullException("pageId");
@@ -275,7 +275,7 @@ namespace BibleCommon.Services
                         oneNoteAppSafe.GetHyperlinkToObject(pageId, objectId, out link);
                     });
 
-                    if (SettingsManager.Instance.UseProxyLinksForLinks)
+                    if (useProxyLinkIfAvailable && SettingsManager.Instance.UseProxyLinksForLinks)
                         link = GetProxyLink(link, pageId, objectId);                    
 
                     //if (!_linksCache.ContainsKey(key))   // пока в этом нет смысла

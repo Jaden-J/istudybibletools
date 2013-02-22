@@ -23,6 +23,9 @@ namespace BibleCommon.Services
 
         public static bool CacheIsActive(string notebookId)
         {
+            if (string.IsNullOrEmpty(notebookId))
+                return false;
+
             return File.Exists(GetCacheFilePath(notebookId));
         }
 
@@ -120,7 +123,7 @@ namespace BibleCommon.Services
                     if (!result.ContainsKey(keyString))
                     {
                         string textElId = (string)objectEl.Parent.Attribute("objectID");
-                        string verseLink = OneNoteProxy.Instance.GenerateHref(ref oneNoteApp, pageId, textElId);
+                        string verseLink = OneNoteProxy.Instance.GenerateHref(ref oneNoteApp, pageId, textElId, false);
 
                         result.Add(keyString, new VersePointerLink()
                         {
