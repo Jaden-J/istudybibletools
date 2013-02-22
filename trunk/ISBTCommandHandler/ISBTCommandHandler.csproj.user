@@ -11,6 +11,6 @@
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>"isbtBibleVerse:;Ин 5:7"</StartArguments>
+    <StartArguments>"isbtBibleVerse:rst/40%207;Мф%205:7&amp;qa=1"</StartArguments>
   </PropertyGroup>
 </Project>

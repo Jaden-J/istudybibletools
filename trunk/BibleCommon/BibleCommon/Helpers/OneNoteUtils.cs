@@ -26,9 +26,18 @@ namespace BibleCommon.Helpers
             get
             {
                 if (!_isOneNote2010.HasValue)
-                {
-                    var assembly = new Application().GetType().Assembly;
-                    _isOneNote2010 = assembly.GetName().Version < new Version(15, 0, 0, 0);
+                {                    
+                    var oneNoteApp = new Application();
+                    try
+                    {
+                        var assembly = oneNoteApp.GetType().Assembly;
+                        _isOneNote2010 = assembly.GetName().Version < new Version(15, 0, 0, 0);
+                    }
+                    finally
+                    {
+                        Marshal.ReleaseComObject(oneNoteApp);
+                        oneNoteApp = null;
+                    }
                 }
 
                 return _isOneNote2010.Value;

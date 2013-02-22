@@ -25,7 +25,9 @@ namespace BibleVersePointer
 {
     public partial class MainForm : Form
     {   
-        private Microsoft.Office.Interop.OneNote.Application _oneNoteApp = null;       
+        private Microsoft.Office.Interop.OneNote.Application _oneNoteApp = null;
+        private bool _systemIsConfigured;
+        private object _locker = new object();
 
         public MainForm()
         {
@@ -38,15 +40,23 @@ namespace BibleVersePointer
             this.Text = BibleCommon.Resources.Constants.OpenVerse; 
             lblDescription.Text = BibleCommon.Resources.Constants.SpecifyBibleVerse;
 
-            new Thread(Initialize).Start();
+            new Thread(InitializeWithLock).Start();
         }
 
         [DllImport("user32.dll")]
         static extern bool SetForegroundWindow(IntPtr hWnd);
 
+        public void InitializeWithLock()
+        {
+            lock (_locker)
+            {
+                Initialize();
+            }
+        }
+
         public void Initialize()
         {
-            SettingsManager.Instance.IsConfigured(ref _oneNoteApp); // разгоняем
+            _systemIsConfigured = SettingsManager.Instance.IsConfigured(ref _oneNoteApp); // разгоняем
         }
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
@@ -62,49 +72,54 @@ namespace BibleVersePointer
 
             try
             {
-                if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
+                lock (_locker)
                 {
-                    SettingsManager.Instance.ReLoadSettings();  // так как программа кэшируется в пуле OneNote, то проверим - может уже сконфигурили всё.
-
-                    if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
+                    if (!_systemIsConfigured)
                     {
-                        Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
+                        SettingsManager.Instance.ReLoadSettings();  // так как программа кэшируется в пуле OneNote, то проверим - может уже сконфигурили всё.
+
+                        Initialize();
+
+                        if (!_systemIsConfigured)
+                        {
+                            Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
+                        }
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(tbVerse.Text))
+                        {
+                            btnOk.Enabled = false;
+                            System.Windows.Forms.Application.DoEvents();
+
+                            try
+                            {
+                                VersePointer vp = new VersePointer(tbVerse.Text);
+
+                                if (!vp.IsValid)
+                                    vp = new VersePointer(tbVerse.Text + " 1:0");  // может только название книги
+
+                                if (vp.IsValid)
+                                {
+                                    var url = OpenBibleVerseHandler.GetCommandUrlStatic(vp, null);
+                                    Process.Start(url);
+
+                                    this.Visible = false;
+                                    Properties.Settings.Default.LastVerse = tbVerse.Text;
+                                    Properties.Settings.Default.Save();
+                                }
+                                else
+                                    throw new Exception(BibleCommon.Resources.Constants.BibleVersePointerCanNotParseString);
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogError(OneNoteUtils.ParseError(ex.Message));
+                            }
+                        }
+
+                        btnOk.Enabled = true;
                     }
                 }
-                else
-                {
-                    if (!string.IsNullOrEmpty(tbVerse.Text))
-                    {
-                        btnOk.Enabled = false;
-                        System.Windows.Forms.Application.DoEvents();
-
-                        try
-                        {
-                            VersePointer vp = new VersePointer(tbVerse.Text);
-
-                            if (!vp.IsValid)
-                                vp = new VersePointer(tbVerse.Text + " 1:0");  // может только название книги
-
-                            if (vp.IsValid)
-                            {   
-                                var url = OpenBibleVerseHandler.GetCommandUrlStatic(vp, null);
-                                Process.Start(url);
-
-                                this.Visible = false;
-                                Properties.Settings.Default.LastVerse = tbVerse.Text;
-                                Properties.Settings.Default.Save();
-                            }
-                            else
-                                throw new Exception(BibleCommon.Resources.Constants.BibleVersePointerCanNotParseString);
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.LogError(OneNoteUtils.ParseError(ex.Message));
-                        }
-                    }
-
-                    btnOk.Enabled = true;
-                }               
 
                 if (!Logger.WasLogged)
                 {

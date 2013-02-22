@@ -49,16 +49,13 @@ namespace BibleCommon.Handlers
             Application oneNoteApp = null;
             try
             {
-                var index = args[0].IndexOf(";");
-                if (index == -1)
+                var parts = args[0].Split(new char[] { ';', '&' });
+                if (parts.Length < 2)
                     throw new ArgumentException(string.Format("Ivalid versePointer args: {0}", args[0]));
 
-                oneNoteApp = new Application();
+                oneNoteApp = new Application();                
 
-                if (!SettingsManager.Instance.IsConfigured(ref oneNoteApp))                
-                    throw new NotConfiguredException();                                    
-
-                var verseString = Uri.UnescapeDataString(args[0].Substring(index + 1));
+                var verseString = Uri.UnescapeDataString(parts[1]);
 
                 var vp = new VersePointer(verseString);
 
