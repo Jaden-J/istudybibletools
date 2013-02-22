@@ -16,9 +16,11 @@ namespace BibleCommon.Handlers
 {
     public class OpenBibleVerseHandler : IProtocolHandler
     {
+        private const string _protocolName = "isbtBibleVerse:";
+
         public string ProtocolName
         {
-            get { return "isbtBibleVerse:"; }
+            get { return _protocolName; }
         }
 
         /// <summary>
@@ -29,15 +31,20 @@ namespace BibleCommon.Handlers
         /// <returns></returns>
         public string GetCommandUrl(VersePointer vp, string moduleName)
         {
-            return string.Format("{0}{1}/{2} {3};{4}", ProtocolName, moduleName, vp.Book.Index, vp.VerseNumber, vp.OriginalVerseName);
+            return GetCommandUrlStatic(vp, moduleName);
         }
 
-        public bool IsProtocolCommand(string[] args)
+        public static string GetCommandUrlStatic(VersePointer vp, string moduleName)
+        {
+            return string.Format("{0}{1}/{2} {3};{4}", _protocolName, moduleName, vp.Book.Index, vp.VerseNumber, vp.OriginalVerseName);
+        }
+
+        public bool IsProtocolCommand(params string[] args)
         {
             return args.Length > 0 && args[0].StartsWith(ProtocolName, StringComparison.OrdinalIgnoreCase);
         }
 
-        public void ExecuteCommand(string[] args)
+        public void ExecuteCommand(params string[] args)
         {
             Application oneNoteApp = null;
             try
@@ -46,15 +53,17 @@ namespace BibleCommon.Handlers
                 if (index == -1)
                     throw new ArgumentException(string.Format("Ivalid versePointer args: {0}", args[0]));
 
+                oneNoteApp = new Application();
+
+                if (!SettingsManager.Instance.IsConfigured(ref oneNoteApp))                
+                    throw new NotConfiguredException();                                    
+
                 var verseString = Uri.UnescapeDataString(args[0].Substring(index + 1));
 
                 var vp = new VersePointer(verseString);
 
-                if (vp.IsValid)
-                {
-                    oneNoteApp = new Application();
-                    GoToVerse(ref oneNoteApp, vp);
-                }
+                if (vp.IsValid)                
+                    GoToVerse(ref oneNoteApp, vp);                
                 else
                     throw new Exception(BibleCommon.Resources.Constants.BibleVersePointerCanNotParseString);
             }
@@ -95,7 +104,11 @@ namespace BibleCommon.Handlers
         {
             if (objectsIds.Length > 0 && !string.IsNullOrEmpty(objectsIds[0].ObjectHref))
             {
-                Process.Start(objectsIds[0].ObjectHref);   // иначе, если делать через NavigateTo, то когда, например, дропбокс изменит имя файла секции (сделает маленькими буквами) - ID меняется и выдаётся ошибка.
+                var linksHandler = new NavigateToHandler();
+                if (linksHandler.IsProtocolCommand(objectsIds[0].ObjectHref))
+                    linksHandler.ExecuteCommand(objectsIds[0].ObjectHref);
+                else
+                    Process.Start(objectsIds[0].ObjectHref);   // иначе, если делать через NavigateTo, то когда, например, дропбокс изменит имя файла секции (сделает маленькими буквами) - ID меняется и выдаётся ошибка.
             }
             else
             {

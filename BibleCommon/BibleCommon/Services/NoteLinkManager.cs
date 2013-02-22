@@ -11,6 +11,7 @@ using BibleCommon.Services;
 using BibleCommon.Common;
 using BibleCommon.Helpers;
 using BibleCommon.Consts;
+using BibleCommon.Handlers;
 
 namespace BibleCommon.Services
 {    
@@ -888,7 +889,7 @@ namespace BibleCommon.Services
                                 prevStyle = StringUtils.GetAttributeValue(prevLinkText, "style");
 
                             string link = OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, textToChange,                                
-                                            localHierarchySearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref,
+                                            OpenBibleVerseHandler.GetCommandUrlStatic(vp, SettingsManager.Instance.ModuleShortName), //  localHierarchySearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref,
                                             localHierarchySearchResult.HierarchyObjectInfo.PageId, localHierarchySearchResult.HierarchyObjectInfo.VerseContentObjectId, additionalParams.ToArray());
 
                             link = string.Format("<span style='font-weight:normal;{1}'>{0}</span>", link, prevStyle);

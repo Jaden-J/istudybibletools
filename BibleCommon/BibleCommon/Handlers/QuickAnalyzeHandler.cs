@@ -21,12 +21,12 @@ namespace BibleCommon.Handlers
             return string.Format("{0}{1}", ProtocolName, "currentPage");
         }
 
-        public bool IsProtocolCommand(string[] args)
+        public bool IsProtocolCommand(params string[] args)
         {
             return args.Length > 0 && args[0].StartsWith(ProtocolName, StringComparison.OrdinalIgnoreCase);
         }
 
-        public void ExecuteCommand(string[] args)
+        public void ExecuteCommand(params string[] args)
         {
             Microsoft.Office.Interop.OneNote.Application oneNoteApp = null;
             try

@@ -23,6 +23,9 @@ namespace BibleCommon.Services
 
         public static bool CacheIsActive(string notebookId)
         {
+            if (string.IsNullOrEmpty(notebookId))
+                return false;
+
             return File.Exists(GetCacheFilePath(notebookId));
         }
 
