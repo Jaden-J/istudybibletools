@@ -28,12 +28,15 @@ namespace BibleCommon.Handlers
         }
 
         public void ExecuteCommand(params string[] args)
-        {            
+        {
+            Application oneNoteApp = null;
             try
             {
+                oneNoteApp = new Application();  // для разгона
+
                 SettingsManager.Initialize();
                 OneNoteProxy.Initialize();
-                
+
                 //BibleCommon.Resources.Constants.Culture = LanguageManager.UserLanguage;
             }
             catch (NotConfiguredException)
@@ -41,7 +44,15 @@ namespace BibleCommon.Handlers
             catch (Exception ex)
             {
                 FormLogger.LogError(ex);
-            }            
+            }
+            finally
+            {
+                if (oneNoteApp != null)
+                {
+                    Marshal.ReleaseComObject(oneNoteApp);
+                    oneNoteApp = null;
+                }
+            }
         }  
     }
 }
