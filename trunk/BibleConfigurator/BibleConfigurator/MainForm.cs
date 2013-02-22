@@ -822,9 +822,9 @@ namespace BibleConfigurator
                     }
                     else if (string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName))
                     {
-                        var modules = ModulesManager.GetModules(true);
-                        if (modules.Count == 1)                        
-                            SettingsManager.Instance.ModuleShortName = modules[0].ShortName;                        
+                        var modules = ModulesManager.GetModules(true);                        
+                        if (modules.Where(m => m.Type == ModuleType.Bible).Count() == 1)                        
+                            SettingsManager.Instance.ModuleShortName = modules.First(m => m.Type == ModuleType.Bible).ShortName;                        
                     }
                     
                     PrepareFolderBrowser();
