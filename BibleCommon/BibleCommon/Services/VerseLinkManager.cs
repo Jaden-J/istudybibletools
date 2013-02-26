@@ -9,6 +9,7 @@ using System.Xml.XPath;
 using BibleCommon.Helpers;
 using BibleCommon.Consts;
 using BibleCommon.Common;
+using BibleCommon.Handlers;
 
 namespace BibleCommon.Services
 {
@@ -248,9 +249,12 @@ namespace BibleCommon.Services
                     string pageName = descriptionPageName + ".";
 
                     if (vp != null)
-                    {   
-                        string linkToBiblePage = OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, vp.ChapterName, null, biblePageId, biblePageTitleId,
-                                                                    Consts.Constants.QueryParameter_BibleVerse, Consts.Constants.QueryParameter_QuickAnalyze);
+                    {
+                        var linkHrefToBiblePage = SettingsManager.Instance.UseProxyLinksForLinks
+                                                    ? OpenBibleVerseHandler.GetCommandUrlStatic(vp, SettingsManager.Instance.ModuleShortName)
+                                                    : null;
+                        var linkToBiblePage = OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, vp.ChapterName, linkHrefToBiblePage, biblePageId, biblePageTitleId,
+                                                    Consts.Constants.QueryParameter_BibleVerse, Consts.Constants.QueryParameter_QuickAnalyze);
                         pageName += string.Format(" <span style='font-size:10pt;'>[{0}]</span>", linkToBiblePage);
                     }
 
