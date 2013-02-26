@@ -220,14 +220,15 @@ namespace BibleCommon.Helpers
         }
 
 
-        public static string GetOrGenerateLinkHref(ref Application oneNoteApp, string objectHref, string pageId, string objectId, params string[] additionalLinkQueryParameters)
+        public static string GetOrGenerateLinkHref(ref Application oneNoteApp, string objectHref, string pageId, 
+                                                    string objectId, bool useProxyLinkIfAvailable, params string[] additionalLinkQueryParameters)
         {
             string link;
 
             if (!string.IsNullOrEmpty(objectHref))
                 link = objectHref;
             else
-                link = OneNoteProxy.Instance.GenerateHref(ref oneNoteApp, pageId, objectId);
+                link = OneNoteProxy.Instance.GenerateHref(ref oneNoteApp, pageId, objectId, useProxyLinkIfAvailable);
 
             foreach (var param in additionalLinkQueryParameters)
                 link += "&" + param;
@@ -240,16 +241,29 @@ namespace BibleCommon.Helpers
             return string.Format("<a href=\"{0}\">{1}</a>", link, title);            
         }
 
-        public static string GetOrGenerateLink(ref Application oneNoteApp, string title, string objectHref, string pageId, string objectId, params string[] additionalLinkQueryParameters)
+        public static string GetOrGenerateLink(ref Application oneNoteApp, string title, string objectHref, string pageId, 
+                                                    string objectId, bool useProxyLinkIfAvailable, params string[] additionalLinkQueryParameters)
         {
-            var link = GetOrGenerateLinkHref(ref oneNoteApp, objectHref, pageId, objectId, additionalLinkQueryParameters);
+            var link = GetOrGenerateLinkHref(ref oneNoteApp, objectHref, pageId, objectId, useProxyLinkIfAvailable, additionalLinkQueryParameters);
 
             return GetLink(title, link);
         }
 
+        public static string GetOrGenerateLink(ref Application oneNoteApp, string title, string objectHref, string pageId,
+                                                    string objectId,  params string[] additionalLinkQueryParameters)
+        {
+            return GetOrGenerateLink(ref oneNoteApp, title, objectHref, pageId, objectId, true, additionalLinkQueryParameters);
+        }
+
         public static string GenerateLink(ref Application oneNoteApp, string title, string pageId, string objectId, params string[] additionalLinkQueryParameters)
         {
-            return GetOrGenerateLink(ref oneNoteApp, title, null, pageId, objectId, additionalLinkQueryParameters);
+            return GetOrGenerateLink(ref oneNoteApp, title, null, pageId, objectId, true, additionalLinkQueryParameters);
+        }
+
+        public static string GenerateLink(ref Application oneNoteApp, string title, string pageId, 
+                                                string objectId, bool useProxyLinkIfAvailable, params string[] additionalLinkQueryParameters)
+        {
+            return GetOrGenerateLink(ref oneNoteApp, title, null, pageId, objectId, useProxyLinkIfAvailable, additionalLinkQueryParameters);
         }
 
         public static XElement NormalizeTextElement(XElement textElement)  // must be one:T element
@@ -280,7 +294,7 @@ namespace BibleCommon.Helpers
             foreach (var inkNode in inkNodes)
             {
                 if (inkNode.XPathSelectElement(".//one:T", xnm) == null)
-                inkNode.Remove();
+                    inkNode.Remove();
                 else
                 {
                     var inkWords = inkNode.XPathSelectElements(".//one:InkWord", xnm).Where(ink => ink.XPathSelectElement(".//one:CallbackID", xnm) == null).ToArray();
@@ -292,14 +306,14 @@ namespace BibleCommon.Helpers
             {
                 try
                 {
-                UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                    UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                    {
+                        oneNoteAppSafe.UpdatePageContent(pageContent.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+                    });
+                }
+                catch (COMException ex)
                 {
-                    oneNoteAppSafe.UpdatePageContent(pageContent.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
-                });
-            }
-            catch (COMException ex)
-            {
-                    if (attemptsCount.GetValueOrDefault(int.MaxValue) < 20)  // 10 секунд - но каждое обновление требует времени. потому на самом деле дольше
+                    if (attemptsCount.GetValueOrDefault(int.MaxValue) < 30)  // 15 секунд - но каждое обновление требует времени. поэтому на самом деле дольше
                     {
                         if (OneNoteUtils.IsError(ex, Error.hrPageReadOnly) || OneNoteUtils.IsError(ex, Error.hrSectionReadOnly))
                         {
@@ -499,12 +513,12 @@ namespace BibleCommon.Helpers
         {
             return ex.Message.IndexOf(error.ToString(), StringComparison.InvariantCultureIgnoreCase) > -1
                 || ex.Message.IndexOf(GetHexError(error), StringComparison.InvariantCultureIgnoreCase) > -1;                
-    }
+        }
 
         private static string GetHexError(Error error)
         {
             return string.Format("0x{0}", Convert.ToString((int)error, 16));
-}
+        }
 
         public static string ParseError(string exceptionMessage)
         {

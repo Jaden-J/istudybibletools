@@ -14,6 +14,9 @@ using BibleCommon.Contracts;
 
 namespace BibleCommon.Services
 {
+    /// <summary>
+    /// Более не поддерживается
+    /// </summary>
     public class NotesPageManager : INotesPageManager
     {
         public string ManagerName
