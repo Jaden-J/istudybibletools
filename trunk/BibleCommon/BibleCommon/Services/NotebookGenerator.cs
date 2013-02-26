@@ -74,10 +74,7 @@ namespace BibleCommon.Services
             if (!string.IsNullOrEmpty(locale))
                 pageDocument.Root.Add(new XAttribute("lang", locale));
 
-            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
-            {
-                oneNoteAppSafe.UpdatePageContent(pageDocument.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
-            });
+            OneNoteUtils.UpdatePageContentSafe(ref oneNoteApp, pageDocument, OneNoteUtils.GetOneNoteXNM());            
 
             var pageDoc = OneNoteUtils.GetPageContent(ref oneNoteApp, pageId, out xnm);
 
