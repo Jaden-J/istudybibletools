@@ -12,14 +12,21 @@ namespace BibleCommon.Handlers
 {
     public class RefreshCacheHandler : IProtocolHandler
     {
+        private const string _protocolName = "isbtRefreshCache:";
+
         public string ProtocolName
         {
-            get { return "isbtRefreshCache:"; }
+            get { return _protocolName; }
+        }
+
+        public static string GetCommandUrlStatic()
+        {
+            return string.Format("{0}{1}", _protocolName, "refreshCache");
         }
 
         public string GetCommandUrl(string args)
         {
-            return string.Format("{0}{1}", ProtocolName, "refreshCache");
+            return GetCommandUrlStatic();
         }
 
         public bool IsProtocolCommand(params string[] args)
