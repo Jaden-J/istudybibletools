@@ -137,10 +137,10 @@ namespace BibleCommon.Handlers
 
         private static string GetValidPath(string newPath)
         {
-            return string.Format("{0}//{1}{2}",
+            return string.Format("{0}///{1}{2}",
                 Constants.OneNoteProtocol,
                 Path.GetPathRoot(Environment.SystemDirectory),
-                newPath.Substring(Constants.OneNoteProtocol.Length + 5));
+                newPath.Substring(Constants.OneNoteProtocol.Length + 6));
         }
 
         string IProtocolHandler.GetCommandUrl(string args)
