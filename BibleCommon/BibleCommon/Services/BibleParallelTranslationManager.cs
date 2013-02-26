@@ -304,10 +304,7 @@ namespace BibleCommon.Services
                 {
                     SupplementalBibleManager.UpdatePageXmlForStrongBible(chapterPageDoc, _isOneNote2010);
 
-                    OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, (oneNoteAppSafe) =>
-                    {
-                        oneNoteAppSafe.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
-                    });
+                    OneNoteUtils.UpdatePageContentSafe(ref _oneNoteApp, chapterPageDoc, xnm);                    
                 }
             }
         }

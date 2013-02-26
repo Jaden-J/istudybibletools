@@ -208,7 +208,7 @@ namespace BibleCommon.Services
             BibleParallelTranslationConnectionResult result = null;
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
             var linkResult = new List<Exception>();
-            var isOneNote2010 = true; // OneNoteUtils.IsOneNote2010Cached(oneNoteApp);
+            var isOneNote2010 = true; // OneNoteUtils.IsOneNote2010Cached(oneNoteApp);  // пока ещё окончательно не разобрался с проблемой ссылок в Стронге для OneNote 2013.
 
             using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
                 SettingsManager.Instance.SupplementalBibleModules.First().ModuleName, module.ShortName,
@@ -579,7 +579,7 @@ namespace BibleCommon.Services
                 NotebookGenerator.AddVerseRowToTable(currentTableElement, BIBLEBOOK.GetFullVerseString(verse.Index, verse.TopIndex, verse.GetValue(true, strongPrefix)), 0, moduleInfo.Locale);
             }
 
-            UpdateChapterPage(ref oneNoteApp, currentChapterDoc, chapter.Index, bibleBookInfo);
+            OneNoteUtils.UpdatePageContentSafe(ref oneNoteApp, currentChapterDoc, xnm);            
         }
 
         private static string GetCurrentSectionGroupId(ref Application oneNoteApp, string currentSectionGroupId, 
@@ -599,14 +599,6 @@ namespace BibleCommon.Services
             }            
 
             return currentSectionGroupId;
-        }
-
-        private static void UpdateChapterPage(ref Application oneNoteApp, XDocument chapterPageDoc, int chapterIndex, BibleBookInfo bibleBookInfo)
-        {
-            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
-            {
-                oneNoteAppSafe.UpdatePageContent(chapterPageDoc.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
-            });
-        }       
+        }             
     }
 }

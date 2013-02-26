@@ -313,7 +313,7 @@ namespace BibleCommon.Helpers
                 }
                 catch (COMException ex)
                 {
-                    if (attemptsCount.GetValueOrDefault(int.MaxValue) < 20)  // 10 секунд - но каждое обновление требует времени. потому на самом деле дольше
+                    if (attemptsCount.GetValueOrDefault(int.MaxValue) < 30)  // 15 секунд - но каждое обновление требует времени. поэтому на самом деле дольше
                     {
                         if (OneNoteUtils.IsError(ex, Error.hrPageReadOnly) || OneNoteUtils.IsError(ex, Error.hrSectionReadOnly))
                         {
