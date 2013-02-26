@@ -11,6 +11,7 @@ using System.Xml;
 using BibleCommon.Consts;
 using System.Text.RegularExpressions;
 using BibleCommon.Contracts;
+using BibleCommon.Handlers;
 
 namespace BibleCommon.Services
 {
@@ -127,12 +128,16 @@ namespace BibleCommon.Services
                 rootElParent = rootElParent.XPathSelectElement("one:OEChildren", notesPageDocument.Xnm);
             }
 
+            var linkHrefToVerse = SettingsManager.Instance.UseProxyLinksForLinks
+                                                    ? OpenBibleVerseHandler.GetCommandUrlStatic(vp, SettingsManager.Instance.ModuleShortName)
+                                                    : verseHierarchyObjectInfo.VerseInfo.ObjectHref;
+
             var rootElement = new XElement(_nms + "OE",
                                 new XElement(_nms + "T",
                                     new XCData(
                                          !isChapter ?
                                             OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseNumber),
-                                                verseHierarchyObjectInfo.VerseInfo.ObjectHref,
+                                                linkHrefToVerse,
                                                 verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.VerseContentObjectId,
                                                 Consts.Constants.QueryParameter_BibleVerse)
                                             :
@@ -390,7 +395,7 @@ namespace BibleCommon.Services
             }
 
             links.Insert(insertLinkIndex, OneNoteUtils.GetOrGenerateLinkHref(
-                                                        ref oneNoteApp, null, notePageInfo.Id, notePageContentObjectId, 
+                                                        ref oneNoteApp, null, notePageInfo.Id, notePageContentObjectId, true,
                                                         string.Format("{0}={1}", Constants.QueryParameterKey_VersePosition, versePosition),
                                                         string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, verseWeight)));
             multiVerseStrings.Insert(insertLinkIndex, GetMultiVerseString(vp.ParentVersePointer ?? vp));
