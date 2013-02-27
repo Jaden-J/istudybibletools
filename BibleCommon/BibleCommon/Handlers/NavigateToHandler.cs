@@ -10,13 +10,14 @@ using System.IO;
 using System.Threading;
 using BibleCommon.Helpers;
 using Microsoft.Office.Interop.OneNote;
+using System.Text.RegularExpressions;
 
 namespace BibleCommon.Handlers
 {
     public class NavigateToHandler : IProtocolHandler
     {
         private const string _protocolName = "isbtOpen:";
-        private const int NavigateAttemptsCount = 10;
+        private const int NavigateAttemptsCount = 3;
 
         private static string ProtocolFullString
         {
@@ -65,12 +66,14 @@ namespace BibleCommon.Handlers
 
             try
             {
-                var newPath = args[0].Replace(ProtocolFullString, Constants.OneNoteProtocol);                
+                var newPath = args[0].ReplaceIgnoreCase(ProtocolFullString, Constants.OneNoteProtocol);                
 
                 if (!TryToRedirectByIds(ref oneNoteApp, newPath))
                 {
                     if (!TryToRedirectByUrl(ref oneNoteApp, newPath))
-                        throw new Exception(string.Format("The {0} attempts of NavigateToUrl() were unsuccessful.", NavigateAttemptsCount));         
+                    {
+                        //throw new Exception(string.Format("OneNote cannot open the specified location after {0} attempts: {1}", NavigateAttemptsCount, newPath));
+                    }
                 }
             }
             finally
@@ -81,14 +84,15 @@ namespace BibleCommon.Handlers
         }
 
         private static bool TryToRedirectByUrl(ref Application oneNoteApp, string newPath)
-        {
-            var currentPageId = oneNoteApp.Windows.CurrentWindow.CurrentPageId;
+        {            
+            var pageId = oneNoteApp.Windows.CurrentWindow != null ? oneNoteApp.Windows.CurrentWindow.CurrentPageId : null;
             newPath = GetValidPath(newPath);
             for (int i = 0; i < NavigateAttemptsCount; i++)
             {
                 try
                 {
-                    if (currentPageId == oneNoteApp.Windows.CurrentWindow.CurrentPageId)
+                    var currentPageId = oneNoteApp.Windows.CurrentWindow != null ? oneNoteApp.Windows.CurrentWindow.CurrentPageId : null;
+                    if (pageId == currentPageId)
                     {
                         OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
                         {
@@ -103,7 +107,7 @@ namespace BibleCommon.Handlers
                     //if (ex.Message.IndexOf("0x80042014") != -1)  //hrObjectDoesNotExist
                     //    return true;
 
-                    Thread.Sleep(1000);
+                    Thread.Sleep(2000);
                 }
             }
 
@@ -111,7 +115,7 @@ namespace BibleCommon.Handlers
         }
 
         private static bool TryToRedirectByIds(ref Application oneNoteApp, string newPath)
-        {
+        {            
             var pageId = StringUtils.GetNotFramedAttributeValue(newPath, Constants.QueryParameterKey_CustomPageId);
 
             if (!string.IsNullOrEmpty(pageId))
@@ -137,10 +141,7 @@ namespace BibleCommon.Handlers
 
         private static string GetValidPath(string newPath)
         {
-            return string.Format("{0}///{1}{2}",
-                Constants.OneNoteProtocol,
-                Path.GetPathRoot(Environment.SystemDirectory),
-                newPath.Substring(Constants.OneNoteProtocol.Length + 6));
+            return Regex.Replace(newPath, @"//\D:\\", "//" + Path.GetPathRoot(Environment.SystemDirectory));            
         }
 
         string IProtocolHandler.GetCommandUrl(string args)
