@@ -20,6 +20,8 @@ namespace ISBTCommandHandler
         /// </summary>
         static void Main(params string[] args)
         {
+            if (args.Length == 0)
+                return;
             try
             {
                 if (!ProcessCommandWithSimpleHandler(args))
