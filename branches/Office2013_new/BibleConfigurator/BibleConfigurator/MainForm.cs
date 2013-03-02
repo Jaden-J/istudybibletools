@@ -101,6 +101,7 @@ namespace BibleConfigurator
         public bool IsModerator { get; set; }
 
         private Dictionary<string, string> _notebooks;
+        private bool _needToRefreshCache = false;   // чтобы понимать, нужно ли обновлять кэш
 
         public MainForm(params string[] args)
         {
@@ -200,6 +201,14 @@ namespace BibleConfigurator
 
                 this.TopMost = false;  // нам не нужен уже топ мост, потому что раньше он нам нужен был из-за того, что OneNote постоянно перекрывал программу когда создавались новые записные книжки
 
+                if (!FormLogger.WasErrorLogged)
+                {
+                    SetProgramParameters();
+                    SettingsManager.Instance.Save();
+                    
+                    RefreshCache(); // сразу обновляем кэш                    
+                }
+
                 if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible))
                 {
                     if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible) && !ToIndexBible)
@@ -209,24 +218,25 @@ namespace BibleConfigurator
                             ToIndexBible = true;
                     }
                 }
-
+                
                 if (ToIndexBible)
                 {
                     IndexBible();
                     ToIndexBible = false;
+                    _needToRefreshCache = true;
                 }
 
-                TryToIndexUnindexedDictionaries();
+                if (TryToIndexUnindexedDictionaries())
+                    _needToRefreshCache = true;
+
+                if (_needToRefreshCache)
+                {
+                    RefreshCache();
+                    _needToRefreshCache = false;
+                }
 
                 if (!FormLogger.WasErrorLogged)
-                {
-                    SetProgramParameters();
-
-                    SettingsManager.Instance.Save();
-
-                    if (_oneNoteApp.Windows.CurrentWindow != null)
-                        Process.Start(RefreshCacheHandler.GetCommandUrlStatic());   // если текущее окно закрыто, то и кэш скорее всего закрыт. Если же кэш открыт, то когда окно откроют, то кэш обновится
-
+                {   
                     if (closeForm)
                         Close();
                     else
@@ -251,6 +261,12 @@ namespace BibleConfigurator
                 btnApply.Enabled = true;
                 this.TopMost = false;
             }
+        }
+
+        private void RefreshCache()
+        {
+            if (_oneNoteApp.Windows.CurrentWindow != null)            
+                Process.Start(RefreshCacheHandler.GetCommandUrlStatic());   // если текущее окно закрыто, то и кэш скорее всего закрыт. Если же кэш открыт, то когда окно откроют, то кэш обновится                            
         }
 
         private void TryToSearchNotebooksForNewModule(ModuleInfo module)
@@ -317,8 +333,10 @@ namespace BibleConfigurator
             return false;
         }
 
-        private void TryToIndexUnindexedDictionaries()
-        {            
+        private bool TryToIndexUnindexedDictionaries()
+        {
+            var result = false;
+
             foreach (var dictionaryInfo in SettingsManager.Instance.DictionariesModules.ToArray())
             {
                 if (!DictionaryTermsCacheManager.CacheIsActive(dictionaryInfo.ModuleName) || dictionaryInfo.ModuleName == ForceIndexDictionaryModuleName)
@@ -331,6 +349,7 @@ namespace BibleConfigurator
                         List<string> notFoundTerms;
                         DictionaryTermsCacheManager.GenerateCache(ref _oneNoteApp, moduleInfo, LongProcessLogger, out notFoundTerms);
                         LongProcessingDone(BibleCommon.Resources.Constants.AddDictionaryFinishMessage);
+                        result = true;
 
                         if (notFoundTerms != null && notFoundTerms.Count > 0)
                         {
@@ -356,6 +375,8 @@ namespace BibleConfigurator
                     }                    
                 }
             }
+
+            return result;
         }
 
         private void IndexBible()
@@ -875,7 +896,7 @@ namespace BibleConfigurator
                 lblWarning.Visible = true;
             //else  // пусть лучше будет так, чтобы если пользователь что-то поменял - его программа просила всегда сохранить изменения, пока он не сохранит
             //    lblWarning.Visible = false;
-
+            
             _notebooks = OneNoteUtils.GetExistingNotebooks(ref _oneNoteApp);
             string singleNotebookId = (IsModerator || module.UseSingleNotebook() || SettingsManager.Instance.IsSingleNotebook) ? SearchForNotebook(module, _notebooks.Keys, ContainerType.Single) : string.Empty;
             string bibleNotebookId = SearchForNotebook(module, _notebooks.Keys, ContainerType.Bible);
@@ -1239,7 +1260,7 @@ namespace BibleConfigurator
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             StopLongProcess = true;
-            LongProcessLogger.AbortedByUser = true;
+            LongProcessLogger.AbortedByUser = true;            
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
