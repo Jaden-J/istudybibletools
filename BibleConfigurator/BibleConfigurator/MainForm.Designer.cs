@@ -32,6 +32,9 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tbcMain = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.chkUseFolderForBibleNotesPages = new System.Windows.Forms.CheckBox();
+            this.btnBibleNotesPagesSetFolder = new System.Windows.Forms.Button();
+            this.tbBibleNotesPagesFolder = new System.Windows.Forms.TextBox();
             this.btnBibleNotesPagesNotebookSetPath = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.chkCreateBibleNotesPagesNotebookFromTemplate = new System.Windows.Forms.CheckBox();
@@ -106,6 +109,7 @@
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.notesPagesFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -150,6 +154,9 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.chkUseFolderForBibleNotesPages);
+            this.tabPage1.Controls.Add(this.btnBibleNotesPagesSetFolder);
+            this.tabPage1.Controls.Add(this.tbBibleNotesPagesFolder);
             this.tabPage1.Controls.Add(this.btnBibleNotesPagesNotebookSetPath);
             this.tabPage1.Controls.Add(this.label8);
             this.tabPage1.Controls.Add(this.chkCreateBibleNotesPagesNotebookFromTemplate);
@@ -176,6 +183,27 @@
             resources.ApplyResources(this.tabPage1, "tabPage1");
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Enter += new System.EventHandler(this.tabPage1_Enter);
+            // 
+            // chkUseFolderForBibleNotesPages
+            // 
+            resources.ApplyResources(this.chkUseFolderForBibleNotesPages, "chkUseFolderForBibleNotesPages");
+            this.chkUseFolderForBibleNotesPages.Name = "chkUseFolderForBibleNotesPages";
+            this.chkUseFolderForBibleNotesPages.UseVisualStyleBackColor = true;
+            this.chkUseFolderForBibleNotesPages.CheckedChanged += new System.EventHandler(this.chkUseFolderForBibleNotesPages_CheckedChanged);
+            // 
+            // btnBibleNotesPagesSetFolder
+            // 
+            resources.ApplyResources(this.btnBibleNotesPagesSetFolder, "btnBibleNotesPagesSetFolder");
+            this.btnBibleNotesPagesSetFolder.Name = "btnBibleNotesPagesSetFolder";
+            this.btnBibleNotesPagesSetFolder.UseVisualStyleBackColor = true;
+            this.btnBibleNotesPagesSetFolder.Click += new System.EventHandler(this.btnBibleNotesPagesSetFolder_Click);
+            // 
+            // tbBibleNotesPagesFolder
+            // 
+            resources.ApplyResources(this.tbBibleNotesPagesFolder, "tbBibleNotesPagesFolder");
+            this.tbBibleNotesPagesFolder.Name = "tbBibleNotesPagesFolder";
+            this.tbBibleNotesPagesFolder.ReadOnly = true;
+            this.tbBibleNotesPagesFolder.Click += new System.EventHandler(this.tbBibleNotesPagesFolder_Click);
             // 
             // btnBibleNotesPagesNotebookSetPath
             // 
@@ -669,6 +697,10 @@
             this.openFileDialog.DefaultExt = "isbt";
             resources.ApplyResources(this.openFileDialog, "openFileDialog");
             // 
+            // notesPagesFolderBrowserDialog
+            // 
+            this.notesPagesFolderBrowserDialog.RootFolder = System.Environment.SpecialFolder.Personal;
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnOK;
@@ -781,6 +813,10 @@
         private System.Windows.Forms.Button btnConverter;
         private System.Windows.Forms.CheckBox chkUseProxyLinksForStrong;
         private System.Windows.Forms.CheckBox chkUseProxyLinksForLinks;
+        private System.Windows.Forms.CheckBox chkUseFolderForBibleNotesPages;
+        private System.Windows.Forms.Button btnBibleNotesPagesSetFolder;
+        private System.Windows.Forms.TextBox tbBibleNotesPagesFolder;
+        private System.Windows.Forms.FolderBrowserDialog notesPagesFolderBrowserDialog;
 
     }
 }

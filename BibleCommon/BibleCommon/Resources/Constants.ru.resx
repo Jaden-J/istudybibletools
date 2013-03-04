@@ -822,4 +822,22 @@
   <data name="UpdatingPageInOneNote" xml:space="preserve">
     <value>Обновление страницы в OneNote</value>
   </data>
+  <data name="ConfiguratorSetFolder" xml:space="preserve">
+    <value>Укажите папку</value>
+  </data>
+  <data name="ContainerTypeBible" xml:space="preserve">
+    <value>Библия</value>
+  </data>
+  <data name="ContainerTypeBibleComments" xml:space="preserve">
+    <value>Комментарии к Библии</value>
+  </data>
+  <data name="ContainerTypeBibleNotesPages" xml:space="preserve">
+    <value>Сводные заметок</value>
+  </data>
+  <data name="ContainerTypeBibleStudy" xml:space="preserve">
+    <value>Изучение Библии</value>
+  </data>
+  <data name="ContainerTypeSingle" xml:space="preserve">
+    <value>Одна записная книжка</value>
+  </data>
 </root>

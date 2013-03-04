@@ -20,6 +20,28 @@ namespace BibleCommon.Common
         Other
     }
 
+    public static class ContainerTypeHelper
+    {
+        public static string GetContainerTypeName(ContainerType type)
+        {
+            switch (type)
+            {
+                case ContainerType.Bible:
+                    return BibleCommon.Resources.Constants.ContainerTypeBible;
+                case ContainerType.BibleStudy:
+                    return BibleCommon.Resources.Constants.ContainerTypeBibleStudy;
+                case ContainerType.BibleComments:
+                    return BibleCommon.Resources.Constants.ContainerTypeBibleComments;
+                case ContainerType.BibleNotesPages:
+                    return BibleCommon.Resources.Constants.ContainerTypeBibleNotesPages;                
+                case ContainerType.Single:
+                    return BibleCommon.Resources.Constants.ContainerTypeSingle;                    
+                default:
+                    return type.ToString();
+            }
+        }
+    }
+
     public enum ModuleType
     {
         Bible = 0,
@@ -594,8 +616,7 @@ namespace BibleCommon.Common
         //    this.ParallelVerses = parallelVerses;
         //}
     }
-
-
+    
     /// <summary>
     /// Сохранённая на страницах OneNote информация о модулях
     /// </summary>
