@@ -16,6 +16,8 @@ namespace BibleCommon.Common
         {
             this.FilePath = filePath;
 
+            this.VersesNotesPageData = new Dictionary<VersePointer, VerseNotesPageData>();
+
             if (File.Exists(this.FilePath))
                 Deserialize();
         }
@@ -37,13 +39,32 @@ namespace BibleCommon.Common
         {
 
         }
+
+        public VerseNotesPageData GetVerseNotesPageData(VersePointer vp)
+        {
+            if (!VersesNotesPageData.ContainsKey(vp))
+            {
+                var vnpd = new VerseNotesPageData(vp);
+                VersesNotesPageData.Add(vp, vnpd);
+                return vnpd;
+            }
+            else
+                return VersesNotesPageData[vp];
+        }
     }
 
     public class VerseNotesPageData
     {
         public VersePointer Verse { get; set; }
-        public List<NotesPageLevel> Levels { get; set; }
+        public Dictionary<string, NotesPageLevel> Levels { get; set; }
         public Dictionary<string, NotesPageLevel> AllPagesLevels { get; set; }
+
+        public VerseNotesPageData(VersePointer vp)
+        {
+            Verse = vp;
+            Levels = new Dictionary<string, NotesPageLevel>();
+            AllPagesLevels = new Dictionary<string, NotesPageLevel>();
+        }
     }
     
 
