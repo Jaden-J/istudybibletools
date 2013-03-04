@@ -165,7 +165,12 @@ namespace BibleCommon.Services
 
                 return _instance;
             }
-        }       
+        }
+
+        protected OneNoteProxy()
+        {
+
+        }
 
         private Dictionary<OneNoteHierarchyContentId, HierarchyElement> _hierarchyContentCache = new Dictionary<OneNoteHierarchyContentId, HierarchyElement>();
         private Dictionary<string, PageContent> _pageContentCache = new Dictionary<string, PageContent>();
@@ -176,14 +181,31 @@ namespace BibleCommon.Services
         private List<SortPageInfo> _sortVerseLinkPagesInfo = new List<SortPageInfo>();
         private Dictionary<string, string> _bibleVersesLinks = null;
         private Dictionary<string, ModuleDictionaryInfo> _moduleDictionaries = new Dictionary<string, ModuleDictionaryInfo>();
-        private Dictionary<string, Dictionary<string, string>> _dictionariesTermsLinks = new Dictionary<string, Dictionary<string, string>>();        
+        private Dictionary<string, Dictionary<string, string>> _dictionariesTermsLinks = new Dictionary<string, Dictionary<string, string>>();
+        private Dictionary<string, NotesPageData> _notesPageDataList = new Dictionary<string, NotesPageData>();        
 
         private bool? _isBibleVersesLinksCacheActive;
 
-        protected OneNoteProxy()
+        public Dictionary<string, NotesPageData> NotesPageDataList
         {
-
+            get
+            {
+                return _notesPageDataList;
+            }
         }
+
+        public NotesPageData GetNotesPageData(string filePath)
+        {
+            if (!_notesPageDataList.ContainsKey(filePath))
+            {
+                var data = new NotesPageData(filePath);
+                _notesPageDataList.Add(filePath, data);
+                return data;
+            }
+            else
+                return _notesPageDataList[filePath];
+        }
+       
 
         public static void Initialize()
         {
