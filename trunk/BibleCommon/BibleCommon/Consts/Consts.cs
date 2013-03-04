@@ -69,6 +69,8 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_NewVersionOnServer = "NewVersionOnServer";
         public static readonly string ParameterName_NewVersionOnServerLatestCheckTime = "NewVersionOnServerLatestCheckTime";
 
+        public static readonly string ParameterName_FolderPathBibleNotesPages = "FolderPath_BibleNotesPages";        
+
         public static readonly string ParameterName_ModuleName = "ModuleName";
         public static readonly string ParameterName_SupplementalBibleModules = "SupplementalBibleModules";
         public static readonly string ParameterName_SupplementalBibleLinkName = "SupplementalBibleLinkName";

@@ -19,7 +19,7 @@ namespace BibleCommon.Handlers
         private const string _protocolName = "isbtOpen:";
         private const int NavigateAttemptsCount = 3;
 
-        private static string ProtocolFullString
+        public static string ProtocolFullString
         {
             get
             {

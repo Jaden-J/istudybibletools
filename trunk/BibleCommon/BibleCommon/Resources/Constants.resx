@@ -825,4 +825,22 @@ Please take notice:
   <data name="UpdatingPageInOneNote" xml:space="preserve">
     <value>Updating the page in OneNote</value>
   </data>
+  <data name="ConfiguratorSetFolder" xml:space="preserve">
+    <value>Specify folder path</value>
+  </data>
+  <data name="ContainerTypeBible" xml:space="preserve">
+    <value>Bible</value>
+  </data>
+  <data name="ContainerTypeBibleComments" xml:space="preserve">
+    <value>Comments to the Bible</value>
+  </data>
+  <data name="ContainerTypeBibleNotesPages" xml:space="preserve">
+    <value>Summary of Notes</value>
+  </data>
+  <data name="ContainerTypeBibleStudy" xml:space="preserve">
+    <value>Bible Study</value>
+  </data>
+  <data name="ContainerTypeSingle" xml:space="preserve">
+    <value>Single</value>
+  </data>
 </root>

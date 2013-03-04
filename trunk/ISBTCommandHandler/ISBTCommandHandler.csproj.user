@@ -11,6 +11,6 @@
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>"isbtOpen:_///C:\Users\Alexander\Dropbox\Holy%20Bible\Справочная%20Библия\Ветхий%20Завет\10.%202-я%20Царств.one#6%20глава.%202-я%20Царств&amp;section-id={42C65513-152E-496A-9130-9B8A0A7F4B1F}&amp;page-id={3A0583E7-5A5D-4E28-8DD6-328FEA8EF332}&amp;object-id={77D775E0-B452-424D-B05D-DF6AF2DA2BD0}&amp;EA&amp;cpId={9C8EF2FE-4979-480E-9164-7D46A10DA542}{1}{E19515485829567608926420142212554705028368731}&amp;coId={4290AE55-430F-4772-A0DB-7B3B3A2A1692}{234}{B0}"</StartArguments>
+    <StartArguments>"isbtNotesPage:rst/39%205;Мал%202:5"</StartArguments>
   </PropertyGroup>
 </Project>

@@ -403,6 +403,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Specify folder path.
+        /// </summary>
+        public static string ConfiguratorSetFolder {
+            get {
+                return ResourceManager.GetString("ConfiguratorSetFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Specify notebook location.
         /// </summary>
         public static string ConfiguratorSetNotebookFolder {
@@ -426,6 +435,51 @@ namespace BibleCommon.Resources {
         public static string ConfiguratorWrongParameterValue {
             get {
                 return ResourceManager.GetString("ConfiguratorWrongParameterValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Bible.
+        /// </summary>
+        public static string ContainerTypeBible {
+            get {
+                return ResourceManager.GetString("ContainerTypeBible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Comments to the Bible.
+        /// </summary>
+        public static string ContainerTypeBibleComments {
+            get {
+                return ResourceManager.GetString("ContainerTypeBibleComments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Summary of Notes.
+        /// </summary>
+        public static string ContainerTypeBibleNotesPages {
+            get {
+                return ResourceManager.GetString("ContainerTypeBibleNotesPages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Bible Study.
+        /// </summary>
+        public static string ContainerTypeBibleStudy {
+            get {
+                return ResourceManager.GetString("ContainerTypeBibleStudy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Single.
+        /// </summary>
+        public static string ContainerTypeSingle {
+            get {
+                return ResourceManager.GetString("ContainerTypeSingle", resourceCulture);
             }
         }
         
