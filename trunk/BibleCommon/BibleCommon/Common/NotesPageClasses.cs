@@ -9,6 +9,7 @@ namespace BibleCommon.Common
 {
     public class NotesPageData
     {
+        public bool IsNew { get; set; }
         public string FilePath { get; set; }
         public Dictionary<VersePointer, VerseNotesPageData> VersesNotesPageData { get; set; }                
 
@@ -20,24 +21,29 @@ namespace BibleCommon.Common
 
             if (File.Exists(this.FilePath))
                 Deserialize();
+            else
+                IsNew = true;
         }
 
-        public void Update(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, NoteLinkManager noteLinkManager,
-            Common.VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition,
-            bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo, Common.HierarchyElementInfo notePageId, string notesPageId, string notePageContentObjectId,
-            string notesPageName, int notesPageWidth, bool isImportantVerse, bool force, bool processAsExtendedVerse, out bool rowWasAdded)
+        public void Update(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, 
+            VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition,
+            bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo, Common.HierarchyElementInfo notePageInfo, string notePageContentObjectId,
+            bool isImportantVerse, bool force, bool processAsExtendedVerse, out bool rowWasAdded)
         {
             rowWasAdded = true;
         }
 
         protected void Deserialize()
         {
-            throw new NotImplementedException();
+            
         }
 
         public void Serialize()
         {
-
+            // не забыть: 
+            //  -нумерация
+            //  -если ссылок нет, то остальную структуру не надо создавать
+            //  -суммируем внутренние веса
         }
 
         public VerseNotesPageData GetVerseNotesPageData(VersePointer vp)
@@ -53,29 +59,41 @@ namespace BibleCommon.Common
         }
     }
 
-    public class VerseNotesPageData
+    public class VerseNotesPageData : NotesPageLevelBase
     {
         public VersePointer Verse { get; set; }
-        public Dictionary<string, NotesPageLevel> Levels { get; set; }
+        
         public Dictionary<string, NotesPageLevel> AllPagesLevels { get; set; }
 
         public VerseNotesPageData(VersePointer vp)
+            : base()
         {
             Verse = vp;
-            Levels = new Dictionary<string, NotesPageLevel>();
             AllPagesLevels = new Dictionary<string, NotesPageLevel>();
         }
-    }
-    
 
-    public class NotesPageLevel
+        public override void AddLevel(NotesPageLevel level)
+        {
+            level.Root = this;
+            base.AddLevel(level);
+        }
+    }
+
+
+    public enum NotesPageLevelType
     {
-        public string Title { get; set; }
-        public string Href { get; set; }
+        HierarchyElement,
+        Page
+    }
+
+    public class NotesPageLevel : NotesPageLevelBase
+    {
+        public string Title { get; set; }        
         public string ID { get; set; }
+        public NotesPageLevelType Type { get; set; }
 
         public NotesPageLevel Parent { get; set; }
-        public List<NotesPageLevel> ChildLevels { get; set; }
+        public VerseNotesPageData Root { get; set; }
 
         private bool _pageLinksWasParsed = false;
         private List<NotesPageLink> _pageLinks;
@@ -85,19 +103,57 @@ namespace BibleCommon.Common
             {
                 if (!_pageLinksWasParsed)
                 {
-                    PageLinks.ForEach(pl => pl.Parse());
+                    _pageLinks.ForEach(pl => pl.Parse());
                     _pageLinksWasParsed = true;
                 }
 
                 return _pageLinks;
             }
         }
+
+        public NotesPageLevel()
+            : base()
+        {
+            _pageLinks = new List<NotesPageLink>();
+        }
+
+        public override void AddLevel(NotesPageLevel level)
+        {
+            level.Root = Root;
+            level.Parent = this;
+
+            base.AddLevel(level);
+
+            if (level.Type == NotesPageLevelType.Page)
+            {
+                if (!Root.AllPagesLevels.ContainsKey(level.ID))
+                    Root.AllPagesLevels.Add(level.ID, level);
+            }
+        }
+    }
+
+    public abstract class NotesPageLevelBase
+    {
+        public Dictionary<string, NotesPageLevel> Levels { get; set; }        
+
+        public virtual void AddLevel(NotesPageLevel level)
+        {            
+            this.Levels.Add(level.ID, level);
+            //todo: sort
+        }
+
+        public NotesPageLevelBase()
+        {
+            Levels = new Dictionary<string, NotesPageLevel>();
+        }
     }
 
     public class NotesPageLink
     {
         public string Href { get; set; }
-        public int Position { get; set; }
+        public XmlCursorPosition VersePosition { get; set; }
+        public decimal VerseWeight { get; set; }        
+
         internal bool WasParsed { get; set; }
 
         internal void Parse()

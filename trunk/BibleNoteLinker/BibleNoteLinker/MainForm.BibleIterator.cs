@@ -74,17 +74,25 @@ namespace BibleNoteLinker
 
             if (_pagesForAnalyzeCount > 0)
             {
-                CommitPages(BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating, 2, OneNoteProxy.PageType.NotesPage);
+                var currentStep = 2;
+                if (string.IsNullOrEmpty(SettingsManager.Instance.FolderPath_BibleNotesPages))
+                {
+                    CommitPagesInOneNote(BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating, currentStep++, OneNoteProxy.PageType.NotesPage);
 
-                SyncNotesPagesContainer();   // эта задача асинхронная, поэтому не выделаем как отдельный этап
+                    SyncNotesPagesContainer();   // эта задача асинхронная, поэтому не выделаем как отдельный этап
 
-                SortNotesPages();  // это происходит очень быстро, поэтому не выделяем как отдельный этап                
+                    SortNotesPages();  // это происходит очень быстро, поэтому не выделяем как отдельный этап                
 
-                CommitNotesPagesHierarchy(3);                
+                    CommitNotesPagesHierarchy(currentStep++);
 
-                UpdateLinksToNotesPages(4);
+                    UpdateLinksToNotesPages(currentStep++);
+                }
+                else
+                {
+                    CommitNotesPagesInFileSystem(currentStep++);
+                }                
 
-                CommitPages(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, 5, null);                
+                CommitPagesInOneNote(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, currentStep++, null);                
             }
 
             OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
@@ -94,7 +102,15 @@ namespace BibleNoteLinker
                     _oneNoteApp.NavigateTo(currentPage.Id, null);
                 }
             });
-        }     
+        }
+
+        private void CommitNotesPagesInFileSystem(int stage)
+        {
+            foreach(var notesPageData in OneNoteProxy.Instance.NotesPageDataList.Values)
+            {
+                notesPageData.Serialize();
+            }
+        }
 
         private void SyncNotesPagesContainer()
         {
@@ -188,7 +204,7 @@ namespace BibleNoteLinker
             }
         }
 
-        private void CommitPages(string startMessage, int stage, OneNoteProxy.PageType? pagesType)
+        private void CommitPagesInOneNote(string startMessage, int stage, OneNoteProxy.PageType? pagesType)
         {   
             LogHighLevelMessage(startMessage, stage, StagesCount);
             Logger.LogMessage(startMessage, true, false);
