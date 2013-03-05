@@ -206,8 +206,8 @@ namespace BibleCommon.Services
             var linkArgs = new List<string>();
             linkArgs.Add(string.Format("{0}={1}", Constants.QueryParameterKey_VersePosition, versePosition));
             linkArgs.Add(string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, verseWeight));
-            if (!string.IsNullOrEmpty(notePageInfo.UniqueId))
-                linkArgs.Add(string.Format("{0}={1}", Constants.QueryParameterKey_NotePageId, notePageInfo.UniqueId));
+            if (!string.IsNullOrEmpty(notePageInfo.ManualId))
+                linkArgs.Add(string.Format("{0}={1}", Constants.QueryParameterKey_NotePageId, notePageInfo.ManualId));
 
             string link = OneNoteUtils.GenerateLink(ref oneNoteApp, 
                             GetVerseLinkTitle(notePageInfo.UniqueTitle, verseWeight >= Constants.ImportantVerseWeight), 
@@ -217,9 +217,9 @@ namespace BibleCommon.Services
 
             if (suchNoteLink != null)
             {
-                var key = new NoteLinkManager.NotePageProcessedVerseId() { NotePageId = notePageInfo.UniqueId ?? notePageInfo.Id, NotesPageName = notesPageName };
+                var key = new NoteLinkManager.NotePageProcessedVerseId() { NotePageId = notePageInfo.ManualId ?? notePageInfo.Id, NotesPageName = notesPageName };
                 if (force && !noteLinkManager.ContainsNotePageProcessedVerse(key, vp) && !processAsExtendedVerse)  // если в первый раз и force и не расширенный стих
-                {  // удаляем старые ссылки на текущую странцу, так как мы начали новый анализ с параметром "force" и мы только в первый раз зашли сюда
+                {  // удаляем старые ссылки на текущую страницу, так как мы начали новый анализ с параметром "force" и мы только в первый раз зашли сюда
                     suchNoteLink.Parent.Remove();
                     suchNoteLink = null;
                 }
@@ -270,8 +270,8 @@ namespace BibleCommon.Services
 
                 var pageLinkArgs = new List<string>();
                 pageLinkArgs.Add(string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, summaryVersesWeight));
-                if (!string.IsNullOrEmpty(notePageInfo.UniqueId))
-                    pageLinkArgs.Add(string.Format("{0}={1}", Constants.QueryParameterKey_NotePageId, notePageInfo.UniqueId));
+                if (!string.IsNullOrEmpty(notePageInfo.ManualId))
+                    pageLinkArgs.Add(string.Format("{0}={1}", Constants.QueryParameterKey_NotePageId, notePageInfo.ManualId));
 
                 var pageLink = OneNoteUtils.GenerateLink(
                                                   ref oneNoteApp, 
@@ -471,8 +471,8 @@ namespace BibleCommon.Services
         private XElement SearchExistingNoteLinkInParent(XElement parentEl, XElement rootElement, HierarchyElementInfo notePageInfo, string notePageLink, XmlNamespaceManager xnm)
         {
             XElement suchNoteLink = null;
-            var uniqueNoteId = !string.IsNullOrEmpty(notePageInfo.UniqueId)
-                                    ? notePageInfo.UniqueId 
+            var uniqueNoteId = !string.IsNullOrEmpty(notePageInfo.ManualId)
+                                    ? notePageInfo.ManualId 
                                     : StringUtils.GetAttributeValue(notePageLink, "page-id");         
 
             var searchInAllPageString = string.Empty;
@@ -488,7 +488,7 @@ namespace BibleCommon.Services
 
                 if (suchNoteLink == null)
                 {
-                    if (string.IsNullOrEmpty(notePageInfo.UniqueId))
+                    if (string.IsNullOrEmpty(notePageInfo.ManualId))
                         uniqueNoteId = Uri.EscapeDataString(uniqueNoteId);
 
                     suchNoteLink = parentEl.XPathSelectElement(
@@ -631,7 +631,7 @@ namespace BibleCommon.Services
             {
                 foreach (var existingLink in parentEl.XPathSelectElements("one:OE", xnm))
                 {
-                    if (!string.IsNullOrEmpty(elInfo.UniqueId))
+                    if (!string.IsNullOrEmpty(elInfo.ManualId))
                     {
                         var existingTitle = StringUtils.GetText(existingLink.XPathSelectElement("one:T", xnm).Value);
                         if (existingTitle == elInfo.UniqueTitle)                        

@@ -167,7 +167,7 @@ namespace BibleCommon.Services
                         var termName = StringUtils.GetText(termEl.Value);
                         var termId = (string)termEl.Parent.Attribute("objectID");
 
-                        notePageHierarchyInfo.UniqueId = string.Format("{{{0}}}", Uri.EscapeUriString(string.Format("{0}_|_{1}", dictionaryName, termName)));
+                        notePageHierarchyInfo.ManualId = string.Format("{{{0}}}", Uri.EscapeUriString(string.Format("{0}_|_{1}", dictionaryName, termName)));
                         notePageHierarchyInfo.UniqueTitle = termName;
                         notePageHierarchyInfo.UniqueNoteTitleId = termId;
 
@@ -1233,10 +1233,10 @@ namespace BibleCommon.Services
             HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo, 
             HierarchyElementInfo notePageId, string notePageContentObjectId, bool createLinkToNotesPage, 
             string notesPageName, string notesParentPageName, int notesPageWidth, int notesPageLevel, bool isImportantVerse, bool force, bool processAsExtendedVerse)
-        {            
-            NotesPageManagerFS.UpdateNotesPage(ref oneNoteApp, this, vp, verseWeight, versePosition, isChapter, verseHierarchyObjectInfo,
-                        notePageId, notePageContentObjectId,
-                        isImportantVerse, force, processAsExtendedVerse);
+        {
+            var pageWasAdded = NotesPageManagerFS.UpdateNotesPage(ref oneNoteApp, this, vp, verseWeight, versePosition, isChapter, verseHierarchyObjectInfo,
+                                        notePageId, notesPageName, notePageContentObjectId,
+                                        isImportantVerse, force, processAsExtendedVerse);
 
             var svp = vp.ToSimpleVersePointer();
             if (verseHierarchyObjectInfo.VerseNumber.HasValue)
@@ -1340,7 +1340,7 @@ namespace BibleCommon.Services
                 var keyForOldProvider = new NotePageProcessedVerseId() { NotePageId = notePageId.Id, NotesPageName = notesPageName };
                 AddNotePageProcessedVerseForOldProvider(keyForOldProvider, vp, verseHierarchyObjectInfo.VerseNumber);
 
-                var key = new NotePageProcessedVerseId() { NotePageId = notePageId.UniqueId ?? notePageId.Id, NotesPageName = notesPageName };
+                var key = new NotePageProcessedVerseId() { NotePageId = notePageId.ManualId ?? notePageId.Id, NotesPageName = notesPageName };
                 return AddNotePageProcessedVerse(key, vp, verseHierarchyObjectInfo.VerseNumber);
             }
 
