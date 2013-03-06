@@ -165,11 +165,11 @@ namespace BibleCommon.Services
                     {
                         var termEl = oeParent.XPathSelectElement("one:Cell[1]/one:OEChildren/one:OE/one:T", notePageDocument.Xnm);
                         var termName = StringUtils.GetText(termEl.Value);
-                        var termId = (string)termEl.Parent.Attribute("objectID");
+                        var termElId = (string)termEl.Parent.Attribute("objectID");
 
                         notePageHierarchyInfo.ManualId = string.Format("{{{0}}}", Uri.EscapeUriString(string.Format("{0}_|_{1}", dictionaryName, termName)));
                         notePageHierarchyInfo.UniqueTitle = termName;
-                        notePageHierarchyInfo.UniqueNoteTitleId = termId;
+                        notePageHierarchyInfo.UniqueNoteTitleId = termElId;
 
                         if (ProcessTextElements(ref _oneNoteApp, oeParent, notePageHierarchyInfo, ref foundChapters, processedTextElements, pageChaptersSearchResult,
                              notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage))
@@ -1237,6 +1237,12 @@ namespace BibleCommon.Services
             var pageWasAdded = NotesPageManagerFS.UpdateNotesPage(ref oneNoteApp, this, vp, verseWeight, versePosition, isChapter, verseHierarchyObjectInfo,
                                         notePageId, notesPageName, notePageContentObjectId,
                                         isImportantVerse, force, processAsExtendedVerse);
+
+
+            if (pageWasAdded)
+            {
+                // тогда добавляем в спец кэш инфу о том, что надо обновить ссылку "Заметки" у стихов vp (либо у svp.GetAllVerses()). Ссылка "Заметки" будет типа "isbtNotesPage:rst/40%205;Мф%201:5;Заметки.htm#5"
+            }
 
             var svp = vp.ToSimpleVersePointer();
             if (verseHierarchyObjectInfo.VerseNumber.HasValue)

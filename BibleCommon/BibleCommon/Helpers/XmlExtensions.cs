@@ -5,9 +5,19 @@ using System.Text;
 using System.Xml.Xsl;
 using System.Xml.XPath;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace BibleCommon.Helpers
 {
+    public static class XmlExtensions
+    {
+        public static XElement AddEl(this XContainer container, XElement el)
+        {
+            container.Add(el);
+            return el;
+        }
+    }
+
     public class CustomXPathFunctions : XsltContext
     {
         public CustomXPathFunctions()
