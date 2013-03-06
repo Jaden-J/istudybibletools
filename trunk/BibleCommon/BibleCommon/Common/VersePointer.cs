@@ -376,7 +376,7 @@ namespace BibleCommon.Common
     }
 
     [Serializable]
-    public class VersePointer
+    public class VersePointer: IComparable<VersePointer>
     {      
         public BibleBookInfo Book { get; set; }
         public int? Chapter { get; set; }
@@ -824,6 +824,14 @@ namespace BibleCommon.Common
         public static bool operator !=(VersePointer vp1, VersePointer vp2)
         {
             return !(vp1 == vp2);
-        }        
+        }
+
+        public int CompareTo(VersePointer other)
+        {
+            if (other == null)
+                return 1;
+
+            return this.Verse.GetValueOrDefault(0).CompareTo(other.Verse.GetValueOrDefault(0));
+        }
     }
 }

@@ -32,34 +32,35 @@ namespace BibleCommon.Services
             HierarchyElementInfo notePageInfo, string notePageContentObjectId, decimal verseWeight, XmlCursorPosition versePosition, 
             VersePointer vp, NoteLinkManager noteLinkManager, bool force, bool processAsExtendedVerse)
         {            
-            NotesPageLevelBase parentLevel = verseNotesPageData;
+            NotesPageHierarchyLevelBase parentLevel = verseNotesPageData;
             if (notePageInfo.Parent != null)
                 parentLevel = CreateParentTreeStructure(ref oneNoteApp, verseNotesPageData, notePageInfo.Parent, notePageInfo.NotebookId, notesPageFilePath);
 
-            var pageLinkLevel = SearchPageLinkLevel(notePageInfo.UniqueName, (NotesPageLevel)parentLevel, notesPageFilePath, vp, noteLinkManager, force, processAsExtendedVerse);              // parentLevel точно будет типа NotesPageLevel
+            var pageLinkLevel = SearchPageLinkLevel(notePageInfo.UniqueName, (NotesPageHierarchyLevel)parentLevel, notesPageFilePath, vp, noteLinkManager, force, processAsExtendedVerse);              // parentLevel точно будет типа NotesPageHierarchyLevel
 
             if (pageLinkLevel == null)
             {
-                pageLinkLevel = new NotesPageLevel() { ID = notePageInfo.UniqueName, Title = notePageInfo.UniqueTitle, Type = NotesPageLevelType.Page };
+                pageLinkLevel = new NotesPagePageLevel() { ID = notePageInfo.UniqueName, Title = notePageInfo.UniqueTitle, PageId = notePageInfo.Id, PageTitleObjectId = notePageInfo.UniqueNoteTitleId };
                 parentLevel.AddLevel(pageLinkLevel);                
             }
 
-            pageLinkLevel.PageLinks.Add(
+            pageLinkLevel.AddPageLink(
                         new NotesPageLink()
                         {
                             VersePosition = versePosition,
                             VerseWeight = verseWeight,
-                            Href = OneNoteUtils.GetOrGenerateLinkHref(ref oneNoteApp, null, notePageInfo.Id, notePageContentObjectId, true)
+                            PageId = notePageInfo.Id,
+                            ContentObjectId = notePageContentObjectId                            
                         });
         }
 
-        private static NotesPageLevel SearchPageLinkLevel(string id, NotesPageLevel parentLevel, string notesPageFilePath,
+        private static NotesPagePageLevel SearchPageLinkLevel(string id, NotesPageHierarchyLevel parentLevel, string notesPageFilePath,
             VersePointer vp, NoteLinkManager noteLinkManager, bool force, bool processAsExtendedVerse)
         {
-            NotesPageLevel pageLinkLevel = null;
+            NotesPagePageLevel pageLinkLevel = null;
 
             if (parentLevel.Levels.ContainsKey(id))
-                pageLinkLevel = parentLevel.Levels[id];
+                pageLinkLevel = (NotesPagePageLevel)parentLevel.Levels[id];
 
             if (pageLinkLevel == null && parentLevel.Root.AllPagesLevels.ContainsKey(id))
             {
@@ -86,16 +87,16 @@ namespace BibleCommon.Services
             return pageLinkLevel;
         }
 
-        private static NotesPageLevelBase CreateParentTreeStructure(ref Application oneNoteApp, NotesPageLevelBase parentLevel, HierarchyElementInfo hierarchyElementInfo, 
+        private static NotesPageHierarchyLevelBase CreateParentTreeStructure(ref Application oneNoteApp, NotesPageHierarchyLevelBase parentLevel, HierarchyElementInfo hierarchyElementInfo, 
             string notebookId, string notesPageFilePath)
         {
-            NotesPageLevelBase parent = parentLevel;
+            NotesPageHierarchyLevelBase parent = parentLevel;
             if (hierarchyElementInfo.Parent != null)
                 parentLevel = CreateParentTreeStructure(ref oneNoteApp, parentLevel, hierarchyElementInfo.Parent, notebookId, notesPageFilePath);
 
             if (!parentLevel.Levels.ContainsKey(hierarchyElementInfo.UniqueName))
             {
-                var notesPageLevel = new NotesPageLevel() { ID = hierarchyElementInfo.UniqueName, Title = hierarchyElementInfo.Title, Type = NotesPageLevelType.HierarchyElement };
+                var notesPageLevel = new NotesPageHierarchyLevel() { ID = hierarchyElementInfo.UniqueName, Title = hierarchyElementInfo.Title };
                 parentLevel.AddLevel(notesPageLevel);
                 return notesPageLevel;
             }
