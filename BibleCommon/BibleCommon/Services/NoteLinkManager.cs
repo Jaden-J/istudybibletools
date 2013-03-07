@@ -989,7 +989,7 @@ namespace BibleCommon.Services
         {
             if (verseNumber.HasValue && SettingsManager.Instance.UseDifferentPagesForEachVerse)
                 return string.Format("{1} {2}", SettingsManager.Instance.PageName_Notes, verseNumber, 
-                    verseNumber.Value.IsMultiVerse ? BibleCommon.Resources.Constants.Verses : BibleCommon.Resources.Constants.Verse);
+                    verseNumber.Value.IsMultiVerse ? BibleCommon.Resources.Constants.Verses : BibleCommon.Resources.Constants.Verse );
 
             return SettingsManager.Instance.PageName_Notes;
         }
