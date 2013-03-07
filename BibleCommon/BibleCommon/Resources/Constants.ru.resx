@@ -840,4 +840,7 @@
   <data name="ContainerTypeSingle" xml:space="preserve">
     <value>Одна записная книжка</value>
   </data>
+  <data name="VerseIsNotMentioned" xml:space="preserve">
+    <value>Данный стих не упоминается в заметках.</value>
+  </data>
 </root>

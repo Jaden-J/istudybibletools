@@ -5,12 +5,14 @@ using System.Text;
 using BibleCommon.Contracts;
 using BibleCommon.Common;
 using BibleCommon.Services;
+using System.IO;
 
 namespace BibleCommon.Handlers
 {
     public class OpenNotesPageHandler : IProtocolHandler
     {
         private const string _protocolName = "isbtNotesPage:";
+        private const string _rubbishPageName = "detailed";
 
         public string ProtocolName
         {
@@ -66,6 +68,21 @@ namespace BibleCommon.Handlers
             {
                 FormLogger.LogError(ex);
             }
+        }
+
+        public static string GetNotesPageFilePath(VersePointer vp, NoteLinkManager.NotesPageType notesPageType)
+        {
+            var path =
+                    Path.Combine(
+                            Path.Combine(SettingsManager.Instance.FolderPath_BibleNotesPages, SettingsManager.Instance.ModuleShortName),
+                            Path.Combine(vp.Book.Name, vp.Chapter.Value.ToString())
+                            );
+
+            var fileName = vp.Verse.GetValueOrDefault(0).ToString();
+            if (notesPageType == NoteLinkManager.NotesPageType.RubbishChapter)
+                fileName = _rubbishPageName;                    
+
+            return Path.Combine(path, fileName + ".htm");
         }
 
         string IProtocolHandler.GetCommandUrl(string args)

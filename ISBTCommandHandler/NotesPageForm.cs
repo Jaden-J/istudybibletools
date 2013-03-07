@@ -8,14 +8,23 @@ using System.Text;
 using System.Windows.Forms;
 using BibleCommon.Handlers;
 using BibleCommon.Common;
+using BibleCommon.Contracts;
+using System.Runtime.InteropServices;
+using BibleCommon.Services;
+using System.IO;
 
 namespace ISBTCommandHandler
 {
     public partial class NotesPageForm : Form
     {
+        protected OpenBibleVerseHandler OpenBibleVerseHandler { get; set; }
+        protected NavigateToHandler NavigateToHandler { get; set; }        
         public NotesPageForm()
-        {
-            InitializeComponent();
+        {            
+            InitializeComponent();            
+
+            OpenBibleVerseHandler = new OpenBibleVerseHandler();
+            NavigateToHandler = new NavigateToHandler();
         }
 
         public void OpenNotesPage(VersePointer vp)
@@ -24,18 +33,24 @@ namespace ISBTCommandHandler
 
             if (!string.IsNullOrEmpty(verseNotesPageFilePath))
             {
-                if (!this.Visible)
-                    this.Show();
+                if (!File.Exists(verseNotesPageFilePath))
+                    FormLogger.LogMessage(BibleCommon.Resources.Constants.VerseIsNotMentioned);
                 else
-                    this.Focus();
+                {
+                    wbNotesPage.Url = new Uri(verseNotesPageFilePath);
 
-                wbNotesPage.Url = new Uri(verseNotesPageFilePath);
+                    if (!this.Visible)
+                        this.Show();
+                    else
+                        this.Focus();
+                }
             }
         }
 
         private string GetVerseNotesPageFilePath(VersePointer vp)
         {
-            return @"C:\Users\lux_demko\Desktop\temp\temp\test.htm";
+            return OpenNotesPageHandler.GetNotesPageFilePath(vp, 
+                SettingsManager.Instance.UseDifferentPagesForEachVerse ? NoteLinkManager.NotesPageType.Verse : NoteLinkManager.NotesPageType.Chapter);
         }
 
         private void NotesPageForm_Load(object sender, EventArgs e)
@@ -45,19 +60,29 @@ namespace ISBTCommandHandler
 
         private void wbNotesPage_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
-            var url = e.Url.ToString();
+            var url = e.Url.ToString();            
 
             if (url.StartsWith(BibleCommon.Consts.Constants.OneNoteProtocol, StringComparison.OrdinalIgnoreCase)
-                || url.StartsWith(NavigateToHandler.ProtocolFullString, StringComparison.OrdinalIgnoreCase))
+                || OpenBibleVerseHandler.IsProtocolCommand(url) || NavigateToHandler.IsProtocolCommand(url))
             {
                 if (chkCloseOnClick.Checked)
                     this.Hide();
-            }
+            }            
         }
 
         private void chkAlwaysOnTop_CheckedChanged(object sender, EventArgs e)
         {
             this.TopMost = chkAlwaysOnTop.Checked;
-        }           
+        }
+
+        private void NotesPageForm_FormClosed(object sender, FormClosedEventArgs e)
+        {            
+            
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+        }
     }
 }

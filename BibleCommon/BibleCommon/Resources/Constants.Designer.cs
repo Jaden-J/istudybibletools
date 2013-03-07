@@ -2086,6 +2086,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на  This verse is not mentioned in the notes..
+        /// </summary>
+        public static string VerseIsNotMentioned {
+            get {
+                return ResourceManager.GetString("VerseIsNotMentioned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на OneNote not started.
         /// </summary>
         public static string VerseLinkerOneNoteNotStarted {

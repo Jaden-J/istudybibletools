@@ -106,9 +106,10 @@ namespace BibleNoteLinker
 
         private void CommitNotesPagesInFileSystem(int stage)
         {
+            // todo: добавить вывод прогресса
             foreach(var notesPageData in OneNoteProxy.Instance.NotesPageDataList.Values)
             {
-                notesPageData.Serialize();
+                notesPageData.Serialize(ref _oneNoteApp);
             }
         }
 

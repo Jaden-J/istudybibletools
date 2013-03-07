@@ -843,4 +843,7 @@ Please take notice:
   <data name="ContainerTypeSingle" xml:space="preserve">
     <value>Single</value>
   </data>
+  <data name="VerseIsNotMentioned" xml:space="preserve">
+    <value> This verse is not mentioned in the notes.</value>
+  </data>
 </root>

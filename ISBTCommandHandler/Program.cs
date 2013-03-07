@@ -22,25 +22,24 @@ namespace ISBTCommandHandler
         [STAThread]
         static void Main(params string[] args)
         {
-            LanguageManager.SetThreadUICulture();
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
-
             if (args.Length == 0)
                 return;
             try
             {
                 if (!ProcessCommandWithSimpleHandler(args))
                 {
-                    if (!ApplicationInstanceManager.CreateSingleInstance(
+                    if (ApplicationInstanceManager.CreateSingleInstance(
                                                         Assembly.GetExecutingAssembly().GetName().Name,
                                                         SingleInstanceCallback))
-                        return;
+                    {
+                        LanguageManager.SetThreadUICulture();
 
-                    _mainForm = new CommandForm();
-                    Application.Run(_mainForm);
+                        Application.EnableVisualStyles();
+                        Application.SetCompatibleTextRenderingDefault(false);
+
+                        _mainForm = new CommandForm();
+                        Application.Run(_mainForm);
+                    }
                 }
             }
             catch (Exception ex)
