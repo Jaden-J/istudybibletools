@@ -6,6 +6,7 @@ using BibleCommon.Common;
 using System.IO;
 using Microsoft.Office.Interop.OneNote;
 using BibleCommon.Helpers;
+using BibleCommon.Handlers;
 
 namespace BibleCommon.Services
 {
@@ -15,10 +16,10 @@ namespace BibleCommon.Services
 
         public static bool UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager,
             VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition,
-            bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo, HierarchyElementInfo notePageInfo, string notesPageName, string notePageContentObjectId,
+            bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo, HierarchyElementInfo notePageInfo, string notePageContentObjectId, NoteLinkManager.NotesPageType notesPageType,
             bool isImportantVerse, bool force, bool processAsExtendedVerse)
         {
-            var notesPageFilePath = GetNotesPageFilePath(vp, notesPageName); 
+            var notesPageFilePath = OpenNotesPageHandler.GetNotesPageFilePath(vp, notesPageType); 
             var notesPageData = OneNoteProxy.Instance.GetNotesPageData(notesPageFilePath);
 
             var verseNotesPageData = notesPageData.GetVerseNotesPageData(vp);
@@ -51,7 +52,8 @@ namespace BibleCommon.Services
                             VerseWeight = verseWeight,
                             PageId = notePageInfo.Id,
                             ContentObjectId = notePageContentObjectId                            
-                        });
+                        },
+                        vp);
         }
 
         private static NotesPagePageLevel SearchPageLinkLevel(string id, NotesPageHierarchyLevel parentLevel, string notesPageFilePath,
@@ -105,20 +107,6 @@ namespace BibleCommon.Services
                 //todo: sort once
                 return parentLevel.Levels[hierarchyElementInfo.UniqueName];
             }
-        }
-
-        private static string GetNotesPageFilePath(VersePointer vp, string notesPageName)
-        {
-            var path =
-                    Path.Combine(
-                            Path.Combine(SettingsManager.Instance.FolderPath_BibleNotesPages, SettingsManager.Instance.ModuleShortName),
-                            Path.Combine(vp.Book.Name, vp.Chapter.Value.ToString())
-                            );
-
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            return Path.Combine(path, notesPageName + ".htm");
-        }
+        }       
     }
 }

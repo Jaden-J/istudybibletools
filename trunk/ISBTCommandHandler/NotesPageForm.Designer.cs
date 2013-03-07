@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.scMain = new System.Windows.Forms.SplitContainer();
+            this.wbNotesPage = new System.Windows.Forms.WebBrowser();
             this.btnClose = new System.Windows.Forms.Button();
             this.chkAlwaysOnTop = new System.Windows.Forms.CheckBox();
             this.chkCloseOnClick = new System.Windows.Forms.CheckBox();
-            this.wbNotesPage = new System.Windows.Forms.WebBrowser();
             this.scMain.Panel1.SuspendLayout();
             this.scMain.Panel2.SuspendLayout();
             this.scMain.SuspendLayout();
@@ -59,6 +59,16 @@
             this.scMain.SplitterDistance = 172;
             this.scMain.TabIndex = 0;
             // 
+            // wbNotesPage
+            // 
+            this.wbNotesPage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.wbNotesPage.Location = new System.Drawing.Point(0, 0);
+            this.wbNotesPage.MinimumSize = new System.Drawing.Size(20, 20);
+            this.wbNotesPage.Name = "wbNotesPage";
+            this.wbNotesPage.Size = new System.Drawing.Size(242, 172);
+            this.wbNotesPage.TabIndex = 0;
+            this.wbNotesPage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.wbNotesPage_Navigating);
+            // 
             // btnClose
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -68,6 +78,7 @@
             this.btnClose.TabIndex = 2;
             this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // chkAlwaysOnTop
             // 
@@ -88,17 +99,7 @@
             this.chkCloseOnClick.Size = new System.Drawing.Size(93, 17);
             this.chkCloseOnClick.TabIndex = 0;
             this.chkCloseOnClick.Text = "Close on Click";
-            this.chkCloseOnClick.UseVisualStyleBackColor = true;            
-            // 
-            // wbNotesPage
-            // 
-            this.wbNotesPage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.wbNotesPage.Location = new System.Drawing.Point(0, 0);
-            this.wbNotesPage.MinimumSize = new System.Drawing.Size(20, 20);
-            this.wbNotesPage.Name = "wbNotesPage";
-            this.wbNotesPage.Size = new System.Drawing.Size(242, 172);
-            this.wbNotesPage.TabIndex = 0;
-            this.wbNotesPage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.wbNotesPage_Navigating);
+            this.chkCloseOnClick.UseVisualStyleBackColor = true;
             // 
             // NotesPageForm
             // 
@@ -110,6 +111,7 @@
             this.MinimumSize = new System.Drawing.Size(250, 250);
             this.Name = "NotesPageForm";
             this.Text = "NotesPage Form";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NotesPageForm_FormClosed);
             this.Load += new System.EventHandler(this.NotesPageForm_Load);
             this.scMain.Panel1.ResumeLayout(false);
             this.scMain.Panel2.ResumeLayout(false);
