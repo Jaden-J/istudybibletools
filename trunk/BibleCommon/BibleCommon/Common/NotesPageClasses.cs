@@ -51,13 +51,13 @@ namespace BibleCommon.Common
             
 
             var chapterVersePointer = VersesNotesPageData[0].Verse.GetChapterPointer();
-            var chapterLinkHref = OpenBibleVerseHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName);            
-            var pageName = Path.GetFileNameWithoutExtension(this.FilePath);
+            var chapterLinkHref = OpenBibleVerseHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName);
+            var pageName = NoteLinkManager.GetDefaultNotesPageName(VersesNotesPageData[0].Verse.VerseNumber);
 
             var xdoc = new XDocument(
                         new XElement("html", 
                             new XElement("head", 
-                                new XElement("title", string.Format("{0} [{1}]", pageName, chapterVersePointer.ChapterName)),
+                                new XElement("title", string.Format("{0} {1} [{1}]", pageName,  chapterVersePointer.ChapterName)),
                                 new XElement("link", new XAttribute("type", "text/css"), new XAttribute("rel", "stylesheet"), new XAttribute("href", "../../../core.css"))
                             )));
 
@@ -83,9 +83,9 @@ namespace BibleCommon.Common
                 SerializeLevel(ref oneNoteApp, verseNotesPageData, bodyEl, 1, null);
             }
 
-            //var folder = Path.GetDirectoryName(this.FilePath);
-            //if (!Directory.Exists(folder))
-            //    Directory.CreateDirectory(folder);
+            var folder = Path.GetDirectoryName(this.FilePath);
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
 
             xdoc.Save(this.FilePath);
         }
@@ -201,7 +201,7 @@ namespace BibleCommon.Common
                                     new XAttribute("class", "verseLink"),
                                     new XAttribute("href", ((VerseNotesPageData)hierarchyLevel).GetVerseLinkHref()),
                                     ((VerseNotesPageData)hierarchyLevel).Verse.Verse.HasValue 
-                                        ? ":" + ((VerseNotesPageData)hierarchyLevel).Verse.Verse.ToString()
+                                        ? ":" + ((VerseNotesPageData)hierarchyLevel).Verse.VerseNumber.ToString()
                                         : string.Empty
                                 ));
             }
