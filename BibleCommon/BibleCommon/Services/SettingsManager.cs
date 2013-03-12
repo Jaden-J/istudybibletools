@@ -129,6 +129,7 @@ namespace BibleCommon.Services
         public string SectionName_DefaultBookOverview { get; set; }
         public string PageName_Notes { get; set; }
         public string FolderPath_BibleNotesPages { get; set; }
+        public bool IsInIntegratedMode { get; set; }
 
      
         public List<NotebookForAnalyzeInfo> SelectedNotebooksForAnalyze { get; set; }

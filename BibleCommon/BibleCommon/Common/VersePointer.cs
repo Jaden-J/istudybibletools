@@ -386,7 +386,7 @@ namespace BibleCommon.Common
         /// первоначально переданная строка в конструктор
         /// </summary>
         public string OriginalVerseName { get; set; }   
-        public string OriginalBookName { get; set; }
+        public string OriginalBookName { get; set; }        
 
         public bool WasChangedVerseAsOneChapteredBook { get; set; }
 
@@ -523,7 +523,7 @@ namespace BibleCommon.Common
                 bool endsWithDot;
                 string moduleName;
                 OriginalBookName = TrimBookName(s, out endsWithDot);
-                Book = GetBibleBook(OriginalBookName, endsWithDot, out moduleName);
+                Book = GetBibleBook(OriginalBookName, endsWithDot, out moduleName);                
 
                 if (!string.IsNullOrEmpty(moduleName))   // значит ссылка дана для модуля, отличного от установленного                
                     ConvertToBaseVerse(moduleName);                

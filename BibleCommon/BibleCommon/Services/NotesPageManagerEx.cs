@@ -217,7 +217,7 @@ namespace BibleCommon.Services
 
             if (suchNoteLink != null)
             {
-                var key = new NoteLinkManager.NotePageProcessedVerseId() { NotePageId = notePageInfo.ManualId ?? notePageInfo.Id, NotesPageName = notesPageName };
+                var key = new NoteLinkManager.NotePageProcessedVerseId() { NotePageId = notePageInfo.UniqueName, NotesPageName = notesPageName };
                 if (force && !noteLinkManager.ContainsNotePageProcessedVerse(key, vp) && !processAsExtendedVerse)  // если в первый раз и force и не расширенный стих
                 {  // удаляем старые ссылки на текущую страницу, так как мы начали новый анализ с параметром "force" и мы только в первый раз зашли сюда
                     suchNoteLink.Parent.Remove();
