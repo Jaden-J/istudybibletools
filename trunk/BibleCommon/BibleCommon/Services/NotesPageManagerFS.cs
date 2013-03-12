@@ -12,14 +12,14 @@ namespace BibleCommon.Services
 {
     public static class NotesPageManagerFS
     {
-        private static Dictionary<string, HashSet<string>> _processedNodes = new Dictionary<string, HashSet<string>>();  // список актуализированных узлов в рамках текущей сессии анализа заметок
+        //private static Dictionary<string, HashSet<string>> _processedNodes = new Dictionary<string, HashSet<string>>();  // список актуализированных узлов в рамках текущей сессии анализа заметок
 
         public static bool UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager,
             VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition,
-            bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo, HierarchyElementInfo notePageInfo, string notePageContentObjectId, NoteLinkManager.NotesPageType notesPageType,
-            bool isImportantVerse, bool force, bool processAsExtendedVerse)
+            bool isChapter, HierarchyElementInfo notePageInfo, string notePageContentObjectId, NoteLinkManager.NotesPageType notesPageType,
+            bool isImportantVerse, bool force, bool processAsExtendedVerse, out string notesPageFilePath)
         {
-            var notesPageFilePath = OpenNotesPageHandler.GetNotesPageFilePath(vp, notesPageType); 
+            notesPageFilePath = OpenNotesPageHandler.GetNotesPageFilePath(vp, notesPageType); 
             var notesPageData = OneNoteProxy.Instance.GetNotesPageData(notesPageFilePath);
 
             var verseNotesPageData = notesPageData.GetVerseNotesPageData(vp);

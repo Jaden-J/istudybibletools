@@ -334,13 +334,9 @@ namespace BibleCommon.Services
             }
         }
 
-        public void AddProcessedVerseOnBiblePageWithUpdatedLinksToNotesPages(VersePointer vp, VerseNumber? verseNumber)
-        {
-            var svp = vp.ToSimpleVersePointer();
-            if (verseNumber.HasValue)
-                svp.VerseNumber = verseNumber.Value;
-
-            svp.GetAllVerses().ForEach(v =>
+        public void AddProcessedVerseOnBiblePageWithUpdatedLinksToNotesPages(List<SimpleVersePointer> verses)
+        {   
+            verses.ForEach(v =>
             {
                 if (!_processedVerses.Contains(v))
                     _processedVerses.Add(v);
