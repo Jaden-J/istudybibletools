@@ -14,9 +14,11 @@ namespace BibleNoteLinker
 {
     public partial class MainForm
     {
-        private const int StagesCount = 5;
+        
         private const int ApproximatePageVersesCount = 100;
         private int _pagesForAnalyzeCount;
+
+        protected int StagesCount { get; set; }
 
         private void StartAnalyze()
         {            
@@ -41,6 +43,8 @@ namespace BibleNoteLinker
             {
                 getCurrentPageException = ex;
             }
+
+            StagesCount = GetStagesCount();
 
             if (!rbAnalyzeCurrentPage.Checked)
             {
@@ -86,13 +90,14 @@ namespace BibleNoteLinker
                     CommitNotesPagesHierarchy(currentStep++);
                 }
 
+                if (SettingsManager.Instance.StoreNotesPagesInFolder)
+                    CommitNotesPagesInFileSystem(currentStep++);
+
                 if (!SettingsManager.Instance.IsInIntegratedMode)
-                    UpdateLinksToNotesPages(currentStep++);
+                    UpdateLinksToNotesPages(currentStep++);                
 
-                if (SettingsManager.Instance.StoreNotesPagesInFolder)                
-                    CommitNotesPagesInFileSystem(currentStep++);                
-
-                CommitPagesInOneNote(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, currentStep++, null);                
+                if (!SettingsManager.Instance.IsInIntegratedMode)
+                    CommitPagesInOneNote(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, currentStep++, null);                
             }
 
             OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
@@ -104,12 +109,46 @@ namespace BibleNoteLinker
             });
         }
 
+        private int GetStagesCount()
+        {
+            if (SettingsManager.Instance.StoreNotesPagesInFolder)
+            {
+                if (SettingsManager.Instance.IsInIntegratedMode)
+                    return 2;
+                else
+                    return 4;
+            }
+            else
+                return 5;            
+        }
+
         private void CommitNotesPagesInFileSystem(int stage)
         {
-            // todo: добавить вывод прогресса
+            string message = BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating;
+            LogHighLevelMessage(message, stage, StagesCount);
+            int allPagesCount = OneNoteProxy.Instance.NotesPageDataList.Count;
+            Logger.LogMessageParams(string.Format("{0} ({1})",
+                message, Helper.GetRightPagesString(allPagesCount)));
+            pbMain.Maximum = allPagesCount;
+            pbMain.Value = 0;
+            pbMain.PerformStep();
+
+            int processedPagesCount = 0;      
+            
             foreach(var notesPageData in OneNoteProxy.Instance.NotesPageDataList.Values)
             {
-                notesPageData.Serialize(ref _oneNoteApp);
+                LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
+
+                try
+                {
+                    notesPageData.Serialize(ref _oneNoteApp);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(string.Format(BibleCommon.Resources.Constants.ErrorWhilePageProcessing, notesPageData.PageName), ex);
+                }
+
+                PerformProcessStep();
             }
         }
 

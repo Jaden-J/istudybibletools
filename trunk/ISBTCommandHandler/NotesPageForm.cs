@@ -56,7 +56,40 @@ namespace ISBTCommandHandler
 
         private void NotesPageForm_Load(object sender, EventArgs e)
         {
-            
+            SetLocation();
+            SetSize();            
+        }
+
+        private void SetSize()
+        {
+            var size = Properties.Settings.Default.NotesPageFormSize;
+            if (!string.IsNullOrEmpty(size))
+            {
+                var sizeParts = size.Split(new char[] { ';' });
+                var w = int.Parse(sizeParts[0]);
+                var h = int.Parse(sizeParts[1]);
+                this.Size = new Size(w, h);
+            }
+            else
+            {
+                здесь
+            }
+        }
+
+        private void SetLocation()
+        {
+            var position = Properties.Settings.Default.NotesPageFormPosition;
+            if (!string.IsNullOrEmpty(position))
+            {
+                var positionParts = position.Split(new char[] { ';' });
+                var x = int.Parse(positionParts[0]);
+                var y = int.Parse(positionParts[1]);
+                this.Location = new Point(x, y);
+            }
+            else
+            {
+                здесь
+            }
         }
 
         private void wbNotesPage_Navigating(object sender, WebBrowserNavigatingEventArgs e)
@@ -77,13 +110,24 @@ namespace ISBTCommandHandler
         }
 
         private void NotesPageForm_FormClosed(object sender, FormClosedEventArgs e)
-        {            
-            
+        {
+            Properties.Settings.Default.NotesPageFormAlwaysOnTop = chkAlwaysOnTop.Checked;
+            Properties.Settings.Default.NotesPageFormCloseOnClick = chkCloseOnClick.Checked;
+            Properties.Settings.Default.NotesPageFormPosition = string.Format("{0};{1}", this.Left, this.Top);
+            Properties.Settings.Default.NotesPageFormSize= string.Format("{0};{1}", this.Width, this.Height);
+
+            Properties.Settings.Default.Save();
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Hide();
+        }
+
+        private void NotesPageForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.Hide();
+            e.Cancel = true;
         }        
     }
 }

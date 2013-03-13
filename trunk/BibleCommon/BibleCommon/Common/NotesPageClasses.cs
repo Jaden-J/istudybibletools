@@ -19,14 +19,14 @@ namespace BibleCommon.Common
         public string FilePath { get; set; }
         public string PageName { get; set; }
 
-        public OrderedDictionary<VersePointer, VerseNotesPageData> VersesNotesPageData { get; set; }                
+        public Dictionary<VersePointer, VerseNotesPageData> VersesNotesPageData { get; set; }                
 
         public NotesPageData(string filePath, string pageName)
         {
             this.FilePath = filePath;
             this.PageName = pageName;
 
-            this.VersesNotesPageData = new OrderedDictionary<VersePointer, VerseNotesPageData>();
+            this.VersesNotesPageData = new Dictionary<VersePointer, VerseNotesPageData>();
 
             if (File.Exists(this.FilePath))
                 Deserialize();
@@ -50,10 +50,9 @@ namespace BibleCommon.Common
         public void Serialize(ref Application oneNoteApp)
         {
             // todo: не забыть: 
-            //  -нумерация
-            
+            //  -нумерация            
 
-            var chapterVersePointer = VersesNotesPageData[0].Verse.GetChapterPointer();
+            var chapterVersePointer = VersesNotesPageData.First().Key.GetChapterPointer();
             var chapterLinkHref = OpenBibleVerseHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName);            
 
             var xdoc = new XDocument(
@@ -80,9 +79,9 @@ namespace BibleCommon.Common
                             new XAttribute("class", "pageTitleLink"),
                             "]")));
             
-            foreach(var verseNotesPageData in VersesNotesPageData.Values)
+            foreach(var verseNotesPageData in VersesNotesPageData.OrderBy(v => v.Key))
             {
-                SerializeLevel(ref oneNoteApp, verseNotesPageData, bodyEl, 1, null);
+                SerializeLevel(ref oneNoteApp, verseNotesPageData.Value, bodyEl, 1, null);
             }
 
             var folder = Path.GetDirectoryName(this.FilePath);
@@ -202,7 +201,7 @@ namespace BibleCommon.Common
                                 new XElement("a",
                                     new XAttribute("class", "verseLink"),
                                     new XAttribute("href", ((VerseNotesPageData)hierarchyLevel).GetVerseLinkHref()),
-                                    ((VerseNotesPageData)hierarchyLevel).Verse.Verse.HasValue 
+                                    !((VerseNotesPageData)hierarchyLevel).Verse.IsChapter 
                                         ? ":" + ((VerseNotesPageData)hierarchyLevel).Verse.VerseNumber.ToString()
                                         : string.Empty
                                 ));
