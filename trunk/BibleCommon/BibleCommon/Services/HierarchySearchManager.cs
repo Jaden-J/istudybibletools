@@ -69,14 +69,22 @@ namespace BibleCommon.Services
                 return result;
             }
 
+            private VerseNumber? _verseNumber;
             public VerseNumber? VerseNumber
             {
                 get
                 {
+                    if (_verseNumber.HasValue)
+                        return _verseNumber;
+
                     if (VerseInfo != null)
                         return VerseInfo.VerseNumber;
 
                     return null;
+                }
+                set
+                {
+                    _verseNumber = value;
                 }
             }
 

@@ -393,13 +393,22 @@ namespace BibleCommon.Common
         /// <summary>
         /// родительская ссылка. Например если мы имеем дело со стихом диапазона, то здесь хранится стих, являющийся диапазоном
         /// </summary>
-        public VersePointer ParentVersePointer { get; set; } 
+        public VersePointer ParentVersePointer { get; set; }
 
+
+        private VerseNumber? _verseNumber;
         public VerseNumber VerseNumber
         {
             get
             {
+                if (_verseNumber.HasValue)
+                    return _verseNumber.Value;
+
                 return new VerseNumber(this.Verse.GetValueOrDefault(), this.TopChapter.HasValue ? null : this.TopVerse);
+            }
+            set
+            {
+                _verseNumber = value;
             }
         }        
 

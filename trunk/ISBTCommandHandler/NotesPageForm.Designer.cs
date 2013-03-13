@@ -112,7 +112,7 @@
             this.Name = "NotesPageForm";
             this.Text = "NotesPage Form";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NotesPageForm_FormClosed);
-            this.Load += new System.EventHandler(this.NotesPageForm_Load);
+            this.Load += new System.EventHandler(this.NotesPageForm_Load);            
             this.scMain.Panel1.ResumeLayout(false);
             this.scMain.Panel2.ResumeLayout(false);
             this.scMain.Panel2.PerformLayout();

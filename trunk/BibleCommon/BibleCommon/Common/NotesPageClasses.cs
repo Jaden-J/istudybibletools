@@ -17,11 +17,14 @@ namespace BibleCommon.Common
     {
         public bool IsNew { get; set; }
         public string FilePath { get; set; }
+        public string PageName { get; set; }
+
         public OrderedDictionary<VersePointer, VerseNotesPageData> VersesNotesPageData { get; set; }                
 
-        public NotesPageData(string filePath)
+        public NotesPageData(string filePath, string pageName)
         {
             this.FilePath = filePath;
+            this.PageName = pageName;
 
             this.VersesNotesPageData = new OrderedDictionary<VersePointer, VerseNotesPageData>();
 
@@ -51,13 +54,12 @@ namespace BibleCommon.Common
             
 
             var chapterVersePointer = VersesNotesPageData[0].Verse.GetChapterPointer();
-            var chapterLinkHref = OpenBibleVerseHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName);
-            var pageName = NoteLinkManager.GetDefaultNotesPageName(VersesNotesPageData[0].Verse.VerseNumber);
+            var chapterLinkHref = OpenBibleVerseHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName);            
 
             var xdoc = new XDocument(
                         new XElement("html", 
                             new XElement("head", 
-                                new XElement("title", string.Format("{0} {1} [{1}]", pageName,  chapterVersePointer.ChapterName)),
+                                new XElement("title", string.Format("{0} {1} [{1}]", PageName,  chapterVersePointer.ChapterName)),
                                 new XElement("link", new XAttribute("type", "text/css"), new XAttribute("rel", "stylesheet"), new XAttribute("href", "../../../core.css"))
                             )));
 
@@ -66,7 +68,7 @@ namespace BibleCommon.Common
             bodyEl.Add(new XElement("div", new XAttribute("class", "pageTitle"),
                         new XElement("span",
                             new XAttribute("class", "pageTitleText"),
-                            pageName),
+                            PageName),
                         new XElement("span",
                             new XAttribute("class", "pageTitleLink"),
                             "["),
@@ -221,8 +223,7 @@ namespace BibleCommon.Common
 
         private string GetDisplayLevel(int level, int? index)
         {
-            return "A.";
-            //throw new NotImplementedException();
+            return "A.";            
         }        
 
         public VerseNotesPageData GetVerseNotesPageData(VersePointer vp)
