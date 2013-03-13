@@ -87,7 +87,7 @@ namespace BibleCommon.Handlers
             var path =
                     Path.Combine(
                             Path.Combine(SettingsManager.Instance.FolderPath_BibleNotesPages, SettingsManager.Instance.ModuleShortName),
-                            Path.Combine(vp.Book.Name, vp.Chapter.Value.ToString())
+                            Path.Combine(string.Format("{0:00}. {1}", vp.Book.Index, vp.Book.Name), vp.Chapter.Value.ToString("00"))
                             );
 
             string fileName;
