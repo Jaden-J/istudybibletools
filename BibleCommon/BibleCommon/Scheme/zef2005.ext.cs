@@ -19,7 +19,41 @@ namespace BibleCommon.Scheme
 
                 return new List<BIBLEBOOK>();
             }
-        }       
+        }
+
+        
+        private Dictionary<int, BIBLEBOOK> _booksDictionary;
+        [XmlIgnore]
+        public Dictionary<int, BIBLEBOOK> BooksDictionary
+        {
+            get
+            {
+                if (_booksDictionary == null)
+                {
+                    _booksDictionary = new Dictionary<int, BIBLEBOOK>();
+                    foreach (var book in BIBLEBOOK)
+                        _booksDictionary.Add(book.Index, book);
+                }
+
+                return _booksDictionary;
+            }
+        }
+
+        public bool VerseExists(SimpleVersePointer vp, string moduleShortName, out VerseNumber verseNumber)
+        {
+            verseNumber = vp.VerseNumber;
+            try
+            {                
+                bool isEmpty;
+                bool isFullVerse;
+                this.BooksDictionary[vp.BookIndex].GetVerseContent(vp, moduleShortName, string.Empty, out verseNumber, out isEmpty, out isFullVerse);
+                return true;
+            }
+            catch (VerseNotFoundException)
+            {
+                return false;
+            }
+        }
     }
 
     public partial class BIBLEBOOK
@@ -43,18 +77,18 @@ namespace BibleCommon.Scheme
 
                 return new List<CHAPTER>();
             }
-        }
+        }        
 
         public string GetVerseContent(SimpleVersePointer versePointer, string moduleShortName, string strongPrefix, 
             out VerseNumber verseNumber, out bool isEmpty, out bool isFullVerse)
         {
             isFullVerse = true;
-            isEmpty = false;            
+            isEmpty = false;
+            verseNumber = versePointer.VerseNumber;
 
             if (versePointer.IsEmpty)
             {
-                isEmpty = true;
-                verseNumber = versePointer.VerseNumber;
+                isEmpty = true;                
                 return null;
             }
 
@@ -62,6 +96,9 @@ namespace BibleCommon.Scheme
                 throw new ChapterNotFoundException(versePointer, moduleShortName, BaseVersePointerException.Severity.Warning);
 
             var chapter = this.Chapters[versePointer.Chapter - 1];
+
+            if (versePointer.IsChapter)            
+                return string.Empty;            
 
             var verse = chapter.GetVerse(versePointer, moduleShortName);
             if (verse == null)

@@ -962,7 +962,7 @@ namespace BibleConfigurator
                 Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.BibleComments).Name),
                 _notebooks, SettingsManager.Instance.NotebookId_BibleComments, cbBibleCommentsNotebook, chkCreateBibleCommentsNotebookFromTemplate);
 
-            if (string.IsNullOrEmpty(SettingsManager.Instance.FolderPath_BibleNotesPages))
+            if (!SettingsManager.Instance.StoreNotesPagesInFolder)
             {
                 SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotesPagesNotebookId) ? _notebooks[bibleNotesPagesNotebookId] :
                     Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.BibleNotesPages).Name),

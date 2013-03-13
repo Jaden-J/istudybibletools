@@ -12,6 +12,7 @@ using BibleCommon.Contracts;
 using System.Runtime.InteropServices;
 using BibleCommon.Services;
 using System.IO;
+using BibleCommon.Helpers;
 
 namespace ISBTCommandHandler
 {
@@ -40,9 +41,9 @@ namespace ISBTCommandHandler
                     wbNotesPage.Url = new Uri(verseNotesPageFilePath);
 
                     if (!this.Visible)
-                        this.Show();
-                    else
-                        this.Focus();
+                        this.Show();                    
+
+                    this.SetFocus();
                 }
             }
         }
@@ -83,6 +84,6 @@ namespace ISBTCommandHandler
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Hide();
-        }
+        }        
     }
 }

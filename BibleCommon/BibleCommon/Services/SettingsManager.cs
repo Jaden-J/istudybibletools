@@ -131,6 +131,14 @@ namespace BibleCommon.Services
         public string FolderPath_BibleNotesPages { get; set; }
         public bool IsInIntegratedMode { get; set; }
 
+        public bool StoreNotesPagesInFolder
+        {
+            get
+            {
+                return string.IsNullOrEmpty(NotebookId_BibleNotesPages);
+            }
+        }
+
      
         public List<NotebookForAnalyzeInfo> SelectedNotebooksForAnalyze { get; set; }
         
@@ -238,6 +246,12 @@ namespace BibleCommon.Services
             }
         }
 
+        internal void ReloadCurrentBibleContentCached()
+        {
+            _currentBibleContent = ModulesManager.GetCurrentBibleContent();
+        }
+
+
         #endregion
 
         /// <summary>
@@ -250,7 +264,9 @@ namespace BibleCommon.Services
                 if (_instance == null)
                     _instance = new SettingsManager();
                 else
-                    Instance.ReLoadSettings();
+                    _instance.ReLoadSettings();                     // здесь нельзяф использовать Instance, потому что используется один и тот же _locker
+
+                _instance.ReloadCurrentBibleContentCached();                
             }
         }
 

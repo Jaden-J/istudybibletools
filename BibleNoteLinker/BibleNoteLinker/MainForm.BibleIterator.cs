@@ -75,7 +75,7 @@ namespace BibleNoteLinker
             if (_pagesForAnalyzeCount > 0)
             {
                 var currentStep = 2;
-                if (string.IsNullOrEmpty(SettingsManager.Instance.FolderPath_BibleNotesPages))
+                if (!SettingsManager.Instance.StoreNotesPagesInFolder)
                 {
                     CommitPagesInOneNote(BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating, currentStep++, OneNoteProxy.PageType.NotesPage);
 
@@ -84,13 +84,13 @@ namespace BibleNoteLinker
                     SortNotesPages();  // это происходит очень быстро, поэтому не выделяем как отдельный этап                
 
                     CommitNotesPagesHierarchy(currentStep++);
-
-                    UpdateLinksToNotesPages(currentStep++);
                 }
-                else
-                {
-                    CommitNotesPagesInFileSystem(currentStep++);
-                }                
+
+                if (!SettingsManager.Instance.IsInIntegratedMode)
+                    UpdateLinksToNotesPages(currentStep++);
+
+                if (SettingsManager.Instance.StoreNotesPagesInFolder)                
+                    CommitNotesPagesInFileSystem(currentStep++);                
 
                 CommitPagesInOneNote(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, currentStep++, null);                
             }
@@ -192,8 +192,20 @@ namespace BibleNoteLinker
 
                     try
                     {
-                        relinkNotesManager.RelinkBiblePageNotes(processedBiblePageId.SectionId, processedBiblePageId.PageId,
-                            processedBiblePageId.PageName, processedBiblePageId.ChapterPointer);
+                        if (string.IsNullOrEmpty(processedBiblePageId.PageId))
+                        {
+                            var hierarchySearchResult = HierarchySearchManager.GetHierarchyObject(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Bible, processedBiblePageId.ChapterPointer, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);
+                            if (hierarchySearchResult.FoundSuccessfully)
+                            {
+                                processedBiblePageId.SectionId = hierarchySearchResult.HierarchyObjectInfo.SectionId;
+                                processedBiblePageId.PageId = hierarchySearchResult.HierarchyObjectInfo.PageId;
+                                processedBiblePageId.PageName = hierarchySearchResult.HierarchyObjectInfo.PageName;
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(processedBiblePageId.PageId))
+                            relinkNotesManager.RelinkBiblePageNotes(processedBiblePageId.SectionId, processedBiblePageId.PageId,
+                                                        processedBiblePageId.PageName, processedBiblePageId.ChapterPointer);
                     }
                     catch (Exception ex)
                     {

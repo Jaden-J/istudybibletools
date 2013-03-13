@@ -15,12 +15,16 @@ namespace BibleCommon.Services
         //private static Dictionary<string, HashSet<string>> _processedNodes = new Dictionary<string, HashSet<string>>();  // список актуализированных узлов в рамках текущей сессии анализа заметок
 
         public static bool UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager,
-            VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition,
-            bool isChapter, HierarchyElementInfo notePageInfo, string notePageContentObjectId, NoteLinkManager.NotesPageType notesPageType,
-            bool isImportantVerse, bool force, bool processAsExtendedVerse, out string notesPageFilePath)
+            VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition, bool isChapter,
+            HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo, 
+            HierarchyElementInfo notePageInfo, string notePageContentObjectId, NoteLinkManager.NotesPageType notesPageType, string notesPageName,
+            bool isImportantVerse, bool force, bool processAsExtendedVerse)
         {
-            notesPageFilePath = OpenNotesPageHandler.GetNotesPageFilePath(vp, notesPageType); 
-            var notesPageData = OneNoteProxy.Instance.GetNotesPageData(notesPageFilePath);
+            if (verseHierarchyObjectInfo.VerseNumber.HasValue)
+                vp.VerseNumber = verseHierarchyObjectInfo.VerseNumber.Value;
+
+            var notesPageFilePath = OpenNotesPageHandler.GetNotesPageFilePath(vp, notesPageType);             
+            var notesPageData = OneNoteProxy.Instance.GetNotesPageData(notesPageFilePath, notesPageName);
 
             var verseNotesPageData = notesPageData.GetVerseNotesPageData(vp);
 
