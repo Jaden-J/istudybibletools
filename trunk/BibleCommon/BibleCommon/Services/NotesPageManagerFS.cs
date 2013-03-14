@@ -24,16 +24,16 @@ namespace BibleCommon.Services
                 vp.VerseNumber = verseHierarchyObjectInfo.VerseNumber.Value;
 
             var notesPageFilePath = OpenNotesPageHandler.GetNotesPageFilePath(vp, notesPageType);             
-            var notesPageData = OneNoteProxy.Instance.GetNotesPageData(notesPageFilePath, notesPageName);
+            var notesPageData = OneNoteProxy.Instance.GetNotesPageData(notesPageFilePath, notesPageName, vp.IsChapter ? vp : vp.GetChapterPointer());
 
             var verseNotesPageData = notesPageData.GetVerseNotesPageData(vp);
 
-            AddNotePageLink(ref oneNoteApp, notesPageFilePath, verseNotesPageData, notePageInfo, notePageContentObjectId, verseWeight, versePosition, vp, noteLinkManager, force, processAsExtendedVerse);
+            AddNotePageLink(ref oneNoteApp, notesPageFilePath, notesPageName, verseNotesPageData, notePageInfo, notePageContentObjectId, verseWeight, versePosition, vp, noteLinkManager, force, processAsExtendedVerse);
 
             return notesPageData.IsNew;
         }
 
-        private static void AddNotePageLink(ref Application oneNoteApp, string notesPageFilePath, VerseNotesPageData verseNotesPageData,
+        private static void AddNotePageLink(ref Application oneNoteApp, string notesPageFilePath, string notesPageName, VerseNotesPageData verseNotesPageData,
             HierarchyElementInfo notePageInfo, string notePageContentObjectId, decimal verseWeight, XmlCursorPosition versePosition, 
             VersePointer vp, NoteLinkManager noteLinkManager, bool force, bool processAsExtendedVerse)
         {            
@@ -41,7 +41,7 @@ namespace BibleCommon.Services
             if (notePageInfo.Parent != null)
                 parentLevel = CreateParentTreeStructure(ref oneNoteApp, verseNotesPageData, notePageInfo.Parent, notePageInfo.NotebookId, notesPageFilePath);
 
-            var pageLinkLevel = SearchPageLinkLevel(notePageInfo.UniqueName, (NotesPageHierarchyLevel)parentLevel, notesPageFilePath, vp, noteLinkManager, force, processAsExtendedVerse);              // parentLevel точно будет типа NotesPageHierarchyLevel
+            var pageLinkLevel = SearchPageLinkLevel(notePageInfo.UniqueName, (NotesPageHierarchyLevel)parentLevel, notesPageName, vp, noteLinkManager, force, processAsExtendedVerse);              // parentLevel точно будет типа NotesPageHierarchyLevel
 
             if (pageLinkLevel == null)
             {
@@ -60,7 +60,7 @@ namespace BibleCommon.Services
                         vp);
         }
 
-        private static NotesPagePageLevel SearchPageLinkLevel(string id, NotesPageHierarchyLevel parentLevel, string notesPageFilePath,
+        private static NotesPagePageLevel SearchPageLinkLevel(string id, NotesPageHierarchyLevel parentLevel, string notesPageName,
             VersePointer vp, NoteLinkManager noteLinkManager, bool force, bool processAsExtendedVerse)
         {
             NotesPagePageLevel pageLinkLevel = null;
@@ -77,7 +77,7 @@ namespace BibleCommon.Services
 
             if (pageLinkLevel != null)
             {
-                var key = new NoteLinkManager.NotePageProcessedVerseId() { NotePageId = id, NotesPageName = notesPageFilePath };
+                var key = new NoteLinkManager.NotePageProcessedVerseId() { NotePageId = id, NotesPageName = notesPageName };
                 if (force && !noteLinkManager.ContainsNotePageProcessedVerse(key, vp) && !processAsExtendedVerse)  // если в первый раз и force и не расширенный стих
                 {  // удаляем старые ссылки на текущую страницу, так как мы начали новый анализ с параметром "force" и мы только в первый раз зашли сюда
                     pageLinkLevel.Parent.Levels.Remove(pageLinkLevel.ID);

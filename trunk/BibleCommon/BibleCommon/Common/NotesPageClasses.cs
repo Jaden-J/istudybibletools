@@ -10,6 +10,7 @@ using System.Collections.Specialized;
 using BibleCommon.Handlers;
 using Microsoft.Office.Interop.OneNote;
 using BibleCommon.Consts;
+using System.Xml.XPath;
 
 namespace BibleCommon.Common
 {
@@ -18,13 +19,15 @@ namespace BibleCommon.Common
         public bool IsNew { get; set; }
         public string FilePath { get; set; }
         public string PageName { get; set; }
+        public VersePointer ChapterPoiner { get; set; }
 
-        public Dictionary<VersePointer, VerseNotesPageData> VersesNotesPageData { get; set; }                
+        public Dictionary<VersePointer, VerseNotesPageData> VersesNotesPageData { get; set; }
 
-        public NotesPageData(string filePath, string pageName)
+        public NotesPageData(string filePath, string pageName, VersePointer chapterPointer)
         {
             this.FilePath = filePath;
             this.PageName = pageName;
+            this.ChapterPoiner = chapterPointer;
 
             this.VersesNotesPageData = new Dictionary<VersePointer, VerseNotesPageData>();
 
@@ -44,7 +47,50 @@ namespace BibleCommon.Common
 
         protected void Deserialize()
         {
-            
+            var xdoc = XDocument.Load(this.FilePath);
+            foreach (var levelEl in xdoc.Root.Element("body").Elements("div").Where(e => e.Attribute("class").Value == "level"))
+            {
+                VersePointer vp;
+                var verse = levelEl.Element("p").Element("a").Value;
+                if (!string.IsNullOrEmpty(verse))
+                {
+                    var verseNumber = VerseNumber.Parse(verse.Substring(1));
+                    vp = new VersePointer(ChapterPoiner, verseNumber.Verse, verseNumber.TopVerse);
+                }
+                else
+                    vp = ChapterPoiner;
+
+                var verseNotesPageData = new VerseNotesPageData(vp);
+                VersesNotesPageData.Add(vp, verseNotesPageData);
+
+                AddHierarchySubLevels(levelEl, verseNotesPageData);
+            }            
+        }
+
+        private void AddHierarchySubLevels(XElement parentLevelEl, NotesPageHierarchyLevelBase parentLevel)
+        {
+            foreach (var levelEl in parentLevelEl.Elements("div").Where(e => e.Attribute("class").Value == "level"))
+            {
+                var pEl = levelEl.Element("p");
+                if (pEl.Attribute("class").Value == "levelTitle")
+                {
+                    var title = pEl.Elements("span").Where(e => e.Attribute("class").Value == "levelTitleText").First().Value;
+                    var level = new NotesPageHierarchyLevel()
+                    {
+                        ID = levelEl.Attribute("id").Value,
+                        Title = title                        
+                    };
+                    parentLevel.AddLevel(level);
+
+                    AddHierarchySubLevels(levelEl, level);
+                }
+                else
+                {
+                    var aEl = levelEl.Element("p").Element("a");
+                    здесь
+
+                }                
+            }
         }
 
         public void Serialize(ref Application oneNoteApp)

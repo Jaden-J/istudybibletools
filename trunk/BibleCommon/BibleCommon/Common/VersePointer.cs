@@ -452,7 +452,13 @@ namespace BibleCommon.Common
         }
 
         public VersePointer(VersePointer chapterPointer, int verse)
-            : this(string.Format("{0} {1}:{2}", chapterPointer.OriginalBookName, chapterPointer.Chapter, verse))
+            : this(chapterPointer, verse, null)
+        {
+
+        }
+
+        public VersePointer(VersePointer chapterPointer, int verse, int? topVerse)
+            : this(chapterPointer.OriginalBookName, chapterPointer.Chapter.Value, verse, topVerse)
         {
 
         }
