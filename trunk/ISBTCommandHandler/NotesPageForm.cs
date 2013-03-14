@@ -18,8 +18,14 @@ namespace ISBTCommandHandler
 {
     public partial class NotesPageForm : Form
     {
+        private const double FormHeightProportion = 0.95;
+        private const double FormWidthProportion = 0.33;
+
         protected OpenBibleVerseHandler OpenBibleVerseHandler { get; set; }
-        protected NavigateToHandler NavigateToHandler { get; set; }        
+        protected NavigateToHandler NavigateToHandler { get; set; }
+
+        public bool ExitApplication { get; set; }
+
         public NotesPageForm()
         {            
             InitializeComponent();            
@@ -56,8 +62,15 @@ namespace ISBTCommandHandler
 
         private void NotesPageForm_Load(object sender, EventArgs e)
         {
+            SetCheckboxes();
             SetLocation();
             SetSize();            
+        }
+
+        private void SetCheckboxes()
+        {
+            chkAlwaysOnTop.Checked = Properties.Settings.Default.NotesPageFormAlwaysOnTop;
+            chkCloseOnClick.Checked = Properties.Settings.Default.NotesPageFormCloseOnClick;
         }
 
         private void SetSize()
@@ -72,8 +85,11 @@ namespace ISBTCommandHandler
             }
             else
             {
-                здесь
-            }
+                var screenInfo = Screen.FromControl(this).Bounds;
+                this.Size = new Size(
+                                 Convert.ToInt32(screenInfo.Size.Width * FormWidthProportion), 
+                                 Convert.ToInt32(screenInfo.Size.Height * FormHeightProportion));
+            } 
         }
 
         private void SetLocation()
@@ -88,7 +104,8 @@ namespace ISBTCommandHandler
             }
             else
             {
-                здесь
+                var screenInfo = Screen.FromControl(this).Bounds;
+                this.Location = new Point(Convert.ToInt32(screenInfo.Size.Width * (1 - FormWidthProportion)), 0);
             }
         }
 
@@ -100,7 +117,7 @@ namespace ISBTCommandHandler
                 || OpenBibleVerseHandler.IsProtocolCommand(url) || NavigateToHandler.IsProtocolCommand(url))
             {
                 if (chkCloseOnClick.Checked)
-                    this.Hide();
+                    this.Hide();                
             }            
         }
 
@@ -123,11 +140,12 @@ namespace ISBTCommandHandler
         {
             this.Hide();
         }
-
         private void NotesPageForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.Hide();
-            e.Cancel = true;
+
+            if (!ExitApplication)
+                e.Cancel = true;
         }        
     }
 }

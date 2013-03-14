@@ -75,6 +75,8 @@ namespace BibleCommon.Handlers
                         //throw new Exception(string.Format("OneNote cannot open the specified location after {0} attempts: {1}", NavigateAttemptsCount, newPath));
                     }
                 }
+
+                OneNoteUtils.SetActiveCurrentWindow(ref oneNoteApp);
             }
             finally
             {

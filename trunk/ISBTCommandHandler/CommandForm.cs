@@ -53,6 +53,12 @@ namespace ISBTCommandHandler
             {
                 if (handler.IsProtocolCommand(args))
                 {
+                    if (handler is ExitApplicationHandler)
+                    {
+                        if (_notesPageForm != null)
+                            _notesPageForm.ExitApplication = true;
+                    }
+
                     handler.ExecuteCommand(args);
 
                     if (handler is OpenNotesPageHandler)
