@@ -205,11 +205,11 @@ namespace BibleCommon.Services
             }
         }
 
-        public NotesPageData GetNotesPageData(string filePath, string pageName)
+        public NotesPageData GetNotesPageData(string filePath, string pageName, VersePointer chapterPointer)
         {
             if (!_notesPageDataList.ContainsKey(filePath))
             {
-                var data = new NotesPageData(filePath, pageName);
+                var data = new NotesPageData(filePath, pageName, chapterPointer);
                 _notesPageDataList.Add(filePath, data);
                 return data;
             }
