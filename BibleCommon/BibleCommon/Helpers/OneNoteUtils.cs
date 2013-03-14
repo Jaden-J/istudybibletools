@@ -533,5 +533,15 @@ namespace BibleCommon.Helpers
 
             return exceptionMessage;
         }
+
+        public static void SetActiveCurrentWindow(ref Application oneNoteApp)
+        {
+            UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                var window = oneNoteAppSafe.Windows.CurrentWindow;
+                if (window != null)
+                    window.Active = true;
+            });
+        }
     }
 }

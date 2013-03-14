@@ -130,6 +130,8 @@ namespace BibleCommon.Handlers
                 }
             }
 
+            OneNoteUtils.SetActiveCurrentWindow(ref oneNoteApp);
+
             if (objectsIds.Length > 1)
             {
                 XmlNamespaceManager xnm;
@@ -153,7 +155,7 @@ namespace BibleCommon.Handlers
             {
                 OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
                 {
-                    oneNoteAppSafe.NavigateTo(pageId, objectId);
+                    oneNoteAppSafe.NavigateTo(pageId, objectId);                    
                 });
 
                 return true;
