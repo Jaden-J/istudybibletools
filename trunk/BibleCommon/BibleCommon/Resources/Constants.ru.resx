@@ -404,7 +404,7 @@
     <value>Скорее всего в OneNote открыта не страница Библии.</value>
   </data>
   <data name="VerseLinksDelimiter" xml:space="preserve">
-    <value>; </value>
+    <value>;</value>
   </data>
   <data name="VerseLinkTemplate" xml:space="preserve">
     <value>ссылка{0}</value>

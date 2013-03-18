@@ -16,6 +16,11 @@ namespace BibleCommon.Helpers
             container.Add(el);
             return el;
         }
+
+        public static IEnumerable<XElement> GetByClass(this XContainer container, string tagName, string className)
+        {
+            return container.Elements(tagName).Where(el => el.Attribute("class").Value == className);
+        }
     }
 
     public class CustomXPathFunctions : XsltContext
