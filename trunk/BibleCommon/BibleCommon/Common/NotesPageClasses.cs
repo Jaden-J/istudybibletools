@@ -40,7 +40,7 @@ namespace BibleCommon.Common
         protected void Deserialize()
         {            
             var xdoc = XDocument.Load(this.FilePath);
-            foreach (var levelEl in xdoc.Root.Element("body").GetByClass("div", "level"))
+            foreach (var levelEl in xdoc.Root.Element("body").GetByClass("div", "verseLevel"))
             {
                 VersePointer vp;
                 var verse = levelEl.Element("p").Element("a").Value;
@@ -61,15 +61,15 @@ namespace BibleCommon.Common
 
         private void AddHierarchySubLevels(XElement parentLevelEl, NotesPageHierarchyLevelBase parentLevel)
         {
-            foreach (var levelEl in parentLevelEl.GetByClass("div", "level"))
+            foreach (var levelEl in parentLevelEl.Elements("div"))
             {
-                if (levelEl.Element("p").Attribute("class").Value == "levelTitle")
+                if (levelEl.Attribute("class").Value == "pageLevel")
                 {
-                    AddHierarchyLevelSubLevel(levelEl, parentLevel);
+                    AddHierarchyPageSubLevel(levelEl, parentLevel); 
                 }
                 else
                 {
-                    AddHierarchyPageSubLevel(levelEl, parentLevel);
+                    AddHierarchyLevelSubLevel(levelEl, parentLevel);                    
                 }
             }
         }
@@ -80,7 +80,7 @@ namespace BibleCommon.Common
 
             var pageLevel = new NotesPagePageLevel()
             {
-                ID = levelEl.Attribute(Constants.NotesPageElementSyncId).Value,
+                Id = levelEl.Attribute(Constants.NotesPageElementSyncId).Value,
                 Title = aEl.Value                
             };
             var subLinksEl = levelEl.Element("div");
@@ -98,7 +98,8 @@ namespace BibleCommon.Common
                 pageLevel.AddPageLink(GetNotesPageLink(aEl));                
             }
 
-            parentLevel.AddLevel(pageLevel, false);
+            Application oneNoteApp = null;
+            parentLevel.AddLevel(ref oneNoteApp, pageLevel, null, false);
         }
 
         private NotesPageLink GetNotesPageLink(XElement aEl)
@@ -118,13 +119,16 @@ namespace BibleCommon.Common
             var title = levelEl.Element("p").GetByClass("span", "levelTitleText").First().Value;
             var level = new NotesPageHierarchyLevel()
             {
-                ID = levelEl.Attribute(Constants.NotesPageElementSyncId).Value,
+                Id = levelEl.Attribute(Constants.NotesPageElementSyncId).Value,
+                HierarchyType = GetHierarchyTypeFromClassName(levelEl.Attribute("class").Value),
                 Title = title
             };
-            parentLevel.AddLevel(level, false);
+
+            Application oneNoteApp = null;
+            parentLevel.AddLevel(ref oneNoteApp, level, null, false);
 
             AddHierarchySubLevels(levelEl, level);
-        }        
+        }             
 
         public void Serialize(ref Application oneNoteApp)
         {
@@ -174,7 +178,7 @@ namespace BibleCommon.Common
         {
             var levelEl = parentEl.AddEl(
                                     new XElement("div", 
-                                        new XAttribute("class", "level")));
+                                        new XAttribute("class", GetLevelClassName(hierarchyLevel))));
 
             if (hierarchyLevel is NotesPagePageLevel)
             {
@@ -195,6 +199,43 @@ namespace BibleCommon.Common
             }                                    
         }
 
+        private HierarchyElementType GetHierarchyTypeFromClassName(string className)
+        {
+            switch (className)
+            {
+                case "notebookLevel":
+                    return HierarchyElementType.Notebook;
+                case "sectionGroupLevel":
+                    return HierarchyElementType.SectionGroup;
+                case "sectionLevel":
+                    return HierarchyElementType.Section;
+                case "pageLevel":
+                    return HierarchyElementType.Page;
+                default:
+                    throw new NotSupportedException(className);
+            }
+        }  
+
+        private object GetLevelClassName(NotesPageHierarchyLevelBase hierarchyLevel)
+        {
+            if (hierarchyLevel is VerseNotesPageData)
+                return "verseLevel";
+
+            switch (((NotesPageHierarchyLevel)hierarchyLevel).HierarchyType)
+            {
+                case HierarchyElementType.Notebook:
+                    return "notebookLevel";
+                case HierarchyElementType.SectionGroup:
+                    return "sectionGroupLevel";
+                case HierarchyElementType.Section:
+                    return "sectionLevel";
+                case HierarchyElementType.Page:
+                    return "pageLevel";
+                default:
+                    throw new NotSupportedException(((NotesPageHierarchyLevel)hierarchyLevel).HierarchyType.ToString());
+            }
+        }
+
         private bool HierarchyLevelContainsPageLinks(NotesPageHierarchyLevelBase hierarchyLevel)
         {
             return hierarchyLevel.Levels.Values.Any(hl => hl is NotesPagePageLevel || HierarchyLevelContainsPageLinks(hl));
@@ -206,7 +247,7 @@ namespace BibleCommon.Common
             levelTitleEl.Add(new XElement("span",
                                 new XAttribute("class", "levelTitleIndex"),
                                 GetDisplayLevel(levelIndex, index)));
-            levelEl.Add(new XAttribute(Constants.NotesPageElementSyncId, pageLevel.ID));
+            levelEl.Add(new XAttribute(Constants.NotesPageElementSyncId, pageLevel.Id));            
 
             var levelTitleLinkEl = levelTitleEl.AddEl(new XElement("a", pageLevel.Title));
 
@@ -300,7 +341,7 @@ namespace BibleCommon.Common
                                     new XAttribute("class", "levelTitleText"),
                                     ((NotesPageHierarchyLevel)hierarchyLevel).Title));
 
-                levelEl.Add(new XAttribute(Constants.NotesPageElementSyncId, ((NotesPageHierarchyLevel)hierarchyLevel).ID));
+                levelEl.Add(new XAttribute(Constants.NotesPageElementSyncId, ((NotesPageHierarchyLevel)hierarchyLevel).Id));                
             }
         }        
 
@@ -340,10 +381,11 @@ namespace BibleCommon.Common
             AllPagesLevels = new Dictionary<string, NotesPagePageLevel>();
         }
 
-        public override void AddLevel(NotesPageHierarchyLevel level, bool toSort)
+        public override void AddLevel(ref Application oneNoteApp, NotesPageHierarchyLevel level, HierarchyElementInfo notePageHierarchyElInfo, bool toSort)
         {
             level.Root = this;
-            base.AddLevel(level, toSort);
+            level.Parent = this;
+            base.AddLevel(ref oneNoteApp, level, notePageHierarchyElInfo, toSort);
         }
 
         public int CompareTo(VerseNotesPageData other)
@@ -418,7 +460,7 @@ namespace BibleCommon.Common
             }
         }
 
-        public override void AddLevel(NotesPageHierarchyLevel level, bool toSort)
+        public override void AddLevel(ref Application oneNoteApp, NotesPageHierarchyLevel level, HierarchyElementInfo notePageHierarchyElInfo, bool toSort)
         {
             throw new NotSupportedException();
         }
@@ -427,6 +469,7 @@ namespace BibleCommon.Common
             : base()
         {
             _pageLinks = new List<NotesPageLink>();
+            this.HierarchyType = HierarchyElementType.Page;
         }
 
         private static string GetMultiVerseString(VersePointer vp)
@@ -450,9 +493,12 @@ namespace BibleCommon.Common
     public class NotesPageHierarchyLevel : NotesPageHierarchyLevelBase
     {
         public string Title { get; set; }        
-        public string ID { get; set; }        
+        public string Id { get; set; }
 
-        public NotesPageHierarchyLevel Parent { get; set; }
+        public HierarchyElementType HierarchyType { get; set; }
+        public string OneNoteId { get; set; }   // идентификатор элемента в XML OneNote. Свойство Id же может содержать всё, что угодно (например, UniqueName)
+
+        public NotesPageHierarchyLevelBase Parent { get; set; }
         public VerseNotesPageData Root { get; set; }
         
 
@@ -462,41 +508,134 @@ namespace BibleCommon.Common
             
         }
 
-        public override void AddLevel(NotesPageHierarchyLevel level, bool toSort)
+        public override void AddLevel(ref Application oneNoteApp, NotesPageHierarchyLevel level, HierarchyElementInfo notePageHierarchyElInfo, bool toSort)
         {
             level.Root = Root;
             level.Parent = this;
 
-            base.AddLevel(level, toSort);
+            base.AddLevel(ref oneNoteApp, level, notePageHierarchyElInfo, toSort);
 
             if (level is NotesPagePageLevel)
             {
-                if (!Root.AllPagesLevels.ContainsKey(level.ID))
-                    Root.AllPagesLevels.Add(level.ID, (NotesPagePageLevel)level);
+                if (!Root.AllPagesLevels.ContainsKey(level.Id))
+                    Root.AllPagesLevels.Add(level.Id, (NotesPagePageLevel)level);
+            }
+        }
+
+        public void TryToSortInParent(ref Application oneNoteApp, HierarchyElementInfo hierarchyElementInfo)
+        {
+            bool levelWasFound;
+            var prevLevelIndex = GetPrevLevelIndex(ref oneNoteApp, this, hierarchyElementInfo, out levelWasFound);
+            var currentLevelIndex = this.Parent.Levels.IndexOf(this.Id);
+            var newLevelIndex = prevLevelIndex + 1;
+
+            var needToMoveOrInsert = !(levelWasFound && newLevelIndex == 0);  // иначе ссылка стоит в начале и она должана там стоять
+            if (needToMoveOrInsert && levelWasFound)
+            {
+                if (newLevelIndex == currentLevelIndex)  // ссылка и так уже на правильном месте
+                    needToMoveOrInsert = false;
+            }
+
+            if (needToMoveOrInsert)  
+            {
+                this.Parent.Levels.RemoveAt(currentLevelIndex);
+                if (newLevelIndex > currentLevelIndex) newLevelIndex--;
+                this.Parent.Levels.Insert(newLevelIndex, this.Id, this);
             }
         }
     }
 
     public abstract class NotesPageHierarchyLevelBase
     {
-        public OrderedDictionary<string, NotesPageHierarchyLevel> Levels { get; set; }        
+        public OrderedDictionary<string, NotesPageHierarchyLevel> Levels { get; set; }
 
-        public virtual void AddLevel(NotesPageHierarchyLevel level, bool toSort)
+        public virtual void AddLevel(ref Application oneNoteApp, NotesPageHierarchyLevel level, HierarchyElementInfo notePageHierarchyElInfo, bool toSort)
         {
-            if (toSort)
+            if (toSort && oneNoteApp != null && level != null)
             {
-                var prevLevelIndex = GetPrevLevelIndex(level);
+                bool levelWasFound;
+                var prevLevelIndex = GetPrevLevelIndex(ref oneNoteApp, level, notePageHierarchyElInfo, out levelWasFound);                
 
-                this.Levels.Insert(prevLevelIndex + 1, level.ID, level);
+                this.Levels.Insert(prevLevelIndex + 1, level.Id, level);
             }
             else
-                this.Levels.Add(level.ID, level);
+                this.Levels.Add(level.Id, level);
         }
 
-        private int GetPrevLevelIndex(ref Application oneNoteApp, string notebookId, NotesPageHierarchyLevel level)
+        protected int GetPrevLevelIndex(ref Application oneNoteApp, NotesPageHierarchyLevel level, HierarchyElementInfo notePageHierarchyElInfo, out bool levelWasFound)
         {
-            var notebookHierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsPages);  //from cache
-            здесь.
+            levelWasFound = false;
+            XElement parentHierarchy, noteLinkInHierarchy = null;
+
+            var notebookHierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notePageHierarchyElInfo.NotebookId, HierarchyScope.hsPages);  //from cache            
+            if (level.HierarchyType != HierarchyElementType.Notebook)
+            {
+                noteLinkInHierarchy = notebookHierarchy.Content.Root.XPathSelectElement(
+                    string.Format("//one:{0}[@ID=\"{1}\"]", HierarchyElementInfo.GetElementName(level.HierarchyType), notePageHierarchyElInfo.Id),
+                    notebookHierarchy.Xnm);
+
+                parentHierarchy = noteLinkInHierarchy.Parent;
+            }
+            else
+                parentHierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks).Content.Root;
+
+            if (noteLinkInHierarchy == null)
+                noteLinkInHierarchy = parentHierarchy.XPathSelectElement(string.Format("*[@ID=\"{0}\"]", notePageHierarchyElInfo.Id), notebookHierarchy.Xnm);
+
+            var prevNodesInHierarchy = noteLinkInHierarchy.NodesBeforeSelf();
+
+            var index = -1;
+            if (prevNodesInHierarchy.Count() != 0)
+            {                
+                foreach (var otherLevel in level.Parent.Levels.Values)
+                {                    
+                    if (!string.IsNullOrEmpty(notePageHierarchyElInfo.ManualId))
+                    {
+                        if (otherLevel.Title == notePageHierarchyElInfo.UniqueTitle)
+                        {
+                            levelWasFound = true;
+                            break;
+                        }
+                        else
+                        {
+                            if (notePageHierarchyElInfo.UniqueTitle.CompareTo(otherLevel.Title) < 0)
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        if (otherLevel.Id == notePageHierarchyElInfo.UniqueName)
+                        {
+                            levelWasFound = true;
+                            break;
+                        }
+                        else
+                        {
+                            XElement existingLinkInHierarchy;
+
+                            if (notePageHierarchyElInfo.Type == HierarchyElementType.Page)
+                            {
+                                existingLinkInHierarchy = parentHierarchy.XPathSelectElement(
+                                            string.Format("one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]",
+                                                Constants.Key_SyncId, otherLevel.Id),
+                                            notebookHierarchy.Xnm);
+                            }
+                            else
+                            {
+                                existingLinkInHierarchy = parentHierarchy.XPathSelectElement(
+                                            string.Format("*[@name=\"{0}\"]", otherLevel.Id),
+                                            notebookHierarchy.Xnm);
+                            }
+
+                            if (!prevNodesInHierarchy.Contains(existingLinkInHierarchy))
+                                break;
+                        }
+                    }
+                    index++;
+                }
+            }
+
+            return index;
         }
 
         public NotesPageHierarchyLevelBase()

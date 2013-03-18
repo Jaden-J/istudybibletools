@@ -123,7 +123,7 @@ namespace BibleCommon.Consts
         public static readonly int ChapterNotesPageLinkOutline_y = 45;
         public static readonly int ChapterNotesPageLinkOutline_z = 1;
 
-        public static readonly string NotesPageElementSyncId = "syncid";
+        public static readonly string NotesPageElementSyncId = "syncid";        
     }   
 }
 
