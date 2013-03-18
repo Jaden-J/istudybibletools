@@ -626,6 +626,8 @@ namespace BibleCommon.Services
             else
                 parentHierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks).Content.Root;
 
+            //parentHierarchy точно != null, потому что мы передаём текущий notePageInfo, который анализируем. Может быть только если удалили страницу после начала анализа этой страницы.
+            
             var noteLinkInHierarchy = parentHierarchy.XPathSelectElement(string.Format("*[@ID=\"{0}\"]", elInfo.Id), xnm);
 
             var prevNodesInHierarchy = noteLinkInHierarchy.NodesBeforeSelf();
@@ -637,8 +639,8 @@ namespace BibleCommon.Services
                     if (!string.IsNullOrEmpty(elInfo.ManualId))
                     {
                         var existingTitle = StringUtils.GetText(existingLink.XPathSelectElement("one:T", xnm).Value);
-                        if (existingTitle == elInfo.UniqueTitle)                        
-                            linkWasFound = true;                        
+                        if (existingTitle == elInfo.UniqueTitle)
+                            linkWasFound = true;
                         else
                         {
                             if (elInfo.UniqueTitle.CompareTo(existingTitle) < 0)
@@ -651,8 +653,8 @@ namespace BibleCommon.Services
                     {
                         var existingLinkId = OneNoteUtils.GetElementMetaData(existingLink, Constants.Key_Id, xnm);
 
-                        if (existingLinkId == elInfo.UniqueName)                        
-                            linkWasFound = true;                        
+                        if (existingLinkId == elInfo.UniqueName)
+                            linkWasFound = true;
                         else
                         {
                             XElement existingLinkInHierarchy;
@@ -662,7 +664,7 @@ namespace BibleCommon.Services
                                 existingLinkInHierarchy = parentHierarchy.XPathSelectElement(
                                             string.Format("one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]",
                                                 Constants.Key_SyncId, existingLinkId),
-                                            xnm);                                
+                                            xnm);
                             }
                             else
                             {
@@ -678,7 +680,7 @@ namespace BibleCommon.Services
                         }
                     }
                 }
-            }
+            }            
 
             return prevLink;
         }
