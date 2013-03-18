@@ -70,7 +70,7 @@ namespace BibleCommon.Services
                 string newNotesPageLink = string.Format("<font size='2pt'>{0}</font>",
                                 OneNoteUtils.GetLink(SettingsManager.Instance.PageName_Notes, link));
 
-                if (textElement.Value != newNotesPageLink)    //todo: добавить, чтобы это условие срадатывало. То есть правильно енкодить строку
+                if (textElement.Value != newNotesPageLink)    //todo: добавить, чтобы это условие срабатывало. То есть правильно енкодить строку
                 {
                     textElement.Value = newNotesPageLink;
                     wasModified = true;

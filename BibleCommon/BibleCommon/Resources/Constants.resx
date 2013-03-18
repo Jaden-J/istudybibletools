@@ -359,7 +359,7 @@ Delete these elements and try again.</value>
     <value>It most likely that not a Bible page is opened in OneNote.</value>
   </data>
   <data name="VerseLinksDelimiter" xml:space="preserve">
-    <value>; </value>
+    <value>;</value>
   </data>
   <data name="VerseLinkTemplate" xml:space="preserve">
     <value>link{0}</value>

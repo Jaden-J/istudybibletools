@@ -46,18 +46,23 @@ namespace BibleCommon.Services
             if (pageLinkLevel == null)
             {
                 pageLinkLevel = new NotesPagePageLevel() { ID = notePageInfo.UniqueName, Title = notePageInfo.UniqueTitle, PageId = notePageInfo.Id, PageTitleObjectId = notePageInfo.UniqueNoteTitleId };
-                parentLevel.AddLevel(pageLinkLevel);                
+                parentLevel.AddLevel(pageLinkLevel, true);                
+            }
+            else if (string.IsNullOrEmpty(pageLinkLevel.GetPageTitleLinkHref(ref oneNoteApp)))  // а то, если десериализовали объект, в котором был только один данный стих, то нет ссылки на заголовок заметки
+            {
+                pageLinkLevel.SetPageTitleLinkHref(notePageInfo.Id, notePageInfo.UniqueNoteTitleId);
             }
 
-            pageLinkLevel.AddPageLink(
-                        new NotesPageLink()
-                        {
-                            VersePosition = versePosition,
-                            VerseWeight = verseWeight,
-                            PageId = notePageInfo.Id,
-                            ContentObjectId = notePageContentObjectId                            
-                        },
-                        vp);
+            if (!processAsExtendedVerse)
+            {
+                pageLinkLevel.AddPageLink(new NotesPageLink()
+                                            {
+                                                VersePosition = versePosition,
+                                                VerseWeight = verseWeight,
+                                                PageId = notePageInfo.Id,
+                                                ContentObjectId = notePageContentObjectId
+                                            }, vp);
+            }
         }
 
         private static NotesPagePageLevel SearchPageLinkLevel(string id, NotesPageHierarchyLevel parentLevel, string notesPageName,
@@ -72,7 +77,7 @@ namespace BibleCommon.Services
             {
                 pageLinkLevel = parentLevel.Root.AllPagesLevels[id];
                 pageLinkLevel.Parent.Levels.Remove(pageLinkLevel.ID);
-                parentLevel.AddLevel(pageLinkLevel);                
+                parentLevel.AddLevel(pageLinkLevel, true);                
             }
 
             if (pageLinkLevel != null)
@@ -103,7 +108,7 @@ namespace BibleCommon.Services
             if (!parentLevel.Levels.ContainsKey(hierarchyElementInfo.UniqueName))
             {
                 var notesPageLevel = new NotesPageHierarchyLevel() { ID = hierarchyElementInfo.UniqueName, Title = hierarchyElementInfo.Title };
-                parentLevel.AddLevel(notesPageLevel);
+                parentLevel.AddLevel(notesPageLevel, true);
                 return notesPageLevel;
             }
             else

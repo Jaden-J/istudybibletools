@@ -2158,7 +2158,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на ; .
+        ///   Ищет локализованную строку, похожую на ;.
         /// </summary>
         public static string VerseLinksDelimiter {
             get {
