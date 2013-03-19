@@ -132,15 +132,13 @@ namespace BibleCommon.Common
 
         public void Serialize(ref Application oneNoteApp)
         {
-            // todo: не забыть: 
-            //  -нумерация            
-
             var chapterVersePointer = VersesNotesPageData.First().Key.GetChapterPointer();
             var chapterLinkHref = OpenBibleVerseHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName);            
 
             var xdoc = new XDocument(
                         new XElement("html", 
                             new XElement("head", 
+                                new XElement("meta", new XAttribute("http-equiv", "X-UA-Compatible"), new XAttribute("content", "IE=edge")),
                                 new XElement("title", string.Format("{0} {1} [{1}]", PageName,  chapterVersePointer.ChapterName)),
                                 new XElement("link", new XAttribute("type", "text/css"), new XAttribute("rel", "stylesheet"), new XAttribute("href", "../../../core.css"))
                             )));
