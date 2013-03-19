@@ -61,9 +61,9 @@ namespace BibleCommon.Common
 
         private void AddHierarchySubLevels(XElement parentLevelEl, NotesPageHierarchyLevelBase parentLevel)
         {
-            foreach (var levelEl in parentLevelEl.Elements("div"))
+            foreach (var levelEl in parentLevelEl.Elements("ol").Elements("li"))
             {
-                if (levelEl.Attribute("class").Value == "pageLevel")
+                if (levelEl.Attribute("class").Value.Contains("pageLevel"))
                 {
                     AddHierarchyPageSubLevel(levelEl, parentLevel); 
                 }
@@ -164,21 +164,22 @@ namespace BibleCommon.Common
             
             foreach(var verseNotesPageData in VersesNotesPageData.OrderBy(v => v.Key))
             {
-                SerializeLevel(ref oneNoteApp, verseNotesPageData.Value, bodyEl, 1, null);
+                SerializeLevel(ref oneNoteApp, verseNotesPageData.Value, bodyEl, 0, null);
             }
 
             var folder = Path.GetDirectoryName(this.FilePath);
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
 
+            xdoc.AddFirst(new XDocumentType("html", null, null, null));
             xdoc.Save(this.FilePath);
         }
 
         private void SerializeLevel(ref Application oneNoteApp, NotesPageHierarchyLevelBase hierarchyLevel, XElement parentEl, int levelIndex, int? index)
         {
             var levelEl = parentEl.AddEl(
-                                    new XElement("div", 
-                                        new XAttribute("class", GetLevelClassName(hierarchyLevel))));
+                                    new XElement(hierarchyLevel is VerseNotesPageData ? "div" : "li", 
+                                        new XAttribute("class", GetLevelClassName(hierarchyLevel, levelIndex))));            
 
             if (hierarchyLevel is NotesPagePageLevel)
             {
@@ -190,10 +191,17 @@ namespace BibleCommon.Common
                 {
                     GenerateHierarchyLevel(hierarchyLevel, levelEl, levelIndex, index);
 
-                    var childIndex = 0;
-                    foreach (var childHierarchyLevel in hierarchyLevel.Levels.Values)
+                    if (hierarchyLevel.Levels.Count > 0)  // хотя по идеи не может у него не быть детей то...
                     {
-                        SerializeLevel(ref oneNoteApp, childHierarchyLevel, levelEl, levelIndex + 1, childIndex++);
+                        levelEl = levelEl.AddEl(
+                                            new XElement("ol",
+                                                new XAttribute("class", "levelChilds level" + (levelIndex + 1))));
+
+                        var childIndex = 0;
+                        foreach (var childHierarchyLevel in hierarchyLevel.Levels.Values)
+                        {
+                            SerializeLevel(ref oneNoteApp, childHierarchyLevel, levelEl, levelIndex + 1, childIndex++);
+                        }
                     }
                 }
             }                                    
@@ -201,22 +209,19 @@ namespace BibleCommon.Common
 
         private HierarchyElementType GetHierarchyTypeFromClassName(string className)
         {
-            switch (className)
-            {
-                case "notebookLevel":
-                    return HierarchyElementType.Notebook;
-                case "sectionGroupLevel":
-                    return HierarchyElementType.SectionGroup;
-                case "sectionLevel":
-                    return HierarchyElementType.Section;
-                case "pageLevel":
-                    return HierarchyElementType.Page;
-                default:
-                    throw new NotSupportedException(className);
-            }
+            if (className.Contains("notebookLevel"))
+                return HierarchyElementType.Notebook;
+            else if (className.Contains("sectionGroupLevel"))
+                return HierarchyElementType.SectionGroup;
+            else if (className.Contains("sectionLevel"))
+                return HierarchyElementType.Section;
+            else if (className.Contains("pageLevel"))
+                return HierarchyElementType.Page;
+            else
+                throw new NotSupportedException(className);
         }  
 
-        private object GetLevelClassName(NotesPageHierarchyLevelBase hierarchyLevel)
+        private object GetLevelClassName(NotesPageHierarchyLevelBase hierarchyLevel, int levelIndex)
         {
             if (hierarchyLevel is VerseNotesPageData)
                 return "verseLevel";
@@ -224,17 +229,17 @@ namespace BibleCommon.Common
             switch (((NotesPageHierarchyLevel)hierarchyLevel).HierarchyType)
             {
                 case HierarchyElementType.Notebook:
-                    return "notebookLevel";
+                    return "notebookLevel level" + levelIndex;
                 case HierarchyElementType.SectionGroup:
-                    return "sectionGroupLevel";
+                    return "sectionGroupLevel level" + levelIndex;
                 case HierarchyElementType.Section:
-                    return "sectionLevel";
+                    return "sectionLevel level" + levelIndex;
                 case HierarchyElementType.Page:
-                    return "pageLevel";
+                    return "pageLevel level" + levelIndex;
                 default:
                     throw new NotSupportedException(((NotesPageHierarchyLevel)hierarchyLevel).HierarchyType.ToString());
             }
-        }
+        }       
 
         private bool HierarchyLevelContainsPageLinks(NotesPageHierarchyLevelBase hierarchyLevel)
         {
@@ -243,11 +248,11 @@ namespace BibleCommon.Common
 
         private void GeneratePageLevel(ref Application oneNoteApp, NotesPagePageLevel pageLevel, XElement levelEl, int levelIndex, int? index)
         {
-            var levelTitleEl = levelEl.AddEl(new XElement("p", new XAttribute("class", "pageLevelTitle")));
-            levelTitleEl.Add(new XElement("span",
-                                new XAttribute("class", "levelTitleIndex"),
-                                GetDisplayLevel(levelIndex, index)));
             levelEl.Add(new XAttribute(Constants.NotesPageElementSyncId, pageLevel.Id));            
+
+            var levelTitleEl = levelEl.AddEl(
+                                        new XElement("p", 
+                                            new XAttribute("class", "pageLevelTitle")));                        
 
             var levelTitleLinkEl = levelTitleEl.AddEl(new XElement("a", pageLevel.Title));
 
@@ -333,10 +338,7 @@ namespace BibleCommon.Common
             }
             else if (hierarchyLevel is NotesPageHierarchyLevel)
             {
-                levelTitleEl.Add(
-                                new XElement("span",
-                                    new XAttribute("class", "levelTitleIndex"),
-                                    GetDisplayLevel(level, index)),
+                levelTitleEl.Add(                                
                                 new XElement("span",
                                     new XAttribute("class", "levelTitleText"),
                                     ((NotesPageHierarchyLevel)hierarchyLevel).Title));
@@ -496,7 +498,7 @@ namespace BibleCommon.Common
         public string Id { get; set; }
 
         public HierarchyElementType HierarchyType { get; set; }
-        public string OneNoteId { get; set; }   // идентификатор элемента в XML OneNote. Свойство Id же может содержать всё, что угодно (например, UniqueName)
+        public string OneNoteId { get; set; }   // идентификатор элемента в XML OneNote. Свойство Id же может содержать всё, что угодно (например, UniqueName - то есть имя раздела, записной книжки...)
 
         public NotesPageHierarchyLevelBase Parent { get; set; }
         public VerseNotesPageData Root { get; set; }
