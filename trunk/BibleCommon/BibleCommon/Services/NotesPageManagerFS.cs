@@ -19,13 +19,13 @@ namespace BibleCommon.Services
             VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition, bool isChapter,
             HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo, 
             HierarchyElementInfo notePageInfo, string notePageContentObjectId, NoteLinkManager.NotesPageType notesPageType, string notesPageName,
-            bool isImportantVerse, bool force, bool processAsExtendedVerse)
+            bool isImportantVerse, bool force, bool processAsExtendedVerse, bool toDeserializeIfExists)
         {
             if (verseHierarchyObjectInfo.VerseNumber.HasValue)
                 vp.VerseNumber = verseHierarchyObjectInfo.VerseNumber.Value;
 
             var notesPageFilePath = OpenNotesPageHandler.GetNotesPageFilePath(vp, notesPageType);             
-            var notesPageData = OneNoteProxy.Instance.GetNotesPageData(notesPageFilePath, notesPageName, vp.IsChapter ? vp : vp.GetChapterPointer());
+            var notesPageData = OneNoteProxy.Instance.GetNotesPageData(notesPageFilePath, notesPageName, vp.IsChapter ? vp : vp.GetChapterPointer(), toDeserializeIfExists);
 
             var verseNotesPageData = notesPageData.GetVerseNotesPageData(vp);
 
