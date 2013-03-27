@@ -1284,7 +1284,7 @@ namespace BibleCommon.Services
             var pageWasAdded = NotesPageManagerFS.UpdateNotesPage(ref oneNoteApp, this, vp, verseWeight, versePosition, isChapter, 
                                         verseHierarchyObjectInfo,
                                         notePageId, notePageContentObjectId, notesPageType, notesPageName,
-                                        isImportantVerse, force, processAsExtendedVerse);
+                                        isImportantVerse, force, processAsExtendedVerse, !(AnalyzeAllPages && force));
 
             return pageWasAdded;
         }

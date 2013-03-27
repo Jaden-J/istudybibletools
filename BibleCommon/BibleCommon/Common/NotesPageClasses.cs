@@ -23,7 +23,7 @@ namespace BibleCommon.Common
 
         public Dictionary<VersePointer, VerseNotesPageData> VersesNotesPageData { get; set; }
 
-        public NotesPageData(string filePath, string pageName, VersePointer chapterPointer)
+        public NotesPageData(string filePath, string pageName, VersePointer chapterPointer, bool toDeserializeIfExists)
         {
             this.FilePath = filePath;
             this.PageName = pageName;
@@ -31,7 +31,7 @@ namespace BibleCommon.Common
 
             this.VersesNotesPageData = new Dictionary<VersePointer, VerseNotesPageData>();
 
-            if (File.Exists(this.FilePath))            
+            if (toDeserializeIfExists && File.Exists(this.FilePath))            
                 Deserialize();            
             else
                 IsNew = true;
