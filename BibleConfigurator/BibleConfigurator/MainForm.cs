@@ -394,7 +394,7 @@ namespace BibleConfigurator
             PrepareForLongProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.IndexBibleStart);
             LongProcessLogger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexBible);
             BibleVersesLinksCacheManager.GenerateBibleVersesLinks(ref _oneNoteApp,
-                SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, !SettingsManager.Instance.StoreNotesPagesInFolder, LongProcessLogger);
+                SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, !SettingsManager.Instance.UseProxyLinksForLinks, LongProcessLogger);
             LongProcessingDone(BibleCommon.Resources.Constants.IndexBibleFinish);
         }
 
