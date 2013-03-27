@@ -1,0 +1,104 @@
+﻿.pageTitle
+{
+    font-size:15pt;
+    font-weight:bold;
+} 
+.verseLevel
+{
+    margin-left:18px;    
+}            
+.verseLevel > .levelChilds
+{
+    margin-left:15px;    
+}
+.subLinks
+{
+    margin-left:20px;        
+}                  
+.levelChilds
+{
+    margin-top:3px;
+    margin-bottom:3px;
+    padding-left:23px;
+}
+.levelTitle
+{                
+    margin-top:3px;
+    margin-bottom:3px;    
+    display:inline;
+}                  
+.pageLevelTitle
+{                
+    margin-top:3px;
+    margin-bottom:3px;
+    display:inline;
+}           
+.subLink
+{                
+    margin:1px;
+}            
+.hidden
+{
+    display:none;
+}
+.pageTitleLink
+{
+    font-size:small;
+}
+.importantVerseLink
+{
+    font-weight:bold;
+}
+.subLinkMultiVerse
+{
+    font-style:italic;
+}
+li.level6:before, li.level7:before 
+{
+    display:inline-block; 
+    width: 0em; 
+    position:relative; 
+    left:-0.5em; 
+    content: ')'
+}
+li.level8:before, li.level9:before 
+{
+    display:inline-block; 
+    width: 0em; 
+    position:relative; 
+    left:-0.5em; 
+    content: ']'
+}
+li.level1
+{
+    list-style-type:upper-roman;
+}
+li.level2
+{
+    list-style-type:upper-alpha;
+}
+li.level3
+{
+    list-style-type:decimal;
+}
+li.level4
+{
+    list-style-type:lower-alpha;
+}
+li.level5
+{
+    list-style-type:lower-roman;
+}
+li.level6
+{
+    list-style-type:lower-alpha;
+}
+li.level7
+{
+    list-style-type:decimal;
+}
+li.level8
+{
+    list-style-type:lower-alpha;
+}
+ 

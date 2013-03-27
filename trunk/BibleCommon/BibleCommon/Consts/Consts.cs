@@ -29,7 +29,7 @@ namespace BibleCommon.Consts
         public static readonly string UnicodeFontName = "Arial Unicode MS";
         public static readonly string AnalyzeMutix = "ISBT_Analyze";
         public static readonly string ParametersMutix = "ISBT_Parameters";
-        public static readonly string OneNoteProtocol = "onenote:";
+        public static readonly string OneNoteProtocol = "onenote:";        
 
         public static readonly decimal ImportantVerseWeight = 2;
 
@@ -123,7 +123,8 @@ namespace BibleCommon.Consts
         public static readonly int ChapterNotesPageLinkOutline_y = 45;
         public static readonly int ChapterNotesPageLinkOutline_z = 1;
 
-        public static readonly string NotesPageElementSyncId = "syncid";        
+        public static readonly string NotesPageElementAttributeName_SyncId = "syncid";
+        public static readonly string NotesPageStyleFileName = "core.css";
     }   
 }
 

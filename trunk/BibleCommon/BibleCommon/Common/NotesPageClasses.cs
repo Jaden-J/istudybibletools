@@ -80,7 +80,7 @@ namespace BibleCommon.Common
 
             var pageLevel = new NotesPagePageLevel()
             {
-                Id = levelEl.Attribute(Constants.NotesPageElementSyncId).Value,
+                Id = levelEl.Attribute(Constants.NotesPageElementAttributeName_SyncId).Value,
                 Title = aEl.Value                
             };
             var subLinksEl = levelEl.Element("div");
@@ -119,7 +119,7 @@ namespace BibleCommon.Common
             var title = levelEl.Element("p").GetByClass("span", "levelTitleText").First().Value;
             var level = new NotesPageHierarchyLevel()
             {
-                Id = levelEl.Attribute(Constants.NotesPageElementSyncId).Value,
+                Id = levelEl.Attribute(Constants.NotesPageElementAttributeName_SyncId).Value,
                 HierarchyType = GetHierarchyTypeFromClassName(levelEl.Attribute("class").Value),
                 Title = title
             };
@@ -140,7 +140,7 @@ namespace BibleCommon.Common
                             new XElement("head", 
                                 new XElement("meta", new XAttribute("http-equiv", "X-UA-Compatible"), new XAttribute("content", "IE=edge")),
                                 new XElement("title", string.Format("{0} {1} [{1}]", PageName,  chapterVersePointer.ChapterName)),
-                                new XElement("link", new XAttribute("type", "text/css"), new XAttribute("rel", "stylesheet"), new XAttribute("href", "../../../core.css"))
+                                new XElement("link", new XAttribute("type", "text/css"), new XAttribute("rel", "stylesheet"), new XAttribute("href", "../../../" + Constants.NotesPageStyleFileName))
                             )));
 
             var bodyEl = xdoc.Root.AddEl(new XElement("body"));
@@ -246,7 +246,7 @@ namespace BibleCommon.Common
 
         private void GeneratePageLevel(ref Application oneNoteApp, NotesPagePageLevel pageLevel, XElement levelEl, int levelIndex, int? index)
         {
-            levelEl.Add(new XAttribute(Constants.NotesPageElementSyncId, pageLevel.Id));            
+            levelEl.Add(new XAttribute(Constants.NotesPageElementAttributeName_SyncId, pageLevel.Id));            
 
             var levelTitleEl = levelEl.AddEl(
                                         new XElement("p", 
@@ -341,7 +341,7 @@ namespace BibleCommon.Common
                                     new XAttribute("class", "levelTitleText"),
                                     ((NotesPageHierarchyLevel)hierarchyLevel).Title));
 
-                levelEl.Add(new XAttribute(Constants.NotesPageElementSyncId, ((NotesPageHierarchyLevel)hierarchyLevel).Id));                
+                levelEl.Add(new XAttribute(Constants.NotesPageElementAttributeName_SyncId, ((NotesPageHierarchyLevel)hierarchyLevel).Id));                
             }
         }        
 

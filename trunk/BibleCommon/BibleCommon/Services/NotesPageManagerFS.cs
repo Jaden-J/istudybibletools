@@ -7,6 +7,7 @@ using System.IO;
 using Microsoft.Office.Interop.OneNote;
 using BibleCommon.Helpers;
 using BibleCommon.Handlers;
+using System.Reflection;
 
 namespace BibleCommon.Services
 {
@@ -151,5 +152,18 @@ namespace BibleCommon.Services
         {
             return string.Format("{0}_{1}", notesPageName, vp);
         }
+
+        public static void UpdateNotesPageCssFile()
+        {            
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("BibleCommon.Resources.NotesPage.css"))
+            {
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    var content = reader.ReadToEnd();
+                    File.WriteAllText(Path.Combine(SettingsManager.Instance.FolderPath_BibleNotesPages, Consts.Constants.NotesPageStyleFileName), content);
+                }
+            }
+        }
+
     }
 }
