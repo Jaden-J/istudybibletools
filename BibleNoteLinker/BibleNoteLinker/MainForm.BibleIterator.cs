@@ -100,6 +100,9 @@ namespace BibleNoteLinker
                     CommitPagesInOneNote(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, currentStep++, null);                
             }
 
+            if (SettingsManager.Instance.StoreNotesPagesInFolder && chkForce.Checked && rbAnalyzeAllPages.Checked)
+                NotesPageManagerFS.UpdateNotesPageCssFile();
+
             OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
                 if (_oneNoteApp.Windows.CurrentWindow != null && currentPage != null)

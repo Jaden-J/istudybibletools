@@ -204,6 +204,7 @@ namespace BibleConfigurator
                     {
                         SettingsManager.Instance.FolderPath_BibleNotesPages = notesPagesFolderBrowserDialog.SelectedPath;
                         SettingsManager.Instance.NotebookId_BibleNotesPages = string.Empty;
+                        NotesPageManagerFS.UpdateNotesPageCssFile();
                     }
                 }
 
@@ -393,7 +394,7 @@ namespace BibleConfigurator
             PrepareForLongProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.IndexBibleStart);
             LongProcessLogger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexBible);
             BibleVersesLinksCacheManager.GenerateBibleVersesLinks(ref _oneNoteApp,
-                SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, LongProcessLogger);
+                SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, !SettingsManager.Instance.StoreNotesPagesInFolder, LongProcessLogger);
             LongProcessingDone(BibleCommon.Resources.Constants.IndexBibleFinish);
         }
 
