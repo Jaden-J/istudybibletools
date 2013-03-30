@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using BibleCommon.Contracts;
 using BibleCommon.Handlers;
 using System.Threading;
+using BibleCommon.Services;
 
 namespace ISBTCommandHandler
 {
@@ -26,7 +27,7 @@ namespace ISBTCommandHandler
                                                     };
 
         public CommandForm()
-        {   
+        {
             InitializeComponent();
 
             var args = Environment.GetCommandLineArgs();

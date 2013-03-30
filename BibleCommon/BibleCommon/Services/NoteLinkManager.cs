@@ -1048,6 +1048,8 @@ namespace BibleCommon.Services
                                                         {
                                                             ResultType = HierarchySearchManager.HierarchySearchResultType.NotFound
                                                         };
+                    BibleCommon.Services.Logger.LogWarning(BibleCommon.Resources.Constants.VerseNotFound, vp.OriginalVerseName);
+                    //todo: нужно добавить новый провайдер, который будет делать ту же сложную работу, что и HierarchySearchManager но только с помощью SettingsManager.Instance.CurrentBibleContentCached   (чтобы понимать ссылки типа  Иуд 5)
                 }
             }
             else
@@ -1261,7 +1263,7 @@ namespace BibleCommon.Services
             var key = new NotePageProcessedVerseId() { NotePageId = notePageId.UniqueName, NotesPageName = notesPageName };
             var processedVerses = AddNotePageProcessedVerse(key, vp, verseHierarchyObjectInfo.VerseNumber);            
 
-            if (createLinkToNotesPage && (notesPageWasModified || force))
+            if (createLinkToNotesPage && (notesPageWasModified || force || isChapter))
             {
                 OneNoteProxy.Instance.AddProcessedBiblePageWithUpdatedLinksToNotesPages(vp.GetChapterPointer(), verseHierarchyObjectInfo);
 
