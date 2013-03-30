@@ -82,7 +82,7 @@
     <Compile Include="SingleInstanceService\InstanceProxy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-	 <Compile Include="..\VersionInfo.cs">
+    <Compile Include="..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
   </ItemGroup>
@@ -124,6 +124,9 @@
       <DependentUpon>CommandForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NotesPageForm.resx">
+      <DependentUpon>NotesPageForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NotesPageForm.ru.resx">
       <DependentUpon>NotesPageForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

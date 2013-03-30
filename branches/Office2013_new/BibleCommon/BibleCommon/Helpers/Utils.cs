@@ -48,6 +48,15 @@ namespace BibleCommon.Helpers
             return s;
         }
 
+        public static string GetNotesPagesFolderPath()
+        {
+            string s = Path.Combine(GetProgramDirectory(), Constants.NotesPagesDirectory);
+            if (!Directory.Exists(s))
+                Directory.CreateDirectory(s);
+
+            return s;
+        }
+
         public static string GetProgramDirectory()
         {
             string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Consts.Constants.ToolsName);
@@ -152,11 +161,11 @@ namespace BibleCommon.Helpers
             return result;
         }
 
-        public static void Wait(Func<bool> checkIfExternalProcessAborted)
+        public static void WaitFor3Seconds(Func<bool> checkIfExternalProcessAborted)
         {
-            for (var i = 0; i < 3; i++)
+            for (var i = 0; i < 30; i++)
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(100);
                 if (checkIfExternalProcessAborted != null)
                 {
                     if (checkIfExternalProcessAborted())

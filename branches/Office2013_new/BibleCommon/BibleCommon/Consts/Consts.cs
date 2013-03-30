@@ -23,6 +23,7 @@ namespace BibleCommon.Consts
         public static readonly string FileExtensionOnepkg = ".onepkg";
         public static readonly string TempDirectory = "Temp";
         public static readonly string CacheDirectory = "Cache";
+        public static readonly string NotesPagesDirectory = "NotesPages";
         public static readonly string LogsDirectory = "Logs";        
         public static readonly string DefaultPartVersesAlphabet = "abcdefghijklmnopqrstuvwxyz";
         public static readonly int DefaultStrongNumbersCount = 14700;        

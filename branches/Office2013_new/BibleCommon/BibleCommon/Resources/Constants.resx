@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BackupManagerFinishMessage" xml:space="preserve">
     <value>Backup created successfully.</value>
@@ -845,5 +845,11 @@ Please take notice:
   </data>
   <data name="VerseIsNotMentioned" xml:space="preserve">
     <value> This verse is not mentioned in the notes.</value>
+  </data>
+  <data name="ChapterNotes" xml:space="preserve">
+    <value>Notes of Chapter</value>
+  </data>
+  <data name="DetailedChapterNotes" xml:space="preserve">
+    <value>Detailed Chapter Notes</value>
   </data>
 </root>
