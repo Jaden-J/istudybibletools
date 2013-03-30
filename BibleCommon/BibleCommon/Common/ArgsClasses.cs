@@ -124,7 +124,7 @@ namespace BibleCommon.Common
                     case HierarchyElementType.Section:
                         return Name;   // идентифицируем по Name, так как ID на разных компьютерах разный
                     case HierarchyElementType.Page:
-                        return SyncPageId ?? Id;                    
+                        return ManualId ?? SyncPageId ?? Id;                    
                 }
 
                 throw new NotSupportedException(Type.ToString());
@@ -154,7 +154,7 @@ namespace BibleCommon.Common
         /// <summary>
         /// Идентификатор, идентифицирующий заметку на странице сводной заметок. Если не задан - используется Id.
         /// </summary>
-        public string UniqueId { get; set; }        
+        public string ManualId { get; set; }        
 
         public HierarchyElementType Type { get; set; }
         

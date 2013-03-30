@@ -36,7 +36,13 @@ namespace BibleCommon.Handlers
 
         public static string GetCommandUrlStatic(VersePointer vp, string moduleName)
         {
-            return string.Format("{0}{1}/{2} {3};{4}", _protocolName, moduleName, vp.Book.Index, vp.VerseNumber, vp.OriginalVerseName);
+            return string.Format("{0}{1}/{2} {3}{4};{5}", 
+                _protocolName, 
+                moduleName, 
+                vp.Book.Index, 
+                vp.Chapter.Value, 
+                !vp.IsChapter ? ":" + vp.VerseNumber : string.Empty, 
+                vp.OriginalVerseName);
         }
 
         public bool IsProtocolCommand(params string[] args)
@@ -124,6 +130,8 @@ namespace BibleCommon.Handlers
                 }
             }
 
+            OneNoteUtils.SetActiveCurrentWindow(ref oneNoteApp);
+
             if (objectsIds.Length > 1)
             {
                 XmlNamespaceManager xnm;
@@ -147,7 +155,7 @@ namespace BibleCommon.Handlers
             {
                 OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
                 {
-                    oneNoteAppSafe.NavigateTo(pageId, objectId);
+                    oneNoteAppSafe.NavigateTo(pageId, objectId);                    
                 });
 
                 return true;

@@ -8,9 +8,10 @@ using ISBTCommandHandler.SingleInstanceService;
 using System.Reflection;
 using BibleCommon.Contracts;
 using BibleCommon.Handlers;
+using BibleCommon.Services;
 
 namespace ISBTCommandHandler
-{
+{    
     static class Program
     {
         private static CommandForm _mainForm;
@@ -18,6 +19,7 @@ namespace ISBTCommandHandler
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
+        [STAThread]
         static void Main(params string[] args)
         {
             if (args.Length == 0)
@@ -26,16 +28,21 @@ namespace ISBTCommandHandler
             {
                 if (!ProcessCommandWithSimpleHandler(args))
                 {
-                    if (!ApplicationInstanceManager.CreateSingleInstance(
+                    if (ApplicationInstanceManager.CreateSingleInstance(
                                                         Assembly.GetExecutingAssembly().GetName().Name,
                                                         SingleInstanceCallback))
-                        return;
+                    {
+                        LanguageManager.SetThreadUICulture();
 
-                    _mainForm = new CommandForm();
-                    Application.Run(_mainForm);
+                        Application.EnableVisualStyles();
+                        Application.SetCompatibleTextRenderingDefault(false);
+
+                        _mainForm = new CommandForm();
+                        Application.Run(_mainForm);
+                    }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 LogError(ex, args);
             }           

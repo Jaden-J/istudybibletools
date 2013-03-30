@@ -376,7 +376,7 @@ namespace BibleCommon.Common
     }
 
     [Serializable]
-    public class VersePointer
+    public class VersePointer: IComparable<VersePointer>
     {      
         public BibleBookInfo Book { get; set; }
         public int? Chapter { get; set; }
@@ -386,20 +386,29 @@ namespace BibleCommon.Common
         /// первоначально переданная строка в конструктор
         /// </summary>
         public string OriginalVerseName { get; set; }   
-        public string OriginalBookName { get; set; }
+        public string OriginalBookName { get; set; }        
 
         public bool WasChangedVerseAsOneChapteredBook { get; set; }
 
         /// <summary>
         /// родительская ссылка. Например если мы имеем дело со стихом диапазона, то здесь хранится стих, являющийся диапазоном
         /// </summary>
-        public VersePointer ParentVersePointer { get; set; } 
+        public VersePointer ParentVersePointer { get; set; }
 
+
+        private VerseNumber? _verseNumber;
         public VerseNumber VerseNumber
         {
             get
             {
+                if (_verseNumber.HasValue)
+                    return _verseNumber.Value;
+
                 return new VerseNumber(this.Verse.GetValueOrDefault(), this.TopChapter.HasValue ? null : this.TopVerse);
+            }
+            set
+            {
+                _verseNumber = value;
             }
         }        
 
@@ -443,7 +452,13 @@ namespace BibleCommon.Common
         }
 
         public VersePointer(VersePointer chapterPointer, int verse)
-            : this(string.Format("{0} {1}:{2}", chapterPointer.OriginalBookName, chapterPointer.Chapter, verse))
+            : this(chapterPointer, verse, null)
+        {
+
+        }
+
+        public VersePointer(VersePointer chapterPointer, int verse, int? topVerse)
+            : this(chapterPointer.OriginalBookName, chapterPointer.Chapter.Value, verse, topVerse)
         {
 
         }
@@ -523,7 +538,7 @@ namespace BibleCommon.Common
                 bool endsWithDot;
                 string moduleName;
                 OriginalBookName = TrimBookName(s, out endsWithDot);
-                Book = GetBibleBook(OriginalBookName, endsWithDot, out moduleName);
+                Book = GetBibleBook(OriginalBookName, endsWithDot, out moduleName);                
 
                 if (!string.IsNullOrEmpty(moduleName))   // значит ссылка дана для модуля, отличного от установленного                
                     ConvertToBaseVerse(moduleName);                
@@ -824,6 +839,14 @@ namespace BibleCommon.Common
         public static bool operator !=(VersePointer vp1, VersePointer vp2)
         {
             return !(vp1 == vp2);
-        }        
+        }
+
+        public int CompareTo(VersePointer other)
+        {
+            if (other == null)
+                return 1;
+
+            return this.Verse.GetValueOrDefault(0).CompareTo(other.Verse.GetValueOrDefault(0));
+        }
     }
 }

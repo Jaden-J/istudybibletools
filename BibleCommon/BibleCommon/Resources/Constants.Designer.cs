@@ -403,7 +403,16 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specify notebook location.
+        ///   Ищет локализованную строку, похожую на Specify folder path.
+        /// </summary>
+        public static string ConfiguratorSetFolder {
+            get {
+                return ResourceManager.GetString("ConfiguratorSetFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Specify notebook location.
         /// </summary>
         public static string ConfiguratorSetNotebookFolder {
             get {
@@ -426,6 +435,51 @@ namespace BibleCommon.Resources {
         public static string ConfiguratorWrongParameterValue {
             get {
                 return ResourceManager.GetString("ConfiguratorWrongParameterValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Bible.
+        /// </summary>
+        public static string ContainerTypeBible {
+            get {
+                return ResourceManager.GetString("ContainerTypeBible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Comments to the Bible.
+        /// </summary>
+        public static string ContainerTypeBibleComments {
+            get {
+                return ResourceManager.GetString("ContainerTypeBibleComments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Summary of Notes.
+        /// </summary>
+        public static string ContainerTypeBibleNotesPages {
+            get {
+                return ResourceManager.GetString("ContainerTypeBibleNotesPages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Bible Study.
+        /// </summary>
+        public static string ContainerTypeBibleStudy {
+            get {
+                return ResourceManager.GetString("ContainerTypeBibleStudy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Single.
+        /// </summary>
+        public static string ContainerTypeSingle {
+            get {
+                return ResourceManager.GetString("ContainerTypeSingle", resourceCulture);
             }
         }
         
@@ -939,7 +993,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to It is recommended to index the Bible for performance optimization. This operation takes about 30 minutes. Start indexing the Bible now?.
+        ///   Ищет локализованную строку, похожую на It is recommended to index the Bible for performance optimization. This operation takes about 3 minutes. Start indexing the Bible now?.
         /// </summary>
         public static string IndexBibleQuestion {
             get {
@@ -948,7 +1002,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на The Bible is not indexed. It is recommended to index the Bible for performance optimization. This operation takes about 30 minutes. Start indexing the Bible now? This message will be displayed each time you start OneNote, while the Bible is not indexed..
+        ///   Ищет локализованную строку, похожую на The Bible is not indexed. It is recommended to index the Bible for performance optimization. This operation takes about 3 minutes. Start indexing the Bible now? This message will be displayed each time you start OneNote, while the Bible is not indexed..
         /// </summary>
         public static string IndexBibleQuestionAtStartUp {
             get {
@@ -2032,7 +2086,16 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OneNote not started.
+        ///   Ищет локализованную строку, похожую на  This verse is not mentioned in the notes..
+        /// </summary>
+        public static string VerseIsNotMentioned {
+            get {
+                return ResourceManager.GetString("VerseIsNotMentioned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на OneNote not started.
         /// </summary>
         public static string VerseLinkerOneNoteNotStarted {
             get {
@@ -2095,7 +2158,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ; .
+        ///   Ищет локализованную строку, похожую на ;.
         /// </summary>
         public static string VerseLinksDelimiter {
             get {

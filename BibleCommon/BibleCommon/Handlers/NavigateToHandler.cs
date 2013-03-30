@@ -19,7 +19,7 @@ namespace BibleCommon.Handlers
         private const string _protocolName = "isbtOpen:";
         private const int NavigateAttemptsCount = 3;
 
-        private static string ProtocolFullString
+        public static string ProtocolFullString
         {
             get
             {
@@ -75,6 +75,8 @@ namespace BibleCommon.Handlers
                         //throw new Exception(string.Format("OneNote cannot open the specified location after {0} attempts: {1}", NavigateAttemptsCount, newPath));
                     }
                 }
+
+                OneNoteUtils.SetActiveCurrentWindow(ref oneNoteApp);
             }
             finally
             {

@@ -18,6 +18,7 @@ namespace ISBTCommandHandler
                                                     { 
                                                         new QuickAnalyzeHandler(), 
                                                         new OpenBibleVerseHandler(),
+                                                        new OpenNotesPageHandler(),
                                                         new NavigateToStrongHandler(), 
                                                         new FindVersesWithStrongNumberHandler(),
                                                         new RefreshCacheHandler(),
@@ -52,10 +53,33 @@ namespace ISBTCommandHandler
             {
                 if (handler.IsProtocolCommand(args))
                 {
+                    if (handler is ExitApplicationHandler)
+                    {
+                        if (_notesPageForm != null)
+                            _notesPageForm.ExitApplication = true;
+                    }
+
                     handler.ExecuteCommand(args);
+
+                    if (handler is OpenNotesPageHandler)
+                    {
+                        var verse = ((OpenNotesPageHandler)handler).Verse;
+                        if (verse.IsValid)
+                            OpenNotesPage(verse);
+                    }                    
+                        
                     break;
                 }
             }
+        }
+
+        private NotesPageForm _notesPageForm = null;
+        private void OpenNotesPage(BibleCommon.Common.VersePointer vp)
+        {
+            if (_notesPageForm == null)
+                _notesPageForm = new NotesPageForm();
+
+            _notesPageForm.OpenNotesPage(vp);
         }       
     }
 }
