@@ -128,6 +128,16 @@ namespace BibleCommon.Services
         public string PageName_DefaultComments { get; set; }
         public string SectionName_DefaultBookOverview { get; set; }
         public string PageName_Notes { get; set; }
+        public string FolderPath_BibleNotesPages { get; set; }
+        public bool IsInIntegratedMode { get; set; }
+
+        public bool StoreNotesPagesInFolder
+        {
+            get
+            {
+                return string.IsNullOrEmpty(NotebookId_BibleNotesPages);
+            }
+        }
 
      
         public List<NotebookForAnalyzeInfo> SelectedNotebooksForAnalyze { get; set; }
@@ -236,6 +246,12 @@ namespace BibleCommon.Services
             }
         }
 
+        internal void ReloadCurrentBibleContentCached()
+        {
+            _currentBibleContent = ModulesManager.GetCurrentBibleContent();
+        }
+
+
         #endregion
 
         /// <summary>
@@ -248,7 +264,9 @@ namespace BibleCommon.Services
                 if (_instance == null)
                     _instance = new SettingsManager();
                 else
-                    Instance.ReLoadSettings();
+                    _instance.ReLoadSettings();                     // здесь нельзяф использовать Instance, потому что используется один и тот же _locker
+
+                _instance.ReloadCurrentBibleContentCached();                
             }
         }
 
@@ -287,7 +305,7 @@ namespace BibleCommon.Services
             {
                 bool result = !string.IsNullOrEmpty(this.NotebookId_Bible)
                     && !string.IsNullOrEmpty(this.NotebookId_BibleComments)
-                    && !string.IsNullOrEmpty(this.NotebookId_BibleNotesPages)
+                    && (!string.IsNullOrEmpty(this.NotebookId_BibleNotesPages) || !string.IsNullOrEmpty(this.FolderPath_BibleNotesPages))
                     && !string.IsNullOrEmpty(this.NotebookId_BibleStudy)
                     && !string.IsNullOrEmpty(this.SectionName_DefaultBookOverview)
                     && !string.IsNullOrEmpty(this.PageName_DefaultComments)
@@ -320,7 +338,7 @@ namespace BibleCommon.Services
                         result = OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_Bible)
                             && OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_BibleComments)
                             && OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_BibleStudy)
-                            && OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_BibleNotesPages);
+                            && (string.IsNullOrEmpty(this.NotebookId_BibleNotesPages) || OneNoteUtils.NotebookExists(ref oneNoteApp, this.NotebookId_BibleNotesPages));
                     }
                 }
 
@@ -493,7 +511,9 @@ namespace BibleCommon.Services
                                                 s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(xmlString => new StoredModuleInfo(xmlString)));
 
             this.SelectedNotebooksForAnalyze = GetParameterValue<List<NotebookForAnalyzeInfo>>(xdoc, Consts.Constants.ParameterName_SelectedNotebooksForAnalyze, 
-                                                        GetDefaultNotebooksForAnalyze(), GetNotebooksForAnalyze); 
+                                                        GetDefaultNotebooksForAnalyze(), GetNotebooksForAnalyze);
+
+            this.FolderPath_BibleNotesPages = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_FolderPathBibleNotesPages);
         }
 
         private T GetParameterValue<T>(XDocument xdoc, string parameterName, object defaultValue = null, Func<string, T> convertFunc = null)
@@ -588,6 +608,7 @@ namespace BibleCommon.Services
                     xDoc.Root.Add(new XElement(Consts.Constants.ParameterName_NotebookIdBible, this.NotebookId_Bible),
                                   new XElement(Consts.Constants.ParameterName_NotebookIdBibleComments, this.NotebookId_BibleComments),
                                   new XElement(Consts.Constants.ParameterName_NotebookIdBibleNotesPages, this.NotebookId_BibleNotesPages),
+                                  new XElement(Consts.Constants.ParameterName_FolderPathBibleNotesPages, this.FolderPath_BibleNotesPages),
                                   new XElement(Consts.Constants.ParameterName_NotebookIdBibleStudy, this.NotebookId_BibleStudy),                                  
                                   new XElement(Consts.Constants.ParameterName_NotebookIdSupplementalBible, this.NotebookId_SupplementalBible),
                                   new XElement(Consts.Constants.ParameterName_NotebookIdDictionaries, this.NotebookId_Dictionaries),

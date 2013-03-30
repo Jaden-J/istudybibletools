@@ -57,6 +57,7 @@
     <Compile Include="Common\CacheClasses.cs" />
     <Compile Include="Common\CustomExceptions.cs" />
     <Compile Include="Common\ModuleInfo.cs" />
+    <Compile Include="Common\NotesPageClasses.cs" />
     <Compile Include="Common\ProcessAbortedByUserException.cs" />
     <Compile Include="Common\ResultClasses.cs" />
     <Compile Include="Common\VersePointerSearchResult.cs" />
@@ -69,11 +70,13 @@
     <Compile Include="Handlers\NavigateToHandler.cs" />
     <Compile Include="Handlers\NavigateToStrongHandler.cs" />
     <Compile Include="Handlers\OpenBibleVerseHandler.cs" />
+    <Compile Include="Handlers\OpenNotesPageHandler.cs" />
     <Compile Include="Handlers\QuickAnalyzeHandler.cs" />
     <Compile Include="Handlers\RebuildDictionaryFileCacheHandler.cs" />
     <Compile Include="Handlers\RefreshCacheHandler.cs" />
     <Compile Include="Helpers\CollectionHelper.cs" />
     <Compile Include="Helpers\FormExtensions.cs" />
+    <Compile Include="Helpers\OrderedDictionary.cs" />
     <Compile Include="Helpers\SharpSerializationHelper.cs" />
     <Compile Include="Helpers\StringUtils.cs" />
     <Compile Include="Helpers\Utils.cs" />
@@ -106,6 +109,7 @@
     <Compile Include="Services\NoteLinkManager.cs" />
     <Compile Include="Services\NotesPageManager.cs" />
     <Compile Include="Services\NotesPageManagerEx.cs" />
+    <Compile Include="Services\NotesPageManagerFS.cs" />
     <Compile Include="Services\NotesPagesProviderManager.cs" />
     <Compile Include="Services\OneNoteLocker.cs" />
     <Compile Include="Services\OneNoteProxy.cs" />
@@ -172,6 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\MessageForm.ico" />
+    <EmbeddedResource Include="Resources\NotesPage.css" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Interop.OneNote">

@@ -132,8 +132,86 @@
   <data name="splitContainer1.Orientation" type="System.Windows.Forms.Orientation, System.Windows.Forms">
     <value>Horizontal</value>
   </data>
+  <data name="chkUseFolderForBibleNotesPages.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="chkUseFolderForBibleNotesPages.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="chkUseFolderForBibleNotesPages.Location" type="System.Drawing.Point, System.Drawing">
+    <value>57, 296</value>
+  </data>
+  <data name="chkUseFolderForBibleNotesPages.Size" type="System.Drawing.Size, System.Drawing">
+    <value>74, 17</value>
+  </data>
+  <data name="chkUseFolderForBibleNotesPages.TabIndex" type="System.Int32, mscorlib">
+    <value>42</value>
+  </data>
+  <data name="chkUseFolderForBibleNotesPages.Text" xml:space="preserve">
+    <value>Use folder</value>
+  </data>
+  <data name="&gt;&gt;chkUseFolderForBibleNotesPages.Name" xml:space="preserve">
+    <value>chkUseFolderForBibleNotesPages</value>
+  </data>
+  <data name="&gt;&gt;chkUseFolderForBibleNotesPages.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;chkUseFolderForBibleNotesPages.Parent" xml:space="preserve">
+    <value>tabPage1</value>
+  </data>
+  <data name="&gt;&gt;chkUseFolderForBibleNotesPages.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="btnBibleNotesPagesSetFolder.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btnBibleNotesPagesSetFolder.Location" type="System.Drawing.Point, System.Drawing">
+    <value>445, 292</value>
+  </data>
+  <data name="btnBibleNotesPagesSetFolder.Size" type="System.Drawing.Size, System.Drawing">
+    <value>26, 23</value>
+  </data>
+  <data name="btnBibleNotesPagesSetFolder.TabIndex" type="System.Int32, mscorlib">
+    <value>41</value>
+  </data>
+  <data name="btnBibleNotesPagesSetFolder.Text" xml:space="preserve">
+    <value>...</value>
+  </data>
+  <data name="&gt;&gt;btnBibleNotesPagesSetFolder.Name" xml:space="preserve">
+    <value>btnBibleNotesPagesSetFolder</value>
+  </data>
+  <data name="&gt;&gt;btnBibleNotesPagesSetFolder.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnBibleNotesPagesSetFolder.Parent" xml:space="preserve">
+    <value>tabPage1</value>
+  </data>
+  <data name="&gt;&gt;btnBibleNotesPagesSetFolder.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="tbBibleNotesPagesFolder.Location" type="System.Drawing.Point, System.Drawing">
+    <value>137, 294</value>
+  </data>
+  <data name="tbBibleNotesPagesFolder.Size" type="System.Drawing.Size, System.Drawing">
+    <value>297, 20</value>
+  </data>
+  <data name="tbBibleNotesPagesFolder.TabIndex" type="System.Int32, mscorlib">
+    <value>40</value>
+  </data>
+  <data name="&gt;&gt;tbBibleNotesPagesFolder.Name" xml:space="preserve">
+    <value>tbBibleNotesPagesFolder</value>
+  </data>
+  <data name="&gt;&gt;tbBibleNotesPagesFolder.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tbBibleNotesPagesFolder.Parent" xml:space="preserve">
+    <value>tabPage1</value>
+  </data>
+  <data name="&gt;&gt;tbBibleNotesPagesFolder.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
   <data name="btnBibleNotesPagesNotebookSetPath.Location" type="System.Drawing.Point, System.Drawing">
-    <value>445, 315</value>
+    <value>445, 263</value>
   </data>
   <data name="btnBibleNotesPagesNotebookSetPath.Size" type="System.Drawing.Size, System.Drawing">
     <value>26, 23</value>
@@ -154,22 +232,22 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;btnBibleNotesPagesNotebookSetPath.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>3</value>
   </data>
   <data name="label8.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="label8.Location" type="System.Drawing.Point, System.Drawing">
-    <value>54, 301</value>
+    <value>54, 249</value>
   </data>
   <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
-    <value>178, 13</value>
+    <value>219, 13</value>
   </data>
   <data name="label8.TabIndex" type="System.Int32, mscorlib">
     <value>38</value>
   </data>
   <data name="label8.Text" xml:space="preserve">
-    <value>Select 'Summary of Notes' notebook</value>
+    <value>Select 'Summary of Notes' notebook or folder</value>
   </data>
   <data name="&gt;&gt;label8.Name" xml:space="preserve">
     <value>label8</value>
@@ -181,13 +259,13 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>4</value>
   </data>
   <data name="chkCreateBibleNotesPagesNotebookFromTemplate.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="chkCreateBibleNotesPagesNotebookFromTemplate.Location" type="System.Drawing.Point, System.Drawing">
-    <value>311, 319</value>
+    <value>311, 267</value>
   </data>
   <data name="chkCreateBibleNotesPagesNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
     <value>123, 17</value>
@@ -208,10 +286,10 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;chkCreateBibleNotesPagesNotebookFromTemplate.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>5</value>
   </data>
   <data name="cbBibleNotesPagesNotebook.Location" type="System.Drawing.Point, System.Drawing">
-    <value>57, 317</value>
+    <value>57, 265</value>
   </data>
   <data name="cbBibleNotesPagesNotebook.Size" type="System.Drawing.Size, System.Drawing">
     <value>248, 21</value>
@@ -229,10 +307,10 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;cbBibleNotesPagesNotebook.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>6</value>
   </data>
   <data name="btnBibleStudyNotebookSetPath.Location" type="System.Drawing.Point, System.Drawing">
-    <value>445, 215</value>
+    <value>445, 163</value>
   </data>
   <data name="btnBibleStudyNotebookSetPath.Size" type="System.Drawing.Size, System.Drawing">
     <value>26, 23</value>
@@ -253,10 +331,10 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;btnBibleStudyNotebookSetPath.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>7</value>
   </data>
   <data name="btnBibleCommentsNotebookSetPath.Location" type="System.Drawing.Point, System.Drawing">
-    <value>445, 265</value>
+    <value>445, 213</value>
   </data>
   <data name="btnBibleCommentsNotebookSetPath.Size" type="System.Drawing.Size, System.Drawing">
     <value>26, 23</value>
@@ -277,10 +355,10 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;btnBibleCommentsNotebookSetPath.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>8</value>
   </data>
   <data name="btnBibleNotebookSetPath.Location" type="System.Drawing.Point, System.Drawing">
-    <value>445, 165</value>
+    <value>445, 113</value>
   </data>
   <data name="btnBibleNotebookSetPath.Size" type="System.Drawing.Size, System.Drawing">
     <value>26, 23</value>
@@ -301,10 +379,10 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;btnBibleNotebookSetPath.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>9</value>
   </data>
   <data name="btnSingleNotebookSetPath.Location" type="System.Drawing.Point, System.Drawing">
-    <value>447, 50</value>
+    <value>445, 50</value>
   </data>
   <data name="btnSingleNotebookSetPath.Size" type="System.Drawing.Size, System.Drawing">
     <value>26, 23</value>
@@ -325,10 +403,10 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;btnSingleNotebookSetPath.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>10</value>
   </data>
   <data name="btnSingleNotebookParameters.Location" type="System.Drawing.Point, System.Drawing">
-    <value>57, 79</value>
+    <value>477, 50</value>
   </data>
   <data name="btnSingleNotebookParameters.Size" type="System.Drawing.Size, System.Drawing">
     <value>102, 23</value>
@@ -349,13 +427,13 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;btnSingleNotebookParameters.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>11</value>
   </data>
   <data name="label4.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>54, 201</value>
+    <value>54, 149</value>
   </data>
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
     <value>141, 13</value>
@@ -376,13 +454,13 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>12</value>
   </data>
   <data name="chkCreateBibleStudyNotebookFromTemplate.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="chkCreateBibleStudyNotebookFromTemplate.Location" type="System.Drawing.Point, System.Drawing">
-    <value>311, 219</value>
+    <value>311, 167</value>
   </data>
   <data name="chkCreateBibleStudyNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
     <value>123, 17</value>
@@ -403,10 +481,10 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;chkCreateBibleStudyNotebookFromTemplate.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>13</value>
   </data>
   <data name="cbBibleStudyNotebook.Location" type="System.Drawing.Point, System.Drawing">
-    <value>57, 217</value>
+    <value>57, 165</value>
   </data>
   <data name="cbBibleStudyNotebook.Size" type="System.Drawing.Size, System.Drawing">
     <value>248, 21</value>
@@ -424,13 +502,13 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;cbBibleStudyNotebook.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>14</value>
   </data>
   <data name="label3.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>54, 251</value>
+    <value>54, 199</value>
   </data>
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
     <value>205, 13</value>
@@ -451,13 +529,13 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
-    <value>12</value>
+    <value>15</value>
   </data>
   <data name="chkCreateBibleCommentsNotebookFromTemplate.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="chkCreateBibleCommentsNotebookFromTemplate.Location" type="System.Drawing.Point, System.Drawing">
-    <value>311, 269</value>
+    <value>311, 217</value>
   </data>
   <data name="chkCreateBibleCommentsNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
     <value>123, 17</value>
@@ -478,10 +556,10 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;chkCreateBibleCommentsNotebookFromTemplate.ZOrder" xml:space="preserve">
-    <value>13</value>
+    <value>16</value>
   </data>
   <data name="cbBibleCommentsNotebook.Location" type="System.Drawing.Point, System.Drawing">
-    <value>57, 267</value>
+    <value>57, 215</value>
   </data>
   <data name="cbBibleCommentsNotebook.Size" type="System.Drawing.Size, System.Drawing">
     <value>248, 21</value>
@@ -499,13 +577,13 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;cbBibleCommentsNotebook.ZOrder" xml:space="preserve">
-    <value>14</value>
+    <value>17</value>
   </data>
   <data name="label2.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>54, 151</value>
+    <value>54, 99</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
     <value>111, 13</value>
@@ -526,13 +604,13 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>15</value>
+    <value>18</value>
   </data>
   <data name="chkCreateBibleNotebookFromTemplate.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="chkCreateBibleNotebookFromTemplate.Location" type="System.Drawing.Point, System.Drawing">
-    <value>311, 169</value>
+    <value>311, 117</value>
   </data>
   <data name="chkCreateBibleNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
     <value>123, 17</value>
@@ -553,10 +631,10 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;chkCreateBibleNotebookFromTemplate.ZOrder" xml:space="preserve">
-    <value>16</value>
+    <value>19</value>
   </data>
   <data name="cbBibleNotebook.Location" type="System.Drawing.Point, System.Drawing">
-    <value>57, 167</value>
+    <value>57, 115</value>
   </data>
   <data name="cbBibleNotebook.Size" type="System.Drawing.Size, System.Drawing">
     <value>248, 21</value>
@@ -574,7 +652,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;cbBibleNotebook.ZOrder" xml:space="preserve">
-    <value>17</value>
+    <value>20</value>
   </data>
   <data name="lblSelectSingleNotebook.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -601,7 +679,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;lblSelectSingleNotebook.ZOrder" xml:space="preserve">
-    <value>18</value>
+    <value>21</value>
   </data>
   <data name="chkCreateSingleNotebookFromTemplate.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -628,7 +706,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;chkCreateSingleNotebookFromTemplate.ZOrder" xml:space="preserve">
-    <value>19</value>
+    <value>22</value>
   </data>
   <data name="cbSingleNotebook.Location" type="System.Drawing.Point, System.Drawing">
     <value>57, 52</value>
@@ -649,13 +727,13 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;cbSingleNotebook.ZOrder" xml:space="preserve">
-    <value>20</value>
+    <value>23</value>
   </data>
   <data name="rbMultiNotebook.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="rbMultiNotebook.Location" type="System.Drawing.Point, System.Drawing">
-    <value>16, 131</value>
+    <value>16, 79</value>
   </data>
   <data name="rbMultiNotebook.Size" type="System.Drawing.Size, System.Drawing">
     <value>123, 17</value>
@@ -676,7 +754,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;rbMultiNotebook.ZOrder" xml:space="preserve">
-    <value>21</value>
+    <value>24</value>
   </data>
   <data name="rbSingleNotebook.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -703,7 +781,7 @@
     <value>tabPage1</value>
   </data>
   <data name="&gt;&gt;rbSingleNotebook.ZOrder" xml:space="preserve">
-    <value>22</value>
+    <value>25</value>
   </data>
   <data name="tabPage1.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
@@ -2079,6 +2157,9 @@
   <data name="openFileDialog.Filter" xml:space="preserve">
     <value>IStudyBibleTools Module|*.isbt</value>
   </data>
+  <metadata name="notesPagesFolderBrowserDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>430, 17</value>
+  </metadata>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -2646,6 +2727,12 @@
   </data>
   <data name="&gt;&gt;openFileDialog.Type" xml:space="preserve">
     <value>System.Windows.Forms.OpenFileDialog, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;notesPagesFolderBrowserDialog.Name" xml:space="preserve">
+    <value>notesPagesFolderBrowserDialog</value>
+  </data>
+  <data name="&gt;&gt;notesPagesFolderBrowserDialog.Type" xml:space="preserve">
+    <value>System.Windows.Forms.FolderBrowserDialog, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>MainForm</value>

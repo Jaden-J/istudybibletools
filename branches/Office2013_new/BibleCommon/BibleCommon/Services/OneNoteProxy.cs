@@ -55,16 +55,27 @@ namespace BibleCommon.Services
 
             public override int GetHashCode()
             {
-                return SectionId.GetHashCode() ^ PageId.GetHashCode() ^ PageName.GetHashCode();
+                if (ChapterPointer != null)
+                    return ChapterPointer.GetHashCode();
+                else
+                    return SectionId.GetHashCode() ^ PageId.GetHashCode() ^ PageName.GetHashCode();
             }
 
             public override bool Equals(object obj)
             {
-                BiblePageId otherObject = (BiblePageId)obj;
-                return SectionId == otherObject.SectionId
-                    && PageId == otherObject.PageId
-                    && PageName == otherObject.PageName;
+                if (obj == null)
+                    return false;
+
+                BiblePageId otherObject = (BiblePageId)obj;                
+
+                if (ChapterPointer != null)
+                    return ChapterPointer == otherObject.ChapterPointer;
+                else
+                    return SectionId == otherObject.SectionId
+                            && PageId == otherObject.PageId
+                            && PageName == otherObject.PageName;
             }
+            
         }
 
         public class CommentPageId 
@@ -165,25 +176,47 @@ namespace BibleCommon.Services
 
                 return _instance;
             }
-        }       
-
-        private Dictionary<OneNoteHierarchyContentId, HierarchyElement> _hierarchyContentCache = new Dictionary<OneNoteHierarchyContentId, HierarchyElement>();
-        private Dictionary<string, PageContent> _pageContentCache = new Dictionary<string, PageContent>();
-        private Dictionary<CommentPageId, string> _commentPagesIdsCache = new Dictionary<CommentPageId, string>();
-        private Dictionary<string, OneNoteProxy.BiblePageId> _processedBiblePages = new Dictionary<string, BiblePageId>();
-        private Dictionary<LinkId, string> _linksCache = new Dictionary<LinkId, string>();        
-        private HashSet<SimpleVersePointer> _processedVerses = new HashSet<SimpleVersePointer>();
-        private List<SortPageInfo> _sortVerseLinkPagesInfo = new List<SortPageInfo>();
-        private Dictionary<string, string> _bibleVersesLinks = null;
-        private Dictionary<string, ModuleDictionaryInfo> _moduleDictionaries = new Dictionary<string, ModuleDictionaryInfo>();
-        private Dictionary<string, Dictionary<string, string>> _dictionariesTermsLinks = new Dictionary<string, Dictionary<string, string>>();        
-
-        private bool? _isBibleVersesLinksCacheActive;
+        }
 
         protected OneNoteProxy()
         {
 
         }
+
+        private Dictionary<OneNoteHierarchyContentId, HierarchyElement> _hierarchyContentCache = new Dictionary<OneNoteHierarchyContentId, HierarchyElement>();
+        private Dictionary<string, PageContent> _pageContentCache = new Dictionary<string, PageContent>();
+        private Dictionary<CommentPageId, string> _commentPagesIdsCache = new Dictionary<CommentPageId, string>();
+        private Dictionary<VersePointer, OneNoteProxy.BiblePageId> _processedBiblePages = new Dictionary<VersePointer, BiblePageId>();
+        private Dictionary<LinkId, string> _linksCache = new Dictionary<LinkId, string>();        
+        private HashSet<SimpleVersePointer> _processedVerses = new HashSet<SimpleVersePointer>();
+        private List<SortPageInfo> _sortVerseLinkPagesInfo = new List<SortPageInfo>();
+        private Dictionary<string, string> _bibleVersesLinks = null;
+        private Dictionary<string, ModuleDictionaryInfo> _moduleDictionaries = new Dictionary<string, ModuleDictionaryInfo>();
+        private Dictionary<string, Dictionary<string, string>> _dictionariesTermsLinks = new Dictionary<string, Dictionary<string, string>>();
+        private Dictionary<string, NotesPageData> _notesPageDataList = new Dictionary<string, NotesPageData>();        
+
+        private bool? _isBibleVersesLinksCacheActive;
+
+        public Dictionary<string, NotesPageData> NotesPageDataList
+        {
+            get
+            {
+                return _notesPageDataList;
+            }
+        }
+
+        public NotesPageData GetNotesPageData(string filePath, string pageName, VersePointer chapterPointer, bool toDeserializeIfExists)
+        {
+            if (!_notesPageDataList.ContainsKey(filePath))
+            {
+                var data = new NotesPageData(filePath, pageName, chapterPointer, toDeserializeIfExists);
+                _notesPageDataList.Add(filePath, data);
+                return data;
+            }
+            else
+                return _notesPageDataList[filePath];
+        }
+       
 
         public static void Initialize()
         {
@@ -296,7 +329,7 @@ namespace BibleCommon.Services
             return NavigateToHandler.GetCommandUrlStatic(link, pageId, objectId);            
         }
 
-        public Dictionary<string, OneNoteProxy.BiblePageId> BiblePagesWithUpdatedLinksToNotesPages
+        public Dictionary<VersePointer, OneNoteProxy.BiblePageId> BiblePagesWithUpdatedLinksToNotesPages
         {
             get
             {
@@ -312,36 +345,32 @@ namespace BibleCommon.Services
             }
         }
 
-        public void AddProcessedVerseOnBiblePageWithUpdatedLinksToNotesPages(VersePointer vp, VerseNumber? verseNumber)
-        {
-            var svp = vp.ToSimpleVersePointer();
-            if (verseNumber.HasValue)
-                svp.VerseNumber = verseNumber.Value;
-
-            svp.GetAllVerses().ForEach(v =>
+        public void AddProcessedVerseOnBiblePageWithUpdatedLinksToNotesPages(List<SimpleVersePointer> verses)
+        {   
+            verses.ForEach(v =>
             {
                 if (!_processedVerses.Contains(v))
                     _processedVerses.Add(v);
             });
         }      
 
-        public void AddProcessedBiblePageWithUpdatedLinksToNotesPages(string bibleSectionId, string biblePageId, string biblePageName, VersePointer chapterPointer)
+        public void AddProcessedBiblePageWithUpdatedLinksToNotesPages(VersePointer chapterPointer, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo)
         {
-            if (!_processedBiblePages.ContainsKey(biblePageId))
+            if (!_processedBiblePages.ContainsKey(chapterPointer))
             {
-                //lock (_locker)
+                var pageId = new BiblePageId()
                 {
-                    //if (!_processedBiblePages.ContainsKey(biblePageId))  // пока в этом нет смысла
-                    {
-                        _processedBiblePages.Add(biblePageId, new BiblePageId()
-                        {
-                            SectionId = bibleSectionId,
-                            PageId = biblePageId,
-                            PageName = biblePageName,
-                            ChapterPointer = chapterPointer
-                        });
-                    }
+                    ChapterPointer = chapterPointer
+                };
+
+                if (verseHierarchyObjectInfo != null)
+                {
+                    pageId.SectionId = verseHierarchyObjectInfo.SectionId;
+                    pageId.PageId = verseHierarchyObjectInfo.PageId;
+                    pageId.PageName = verseHierarchyObjectInfo.PageName;
                 }
+
+                _processedBiblePages.Add(chapterPointer, pageId);
             }
         }
 
@@ -368,7 +397,7 @@ namespace BibleCommon.Services
                 verseLinkParentPageId = GetVerseLinkPageId(ref oneNoteApp, bibleSectionId, biblePageId, biblePageName,
                     verseLinkParentPageName, isSummaryNotesPage, null, 1, out pageWasCreated, createNewPageIfNeeded);
 
-            CommentPageId key = new CommentPageId()
+            var key = new CommentPageId()
             {
                 BiblePageId = new BiblePageId()
                 {
