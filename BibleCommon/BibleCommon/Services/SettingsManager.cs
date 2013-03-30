@@ -513,7 +513,7 @@ namespace BibleCommon.Services
             this.SelectedNotebooksForAnalyze = GetParameterValue<List<NotebookForAnalyzeInfo>>(xdoc, Consts.Constants.ParameterName_SelectedNotebooksForAnalyze, 
                                                         GetDefaultNotebooksForAnalyze(), GetNotebooksForAnalyze);
 
-            this.FolderPath_BibleNotesPages = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_FolderPathBibleNotesPages);
+            this.FolderPath_BibleNotesPages = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_FolderPathBibleNotesPages, Utils.GetNotesPagesFolderPath());
         }
 
         private T GetParameterValue<T>(XDocument xdoc, string parameterName, object defaultValue = null, Func<string, T> convertFunc = null)
@@ -565,6 +565,7 @@ namespace BibleCommon.Services
             this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
             this.UseProxyLinksForStrong = Consts.Constants.Default_UseProxyLinksForStrong;
             this.UseProxyLinksForLinks = !OneNoteUtils.IsOneNote2010Cached;
+            this.FolderPath_BibleNotesPages = Utils.GetNotesPagesFolderPath();
 
             LoadDefaultLocalazibleSettings();
         }

@@ -14,19 +14,29 @@ using System.Xml.XPath;
 
 namespace BibleCommon.Common
 {
+    public enum NotesPageType
+    {
+        Verse,
+        Chapter,
+        Detailed
+    }
+
     public class NotesPageData
     {
         public bool IsNew { get; set; }
         public string FilePath { get; set; }
         public string PageName { get; set; }
+        NotesPageType NotesPageType { get; set; }
         public VersePointer ChapterPoiner { get; set; }
+        
 
         public Dictionary<VersePointer, VerseNotesPageData> VersesNotesPageData { get; set; }
 
-        public NotesPageData(string filePath, string pageName, VersePointer chapterPointer, bool toDeserializeIfExists)
+        public NotesPageData(string filePath, string pageName, NotesPageType notesPageType, VersePointer chapterPointer, bool toDeserializeIfExists)
         {
             this.FilePath = filePath;
             this.PageName = pageName;
+            this.NotesPageType = notesPageType;
             this.ChapterPoiner = chapterPointer;
 
             this.VersesNotesPageData = new Dictionary<VersePointer, VerseNotesPageData>();
@@ -133,32 +143,19 @@ namespace BibleCommon.Common
         public void Serialize(ref Application oneNoteApp)
         {
             var chapterVersePointer = VersesNotesPageData.First().Key.GetChapterPointer();
-            var chapterLinkHref = OpenBibleVerseHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName);            
+            
 
             var xdoc = new XDocument(
                         new XElement("html", 
                             new XElement("head", 
                                 new XElement("meta", new XAttribute("http-equiv", "X-UA-Compatible"), new XAttribute("content", "IE=edge")),
-                                new XElement("title", string.Format("{0} {1} [{1}]", PageName,  chapterVersePointer.ChapterName)),
+                                new XElement("title", string.Format("{0} {1}", PageName,  chapterVersePointer.ChapterName)),
                                 new XElement("link", new XAttribute("type", "text/css"), new XAttribute("rel", "stylesheet"), new XAttribute("href", "../../../" + Constants.NotesPageStyleFileName))
                             )));
 
             var bodyEl = xdoc.Root.AddEl(new XElement("body"));
 
-            bodyEl.Add(new XElement("div", new XAttribute("class", "pageTitle"),
-                        new XElement("span",
-                            new XAttribute("class", "pageTitleText"),
-                            PageName),
-                        new XElement("span",
-                            new XAttribute("class", "pageTitleLink"),
-                            "["),
-                        new XElement("a",
-                            new XAttribute("class", "pageTitleLink"),
-                            new XAttribute("href", chapterLinkHref),
-                            chapterVersePointer.ChapterName),
-                        new XElement("span",
-                            new XAttribute("class", "pageTitleLink"),
-                            "]")));
+            AddPageTitle(bodyEl, chapterVersePointer);           
             
             foreach(var verseNotesPageData in VersesNotesPageData.OrderBy(v => v.Key))
             {
@@ -171,6 +168,52 @@ namespace BibleCommon.Common
 
             xdoc.AddFirst(new XDocumentType("html", null, null, null));
             xdoc.Save(this.FilePath);
+        }
+
+        private void AddPageTitle(XElement bodyEl, VersePointer chapterVersePointer)
+        {            
+            var chapterLinkHref = OpenBibleVerseHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName);
+
+            XObject pageTitleAdditionalLinkEl = new XCData(string.Empty);
+            if (NotesPageType == Common.NotesPageType.Chapter) 
+            {
+                if (SettingsManager.Instance.RubbishPage_Use)
+                {
+                    pageTitleAdditionalLinkEl = new XElement("a",
+                                                    new XAttribute("class", "chapterNotesPage"),
+                                                    new XAttribute("href",
+                                                        OpenNotesPageHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName, Common.NotesPageType.Detailed)),
+                                                    Resources.Constants.DetailedChapterNotes);
+                }
+            }
+            else if (NotesPageType == Common.NotesPageType.Verse)
+            {
+                pageTitleAdditionalLinkEl = new XElement("a",
+                                                    new XAttribute("class", "chapterNotesPage"),
+                                                    new XAttribute("href",
+                                                        OpenNotesPageHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName, Common.NotesPageType.Chapter)),
+                                                    Resources.Constants.ChapterNotes);
+            }
+
+            bodyEl.Add(new XElement("table", new XAttribute("class", "pageTitle"), new XAttribute("cellpadding", "0"), new XAttribute("cellspacing", "0"),
+                        new XElement("tr",
+                            new XElement("td", new XAttribute("class", "tdPageTitle"),
+                                new XElement("span",
+                                    new XAttribute("class", "pageTitleText"),
+                                    PageName),
+                                new XElement("span",
+                                    new XAttribute("class", "pageTitleLink"),
+                                    "["),
+                                new XElement("a",
+                                    new XAttribute("class", "pageTitleLink"),
+                                    new XAttribute("href", chapterLinkHref),
+                                    chapterVersePointer.ChapterName),
+                                new XElement("span",
+                                    new XAttribute("class", "pageTitleLink"),
+                                    "]")),
+                            new XElement("td", new XAttribute("class", "tdChapterNotesPage"),
+                                    pageTitleAdditionalLinkEl)
+                        )));
         }
 
         private void SerializeLevel(ref Application oneNoteApp, NotesPageHierarchyLevelBase hierarchyLevel, XElement parentEl, int levelIndex, int? index)

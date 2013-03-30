@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using BibleCommon.Contracts;
 using BibleCommon.Handlers;
 using System.Threading;
+using BibleCommon.Services;
 
 namespace ISBTCommandHandler
 {
@@ -26,7 +27,7 @@ namespace ISBTCommandHandler
                                                     };
 
         public CommandForm()
-        {   
+        {
             InitializeComponent();
 
             var args = Environment.GetCommandLineArgs();
@@ -63,9 +64,7 @@ namespace ISBTCommandHandler
 
                     if (handler is OpenNotesPageHandler)
                     {
-                        var verse = ((OpenNotesPageHandler)handler).Verse;
-                        if (verse.IsValid)
-                            OpenNotesPage(verse);
+                        OpenNotesPage(((OpenNotesPageHandler)handler).GetVerseFilePath());
                     }                    
                         
                     break;
@@ -74,12 +73,12 @@ namespace ISBTCommandHandler
         }
 
         private NotesPageForm _notesPageForm = null;
-        private void OpenNotesPage(BibleCommon.Common.VersePointer vp)
+        private void OpenNotesPage(string filePath)
         {
             if (_notesPageForm == null)
                 _notesPageForm = new NotesPageForm();
 
-            _notesPageForm.OpenNotesPage(vp);
+            _notesPageForm.OpenNotesPage(filePath);
         }       
     }
 }

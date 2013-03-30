@@ -182,7 +182,7 @@ namespace BibleConfigurator
 
                     if (_moduleWasChanged)
                     {
-                        TryToSearchNotebooksForNewModule(module);
+                        TryToSearchNotebooksForNewModule(module);                        
                         _moduleWasChanged = false;
                     }
 
@@ -197,9 +197,9 @@ namespace BibleConfigurator
 
                     if (!chkUseFolderForBibleNotesPages.Checked)
                     {
-                        SaveMultiNotebookParameters(module, ContainerType.BibleNotesPages,
-                            chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, BibleNotesPagesNotebookFromTemplatePath);
-                    }
+                    SaveMultiNotebookParameters(module, ContainerType.BibleNotesPages,
+                        chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, BibleNotesPagesNotebookFromTemplatePath);                    
+                }
                     else
                     {
                         SettingsManager.Instance.FolderPath_BibleNotesPages = notesPagesFolderBrowserDialog.SelectedPath;
@@ -335,8 +335,8 @@ namespace BibleConfigurator
                 {
                     var moduleInfo = ModulesManager.GetModuleInfo(dictionaryInfo.ModuleName);
                     if (moduleInfo != null && moduleInfo.Type != ModuleType.Strong)                        
-                        return true;
-                }
+                    return true;
+            }
             }
 
             return false;
@@ -702,7 +702,7 @@ namespace BibleConfigurator
                                 if (notebookType == ContainerType.BibleComments)
                                     SettingsManager.Instance.NotebookId_BibleComments = notebookId;
                                 else
-                                    SettingsManager.Instance.NotebookId_BibleStudy = notebookId;        
+                                    SettingsManager.Instance.NotebookId_BibleStudy = notebookId;
 
                                 var notebookIdLocal = notebookId;
                                 if (SettingsManager.Instance.SelectedNotebooksForAnalyze != null 
@@ -737,7 +737,7 @@ namespace BibleConfigurator
             }
 
             return false;
-        }        
+        }
 
         private void SearchForCorrespondenceSectionGroups(ModuleInfo module, string notebookId)
         {
@@ -894,7 +894,7 @@ namespace BibleConfigurator
         }      
 
         private void MainForm_Load(object sender, EventArgs e)
-        {   
+        {
             _loadForm = new LoadForm();
 
             _loadForm.Show();
@@ -963,18 +963,21 @@ namespace BibleConfigurator
                 Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.BibleComments).Name),
                 _notebooks, SettingsManager.Instance.NotebookId_BibleComments, cbBibleCommentsNotebook, chkCreateBibleCommentsNotebookFromTemplate);
 
-            if (!SettingsManager.Instance.StoreNotesPagesInFolder)
-            {
-                SetNotebookParameters(rbMultiNotebook.Checked, !string.IsNullOrEmpty(bibleNotesPagesNotebookId) ? _notebooks[bibleNotesPagesNotebookId] :
-                    Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.BibleNotesPages).Name),
-                    _notebooks, SettingsManager.Instance.NotebookId_BibleNotesPages, cbBibleNotesPagesNotebook, chkCreateBibleNotesPagesNotebookFromTemplate);
-                chkUseFolderForBibleNotesPages.Checked = false;
+            if (SettingsManager.Instance.StoreNotesPagesInFolder || !_notebooks.ContainsKey(SettingsManager.Instance.NotebookId_BibleNotesPages))
+            {                
+                notesPagesFolderBrowserDialog.SelectedPath = SettingsManager.Instance.FolderPath_BibleNotesPages;                
+                tbBibleNotesPagesFolder.Text = SettingsManager.Instance.FolderPath_BibleNotesPages;
+                chkUseFolderForBibleNotesPages.Checked = true; 
             }
             else
             {
-                notesPagesFolderBrowserDialog.SelectedPath = SettingsManager.Instance.FolderPath_BibleNotesPages;
-                tbBibleNotesPagesFolder.Text = SettingsManager.Instance.FolderPath_BibleNotesPages;
-                chkUseFolderForBibleNotesPages.Checked = true;
+                SetNotebookParameters(rbMultiNotebook.Checked, 
+                                      !string.IsNullOrEmpty(bibleNotesPagesNotebookId) 
+                                                    ? _notebooks[bibleNotesPagesNotebookId]
+                                                    : Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.BibleNotesPages).Name),
+                                      _notebooks, SettingsManager.Instance.NotebookId_BibleNotesPages, cbBibleNotesPagesNotebook, chkCreateBibleNotesPagesNotebookFromTemplate);
+
+                chkUseFolderForBibleNotesPages.Checked = false;
             }
 
             tbBookOverviewName.Text = SettingsManager.Instance.SectionName_DefaultBookOverview;
@@ -1020,7 +1023,7 @@ namespace BibleConfigurator
         }
 
         private string SearchForNotebook(ModuleInfo module, IEnumerable<string> notebooksIds, ContainerType notebookType)
-        {
+        {   
             foreach (string notebookId in notebooksIds)
             {
                 string errorText;
@@ -1057,7 +1060,7 @@ namespace BibleConfigurator
             BibleNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
             BibleCommentsNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
             BibleNotesPagesNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
-            BibleStudyNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;            
+            BibleStudyNotebookFromTemplatePath = folderBrowserDialog.SelectedPath;
         }
 
         private void PrepareFolderBrowsers()
@@ -1071,14 +1074,14 @@ namespace BibleConfigurator
 
             
             folderBrowserDialog.SelectedPath = defaultNotebookFolderPath;
-            folderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetNotebookFolder;            
+            folderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetNotebookFolder;
 
             string toolTipMessage = BibleCommon.Resources.Constants.DefineNotebookDirectory;
             FormExtensions.SetToolTip(btnSingleNotebookSetPath, toolTipMessage);
             FormExtensions.SetToolTip(btnBibleNotebookSetPath, toolTipMessage);
             FormExtensions.SetToolTip(btnBibleStudyNotebookSetPath, toolTipMessage);
             FormExtensions.SetToolTip(btnBibleCommentsNotebookSetPath, toolTipMessage);
-            FormExtensions.SetToolTip(btnBibleNotesPagesNotebookSetPath, toolTipMessage);            
+            FormExtensions.SetToolTip(btnBibleNotesPagesNotebookSetPath, toolTipMessage);
                 
             notesPagesFolderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetFolder;
             FormExtensions.SetToolTip(btnBibleNotesPagesSetFolder, BibleCommon.Resources.Constants.ConfiguratorSetFolder);
@@ -1170,7 +1173,7 @@ namespace BibleConfigurator
         }
 
         private void btnSingleNotebookParameters_Click(object sender, EventArgs e)
-        {
+        {   
             try
             {
                 string notebookName;
@@ -1178,34 +1181,34 @@ namespace BibleConfigurator
                 if (!string.IsNullOrEmpty(notebookId))
                 {                   
                     
-                    var module = ModulesManager.GetCurrentModuleInfo();
-                    string errorText;
+                var module = ModulesManager.GetCurrentModuleInfo();
+                string errorText;
                     if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, ContainerType.Single, out errorText))
-                    {
-                        if (_notebookParametersForm == null)
-                            _notebookParametersForm = new NotebookParametersForm(_oneNoteApp, notebookId);
+                {
+                    if (_notebookParametersForm == null)
+                        _notebookParametersForm = new NotebookParametersForm(_oneNoteApp, notebookId);
 
-                        if (_notebookParametersForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                        {
-                            SettingsManager.Instance.SectionGroupId_Bible = _notebookParametersForm.GroupedSectionGroups[ContainerType.Bible];
-                            SettingsManager.Instance.SectionGroupId_BibleStudy = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleStudy];
-                            SettingsManager.Instance.SectionGroupId_BibleComments = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleComments];
-                            SettingsManager.Instance.SectionGroupId_BibleNotesPages = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleComments];
+                    if (_notebookParametersForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {   
+                        SettingsManager.Instance.SectionGroupId_Bible = _notebookParametersForm.GroupedSectionGroups[ContainerType.Bible];
+                        SettingsManager.Instance.SectionGroupId_BibleStudy = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleStudy];
+                        SettingsManager.Instance.SectionGroupId_BibleComments = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleComments];
+                        SettingsManager.Instance.SectionGroupId_BibleNotesPages = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleComments];
 
-                            _wasSearchedSectionGroupsInSingleNotebook = true;  // нашли необходимые группы секций. 
-                        }
-                    }
-                    else
-                    {
-                        FormLogger.LogError(string.Format(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected + "\n" + errorText, notebookName, 
-                            ContainerTypeHelper.GetContainerTypeName(ContainerType.Single)));
+                        _wasSearchedSectionGroupsInSingleNotebook = true;  // нашли необходимые группы секций. 
                     }
                 }
                 else
                 {
-                    FormLogger.LogMessage(BibleCommon.Resources.Constants.ConfiguratorNotebookNotDefined);
+                        FormLogger.LogError(string.Format(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected + "\n" + errorText, notebookName, 
+                            ContainerTypeHelper.GetContainerTypeName(ContainerType.Single)));
                 }
             }
+            else
+            {
+                FormLogger.LogMessage(BibleCommon.Resources.Constants.ConfiguratorNotebookNotDefined);
+            }
+        }
             catch (Exception ex)
             {
                 FormLogger.LogError(ex);
@@ -1802,6 +1805,7 @@ namespace BibleConfigurator
                         SettingsManager.Instance.ModuleShortName = moduleInfo.ShortName;
                         ReLoadModulesInfo();
                         ReLoadParameters(SettingsManager.Instance.ModuleShortName != _originalModuleShortName);
+                        tbcMain.SelectedTab = tbcMain.TabPages[0];
                     }
                     break;
                 case ModuleType.Strong:
@@ -1928,7 +1932,7 @@ namespace BibleConfigurator
                     }
                 }
             }
-        }
+        }                                             
 
         private void chkUseFolderForBibleNotesPages_CheckedChanged(object sender, EventArgs e)
         {
@@ -1940,7 +1944,7 @@ namespace BibleConfigurator
 
 
             chkCreateBibleNotesPagesNotebookFromTemplate_CheckedChanged(this, null);
-        }
+    }
 
         private void btnBibleNotesPagesSetFolder_Click(object sender, EventArgs e)
         {

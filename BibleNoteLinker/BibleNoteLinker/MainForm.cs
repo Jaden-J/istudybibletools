@@ -63,7 +63,7 @@ namespace BibleNoteLinker
                 Logger.LogMessageParams("{0}: {1}", BibleCommon.Resources.Constants.StartTime, dt.ToLongTimeString());
                 StartAnalyze();
                 Logger.LogMessageParams("{0}: {1}", BibleCommon.Resources.Constants.TimeSpent, DateTime.Now.Subtract(dt));
-
+                this.SetFocus();                
             }
             catch (ProcessAbortedByUserException)
             {
@@ -75,7 +75,6 @@ namespace BibleNoteLinker
             }
 
             pbMain.Value = pbMain.Maximum = 1;
-
 
             string message;            
 

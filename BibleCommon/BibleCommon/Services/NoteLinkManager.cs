@@ -74,12 +74,7 @@ namespace BibleCommon.Services
             public XmlCursorPosition VersePosition { get; set; }
         }
 
-        public enum NotesPageType
-        {
-            Verse,
-            Chapter,            
-            RubbishChapter
-        }
+        
 
         #endregion        
         
@@ -365,7 +360,7 @@ namespace BibleCommon.Services
                                 chapterInfo.ChapterPosition, true,
                                 chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
                                 notePageId, chapterInfo.TextElementObjectId, false,
-                                NotesPageType.RubbishChapter, SettingsManager.Instance.PageWidth_RubbishNotes, 1, chapterInfo.IsImportantChapter,
+                                NotesPageType.Detailed, SettingsManager.Instance.PageWidth_RubbishNotes, 1, chapterInfo.IsImportantChapter,
                                 (chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
                                     || chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName) ? true : force, false);
                         }
@@ -965,7 +960,7 @@ namespace BibleCommon.Services
                     TryLinkVerseToNotesPage(ref oneNoteApp, vp, verseWeight, searchResult.ResultType, versePosition,
                         notePageId, notePageContentObjectId, linkDepth,
                         false, SettingsManager.Instance.RubbishPage_ExcludedVersesLinking, 
-                        NotesPageType.RubbishChapter, SettingsManager.Instance.PageWidth_RubbishNotes, 1, 
+                        NotesPageType.Detailed, SettingsManager.Instance.PageWidth_RubbishNotes, 1, 
                         globalChapterSearchResult, pageChaptersSearchResult,
                         isInBrackets, isExcluded, isImportantVerse, force, !needToQueueIfChapter, processAsExtendedVerse, out localHierarchySearchResult, ref processedVerses, null);                
 
@@ -1053,6 +1048,8 @@ namespace BibleCommon.Services
                                                         {
                                                             ResultType = HierarchySearchManager.HierarchySearchResultType.NotFound
                                                         };
+                    BibleCommon.Services.Logger.LogWarning(BibleCommon.Resources.Constants.VerseNotFound, vp.OriginalVerseName);
+                    //todo: нужно добавить новый провайдер, который будет делать ту же сложную работу, что и HierarchySearchManager но только с помощью SettingsManager.Instance.CurrentBibleContentCached   (чтобы понимать ссылки типа  Иуд 5)
                 }
             }
             else
@@ -1266,7 +1263,7 @@ namespace BibleCommon.Services
             var key = new NotePageProcessedVerseId() { NotePageId = notePageId.UniqueName, NotesPageName = notesPageName };
             var processedVerses = AddNotePageProcessedVerse(key, vp, verseHierarchyObjectInfo.VerseNumber);            
 
-            if (createLinkToNotesPage && (notesPageWasModified || force))
+            if (createLinkToNotesPage && (notesPageWasModified || force || isChapter))
             {
                 OneNoteProxy.Instance.AddProcessedBiblePageWithUpdatedLinksToNotesPages(vp.GetChapterPointer(), verseHierarchyObjectInfo);
 
@@ -1304,7 +1301,7 @@ namespace BibleCommon.Services
                 case NotesPageType.Chapter:
                     notesPageName = SettingsManager.Instance.PageName_Notes;
                     break;
-                case NotesPageType.RubbishChapter:
+                case NotesPageType.Detailed:
                     notesPageName = SettingsManager.Instance.PageName_RubbishNotes;
                     break;
                 default:
