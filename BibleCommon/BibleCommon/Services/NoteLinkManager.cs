@@ -74,12 +74,7 @@ namespace BibleCommon.Services
             public XmlCursorPosition VersePosition { get; set; }
         }
 
-        public enum NotesPageType
-        {
-            Verse,
-            Chapter,            
-            RubbishChapter
-        }
+        
 
         #endregion        
         
@@ -365,7 +360,7 @@ namespace BibleCommon.Services
                                 chapterInfo.ChapterPosition, true,
                                 chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
                                 notePageId, chapterInfo.TextElementObjectId, false,
-                                NotesPageType.RubbishChapter, SettingsManager.Instance.PageWidth_RubbishNotes, 1, chapterInfo.IsImportantChapter,
+                                NotesPageType.Detailed, SettingsManager.Instance.PageWidth_RubbishNotes, 1, chapterInfo.IsImportantChapter,
                                 (chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
                                     || chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName) ? true : force, false);
                         }
@@ -965,7 +960,7 @@ namespace BibleCommon.Services
                     TryLinkVerseToNotesPage(ref oneNoteApp, vp, verseWeight, searchResult.ResultType, versePosition,
                         notePageId, notePageContentObjectId, linkDepth,
                         false, SettingsManager.Instance.RubbishPage_ExcludedVersesLinking, 
-                        NotesPageType.RubbishChapter, SettingsManager.Instance.PageWidth_RubbishNotes, 1, 
+                        NotesPageType.Detailed, SettingsManager.Instance.PageWidth_RubbishNotes, 1, 
                         globalChapterSearchResult, pageChaptersSearchResult,
                         isInBrackets, isExcluded, isImportantVerse, force, !needToQueueIfChapter, processAsExtendedVerse, out localHierarchySearchResult, ref processedVerses, null);                
 
@@ -1304,7 +1299,7 @@ namespace BibleCommon.Services
                 case NotesPageType.Chapter:
                     notesPageName = SettingsManager.Instance.PageName_Notes;
                     break;
-                case NotesPageType.RubbishChapter:
+                case NotesPageType.Detailed:
                     notesPageName = SettingsManager.Instance.PageName_RubbishNotes;
                     break;
                 default:

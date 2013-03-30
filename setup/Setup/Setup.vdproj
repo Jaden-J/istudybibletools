@@ -28,6 +28,12 @@
         "Entry"
         {
         "MsmKey" = "8:_1793CEEA53D253C1B75AF089A5525B0D"
+        "OwnerKey" = "8:_CFAFEF9604CA4C94A980F524EF75E965"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1793CEEA53D253C1B75AF089A5525B0D"
         "OwnerKey" = "8:_FFEA549306074C1F816582BF2A48D211"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -148,6 +154,12 @@
         "Entry"
         {
         "MsmKey" = "8:_8571B0778C1FEEE46A98FF1409607CAC"
+        "OwnerKey" = "8:_CFAFEF9604CA4C94A980F524EF75E965"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8571B0778C1FEEE46A98FF1409607CAC"
         "OwnerKey" = "8:_CA4EBCE7EEAD491A924378B1B80C766E"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -185,6 +197,12 @@
         {
         "MsmKey" = "8:_A0B13D6137CE0EE568CF37B719D9CB54"
         "OwnerKey" = "8:_8571B0778C1FEEE46A98FF1409607CAC"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A0B13D6137CE0EE568CF37B719D9CB54"
+        "OwnerKey" = "8:_CFAFEF9604CA4C94A980F524EF75E965"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -299,6 +317,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_3FC71294DAB247EDA89368E781DCDC4E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_CFAFEF9604CA4C94A980F524EF75E965"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -485,10 +509,10 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0"
                     {
-                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
-                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    "Name" = "8:Microsoft .NET Framework 4 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0"
                     }
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
                     {
@@ -784,7 +808,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=2.6.38.805, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=3.0.3.900, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_8571B0778C1FEEE46A98FF1409607CAC"
@@ -1090,7 +1114,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OneNote IStudyBibleTools"
         "ProductCode" = "8:{7277C990-BBD2-4BEF-8C3A-2BCF400E5CC5}"
-        "PackageCode" = "8:{F68587E5-A270-4B1B-A0FD-ADD66E441DE1}"
+        "PackageCode" = "8:{D983B7EA-6D7C-4465-A516-968620506E29}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

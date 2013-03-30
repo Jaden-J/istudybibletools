@@ -23,6 +23,12 @@ namespace BibleCommon.Handlers
         /// Свойство доступно только после выполнения метода ExecuteCommand()
         /// </summary>
         public VersePointer Verse { get; set; }
+        public NotesPageType NotesPageType { get; set; }
+
+        public string GetVerseFilePath()
+        {
+            return GetNotesPageFilePath(Verse, NotesPageType);
+        }
 
         /// <summary>
         /// 
@@ -30,20 +36,20 @@ namespace BibleCommon.Handlers
         /// <param name="vp"></param>
         /// <param name="moduleName">может быть null</param>
         /// <returns></returns>
-        public string GetCommandUrl(VersePointer vp, string moduleName)
+        public string GetCommandUrl(VersePointer vp, string moduleName, NotesPageType notesPageType)
         {
-            return GetCommandUrlStatic(vp, moduleName);
+            return GetCommandUrlStatic(vp, moduleName, notesPageType);
         }
 
-        public static string GetCommandUrlStatic(VersePointer vp, string moduleName)
+        public static string GetCommandUrlStatic(VersePointer vp, string moduleName, NotesPageType notesPageType)
         {
-            return string.Format("{0}{1}/{2} {3}{4};{5}",
+            return string.Format("{0}{1}/{2} {3}{4};{5};{6}",
                 _protocolName,
                 moduleName,
                 vp.Book.Index,
                 vp.Chapter.Value,
                 !vp.IsChapter ? ":" + vp.VerseNumber : string.Empty,
-                vp.OriginalVerseName);
+                vp.OriginalVerseName, notesPageType);
         }
 
         public bool IsProtocolCommand(params string[] args)
@@ -60,11 +66,17 @@ namespace BibleCommon.Handlers
                     throw new ArgumentException(string.Format("Ivalid versePointer args: {0}", args[0]));            
 
                 var verseString = Uri.UnescapeDataString(parts[1]);
-
                 Verse = new VersePointer(verseString);
-
                 if (!Verse.IsValid)                    
                     throw new Exception(BibleCommon.Resources.Constants.BibleVersePointerCanNotParseString);
+
+                if (parts.Length == 3)
+                {
+                    var notesPageTypeString = Uri.UnescapeDataString(parts[2]);
+                    NotesPageType = (NotesPageType)Enum.Parse(typeof(NotesPageType), notesPageTypeString);
+                }
+                else
+                    NotesPageType = Common.NotesPageType.Verse;
             }
             catch (InvalidModuleException imEx)
             {
@@ -74,7 +86,7 @@ namespace BibleCommon.Handlers
             {
                 FormLogger.LogError(ex);
             }
-        }
+        }        
 
         /// <summary>
         /// Если используем файловую систему для хранения сводных заметок
@@ -82,7 +94,7 @@ namespace BibleCommon.Handlers
         /// <param name="vp"></param>
         /// <param name="notesPageType"></param>
         /// <returns></returns>
-        public static string GetNotesPageFilePath(VersePointer vp, NoteLinkManager.NotesPageType notesPageType)
+        public static string GetNotesPageFilePath(VersePointer vp, NotesPageType notesPageType)
         {
             var path =
                     Path.Combine(
@@ -92,9 +104,9 @@ namespace BibleCommon.Handlers
 
             string fileName;
 
-            if (notesPageType == NoteLinkManager.NotesPageType.RubbishChapter)
+            if (notesPageType == NotesPageType.Detailed)
                 fileName = _rubbishPageName;
-            else if (notesPageType == NoteLinkManager.NotesPageType.Chapter)
+            else if (notesPageType == NotesPageType.Chapter)
                 fileName = "0";            
             else 
                 fileName = vp.VerseNumber.ToString();
