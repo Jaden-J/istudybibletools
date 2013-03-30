@@ -27,17 +27,17 @@ namespace ISBTCommandHandler
         public bool ExitApplication { get; set; }
 
         public NotesPageForm()
-        {            
+        {   
+            this.SetFormUICulture();
+
             InitializeComponent();            
 
             OpenBibleVerseHandler = new OpenBibleVerseHandler();
             NavigateToHandler = new NavigateToHandler();
         }
 
-        public void OpenNotesPage(VersePointer vp)
-        {
-            var verseNotesPageFilePath = GetVerseNotesPageFilePath(vp);
-
+        public void OpenNotesPage(string verseNotesPageFilePath)
+        {   
             if (!string.IsNullOrEmpty(verseNotesPageFilePath))
             {
                 if (!File.Exists(verseNotesPageFilePath))
@@ -52,13 +52,7 @@ namespace ISBTCommandHandler
                     this.SetFocus();
                 }
             }
-        }
-
-        private string GetVerseNotesPageFilePath(VersePointer vp)
-        {
-            return OpenNotesPageHandler.GetNotesPageFilePath(vp, 
-                SettingsManager.Instance.UseDifferentPagesForEachVerse ? NoteLinkManager.NotesPageType.Verse : NoteLinkManager.NotesPageType.Chapter);
-        }
+        }        
 
         private void NotesPageForm_Load(object sender, EventArgs e)
         {

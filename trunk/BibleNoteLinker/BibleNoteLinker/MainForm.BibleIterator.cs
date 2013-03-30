@@ -109,7 +109,7 @@ namespace BibleNoteLinker
                 {
                     _oneNoteApp.NavigateTo(currentPage.Id, null);
                 }
-            });
+            });            
         }
 
         private int GetStagesCount()

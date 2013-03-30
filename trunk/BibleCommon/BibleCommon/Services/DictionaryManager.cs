@@ -191,7 +191,7 @@ namespace BibleCommon.Services
                             oneNoteAppSafe.SyncHierarchy(dictionarySectionId);
                         });
 
-                        Utils.Wait(checkIfExternalProcessAborted);
+                        Utils.WaitFor3Seconds(checkIfExternalProcessAborted);
 
                         WaitWhileDictionaryIsCreating(ref oneNoteApp, dictionarySectionId, dictionaryPagesCount, attemptsCount + 1, checkIfExternalProcessAborted);
                     }
