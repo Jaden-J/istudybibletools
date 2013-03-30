@@ -67,7 +67,7 @@ namespace BibleCommon.Services
             if (SettingsManager.Instance.StoreNotesPagesInFolder || (SettingsManager.Instance.UseDifferentPagesForEachVerse && SettingsManager.Instance.UseProxyLinksForLinks))
             {
                 var link = OpenNotesPageHandler.GetCommandUrlStatic(vp, SettingsManager.Instance.ModuleShortName, 
-                                                        SettingsManager.Instance.UseDifferentPagesForEachVerse ? NotesPageType.Verse : NotesPageType.Chapter);                
+                                                        SettingsManager.Instance.UseDifferentPagesForEachVerse && !vp.IsChapter ? NotesPageType.Verse : NotesPageType.Chapter);                
                 string newNotesPageLink = string.Format("<font size='2pt'>{0}</font>",
                                 OneNoteUtils.GetLink(SettingsManager.Instance.PageName_Notes, link));
 

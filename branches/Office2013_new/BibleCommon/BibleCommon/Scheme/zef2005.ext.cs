@@ -43,13 +43,17 @@ namespace BibleCommon.Scheme
         {
             verseNumber = vp.VerseNumber;
             try
-            {                
+            {
                 bool isEmpty;
                 bool isFullVerse;
                 this.BooksDictionary[vp.BookIndex].GetVerseContent(vp, moduleShortName, string.Empty, out verseNumber, out isEmpty, out isFullVerse);
                 return true;
             }
             catch (VerseNotFoundException)
+            {
+                return false;
+            }
+            catch (ChapterNotFoundException)
             {
                 return false;
             }

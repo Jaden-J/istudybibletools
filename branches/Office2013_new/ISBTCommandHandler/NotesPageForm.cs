@@ -27,7 +27,9 @@ namespace ISBTCommandHandler
         public bool ExitApplication { get; set; }
 
         public NotesPageForm()
-        {            
+        {   
+            this.SetFormUICulture();
+
             InitializeComponent();            
 
             OpenBibleVerseHandler = new OpenBibleVerseHandler();
