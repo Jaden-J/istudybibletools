@@ -408,8 +408,8 @@ namespace BibleCommon.Services
             var primaryBibleObjectsSearchResult = HierarchySearchManager.GetHierarchyObject(ref oneNoteApp,
                     SettingsManager.Instance.NotebookId_Bible, parallelVerse.ToVersePointer(SettingsManager.Instance.CurrentModuleCached), HierarchySearchManager.FindVerseLevel.AllVerses);
 
-            if (primaryBibleObjectsSearchResult.ResultType != HierarchySearchManager.HierarchySearchResultType.Successfully
-                || primaryBibleObjectsSearchResult.HierarchyStage != HierarchySearchManager.HierarchyStage.ContentPlaceholder)
+            if (primaryBibleObjectsSearchResult.ResultType != BibleHierarchySearchResultType.Successfully
+                || primaryBibleObjectsSearchResult.HierarchyStage != BibleHierarchyStage.ContentPlaceholder)
                 throw new VerseNotFoundException(parallelVerse, SettingsManager.Instance.ModuleShortName, BaseVersePointerException.Severity.Error);
 
             VerseNumber? baseVerseNumber;

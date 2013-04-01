@@ -51,7 +51,7 @@ namespace BibleCommon.Services
 
         public string UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, 
            decimal verseWeight, XmlCursorPosition versePosition,
-           bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
+           bool isChapter, BibleHierarchyObjectInfo verseHierarchyObjectInfo,
            HierarchyElementInfo notePageInfo, string notesPageId, string notePageContentObjectId,
            string notesPageName, int notesPageWidth, bool isImportantVerse, bool force, bool processAsExtendedVerse, out bool rowWasAdded)
         {
@@ -82,7 +82,7 @@ namespace BibleCommon.Services
 
 
         private XElement GetVerseRootElementAndCreateIfNotExists(ref Application oneNoteApp, VersePointer vp, bool isChapter,
-           int mainColumnWidth, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
+           int mainColumnWidth, BibleHierarchyObjectInfo verseHierarchyObjectInfo,
            OneNoteProxy.PageContent notesPageDocument, out bool rowWasAdded)
         {
             rowWasAdded = false;
@@ -109,7 +109,7 @@ namespace BibleCommon.Services
         }      
 
         private XElement CreateRootElelementForNotesPage(ref Application oneNoteApp, VersePointer vp, bool isChapter, XElement sizeEl,
-            HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo, OneNoteProxy.PageContent notesPageDocument)
+            BibleHierarchyObjectInfo verseHierarchyObjectInfo, OneNoteProxy.PageContent notesPageDocument)
         {
             var rootElParent = notesPageDocument.Content.Root.XPathSelectElement("one:Outline/one:OEChildren", notesPageDocument.Xnm);
 
