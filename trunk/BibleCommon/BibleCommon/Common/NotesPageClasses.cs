@@ -27,8 +27,7 @@ namespace BibleCommon.Common
         public string FilePath { get; set; }
         public string PageName { get; set; }
         NotesPageType NotesPageType { get; set; }
-        public VersePointer ChapterPoiner { get; set; }
-        
+        public VersePointer ChapterPoiner { get; set; }        
 
         public Dictionary<VersePointer, VerseNotesPageData> VersesNotesPageData { get; set; }
 

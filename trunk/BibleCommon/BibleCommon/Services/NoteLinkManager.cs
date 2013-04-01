@@ -55,7 +55,7 @@ namespace BibleCommon.Services
         {
             internal string TextElementObjectId { get; set; }
             internal VersePointerSearchResult VersePointerSearchResult { get; set; }
-            internal HierarchySearchManager.HierarchySearchResult HierarchySearchResult { get; set; }
+            internal BibleSearchResult HierarchySearchResult { get; set; }
             internal bool IsImportantChapter { get; set; }
             internal XmlCursorPosition ChapterPosition { get; set; }
             internal decimal ChapterWeight { get; set; }
@@ -565,8 +565,8 @@ namespace BibleCommon.Services
 
             if (onVersePointerFound != null)
                 onVersePointerFound(verseInfo.SearchResult);
-            
-            HierarchySearchManager.HierarchySearchResult hierarchySearchResult;            
+
+            BibleSearchResult hierarchySearchResult;            
 
             if (!verseInfo.LinkInfo.IsLink
                 || (verseInfo.LinkInfo.LinkType == VerseRecognitionManager.LinkInfo.LinkTypeEnum.LinkAfterQuickAnalyze && (linkDepth >= AnalyzeDepth.Full || force))
@@ -773,11 +773,11 @@ namespace BibleCommon.Services
             string textElementValue, HierarchyElementInfo notePageId, string notePageContentObjectId,
             AnalyzeDepth linkDepth, VersePointerSearchResult globalChapterSearchResult, List<VersePointerSearchResult> pageChaptersSearchResult,
             VerseRecognitionManager.LinkInfo linkInfo, bool isInBrackets, bool isExcluded, bool isImportantVerse, bool force,
-            out int newEndVerseIndex, out HierarchySearchManager.HierarchySearchResult hierarchySearchResult, out bool needToQueueIfChapter, 
+            out int newEndVerseIndex, out BibleSearchResult hierarchySearchResult, out bool needToQueueIfChapter, 
             out decimal verseWeight, out XmlCursorPosition versePosition)
         {
-            hierarchySearchResult = new HierarchySearchManager.HierarchySearchResult() { ResultType = BibleHierarchySearchResultType.NotFound };
-            var localHierarchySearchResult = new HierarchySearchManager.HierarchySearchResult() { ResultType = BibleHierarchySearchResultType.NotFound };
+            hierarchySearchResult = new BibleSearchResult() { ResultType = BibleHierarchySearchResultType.NotFound };
+            var localHierarchySearchResult = new BibleSearchResult() { ResultType = BibleHierarchySearchResultType.NotFound };
             needToQueueIfChapter = true;  // по умолчанию - анализируем главы в самом конце            
             verseWeight = 1;
             versePosition = new XmlCursorPosition((IXmlLineInfo)searchResult.TextElement);
@@ -1020,8 +1020,8 @@ namespace BibleCommon.Services
             NotesPageType notesPageType, int notesPageWidth, int notesPageLevel, 
             VersePointerSearchResult globalChapterSearchResult, List<VersePointerSearchResult> pageChaptersSearchResult,
             bool isInBrackets, bool isExcluded, bool isImportantVerse, bool force, bool forceAnalyzeChapter, bool processAsExtendedVerse,
-            out HierarchySearchManager.HierarchySearchResult hierarchySearchResult, ref List<SimpleVersePointer> processedVerses,
-            Action<HierarchySearchManager.HierarchySearchResult> onHierarchyElementFound)
+            out BibleSearchResult hierarchySearchResult, ref List<SimpleVersePointer> processedVerses,
+            Action<BibleSearchResult> onHierarchyElementFound)
         {
             if (SettingsManager.Instance.UseProxyLinksForLinks
                 && (SettingsManager.Instance.CurrentModuleCached != null && SettingsManager.Instance.CurrentModuleCached.Version >= Consts.Constants.ModulesWithXmlBibleMinVersion)
