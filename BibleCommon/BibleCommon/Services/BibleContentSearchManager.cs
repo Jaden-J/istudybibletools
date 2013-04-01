@@ -8,14 +8,20 @@ namespace BibleCommon.Services
 {
     public static class BibleContentSearchManager
     {
-        public static HierarchySearchManager.HierarchySearchResult GetHierarchyObject(VersePointer vp)
+        public static BibleSearchResult GetHierarchyObject(VersePointer vp)
+        {
+            return GetHierarchyObjectInternal(vp, true);
+        }
+
+        private static BibleSearchResult GetHierarchyObjectInternal(VersePointer vp, bool checkForOneChapteredBook)
         {
             VerseNumber verseNumber;
-            HierarchySearchManager.HierarchySearchResult hierarchySearchResult = null;
+            BibleSearchResult hierarchySearchResult = null;
+            var svp = vp.ToSimpleVersePointer();
 
-            if (SettingsManager.Instance.CurrentBibleContentCached.VerseExists(vp.ToSimpleVersePointer(), SettingsManager.Instance.ModuleShortName, out verseNumber))
+            if (SettingsManager.Instance.CurrentBibleContentCached.VerseExists(svp, SettingsManager.Instance.ModuleShortName, out verseNumber))
             {
-                hierarchySearchResult = new HierarchySearchManager.HierarchySearchResult()
+                hierarchySearchResult = new BibleSearchResult()
                 {
                     ResultType = BibleHierarchySearchResultType.Successfully,
                     HierarchyStage = vp.IsChapter
@@ -27,21 +33,22 @@ namespace BibleCommon.Services
                     }
                 };
             }
-            else if (vp.IsChapter)   // возможно стих типа "2Ин 8"
+
+            if ((checkForOneChapteredBook && vp.IsChapter)
+                 && (hierarchySearchResult == null                                               // возможно стих типа "Иуд 2"
+                     || (vp.TopChapter.HasValue && vp.Chapter.GetValueOrDefault(0) == 1)))       // Иуд 1-3
             {
-                //if (BookHasOnlyOneChapter(ref oneNoteApp, vp, result.HierarchyObjectInfo, useCacheIfAvailable))
-                //{
-                //    var changedVerseResult = TryToChangeVerseAsOneChapteredBookAndSearchInHierarchy(
-                //        ref oneNoteApp, bibleNotebookId, ref vp, findAllVerseObjects, useCacheIfAvailable, false);
-                //    if (changedVerseResult != null)
-                //        return changedVerseResult;
-                //}
-            }
-            
+                if (SettingsManager.Instance.CurrentBibleContentCached.BookHasOnlyOneChapter(svp))
+                {
+                    var changedVerseResult = TryToChangeVerseAsOneChapteredBookAndSearchInHierarchy(ref vp);
+                    if (changedVerseResult != null)
+                        return changedVerseResult;
+                }
+            }            
 
             if (hierarchySearchResult == null)
             {
-                hierarchySearchResult = new HierarchySearchManager.HierarchySearchResult()
+                hierarchySearchResult = new BibleSearchResult()
                 {
                     ResultType = BibleHierarchySearchResultType.NotFound
                 };
@@ -50,5 +57,19 @@ namespace BibleCommon.Services
 
             return hierarchySearchResult;
         }
+
+        private static BibleSearchResult TryToChangeVerseAsOneChapteredBookAndSearchInHierarchy(ref VersePointer vp)
+        {
+            var modifiedVp = new VersePointer(vp.OriginalVerseName);
+            modifiedVp.ChangeVerseAsOneChapteredBook();
+            var changedVerseResult = GetHierarchyObjectInternal(modifiedVp, false);
+            if (changedVerseResult.FoundSuccessfully)
+            {
+                vp.ChangeVerseAsOneChapteredBook();
+                return changedVerseResult;
+            }
+            else
+                return null;
+        }        
     }
 }

@@ -51,7 +51,7 @@ namespace BibleCommon.Common
         public string PageId { get; set; }
         public string PageName { get; set; }
         public VerseObjectInfo VerseInfo { get; set; }
-        public Dictionary<VersePointer, VerseObjectInfo> AdditionalObjectsIds { get; set; }
+        public Dictionary<VersePointer, VerseObjectInfo> AdditionalObjectsIds { get; set; }  // пока заполняется только при поиске в Библии в OneNote (в HierarchySearchManager)
         public bool LoadedFromCache { get; set; }
 
         public List<VerseObjectInfo> GetAllObjectsIds()

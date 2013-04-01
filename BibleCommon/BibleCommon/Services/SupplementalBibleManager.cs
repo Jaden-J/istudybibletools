@@ -482,7 +482,7 @@ namespace BibleCommon.Services
 
         private static void LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(ref Application oneNoteApp, 
             SimpleVersePointer baseVersePointer, XElement baseVerseEl, VerseNumber? baseVerseNumber, string verseTextWithoutNumber,
-            HierarchySearchManager.HierarchySearchResult primaryBibleObjectsSearchResult,
+            BibleSearchResult primaryBibleObjectsSearchResult,
             bool isStrong, int strongStyleIndex, Dictionary<string, string> strongTermLinksCache, string strongModuleShortName, string alphabet, bool isOneNote2010,
             ref List<Exception> result, XNamespace nms)
         {
@@ -508,8 +508,8 @@ namespace BibleCommon.Services
             baseVerseEl.Value = string.Format("{0}<span> </span>{1}", linkToParallelVerse, versePart);
         }
 
-        private static void LinkMainBibleVersesToSupplementalBibleVerse(ref Application oneNoteApp, string baseChapterPageId, string baseVerseElementId, 
-            SimpleVerse parallelVerse, HierarchySearchManager.HierarchySearchResult baseBibleObjectsSearchResult, XmlNamespaceManager xnm, XNamespace nms)
+        private static void LinkMainBibleVersesToSupplementalBibleVerse(ref Application oneNoteApp, string baseChapterPageId, string baseVerseElementId,
+            SimpleVerse parallelVerse, BibleSearchResult baseBibleObjectsSearchResult, XmlNamespaceManager xnm, XNamespace nms)
         {           
             if (parallelVerse.PartIndex.GetValueOrDefault(0) == 0 && !parallelVerse.IsEmpty 
                 //&& !string.IsNullOrEmpty(parallelVerse.VerseContent)  интересно зачем такое условие сделал? Ведь одно дело он IsEmpty, а другое дело просто пустой...

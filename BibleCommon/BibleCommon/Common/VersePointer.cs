@@ -435,13 +435,22 @@ namespace BibleCommon.Common
             return new VersePointer(string.Format("{0}:0", chapterName));
         }
 
-        public string FriendlyVerseName
+        public string GetFriendlyFullVerseName()
         {
-            get
+            var s = ChapterName;
+
+            if (IsChapter)
             {
-                return string.Format("{0}:{1}", ChapterName, Verse);
+                if (TopChapter.HasValue)               
+                    s += "-" + TopChapter;                
             }
-        }    
+            else
+            {
+                s += ":" + VerseNumber.ToString();
+            }
+
+            return s;
+        }
 
         public string ChapterName
         {

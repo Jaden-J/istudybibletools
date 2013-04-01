@@ -41,8 +41,8 @@ namespace BibleCommon.Handlers
                 moduleName, 
                 vp.Book.Index, 
                 vp.Chapter.Value, 
-                !vp.IsChapter ? ":" + vp.VerseNumber : string.Empty, 
-                vp.OriginalVerseName);
+                !vp.IsChapter ? ":" + vp.VerseNumber : string.Empty,
+                vp.GetFriendlyFullVerseName());
         }
 
         public bool IsProtocolCommand(params string[] args)
