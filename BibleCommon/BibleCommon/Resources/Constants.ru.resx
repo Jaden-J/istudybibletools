@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="_LANGUAGE_NAME" xml:space="preserve">
     <value>Русский</value>
@@ -665,10 +665,10 @@
     <value>Ошибка при обработке страницы '{0}'</value>
   </data>
   <data name="IndexBibleQuestion" xml:space="preserve">
-    <value>Рекомендуется проиндексировать Библию для оптимизации производительности. Данная операция занимает около 3 минут. Проиндексировать Библию сейчас?</value>
+    <value>Рекомендуется проиндексировать Библию для оптимизации производительности. Данная операция занимает около 5 минут. Проиндексировать Библию сейчас?</value>
   </data>
   <data name="IndexBibleQuestionAtStartUp" xml:space="preserve">
-    <value>Библия не проиндексирована. Рекомендуется проиндексировать Библию для оптимизации производительности. Данная операция занимает около 3 минут. Проиндексировать Библию сейчас? Данное сообщение будет показываться каждый раз при запуске OneNote, пока Библия не будет проиндексирована.</value>
+    <value>Библия не проиндексирована. Рекомендуется проиндексировать Библию для оптимизации производительности. Данная операция занимает около 5 минут. Проиндексировать Библию сейчас? Данное сообщение будет показываться каждый раз при запуске OneNote, пока Библия не будет проиндексирована.</value>
   </data>
   <data name="ModuleIsNotSupported" xml:space="preserve">
     <value>Версия данного модуля не поддерживается. Необходимо обновить программу до версии '{0}'. Текущая версия программы: '{1}'.</value>

@@ -52,15 +52,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ArgsClasses.cs" />
+    <Compile Include="Common\BibleHierarchySearchResult.cs" />
     <Compile Include="Common\BibleTranslationDifferencesEx.cs" />
     <Compile Include="Common\BibleTranslationDifferencesFormula.cs" />
     <Compile Include="Common\CacheClasses.cs" />
     <Compile Include="Common\CustomExceptions.cs" />
+    <Compile Include="Common\HierarchyElementInfo.cs" />
     <Compile Include="Common\ModuleInfo.cs" />
     <Compile Include="Common\NotesPageClasses.cs" />
     <Compile Include="Common\ProcessAbortedByUserException.cs" />
     <Compile Include="Common\ResultClasses.cs" />
     <Compile Include="Common\VersePointerSearchResult.cs" />
+    <Compile Include="Common\XmlCursorPosition.cs" />
     <Compile Include="Consts\Consts.cs" />
     <Compile Include="Contracts\ICustomLogger.cs" />
     <Compile Include="Contracts\INotesPageManager.cs" />
@@ -95,6 +98,7 @@
       <DependentUpon>zef2005.xsd</DependentUpon>
     </Compile>
     <Compile Include="Scheme\zef2005.ext.cs" />
+    <Compile Include="Services\BibleContentSearchManager.cs" />
     <Compile Include="Services\BibleParallelTranslationConnectorManager.cs" />
     <Compile Include="Services\BibleParallelTranslationManager.cs" />
     <Compile Include="Services\BibleVersesLinksCacheManager.cs" />

@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BackupManagerFinishMessage" xml:space="preserve">
     <value>Backup created successfully.</value>
@@ -668,10 +668,10 @@ Delete these elements and try again.</value>
     <value>Error while page '{0}' processing</value>
   </data>
   <data name="IndexBibleQuestion" xml:space="preserve">
-    <value>It is recommended to index the Bible for performance optimization. This operation takes about 3 minutes. Start indexing the Bible now?</value>
+    <value>It is recommended to index the Bible for performance optimization. This operation takes about 5 minutes. Start indexing the Bible now?</value>
   </data>
   <data name="IndexBibleQuestionAtStartUp" xml:space="preserve">
-    <value>The Bible is not indexed. It is recommended to index the Bible for performance optimization. This operation takes about 3 minutes. Start indexing the Bible now? This message will be displayed each time you start OneNote, while the Bible is not indexed.</value>
+    <value>The Bible is not indexed. It is recommended to index the Bible for performance optimization. This operation takes about 5 minutes. Start indexing the Bible now? This message will be displayed each time you start OneNote, while the Bible is not indexed.</value>
   </data>
   <data name="ModuleIsNotSupported" xml:space="preserve">
     <value>Version of this module is not supported. You should upgrade the program up to version '{0}'. The current version of the program is '{1}'.</value>

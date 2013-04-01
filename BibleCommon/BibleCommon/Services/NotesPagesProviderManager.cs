@@ -38,7 +38,7 @@ namespace BibleCommon.Services
 
         public string UpdateNotesPage(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, NoteLinkManager noteLinkManager, 
             Common.VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition,
-            bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo, Common.HierarchyElementInfo notePageId, string notesPageId, string notePageContentObjectId, 
+            bool isChapter, BibleHierarchyObjectInfo verseHierarchyObjectInfo, Common.HierarchyElementInfo notePageId, string notesPageId, string notePageContentObjectId, 
             string notesPageName, int notesPageWidth, bool isImportantVerse, bool force, bool processAsExtendedVerse, out bool rowWasAdded)
         {
             var manager = GetNotesPageProvider(ref oneNoteApp, notesPageId, notesPageWidth);            

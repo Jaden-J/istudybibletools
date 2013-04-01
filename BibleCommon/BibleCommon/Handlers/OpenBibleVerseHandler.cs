@@ -92,8 +92,8 @@ namespace BibleCommon.Handlers
         {
             var result = HierarchySearchManager.GetHierarchyObject(ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);
 
-            if (result.ResultType != HierarchySearchManager.HierarchySearchResultType.NotFound
-                && (result.HierarchyStage == HierarchySearchManager.HierarchyStage.ContentPlaceholder || result.HierarchyStage == HierarchySearchManager.HierarchyStage.Page))
+            if (result.ResultType != BibleHierarchySearchResultType.NotFound
+                && (result.HierarchyStage == BibleHierarchyStage.ContentPlaceholder || result.HierarchyStage == BibleHierarchyStage.Page))
             {
                 string hierarchyObjectId = !string.IsNullOrEmpty(result.HierarchyObjectInfo.PageId)
                     ? result.HierarchyObjectInfo.PageId : result.HierarchyObjectInfo.SectionId;
@@ -107,7 +107,7 @@ namespace BibleCommon.Handlers
             return false;
         }
 
-        private void NavigateTo(ref Application oneNoteApp, string pageId, params HierarchySearchManager.VerseObjectInfo[] objectsIds)
+        private void NavigateTo(ref Application oneNoteApp, string pageId, params VerseObjectInfo[] objectsIds)
         {
             if (!TryToRedirectByIds(oneNoteApp, pageId, objectsIds.Length > 0 ? objectsIds[0].ObjectId : null))
             {

@@ -14,7 +14,7 @@ namespace BibleCommon.Contracts
 
         string UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, 
            decimal verseWeight, XmlCursorPosition versePosition, bool isChapter,
-           HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
+           BibleHierarchyObjectInfo verseHierarchyObjectInfo,
            HierarchyElementInfo notePageId, string notesPageId, string notePageContentObjectId,
            string notesPageName, int notesPageWidth, bool isImportantVerse, bool force, bool processAsExtendedVerse, out bool rowWasAdded);
 

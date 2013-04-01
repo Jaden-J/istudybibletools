@@ -354,7 +354,7 @@ namespace BibleCommon.Services
             });
         }      
 
-        public void AddProcessedBiblePageWithUpdatedLinksToNotesPages(VersePointer chapterPointer, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo)
+        public void AddProcessedBiblePageWithUpdatedLinksToNotesPages(VersePointer chapterPointer, BibleHierarchyObjectInfo verseHierarchyObjectInfo)
         {
             if (!_processedBiblePages.ContainsKey(chapterPointer))
             {
