@@ -8,8 +8,9 @@ using System.Xml.XPath;
 using System.Xml.Linq;
 using BibleCommon.Consts;
 using BibleCommon.Common;
+using BibleCommon.Services;
 
-namespace BibleCommon.Services
+namespace BibleCommon.Providers
 {
     public class NotesPagesProviderManager : INotesPageManager
     {

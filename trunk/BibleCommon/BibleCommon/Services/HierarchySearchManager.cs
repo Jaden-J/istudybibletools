@@ -83,7 +83,7 @@ namespace BibleCommon.Services
         /// <param name="vp"></param>
         /// <param name="findAllVerseObjects">Поиск осуществляется только по текущей главе. Чтобы найти все стихи во всех главах (если например ссылка 3:4-6:8), то надо отдельно вызвать GetAllIncludedVersesExceptFirst</param>
         /// <returns></returns>
-        public static HierarchySearchResult GetHierarchyObject(ref Application oneNoteApp, string bibleNotebookId, VersePointer vp, FindVerseLevel findAllVerseObjects, bool useCacheIfAvailable = true)
+        public static HierarchySearchResult GetHierarchyObject(ref Application oneNoteApp, string bibleNotebookId, ref VersePointer vp, FindVerseLevel findAllVerseObjects, bool useCacheIfAvailable = true)
         {
             var result = GetHierarchyObjectInternal(ref oneNoteApp, bibleNotebookId, vp, findAllVerseObjects, useCacheIfAvailable);
 
@@ -94,7 +94,7 @@ namespace BibleCommon.Services
             else
             {
                 //ответ на вопрос "почему для разных ситуаций (есть кэш/нет кэша; Иуд 1-3/Иуд 2-3) используется разный подход?". Потому что, если в кэше ничего не нашли (Иуд 2-3), то начинаем искать в структуре (если нет кэша), а это долго. Если же в кэше нашли, а дополнительные ссылки не нашли (Иуд 1-3), то в структуре уже ничего не ищем (если нет кэша), потому здесь можно использовать общий подход (который и приведён ниже)
-                if (vp.IsChapter && vp.TopChapter.HasValue 
+                if (vp.IsChapter && (vp.ParentVersePointer ?? vp).TopChapter.HasValue 
                     && (findAllVerseObjects == FindVerseLevel.AllVerses || findAllVerseObjects == FindVerseLevel.OnlyVersesOfFirstChapter)
                     && result.HierarchyObjectInfo.AdditionalObjectsIds.Count == 0)
                 {                                                                                                         // возможно имеем дело со стихами "Иуд 1-3"
@@ -409,15 +409,14 @@ namespace BibleCommon.Services
             int? result = null;
 
             if (bibleNotebookId == SettingsManager.Instance.NotebookId_Bible 
-                && SettingsManager.Instance.CurrentModuleCached != null 
-                && SettingsManager.Instance.CurrentModuleCached.Version >= Consts.Constants.ModulesWithXmlBibleMinVersion)
+                && SettingsManager.Instance.CanUseBibleContent)
             {
                 result = ModulesManager.GetChapterVersesCount(SettingsManager.Instance.CurrentBibleContentCached, versePointer);
             }
 
             if (result == null)
             {
-                var chapterPageResult = GetHierarchyObject(ref oneNoteApp, bibleNotebookId, versePointer, FindVerseLevel.OnlyFirstVerse);
+                var chapterPageResult = GetHierarchyObject(ref oneNoteApp, bibleNotebookId, ref versePointer, FindVerseLevel.OnlyFirstVerse);
                 if (chapterPageResult.ResultType != BibleHierarchySearchResultType.NotFound 
                     && chapterPageResult.HierarchyStage == BibleHierarchyStage.Page)
                 {

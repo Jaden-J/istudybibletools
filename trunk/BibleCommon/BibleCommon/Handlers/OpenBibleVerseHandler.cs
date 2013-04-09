@@ -36,12 +36,11 @@ namespace BibleCommon.Handlers
 
         public static string GetCommandUrlStatic(VersePointer vp, string moduleName)
         {
-            return string.Format("{0}{1}/{2} {3}{4};{5}", 
+            return string.Format("{0}{1}/{2} {3};{4}", 
                 _protocolName, 
                 moduleName, 
-                vp.Book.Index, 
-                vp.Chapter.Value, 
-                !vp.IsChapter ? ":" + vp.VerseNumber : string.Empty,
+                vp.Book.Index,                 
+                vp.GetFullMultiVerseString(),                
                 vp.GetFriendlyFullVerseName());
         }
 
@@ -90,7 +89,7 @@ namespace BibleCommon.Handlers
 
         private bool GoToVerse(ref Application oneNoteApp, VersePointer vp)
         {
-            var result = HierarchySearchManager.GetHierarchyObject(ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);
+            var result = HierarchySearchManager.GetHierarchyObject(ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, ref vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);
 
             if (result.ResultType != BibleHierarchySearchResultType.NotFound
                 && (result.HierarchyStage == BibleHierarchyStage.ContentPlaceholder || result.HierarchyStage == BibleHierarchyStage.Page))

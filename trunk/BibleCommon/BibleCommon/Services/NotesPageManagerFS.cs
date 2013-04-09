@@ -21,9 +21,6 @@ namespace BibleCommon.Services
             HierarchyElementInfo notePageInfo, string notePageContentObjectId, NotesPageType notesPageType, string notesPageName,
             bool isImportantVerse, bool force, bool processAsExtendedVerse, bool toDeserializeIfExists)
         {
-            if (verseHierarchyObjectInfo.VerseNumber.HasValue)
-                vp.VerseNumber = verseHierarchyObjectInfo.VerseNumber.Value;
-
             var notesPageFilePath = OpenNotesPageHandler.GetNotesPageFilePath(vp, notesPageType);             
             var notesPageData = OneNoteProxy.Instance.GetNotesPageData(notesPageFilePath, notesPageName, notesPageType, vp.IsChapter ? vp : vp.GetChapterPointer(), toDeserializeIfExists);
 

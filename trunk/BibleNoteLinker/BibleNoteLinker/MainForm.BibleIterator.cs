@@ -236,7 +236,8 @@ namespace BibleNoteLinker
                     {
                         if (string.IsNullOrEmpty(processedBiblePageId.PageId))
                         {
-                            var hierarchySearchResult = HierarchySearchManager.GetHierarchyObject(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Bible, processedBiblePageId.ChapterPointer, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);
+                            var vp = processedBiblePageId.ChapterPointer;
+                            var hierarchySearchResult = HierarchySearchManager.GetHierarchyObject(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Bible, ref vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);
                             if (hierarchySearchResult.FoundSuccessfully)
                             {
                                 processedBiblePageId.SectionId = hierarchySearchResult.HierarchyObjectInfo.SectionId;
