@@ -405,8 +405,9 @@ namespace BibleCommon.Services
         {
             var result = new List<Exception>();            
 
+            var svp = parallelVerse.ToVersePointer(SettingsManager.Instance.CurrentModuleCached);
             var primaryBibleObjectsSearchResult = HierarchySearchManager.GetHierarchyObject(ref oneNoteApp,
-                    SettingsManager.Instance.NotebookId_Bible, parallelVerse.ToVersePointer(SettingsManager.Instance.CurrentModuleCached), HierarchySearchManager.FindVerseLevel.AllVerses);
+                    SettingsManager.Instance.NotebookId_Bible, ref svp, HierarchySearchManager.FindVerseLevel.AllVerses);
 
             if (primaryBibleObjectsSearchResult.ResultType != BibleHierarchySearchResultType.Successfully
                 || primaryBibleObjectsSearchResult.HierarchyStage != BibleHierarchyStage.ContentPlaceholder)

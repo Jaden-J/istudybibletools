@@ -13,6 +13,7 @@ using BibleCommon.Helpers;
 using BibleCommon.Consts;
 using BibleCommon.Handlers;
 using System.IO;
+using BibleCommon.Providers;
 
 namespace BibleCommon.Services
 {    
@@ -809,24 +810,27 @@ namespace BibleCommon.Services
             }
 
             if (searchResult.VersePointer.IsChapter)
-                needToQueueIfChapter = !NeedToForceAnalyzeChapter(searchResult); // нужно ли анализировать главу сразу же, а не в самом конце             
+                needToQueueIfChapter = !NeedToForceAnalyzeChapter(searchResult); // нужно ли анализировать главу сразу же, а не в самом конце                         
 
-            List<VersePointer> allIncludedVersesExceptFirst = null;            
+            List<VersePointer> allSubVerses = null;
 
             #region linking main notes page            
 
-            List<VersePointer> verses = new List<VersePointer>() { searchResult.VersePointer };
+            var verses = new List<VersePointer>();
 
             if (searchResult.VersePointer.IsMultiVerse)
             {
-                allIncludedVersesExceptFirst = searchResult.VersePointer.GetAllIncludedVersesExceptFirst(ref oneNoteApp,
+                allSubVerses = searchResult.VersePointer.GetAllVerses(ref oneNoteApp,
                                                     new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible });
 
-                verseWeight = (decimal)1 / (decimal)(allIncludedVersesExceptFirst.Count + 1);
+                verseWeight = (decimal)1 / (decimal)allSubVerses.Count;
 
-                if (SettingsManager.Instance.ExpandMultiVersesLinking)                
-                    verses.AddRange(allIncludedVersesExceptFirst);                
-            }
+                if (SettingsManager.Instance.ExpandMultiVersesLinking)
+                    verses.AddRange(allSubVerses);
+            }            
+
+            if (verses.Count == 0)
+                verses.Add(searchResult.VersePointer);
 
             if (isImportantVerse)
                 verseWeight = Constants.ImportantVerseWeight;
@@ -861,6 +865,12 @@ namespace BibleCommon.Services
                     {                        
                         if (linkDepth >= AnalyzeDepth.SetVersesLinks)
                         {
+                            if (vp.ParentVersePointer != null)
+                            {
+                                var parentVerse = vp.ParentVersePointer;
+                                BibleHierarchySearchProvider.CheckVerseForExisting(ref oneNoteApp, ref parentVerse);   // чтобы, если например Иуд 1-4, изменить, как надо                                
+                            }
+
                             string textToChange;
                             if (!string.IsNullOrEmpty(searchResult.VerseString))
                                 textToChange = searchResult.VerseString;
@@ -893,7 +903,7 @@ namespace BibleCommon.Services
 
 
                             var linkHref = SettingsManager.Instance.UseProxyLinksForLinks
-                                                ? OpenBibleVerseHandler.GetCommandUrlStatic(vp, SettingsManager.Instance.ModuleShortName)
+                                                ? OpenBibleVerseHandler.GetCommandUrlStatic(vp.ParentVersePointer ?? vp, SettingsManager.Instance.ModuleShortName)
                                                 : localHierarchySearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref;
 
                             string link = OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, textToChange, linkHref,
@@ -945,15 +955,17 @@ namespace BibleCommon.Services
 
             if (SettingsManager.Instance.RubbishPage_Use)
             {
-                List<VersePointer> rubbishVerses = new List<VersePointer>() { searchResult.VersePointer };
+                var rubbishVerses = new List<VersePointer>();
 
                 if (SettingsManager.Instance.RubbishPage_ExpandMultiVersesLinking && searchResult.VersePointer.IsMultiVerse)
                 {
-                    if (allIncludedVersesExceptFirst == null)
-                        allIncludedVersesExceptFirst = searchResult.VersePointer.GetAllIncludedVersesExceptFirst(ref oneNoteApp,
+                    if (allSubVerses == null)
+                        allSubVerses = searchResult.VersePointer.GetAllVerses(ref oneNoteApp,
                                                             new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible });
-                    rubbishVerses.AddRange(allIncludedVersesExceptFirst);
+                    rubbishVerses.AddRange(allSubVerses);
                 }
+                else
+                    rubbishVerses.Add(searchResult.VersePointer);
                 
                 foreach (VersePointer vp in rubbishVerses)
                 {                    
@@ -1023,20 +1035,13 @@ namespace BibleCommon.Services
             out BibleSearchResult hierarchySearchResult, ref List<SimpleVersePointer> processedVerses,
             Action<BibleSearchResult> onHierarchyElementFound)
         {
-            if (SettingsManager.Instance.UseProxyLinksForLinks
-                && (SettingsManager.Instance.CurrentModuleCached != null && SettingsManager.Instance.CurrentModuleCached.Version >= Consts.Constants.ModulesWithXmlBibleMinVersion)
-                && (SettingsManager.Instance.StoreNotesPagesInFolder || linkDepth < AnalyzeDepth.Full))
-            {
-                hierarchySearchResult = BibleContentSearchManager.GetHierarchyObject(vp);
-            }
-            else
-            {
-                hierarchySearchResult = HierarchySearchManager.GetHierarchyObject(
-                                                    ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.AllVerses);
-            }
+            hierarchySearchResult = BibleHierarchySearchProvider.GetHierarchyObject(ref oneNoteApp, ref vp, linkDepth);            
 
             if (hierarchySearchResult.FoundSuccessfully)
             {
+                if (hierarchySearchResult.HierarchyObjectInfo.VerseNumber.HasValue)
+                    vp.VerseNumber = hierarchySearchResult.HierarchyObjectInfo.VerseNumber.Value;    // то есть мы уточняем номер для этого стиха (ведь может быть смежные стихи, как в ibs). Важно: здесь у нас точно !vp.IsMultiVerse, так как если бы он был IsMultiVerse, то мы его переделали в subVerse (и у него теперь есть ParentVersePointer)
+
                 if (hierarchySearchResult.HierarchyObjectInfo == null 
                     || hierarchySearchResult.HierarchyObjectInfo.PageId != notePageId.Id)
                 {
@@ -1315,7 +1320,7 @@ namespace BibleCommon.Services
                 if (verseHierarchyObjectInfo.LoadedFromCache)
                 {
                     var fullSearchResult = HierarchySearchManager.GetHierarchyObject(
-                                                ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, vp, HierarchySearchManager.FindVerseLevel.AllVerses, false);
+                                                ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, ref vp, HierarchySearchManager.FindVerseLevel.AllVerses, false);
 
                     if (fullSearchResult.FoundSuccessfully)
                     {

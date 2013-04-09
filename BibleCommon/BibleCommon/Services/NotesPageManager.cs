@@ -192,17 +192,12 @@ namespace BibleCommon.Services
 
         private static string GetMultiVerseString(VersePointer vp)
         {
-            if (vp.IsMultiVerse)
-            {
-                if (vp.TopChapter != null && vp.TopVerse != null)
-                    return string.Format(" <b>({0}:{1}-{2}:{3})</b>", vp.Chapter, vp.Verse, vp.TopChapter, vp.TopVerse);
-                else if (vp.TopChapter != null && vp.IsChapter)
-                    return string.Format(" <b>({0}-{1})</b>", vp.Chapter, vp.TopChapter);
-                else
-                    return string.Format(" <b>(:{0}-{1})</b>", vp.Verse, vp.TopVerse);
-            }
-            else
-                return string.Empty;
+            var result = string.Empty;
+
+            if (vp.IsMultiVerse)               
+                result = string.Format(" <b>({0})</b>", vp.GetLightMultiVerseString());            
+
+            return result;
         }
 
         private static string GetExistingMultiVerseString(XElement suchNoteLink)

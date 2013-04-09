@@ -770,17 +770,8 @@ namespace BibleCommon.Services
         {
             var result = string.Empty;
 
-            if (vp.IsMultiVerse)
-            {
-                if (vp.TopChapter != null && vp.TopVerse != null)
-                    result = string.Format("({0}:{1}-{2}:{3})", vp.Chapter, vp.Verse, vp.TopChapter, vp.TopVerse);
-                else if (vp.TopChapter != null && vp.IsChapter)
-                    result = string.Format("({0}-{1})", vp.Chapter, vp.TopChapter);
-                else
-                    result = string.Format("(:{0}-{1})", vp.Verse, vp.TopVerse);
-
-                result = FormatMultiVerseString(result);
-            }
+            if (vp.IsMultiVerse)               
+                result = FormatMultiVerseString(string.Format("({0})", vp.GetLightMultiVerseString()));            
 
             return result;
         }        

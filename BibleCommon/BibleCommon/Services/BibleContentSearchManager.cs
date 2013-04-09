@@ -8,12 +8,17 @@ namespace BibleCommon.Services
 {
     public static class BibleContentSearchManager
     {
-        public static BibleSearchResult GetHierarchyObject(VersePointer vp)
+        public static bool CheckVerseForExisting(ref VersePointer vp)
         {
-            return GetHierarchyObjectInternal(vp, true);
+            return GetHierarchyObject(ref vp).FoundSuccessfully;
         }
 
-        private static BibleSearchResult GetHierarchyObjectInternal(VersePointer vp, bool checkForOneChapteredBook)
+        public static BibleSearchResult GetHierarchyObject(ref VersePointer vp)
+        {
+            return GetHierarchyObjectInternal(ref vp, true);
+        }
+
+        private static BibleSearchResult GetHierarchyObjectInternal(ref VersePointer vp, bool checkForOneChapteredBook)
         {
             VerseNumber verseNumber;
             BibleSearchResult hierarchySearchResult = null;
@@ -36,7 +41,7 @@ namespace BibleCommon.Services
 
             if ((checkForOneChapteredBook && vp.IsChapter)
                  && (hierarchySearchResult == null                                               // возможно стих типа "Иуд 2"
-                     || (vp.TopChapter.HasValue && vp.Chapter.GetValueOrDefault(0) == 1)))       // Иуд 1-3
+                     || ((vp.ParentVersePointer ?? vp).TopChapter.HasValue && vp.Chapter.GetValueOrDefault(0) == 1)))       // Иуд 1-3
             {
                 if (SettingsManager.Instance.CurrentBibleContentCached.BookHasOnlyOneChapter(svp))
                 {
@@ -62,7 +67,7 @@ namespace BibleCommon.Services
         {
             var modifiedVp = new VersePointer(vp.OriginalVerseName);
             modifiedVp.ChangeVerseAsOneChapteredBook();
-            var changedVerseResult = GetHierarchyObjectInternal(modifiedVp, false);
+            var changedVerseResult = GetHierarchyObjectInternal(ref modifiedVp, false);
             if (changedVerseResult.FoundSuccessfully)
             {
                 vp.ChangeVerseAsOneChapteredBook();
