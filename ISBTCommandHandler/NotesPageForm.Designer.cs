@@ -34,7 +34,6 @@
             this.btnClose = new System.Windows.Forms.Button();
             this.chkAlwaysOnTop = new System.Windows.Forms.CheckBox();
             this.chkCloseOnClick = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.scMain)).BeginInit();
             this.scMain.Panel1.SuspendLayout();
             this.scMain.Panel2.SuspendLayout();
             this.scMain.SuspendLayout();
@@ -48,12 +47,10 @@
             // 
             // scMain.Panel1
             // 
-            resources.ApplyResources(this.scMain.Panel1, "scMain.Panel1");
             this.scMain.Panel1.Controls.Add(this.wbNotesPage);
             // 
             // scMain.Panel2
             // 
-            resources.ApplyResources(this.scMain.Panel2, "scMain.Panel2");
             this.scMain.Panel2.Controls.Add(this.btnClose);
             this.scMain.Panel2.Controls.Add(this.chkAlwaysOnTop);
             this.scMain.Panel2.Controls.Add(this.chkCloseOnClick);
@@ -61,6 +58,7 @@
             // wbNotesPage
             // 
             resources.ApplyResources(this.wbNotesPage, "wbNotesPage");
+            this.wbNotesPage.MinimumSize = new System.Drawing.Size(20, 20);
             this.wbNotesPage.Name = "wbNotesPage";
             this.wbNotesPage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.wbNotesPage_Navigating);
             // 
@@ -86,8 +84,8 @@
             // 
             // NotesPageForm
             // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.scMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "NotesPageForm";
@@ -97,7 +95,6 @@
             this.scMain.Panel1.ResumeLayout(false);
             this.scMain.Panel2.ResumeLayout(false);
             this.scMain.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.scMain)).EndInit();
             this.scMain.ResumeLayout(false);
             this.ResumeLayout(false);
 
