@@ -216,6 +216,14 @@ namespace BibleCommon.Services
             }
         }
 
+        public bool CanUseBibleContent
+        {
+            get
+            {
+                return CurrentModuleCached != null && CurrentModuleCached.Version >= Consts.Constants.ModulesWithXmlBibleMinVersion;
+            }
+        }
+
         /// <summary>
         /// Значение данного свойства сохраняется в памяти и не обновляется! нельзя использовать в коде, где текущий модуль может измениться
         /// </summary>

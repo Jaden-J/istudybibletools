@@ -1011,7 +1011,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to It is recommended to index the Bible for performance optimization. This operation takes about 3 minutes. Start indexing the Bible now?.
+        ///   Ищет локализованную строку, похожую на It is recommended to index the Bible for performance optimization. This operation takes about 5 minutes. Start indexing the Bible now?.
         /// </summary>
         public static string IndexBibleQuestion {
             get {
@@ -1020,7 +1020,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The Bible is not indexed. It is recommended to index the Bible for performance optimization. This operation takes about 3 minutes. Start indexing the Bible now? This message will be displayed each time you start OneNote, while the Bible is not indexed..
+        ///   Ищет локализованную строку, похожую на The Bible is not indexed. It is recommended to index the Bible for performance optimization. This operation takes about 5 minutes. Start indexing the Bible now? This message will be displayed each time you start OneNote, while the Bible is not indexed..
         /// </summary>
         public static string IndexBibleQuestionAtStartUp {
             get {

@@ -394,9 +394,12 @@ namespace BibleCommon.Common
         /// родительская ссылка. Например если мы имеем дело со стихом диапазона, то здесь хранится стих, являющийся диапазоном
         /// </summary>
         public VersePointer ParentVersePointer { get; set; }
-
+        
 
         private VerseNumber? _verseNumber;
+        /// <summary>
+        /// Стих, который был передан изначально
+        /// </summary>
         public VerseNumber VerseNumber
         {
             get
@@ -425,6 +428,55 @@ namespace BibleCommon.Common
             return string.Format("{0} {1}:{2}", Book != null ? Book.Name : string.Empty, Chapter, Verse.GetValueOrDefault());
         }
 
+
+        /// <summary>
+        /// Новый термин: MultiVerseString - строка в стихе после названия книги. (*| 5:6, :6, :6-7, 5-6...)
+        /// </summary>
+        /// <returns></returns>
+        public string GetFullMultiVerseString()
+        {
+            if (IsMultiVerse)
+            {
+                if (TopChapter != null && TopVerse != null)
+                    return string.Format("{0}:{1}-{2}:{3}", Chapter, Verse, TopChapter, TopVerse);
+                else if (TopChapter != null && IsChapter)
+                    return string.Format("{0}-{1}", Chapter, TopChapter);
+                else
+                    return string.Format("{0}:{1}-{2}", Chapter, Verse, TopVerse);
+            }
+            else
+            {
+                if (IsChapter)
+                    return string.Format("{0}", Chapter);
+                else
+                    return string.Format("{0}:{1}", Chapter, Verse);
+            }            
+        }
+
+        /// <summary>
+        /// Возвращает "лёгкую" версию мульти строки стиха. То есть если возможно - без главы.
+        /// </summary>
+        /// <returns></returns>
+        public string GetLightMultiVerseString()
+        {
+            if (IsMultiVerse)
+            {
+                if (TopChapter != null && TopVerse != null)
+                    return string.Format("{0}:{1}-{2}:{3}", Chapter, Verse, TopChapter, TopVerse);
+                else if (TopChapter != null && IsChapter)
+                    return string.Format("{0}-{1}", Chapter, TopChapter);
+                else
+                    return string.Format(":{0}-{1}", Verse, TopVerse);
+            }
+            else
+            {
+                if (IsChapter)
+                    return string.Format("{0}", Chapter);
+                else
+                    return string.Format(":{0}", Verse);
+            }            
+        }
+
         public static VersePointer GetChapterVersePointer(string bookName, int chapter)
         {
             return GetChapterVersePointer(string.Format("{0} {1}", bookName, chapter));
@@ -432,16 +484,13 @@ namespace BibleCommon.Common
 
         public static VersePointer GetChapterVersePointer(string chapterName)
         {
-            return new VersePointer(string.Format("{0}:0", chapterName));
+            return new VersePointer(chapterName);
         }
 
-        public string FriendlyVerseName
-        {
-            get
-            {
-                return string.Format("{0}:{1}", ChapterName, Verse);
-            }
-        }    
+        public string GetFriendlyFullVerseName()
+        {   
+            return string.Format("{0} {1}", Book != null ? Book.Name : string.Empty, GetFullMultiVerseString());            
+        }
 
         public string ChapterName
         {
@@ -464,19 +513,23 @@ namespace BibleCommon.Common
         }
 
         public VersePointer(string bookName, int chapter)
-            : this(bookName, chapter, 0)
+            : this(bookName, chapter, null)
         {
 
         }
 
-        public VersePointer(string bookName, int chapter, int verse)
+        public VersePointer(string bookName, int chapter, int? verse)
             : this(bookName, chapter, verse, null)
         {
 
         }
 
-        public VersePointer(string bookName, int chapter, int verse, int? topVerse)
-            : this(string.Format("{0} {1}:{2}{3}{4}", bookName, chapter, verse, topVerse.HasValue ? "-" : string.Empty, topVerse))
+        public VersePointer(string bookName, int chapter, int? verse, int? topVerse)
+            : this(string.Format("{0} {1}{2}{3}", 
+                                    bookName, 
+                                    chapter, 
+                                    verse.HasValue ? ":" + verse : string.Empty, 
+                                    topVerse.HasValue ? "-" + topVerse : string.Empty))
         {
 
         }
@@ -740,7 +793,10 @@ namespace BibleCommon.Common
         {
             var result = new List<VersePointer>();
 
-            result.Add(this);
+            var firstVerse = this.IsChapter ? new VersePointer(this.OriginalBookName, this.Chapter.Value) : new VersePointer(this.OriginalBookName, this.Chapter.Value, this.Verse.Value);
+            firstVerse.ParentVersePointer = this;
+            result.Add(firstVerse);
+
             result.AddRange(this.GetAllIncludedVersesExceptFirst(ref oneNoteApp, args));
 
             return result;
@@ -763,10 +819,12 @@ namespace BibleCommon.Common
                         if (chapterIndex == TopChapter)
                             topVerse = TopVerse.Value;
                         else
+                        {
                             topVerse = HierarchySearchManager.GetChapterVersesCount(
-                                            ref oneNoteApp, args.BibleNotebookId, 
+                                            ref oneNoteApp, args.BibleNotebookId,
                                             VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex))
                                             .GetValueOrDefault(0);
+                        }
 
                         if (chapterIndex == Chapter)
                             startVerseIndex = Verse.Value + 1;
