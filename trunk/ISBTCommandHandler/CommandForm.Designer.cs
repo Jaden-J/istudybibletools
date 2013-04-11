@@ -40,7 +40,8 @@
             this.Opacity = 0D;
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.Text = "CommandForm";            
+            this.Text = "CommandForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CommandForm_FormClosing);
             this.ResumeLayout(false);
 
         }
