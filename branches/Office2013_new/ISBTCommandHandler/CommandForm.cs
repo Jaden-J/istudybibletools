@@ -76,9 +76,12 @@ namespace ISBTCommandHandler
         private void OpenNotesPage(string filePath)
         {
             if (_notesPageForm == null)
+            {
                 _notesPageForm = new NotesPageForm();
+                _notesPageForm.ShowInTaskbar = true;
+            }
 
             _notesPageForm.OpenNotesPage(filePath);
-        }       
+        }               
     }
 }

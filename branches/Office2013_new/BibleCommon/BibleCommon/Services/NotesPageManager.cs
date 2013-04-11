@@ -26,7 +26,7 @@ namespace BibleCommon.Services
 
         public string UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, 
            decimal verseWeight, XmlCursorPosition versePosition,
-           bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
+           bool isChapter, BibleHierarchyObjectInfo verseHierarchyObjectInfo,
            HierarchyElementInfo notePageId, string notesPageId, string notePageContentObjectId,
            string notesPageName, int notesPageWidth, bool isImportantVerse, bool force, bool processAsExtendedVerse, out bool rowWasAdded)
         {
@@ -192,17 +192,12 @@ namespace BibleCommon.Services
 
         private static string GetMultiVerseString(VersePointer vp)
         {
-            if (vp.IsMultiVerse)
-            {
-                if (vp.TopChapter != null && vp.TopVerse != null)
-                    return string.Format(" <b>({0}:{1}-{2}:{3})</b>", vp.Chapter, vp.Verse, vp.TopChapter, vp.TopVerse);
-                else if (vp.TopChapter != null && vp.IsChapter)
-                    return string.Format(" <b>({0}-{1})</b>", vp.Chapter, vp.TopChapter);
-                else
-                    return string.Format(" <b>(:{0}-{1})</b>", vp.Verse, vp.TopVerse);
-            }
-            else
-                return string.Empty;
+            var result = string.Empty;
+
+            if (vp.IsMultiVerse)               
+                result = string.Format(" <b>({0})</b>", vp.GetLightMultiVerseString());            
+
+            return result;
         }
 
         private static string GetExistingMultiVerseString(XElement suchNoteLink)
@@ -223,7 +218,7 @@ namespace BibleCommon.Services
         }        
 
         private static XElement GetNotesRowAndCreateIfNotExists(ref Application oneNoteApp, VersePointer vp, bool isChapter,
-            int mainColumnWidth, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
+            int mainColumnWidth, BibleHierarchyObjectInfo verseHierarchyObjectInfo,
             XDocument notesPageDocument, XmlNamespaceManager xnm, XNamespace nms, out bool rowWasAdded)
         {
             rowWasAdded = false;
@@ -279,7 +274,7 @@ namespace BibleCommon.Services
             return result;
         }
 
-        private static void AddNewNotesRow(ref Application oneNoteApp, VersePointer vp, bool isChapter, HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo,
+        private static void AddNewNotesRow(ref Application oneNoteApp, VersePointer vp, bool isChapter, BibleHierarchyObjectInfo verseHierarchyObjectInfo,
             XElement tableElement, XmlNamespaceManager xnm, XNamespace nms)
         {
             XElement newRow = new XElement(nms + "Row",

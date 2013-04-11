@@ -27,8 +27,7 @@ namespace BibleCommon.Common
         public string FilePath { get; set; }
         public string PageName { get; set; }
         NotesPageType NotesPageType { get; set; }
-        public VersePointer ChapterPoiner { get; set; }
-        
+        public VersePointer ChapterPoiner { get; set; }        
 
         public Dictionary<VersePointer, VerseNotesPageData> VersesNotesPageData { get; set; }
 
@@ -520,14 +519,7 @@ namespace BibleCommon.Common
             var result = string.Empty;
 
             if (vp.IsMultiVerse)
-            {
-                if (vp.TopChapter != null && vp.TopVerse != null)
-                    result = string.Format("({0}:{1}-{2}:{3})", vp.Chapter, vp.Verse, vp.TopChapter, vp.TopVerse);
-                else if (vp.TopChapter != null && vp.IsChapter)
-                    result = string.Format("({0}-{1})", vp.Chapter, vp.TopChapter);
-                else
-                    result = string.Format("(:{0}-{1})", vp.Verse, vp.TopVerse);                
-            }
+                result = string.Format("({0})", vp.GetLightMultiVerseString());            
 
             return result;
         }

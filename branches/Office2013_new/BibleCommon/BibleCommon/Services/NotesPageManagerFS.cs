@@ -17,13 +17,10 @@ namespace BibleCommon.Services
 
         public static bool UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager,
             VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition, bool isChapter,
-            HierarchySearchManager.HierarchyObjectInfo verseHierarchyObjectInfo, 
+            BibleHierarchyObjectInfo verseHierarchyObjectInfo, 
             HierarchyElementInfo notePageInfo, string notePageContentObjectId, NotesPageType notesPageType, string notesPageName,
             bool isImportantVerse, bool force, bool processAsExtendedVerse, bool toDeserializeIfExists)
         {
-            if (verseHierarchyObjectInfo.VerseNumber.HasValue)
-                vp.VerseNumber = verseHierarchyObjectInfo.VerseNumber.Value;
-
             var notesPageFilePath = OpenNotesPageHandler.GetNotesPageFilePath(vp, notesPageType);             
             var notesPageData = OneNoteProxy.Instance.GetNotesPageData(notesPageFilePath, notesPageName, notesPageType, vp.IsChapter ? vp : vp.GetChapterPointer(), toDeserializeIfExists);
 

@@ -47,7 +47,10 @@ namespace ISBTCommandHandler
                     wbNotesPage.Url = new Uri(verseNotesPageFilePath);
 
                     if (!this.Visible)
-                        this.Show();                    
+                    {
+                        this.Show();
+                        this.WindowState = FormWindowState.Normal;
+                    }
 
                     this.SetFocus();
                 }
@@ -138,7 +141,7 @@ namespace ISBTCommandHandler
         {
             this.Hide();
 
-            if (!ExitApplication)
+            if (e.CloseReason != CloseReason.WindowsShutDown && !ExitApplication)
                 e.Cancel = true;
         }        
     }

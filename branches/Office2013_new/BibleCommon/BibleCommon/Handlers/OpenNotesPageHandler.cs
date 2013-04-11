@@ -49,7 +49,7 @@ namespace BibleCommon.Handlers
                 vp.Book.Index,
                 vp.Chapter.Value,
                 !vp.IsChapter ? ":" + vp.VerseNumber : string.Empty,
-                vp.OriginalVerseName, notesPageType);
+                vp.GetFriendlyFullVerseName(), notesPageType);
         }
 
         public bool IsProtocolCommand(params string[] args)
@@ -108,8 +108,8 @@ namespace BibleCommon.Handlers
                 fileName = _rubbishPageName;
             else if (notesPageType == NotesPageType.Chapter)
                 fileName = "0";            
-            else 
-                fileName = vp.VerseNumber.ToString();
+            else
+                fileName = vp.VerseNumber.ToString(); //todo: а если у нас будет передан стих Ин 2:4-5, какой такм будет VerseNumber?
 
             return Path.Combine(path, fileName + ".htm");
         }

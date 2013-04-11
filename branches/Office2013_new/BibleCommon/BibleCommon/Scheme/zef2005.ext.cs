@@ -58,6 +58,11 @@ namespace BibleCommon.Scheme
                 return false;
             }
         }
+
+        public bool BookHasOnlyOneChapter(SimpleVersePointer vp)
+        {
+            return this.BooksDictionary[vp.BookIndex].Chapters.Count == 1;
+        }
     }
 
     public partial class BIBLEBOOK

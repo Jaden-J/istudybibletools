@@ -10,6 +10,7 @@ using System.Xml.XPath;
 using BibleCommon.Services;
 using BibleCommon.Common;
 using BibleCommon.Handlers;
+using BibleCommon.Providers;
 
 namespace BibleCommon.Services
 {
