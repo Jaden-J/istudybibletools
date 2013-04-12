@@ -370,6 +370,7 @@ namespace BibleCommon.Common
                 levelTitleEl.Add(
                                 new XElement("a",
                                     new XAttribute("class", "verseLink"),
+                                    new XAttribute("id", ((VerseNotesPageData)hierarchyLevel).Verse.Verse.GetValueOrDefault(0)),
                                     new XAttribute("href", ((VerseNotesPageData)hierarchyLevel).GetVerseLinkHref()),
                                     !((VerseNotesPageData)hierarchyLevel).Verse.IsChapter 
                                         ? ":" + ((VerseNotesPageData)hierarchyLevel).Verse.VerseNumber.ToString()

@@ -9,8 +9,9 @@
     <ErrorReportUrlHistory />
     <FallbackCulture>en-US</FallbackCulture>
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
+    <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>"isbtNotesPage:rst/1%25204%3bбыт%25204:0%3bVerse"</StartArguments>
+    <StartArguments>"isbtNotesPage:rst/1%204;быт%201:2;Verse"</StartArguments>
   </PropertyGroup>
 </Project>

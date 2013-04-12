@@ -10,6 +10,8 @@ using BibleCommon.Contracts;
 using BibleCommon.Handlers;
 using System.Threading;
 using BibleCommon.Services;
+using BibleCommon.Common;
+using BibleCommon.Helpers;
 
 namespace ISBTCommandHandler
 {
@@ -64,7 +66,7 @@ namespace ISBTCommandHandler
 
                     if (handler is OpenNotesPageHandler)
                     {
-                        OpenNotesPage(((OpenNotesPageHandler)handler).GetVerseFilePath());
+                        OpenNotesPage(((OpenNotesPageHandler)handler).Verse, ((OpenNotesPageHandler)handler).GetVerseFilePath());
                     }                    
                         
                     break;
@@ -73,15 +75,16 @@ namespace ISBTCommandHandler
         }
 
         private NotesPageForm _notesPageForm = null;
-        private void OpenNotesPage(string filePath)
+        private void OpenNotesPage(VersePointer vp, string filePath)
         {
             if (_notesPageForm == null)
             {
-                _notesPageForm = new NotesPageForm();
-                _notesPageForm.ShowInTaskbar = true;
+                _notesPageForm = new NotesPageForm();                
+                _notesPageForm.ShowInTaskbar = true;                
             }
 
-            _notesPageForm.OpenNotesPage(filePath);
+            this.SetFocus();
+            _notesPageForm.OpenNotesPage(vp, filePath);            
         }               
     }
 }

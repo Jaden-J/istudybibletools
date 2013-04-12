@@ -65,7 +65,9 @@ namespace BibleCommon.Services
         private bool RelinkBiblePageNote(string bibleSectionId, string biblePageId, string biblePageName, XElement textElement, VersePointer vp, VerseNumber? verseNumber)
         {
             bool wasModified = false;
-            if (SettingsManager.Instance.StoreNotesPagesInFolder || (SettingsManager.Instance.UseDifferentPagesForEachVerse && SettingsManager.Instance.UseProxyLinksForLinks))
+            if (SettingsManager.Instance.StoreNotesPagesInFolder
+                // || (SettingsManager.Instance.UseDifferentPagesForEachVerse && SettingsManager.Instance.UseProxyLinksForLinks)   //todo: наверное это не будем делать, сложно будет правильно обрабатывать в OpenNotesPageHandler
+                )
             {
                 var link = OpenNotesPageHandler.GetCommandUrlStatic(vp, SettingsManager.Instance.ModuleShortName, 
                                                         SettingsManager.Instance.UseDifferentPagesForEachVerse && !vp.IsChapter ? NotesPageType.Verse : NotesPageType.Chapter);                
