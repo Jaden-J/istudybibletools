@@ -902,7 +902,7 @@ namespace BibleCommon.Services
                                 prevStyle = StringUtils.GetAttributeValue(prevLinkText, "style");
 
 
-                            var linkHref = SettingsManager.Instance.UseProxyLinksForLinks
+                            var linkHref = SettingsManager.Instance.UseProxyLinksForBibleVerses
                                                 ? OpenBibleVerseHandler.GetCommandUrlStatic(vp.ParentVersePointer ?? vp, SettingsManager.Instance.ModuleShortName)
                                                 : localHierarchySearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref;
 

@@ -231,8 +231,19 @@ namespace BibleNoteLinker
         {
             if (_wasStartAnalyze && !_wasAnalyzed)
             {
-                if (MessageBox.Show(BibleCommon.Resources.Constants.NoteLinkerQuestionOnClosing,
-                    BibleCommon.Resources.Constants.NoteLinkerFormCaptionOnClosing, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)
+                var caption = BibleCommon.Resources.Constants.NoteLinkerFormCaptionOnClosing;
+                string body;
+
+                if (SettingsManager.Instance.StoreNotesPagesInFolder)
+                {
+                    body = BibleCommon.Resources.Constants.StopNotesAnalysis; 
+                }
+                else
+                {
+                    body = BibleCommon.Resources.Constants.NoteLinkerQuestionOnClosing;
+                }
+
+                if (MessageBox.Show(body, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.No)
                 {
                     e.Cancel = true;
                 }
