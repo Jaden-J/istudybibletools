@@ -12,7 +12,7 @@ namespace BibleCommon.Providers
     {
         public static BibleSearchResult GetHierarchyObject(ref Application oneNoteApp, ref VersePointer vp, NoteLinkManager.AnalyzeDepth? linkDepth)
         {
-            if (SettingsManager.Instance.UseProxyLinksForLinks && SettingsManager.Instance.CanUseBibleContent
+            if (SettingsManager.Instance.UseProxyLinksForBibleVerses && SettingsManager.Instance.CanUseBibleContent
                 && (SettingsManager.Instance.StoreNotesPagesInFolder || linkDepth.GetValueOrDefault() < NoteLinkManager.AnalyzeDepth.Full))
             {
                 return BibleContentSearchManager.GetHierarchyObject(ref vp);

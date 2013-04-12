@@ -236,7 +236,7 @@ Delete these elements and try again.</value>
     <value>Sort pages error</value>
   </data>
   <data name="NoteLinkerFormCaptionOnClosing" xml:space="preserve">
-    <value>Close the program?</value>
+    <value>Warning!</value>
   </data>
   <data name="NoteLinkerHideDetails" xml:space="preserve">
     <value>Hide details</value>
@@ -851,5 +851,8 @@ Please take notice:
   </data>
   <data name="DetailedChapterNotes" xml:space="preserve">
     <value>Detailed Chapter Notes</value>
+  </data>
+  <data name="StopNotesAnalysis" xml:space="preserve">
+    <value>Are you sure you want to cancel the Notes Analysis?</value>
   </data>
 </root>

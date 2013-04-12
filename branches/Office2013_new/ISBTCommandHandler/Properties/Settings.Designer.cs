@@ -70,5 +70,17 @@ namespace ISBTCommandHandler.Properties {
                 this["NotesPageFormAlwaysOnTop"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int NotesPageFormScale {
+            get {
+                return ((int)(this["NotesPageFormScale"]));
+            }
+            set {
+                this["NotesPageFormScale"] = value;
+            }
+        }
     }
 }

@@ -151,13 +151,23 @@ namespace BibleCommon.Services
         }
 
         public static void UpdateNotesPageCssFile()
-        {            
-            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("BibleCommon.Resources.NotesPage.css"))
+        {
+            UpdateNotesPageFile("BibleCommon.Resources.NotesPage.css", Consts.Constants.NotesPageStyleFileName);            
+        }
+
+        public static void UpdateNotesPageJsFile()
+        {
+            UpdateNotesPageFile("BibleCommon.Resources.NotesPage.js", Consts.Constants.NotesPageScriptFileName);
+        }
+
+        private static void UpdateNotesPageFile(string fileResourceName, string fileName)
+        {
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(fileResourceName))
             {
                 using (StreamReader reader = new StreamReader(stream))
                 {
                     var content = reader.ReadToEnd();
-                    File.WriteAllText(Path.Combine(SettingsManager.Instance.FolderPath_BibleNotesPages, Consts.Constants.NotesPageStyleFileName), content);
+                    File.WriteAllText(Path.Combine(SettingsManager.Instance.FolderPath_BibleNotesPages, fileName), content);
                 }
             }
         }

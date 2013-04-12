@@ -1,4 +1,5 @@
-﻿namespace ISBTCommandHandler
+﻿using ISBTCommandHandler.Controls;
+namespace ISBTCommandHandler
 {
     partial class NotesPageForm
     {
@@ -30,13 +31,16 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NotesPageForm));
             this.scMain = new System.Windows.Forms.SplitContainer();
-            this.wbNotesPage = new System.Windows.Forms.WebBrowser();
+            this.wbNotesPage = new ISBTCommandHandler.Controls.WebBrowserEx();
+            this.label1 = new System.Windows.Forms.Label();
+            this.trbScale = new System.Windows.Forms.TrackBar();
             this.btnClose = new System.Windows.Forms.Button();
             this.chkAlwaysOnTop = new System.Windows.Forms.CheckBox();
             this.chkCloseOnClick = new System.Windows.Forms.CheckBox();
             this.scMain.Panel1.SuspendLayout();
             this.scMain.Panel2.SuspendLayout();
             this.scMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trbScale)).BeginInit();
             this.SuspendLayout();
             // 
             // scMain
@@ -51,6 +55,8 @@
             // 
             // scMain.Panel2
             // 
+            this.scMain.Panel2.Controls.Add(this.label1);
+            this.scMain.Panel2.Controls.Add(this.trbScale);
             this.scMain.Panel2.Controls.Add(this.btnClose);
             this.scMain.Panel2.Controls.Add(this.chkAlwaysOnTop);
             this.scMain.Panel2.Controls.Add(this.chkCloseOnClick);
@@ -60,7 +66,21 @@
             resources.ApplyResources(this.wbNotesPage, "wbNotesPage");
             this.wbNotesPage.MinimumSize = new System.Drawing.Size(20, 20);
             this.wbNotesPage.Name = "wbNotesPage";
+            this.wbNotesPage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.wbNotesPage_DocumentCompleted);
             this.wbNotesPage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.wbNotesPage_Navigating);
+            // 
+            // label1
+            // 
+            resources.ApplyResources(this.label1, "label1");
+            this.label1.Name = "label1";
+            // 
+            // trbScale
+            // 
+            resources.ApplyResources(this.trbScale, "trbScale");
+            this.trbScale.Maximum = 20;
+            this.trbScale.Name = "trbScale";
+            this.trbScale.Value = 10;
+            this.trbScale.Scroll += new System.EventHandler(this.trbScale_Scroll);
             // 
             // btnClose
             // 
@@ -96,6 +116,7 @@
             this.scMain.Panel2.ResumeLayout(false);
             this.scMain.Panel2.PerformLayout();
             this.scMain.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.trbScale)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -106,6 +127,8 @@
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.CheckBox chkAlwaysOnTop;
         private System.Windows.Forms.CheckBox chkCloseOnClick;
-        private System.Windows.Forms.WebBrowser wbNotesPage;
+        private WebBrowserEx wbNotesPage;
+        private System.Windows.Forms.TrackBar trbScale;
+        private System.Windows.Forms.Label label1;
     }
 }

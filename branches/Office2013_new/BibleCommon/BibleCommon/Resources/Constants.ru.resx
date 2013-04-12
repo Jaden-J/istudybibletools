@@ -272,7 +272,7 @@
     <value>Ошибка во время сортировки страницы</value>
   </data>
   <data name="NoteLinkerFormCaptionOnClosing" xml:space="preserve">
-    <value>Закрыть программу?</value>
+    <value>Внимание!</value>
   </data>
   <data name="NoteLinkerHideDetails" xml:space="preserve">
     <value>Скрыть детали</value>
@@ -848,5 +848,8 @@
   </data>
   <data name="DetailedChapterNotes" xml:space="preserve">
     <value>Подробные заметки главы</value>
+  </data>
+  <data name="StopNotesAnalysis" xml:space="preserve">
+    <value>Вы действительно хотите остановить анализ заметок?</value>
   </data>
 </root>

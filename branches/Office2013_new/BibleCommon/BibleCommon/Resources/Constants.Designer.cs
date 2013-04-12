@@ -1974,7 +1974,16 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Saved successfully.
+        ///   Ищет локализованную строку, похожую на Are you sure you want to cancel the Notes Analysis?.
+        /// </summary>
+        public static string StopNotesAnalysis {
+            get {
+                return ResourceManager.GetString("StopNotesAnalysis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Saved successfully.
         /// </summary>
         public static string SuccessfullySaved {
             get {

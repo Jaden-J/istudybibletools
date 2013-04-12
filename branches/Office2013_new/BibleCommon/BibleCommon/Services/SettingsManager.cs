@@ -179,6 +179,11 @@ namespace BibleCommon.Services
         public bool UseProxyLinksForLinks { get; set; }
 
         /// <summary>
+        /// Использовать промежуточные ссылки для ссылок на Библию
+        /// </summary>
+        public bool UseProxyLinksForBibleVerses { get; set; }
+
+        /// <summary>
         /// Необходимо ли линковать каждый стих, входящий в MultiVerse
         /// </summary>
         public bool ExpandMultiVersesLinking { get; set; }
@@ -494,6 +499,7 @@ namespace BibleCommon.Services
             this.RubbishPage_ExcludedVersesLinking = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_RubbishPageExcludedVersesLinking, Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking);
             this.UseProxyLinksForStrong = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseProxyLinksForStrong, Consts.Constants.Default_UseProxyLinksForStrong);
             this.UseProxyLinksForLinks = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseProxyLinksForLinks, !OneNoteUtils.IsOneNote2010Cached);
+            this.UseProxyLinksForBibleVerses = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseProxyLinksForBibleVerses, Consts.Constants.Default_UseProxyLinksForBibleVerses);
 
             this.SupplementalBibleLinkName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SupplementalBibleLinkName,
                                                   GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName));
@@ -572,6 +578,7 @@ namespace BibleCommon.Services
             this.RubbishPage_ExpandMultiVersesLinking = Consts.Constants.DefaultRubbishPage_ExpandMultiVersesLinking;
             this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
             this.UseProxyLinksForStrong = Consts.Constants.Default_UseProxyLinksForStrong;
+            this.UseProxyLinksForBibleVerses = Consts.Constants.Default_UseProxyLinksForBibleVerses;
             this.UseProxyLinksForLinks = !OneNoteUtils.IsOneNote2010Cached;
             this.FolderPath_BibleNotesPages = Utils.GetNotesPagesFolderPath();
 
@@ -603,6 +610,7 @@ namespace BibleCommon.Services
                 && this.RubbishPage_ExcludedVersesLinking == Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking
                 && this.UseProxyLinksForStrong == Consts.Constants.Default_UseProxyLinksForStrong
                 && this.UseProxyLinksForLinks == !OneNoteUtils.IsOneNote2010Cached
+                && this.UseProxyLinksForBibleVerses == Consts.Constants.Default_UseProxyLinksForBibleVerses
                 && this.SupplementalBibleLinkName == GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName);
         }
 
@@ -648,7 +656,8 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_SupplementalBibleLinkName, this.SupplementalBibleLinkName),                                  
                                   new XElement(Consts.Constants.ParameterName_DictionariesModules, string.Join(";", this.DictionariesModules.ConvertAll(dm => dm.ToString()).ToArray())),
                                   new XElement(Consts.Constants.ParameterName_UseProxyLinksForStrong, UseProxyLinksForStrong),
-                                  new XElement(Consts.Constants.ParameterName_UseProxyLinksForLinks, UseProxyLinksForLinks)
+                                  new XElement(Consts.Constants.ParameterName_UseProxyLinksForLinks, UseProxyLinksForLinks),
+                                  new XElement(Consts.Constants.ParameterName_UseProxyLinksForBibleVerses, UseProxyLinksForBibleVerses)
                                   );
 
                     if (SelectedNotebooksForAnalyze != null && SelectedNotebooksForAnalyzeIsNotAsDefault())
