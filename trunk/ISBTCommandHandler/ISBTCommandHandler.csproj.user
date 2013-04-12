@@ -12,6 +12,6 @@
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>"isbtNotesPage:rst/1%204;быт%201:2;Verse"</StartArguments>
+    <StartArguments>"isbtopen:_///C:\Users\lux_demko\Desktop\temp\OneNote%20Notebooks\Комментарии%20к%20Библии\Новый%20Завет\04.%20От%20Иоанна\14%20глава.%20От%20Иоанна.one#Перечень%20по%20%22Послушание%20и%20любовь%22.%20%5bОт%20Иоанна&amp;section-id={F8CD35B7-90EF-4D15-8878-0B4FB0AF114C}&amp;page-id={C09E4011-6731-4B1D-8A7B-A2614F33C842}&amp;object-id={651AD066-870F-430F-B839-F7126AC8AD29}&amp;11&amp;cpId={D5EE20CE-DB40-0398-0D92-8B87491C72AE}{1}{B0}&amp;coId={88E6CA2A-5EF0-0A7A-3801-ADA1E9888AA2}{17}{B0}&amp;vp=2;1090&amp;vw=2"</StartArguments>
   </PropertyGroup>
 </Project>

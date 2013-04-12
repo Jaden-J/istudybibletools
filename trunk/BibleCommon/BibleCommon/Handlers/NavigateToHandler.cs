@@ -62,11 +62,13 @@ namespace BibleCommon.Handlers
             if (args.Length == 0)
                 throw new ArgumentNullException("args");
 
+            var link = args.Length == 1 ? args[0] : string.Join(" ", args);
+
             var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
 
             try
             {
-                var newPath = args[0].ReplaceIgnoreCase(ProtocolFullString, Constants.OneNoteProtocol);                
+                var newPath = link.ReplaceIgnoreCase(ProtocolFullString, Constants.OneNoteProtocol);                
 
                 if (!TryToRedirectByIds(ref oneNoteApp, newPath))
                 {
