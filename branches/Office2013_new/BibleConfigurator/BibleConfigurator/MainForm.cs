@@ -223,7 +223,8 @@ namespace BibleConfigurator
                 {
                     if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible) && !ToIndexBible)
                     {
-                        if (MessageBox.Show(BibleCommon.Resources.Constants.IndexBibleQuestion, BibleCommon.Resources.Constants.Warning,
+                        var minutes = SettingsManager.Instance.UseProxyLinksForBibleVerses ? 5 : 30;
+                        if (MessageBox.Show(string.Format(BibleCommon.Resources.Constants.IndexBibleQuestion, minutes), BibleCommon.Resources.Constants.Warning,
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                             ToIndexBible = true;
                     }
@@ -500,6 +501,13 @@ namespace BibleConfigurator
             SettingsManager.Instance.RubbishPage_ExcludedVersesLinking = chkRubbishExcludedVersesLinking.Checked;
             SettingsManager.Instance.UseProxyLinksForStrong = chkUseProxyLinksForStrong.Checked;
             SettingsManager.Instance.UseProxyLinksForLinks = chkUseProxyLinksForLinks.Checked;
+
+            if (SettingsManager.Instance.UseProxyLinksForBibleVerses != chkUseProxyLinksForBibleVerses.Checked && !chkUseProxyLinksForBibleVerses.Checked)  // то есть мы перестали использовать прокси ссылки для стихов Библии
+            {
+                OneNoteProxy.Instance.CleanBibleVersesLinksCache();    
+            }
+
+            SettingsManager.Instance.UseProxyLinksForBibleVerses = chkUseProxyLinksForBibleVerses.Checked;
         }
 
         private void SaveIntegerSettings()
@@ -586,7 +594,8 @@ namespace BibleConfigurator
                 || SettingsManager.Instance.PageWidth_Notes.ToString() != tbNotesPageWidth.Text
                 || SettingsManager.Instance.PageWidth_RubbishNotes.ToString() != tbRubbishNotesPageWidth.Text
                 || SettingsManager.Instance.UseProxyLinksForStrong != chkUseProxyLinksForStrong.Checked
-                || SettingsManager.Instance.UseProxyLinksForLinks != chkUseProxyLinksForLinks.Checked;
+                || SettingsManager.Instance.UseProxyLinksForLinks != chkUseProxyLinksForLinks.Checked
+                || SettingsManager.Instance.UseProxyLinksForBibleVerses != chkUseProxyLinksForBibleVerses.Checked;
 
         }
 
@@ -997,6 +1006,7 @@ namespace BibleConfigurator
 
             chkUseProxyLinksForStrong.Checked = SettingsManager.Instance.UseProxyLinksForStrong;
             chkUseProxyLinksForLinks.Checked = SettingsManager.Instance.UseProxyLinksForLinks;
+            chkUseProxyLinksForBibleVerses.Checked = SettingsManager.Instance.UseProxyLinksForBibleVerses;
 
             chkUseRubbishPage_CheckedChanged(this, null);
             chkUseFolderForBibleNotesPages_CheckedChanged(this, null);

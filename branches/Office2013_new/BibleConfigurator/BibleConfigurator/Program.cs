@@ -142,7 +142,8 @@ namespace BibleConfigurator
 
                             if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible))
                             {
-                                using (var form = new MessageForm(BibleCommon.Resources.Constants.IndexBibleQuestionAtStartUp, BibleCommon.Resources.Constants.Warning,
+                                var minutes = SettingsManager.Instance.UseProxyLinksForBibleVerses ? 5 : 30;
+                                using (var form = new MessageForm(string.Format(BibleCommon.Resources.Constants.IndexBibleQuestionAtStartUp, minutes), BibleCommon.Resources.Constants.Warning,
                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                                 {
                                     if (form.ShowDialog() == DialogResult.Yes)

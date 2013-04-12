@@ -233,11 +233,17 @@
   <data name="tabPage2.Text" xml:space="preserve">
     <value>Параметры программы</value>
   </data>
+  <data name="cbUseProxyLinksForBibleVerses.Size" type="System.Drawing.Size, System.Drawing">
+    <value>277, 17</value>
+  </data>
+  <data name="chkUseProxyLinksForBibleVerses.Text" xml:space="preserve">
+    <value>Использовать прокси-ссылки для стихов Библии</value>
+  </data>
   <data name="chkUseProxyLinksForLinks.Size" type="System.Drawing.Size, System.Drawing">
-    <value>179, 17</value>
+    <value>306, 17</value>
   </data>
   <data name="chkUseProxyLinksForLinks.Text" xml:space="preserve">
-    <value>Использовать прокси-ссылки</value>
+    <value>Использовать прокси-ссылки для ссылок "onenote://"</value>
   </data>
   <data name="chkUseProxyLinksForStrong.Size" type="System.Drawing.Size, System.Drawing">
     <value>291, 17</value>
