@@ -149,7 +149,8 @@ namespace BibleCommon.Common
                             new XElement("head", 
                                 new XElement("meta", new XAttribute("http-equiv", "X-UA-Compatible"), new XAttribute("content", "IE=edge")),
                                 new XElement("title", string.Format("{0} {1}", PageName,  chapterVersePointer.ChapterName)),
-                                new XElement("link", new XAttribute("type", "text/css"), new XAttribute("rel", "stylesheet"), new XAttribute("href", "../../../" + Constants.NotesPageStyleFileName))
+                                new XElement("link", new XAttribute("type", "text/css"), new XAttribute("rel", "stylesheet"), new XAttribute("href", "../../../" + Constants.NotesPageStyleFileName)),
+                                new XElement("script", new XAttribute("type", "text/javascript"), new XAttribute("src", "../../../" + Constants.NotesPageScriptFileName), ";")
                             )));
 
             var bodyEl = xdoc.Root.AddEl(new XElement("body"));
@@ -370,6 +371,7 @@ namespace BibleCommon.Common
                 levelTitleEl.Add(
                                 new XElement("a",
                                     new XAttribute("class", "verseLink"),
+                                    new XAttribute("id", ((VerseNotesPageData)hierarchyLevel).Verse.Verse.GetValueOrDefault(0)),
                                     new XAttribute("href", ((VerseNotesPageData)hierarchyLevel).GetVerseLinkHref()),
                                     !((VerseNotesPageData)hierarchyLevel).Verse.IsChapter 
                                         ? ":" + ((VerseNotesPageData)hierarchyLevel).Verse.VerseNumber.ToString()

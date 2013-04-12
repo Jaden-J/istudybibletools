@@ -40,6 +40,7 @@ namespace BibleCommon.Consts
         public static readonly int DefaultPageWidth_RubbishNotes = 500;
         public static readonly int DefaultPageWidth_Bible = 500;
         public static readonly bool Default_UseProxyLinksForStrong = true;
+        public static readonly bool Default_UseProxyLinksForBibleVerses = true;
         public static readonly bool DefaultExpandMultiVersesLinking = true;
         public static readonly bool DefaultExcludedVersesLinking = false;
         public static readonly bool DefaultUseDifferentPagesForEachVerse = true;
@@ -91,6 +92,7 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_RubbishPageExcludedVersesLinking = "RubbishPage_ExcludedVersesLinking";
 
         public static readonly string ParameterName_UseProxyLinksForStrong = "UseProxyLinksForStrong";
+        public static readonly string ParameterName_UseProxyLinksForBibleVerses = "UseProxyLinksForBibleVerses";
         public static readonly string ParameterName_UseProxyLinksForLinks = "UseProxyLinksForLinks";
 
         public static readonly string ParameterName_UseDefaultSettings = "UseDefaultSettings";        
@@ -126,6 +128,7 @@ namespace BibleCommon.Consts
 
         public static readonly string NotesPageElementAttributeName_SyncId = "syncid";
         public static readonly string NotesPageStyleFileName = "core.css";
+        public static readonly string NotesPageScriptFileName = "core.js";
     }   
 }
 
