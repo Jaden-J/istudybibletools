@@ -59,6 +59,7 @@
             this.rbMultiNotebook = new System.Windows.Forms.RadioButton();
             this.rbSingleNotebook = new System.Windows.Forms.RadioButton();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.chkUseProxyLinksForBibleVerses = new System.Windows.Forms.CheckBox();
             this.chkUseProxyLinksForLinks = new System.Windows.Forms.CheckBox();
             this.chkUseProxyLinksForStrong = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -110,6 +111,7 @@
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.notesPagesFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -360,6 +362,7 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage2.Controls.Add(this.chkUseProxyLinksForBibleVerses);
             this.tabPage2.Controls.Add(this.chkUseProxyLinksForLinks);
             this.tabPage2.Controls.Add(this.chkUseProxyLinksForStrong);
             this.tabPage2.Controls.Add(this.label9);
@@ -374,6 +377,12 @@
             resources.ApplyResources(this.tabPage2, "tabPage2");
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Enter += new System.EventHandler(this.tabPage1_Enter);
+            // 
+            // chkUseProxyLinksForBibleVerses
+            // 
+            resources.ApplyResources(this.chkUseProxyLinksForBibleVerses, "chkUseProxyLinksForBibleVerses");
+            this.chkUseProxyLinksForBibleVerses.Name = "chkUseProxyLinksForBibleVerses";
+            this.chkUseProxyLinksForBibleVerses.UseVisualStyleBackColor = true;
             // 
             // chkUseProxyLinksForLinks
             // 
@@ -717,6 +726,7 @@
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.tbcMain.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -817,6 +827,7 @@
         private System.Windows.Forms.Button btnBibleNotesPagesSetFolder;
         private System.Windows.Forms.TextBox tbBibleNotesPagesFolder;
         private System.Windows.Forms.FolderBrowserDialog notesPagesFolderBrowserDialog;
+        private System.Windows.Forms.CheckBox chkUseProxyLinksForBibleVerses;
 
     }
 }
