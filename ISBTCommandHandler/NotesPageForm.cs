@@ -18,13 +18,15 @@ namespace ISBTCommandHandler
 {
     public partial class NotesPageForm : Form
     {
-        private const double FormHeightProportion = 0.95;
+        private const double FormHeightProportion = 0.95;  // от всего экрана
         private const double FormWidthProportion = 0.33;
+
+        private string _titleAtStart;
 
         protected OpenBibleVerseHandler OpenBibleVerseHandler { get; set; }
         protected NavigateToHandler NavigateToHandler { get; set; }
 
-        public bool ExitApplication { get; set; }
+        public bool ExitApplication { get; set; }   
 
         public NotesPageForm()
         {   
@@ -34,9 +36,18 @@ namespace ISBTCommandHandler
 
             OpenBibleVerseHandler = new OpenBibleVerseHandler();
             NavigateToHandler = new NavigateToHandler();
+
+            _titleAtStart = this.Text;                        
         }
 
-        public void OpenNotesPage(string verseNotesPageFilePath)
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            base.OnMouseWheel(e);
+            if (!wbNotesPage.Focused || !wbNotesPage.RectangleToScreen(wbNotesPage.ClientRectangle).Contains(Cursor.Position))            
+                wbNotesPage.Scroll(e);                            
+        }
+
+        public void OpenNotesPage(VersePointer vp, string verseNotesPageFilePath)
         {   
             if (!string.IsNullOrEmpty(verseNotesPageFilePath))
             {
@@ -44,15 +55,20 @@ namespace ISBTCommandHandler
                     FormLogger.LogMessage(BibleCommon.Resources.Constants.VerseIsNotMentioned);
                 else
                 {
+                    if (!vp.IsChapter && !SettingsManager.Instance.UseDifferentPagesForEachVerse)
+                        verseNotesPageFilePath += "#" + vp.Verse.Value;
+
                     wbNotesPage.Url = new Uri(verseNotesPageFilePath);
 
-                    if (!this.Visible)
-                    {
-                        this.Show();
-                        this.WindowState = FormWindowState.Normal;
-                    }
+                    if (!this.Visible)                    
+                        this.Show();                                            
 
-                    this.SetFocus();
+                    if (this.WindowState != FormWindowState.Normal)
+                        this.WindowState = FormWindowState.Normal;
+
+                    this.SetFocus();                    
+
+                    this.Text = string.Format("{0} ({1})", _titleAtStart, vp.GetFriendlyFullVerseName());
                 }
             }
         }        
@@ -61,7 +77,13 @@ namespace ISBTCommandHandler
         {
             SetCheckboxes();
             SetLocation();
-            SetSize();            
+            SetSize();
+            SetScale();
+        }
+
+        private void SetScale()
+        {
+            trbScale.Value = Properties.Settings.Default.NotesPageFormScale;            
         }
 
         private void SetCheckboxes()
@@ -129,6 +151,7 @@ namespace ISBTCommandHandler
             Properties.Settings.Default.NotesPageFormCloseOnClick = chkCloseOnClick.Checked;
             Properties.Settings.Default.NotesPageFormPosition = string.Format("{0};{1}", this.Left, this.Top);
             Properties.Settings.Default.NotesPageFormSize= string.Format("{0};{1}", this.Width, this.Height);
+            Properties.Settings.Default.NotesPageFormScale = trbScale.Value;
 
             Properties.Settings.Default.Save();
         }
@@ -143,6 +166,18 @@ namespace ISBTCommandHandler
 
             if (e.CloseReason != CloseReason.WindowsShutDown && !ExitApplication)
                 e.Cancel = true;
-        }        
+        }
+
+        private void trbScale_Scroll(object sender, EventArgs e)
+        {
+            var k = trbScale.Value > 10 ? 0.1 : 0.05;
+            k = (float)(1 + (trbScale.Value - 10) * k);
+            wbNotesPage.Zoom((int)(k * 100));            
+        }
+
+        private void wbNotesPage_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            trbScale_Scroll(this, null);
+        }                
     }
 }
