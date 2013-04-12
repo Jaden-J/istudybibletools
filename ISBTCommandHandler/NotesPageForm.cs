@@ -42,9 +42,19 @@ namespace ISBTCommandHandler
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            base.OnMouseWheel(e);
-            if (!wbNotesPage.Focused || !wbNotesPage.RectangleToScreen(wbNotesPage.ClientRectangle).Contains(Cursor.Position))            
-                wbNotesPage.Scroll(e);                            
+            try
+            {
+                base.OnMouseWheel(e);
+                if ((!wbNotesPage.Focused || !wbNotesPage.RectangleToScreen(wbNotesPage.ClientRectangle).Contains(Cursor.Position))
+                    && this.RectangleToScreen(this.ClientRectangle).Contains(Cursor.Position))
+                {
+                    wbNotesPage.Scroll(e);
+                }
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
         }
 
         public void OpenNotesPage(VersePointer vp, string verseNotesPageFilePath)
@@ -79,6 +89,7 @@ namespace ISBTCommandHandler
             SetLocation();
             SetSize();
             SetScale();
+            wbNotesPage.Focus();
         }
 
         private void SetScale()

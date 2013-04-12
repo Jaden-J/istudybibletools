@@ -126,6 +126,7 @@ namespace BibleCommon.Consts
 
         public static readonly string NotesPageElementAttributeName_SyncId = "syncid";
         public static readonly string NotesPageStyleFileName = "core.css";
+        public static readonly string NotesPageScriptFileName = "core.js";
     }   
 }
 

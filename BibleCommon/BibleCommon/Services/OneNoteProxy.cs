@@ -193,11 +193,11 @@ namespace BibleCommon.Services
         private Dictionary<string, string> _bibleVersesLinks = null;
         private Dictionary<string, ModuleDictionaryInfo> _moduleDictionaries = new Dictionary<string, ModuleDictionaryInfo>();
         private Dictionary<string, Dictionary<string, string>> _dictionariesTermsLinks = new Dictionary<string, Dictionary<string, string>>();
-        private Dictionary<string, NotesPageData> _notesPageDataList = new Dictionary<string, NotesPageData>();        
+        private OrderedDictionary<string, NotesPageData> _notesPageDataList = new OrderedDictionary<string, NotesPageData>();        
 
         private bool? _isBibleVersesLinksCacheActive;
 
-        public Dictionary<string, NotesPageData> NotesPageDataList
+        public OrderedDictionary<string, NotesPageData> NotesPageDataList
         {
             get
             {

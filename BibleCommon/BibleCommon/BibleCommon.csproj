@@ -192,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\MessageForm.ico" />
+    <EmbeddedResource Include="Resources\NotesPage.js" />
     <EmbeddedResource Include="Resources\NotesPage.css" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

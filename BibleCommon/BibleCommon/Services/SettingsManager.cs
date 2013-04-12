@@ -179,6 +179,11 @@ namespace BibleCommon.Services
         public bool UseProxyLinksForLinks { get; set; }
 
         /// <summary>
+        /// Использовать промежуточные ссылки для ссылок на Библию
+        /// </summary>
+        public bool UseProxyLinksForBibleVerses { get; set; }
+
+        /// <summary>
         /// Необходимо ли линковать каждый стих, входящий в MultiVerse
         /// </summary>
         public bool ExpandMultiVersesLinking { get; set; }

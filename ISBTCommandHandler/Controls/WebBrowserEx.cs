@@ -185,8 +185,8 @@ namespace ISBTCommandHandler.Controls
 
         public void Scroll(MouseEventArgs e)
         {
-            if (Document != null)
-                Navigate(string.Format("javascript:window.scrollBy(0,{0});", -1*e.Delta));                
+            if (Document != null)            
+                this.Document.InvokeScript("scrollBy", new object[] { 0, -1 * e.Delta });            
         }
 
         protected override void DetachInterfaces()
