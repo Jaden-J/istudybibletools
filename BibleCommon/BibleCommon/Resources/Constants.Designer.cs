@@ -1326,7 +1326,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Close the program?.
+        ///   Ищет локализованную строку, похожую на Warning!.
         /// </summary>
         public static string NoteLinkerFormCaptionOnClosing {
             get {
@@ -1970,6 +1970,15 @@ namespace BibleCommon.Resources {
         public static string StartTime {
             get {
                 return ResourceManager.GetString("StartTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Are you sure you want to cancel the Notes Analysis?.
+        /// </summary>
+        public static string StopNotesAnalysis {
+            get {
+                return ResourceManager.GetString("StopNotesAnalysis", resourceCulture);
             }
         }
         

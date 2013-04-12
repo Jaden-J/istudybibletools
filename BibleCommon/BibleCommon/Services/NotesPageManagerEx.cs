@@ -128,7 +128,7 @@ namespace BibleCommon.Services
                 rootElParent = rootElParent.XPathSelectElement("one:OEChildren", notesPageDocument.Xnm);
             }
 
-            var linkHrefToVerse = SettingsManager.Instance.UseProxyLinksForLinks
+            var linkHrefToVerse = SettingsManager.Instance.UseProxyLinksForBibleVerses
                                                     ? OpenBibleVerseHandler.GetCommandUrlStatic(vp, SettingsManager.Instance.ModuleShortName)
                                                     : verseHierarchyObjectInfo.VerseInfo.ObjectHref;
 
