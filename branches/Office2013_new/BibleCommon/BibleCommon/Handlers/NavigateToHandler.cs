@@ -64,7 +64,7 @@ namespace BibleCommon.Handlers
 
             var link = args.Length == 1 ? args[0] : string.Join(" ", args);
 
-            var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
 
             try
             {

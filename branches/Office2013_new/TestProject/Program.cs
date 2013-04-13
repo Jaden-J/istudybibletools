@@ -42,7 +42,7 @@ namespace TestProject
 
             sw.Start();
 
-            _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
             
 
             try
@@ -331,7 +331,7 @@ namespace TestProject
             string xml;
             var xnm = new XmlNamespaceManager(new NameTable());
             xnm.AddNamespace("one", "http://schemas.microsoft.com/office/onenote/2013/onenote");
-            var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
 
             oneNoteApp.GetHierarchy(null, HierarchyScope.hsNotebooks, out xml);
             var notebookId = (string)XDocument.Parse(xml).Root.XPathSelectElement("one:Notebook", xnm).Attribute("ID");
@@ -381,7 +381,7 @@ namespace TestProject
 
         private static void AddColorLink()
         {   
-            var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();             
+            var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();             
             string xml;
             oneNoteApp.GetPageContent(_oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xml);
             var currentPageDoc = XDocument.Parse(xml);
@@ -639,7 +639,7 @@ namespace TestProject
 
         private static void SearchForEnText()
         {
-            var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
             string notebookId = OneNoteUtils.GetNotebookIdByName(ref oneNoteApp, "Biblia", false);
 
             var pages = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, false);
@@ -658,7 +658,7 @@ namespace TestProject
         private static void ChangeCurrentPageLocale(string locale)
         {
             // it does not work (((((
-            var oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
 
             XmlNamespaceManager xnm;
             var pageDoc = OneNoteUtils.GetPageContent(ref oneNoteApp, oneNoteApp.Windows.CurrentWindow.CurrentPageId, out xnm);

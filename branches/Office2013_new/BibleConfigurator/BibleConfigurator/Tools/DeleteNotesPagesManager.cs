@@ -10,6 +10,7 @@ using System.Xml.XPath;
 using BibleCommon.Services;
 using BibleCommon.Consts;
 using BibleCommon.Common;
+using System.IO;
 
 namespace BibleConfigurator.Tools
 {
@@ -36,7 +37,7 @@ namespace BibleConfigurator.Tools
             {
                 BibleCommon.Services.Logger.Init("DeleteNotesPagesManager");
 
-                Dictionary<string, string> pagesToDelete = GetAllNotesPagesIds();
+                var pagesToDelete = SettingsManager.Instance.StoreNotesPagesInFolder ? GetNotesPageFiles() : GetAllNotesPagesIds();
                 int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleShortName, true);
 
                 _form.PrepareForLongProcessing(chaptersCount + pagesToDelete.Count, 1, BibleCommon.Resources.Constants.DeleteNotesPagesManagerStartMessage);
@@ -44,7 +45,7 @@ namespace BibleConfigurator.Tools
                 NotebookIteratorHelper.Iterate(ref _oneNoteApp,
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
                         {
-                            _form.PerformProgressStep(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage , pageInfo.Title));
+                            _form.PerformProgressStep(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage, pageInfo.Title));
 
                             try
                             {
@@ -59,16 +60,30 @@ namespace BibleConfigurator.Tools
                                 throw new ProcessAbortedByUserException();
                         });
 
-                foreach (var page in pagesToDelete)
+
+                if (SettingsManager.Instance.StoreNotesPagesInFolder)
                 {
-                    string message = string.Format("{0} '{1}'", BibleCommon.Resources.Constants.DeleteNotesPagesManagerRemovePage, page.Value);
-                    _form.PerformProgressStep(message);
-                    BibleCommon.Services.Logger.LogMessageParams(message);
+                    foreach (var file in pagesToDelete)
+                    {
+                        _form.PerformProgressStep(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.DeleteNotesPagesManagerRemovePage,  file.Value));
+                        File.Delete(file.Key);
+                    }
 
-                    DeleteNotesPage(page.Key);
+                    Directory.Delete(GetNotesPageFolder(), true);
+                }
+                else
+                {
+                    foreach (var page in pagesToDelete)
+                    {
+                        string message = string.Format("{0} '{1}'", BibleCommon.Resources.Constants.DeleteNotesPagesManagerRemovePage, page.Value);
+                        _form.PerformProgressStep(message);
+                        BibleCommon.Services.Logger.LogMessageParams(message);
 
-                    if (_form.StopLongProcess)
-                        throw new ProcessAbortedByUserException();
+                        DeleteNotesPage(page.Key);
+
+                        if (_form.StopLongProcess)
+                            throw new ProcessAbortedByUserException();
+                    }
                 }
 
                 _form.LongProcessingDone(BibleCommon.Resources.Constants.DeleteNotesPagesManagerFinishMessage);
@@ -81,6 +96,23 @@ namespace BibleConfigurator.Tools
             {
                 BibleCommon.Services.Logger.Done();               
             }
+        }
+
+        private Dictionary<string, string> GetNotesPageFiles()
+        {
+            var result = new Dictionary<string, string>();
+
+            foreach (var file in Directory.GetFiles(GetNotesPageFolder(), "*.htm", SearchOption.AllDirectories))
+            {
+                result.Add(file, Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(file))));
+            }
+
+            return result;
+        }
+
+        private static string GetNotesPageFolder()
+        {
+            return Path.Combine(SettingsManager.Instance.FolderPath_BibleNotesPages, SettingsManager.Instance.ModuleShortName);
         }
 
         private Dictionary<string, string> GetAllNotesPagesIds()

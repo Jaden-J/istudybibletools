@@ -133,7 +133,7 @@ namespace BibleConfigurator
         {
             this.SetFormUICulture();
             InitializeComponent();
-            _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
 
             this.Text = BibleCommon.Resources.Constants.SearchInDictionaries;
             this.btnCancel.Text = BibleCommon.Resources.Constants.Close;

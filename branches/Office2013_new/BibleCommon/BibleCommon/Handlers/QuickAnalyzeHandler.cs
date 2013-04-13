@@ -32,11 +32,11 @@ namespace BibleCommon.Handlers
             try
             {
                 Logger.Init("QuickAnalyze");
-                oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+                oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
                 var currentPage = OneNoteUtils.GetCurrentPageInfo(ref oneNoteApp);
                 using (NoteLinkManager noteLinkManager = new NoteLinkManager(oneNoteApp))
                 {
-                    noteLinkManager.LinkPageVerses(currentPage.NotebookId, currentPage.Id, NoteLinkManager.AnalyzeDepth.SetVersesLinks, false);
+                    noteLinkManager.LinkPageVerses(currentPage.NotebookId, currentPage.Id, NoteLinkManager.AnalyzeDepth.SetVersesLinks, false, null);
                     noteLinkManager.SetCursorOnNearestVerse(noteLinkManager.LastAnalyzedVerse);
                 }
                 OneNoteProxy.Instance.CommitAllModifiedPages(ref oneNoteApp, true, null, null, null);

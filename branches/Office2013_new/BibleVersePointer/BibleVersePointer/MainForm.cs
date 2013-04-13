@@ -35,7 +35,7 @@ namespace BibleVersePointer
 
             InitializeComponent();
 
-            _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
             
             this.Text = BibleCommon.Resources.Constants.OpenVerse; 
             lblDescription.Text = BibleCommon.Resources.Constants.SpecifyBibleVerse;

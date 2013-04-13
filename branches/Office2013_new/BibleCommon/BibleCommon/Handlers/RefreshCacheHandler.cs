@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Office.Interop.OneNote;
 using BibleCommon.Common;
+using BibleCommon.Helpers;
 
 namespace BibleCommon.Handlers
 {
@@ -39,7 +40,7 @@ namespace BibleCommon.Handlers
             Application oneNoteApp = null;
             try
             {
-                oneNoteApp = new Application();  // для разгона
+                oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();  // для разгона
 
                 SettingsManager.Initialize();
                 OneNoteProxy.Initialize();

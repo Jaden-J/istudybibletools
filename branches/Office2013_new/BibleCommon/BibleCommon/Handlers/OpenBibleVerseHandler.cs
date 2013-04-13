@@ -58,7 +58,7 @@ namespace BibleCommon.Handlers
                 if (parts.Length < 2)
                     throw new ArgumentException(string.Format("Ivalid versePointer args: {0}", args[0]));
 
-                oneNoteApp = new Application();
+                oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
 
                 var verseString = Uri.UnescapeDataString(parts[1]);
 

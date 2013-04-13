@@ -74,7 +74,7 @@ namespace BibleCommon.Services
                 string newNotesPageLink = string.Format("<font size='2pt'>{0}</font>",
                                 OneNoteUtils.GetLink(SettingsManager.Instance.PageName_Notes, link));
 
-                if (textElement.Value != newNotesPageLink)    //todo: добавить, чтобы это условие срабатывало. То есть правильно енкодить строку
+                if (!LinksAreEqual(textElement.Value, SettingsManager.Instance.PageName_Notes, link, newNotesPageLink))
                 {
                     textElement.Value = newNotesPageLink;
                     wasModified = true;
@@ -100,12 +100,30 @@ namespace BibleCommon.Services
                 string newNotesPageLink = string.Format("<font size='2pt'>{0}</font>",
                                     OneNoteUtils.GenerateLink(ref _oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, notesRowObjectId, false));
 
-                textElement.Value = newNotesPageLink;
-
-                return true;
+                if (!LinksAreEqual(textElement.Value, SettingsManager.Instance.PageName_Notes, null, newNotesPageLink))
+                {
+                    textElement.Value = newNotesPageLink;
+                    return true;
+                }                
             }
 
             return false;
+        }
+
+        private static bool LinksAreEqual(string existingLink, string newLinkText, string newLinkHref, string newLink)
+        {
+            if (string.IsNullOrEmpty(newLinkHref))
+                newLinkHref = StringUtils.GetAttributeValue(newLink, "href");
+
+            var existingLinkHref = StringUtils.GetAttributeValue(existingLink, "href");
+
+            if (!string.IsNullOrEmpty(existingLinkHref))
+            {
+                return StringUtils.GetText(existingLink) == newLinkText
+                        && Uri.UnescapeDataString(existingLinkHref) == newLinkHref;
+            }
+            else
+                return false;
         }
 
         private static bool CantainsLinkToNotesPage(XElement textElement)
