@@ -376,7 +376,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Delete all summary of notes and references to them?.
+        ///   Looks up a localized string similar to Delete all pages &quot;Summary of Notes&quot; and references to them?.
         /// </summary>
         public static string ConfiguratorQuestionDeleteAllNotesPages {
             get {

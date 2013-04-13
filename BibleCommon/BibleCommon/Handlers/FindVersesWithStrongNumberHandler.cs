@@ -47,7 +47,7 @@ namespace BibleCommon.Handlers
             //if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_SupplementalBible))   // вроде бы как, какая разница. Если нет - то пусть везде ищет.
             //{
                 string strongNumber = args[0].Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries)[1];
-                var oneNoteApp = new Application();
+                var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
                 string result;
                 try
                 {

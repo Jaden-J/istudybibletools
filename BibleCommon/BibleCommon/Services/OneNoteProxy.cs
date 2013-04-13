@@ -478,8 +478,7 @@ namespace BibleCommon.Services
         {
             PageContent result;
 
-            var key = string.Format("{0}_{1}", pageId, pageInfo);
-
+            var key = GetPageContentCacheKey(pageId, pageInfo);
             if (!_pageContentCache.ContainsKey(key) || refreshCache)
             {
                 //lock (_locker)
@@ -525,6 +524,11 @@ namespace BibleCommon.Services
             _hierarchyContentCache.Clear();
         }
 
+        private static string GetPageContentCacheKey(string pageId, PageInfo pageInfo)
+        {
+            return string.Format("{0}_{1}", pageId, pageInfo);
+        }
+
         public void CommitModifiedPage(ref Application oneNoteApp, PageContent page, bool throwExceptions)
         {
             if (page == null)
@@ -550,6 +554,13 @@ namespace BibleCommon.Services
             _pageContentCache.Remove(page.PageId);
         }
 
+        public void RemovePageContentFromCache(string pageId, PageInfo pageInfo)
+        {
+            var key = GetPageContentCacheKey(pageId, pageInfo);
+            if (_pageContentCache.ContainsKey(key))
+                _pageContentCache.Remove(key);
+        }
+
         public void CommitAllModifiedPages(ref Application oneNoteApp, bool throwExceptions, Func<PageContent, bool> filter, 
             Action<int> onAllPagesToCommitFound, Action<PageContent> onPageProcessed)
         {   
@@ -559,32 +570,11 @@ namespace BibleCommon.Services
             
             foreach (PageContent page in toCommit)
             {
-                try
-                {
-                    if (page.AddLatestAnalyzeTimeMetaAttribute)
-                        OneNoteUtils.UpdateElementMetaData(page.Content.Root, Constants.Key_LatestAnalyzeTime, DateTime.UtcNow.AddSeconds(10).ToString(), page.Xnm);
-
-                    OneNoteUtils.UpdatePageContentSafe(ref oneNoteApp, page.Content, page.Xnm);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(string.Format("{0} '{1}'.", BibleCommon.Resources.Constants.Error_UpdatePage, (string)page.Content.Root.Attribute("name")), ex);
-                    if (throwExceptions)
-                    {
-                        _pageContentCache.Remove(page.PageId);  // мы всё равно не смогли обновить эту страницу.
-                        throw;
-                    }
-                }
+                CommitModifiedPage(ref oneNoteApp, page, throwExceptions);               
 
                 if (onPageProcessed != null)
                     onPageProcessed(page);
-            }
-
-            //lock (_locker)
-            {
-                foreach (var page in toCommit)  
-                    _pageContentCache.Remove(page.PageId);
-            }
+            }            
         }        
 
         public void CommitAllModifiedHierarchy(ref Application oneNoteApp, Action<int> onAllHierarchyToCommitFound,

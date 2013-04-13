@@ -109,7 +109,7 @@ namespace BibleCommon.Handlers
             else if (notesPageType == NotesPageType.Chapter)
                 fileName = "0";            
             else
-                fileName = vp.VerseNumber.ToString(); //todo: а если у нас будет передан стих Ин 2:4-5, какой такм будет VerseNumber?
+                fileName = vp.VerseNumber.ToString(); 
 
             return Path.Combine(path, fileName + ".htm");
         }

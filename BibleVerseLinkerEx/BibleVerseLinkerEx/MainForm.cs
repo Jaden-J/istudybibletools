@@ -34,7 +34,7 @@ namespace BibleVerseLinkerEx
             btnOk.Enabled = false;
             Application.DoEvents();
 
-            Microsoft.Office.Interop.OneNote.Application oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            Microsoft.Office.Interop.OneNote.Application oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
 
             try
             {
