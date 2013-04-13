@@ -154,7 +154,7 @@
     <value>Notebook template is not found at</value>
   </data>
   <data name="ConfiguratorQuestionDeleteAllNotesPages" xml:space="preserve">
-    <value>Delete all summary of notes and references to them?</value>
+    <value>Delete all pages "Summary of Notes" and references to them?</value>
   </data>
   <data name="ConfiguratorQuestionDeleteAllNotesPagesManually" xml:space="preserve">
     <value>'Summary of Notes' pages use a separate notebook. It is recommended to manually remove the notebook 'Summary of Notes' and recreate it from template. Continue?</value>

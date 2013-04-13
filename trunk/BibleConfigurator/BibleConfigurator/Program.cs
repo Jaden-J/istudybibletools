@@ -84,7 +84,7 @@ namespace BibleConfigurator
         private static void CreateOneNoteAppIfNotExists()
         {
             if (_oneNoteApp == null)
-                _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+                _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
         }
 
         private static bool IsSystemConfigured()

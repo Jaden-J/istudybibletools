@@ -30,7 +30,8 @@ namespace BibleCommon.Consts
         public static readonly string UnicodeFontName = "Arial Unicode MS";
         public static readonly string AnalyzeMutix = "ISBT_Analyze";
         public static readonly string ParametersMutix = "ISBT_Parameters";
-        public static readonly string OneNoteProtocol = "onenote:";        
+        public static readonly string OneNoteProtocol = "onenote:";
+        public static readonly string DoNotAnalyzeSymbol = "{}";       
 
         public static readonly decimal ImportantVerseWeight = 2;
 

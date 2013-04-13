@@ -70,7 +70,7 @@ namespace BibleConfigurator
             }
         }
 
-        private Microsoft.Office.Interop.OneNote.Application _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+        private Microsoft.Office.Interop.OneNote.Application _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
 
         private string SingleNotebookFromTemplatePath { get; set; }
         private string BibleNotebookFromTemplatePath { get; set; }
@@ -1380,6 +1380,7 @@ namespace BibleConfigurator
                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
             {
                 if (SettingsManager.Instance.NotebookId_BibleComments == SettingsManager.Instance.NotebookId_BibleNotesPages
+                    || SettingsManager.Instance.StoreNotesPagesInFolder 
                     || MessageBox.Show(BibleCommon.Resources.Constants.ConfiguratorQuestionDeleteAllNotesPagesManually, BibleCommon.Resources.Constants.Warning,
                         MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.Yes)
                 {
