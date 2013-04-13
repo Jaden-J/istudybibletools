@@ -141,7 +141,7 @@ namespace BibleCommon.Services
                     notePageDocument.PageType = OneNoteProxy.PageType.NotesPage;  // уточняем тип страницы
                 }
 
-                if (doNotAnalyze.GetValueOrDefault(false) || notePageName.Contains(Constants.DoNotAnalyzeSymbol))
+                if (doNotAnalyze.GetValueOrDefault(false) || StringUtils.IndexOfAny(notePageName, Constants.DoNotAnalyzeSymbol1, Constants.DoNotAnalyzeSymbol2) > -1)
                     IsExcludedCurrentNotePage = true;               
 
                 HierarchyElementInfo notePageHierarchyInfo;

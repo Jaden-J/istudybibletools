@@ -329,7 +329,7 @@ namespace BibleNoteLinker
                 Logger.LogMessageParams("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSectionGroup, sectionGroup.Title);
                 Logger.MoveLevel(1);
 
-                doNotAnalyze = doNotAnalyze.GetValueOrDefault(false) || sectionGroup.Title.Contains(Constants.DoNotAnalyzeSymbol);
+                doNotAnalyze = doNotAnalyze.GetValueOrDefault(false) || StringUtils.IndexOfAny(sectionGroup.Title, Constants.DoNotAnalyzeSymbol1, Constants.DoNotAnalyzeSymbol2) > -1;
             }
 
             foreach (BibleCommon.Services.NotebookIterator.SectionInfo section in sectionGroup.Sections)
@@ -351,7 +351,7 @@ namespace BibleNoteLinker
             Logger.LogMessageParams("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSection, section.Title);
             Logger.MoveLevel(1);
 
-            doNotAnalyze = doNotAnalyze.GetValueOrDefault(false) || section.Title.Contains(Constants.DoNotAnalyzeSymbol);
+            doNotAnalyze = doNotAnalyze.GetValueOrDefault(false) || StringUtils.IndexOfAny(section.Title, Constants.DoNotAnalyzeSymbol1, Constants.DoNotAnalyzeSymbol2) > -1; 
 
             foreach (BibleCommon.Services.NotebookIterator.PageInfo page in section.Pages)
             {
