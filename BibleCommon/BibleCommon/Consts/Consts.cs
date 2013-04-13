@@ -31,7 +31,8 @@ namespace BibleCommon.Consts
         public static readonly string AnalyzeMutix = "ISBT_Analyze";
         public static readonly string ParametersMutix = "ISBT_Parameters";
         public static readonly string OneNoteProtocol = "onenote:";
-        public static readonly string DoNotAnalyzeSymbol = "{}";       
+        public static readonly string DoNotAnalyzeSymbol1 = "{}";
+        public static readonly string DoNotAnalyzeSymbol2 = "[]";       
 
         public static readonly decimal ImportantVerseWeight = 2;
 
