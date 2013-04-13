@@ -24,7 +24,7 @@ namespace BibleNoteLinker
             this.SetFormUICulture();
 
             InitializeComponent();
-            _oneNoteApp = new Microsoft.Office.Interop.OneNote.Application();
+            _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
         }
 
         private int _originalFormHeight;        

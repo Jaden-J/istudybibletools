@@ -85,7 +85,7 @@ namespace BibleConfigurator.ModuleConverter
             bool isStrong,  
             Version version, Version minProgramVersion, bool generateBibleNotebook, bool generateBibleXml)
         {
-            _oneNoteApp = new Application();
+            _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
             this.IsStrong = isStrong;
             this.ModuleShortName = moduleShortName.ToLower();            
             this.GenerateBibleNotebook = generateBibleNotebook;

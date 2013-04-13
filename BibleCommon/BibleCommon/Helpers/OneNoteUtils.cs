@@ -27,7 +27,7 @@ namespace BibleCommon.Helpers
             {
                 if (!_isOneNote2010.HasValue)
                 {                    
-                    var oneNoteApp = new Application();
+                    var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
                     try
                     {
                         var assembly = oneNoteApp.GetType().Assembly;
@@ -344,11 +344,22 @@ namespace BibleCommon.Helpers
             UseOneNoteAPIInternal(ref oneNoteApp, action, 0);
         }
 
+        public static Application CreateOneNoteAppSafe()
+        {
+            Application oneNoteApp = null;
+            UseOneNoteAPIInternal(ref oneNoteApp, null, 0);
+            return oneNoteApp;
+        }
+
         private static void UseOneNoteAPIInternal(ref Application oneNoteApp, Action<IApplication> action, int attemptsCount)
         {
             try
             {
-                action(oneNoteApp);
+                if (oneNoteApp == null)
+                    oneNoteApp = new Application();
+
+                if (action != null)
+                    action(oneNoteApp);
             }
             catch (COMException ex)
             {
@@ -356,6 +367,7 @@ namespace BibleCommon.Helpers
                     || ex.Message.Contains("0x800706BA") 
                     || ex.Message.Contains("0x800706BE")
                     || ex.Message.Contains("0x80010001")                                        // System.Runtime.InteropServices.COMException (0x80010001): Вызов был отклонен. (Исключение из HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+                    || ex.Message.Contains("0x80010108")                                        // RPC_E_DISCONNECTED
                     )  
                 {
                     Logger.LogMessageSilientParams("UseOneNoteAPI. Attempt {0}: {1}", attemptsCount, ex.Message);
@@ -367,15 +379,15 @@ namespace BibleCommon.Helpers
 
                         try
                         {
-                            Marshal.ReleaseComObject(oneNoteApp);
+                            if (oneNoteApp != null)
+                                Marshal.ReleaseComObject(oneNoteApp);
                         }
                         catch (Exception releaseEx)
                         {
                             Logger.LogError(releaseEx);
                         }
 
-                        oneNoteApp = null;
-                        oneNoteApp = new Application();
+                        oneNoteApp = null;                        
                         UseOneNoteAPIInternal(ref oneNoteApp, action, attemptsCount);
                     }
                     else

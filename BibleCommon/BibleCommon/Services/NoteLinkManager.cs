@@ -79,9 +79,6 @@ namespace BibleCommon.Services
 
         #endregion        
         
-        internal const string DoNotAnalyzeAllPageSymbol = "{}";       
-          
-
         public enum AnalyzeDepth
         {
             OnlyFindVerses = 1,            
@@ -98,6 +95,9 @@ namespace BibleCommon.Services
 
         private Application _oneNoteApp;
         private NotesPagesProviderManager _notesPagesProviderManager;
+        private bool _pageContentWasChanged = false;
+
+
         public NoteLinkManager(Application oneNoteApp)
         {
             _oneNoteApp = oneNoteApp;
@@ -115,7 +115,8 @@ namespace BibleCommon.Services
         /// <param name="pageId"></param>
         /// <param name="linkDepth"></param>
         /// <param name="force">Обрабатывать даже ссылки</param>
-        public void LinkPageVerses(string notebookId, string pageId, AnalyzeDepth linkDepth, bool force)
+        /// <param name="doNotAnalyze">В названии элементов иерархии встретился символ '{}'. То есть не анализируем такую страницу.</param>
+        public void LinkPageVerses(string notebookId, string pageId, AnalyzeDepth linkDepth, bool force, bool? doNotAnalyze)
         {
             try
             {   
@@ -140,9 +141,8 @@ namespace BibleCommon.Services
                     notePageDocument.PageType = OneNoteProxy.PageType.NotesPage;  // уточняем тип страницы
                 }
 
-                if (notePageName.Contains(DoNotAnalyzeAllPageSymbol))
-                    IsExcludedCurrentNotePage = true;                
-
+                if (doNotAnalyze.GetValueOrDefault(false) || notePageName.Contains(Constants.DoNotAnalyzeSymbol))
+                    IsExcludedCurrentNotePage = true;               
 
                 HierarchyElementInfo notePageHierarchyInfo;
 
@@ -196,7 +196,7 @@ namespace BibleCommon.Services
 
                 notePageDocument.WasModified = true;
 
-                if (linkDepth >= AnalyzeDepth.Full)
+                if (linkDepth >= AnalyzeDepth.Full && _pageContentWasChanged)
                 {
                     notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
 
@@ -204,6 +204,8 @@ namespace BibleCommon.Services
                     System.Windows.Forms.Application.DoEvents();
                     OneNoteProxy.Instance.CommitModifiedPage(ref _oneNoteApp, notePageDocument, false);
                 }
+                else
+                    OneNoteProxy.Instance.RemovePageContentFromCache(pageId, PageInfo.piBasic);
             }
             catch (ProcessAbortedByUserException)
             {                
@@ -922,6 +924,8 @@ namespace BibleCommon.Services
                                     needToAddSpace = true;
                             }
 
+                            CheckIfLinkIsChanged(linkInfo, textElementValue, startVerseNameIndex, endVerseNameIndex, linkHref, link);                            
+
                             textElementValue = string.Concat(
                                 htmlTextBefore,
                                 needToAddSpace ? " " : string.Empty,
@@ -983,6 +987,26 @@ namespace BibleCommon.Services
             #endregion
 
             return textElementValue;
+        }
+
+        private void CheckIfLinkIsChanged(VerseRecognitionManager.LinkInfo linkInfo, string textElementValue, int startVerseNameIndex, int endVerseNameIndex, string linkHref, string link)
+        {
+            if (linkInfo.IsLink)
+            {
+                var existingLinkHref = StringUtils.GetAttributeValue(textElementValue.Substring(startVerseNameIndex, endVerseNameIndex - startVerseNameIndex), "href");
+                if (!string.IsNullOrEmpty(existingLinkHref))
+                {
+                    existingLinkHref = Uri.UnescapeDataString(existingLinkHref);
+                    if (string.IsNullOrEmpty(linkHref))
+                        linkHref = StringUtils.GetAttributeValue(link, "href");
+                    if (existingLinkHref != linkHref)
+                        _pageContentWasChanged = true;
+                }
+                else
+                    _pageContentWasChanged = true;
+            }
+            else
+                _pageContentWasChanged = true;
         }
 
         private bool NeedToForceAnalyzeChapter(VersePointerSearchResult searchResult)

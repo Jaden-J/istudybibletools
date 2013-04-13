@@ -7,6 +7,7 @@ using System.Diagnostics;
 using BibleCommon.Contracts;
 using BibleCommon.Services;
 using System.Runtime.InteropServices;
+using BibleCommon.Helpers;
 
 namespace BibleCommon.Handlers
 {
@@ -67,7 +68,7 @@ namespace BibleCommon.Handlers
             StrongNumber = verseArgs[0];
             ModuleShortName = verseArgs[1];
 
-            var oneNoteApp = new Application();
+            var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
 
             try
             {

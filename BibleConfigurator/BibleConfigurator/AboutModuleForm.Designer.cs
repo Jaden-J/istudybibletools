@@ -32,10 +32,12 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.lblTitle = new System.Windows.Forms.Label();
             this.pnBooks = new System.Windows.Forms.Panel();
+            this.wbBooks = new System.Windows.Forms.WebBrowser();
             this.label1 = new System.Windows.Forms.Label();
             this.lblLocation = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.wbBooks = new System.Windows.Forms.WebBrowser();
+            this.lblVersion = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.pnBooks.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -59,6 +61,11 @@
             this.pnBooks.Controls.Add(this.wbBooks);
             this.pnBooks.Name = "pnBooks";
             // 
+            // wbBooks
+            // 
+            resources.ApplyResources(this.wbBooks, "wbBooks");
+            this.wbBooks.Name = "wbBooks";
+            // 
             // label1
             // 
             resources.ApplyResources(this.label1, "label1");
@@ -74,16 +81,22 @@
             resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
             // 
-            // wbBooks
+            // lblVersion
             // 
-            resources.ApplyResources(this.wbBooks, "wbBooks");
-            this.wbBooks.MinimumSize = new System.Drawing.Size(20, 20);
-            this.wbBooks.Name = "wbBooks";
+            resources.ApplyResources(this.lblVersion, "lblVersion");
+            this.lblVersion.Name = "lblVersion";
+            // 
+            // label4
+            // 
+            resources.ApplyResources(this.label4, "label4");
+            this.label4.Name = "label4";
             // 
             // AboutModuleForm
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.Controls.Add(this.lblVersion);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.lblLocation);
             this.Controls.Add(this.label1);
@@ -111,5 +124,7 @@
         private System.Windows.Forms.Label lblLocation;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.WebBrowser wbBooks;
+        private System.Windows.Forms.Label lblVersion;
+        private System.Windows.Forms.Label label4;
     }
 }

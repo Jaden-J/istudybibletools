@@ -72,7 +72,7 @@ namespace BibleNoteLinker
                 LogHighLevelMessage(message, 1, StagesCount);
                 Logger.LogMessageParams(message);
                 Logger.MoveLevel(1);
-                ProcessPage(currentPage);
+                ProcessPage(currentPage, null);
                 Logger.MoveLevel(-1);
             }
 
@@ -296,7 +296,7 @@ namespace BibleNoteLinker
                 Logger.LogMessageParams("{0}: '{1}'", BibleCommon.Resources.Constants.NoteLinkerProcessNotebook, notebook.Title);
                 Logger.MoveLevel(1);
 
-                ProcessSectionGroup(notebook.RootSectionGroup, true);
+                ProcessSectionGroup(notebook.RootSectionGroup, true, null);
 
                 Logger.MoveLevel(-1);
             }
@@ -322,49 +322,58 @@ namespace BibleNoteLinker
             System.Windows.Forms.Application.DoEvents();
         }
 
-        private void ProcessSectionGroup(BibleCommon.Services.NotebookIterator.SectionGroupInfo sectionGroup, bool isRoot)
+        private void ProcessSectionGroup(BibleCommon.Services.NotebookIterator.SectionGroupInfo sectionGroup, bool isRoot, bool? doNotAnalyze)
         {
             if (!isRoot)
             {
                 Logger.LogMessageParams("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSectionGroup, sectionGroup.Title);
                 Logger.MoveLevel(1);
+
+                doNotAnalyze = doNotAnalyze.GetValueOrDefault(false) || sectionGroup.Title.Contains(Constants.DoNotAnalyzeSymbol);
             }
 
             foreach (BibleCommon.Services.NotebookIterator.SectionInfo section in sectionGroup.Sections)
             {
-                Logger.LogMessageParams("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSection, section.Title);
-                Logger.MoveLevel(1);
-
-                foreach (BibleCommon.Services.NotebookIterator.PageInfo page in section.Pages)
-                {
-                    string message = string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage, page.Title);
-                    LogHighLevelMessage(message, 1, StagesCount);
-                    Logger.LogMessageParams(message);
-                    Logger.MoveLevel(1);
-
-                    ProcessPage(page);                    
-
-                    Logger.MoveLevel(-1);
-                }
-
-                Logger.MoveLevel(-1);
+                ProcessSection(section, doNotAnalyze);                
             }
 
             foreach (BibleCommon.Services.NotebookIterator.SectionGroupInfo subSectionGroup in sectionGroup.SectionGroups)
             {
-                ProcessSectionGroup(subSectionGroup, false);
+                ProcessSectionGroup(subSectionGroup, false, doNotAnalyze);
             }
 
             if (!isRoot)
                 Logger.MoveLevel(-1);
         }
 
-        private void ProcessPage(NotebookIterator.PageInfo page)
+        private void ProcessSection(NotebookIterator.SectionInfo section, bool? doNotAnalyze)
+        {
+            Logger.LogMessageParams("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSection, section.Title);
+            Logger.MoveLevel(1);
+
+            doNotAnalyze = doNotAnalyze.GetValueOrDefault(false) || section.Title.Contains(Constants.DoNotAnalyzeSymbol);
+
+            foreach (BibleCommon.Services.NotebookIterator.PageInfo page in section.Pages)
+            {
+                string message = string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage, page.Title);
+                LogHighLevelMessage(message, 1, StagesCount);
+                Logger.LogMessageParams(message);
+                Logger.MoveLevel(1);                
+
+                ProcessPage(page, doNotAnalyze);
+
+                Logger.MoveLevel(-1);
+            }
+
+            Logger.MoveLevel(-1);
+        }
+
+        private void ProcessPage(NotebookIterator.PageInfo page, bool? doNotAnalyze)
         {
             using (NoteLinkManager noteLinkManager = new NoteLinkManager(_oneNoteApp) { AnalyzeAllPages = rbAnalyzeAllPages.Checked })
             {
                 noteLinkManager.OnNextVerseProcess += new EventHandler<NoteLinkManager.ProcessVerseEventArgs>(noteLinkManager_OnNextVerseProcess);
-                noteLinkManager.LinkPageVerses(page.NotebookId, page.Id, NoteLinkManager.AnalyzeDepth.Full, chkForce.Checked);
+                noteLinkManager.LinkPageVerses(page.NotebookId, page.Id, NoteLinkManager.AnalyzeDepth.Full, chkForce.Checked, doNotAnalyze);
             }
 
             pbMain.PerformStep();
