@@ -62,7 +62,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Consts.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="MainForm.BibleIterator.cs">
       <SubType>Form</SubType>

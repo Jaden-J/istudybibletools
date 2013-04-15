@@ -194,18 +194,21 @@ namespace BibleCommon.Services
                     ProcessChapters(foundChapters, notePageHierarchyInfo, linkDepth, force);                                       
                 }
 
-                notePageDocument.WasModified = true;
+                notePageDocument.WasModified = _pageContentWasChanged;
 
-                if (linkDepth >= AnalyzeDepth.Full && _pageContentWasChanged)
+                if (linkDepth >= AnalyzeDepth.Full)   // если SetVersesLinks, то мы позже обновим, так как нам надо ещё поставить курсор в нужное место
                 {
-                    notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
+                    if (_pageContentWasChanged)
+                    {
+                        notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
 
-                    Logger.LogMessageParams(Resources.Constants.UpdatingPageInOneNote);
-                    System.Windows.Forms.Application.DoEvents();
-                    OneNoteProxy.Instance.CommitModifiedPage(ref _oneNoteApp, notePageDocument, false);
-                }
-                else
-                    OneNoteProxy.Instance.RemovePageContentFromCache(pageId, PageInfo.piBasic);
+                        Logger.LogMessageParams(Resources.Constants.UpdatingPageInOneNote);
+                        System.Windows.Forms.Application.DoEvents();
+                        OneNoteProxy.Instance.CommitModifiedPage(ref _oneNoteApp, notePageDocument, false);
+                    }
+                    else
+                        OneNoteProxy.Instance.RemovePageContentFromCache(pageId, PageInfo.piBasic);
+                }                
             }
             catch (ProcessAbortedByUserException)
             {                

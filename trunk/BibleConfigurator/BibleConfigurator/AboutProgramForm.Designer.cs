@@ -71,6 +71,7 @@
             // lblNewVersion
             // 
             resources.ApplyResources(this.lblNewVersion, "lblNewVersion");
+            this.lblNewVersion.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblNewVersion.ForeColor = System.Drawing.Color.Red;
             this.lblNewVersion.Name = "lblNewVersion";
             this.lblNewVersion.Click += new System.EventHandler(this.lblNewVersion_Click);
