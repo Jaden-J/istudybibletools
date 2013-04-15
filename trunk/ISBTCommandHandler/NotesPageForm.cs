@@ -155,9 +155,7 @@ namespace ISBTCommandHandler
             {
                 if (chkCloseOnClick.Checked)
                     this.Hide();                
-            }
-
-            this.SendToBack();
+            }            
         }
 
         private void chkAlwaysOnTop_CheckedChanged(object sender, EventArgs e)
