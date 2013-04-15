@@ -130,13 +130,20 @@ namespace ISBTCommandHandler
                 var positionParts = position.Split(new char[] { ';' });
                 var x = int.Parse(positionParts[0]);
                 var y = int.Parse(positionParts[1]);
-                this.Location = new Point(x, y);
+
+                if (x > 0 && y > 0)
+                    this.Location = new Point(x, y);
+                else
+                    SetDefaultPosition();
             }
-            else
-            {
-                var screenInfo = Screen.FromControl(this).Bounds;
-                this.Location = new Point(Convert.ToInt32(screenInfo.Size.Width * (1 - FormWidthProportion)), 0);
-            }
+            else            
+                SetDefaultPosition();            
+        }
+
+        private void SetDefaultPosition()
+        {
+            var screenInfo = Screen.FromControl(this).Bounds;
+            this.Location = new Point(Convert.ToInt32(screenInfo.Size.Width * (1 - FormWidthProportion)), 0);
         }
 
         private void wbNotesPage_Navigating(object sender, WebBrowserNavigatingEventArgs e)
@@ -148,7 +155,9 @@ namespace ISBTCommandHandler
             {
                 if (chkCloseOnClick.Checked)
                     this.Hide();                
-            }            
+            }
+
+            this.SendToBack();
         }
 
         private void chkAlwaysOnTop_CheckedChanged(object sender, EventArgs e)
