@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "靠匢顨匢餐匢馰匢駸匢騌匢", "Setup\Setup.vdproj", "{4DC3056D-424A-4D52-AB20-FB7FC4AFA95F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RibbonButtons", "RibbonButtons\RibbonButtons.csproj", "{72CEED21-AD36-4E0C-886C-8DA80EA5D785}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{4DC3056D-424A-4D52-AB20-FB7FC4AFA95F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{98750266-722F-469D-943F-9D38CB36AA2D}"
 EndProject
@@ -33,6 +35,16 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{72CEED21-AD36-4E0C-886C-8DA80EA5D785}.Release|x86.ActiveCfg = Release|Any CPU
 		{4DC3056D-424A-4D52-AB20-FB7FC4AFA95F}.Debug|Any CPU.ActiveCfg = Debug
 		{4DC3056D-424A-4D52-AB20-FB7FC4AFA95F}.Debug|Mixed Platforms.ActiveCfg = Debug
 		{4DC3056D-424A-4D52-AB20-FB7FC4AFA95F}.Debug|Mixed Platforms.Build.0 = Debug

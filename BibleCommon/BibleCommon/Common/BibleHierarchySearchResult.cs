@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BibleCommon.Services;
 
 namespace BibleCommon.Common
 {
@@ -24,11 +25,25 @@ namespace BibleCommon.Common
     {
         public string ObjectId { get; set; }
         public VerseNumber? VerseNumber { get; set; } // Мы, например, искали Быт 4:4 (модуль IBS). А нам вернули Быт 4:3. Здесь будем хранить "3-4".
+        public string PageId { get; set; }
 
         /// <summary>
         /// Важно! Если нет кэша Библии, то это свойство пустое
         /// </summary>
-        public string ObjectHref { get; set; }
+        public string ProxyHref
+        {
+            get
+            {
+                return GetProxyHref();
+            }
+        }
+
+        /// <summary>
+        /// Важно! Если нет кэша Библии, то это свойство пустое
+        /// </summary>
+        public string Href { get; set; }
+
+        public bool IsVerse { get { return VerseNumber != null; } }
 
         public VerseObjectInfo()
         {
@@ -36,12 +51,23 @@ namespace BibleCommon.Common
 
         public VerseObjectInfo(VersePointerLink link)
         {
+            this.PageId = link.PageId;
             this.ObjectId = link.ObjectId;
             this.VerseNumber = link.VerseNumber;
-            this.ObjectHref = link.GetFullHref();
+            this.Href = link.Href;            
         }
 
-        public bool IsVerse { get { return VerseNumber != null; } }
+        /// <summary>
+        /// Если используются ProxyLinks, а текущая Href не является ProxyLink, то данный метод исправит это
+        /// </summary>
+        /// <returns></returns>
+        public string GetProxyHref()
+        {
+            if (SettingsManager.Instance.UseProxyLinksForLinks && !OneNoteProxy.IsProxyLink(Href) && !string.IsNullOrEmpty(Href))
+                return OneNoteProxy.GetProxyLink(Href, PageId, ObjectId);
+
+            return Href;
+        }        
     }
 
     [Serializable]

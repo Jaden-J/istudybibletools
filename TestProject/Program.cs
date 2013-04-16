@@ -48,9 +48,7 @@ namespace TestProject
 
             try
             {
-                var n = new OpenNotesPageHandler();
-                n.ExecuteCommand("isbtnotespage:rst/55 3;2тим 3:0;Detailed");
-                n.GetVerseFilePath();
+                OneNoteUtils.SetActiveCurrentWindow(ref _oneNoteApp);
 
                 
                 //Console.WriteLine(Regex.Replace("<br>no<", string.Format("(^|[^0-9a-zA-Z]){0}($|[^0-9a-zA-Z<])", "no"), @"$1aeasdasds$2", RegexOptions.IgnoreCase));

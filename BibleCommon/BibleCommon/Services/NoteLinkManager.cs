@@ -909,7 +909,7 @@ namespace BibleCommon.Services
 
                             var linkHref = SettingsManager.Instance.UseProxyLinksForBibleVerses
                                                 ? OpenBibleVerseHandler.GetCommandUrlStatic(vp.ParentVersePointer ?? vp, SettingsManager.Instance.ModuleShortName)
-                                                : localHierarchySearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref;
+                                                : localHierarchySearchResult.HierarchyObjectInfo.VerseInfo.ProxyHref;
 
                             string link = OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, textToChange, linkHref,
                                             localHierarchySearchResult.HierarchyObjectInfo.PageId, 

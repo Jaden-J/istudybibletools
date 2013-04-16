@@ -493,7 +493,7 @@ namespace BibleCommon.Services
                         string.Format("baseVerseNumber != baseVersePointer (baseVerseNumber = '{0}', baseVersePointer = '{1}')", baseVerseNumber, baseVersePointer)));
 
             string linkToParallelVerse = OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, baseVerseNumber.ToString(),
-                primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref,
+                primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseInfo.ProxyHref,
                 primaryBibleObjectsSearchResult.HierarchyObjectInfo.PageId, primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseContentObjectId, 
                 Consts.Constants.QueryParameter_BibleVerse);
 
