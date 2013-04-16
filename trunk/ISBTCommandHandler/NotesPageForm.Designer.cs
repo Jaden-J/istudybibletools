@@ -32,15 +32,16 @@ namespace ISBTCommandHandler
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NotesPageForm));
             this.scMain = new System.Windows.Forms.SplitContainer();
             this.wbNotesPage = new ISBTCommandHandler.Controls.WebBrowserEx();
+            this.btnScaleDown = new System.Windows.Forms.Button();
+            this.btnScaleUp = new System.Windows.Forms.Button();
+            this.tbScale = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.trbScale = new System.Windows.Forms.TrackBar();
             this.btnClose = new System.Windows.Forms.Button();
             this.chkAlwaysOnTop = new System.Windows.Forms.CheckBox();
             this.chkCloseOnClick = new System.Windows.Forms.CheckBox();
             this.scMain.Panel1.SuspendLayout();
             this.scMain.Panel2.SuspendLayout();
             this.scMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trbScale)).BeginInit();
             this.SuspendLayout();
             // 
             // scMain
@@ -51,12 +52,16 @@ namespace ISBTCommandHandler
             // 
             // scMain.Panel1
             // 
+            resources.ApplyResources(this.scMain.Panel1, "scMain.Panel1");
             this.scMain.Panel1.Controls.Add(this.wbNotesPage);
             // 
             // scMain.Panel2
             // 
+            resources.ApplyResources(this.scMain.Panel2, "scMain.Panel2");
+            this.scMain.Panel2.Controls.Add(this.btnScaleDown);
+            this.scMain.Panel2.Controls.Add(this.btnScaleUp);
+            this.scMain.Panel2.Controls.Add(this.tbScale);
             this.scMain.Panel2.Controls.Add(this.label1);
-            this.scMain.Panel2.Controls.Add(this.trbScale);
             this.scMain.Panel2.Controls.Add(this.btnClose);
             this.scMain.Panel2.Controls.Add(this.chkAlwaysOnTop);
             this.scMain.Panel2.Controls.Add(this.chkCloseOnClick);
@@ -69,18 +74,31 @@ namespace ISBTCommandHandler
             this.wbNotesPage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.wbNotesPage_DocumentCompleted);
             this.wbNotesPage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.wbNotesPage_Navigating);
             // 
+            // btnScaleDown
+            // 
+            resources.ApplyResources(this.btnScaleDown, "btnScaleDown");
+            this.btnScaleDown.Name = "btnScaleDown";
+            this.btnScaleDown.UseVisualStyleBackColor = true;
+            this.btnScaleDown.Click += new System.EventHandler(this.btnScaleDown_Click);
+            // 
+            // btnScaleUp
+            // 
+            resources.ApplyResources(this.btnScaleUp, "btnScaleUp");
+            this.btnScaleUp.Name = "btnScaleUp";
+            this.btnScaleUp.UseVisualStyleBackColor = true;
+            this.btnScaleUp.Click += new System.EventHandler(this.btnScaleUp_Click);
+            // 
+            // tbScale
+            // 
+            resources.ApplyResources(this.tbScale, "tbScale");
+            this.tbScale.Name = "tbScale";
+            this.tbScale.TextChanged += new System.EventHandler(this.tbScale_TextChanged);
+            this.tbScale.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbScale_KeyPress);
+            // 
             // label1
             // 
             resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            // 
-            // trbScale
-            // 
-            resources.ApplyResources(this.trbScale, "trbScale");
-            this.trbScale.Maximum = 20;
-            this.trbScale.Name = "trbScale";
-            this.trbScale.Value = 10;
-            this.trbScale.Scroll += new System.EventHandler(this.trbScale_Scroll);
             // 
             // btnClose
             // 
@@ -104,8 +122,8 @@ namespace ISBTCommandHandler
             // 
             // NotesPageForm
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.scMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "NotesPageForm";
@@ -116,7 +134,6 @@ namespace ISBTCommandHandler
             this.scMain.Panel2.ResumeLayout(false);
             this.scMain.Panel2.PerformLayout();
             this.scMain.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.trbScale)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -128,7 +145,9 @@ namespace ISBTCommandHandler
         private System.Windows.Forms.CheckBox chkAlwaysOnTop;
         private System.Windows.Forms.CheckBox chkCloseOnClick;
         private WebBrowserEx wbNotesPage;
-        private System.Windows.Forms.TrackBar trbScale;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnScaleDown;
+        private System.Windows.Forms.Button btnScaleUp;
+        private System.Windows.Forms.TextBox tbScale;
     }
 }

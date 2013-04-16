@@ -22,6 +22,7 @@ namespace ISBTCommandHandler
         private const double FormWidthProportion = 0.33;
 
         private string _titleAtStart;
+        private bool _suppressTbScaleLayout;
 
         protected OpenBibleVerseHandler OpenBibleVerseHandler { get; set; }
         protected NavigateToHandler NavigateToHandler { get; set; }
@@ -89,12 +90,14 @@ namespace ISBTCommandHandler
             SetLocation();
             SetSize();
             SetScale();
-            wbNotesPage.Focus();
+            wbNotesPage.Focus();            
         }
 
         private void SetScale()
         {
-            trbScale.Value = Properties.Settings.Default.NotesPageFormScale;            
+            _suppressTbScaleLayout = true;
+            tbScale.Text = Properties.Settings.Default.NotesPageFormScale.ToString();
+            _suppressTbScaleLayout = false;
         }
 
         private void SetCheckboxes()
@@ -169,7 +172,7 @@ namespace ISBTCommandHandler
             Properties.Settings.Default.NotesPageFormCloseOnClick = chkCloseOnClick.Checked;
             Properties.Settings.Default.NotesPageFormPosition = string.Format("{0};{1}", this.Left, this.Top);
             Properties.Settings.Default.NotesPageFormSize= string.Format("{0};{1}", this.Width, this.Height);
-            Properties.Settings.Default.NotesPageFormScale = trbScale.Value;
+            Properties.Settings.Default.NotesPageFormScale = GetInputScale();
 
             Properties.Settings.Default.Save();
         }
@@ -185,17 +188,56 @@ namespace ISBTCommandHandler
             if (e.CloseReason != CloseReason.WindowsShutDown && !ExitApplication)
                 e.Cancel = true;
         }
-
-        private void trbScale_Scroll(object sender, EventArgs e)
-        {
-            var k = trbScale.Value > 10 ? 0.1 : 0.05;
-            k = (float)(1 + (trbScale.Value - 10) * k);
-            wbNotesPage.Zoom((int)(k * 100));            
-        }
-
+        
         private void wbNotesPage_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            trbScale_Scroll(this, null);
-        }                
+            tbScale_TextChanged(this, null);
+        }
+
+        private void tbScale_TextChanged(object sender, EventArgs e)
+        {
+            if (!_suppressTbScaleLayout)
+            {
+                var scale = GetInputScale();
+                //var k = scale > 10 ? 0.1 : 0.05;
+                //k = (float)(1 + (scale - 10) * k);
+                wbNotesPage.Zoom(scale);
+
+                if (!tbScale.Text.EndsWith("%"))
+                {
+                    _suppressTbScaleLayout = true;
+                    tbScale.Text += "%";
+                    _suppressTbScaleLayout = false;
+                }
+            }
+        }
+
+        private void tbScale_KeyPress(object sender, KeyPressEventArgs e)
+        {   
+            e.Handled = true;
+        }
+
+        private void btnScaleUp_Click(object sender, EventArgs e)
+        {
+            var scale = GetInputScale();
+            if (scale < 200)
+                tbScale.Text = (scale + 5).ToString();
+        }
+
+        private void btnScaleDown_Click(object sender, EventArgs e)
+        {
+            var scale = GetInputScale();
+            if (scale > 50)
+                tbScale.Text = (scale - 5).ToString();
+        }
+
+        private int GetInputScale()
+        {
+            var scale = tbScale.Text;
+            if (scale.EndsWith("%"))
+                scale = scale.Remove(scale.Length - 1);
+
+            return Convert.ToInt32(scale);                
+        }
     }
 }

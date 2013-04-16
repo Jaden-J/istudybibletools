@@ -553,6 +553,8 @@ namespace BibleCommon.Helpers
                 var window = oneNoteAppSafe.Windows.CurrentWindow;
                 if (window != null)
                     window.Active = true;
+
+                //oneNoteAppSafe.NavigateTo(oneNoteAppSafe.Windows.CurrentWindow.CurrentPageId);
             });
         }
     }

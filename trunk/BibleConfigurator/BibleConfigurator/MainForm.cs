@@ -223,7 +223,7 @@ namespace BibleConfigurator
                 {
                     if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible) && !ToIndexBible)
                     {
-                        var minutes = SettingsManager.Instance.UseProxyLinksForBibleVerses ? 5 : 30;
+                        var minutes = GetMinutesForBibleVersesCacheGenerating();
                         if (MessageBox.Show(string.Format(BibleCommon.Resources.Constants.IndexBibleQuestion, minutes), BibleCommon.Resources.Constants.Warning,
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                             ToIndexBible = true;
@@ -272,6 +272,11 @@ namespace BibleConfigurator
                 btnApply.Enabled = true;
                 this.TopMost = false;
             }
+        }
+
+        internal static int GetMinutesForBibleVersesCacheGenerating()
+        {
+            return !SettingsManager.Instance.UseProxyLinksForBibleVerses || SettingsManager.Instance.GenerateFullBibleVersesCache ? 30 : 5;
         }
 
         private void RefreshCache()
@@ -396,7 +401,9 @@ namespace BibleConfigurator
             PrepareForLongProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.IndexBibleStart);
             LongProcessLogger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexBible);
             BibleVersesLinksCacheManager.GenerateBibleVersesLinks(ref _oneNoteApp,
-                SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, !SettingsManager.Instance.UseProxyLinksForBibleVerses, LongProcessLogger);
+                SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, 
+                !SettingsManager.Instance.UseProxyLinksForBibleVerses || SettingsManager.Instance.GenerateFullBibleVersesCache,
+                LongProcessLogger);
             LongProcessingDone(BibleCommon.Resources.Constants.IndexBibleFinish);
         }
 

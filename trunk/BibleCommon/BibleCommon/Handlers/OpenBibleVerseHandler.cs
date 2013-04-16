@@ -97,7 +97,7 @@ namespace BibleCommon.Handlers
                 string hierarchyObjectId = !string.IsNullOrEmpty(result.HierarchyObjectInfo.PageId)
                     ? result.HierarchyObjectInfo.PageId : result.HierarchyObjectInfo.SectionId;
 
-                NavigateTo(ref oneNoteApp, hierarchyObjectId, result.HierarchyObjectInfo.GetAllObjectsIds().ToArray());
+                NavigateTo(ref oneNoteApp, vp, hierarchyObjectId, result.HierarchyObjectInfo.GetAllObjectsIds().ToArray());
                 return true;
             }
             else
@@ -106,13 +106,14 @@ namespace BibleCommon.Handlers
             return false;
         }
 
-        private void NavigateTo(ref Application oneNoteApp, string pageId, params VerseObjectInfo[] objectsIds)
+        private void NavigateTo(ref Application oneNoteApp, VersePointer vp, string pageId, params VerseObjectInfo[] objectsIds)
         {
+            var toCleanCacheAndRetry = false;
             if (!TryToRedirectByIds(oneNoteApp, pageId, objectsIds.Length > 0 ? objectsIds[0].ObjectId : null))
             {
                 if (objectsIds.Length > 0)
                 {
-                    var linkHref = objectsIds[0].ObjectHref;
+                    var linkHref = objectsIds[0].Href;
                     if (!string.IsNullOrEmpty(linkHref))
                     {
                         var linksHandler = new NavigateToHandler();
@@ -122,15 +123,39 @@ namespace BibleCommon.Handlers
                         {
                             OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
                             {
-                                oneNoteAppSafe.NavigateToUrl(linkHref);   
+                                oneNoteAppSafe.NavigateToUrl(linkHref);
                             });
                         }
                     }
+                    else
+                        toCleanCacheAndRetry = true;                    
+                }
+                else
+                    toCleanCacheAndRetry = true;                    
+            }
+
+            if (toCleanCacheAndRetry)
+            {
+                if (OneNoteProxy.Instance.IsBibleVersesLinksCacheActive)
+                {
+                    OneNoteProxy.Instance.CleanBibleVersesLinksCache();
+
+                    SettingsManager.Instance.GenerateFullBibleVersesCache = true;
+                    SettingsManager.Instance.Save();
+
+                    GoToVerse(ref oneNoteApp, vp);
+                    return;
                 }
             }
 
             OneNoteUtils.SetActiveCurrentWindow(ref oneNoteApp);
 
+            //Пока не используем такую возможность, потому что Библия по умоланию заблокирована
+            //SelectOtherVerses(ref oneNoteApp, pageId, objectsIds);
+        }
+
+        private void SelectOtherVerses(ref Application oneNoteApp, string pageId, params VerseObjectInfo[] objectsIds)
+        {
             if (objectsIds.Length > 1)
             {
                 XmlNamespaceManager xnm;

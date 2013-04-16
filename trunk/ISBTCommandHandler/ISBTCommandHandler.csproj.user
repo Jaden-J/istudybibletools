@@ -12,6 +12,6 @@
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>"isbtopen:_///C:\Users\lux_demko\Desktop\temp\OneNote%20Notebooks\Изучение%20Библии\Сессии\Сессия%202\Господь%20-%20я%20хочу%20знать%20Тебя\Занятие%202.one#Учебник.%20Создатель%20(Творец).&amp;section-id={C50A42C8-05CB-4AD6-9C6A-6F52676912B4}&amp;page-id={171C5A05-6DDF-4D89-9188-A5EE8ADE1EB9}&amp;object-id={10993C83-46BE-04F3-2DFA-DF2CD72D26F9}&amp;36&amp;cpId={1D84BB48-3811-4677-98F5-2848893758DF}{1}{B0}&amp;coId={6CA84562-7D9D-4227-9A19-020D7F29DE2B}{54}{B0}&amp;vp=235;228&amp;vw=0,5"</StartArguments>
+    <StartArguments>"isbtBibleVerse:rst/1%201:2;Бытие%201:2"</StartArguments>
   </PropertyGroup>
 </Project>

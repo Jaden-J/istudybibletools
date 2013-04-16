@@ -29,7 +29,10 @@ namespace BibleCommon.Handlers
 
         public static string GetCommandUrlStatic(string link, string pageId, string objectId)
         {
-            return string.Concat(
+            if (string.IsNullOrEmpty(link))
+                return string.Empty;
+            else
+                return string.Concat(
                         link.Replace(Constants.OneNoteProtocol, ProtocolFullString),
                         "&", Constants.QueryParameterKey_CustomPageId, "=", pageId,
                         "&", Constants.QueryParameterKey_CustomObjectId, "=", objectId);
