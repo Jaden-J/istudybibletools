@@ -130,7 +130,7 @@ namespace BibleCommon.Services
 
             var linkHrefToVerse = SettingsManager.Instance.UseProxyLinksForBibleVerses
                                                     ? OpenBibleVerseHandler.GetCommandUrlStatic(vp, SettingsManager.Instance.ModuleShortName)
-                                                    : verseHierarchyObjectInfo.VerseInfo.ObjectHref;
+                                                    : verseHierarchyObjectInfo.VerseInfo.ProxyHref;
 
             var rootElement = new XElement(_nms + "OE",
                                 new XElement(_nms + "T",

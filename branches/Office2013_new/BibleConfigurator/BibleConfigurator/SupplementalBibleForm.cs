@@ -17,8 +17,8 @@ namespace BibleConfigurator
 {
     public class SupplementalBibleForm: BaseSupplementalForm
     {
-        public SupplementalBibleForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
-            : base(oneNoteApp, form)
+        public SupplementalBibleForm(MainForm form)
+            : base(form)
         { }        
 
         protected override string GetValidSupplementalNotebookId()

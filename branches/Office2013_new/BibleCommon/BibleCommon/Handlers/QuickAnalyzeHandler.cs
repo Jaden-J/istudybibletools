@@ -34,11 +34,10 @@ namespace BibleCommon.Handlers
                 Logger.Init("QuickAnalyze");
                 oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
                 var currentPage = OneNoteUtils.GetCurrentPageInfo(ref oneNoteApp);
-                using (NoteLinkManager noteLinkManager = new NoteLinkManager(oneNoteApp))
-                {
-                    noteLinkManager.LinkPageVerses(currentPage.NotebookId, currentPage.Id, NoteLinkManager.AnalyzeDepth.SetVersesLinks, false, null);
-                    noteLinkManager.SetCursorOnNearestVerse(noteLinkManager.LastAnalyzedVerse);
-                }
+                var noteLinkManager = new NoteLinkManager();                
+                noteLinkManager.LinkPageVerses(ref oneNoteApp, currentPage.NotebookId, currentPage.Id, NoteLinkManager.AnalyzeDepth.SetVersesLinks, false, null);
+                noteLinkManager.SetCursorOnNearestVerse(noteLinkManager.LastAnalyzedVerse);
+                
                 OneNoteProxy.Instance.CommitAllModifiedPages(ref oneNoteApp, true, null, null, null);
             }
             catch (Exception ex)
@@ -47,11 +46,7 @@ namespace BibleCommon.Handlers
             }
             finally
             {
-                if (oneNoteApp != null)
-                {
-                    Marshal.ReleaseComObject(oneNoteApp);
-                    oneNoteApp = null;
-                }
+                OneNoteUtils.ReleaseOneNoteApp(ref oneNoteApp);
             }
         }  
     }

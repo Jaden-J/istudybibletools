@@ -30,10 +30,11 @@ namespace TestProject
 {    
     class Program
     {
-        private const string ForGeneratingFolderPath = @"E:\Dropbox\Holy Bible\IStudyBibleTools\ForGenerating";
-        private const string TempFolderPath = @"E:\temp";
+        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\IStudyBibleTools\ForGenerating";
+        private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp";
 
-        private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;   
+        private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;       
+       
 
         [STAThread]
         unsafe static void Main(string[] args)
@@ -42,14 +43,8 @@ namespace TestProject
 
             sw.Start();
 
-            _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
-            
-
             try
-            {
-                var n = new OpenNotesPageHandler();
-                n.ExecuteCommand("isbtnotespage:rst/55 3;2тим 3:0;Detailed");
-                n.GetVerseFilePath();
+            {              
 
                 
                 //Console.WriteLine(Regex.Replace("<br>no<", string.Format("(^|[^0-9a-zA-Z]){0}($|[^0-9a-zA-Z<])", "no"), @"$1aeasdasds$2", RegexOptions.IgnoreCase));
@@ -124,7 +119,7 @@ namespace TestProject
 
             Console.WriteLine("Finish. Elapsed time: {0}", sw.Elapsed);
             Console.ReadKey();
-        }    
+        }
 
         private static void LoadAllPagesToCache()
         {
@@ -147,7 +142,7 @@ namespace TestProject
         private static void ChangeLinksProtocol()
         {            
             string currentPageXml;
-            _oneNoteApp.GetPageContent(_oneNoteApp.Windows.CurrentWindow.CurrentPageId, out currentPageXml, PageInfo.piBasic, XMLSchema.xs2013);
+            _oneNoteApp.GetPageContent(_oneNoteApp.Windows.CurrentWindow.CurrentPageId, out currentPageXml, PageInfo.piBasic, XMLSchema.xs2010);
             currentPageXml = currentPageXml.Replace("href=\"onenote:http", "href=\"isbtopen:http").Replace("href=\"onenote://", "href=\"isbtopen:");
             _oneNoteApp.UpdatePageContent(currentPageXml);
         }
@@ -240,7 +235,7 @@ namespace TestProject
             File.WriteAllText(vineOTFilePath + "_new", vineOT);
         }
 
-
+      
 
         private static void ConvertChineseModuleFromTextFiles()
         {
@@ -328,11 +323,11 @@ namespace TestProject
 
         private static void SearchInNotebook()
         {
-            string xml;
             var xnm = new XmlNamespaceManager(new NameTable());
-            xnm.AddNamespace("one", "http://schemas.microsoft.com/office/onenote/2013/onenote");
-            var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
+            xnm.AddNamespace("one", Constants.OneNoteXmlNs);
 
+            var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
+            string xml;
             oneNoteApp.GetHierarchy(null, HierarchyScope.hsNotebooks, out xml);
             var notebookId = (string)XDocument.Parse(xml).Root.XPathSelectElement("one:Notebook", xnm).Attribute("ID");
             oneNoteApp.FindPages(notebookId, "test", out xml, true, true);
@@ -365,7 +360,7 @@ namespace TestProject
 
         private static void GenerateBibleVersesLinks()
         {
-            //BibleVersesLinksCacheManager.GenerateBibleVersesLinks(OneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, new ConsoleLogger());            
+            //BibleVersesLinksCacheManager.GenerateBibleVersesLinks(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, new ConsoleLogger());            
 
 
           //  var result = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
@@ -403,7 +398,7 @@ namespace TestProject
         private static void GenerateEnStrongDictionary()
         {
             var moduleName = "kjvstrong";
-            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Dictionaries", moduleName, "Strong's Dictionary", "Strong's Exhaustive Concordance (c) Bible Foundation",
+            var converter = new BibleQuotaDictionaryConverter("Dictionaries", moduleName, "Strong's Dictionary", "Strong's Exhaustive Concordance (c) Bible Foundation",
                  new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\HEBREW.HTM"), SectionName = "1. Old Testament.one", DictionaryPageDescription="Strong's Hebrew Dictionary (с) Bible Foundation", TermPrefix = "H" },
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\GREEK.HTM"), SectionName = "2. New Testament.one", DictionaryPageDescription="Strong's Greek Dictionary (с) Bible Foundation", TermPrefix= "G" }
@@ -424,7 +419,7 @@ namespace TestProject
         {
             var moduleName = "rststrong";
 
-            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Словари", moduleName, "Словарь Стронга", "Еврейский и Греческий лексикон Стронга (с) Bob Jones University",
+            var converter = new BibleQuotaDictionaryConverter("Словари", moduleName, "Словарь Стронга", "Еврейский и Греческий лексикон Стронга (с) Bob Jones University",
                 new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\HEBREW.HTM"), SectionName = "Ветхий Завет.one", DictionaryPageDescription="Еврейский лексикон Стронга (с) Bob Jones University", TermPrefix = "H" },
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\GREEK.HTM"), SectionName = "Новый Завет.one", DictionaryPageDescription="Греческий лексикон Стронга (с) Bob Jones University", TermPrefix= "G" }
@@ -443,19 +438,19 @@ namespace TestProject
 
         private static void GenerateRuDictionary()
         {
-            //var converter = new BibleQuotaDictionaryConverter(OneNoteApp, "Словари", "goetze", "Библейский словарь Б.Геце", "Библейский словарь Б.Геце",
+            //var converter = new BibleQuotaDictionaryConverter(ref _oneNoteApp, "Словари", "goetze", "Библейский словарь Б.Геце", "Библейский словарь Б.Геце",
             //  new List<DictionaryFile>() { 
             //        new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Goetze\goetze.htm"), DictionaryPageDescription="Библейский словарь Б.Геце" }                    
             //    }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Геце",
             //    Path.Combine(TempFolderPath, "goetze"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0));
 
 
-            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Словари", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
+            var converter = new BibleQuotaDictionaryConverter("Словари", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
              new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
                 }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
                Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0));
-
+        
 
             using (var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message)))
             {
@@ -467,8 +462,8 @@ namespace TestProject
         {
             var moduleName = "vinent";
             var moduleDescription = "Vine's Expository Dictionary of New Testament Words";
-            var converter = new BibleQuotaDictionaryConverter(_oneNoteApp, "Dictionaries", moduleName, moduleDescription, moduleDescription,
-             new List<DictionaryFile>() { 
+            var converter = new BibleQuotaDictionaryConverter("Dictionaries", moduleName, moduleDescription, moduleDescription,
+            new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, string.Format("{0}\\{0}.htm", moduleName)), DictionaryPageDescription = moduleDescription }
                 }, BibleQuotaDictionaryConverter.StructureType.Dictionary, moduleName,
               Path.Combine(TempFolderPath, moduleName), "<p><b>", "User Notes", null, "en", new Version(2, 0));

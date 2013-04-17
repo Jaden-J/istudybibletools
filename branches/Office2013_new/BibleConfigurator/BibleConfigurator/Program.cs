@@ -68,10 +68,7 @@ namespace BibleConfigurator
             }
             finally
             {
-                if (_oneNoteApp != null)
-                {                    
-                    _oneNoteApp = null;
-                }
+                OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
             }
         }
 
@@ -142,7 +139,7 @@ namespace BibleConfigurator
 
                             if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible))
                             {
-                                var minutes = SettingsManager.Instance.UseProxyLinksForBibleVerses ? 5 : 30;
+                                var minutes = MainForm.GetMinutesForBibleVersesCacheGenerating();
                                 using (var form = new MessageForm(string.Format(BibleCommon.Resources.Constants.IndexBibleQuestionAtStartUp, minutes), BibleCommon.Resources.Constants.Warning,
                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                                 {
@@ -300,11 +297,7 @@ namespace BibleConfigurator
             }
             finally
             {
-                if (_oneNoteApp != null)
-                {
-                    Marshal.ReleaseComObject(_oneNoteApp);
-                    _oneNoteApp = null;
-                }
+                OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
             }
         }        
 

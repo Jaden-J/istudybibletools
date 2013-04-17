@@ -285,7 +285,7 @@ namespace BibleCommon.Services
                                                     new XCData(
                                                         !isChapter ?
                                                             OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseNumber),
-                                                                verseHierarchyObjectInfo.VerseInfo.ObjectHref,
+                                                                verseHierarchyObjectInfo.VerseInfo.ProxyHref,
                                                                 verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.VerseContentObjectId, 
                                                                 Consts.Constants.QueryParameter_BibleVerse)
                                                             :

@@ -10,7 +10,7 @@ using System.Xml.XPath;
 
 namespace BibleCommon.Services
 {
-    public class NotebookIterator: IDisposable
+    public class NotebookIterator
     {
         public class HierarchyElementInfo
         {
@@ -56,16 +56,14 @@ namespace BibleCommon.Services
             public XmlNamespaceManager Xnm { get; set; }
         }
 
-        private Application _oneNoteApp;
-
-        public NotebookIterator(Application oneNoteApp)
+        public NotebookIterator()
         {
-            _oneNoteApp = oneNoteApp;         
+            
         }
 
-        public NotebookInfo GetNotebookPages(string notebookId, string sectionGroupId, Func<PageInfo, bool> filter)
+        public NotebookInfo GetNotebookPages(ref Application oneNoteApp, string notebookId, string sectionGroupId, Func<PageInfo, bool> filter)
         {
-            OneNoteProxy.HierarchyElement notebookElement = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, notebookId, HierarchyScope.hsPages);
+            OneNoteProxy.HierarchyElement notebookElement = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsPages);
 
             XElement sectionGroup = string.IsNullOrEmpty(sectionGroupId)
                                         ? notebookElement.Content.Root
@@ -149,12 +147,6 @@ namespace BibleCommon.Services
         {
             hierarchyElement.Title = (string)xElement.Attribute("name");
             hierarchyElement.Id = (string)xElement.Attribute("ID");
-        }
-
-
-        public void Dispose()
-        {            
-            _oneNoteApp = null;
         }
     }
 }

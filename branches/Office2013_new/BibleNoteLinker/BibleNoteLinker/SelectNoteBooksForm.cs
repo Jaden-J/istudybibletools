@@ -18,10 +18,10 @@ namespace BibleNoteLinker
     {
         private Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
 
-        public SelectNoteBooksForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp)
+        public SelectNoteBooksForm()
         {
             InitializeComponent();
-            _oneNoteApp = oneNoteApp;
+            _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
         }
 
         private void SelectNoteBooks_Load(object sender, EventArgs e)
@@ -184,7 +184,7 @@ namespace BibleNoteLinker
 
         private void SelectNoteBooksForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _oneNoteApp = null;
+            OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
         }
     }
 }

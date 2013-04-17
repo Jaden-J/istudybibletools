@@ -603,9 +603,9 @@ namespace BibleCommon.Services
             }
         }
 
-        //public void RefreshPageContentCache(Application oneNoteApp, string pageId)
+        //public void RefreshPageContentCache(ref Application oneNoteApp, string pageId)
         //{
-        //    GetPageContent(oneNoteApp, pageId, true);
+        //    GetPageContent(ref oneNoteApp, pageId, true);
         //}
         
         public bool IsBibleVersesLinksCacheActive

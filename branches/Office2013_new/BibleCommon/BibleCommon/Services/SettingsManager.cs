@@ -131,6 +131,11 @@ namespace BibleCommon.Services
         public string FolderPath_BibleNotesPages { get; set; }
         public bool IsInIntegratedMode { get; set; }
 
+        /// <summary>
+        /// Множество пользователей не используют такие программы, как дропбокс, и потому у них не будет проблем с изменением регистра названий файлов, и потому им не нужен полный кэш Библейских стихов. Но когда один раз случается, что кэш устарел, значит надо в следующий раз генерировать полный кэш Библейских стихов.
+        /// </summary>
+        public bool GenerateFullBibleVersesCache { get; set; }
+
         public bool StoreNotesPagesInFolder
         {
             get
@@ -451,7 +456,9 @@ namespace BibleCommon.Services
             this.NewVersionOnServer = GetParameterValue<Version>(xdoc, Consts.Constants.ParameterName_NewVersionOnServer, null, value => new Version(value));
             this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, null, value => DateTime.Parse(value));            
             this.Language = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_Language, Thread.CurrentThread.CurrentUICulture.LCID);
-            this.ModuleShortName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ModuleName, string.Empty);            
+            this.ModuleShortName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ModuleName, string.Empty);
+
+            this.GenerateFullBibleVersesCache = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_GenerateFullBibleVersesCache, false);            
         }
 
         private CultureInfo _currentCultureInfo = null;
@@ -582,6 +589,8 @@ namespace BibleCommon.Services
             this.UseProxyLinksForLinks = !OneNoteUtils.IsOneNote2010Cached;
             this.FolderPath_BibleNotesPages = Utils.GetNotesPagesFolderPath();
 
+            this.GenerateFullBibleVersesCache = false;
+
             LoadDefaultLocalazibleSettings();
         }
 
@@ -657,7 +666,8 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_DictionariesModules, string.Join(";", this.DictionariesModules.ConvertAll(dm => dm.ToString()).ToArray())),
                                   new XElement(Consts.Constants.ParameterName_UseProxyLinksForStrong, UseProxyLinksForStrong),
                                   new XElement(Consts.Constants.ParameterName_UseProxyLinksForLinks, UseProxyLinksForLinks),
-                                  new XElement(Consts.Constants.ParameterName_UseProxyLinksForBibleVerses, UseProxyLinksForBibleVerses)
+                                  new XElement(Consts.Constants.ParameterName_UseProxyLinksForBibleVerses, UseProxyLinksForBibleVerses),
+                                  new XElement(Consts.Constants.ParameterName_GenerateFullBibleVersesCache, GenerateFullBibleVersesCache)
                                   );
 
                     if (SelectedNotebooksForAnalyze != null && SelectedNotebooksForAnalyzeIsNotAsDefault())
@@ -737,7 +747,7 @@ namespace BibleCommon.Services
             {
                 IsSingleNotebook.ToString().ToLower(), string.Join(",", notebooksIds.ConvertAll(notebook => notebook.Serialize()).ToArray())
             });
-        } 
+        }        
     }
 }
 

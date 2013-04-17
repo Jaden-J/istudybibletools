@@ -221,7 +221,7 @@ namespace BibleNoteLinker
 
         private void tsmiSeelctNotebooks_Click(object sender, EventArgs e)
         {
-            using (SelectNoteBooksForm form = new SelectNoteBooksForm(_oneNoteApp))
+            using (var form = new SelectNoteBooksForm())
             {
                 form.ShowDialog();
             }
@@ -272,7 +272,7 @@ namespace BibleNoteLinker
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _oneNoteApp = null;
+            OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
         }
     }
 }

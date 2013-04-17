@@ -142,6 +142,9 @@
   <data name="lblAuthor.Location" type="System.Drawing.Point, System.Drawing">
     <value>83, 58</value>
   </data>
+  <data name="lblNewVersion.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 8.25pt, style=Underline</value>
+  </data>
   <data name="lblNewVersion.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 90</value>
   </data>
@@ -262,6 +265,10 @@
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 </value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>Inherit</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Программа для самостоятельного изучения Библии</value>
