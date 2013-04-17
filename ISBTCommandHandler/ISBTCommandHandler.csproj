@@ -129,6 +129,9 @@
     <EmbeddedResource Include="NotesPageForm.resx">
       <DependentUpon>NotesPageForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="NotesPageForm.ru.resx">
+      <DependentUpon>NotesPageForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BibleCommon\BibleCommon\BibleCommon.csproj">
