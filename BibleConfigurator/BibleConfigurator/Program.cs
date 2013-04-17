@@ -68,10 +68,7 @@ namespace BibleConfigurator
             }
             finally
             {
-                if (_oneNoteApp != null)
-                {                    
-                    _oneNoteApp = null;
-                }
+                OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
             }
         }
 
@@ -300,11 +297,7 @@ namespace BibleConfigurator
             }
             finally
             {
-                if (_oneNoteApp != null)
-                {
-                    Marshal.ReleaseComObject(_oneNoteApp);
-                    _oneNoteApp = null;
-                }
+                OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
             }
         }        
 

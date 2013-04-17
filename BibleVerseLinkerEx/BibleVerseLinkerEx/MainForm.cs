@@ -24,10 +24,7 @@ namespace BibleVerseLinkerEx
             this.SetFormUICulture();
 
             InitializeComponent();
-        }
-
-        [DllImport("user32.dll")]
-        static extern bool SetForegroundWindow(IntPtr hWnd);
+        }        
 
         private void btnOk_Click(object sender, EventArgs e)
         {
@@ -48,7 +45,7 @@ namespace BibleVerseLinkerEx
                 {
                     try
                     {
-                        using (VerseLinker vlManager = new VerseLinker(oneNoteApp))
+                        using (VerseLinker vlManager = new VerseLinker())
                         {
                             if (!string.IsNullOrEmpty(tbPageName.Text))
                                 vlManager.DescriptionPageName = tbPageName.Text;
@@ -62,10 +59,7 @@ namespace BibleVerseLinkerEx
 
                             if (!Logger.WasLogged)
                             {
-                                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, () =>
-                                {
-                                    SetForegroundWindow(new IntPtr((long)oneNoteApp.Windows.CurrentWindow.WindowHandle));
-                                });
+                                OneNoteUtils.SetActiveCurrentWindow(ref oneNoteApp);
                                 this.Visible = false;
                                 vlManager.SortCommentsPages();
                             }
@@ -89,8 +83,7 @@ namespace BibleVerseLinkerEx
             }
             finally
             {
-                Marshal.ReleaseComObject(oneNoteApp);
-                oneNoteApp = null;
+                OneNoteUtils.ReleaseOneNoteApp(ref oneNoteApp);
             }
         }
        

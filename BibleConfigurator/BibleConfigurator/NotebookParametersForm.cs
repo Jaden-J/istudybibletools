@@ -28,9 +28,9 @@ namespace BibleConfigurator
 
         private bool _firstLoad = true;
 
-        public NotebookParametersForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, string notebookId)
+        public NotebookParametersForm(string notebookId)
         {
-            _oneNoteApp = oneNoteApp;
+            _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
             _notebookId = notebookId;
             InitializeComponent();
         }
@@ -178,9 +178,7 @@ namespace BibleConfigurator
 
         private void NotebookParametersForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _oneNoteApp = null;
-        }
-
-       
+            OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
+        }       
     }
 }

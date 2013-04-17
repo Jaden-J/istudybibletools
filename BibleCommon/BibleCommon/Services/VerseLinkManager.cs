@@ -326,7 +326,7 @@ namespace BibleCommon.Services
 
             //oneNoteApp.UpdateHierarchy(hierarchy.Content.ToString());
 
-            //OneNoteProxy.Instance.RefreshHierarchyCache(oneNoteApp, sectionId, HierarchyScope.hsPages);
+            //OneNoteProxy.Instance.RefreshHierarchyCache(ref oneNoteApp, sectionId, HierarchyScope.hsPages);
         }
 
         private static VersePointer GetVersePointer(string bibleSectionName, string biblePageName)
