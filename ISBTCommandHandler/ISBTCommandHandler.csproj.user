@@ -12,6 +12,6 @@
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>"isbtopen:_///C:\Users\lux_demko\Desktop\temp\OneNote%20Notebooks\Комментарии%20к%20Библии\Новый%20Завет\04.%20От%20Иоанна\14%20глава.%20От%20Иоанна.one#Перечень%20по%20%22Послушание%20и%20любовь%22.%20%5bОт%20Иоанна&amp;section-id={F8CD35B7-90EF-4D15-8878-0B4FB0AF114C}&amp;page-id={C09E4011-6731-4B1D-8A7B-A2614F33C842}&amp;object-id={651AD066-870F-430F-B839-F7126AC8AD29}&amp;11&amp;cpId={D5EE20CE-DB40-0398-0D92-8B87491C72AE}{1}{B0}&amp;coId={88E6CA2A-5EF0-0A7A-3801-ADA1E9888AA2}{17}{B0}&amp;vp=2;1090&amp;vw=2"</StartArguments>
+    <StartArguments>"isbtopen:_///C:\Users\lux_demko\Desktop\temp\OneNote%20Notebooks\Изучение%20Библии\Курсы\Господь%20-%20дай%20мне%20сердце%20угодное%20Тебе\Занятие%208.one#Учебник.%20В%20чем%20сила%20нашей%20немощи&amp;section-id={EF58EB7B-2871-4086-B806-0F088EA5D58F}&amp;page-id={C2F38B36-FA5D-43F8-8E9D-EDC07F90ED51}&amp;object-id={182ADE88-318B-0B20-2CD1-CE9EFB1B0E93}&amp;46&amp;cpId={73F8ECDB-9AEF-4CEB-B663-23B4BD9440EA}{1}{B0}&amp;coId={2D6C8233-110E-472E-9C06-2FFA1E126D41}{70}{B0}&amp;vp=84;314&amp;vw=0,33"</StartArguments>
   </PropertyGroup>
 </Project>

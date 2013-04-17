@@ -53,12 +53,9 @@ namespace BibleCommon.Services
             var xnm = OneNoteUtils.GetOneNoteXNM();
             var result = new Dictionary<string, string>();
 
-            using (NotebookIterator iterator = new NotebookIterator(oneNoteApp))
-            {
-                BibleCommon.Services.NotebookIterator.NotebookInfo notebook = iterator.GetNotebookPages(notebookId, sectionGroupId, null);
-
-                IterateContainer(ref oneNoteApp, notebookId, toGenerateHref, notebook.RootSectionGroup, ref result, xnm, logger);
-            }
+            var iterator = new NotebookIterator();            
+            BibleCommon.Services.NotebookIterator.NotebookInfo notebook = iterator.GetNotebookPages(ref oneNoteApp, notebookId, sectionGroupId, null);
+            IterateContainer(ref oneNoteApp, notebookId, toGenerateHref, notebook.RootSectionGroup, ref result, xnm, logger);           
 
             SharpSerializationHelper.Serialize(result, filePath);
         }

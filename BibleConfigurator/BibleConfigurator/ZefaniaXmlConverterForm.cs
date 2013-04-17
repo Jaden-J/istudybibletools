@@ -67,10 +67,10 @@ namespace BibleConfigurator
         private volatile Dictionary<string, string> _notebookFilesToWatch = new Dictionary<string, string>();
         private bool _allNotebooksPublished = false;
 
-        public ZefaniaXmlConverterForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm mainForm)
+        public ZefaniaXmlConverterForm(MainForm mainForm)
         {
             InitializeComponent();
-            _oneNoteApp = oneNoteApp;
+            _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
             _mainForm = mainForm;
             _formLogger = new LongProcessLogger(_mainForm);
         }
@@ -677,7 +677,7 @@ namespace BibleConfigurator
 
         private void ZefaniaXmlConverterForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _oneNoteApp = null;
+            OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
             _mainForm = null;
             _formLogger.Dispose();
         }

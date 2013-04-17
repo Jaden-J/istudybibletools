@@ -43,9 +43,14 @@ namespace ISBTCommandHandler
             {
                 var cp = base.CreateParams;
                 cp.ExStyle |= 0x80;  // Turn on WS_EX_TOOLWINDOW
-                return cp;
+                return cp;                
             }
-        }               
+        }
+
+        protected override bool ShowWithoutActivation
+        {
+            get { return true; }
+        }
 
         internal void ProcessCommandLine(params string[] args)
         {

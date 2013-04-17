@@ -349,8 +349,7 @@ namespace BibleConfigurator.ModuleConverter
 
         public void Dispose()
         {
-            Marshal.ReleaseComObject(_oneNoteApp);
-            _oneNoteApp = null;
+            OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
         }
     }
 }

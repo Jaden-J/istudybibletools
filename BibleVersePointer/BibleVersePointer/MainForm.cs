@@ -25,7 +25,7 @@ namespace BibleVersePointer
 {
     public partial class MainForm : Form
     {   
-        private Microsoft.Office.Interop.OneNote.Application _oneNoteApp = null;
+        private Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
         private bool _systemIsConfigured;
         private object _locker = new object();
 
@@ -42,9 +42,6 @@ namespace BibleVersePointer
 
             new Thread(InitializeWithLock).Start();
         }
-
-        [DllImport("user32.dll")]
-        static extern bool SetForegroundWindow(IntPtr hWnd);
 
         public void InitializeWithLock()
         {
@@ -123,11 +120,7 @@ namespace BibleVersePointer
 
                 if (!Logger.WasLogged)
                 {
-                    OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
-                    {
-                        if (_oneNoteApp.Windows.CurrentWindow != null)
-                            SetForegroundWindow(new IntPtr((long)_oneNoteApp.Windows.CurrentWindow.WindowHandle));
-                    });
+                    OneNoteUtils.SetActiveCurrentWindow(ref _oneNoteApp);
                     this.Close();
                 }
             }
@@ -161,7 +154,7 @@ namespace BibleVersePointer
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _oneNoteApp = null;
+            OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
         }   
     }
 }

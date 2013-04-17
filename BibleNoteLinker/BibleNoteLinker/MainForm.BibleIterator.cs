@@ -216,51 +216,49 @@ namespace BibleNoteLinker
                     Logger.LogError(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.NoteLinkerErrorWhilePageSorting, sortPageInfo.PageId), ex);
                 }
             }
-        }       
+        }
 
         private void UpdateLinksToNotesPages(int stage)
         {
             string message = BibleCommon.Resources.Constants.NoteLinkerLinksToNotesPagesUpdating;
             LogHighLevelMessage(message, stage, StagesCount);
-            int allPagesCount = OneNoteProxy.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values.Count;            
+            int allPagesCount = OneNoteProxy.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values.Count;
             Logger.LogMessageParams(string.Format("{0} ({1})",
-                message, Helper.GetRightPagesString(allPagesCount)));            
+                message, Helper.GetRightPagesString(allPagesCount)));
             pbMain.Maximum = allPagesCount;
             pbMain.Value = 0;
             pbMain.PerformStep();
 
             int processedPagesCount = 0;
-            using (var relinkNotesManager = new RelinkAllBibleNotesManager(_oneNoteApp))
+            var relinkNotesManager = new RelinkAllBibleNotesManager();
+            foreach (OneNoteProxy.BiblePageId processedBiblePageId in OneNoteProxy.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values)
             {
-                foreach (OneNoteProxy.BiblePageId processedBiblePageId in OneNoteProxy.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values)
+                LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
+
+                try
                 {
-                    LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
-
-                    try
+                    if (string.IsNullOrEmpty(processedBiblePageId.PageId))
                     {
-                        if (string.IsNullOrEmpty(processedBiblePageId.PageId))
+                        var vp = processedBiblePageId.ChapterPointer;
+                        var hierarchySearchResult = HierarchySearchManager.GetHierarchyObject(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Bible, ref vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);
+                        if (hierarchySearchResult.FoundSuccessfully)
                         {
-                            var vp = processedBiblePageId.ChapterPointer;
-                            var hierarchySearchResult = HierarchySearchManager.GetHierarchyObject(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Bible, ref vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);
-                            if (hierarchySearchResult.FoundSuccessfully)
-                            {
-                                processedBiblePageId.SectionId = hierarchySearchResult.HierarchyObjectInfo.SectionId;
-                                processedBiblePageId.PageId = hierarchySearchResult.HierarchyObjectInfo.PageId;
-                                processedBiblePageId.PageName = hierarchySearchResult.HierarchyObjectInfo.PageName;
-                            }
+                            processedBiblePageId.SectionId = hierarchySearchResult.HierarchyObjectInfo.SectionId;
+                            processedBiblePageId.PageId = hierarchySearchResult.HierarchyObjectInfo.PageId;
+                            processedBiblePageId.PageName = hierarchySearchResult.HierarchyObjectInfo.PageName;
                         }
-
-                        if (!string.IsNullOrEmpty(processedBiblePageId.PageId))
-                            relinkNotesManager.RelinkBiblePageNotes(processedBiblePageId.SectionId, processedBiblePageId.PageId,
-                                                        processedBiblePageId.PageName, processedBiblePageId.ChapterPointer);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError(string.Format(BibleCommon.Resources.Constants.ErrorWhilePageProcessing, processedBiblePageId.PageName), ex);
                     }
 
-                    PerformProcessStep();                                        
+                    if (!string.IsNullOrEmpty(processedBiblePageId.PageId))
+                        relinkNotesManager.RelinkBiblePageNotes(ref _oneNoteApp, processedBiblePageId.SectionId, processedBiblePageId.PageId,
+                                                    processedBiblePageId.PageName, processedBiblePageId.ChapterPointer);
                 }
+                catch (Exception ex)
+                {
+                    Logger.LogError(string.Format(BibleCommon.Resources.Constants.ErrorWhilePageProcessing, processedBiblePageId.PageName), ex);
+                }
+
+                PerformProcessStep();
             }
         }
 
@@ -370,11 +368,10 @@ namespace BibleNoteLinker
 
         private void ProcessPage(NotebookIterator.PageInfo page, bool? doNotAnalyze)
         {
-            using (NoteLinkManager noteLinkManager = new NoteLinkManager(_oneNoteApp) { AnalyzeAllPages = rbAnalyzeAllPages.Checked })
-            {
-                noteLinkManager.OnNextVerseProcess += new EventHandler<NoteLinkManager.ProcessVerseEventArgs>(noteLinkManager_OnNextVerseProcess);
-                noteLinkManager.LinkPageVerses(page.NotebookId, page.Id, NoteLinkManager.AnalyzeDepth.Full, chkForce.Checked, doNotAnalyze);
-            }
+            var noteLinkManager = new NoteLinkManager() { AnalyzeAllPages = rbAnalyzeAllPages.Checked };
+            noteLinkManager.OnNextVerseProcess += new EventHandler<NoteLinkManager.ProcessVerseEventArgs>(noteLinkManager_OnNextVerseProcess);
+            noteLinkManager.LinkPageVerses(ref _oneNoteApp, page.NotebookId, page.Id, NoteLinkManager.AnalyzeDepth.Full, chkForce.Checked, doNotAnalyze);
+            
 
             pbMain.PerformStep();
             System.Windows.Forms.Application.DoEvents();            
@@ -403,42 +400,40 @@ namespace BibleNoteLinker
 
         private List<NotebookIterator.NotebookInfo> GetNotebooksInfo()
         {
-            using (NotebookIterator iterator = new NotebookIterator(_oneNoteApp))
+            var iterator = new NotebookIterator();
+            var result = new List<NotebookIterator.NotebookInfo>();
+
+            Func<NotebookIterator.PageInfo, bool> filter = null;
+            if (rbAnalyzeChangedPages.Checked)
+                filter = IsPageWasModifiedAfterLastAnalyze;
+
+            if (SettingsManager.Instance.IsSingleNotebook)
             {
-                List<NotebookIterator.NotebookInfo> result = new List<NotebookIterator.NotebookInfo>();
-
-                Func<NotebookIterator.PageInfo, bool> filter = null;
-                if (rbAnalyzeChangedPages.Checked)
-                    filter = IsPageWasModifiedAfterLastAnalyze;
-
-                if (SettingsManager.Instance.IsSingleNotebook)
+                result.Add(iterator.GetNotebookPages(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_BibleStudy, filter));
+                //result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_BibleComments, filter));
+            }
+            else
+            {
+                foreach (var notebookInfo in SettingsManager.Instance.SelectedNotebooksForAnalyze.ToArray())
                 {
-                    result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_BibleStudy, filter));
-                    //result.Add(iterator.GetNotebookPages(SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_BibleComments, filter));
-                }
-                else
-                {
-                    foreach (var notebookInfo in SettingsManager.Instance.SelectedNotebooksForAnalyze.ToArray())
+                    try
                     {
-                        try
+                        result.Add(iterator.GetNotebookPages(ref _oneNoteApp, notebookInfo.NotebookId, null, filter));
+                    }
+                    catch (Exception ex)
+                    {
+                        if (OneNoteUtils.IsError(ex, Error.hrObjectDoesNotExist))
                         {
-                            result.Add(iterator.GetNotebookPages(notebookInfo.NotebookId, null, filter));
+                            SettingsManager.Instance.SelectedNotebooksForAnalyze.Remove(notebookInfo);
+                            SettingsManager.Instance.Save();
                         }
-                        catch (Exception ex)
-                        {
-                            if (OneNoteUtils.IsError(ex, Error.hrObjectDoesNotExist))
-                            {
-                                SettingsManager.Instance.SelectedNotebooksForAnalyze.Remove(notebookInfo);
-                                SettingsManager.Instance.Save();
-                            }
-                            else
-                                throw;
-                        }
+                        else
+                            throw;
                     }
                 }
-
-                return result;
             }
+
+            return result;
         }
 
         private bool IsPageWasModifiedAfterLastAnalyze(NotebookIterator.PageInfo page)

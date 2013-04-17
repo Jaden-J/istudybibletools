@@ -73,7 +73,7 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="bqDictionaryFolder">Только один словарь может быть в папке.</param>
         /// <param name="type"></param>
         /// <param name="manifestFilesFolder"></param>
-        public BibleQuotaDictionaryConverter(Application oneNoteApp, string notebookName, string dictionaryModuleName, string dictionaryName, string dictionaryDescription, 
+        public BibleQuotaDictionaryConverter(string notebookName, string dictionaryModuleName, string dictionaryName, string dictionaryDescription, 
             List<DictionaryFile> dictionaryFiles, StructureType type, string dictionarySectionGroupName, string manifestFilesFolder, string termStartString, string userNotesString, string findAllVersesString,
             string locale, Version version)
         {
@@ -82,7 +82,7 @@ namespace BibleConfigurator.ModuleConverter
             this.DictionaryName = dictionaryName;
             this.DictionaryDescription = dictionaryDescription;            
             this.DictionarySectionGroupName = dictionarySectionGroupName;
-            this._oneNoteApp = oneNoteApp;            
+            this._oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();            
             this.ManifestFilesFolder = manifestFilesFolder;
             this.NotebookId = OneNoteUtils.GetNotebookIdByName(ref _oneNoteApp, notebookName, true);
             if (string.IsNullOrEmpty(this.NotebookId))
@@ -423,7 +423,7 @@ namespace BibleConfigurator.ModuleConverter
 
         public void Dispose()
         {
-            _oneNoteApp = null;
+            OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
         }
     }
 }

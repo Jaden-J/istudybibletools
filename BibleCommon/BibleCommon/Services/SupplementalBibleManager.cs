@@ -142,7 +142,7 @@ namespace BibleCommon.Services
             var isOneNote2010 = true; // OneNoteUtils.IsOneNote2010Cached(oneNoteApp);
 
             BibleParallelTranslationConnectionResult result;
-            using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
+            using (var bibleTranslationManager = new BibleParallelTranslationManager(
                             supplementalModuleShortName, SettingsManager.Instance.ModuleShortName,
                             SettingsManager.Instance.NotebookId_SupplementalBible))
             {
@@ -210,7 +210,7 @@ namespace BibleCommon.Services
             var linkResult = new List<Exception>();
             var isOneNote2010 = true; // OneNoteUtils.IsOneNote2010Cached(oneNoteApp);  // пока ещё окончательно не разобрался с проблемой ссылок в Стронге для OneNote 2013.
 
-            using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
+            using (var bibleTranslationManager = new BibleParallelTranslationManager(
                 SettingsManager.Instance.SupplementalBibleModules.First().ModuleName, module.ShortName,
                 SettingsManager.Instance.NotebookId_SupplementalBible))
             {
@@ -344,7 +344,7 @@ namespace BibleCommon.Services
                 SettingsManager.Instance.SupplementalBibleModules.Remove(storedModuleInfo);
                 SettingsManager.Instance.Save();               
 
-                using (var bibleTranslationManager = new BibleParallelTranslationManager(oneNoteApp,
+                using (var bibleTranslationManager = new BibleParallelTranslationManager(
                    SettingsManager.Instance.SupplementalBibleModules.First().ModuleName, moduleShortName,
                    SettingsManager.Instance.NotebookId_SupplementalBible))
                 {
@@ -493,7 +493,7 @@ namespace BibleCommon.Services
                         string.Format("baseVerseNumber != baseVersePointer (baseVerseNumber = '{0}', baseVersePointer = '{1}')", baseVerseNumber, baseVersePointer)));
 
             string linkToParallelVerse = OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, baseVerseNumber.ToString(),
-                primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseInfo.ObjectHref,
+                primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseInfo.ProxyHref,
                 primaryBibleObjectsSearchResult.HierarchyObjectInfo.PageId, primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseContentObjectId, 
                 Consts.Constants.QueryParameter_BibleVerse);
 

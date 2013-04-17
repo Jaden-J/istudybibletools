@@ -79,11 +79,7 @@ namespace BibleCommon.Handlers
             }
             finally
             {
-                if (oneNoteApp != null)
-                {
-                    Marshal.ReleaseComObject(oneNoteApp);
-                    oneNoteApp = null;
-                }
+                OneNoteUtils.ReleaseOneNoteApp(ref oneNoteApp);
             }
         }
 
@@ -97,7 +93,7 @@ namespace BibleCommon.Handlers
                 string hierarchyObjectId = !string.IsNullOrEmpty(result.HierarchyObjectInfo.PageId)
                     ? result.HierarchyObjectInfo.PageId : result.HierarchyObjectInfo.SectionId;
 
-                NavigateTo(ref oneNoteApp, hierarchyObjectId, result.HierarchyObjectInfo.GetAllObjectsIds().ToArray());
+                NavigateTo(ref oneNoteApp, vp, hierarchyObjectId, result.HierarchyObjectInfo.GetAllObjectsIds().ToArray());
                 return true;
             }
             else
@@ -106,31 +102,57 @@ namespace BibleCommon.Handlers
             return false;
         }
 
-        private void NavigateTo(ref Application oneNoteApp, string pageId, params VerseObjectInfo[] objectsIds)
+        private void NavigateTo(ref Application oneNoteApp, VersePointer vp, string pageId, params VerseObjectInfo[] objectsIds)
         {
-            if (!TryToRedirectByIds(oneNoteApp, pageId, objectsIds.Length > 0 ? objectsIds[0].ObjectId : null))
+            var toCleanCacheAndRetry = false;
+            if (!NavigateToHandler.TryToRedirectByIds(ref oneNoteApp, pageId, objectsIds.Length > 0 ? objectsIds[0].ObjectId : null))
             {
                 if (objectsIds.Length > 0)
                 {
-                    var linkHref = objectsIds[0].ObjectHref;
+                    var linkHref = objectsIds[0].Href;
                     if (!string.IsNullOrEmpty(linkHref))
                     {
                         var linksHandler = new NavigateToHandler();
                         if (linksHandler.IsProtocolCommand(linkHref))
-                            linksHandler.ExecuteCommand(linkHref);
+                        {
+                            if (!linksHandler.TryExecuteCommand(linkHref))
+                                toCleanCacheAndRetry = true;
+                        }
                         else
                         {
-                            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
-                            {
-                                oneNoteAppSafe.NavigateToUrl(linkHref);   
-                            });
+                            if (!NavigateToHandler.TryToRedirectByUrl(ref oneNoteApp, linkHref))
+                                toCleanCacheAndRetry = true;
                         }
                     }
+                    else
+                        toCleanCacheAndRetry = true;                    
+                }
+                else
+                    toCleanCacheAndRetry = true;                    
+            }
+
+            if (toCleanCacheAndRetry)
+            {
+                if (OneNoteProxy.Instance.IsBibleVersesLinksCacheActive)
+                {
+                    OneNoteProxy.Instance.CleanBibleVersesLinksCache();
+
+                    SettingsManager.Instance.GenerateFullBibleVersesCache = true;
+                    SettingsManager.Instance.Save();
+
+                    GoToVerse(ref oneNoteApp, vp);
+                    return;
                 }
             }
 
             OneNoteUtils.SetActiveCurrentWindow(ref oneNoteApp);
 
+            //Пока не используем такую возможность, потому что Библия по умоланию заблокирована
+            //SelectOtherVerses(ref oneNoteApp, pageId, objectsIds);
+        }
+
+        private void SelectOtherVerses(ref Application oneNoteApp, string pageId, params VerseObjectInfo[] objectsIds)
+        {
             if (objectsIds.Length > 1)
             {
                 XmlNamespaceManager xnm;
@@ -147,23 +169,7 @@ namespace BibleCommon.Handlers
                 OneNoteUtils.UpdatePageContentSafe(ref oneNoteApp, pageDoc, xnm);
             }
         }
-
-        private bool TryToRedirectByIds(Application oneNoteApp, string pageId, string objectId)
-        {
-            try
-            {
-                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
-                {
-                    oneNoteAppSafe.NavigateTo(pageId, objectId);                    
-                });
-
-                return true;
-            }
-            catch (COMException)
-            {
-                return false;
-            }
-        }
+       
 
         string IProtocolHandler.GetCommandUrl(string args)
         {

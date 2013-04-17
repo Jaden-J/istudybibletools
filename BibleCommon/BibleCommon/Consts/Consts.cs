@@ -99,7 +99,10 @@ namespace BibleCommon.Consts
 
         public static readonly string ParameterName_UseDefaultSettings = "UseDefaultSettings";        
 
-        public static readonly string ParameterName_Language = "Language";        
+        public static readonly string ParameterName_Language = "Language";
+
+        public static readonly string ParameterName_GenerateFullBibleVersesCache = "GenerateFullBibleVersesCache";        
+        
         
         public static readonly TimeSpan NewVersionCheckPeriod = new TimeSpan(1, 0, 0, 0);
 

@@ -20,7 +20,7 @@ namespace BibleVerseLinkerEx
     {
         public string DescriptionPageName { get; set; }
 
-        private Application _oneNoteApp = null;
+        private Application _oneNoteApp;
         public Application OneNoteApp
         {
             get
@@ -29,9 +29,9 @@ namespace BibleVerseLinkerEx
             }
         }
 
-        public VerseLinker(Application oneNoteApp)
+        public VerseLinker()
         {
-            _oneNoteApp = oneNoteApp;
+            _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
             DescriptionPageName = SettingsManager.Instance.PageName_DefaultComments;         
         }
 
@@ -341,7 +341,7 @@ namespace BibleVerseLinkerEx
 
         public void Dispose()
         {
-            _oneNoteApp = null;
+            OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
         }
     }
 }

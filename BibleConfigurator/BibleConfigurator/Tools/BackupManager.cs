@@ -28,9 +28,9 @@ namespace BibleConfigurator.Tools
         private DateTime _startTime;
         private static object _locker = new object();
 
-        public BackupManager(Application oneNoteApp, MainForm form)
+        public BackupManager(MainForm form)
         {
-            _oneNoteApp = oneNoteApp;
+            _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
             _form = form;
         }
 
@@ -115,7 +115,7 @@ namespace BibleConfigurator.Tools
                 BibleCommon.Services.Logger.LogMessageParams(finalMessage);
             }
 
-            _oneNoteApp = null;
+            OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
             _form = null;
         }
 

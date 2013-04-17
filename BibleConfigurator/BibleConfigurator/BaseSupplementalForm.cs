@@ -13,6 +13,7 @@ using Microsoft.Office.Interop.OneNote;
 using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Linq;
+using System.Runtime.InteropServices;
 
 namespace BibleConfigurator
 {
@@ -72,9 +73,9 @@ namespace BibleConfigurator
             }
         }
 
-        public BaseSupplementalForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
+        public BaseSupplementalForm(MainForm form)
         {
-            _oneNoteApp = oneNoteApp;
+            _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
             MainForm = form;
 
             Modules = ModulesManager.GetModules(true).OrderBy(m => m.DisplayName).ToList();
@@ -434,7 +435,8 @@ namespace BibleConfigurator
 
         private void SupplementalBibleForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _oneNoteApp = null;
+            OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
+
             MainForm = null;
             Logger.Dispose();
         }

@@ -60,7 +60,7 @@ namespace BibleCommon.Services
 
         private BibleParallelTranslationConnectionResult _result;
 
-        public BibleParallelTranslationManager(Application oneNoteApp, string baseModuleShortName, string parallelModuleShortName, string bibleNotebookId)
+        public BibleParallelTranslationManager(string baseModuleShortName, string parallelModuleShortName, string bibleNotebookId)
         {            
             this.BibleNotebookId = bibleNotebookId;
             this.BaseModuleShortName = baseModuleShortName;
@@ -74,7 +74,7 @@ namespace BibleCommon.Services
 
             CheckModules();
 
-            _oneNoteApp = oneNoteApp;
+            _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
             _isOneNote2010 = true; // OneNoteUtils.IsOneNote2010Cached(_oneNoteApp);
         }
 
@@ -97,7 +97,7 @@ namespace BibleCommon.Services
 
         public void Dispose()
         {
-            _oneNoteApp = null;
+            OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
         }
 
         public void RemoveParallelTranslation(string moduleName)
@@ -149,7 +149,7 @@ namespace BibleCommon.Services
 
         public static List<Exception> CheckModules(string primaryModuleName, string parallelModuleName)
         {
-            using (var manager = new BibleParallelTranslationManager(null, primaryModuleName, parallelModuleName, SettingsManager.Instance.NotebookId_Bible))
+            using (var manager = new BibleParallelTranslationManager(primaryModuleName, parallelModuleName, SettingsManager.Instance.NotebookId_Bible))
             {
                 manager.ForCheckOnly = true;
                 return manager.IterateBaseBible(null, false, true, null, true).Errors;
@@ -158,7 +158,7 @@ namespace BibleCommon.Services
 
         public static List<string> CheckForInconsistencies(string baseModuleName, string parallelModuleName)
         {
-            using (var manager = new BibleParallelTranslationManager(null, baseModuleName, parallelModuleName, SettingsManager.Instance.NotebookId_Bible))
+            using (var manager = new BibleParallelTranslationManager(baseModuleName, parallelModuleName, SettingsManager.Instance.NotebookId_Bible))
             {
                 manager.ForCheckOnly = true;
                 return manager.IterateBaseBible(null, false, false, null, true).NotFoundBibleVerses;
