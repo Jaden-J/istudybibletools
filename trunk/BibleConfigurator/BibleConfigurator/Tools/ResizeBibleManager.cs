@@ -18,9 +18,9 @@ namespace BibleConfigurator.Tools
         private Application _oneNoteApp;
         private MainForm _form;
 
-        public ResizeBibleManager(Application oneNoteApp, MainForm form)
+        public ResizeBibleManager(MainForm form)
         {
-            _oneNoteApp = oneNoteApp;
+            _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
             _form = form;
         }
 
@@ -137,7 +137,7 @@ namespace BibleConfigurator.Tools
 
         public void Dispose()
         {
-            _oneNoteApp = null;
+            OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
             _form = null;
         }
     }

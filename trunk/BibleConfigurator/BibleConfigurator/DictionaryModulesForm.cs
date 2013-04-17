@@ -15,8 +15,8 @@ namespace BibleConfigurator
 {
     public class DictionaryModulesForm: BaseSupplementalForm
     {
-        public DictionaryModulesForm(Microsoft.Office.Interop.OneNote.Application oneNoteApp, MainForm form)
-            : base(oneNoteApp, form)
+        public DictionaryModulesForm(MainForm form)
+            : base(form)
         { }
 
         protected override string GetValidSupplementalNotebookId()

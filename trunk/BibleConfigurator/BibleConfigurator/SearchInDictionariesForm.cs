@@ -210,8 +210,7 @@ namespace BibleConfigurator
 
         private void SearchInDictionariesForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Marshal.ReleaseComObject(_oneNoteApp);
-            _oneNoteApp = null;
+            OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
         }
 
         private void cbDictionaries_SelectedIndexChanged(object sender, EventArgs e)

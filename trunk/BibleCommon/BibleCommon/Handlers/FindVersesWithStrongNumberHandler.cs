@@ -65,8 +65,7 @@ namespace BibleCommon.Handlers
                 }
                 finally
                 {
-                    Marshal.ReleaseComObject(oneNoteApp);
-                    oneNoteApp = null;
+                    OneNoteUtils.ReleaseOneNoteApp(ref oneNoteApp);
                 }
             //}            
         }        

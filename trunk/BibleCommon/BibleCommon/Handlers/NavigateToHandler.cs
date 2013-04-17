@@ -58,9 +58,9 @@ namespace BibleCommon.Handlers
             {
                 FormLogger.LogError(ex);                
             }            
-        }        
+        }
 
-        private void TryExecuteCommand(string[] args)
+        internal bool TryExecuteCommand(params string[] args)
         {
             if (args.Length == 0)
                 throw new ArgumentNullException("args");
@@ -78,19 +78,21 @@ namespace BibleCommon.Handlers
                     if (!TryToRedirectByUrl(ref oneNoteApp, newPath))
                     {
                         //throw new Exception(string.Format("OneNote cannot open the specified location after {0} attempts: {1}", NavigateAttemptsCount, newPath));
+                        return false;
                     }
                 }
 
                 OneNoteUtils.SetActiveCurrentWindow(ref oneNoteApp);
+
+                return true;
             }
             finally
             {
-                Marshal.ReleaseComObject(oneNoteApp);
-                oneNoteApp = null;
+                OneNoteUtils.ReleaseOneNoteApp(ref oneNoteApp);
             }
         }
 
-        private static bool TryToRedirectByUrl(ref Application oneNoteApp, string newPath)
+        internal static bool TryToRedirectByUrl(ref Application oneNoteApp, string newPath)
         {            
             var pageId = oneNoteApp.Windows.CurrentWindow != null ? oneNoteApp.Windows.CurrentWindow.CurrentPageId : null;
             newPath = GetValidPath(newPath);
@@ -130,20 +132,28 @@ namespace BibleCommon.Handlers
                 var objectId = !string.IsNullOrEmpty(pageId) 
                                     ? StringUtils.GetNotFramedAttributeValue(newPath, Constants.QueryParameterKey_CustomObjectId) 
                                     : string.Empty;
-                try
-                {
-                    OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
-                    {
-                        oneNoteAppSafe.NavigateTo(pageId, objectId);
-                    });
-                    return true;
-                }
-                catch (COMException)
-                {
-                }
+
+                return TryToRedirectByIds(ref oneNoteApp, pageId, objectId);
             }
 
             return false;
+        }
+
+        internal static bool TryToRedirectByIds(ref Application oneNoteApp, string pageId, string objectId)
+        {
+            try
+            {
+                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                {
+                    oneNoteAppSafe.NavigateTo(pageId, objectId);
+                });
+
+                return true;
+            }
+            catch (COMException)
+            {
+                return false;
+            }
         }
 
         private static string GetValidPath(string newPath)

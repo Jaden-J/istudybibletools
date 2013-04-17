@@ -35,8 +35,7 @@ namespace BibleCommon.Helpers
                     }
                     finally
                     {
-                        Marshal.ReleaseComObject(oneNoteApp);
-                        oneNoteApp = null;
+                        OneNoteUtils.ReleaseOneNoteApp(ref oneNoteApp);
                     }
                 }
 
@@ -351,6 +350,23 @@ namespace BibleCommon.Helpers
             return oneNoteApp;
         }
 
+        public static void ReleaseOneNoteApp(ref Application oneNoteApp)
+        {
+            if (oneNoteApp != null)
+            {
+                try
+                {
+                    Marshal.ReleaseComObject(oneNoteApp);
+                }
+                catch (Exception releaseEx)
+                {
+                    Logger.LogError(releaseEx);
+                }
+
+                oneNoteApp = null;
+            }
+        }
+
         private static void UseOneNoteAPIInternal(ref Application oneNoteApp, Action<IApplication> action, int attemptsCount)
         {
             try
@@ -377,17 +393,7 @@ namespace BibleCommon.Helpers
                         Thread.Sleep(1000 * attemptsCount);
                         System.Windows.Forms.Application.DoEvents();
 
-                        try
-                        {
-                            if (oneNoteApp != null)
-                                Marshal.ReleaseComObject(oneNoteApp);
-                        }
-                        catch (Exception releaseEx)
-                        {
-                            Logger.LogError(releaseEx);
-                        }
-
-                        oneNoteApp = null;                        
+                        ReleaseOneNoteApp(ref oneNoteApp);                    
                         UseOneNoteAPIInternal(ref oneNoteApp, action, attemptsCount);
                     }
                     else
@@ -552,7 +558,10 @@ namespace BibleCommon.Helpers
             {
                 var window = oneNoteAppSafe.Windows.CurrentWindow;
                 if (window != null)
+                {
+                    //window.Active = false;
                     window.Active = true;
+                }
 
                 //oneNoteAppSafe.NavigateTo(oneNoteAppSafe.Windows.CurrentWindow.CurrentPageId);
             });
