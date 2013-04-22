@@ -134,7 +134,7 @@ namespace ISBTCommandHandler
                 var x = int.Parse(positionParts[0]);
                 var y = int.Parse(positionParts[1]);
 
-                if (x > 0 && y > 0)
+                if (x >= 0 && y >= 0)                
                     this.Location = new Point(x, y);
                 else
                     SetDefaultPosition();
@@ -238,6 +238,16 @@ namespace ISBTCommandHandler
                 scale = scale.Remove(scale.Length - 1);
 
             return Convert.ToInt32(scale);                
+        }
+
+        private bool _firstShown = true;
+        private void NotesPageForm_Shown(object sender, EventArgs e)
+        {
+            if (_firstShown)
+            {
+                this.Focus();                
+                _firstShown = false;
+            }            
         }
     }
 }

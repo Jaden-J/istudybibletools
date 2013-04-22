@@ -231,27 +231,35 @@ namespace BibleNoteLinker
 
             int processedPagesCount = 0;
             var relinkNotesManager = new RelinkAllBibleNotesManager();
-            foreach (OneNoteProxy.BiblePageId processedBiblePageId in OneNoteProxy.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values)
+            foreach (var processedBiblePageId in OneNoteProxy.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values)
             {
                 LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
 
                 try
                 {
+                    var vp = processedBiblePageId.ChapterPointer;
                     if (string.IsNullOrEmpty(processedBiblePageId.PageId))
-                    {
-                        var vp = processedBiblePageId.ChapterPointer;
+                    {                        
                         var hierarchySearchResult = HierarchySearchManager.GetHierarchyObject(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Bible, ref vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);
                         if (hierarchySearchResult.FoundSuccessfully)
                         {
                             processedBiblePageId.SectionId = hierarchySearchResult.HierarchyObjectInfo.SectionId;
                             processedBiblePageId.PageId = hierarchySearchResult.HierarchyObjectInfo.PageId;
                             processedBiblePageId.PageName = hierarchySearchResult.HierarchyObjectInfo.PageName;
+                            processedBiblePageId.LoadedFromCache = hierarchySearchResult.HierarchyObjectInfo.LoadedFromCache;
                         }
                     }
 
                     if (!string.IsNullOrEmpty(processedBiblePageId.PageId))
-                        relinkNotesManager.RelinkBiblePageNotes(ref _oneNoteApp, processedBiblePageId.SectionId, processedBiblePageId.PageId,
-                                                    processedBiblePageId.PageName, processedBiblePageId.ChapterPointer);
+                    {
+                        var processedBiblePageIdLocal = processedBiblePageId;
+                        HierarchySearchManager.UseHierarchyObjectSafe(ref _oneNoteApp, ref processedBiblePageIdLocal, ref vp, (verseHierarchyInfoSafe) =>
+                        {
+                            relinkNotesManager.RelinkBiblePageNotes(ref _oneNoteApp, verseHierarchyInfoSafe.SectionId, verseHierarchyInfoSafe.PageId,
+                                                        verseHierarchyInfoSafe.PageName, vp);
+                            return true;
+                        });
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -293,7 +301,7 @@ namespace BibleNoteLinker
             {
                 Logger.LogMessageParams("{0}: '{1}'", BibleCommon.Resources.Constants.NoteLinkerProcessNotebook, notebook.Title);
                 Logger.MoveLevel(1);
-
+                
                 ProcessSectionGroup(notebook.RootSectionGroup, true, null);
 
                 Logger.MoveLevel(-1);
@@ -325,10 +333,10 @@ namespace BibleNoteLinker
             if (!isRoot)
             {
                 Logger.LogMessageParams("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSectionGroup, sectionGroup.Title);
-                Logger.MoveLevel(1);
-
-                doNotAnalyze = doNotAnalyze.GetValueOrDefault(false) || StringUtils.IndexOfAny(sectionGroup.Title, Constants.DoNotAnalyzeSymbol1, Constants.DoNotAnalyzeSymbol2) > -1;
+                Logger.MoveLevel(1);                
             }
+
+            doNotAnalyze = doNotAnalyze.GetValueOrDefault(false) || StringUtils.IndexOfAny(sectionGroup.Title, Constants.DoNotAnalyzeSymbol1, Constants.DoNotAnalyzeSymbol2) > -1;
 
             foreach (BibleCommon.Services.NotebookIterator.SectionInfo section in sectionGroup.Sections)
             {
@@ -383,17 +391,17 @@ namespace BibleNoteLinker
         void noteLinkManager_OnNextVerseProcess(object sender, NoteLinkManager.ProcessVerseEventArgs e)
         {
             System.Windows.Forms.Application.DoEvents();
-            e.CancelProcess = _processAbortedByUser;
-            
-            if (_pagesForAnalyzeCount == 1 && e.FoundVerse)
-            {
-                if (pbMain.Value == pbMain.Maximum)
-                    pbMain.Value = 0;
-                pbMain.PerformStep();
-            }
+            e.CancelProcess = _processAbortedByUser;                       
 
             if (e.FoundVerse)
             {
+                if (_pagesForAnalyzeCount == 1)
+                {
+                    if (pbMain.Value == pbMain.Maximum)
+                        pbMain.Value = 0;
+                    pbMain.PerformStep();
+                }
+
                 LogHighLevelAdditionalMessage(string.Format(": {0}", e.VersePointer.OriginalVerseName));
             }
         }

@@ -511,7 +511,7 @@ namespace BibleConfigurator
 
             if (SettingsManager.Instance.UseProxyLinksForBibleVerses != chkUseProxyLinksForBibleVerses.Checked && !chkUseProxyLinksForBibleVerses.Checked)  // то есть мы перестали использовать прокси ссылки для стихов Библии
             {
-                OneNoteProxy.Instance.CleanBibleVersesLinksCache();    
+                OneNoteProxy.Instance.CleanBibleVersesLinksCache(false);    
             }
 
             SettingsManager.Instance.UseProxyLinksForBibleVerses = chkUseProxyLinksForBibleVerses.Checked;

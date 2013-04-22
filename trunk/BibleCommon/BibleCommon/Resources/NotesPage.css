@@ -1,4 +1,8 @@
-﻿.pageTitle
+﻿a
+{
+    line-height: 1.3;	
+}
+.pageTitle
 {
     font-size:15pt;
     font-weight:bold;

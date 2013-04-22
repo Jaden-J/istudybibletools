@@ -20,6 +20,9 @@ namespace BibleCommon.Helpers
 {
     public static class OneNoteUtils
     {
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
         private static bool? _isOneNote2010;
         public static bool IsOneNote2010Cached
         {
@@ -560,7 +563,8 @@ namespace BibleCommon.Helpers
                 if (window != null)
                 {
                     //window.Active = false;
-                    window.Active = true;
+                    //window.Active = true;
+                    SetForegroundWindow(new IntPtr((long)window.WindowHandle));
                 }
 
                 //oneNoteAppSafe.NavigateTo(oneNoteAppSafe.Windows.CurrentWindow.CurrentPageId);

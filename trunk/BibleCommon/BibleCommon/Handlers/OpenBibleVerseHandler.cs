@@ -135,10 +135,8 @@ namespace BibleCommon.Handlers
             {
                 if (OneNoteProxy.Instance.IsBibleVersesLinksCacheActive)
                 {
-                    OneNoteProxy.Instance.CleanBibleVersesLinksCache();
-
-                    SettingsManager.Instance.GenerateFullBibleVersesCache = true;
-                    SettingsManager.Instance.Save();
+                    OneNoteProxy.Instance.CleanBibleVersesLinksCache(true);
+                    Logger.LogWarning(BibleCommon.Resources.Constants.BibleVersesLinksCacheWasCleaned);                    
 
                     GoToVerse(ref oneNoteApp, vp);
                     return;

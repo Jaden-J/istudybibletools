@@ -145,7 +145,12 @@ namespace BibleCommon.Services
 
         public void ProcessHierarchyElement(HierarchyElementInfo hierarchyElement, XElement xElement)
         {
-            hierarchyElement.Title = (string)xElement.Attribute("name");
+            var nickNameAttr = xElement.Attribute("nickname");
+            if (nickNameAttr != null)
+                hierarchyElement.Title = nickNameAttr.Value;
+            else
+                hierarchyElement.Title = (string)xElement.Attribute("name");
+
             hierarchyElement.Id = (string)xElement.Attribute("ID");
         }
     }
