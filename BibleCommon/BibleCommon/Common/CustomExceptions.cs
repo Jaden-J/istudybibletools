@@ -27,9 +27,17 @@ namespace BibleCommon.Common
         }
     }
 
-    public class NotFoundVerseLinkPageExceptions : ProgramException
+    public class NotFoundPageException : ProgramException
     {
-        public NotFoundVerseLinkPageExceptions(string message)
+        public NotFoundPageException(string message)
+            : base(message)
+        {
+        }
+    }
+
+    public class NotFoundVerseLinkPageException : NotFoundPageException
+    {
+        public NotFoundVerseLinkPageException(string message)
             : base(message)
         {
         }        

@@ -48,13 +48,13 @@ namespace BibleCommon.Services
                         result = pageId;
                     }
                     else if (createIfNeeded)
-                        throw new NotFoundVerseLinkPageExceptions(BibleCommon.Resources.Constants.VerseLinkManagerCommentPageNotFound + exceptionResolveWay);
+                        throw new NotFoundVerseLinkPageException(BibleCommon.Resources.Constants.VerseLinkManagerCommentPageNotFound + exceptionResolveWay);
                 }
                 else if (createIfNeeded)
-                    throw new NotFoundVerseLinkPageExceptions(BibleCommon.Resources.Constants.VerseLinkManagerCommentSectionNotFound + exceptionResolveWay);
+                    throw new NotFoundVerseLinkPageException(BibleCommon.Resources.Constants.VerseLinkManagerCommentSectionNotFound + exceptionResolveWay);
             }
             else if (createIfNeeded)
-                throw new NotFoundVerseLinkPageExceptions(BibleCommon.Resources.Constants.VerseLinkManagerCommentSectionGroupNotFound + exceptionResolveWay);
+                throw new NotFoundVerseLinkPageException(BibleCommon.Resources.Constants.VerseLinkManagerCommentSectionGroupNotFound + exceptionResolveWay);
 
             return result;
         }
