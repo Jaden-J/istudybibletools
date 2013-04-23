@@ -57,7 +57,7 @@ namespace BibleCommon.Services
         {
             string targetContentObjectId = string.Empty;
 
-            OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);            
+            ApplicationCache.PageContent notesPageDocument = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, notesPageId, ApplicationCache.PageType.NotesPage);            
 
             var rootElement = GetVerseRootElementAndCreateIfNotExists(ref oneNoteApp, vp, isChapter, notesPageWidth, verseHierarchyObjectInfo,
                 notesPageDocument, out rowWasAdded);
@@ -75,7 +75,7 @@ namespace BibleCommon.Services
 
         public string GetNotesRowObjectId(ref Application oneNoteApp, string notesPageId, VerseNumber? verseNumber, bool isChapter)
         {
-            var notesPageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
+            var notesPageDocument = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, notesPageId, ApplicationCache.PageType.NotesPage);
 
             return GetNotesRowObjectId(notesPageDocument, notesPageId, verseNumber);
         }
@@ -83,7 +83,7 @@ namespace BibleCommon.Services
 
         private XElement GetVerseRootElementAndCreateIfNotExists(ref Application oneNoteApp, VersePointer vp, bool isChapter,
            int mainColumnWidth, BibleHierarchyObjectInfo verseHierarchyObjectInfo,
-           OneNoteProxy.PageContent notesPageDocument, out bool rowWasAdded)
+           ApplicationCache.PageContent notesPageDocument, out bool rowWasAdded)
         {
             rowWasAdded = false;
 
@@ -109,7 +109,7 @@ namespace BibleCommon.Services
         }      
 
         private XElement CreateRootElelementForNotesPage(ref Application oneNoteApp, VersePointer vp, bool isChapter, XElement sizeEl,
-            BibleHierarchyObjectInfo verseHierarchyObjectInfo, OneNoteProxy.PageContent notesPageDocument)
+            BibleHierarchyObjectInfo verseHierarchyObjectInfo, ApplicationCache.PageContent notesPageDocument)
         {
             var rootElParent = notesPageDocument.Content.Root.XPathSelectElement("one:Outline/one:OEChildren", notesPageDocument.Xnm);
 
@@ -168,7 +168,7 @@ namespace BibleCommon.Services
             return rootElement.XPathSelectElement("one:OEChildren", notesPageDocument.Xnm);
         }
 
-        private string GetNotesRowObjectId(OneNoteProxy.PageContent notesPageDocument, string notesPageId, VerseNumber? verseNumber)
+        private string GetNotesRowObjectId(ApplicationCache.PageContent notesPageDocument, string notesPageId, VerseNumber? verseNumber)
         {
             var result = string.Empty;
             XElement targetElement = null;
@@ -195,7 +195,7 @@ namespace BibleCommon.Services
 
         private void AddLinkToNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition,
            XElement rootElement, HierarchyElementInfo notePageInfo, string notePageContentObjectId,
-           OneNoteProxy.PageContent notesPageDocument, string notesPageName, string notebookId, bool isImportantVerse, bool force, bool processAsExtendedVerse)
+           ApplicationCache.PageContent notesPageDocument, string notesPageName, string notebookId, bool isImportantVerse, bool force, bool processAsExtendedVerse)
         {
             _parentElement = rootElement;
             _level = 1;
@@ -619,12 +619,12 @@ namespace BibleCommon.Services
             XElement prevLink = null;
             linkWasFound = false;
 
-            var notebookHierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, elInfo.NotebookId, HierarchyScope.hsPages);  //from cache
+            var notebookHierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, elInfo.NotebookId, HierarchyScope.hsPages);  //from cache
             XElement parentHierarchy;
             if (elInfo.Type != HierarchyElementType.Notebook)
                 parentHierarchy = notebookHierarchy.Content.Root.XPathSelectElement(string.Format("//one:{0}[@ID=\"{1}\"]", elInfo.GetElementName(), elInfo.Id), xnm).Parent;
             else
-                parentHierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks).Content.Root;
+                parentHierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks).Content.Root;
 
             //parentHierarchy точно != null, потому что мы передаём текущий notePageInfo, который анализируем. Может быть только если удалили страницу после начала анализа этой страницы.
             

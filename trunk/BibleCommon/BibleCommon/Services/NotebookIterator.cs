@@ -63,7 +63,7 @@ namespace BibleCommon.Services
 
         public NotebookInfo GetNotebookPages(ref Application oneNoteApp, string notebookId, string sectionGroupId, Func<PageInfo, bool> filter)
         {
-            OneNoteProxy.HierarchyElement notebookElement = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsPages);
+            ApplicationCache.HierarchyElement notebookElement = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsPages);
 
             XElement sectionGroup = string.IsNullOrEmpty(sectionGroupId)
                                         ? notebookElement.Content.Root

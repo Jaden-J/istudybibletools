@@ -121,7 +121,7 @@ namespace BibleCommon.Services
                 _notesPagesProviderManager.ForceUpdateProvider = AnalyzeAllPages && force && linkDepth >= AnalyzeDepth.Full;
 
                 bool wasModified = false;
-                OneNoteProxy.PageContent notePageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, pageId, OneNoteProxy.PageType.NotePage, PageInfo.piBasic, true);
+                ApplicationCache.PageContent notePageDocument = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, pageId, ApplicationCache.PageType.NotePage, PageInfo.piBasic, true);
 
                 string notePageName = (string)notePageDocument.Content.Root.Attribute("name");
 
@@ -136,7 +136,7 @@ namespace BibleCommon.Services
                     isSummaryNotesPage = true;
                     if (linkDepth > AnalyzeDepth.SetVersesLinks)
                         linkDepth = AnalyzeDepth.SetVersesLinks;  // на странице заметок только обновляем ссылки
-                    notePageDocument.PageType = OneNoteProxy.PageType.NotesPage;  // уточняем тип страницы
+                    notePageDocument.PageType = ApplicationCache.PageType.NotesPage;  // уточняем тип страницы
                 }
 
                 if (doNotAnalyze.GetValueOrDefault(false) || StringUtils.IndexOfAny(notePageName, Constants.DoNotAnalyzeSymbol1, Constants.DoNotAnalyzeSymbol2) > -1)
@@ -202,10 +202,10 @@ namespace BibleCommon.Services
 
                         Logger.LogMessageParams(Resources.Constants.UpdatingPageInOneNote);
                         System.Windows.Forms.Application.DoEvents();
-                        OneNoteProxy.Instance.CommitModifiedPage(ref oneNoteApp, notePageDocument, false);
+                        ApplicationCache.Instance.CommitModifiedPage(ref oneNoteApp, notePageDocument, false);
                     }
                     else
-                        OneNoteProxy.Instance.RemovePageContentFromCache(pageId, PageInfo.piBasic);
+                        ApplicationCache.Instance.RemovePageContentFromCache(pageId, PageInfo.piBasic);
                 }                
             }
             catch (ProcessAbortedByUserException)
@@ -217,7 +217,7 @@ namespace BibleCommon.Services
             }
         }
 
-        private HierarchyElementInfo GetPageHierarchyInfo(ref Application oneNoteApp, string notebookId, OneNoteProxy.PageContent notePageDocument, string notePageId, string notePageName, bool loadFullHierarchy)
+        private HierarchyElementInfo GetPageHierarchyInfo(ref Application oneNoteApp, string notebookId, ApplicationCache.PageContent notePageDocument, string notePageId, string notePageName, bool loadFullHierarchy)
         {
             XElement titleElement = notePageDocument.Content.Root.XPathSelectElement("one:Title/one:OE", notePageDocument.Xnm);
             string pageTitleId = titleElement != null ? (string)titleElement.Attribute("objectID") : null;
@@ -240,14 +240,14 @@ namespace BibleCommon.Services
                     OneNoteUtils.UpdateElementMetaData(notePageDocument.Content.Root, Constants.Key_SyncId, result.SyncPageId, notePageDocument.Xnm);                    
                 }                
 
-                var fullNotebookHierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsPages, false);
+                var fullNotebookHierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsPages, false);
                 LoadHierarchyElementParent(notebookId, fullNotebookHierarchy, ref result);
             }
 
             return result;
         }
 
-        private void LoadHierarchyElementParent(string notebookId, OneNoteProxy.HierarchyElement fullNotebookHierarchy, ref HierarchyElementInfo elementInfo)
+        private void LoadHierarchyElementParent(string notebookId, ApplicationCache.HierarchyElement fullNotebookHierarchy, ref HierarchyElementInfo elementInfo)
         {
             var el = fullNotebookHierarchy.Content.Root.XPathSelectElement(
                                 string.Format("//one:{0}[@ID=\"{1}\"]", elementInfo.GetElementName(), elementInfo.Id), fullNotebookHierarchy.Xnm);
@@ -399,7 +399,7 @@ namespace BibleCommon.Services
             return pageChaptersSearchResult;
         }
 
-        private bool IsSummaryNotesPage(ref Application oneNoteApp, OneNoteProxy.PageContent pageDocument, string pageName)
+        private bool IsSummaryNotesPage(ref Application oneNoteApp, ApplicationCache.PageContent pageDocument, string pageName)
         {
             string isNotesPage = OneNoteUtils.GetElementMetaData(pageDocument.Content.Root, Constants.Key_IsSummaryNotesPage, pageDocument.Xnm);
             if (!string.IsNullOrEmpty(isNotesPage))
@@ -1280,9 +1280,9 @@ namespace BibleCommon.Services
 
             if (createLinkToNotesPage && (notesPageWasCreatedOrRowAdded || force || isChapter))
             {
-                OneNoteProxy.Instance.AddProcessedBiblePageWithUpdatedLinksToNotesPages(vp.GetChapterPointer(), verseHierarchyObjectInfo);
+                ApplicationCache.Instance.AddProcessedBiblePageWithUpdatedLinksToNotesPages(vp.GetChapterPointer(), verseHierarchyObjectInfo);
 
-                OneNoteProxy.Instance.AddProcessedVerseOnBiblePageWithUpdatedLinksToNotesPages(processedVerses);  // добавляем только стихи, отмеченные на "Сводной заметок"
+                ApplicationCache.Instance.AddProcessedVerseOnBiblePageWithUpdatedLinksToNotesPages(processedVerses);  // добавляем только стихи, отмеченные на "Сводной заметок"
             }
 
             return processedVerses;
@@ -1344,7 +1344,7 @@ namespace BibleCommon.Services
                 var oneNoteAppLocal = oneNoteApp;
                 HierarchySearchManager.UseHierarchyObjectSafe(ref oneNoteAppLocal, ref verseHierarchyObjectInfo, ref vp, (verseHierarchyObjectInfoSafe) =>
                 {                    
-                    notesPageId = OneNoteProxy.Instance.GetNotesPageId(ref oneNoteAppLocal,
+                    notesPageId = ApplicationCache.Instance.GetNotesPageId(ref oneNoteAppLocal,
                         verseHierarchyObjectInfoSafe.SectionId,
                         verseHierarchyObjectInfoSafe.PageId, biblePageName, notesPageName, out pageWasCreated, notesParentPageName, notesPageLevel);
 

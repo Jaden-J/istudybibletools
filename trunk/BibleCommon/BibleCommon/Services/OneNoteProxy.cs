@@ -20,7 +20,7 @@ namespace BibleCommon.Services
     /// <summary>
     /// Кэш OneNote
     /// </summary>
-    public class OneNoteProxy
+    public class ApplicationCache
     {
 
         #region Helper classes       
@@ -128,8 +128,8 @@ namespace BibleCommon.Services
 
         private static object _locker = new object();
 
-        private static volatile OneNoteProxy _instance = null;
-        public static OneNoteProxy Instance
+        private static volatile ApplicationCache _instance = null;
+        public static ApplicationCache Instance
         {
             get
             {
@@ -139,7 +139,7 @@ namespace BibleCommon.Services
                     {
                         if (_instance == null)
                         {
-                            _instance = new OneNoteProxy();
+                            _instance = new ApplicationCache();
                         }
                     }
                 }
@@ -148,7 +148,7 @@ namespace BibleCommon.Services
             }
         }
 
-        protected OneNoteProxy()
+        protected ApplicationCache()
         {
 
         }
@@ -192,7 +192,7 @@ namespace BibleCommon.Services
         {
             lock (_locker)
             {
-                _instance = new OneNoteProxy();
+                _instance = new ApplicationCache();
 
                 _instance._isBibleVersesLinksCacheActive = BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible);
                 if (_instance._isBibleVersesLinksCacheActive.GetValueOrDefault(false))                
@@ -278,7 +278,7 @@ namespace BibleCommon.Services
                         oneNoteAppSafe.GetHyperlinkToObject(pageId, objectId, out link);
                     });
 
-                    if (useProxyLinkIfAvailable && SettingsManager.Instance.UseProxyLinksForLinks)
+                    if (useProxyLinkIfAvailable && SettingsManager.Instance.UseProxyLinksForLinks) 
                         link = GetProxyLink(link, pageId, objectId);                    
 
                     //if (!_linksCache.ContainsKey(key))   // пока в этом нет смысла

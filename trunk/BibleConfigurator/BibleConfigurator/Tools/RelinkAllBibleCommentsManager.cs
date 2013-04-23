@@ -126,7 +126,7 @@ namespace BibleConfigurator.Tools
 
             string commentPageName = GetCommentPageName(commentLink);
             bool pageWasCreated;
-            string commentPageId = OneNoteProxy.Instance.GetCommentPageId(ref _oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName, out pageWasCreated, false);
+            string commentPageId = ApplicationCache.Instance.GetCommentPageId(ref _oneNoteApp, bibleSectionId, biblePageId, biblePageName, commentPageName, out pageWasCreated, false);
             if (!string.IsNullOrEmpty(commentPageId))
             {
                 string commentObjectId = GetComentObjectId(commentPageId, commentText, null, 0);
@@ -145,7 +145,7 @@ namespace BibleConfigurator.Tools
 
         private string GetComentObjectId(string commentPageId, string commentText, string textElementId, int startIndex)
         {            
-            OneNoteProxy.PageContent pageDoc = OneNoteProxy.Instance.GetPageContent(ref _oneNoteApp, commentPageId, OneNoteProxy.PageType.CommentPage);
+            ApplicationCache.PageContent pageDoc = ApplicationCache.Instance.GetPageContent(ref _oneNoteApp, commentPageId, ApplicationCache.PageType.CommentPage);
 
             foreach (XElement el in pageDoc.Content.Root.XPathSelectElements(string.Format("one:Outline/one:OEChildren/one:OE{0}/one:T",
                 !string.IsNullOrEmpty(textElementId) ? string.Format("[@objectID=\"{0}\"]", textElementId) : string.Empty), pageDoc.Xnm))

@@ -43,7 +43,7 @@ namespace BibleCommon.Handlers
                 oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();  // для разгона
 
                 SettingsManager.Initialize();
-                OneNoteProxy.Initialize();
+                ApplicationCache.Initialize();
 
                 //BibleCommon.Resources.Constants.Culture = LanguageManager.UserLanguage;
             }
