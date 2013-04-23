@@ -120,7 +120,7 @@ namespace BibleCommon.Services
                     if (!result.ContainsKey(keyString))
                     {
                         string textElId = (string)objectEl.Parent.Attribute("objectID");
-                        string verseLink = toGenerateHref ? OneNoteProxy.Instance.GenerateHref(ref oneNoteApp, pageId, textElId, false) : null;
+                        string verseLink = toGenerateHref ? ApplicationCache.Instance.GenerateHref(ref oneNoteApp, pageId, textElId, false) : null;
 
                         result.Add(keyString, new VersePointerLink()
                         {

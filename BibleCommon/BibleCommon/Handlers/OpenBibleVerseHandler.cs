@@ -133,9 +133,9 @@ namespace BibleCommon.Handlers
 
             if (toCleanCacheAndRetry)
             {
-                if (OneNoteProxy.Instance.IsBibleVersesLinksCacheActive)
+                if (ApplicationCache.Instance.IsBibleVersesLinksCacheActive)
                 {
-                    OneNoteProxy.Instance.CleanBibleVersesLinksCache(true);
+                    ApplicationCache.Instance.CleanBibleVersesLinksCache(true);
                     Logger.LogWarning(BibleCommon.Resources.Constants.BibleVersesLinksCacheWasCleaned);                    
 
                     GoToVerse(ref oneNoteApp, vp);

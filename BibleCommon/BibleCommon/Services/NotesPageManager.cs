@@ -32,7 +32,7 @@ namespace BibleCommon.Services
         {
             string targetContentObjectId = string.Empty;
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
-            OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
+            ApplicationCache.PageContent notesPageDocument = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, notesPageId, ApplicationCache.PageType.NotesPage);
 
             XElement rowElement = GetNotesRowAndCreateIfNotExists(ref oneNoteApp, vp, isChapter, notesPageWidth, verseHierarchyObjectInfo,
                 notesPageDocument.Content, notesPageDocument.Xnm, nms, out rowWasAdded);
@@ -51,7 +51,7 @@ namespace BibleCommon.Services
         public string GetNotesRowObjectId(ref Application oneNoteApp, string notesPageId, VerseNumber? verseNumber, bool isChapter)
         {
             string result = string.Empty;
-            OneNoteProxy.PageContent notesPageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
+            ApplicationCache.PageContent notesPageDocument = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, notesPageId, ApplicationCache.PageType.NotesPage);
             XElement tableElement = notesPageDocument.Content.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", notesPageDocument.Xnm);
             XElement targetElement = GetNotesRow(tableElement, verseNumber, isChapter, notesPageDocument.Xnm);
 
@@ -65,7 +65,7 @@ namespace BibleCommon.Services
 
         private static void AddLinkToNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, XElement rowElement,
            HierarchyElementInfo notePageId, string notePageContentObjectId,
-           OneNoteProxy.PageContent notesPageDocument, XmlNamespaceManager xnm, XNamespace nms, string notesPageName, bool force, bool processAsExtendedVerse)
+           ApplicationCache.PageContent notesPageDocument, XmlNamespaceManager xnm, XNamespace nms, string notesPageName, bool force, bool processAsExtendedVerse)
         {
             string noteTitle = (notePageId.SectionGroupName != notePageId.SectionName && !string.IsNullOrEmpty(notePageId.SectionGroupName))
                 ? string.Format("{0} / {1} / {2}", notePageId.SectionGroupName, notePageId.SectionName, notePageId.Title)

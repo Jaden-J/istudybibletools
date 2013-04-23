@@ -825,8 +825,8 @@ Please take notice:
   <data name="UpdatingPageInOneNote" xml:space="preserve">
     <value>Updating the page in OneNote</value>
   </data>
-  <data name="ConfiguratorSetFolder" xml:space="preserve">
-    <value>Specify folder path</value>
+  <data name="ConfiguratorSetFolderForNotesPages" xml:space="preserve">
+    <value>Specify the folder for "Notes Pages" files</value>
   </data>
   <data name="ContainerTypeBible" xml:space="preserve">
     <value>Bible</value>

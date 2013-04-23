@@ -63,8 +63,8 @@ namespace BibleCommon.Common
         /// <returns></returns>
         public string GetProxyHref()
         {
-            if (SettingsManager.Instance.UseProxyLinksForLinks && !OneNoteProxy.IsProxyLink(Href) && !string.IsNullOrEmpty(Href))
-                return OneNoteProxy.GetProxyLink(Href, PageId, ObjectId);
+            if (SettingsManager.Instance.UseProxyLinksForLinks && !ApplicationCache.IsProxyLink(Href) && !string.IsNullOrEmpty(Href))
+                return ApplicationCache.GetProxyLink(Href, PageId, ObjectId);
 
             return Href;
         }        

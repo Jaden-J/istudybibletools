@@ -25,10 +25,10 @@ namespace BibleCommon.Services
 
         public void RelinkBiblePageNotes(ref Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName, VersePointer chapterPointer)
         {   
-            OneNoteProxy.PageContent biblePageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, biblePageId, OneNoteProxy.PageType.Bible);
+            ApplicationCache.PageContent biblePageDocument = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, biblePageId, ApplicationCache.PageType.Bible);
             bool wasModified = false;           
 
-            if (OneNoteProxy.Instance.ProcessedVersesOnBiblePagesWithUpdatedLinksToNotesPages.Contains(chapterPointer.ToSimpleVersePointer()))
+            if (ApplicationCache.Instance.ProcessedVersesOnBiblePagesWithUpdatedLinksToNotesPages.Contains(chapterPointer.ToSimpleVersePointer()))
             {
                 var chapterNotesPageLink = NoteLinkManager.GetChapterNotesPageLinkAndCreateIfNeeded(biblePageDocument.Content, biblePageDocument.Xnm);                
                 if (RelinkBiblePageNote(ref oneNoteApp, bibleSectionId, biblePageId, biblePageName, chapterNotesPageLink, chapterPointer, null))
@@ -48,7 +48,7 @@ namespace BibleCommon.Services
                 {
                     VersePointer vp = new VersePointer(chapterPointer, verseNumber.Value.Verse);
 
-                    if (OneNoteProxy.Instance.ProcessedVersesOnBiblePagesWithUpdatedLinksToNotesPages.Contains(vp.ToSimpleVersePointer()))  // если мы обрабатывали этот стих
+                    if (ApplicationCache.Instance.ProcessedVersesOnBiblePagesWithUpdatedLinksToNotesPages.Contains(vp.ToSimpleVersePointer()))  // если мы обрабатывали этот стих
                     {
                         if (RelinkBiblePageNote(ref oneNoteApp, bibleSectionId, biblePageId, biblePageName, textElement, vp, verseNumber))
                             wasModified = true;
@@ -90,13 +90,13 @@ namespace BibleCommon.Services
         {
             bool pageWasCreated;
             string notesPageName = NoteLinkManager.GetDefaultNotesPageName(verseNumber);
-            string notesPageId = OneNoteProxy.Instance.GetNotesPageId(ref oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName, out pageWasCreated);
+            string notesPageId = ApplicationCache.Instance.GetNotesPageId(ref oneNoteApp, bibleSectionId, biblePageId, biblePageName, notesPageName, out pageWasCreated);
             string notesRowObjectId = _notesPagesProviderManager.GetNotesRowObjectId(ref oneNoteApp, notesPageId, verseNumber, !verseNumber.HasValue);
 
             if (!string.IsNullOrEmpty(notesRowObjectId))
             {
                 string newNotesPageLink = string.Format("<font size='2pt'>{0}</font>",
-                                    OneNoteUtils.GenerateLink(ref oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, notesRowObjectId, false));
+                                    OneNoteUtils.GenerateLink(ref oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, notesRowObjectId, !SettingsManager.Instance.UseDifferentPagesForEachVerse));  
 
                 if (!LinksAreEqual(textElement.Value, SettingsManager.Instance.PageName_Notes, null, newNotesPageLink))
                 {

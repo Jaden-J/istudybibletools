@@ -506,6 +506,12 @@ namespace BibleCommon.Common
 
         }
 
+        public VersePointer(VersePointer chapterPointer, VerseNumber verseNumber)
+            : this(chapterPointer, verseNumber.Verse, verseNumber.TopVerse)
+        {
+
+        }
+
         public VersePointer(VersePointer chapterPointer, int verse, int? topVerse)
             : this(chapterPointer.OriginalBookName, chapterPointer.Chapter.Value, verse, topVerse)
         {

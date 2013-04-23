@@ -22,7 +22,7 @@ namespace BibleCommon.Services
             bool isImportantVerse, bool force, bool processAsExtendedVerse, bool toDeserializeIfExists)
         {
             var notesPageFilePath = OpenNotesPageHandler.GetNotesPageFilePath(vp, notesPageType);             
-            var notesPageData = OneNoteProxy.Instance.GetNotesPageData(notesPageFilePath, notesPageName, notesPageType, vp.IsChapter ? vp : vp.GetChapterPointer(), toDeserializeIfExists);
+            var notesPageData = ApplicationCache.Instance.GetNotesPageData(notesPageFilePath, notesPageName, notesPageType, vp.IsChapter ? vp : vp.GetChapterPointer(), toDeserializeIfExists);
 
             var verseNotesPageData = notesPageData.GetVerseNotesPageData(vp);
 

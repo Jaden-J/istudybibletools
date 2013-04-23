@@ -119,7 +119,7 @@ namespace BibleConfigurator.Tools
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
 
-            var allPages = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, SettingsManager.Instance.NotebookId_BibleNotesPages, HierarchyScope.hsPages, true);
+            var allPages = ApplicationCache.Instance.GetHierarchy(ref _oneNoteApp, SettingsManager.Instance.NotebookId_BibleNotesPages, HierarchyScope.hsPages, true);
 
             foreach(var page in allPages.Content.XPathSelectElements("//one:Page", allPages.Xnm))
             {

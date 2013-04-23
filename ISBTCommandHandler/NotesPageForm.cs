@@ -23,6 +23,7 @@ namespace ISBTCommandHandler
 
         private string _titleAtStart;
         private bool _suppressTbScaleLayout;
+        private bool _touchInputAvailable;
 
         protected OpenBibleVerseHandler OpenBibleVerseHandler { get; set; }
         protected NavigateToHandler NavigateToHandler { get; set; }
@@ -89,9 +90,11 @@ namespace ISBTCommandHandler
             SetCheckboxes();
             SetLocation();
             SetSize();
-            SetScale();
-            wbNotesPage.Focus();            
-        }
+            SetScale();            
+            wbNotesPage.Focus();
+
+            _touchInputAvailable = Utils.TouchInputAvailable();
+        }        
 
         private void SetScale()
         {
@@ -192,6 +195,14 @@ namespace ISBTCommandHandler
         private void wbNotesPage_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             tbScale_TextChanged(this, null);
+
+            if (_touchInputAvailable)
+            {
+                var styleEl = wbNotesPage.Document.CreateElement("style");
+                styleEl.SetAttribute("type", "text/css");
+                styleEl.InnerHtml = " li.pageLevel { padding-bottom:5px; } .subLinks { padding-top:5px; } ";
+                wbNotesPage.Document.Body.AppendChild(styleEl);
+            }
         }
 
         private void tbScale_TextChanged(object sender, EventArgs e)
@@ -248,6 +259,6 @@ namespace ISBTCommandHandler
                 this.Focus();                
                 _firstShown = false;
             }            
-        }
+        }        
     }
 }

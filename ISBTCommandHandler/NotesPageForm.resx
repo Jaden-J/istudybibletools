@@ -145,7 +145,7 @@
     <value>wbNotesPage</value>
   </data>
   <data name="&gt;&gt;wbNotesPage.Type" xml:space="preserve">
-    <value>ISBTCommandHandler.Controls.WebBrowserEx, ISBTCommandHandler, Version=3.0.21.900, Culture=neutral, PublicKeyToken=null</value>
+    <value>ISBTCommandHandler.Controls.WebBrowserEx, ISBTCommandHandler, Version=3.0.24.900, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;wbNotesPage.Parent" xml:space="preserve">
     <value>scMain.Panel1</value>

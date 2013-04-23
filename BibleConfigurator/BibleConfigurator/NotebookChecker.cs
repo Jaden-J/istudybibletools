@@ -22,7 +22,7 @@ namespace BibleConfigurator
 
             if (!string.IsNullOrEmpty(notebookId))
             {
-                OneNoteProxy.HierarchyElement notebookEl = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsSections, true);                
+                ApplicationCache.HierarchyElement notebookEl = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsSections, true);                
 
                 try
                 {
@@ -99,7 +99,7 @@ namespace BibleConfigurator
             }
         }     
 
-        internal static XElement GetFirstNotebookBiblePageId(ref Application oneNoteApp, string notebookId, OneNoteProxy.HierarchyElement containerEl, out XmlNamespaceManager xnm)
+        internal static XElement GetFirstNotebookBiblePageId(ref Application oneNoteApp, string notebookId, ApplicationCache.HierarchyElement containerEl, out XmlNamespaceManager xnm)
         {   
             XElement sectionsDoc;
 
@@ -126,7 +126,7 @@ namespace BibleConfigurator
             return null;
         }
 
-        private static void CheckNotebookMetadata(ref Application oneNoteApp, ModuleInfo module, string notebookId, ContainerType notebookType, OneNoteProxy.HierarchyElement containerEl)
+        private static void CheckNotebookMetadata(ref Application oneNoteApp, ModuleInfo module, string notebookId, ContainerType notebookType, ApplicationCache.HierarchyElement containerEl)
         {
             if (notebookType == ContainerType.Bible)
             {

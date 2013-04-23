@@ -81,7 +81,7 @@ namespace BibleNoteLinker
                 var currentStep = 2;
                 if (!SettingsManager.Instance.StoreNotesPagesInFolder)
                 {
-                    CommitPagesInOneNote(BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating, currentStep++, OneNoteProxy.PageType.NotesPage);
+                    CommitPagesInOneNote(BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating, currentStep++, ApplicationCache.PageType.NotesPage);
 
                     SyncNotesPagesContainer();   // эта задача асинхронная, поэтому не выделаем как отдельный этап
 
@@ -132,7 +132,7 @@ namespace BibleNoteLinker
         {
             string message = BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating;
             LogHighLevelMessage(message, stage, StagesCount);
-            int allPagesCount = OneNoteProxy.Instance.NotesPageDataList.Count;
+            int allPagesCount = ApplicationCache.Instance.NotesPageDataList.Count;
             Logger.LogMessageParams(string.Format("{0} ({1})",
                 message, Helper.GetRightPagesString(allPagesCount)));
             pbMain.Maximum = allPagesCount;
@@ -141,18 +141,18 @@ namespace BibleNoteLinker
 
             int processedPagesCount = 0;
 
-            for (var i = 0; i < OneNoteProxy.Instance.NotesPageDataList.Count; i++)
+            for (var i = 0; i < ApplicationCache.Instance.NotesPageDataList.Count; i++)
             {
                 LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
                 
                 try
                 {
-                    OneNoteProxy.Instance.NotesPageDataList[i].Serialize(ref _oneNoteApp);
-                    OneNoteProxy.Instance.NotesPageDataList[i] = null;  // освобождаем память. Так как таких объектов много, а память ещё нужна для обновления страниц в OneNote.
+                    ApplicationCache.Instance.NotesPageDataList[i].Serialize(ref _oneNoteApp);
+                    ApplicationCache.Instance.NotesPageDataList[i] = null;  // освобождаем память. Так как таких объектов много, а память ещё нужна для обновления страниц в OneNote.
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(string.Format(BibleCommon.Resources.Constants.ErrorWhilePageProcessing, OneNoteProxy.Instance.NotesPageDataList[i].PageName), ex);
+                    Logger.LogError(string.Format(BibleCommon.Resources.Constants.ErrorWhilePageProcessing, ApplicationCache.Instance.NotesPageDataList[i].PageName), ex);
                 }
 
                 PerformProcessStep();
@@ -184,7 +184,7 @@ namespace BibleNoteLinker
             int allPagesCount = 0;
             int processedPagesCount = 0;
             Logger.LogMessage(message, true, false);
-            OneNoteProxy.Instance.CommitAllModifiedHierarchy(ref _oneNoteApp,
+            ApplicationCache.Instance.CommitAllModifiedHierarchy(ref _oneNoteApp,
                 pagesCount =>
                 {
                     allPagesCount = pagesCount;
@@ -204,7 +204,7 @@ namespace BibleNoteLinker
         private void SortNotesPages()
         {
             //Сортировка страниц 'Сводные заметок'
-            foreach (var sortPageInfo in OneNoteProxy.Instance.SortVerseLinkPagesInfo)
+            foreach (var sortPageInfo in ApplicationCache.Instance.SortVerseLinkPagesInfo)
             {
                 try
                 {
@@ -222,7 +222,7 @@ namespace BibleNoteLinker
         {
             string message = BibleCommon.Resources.Constants.NoteLinkerLinksToNotesPagesUpdating;
             LogHighLevelMessage(message, stage, StagesCount);
-            int allPagesCount = OneNoteProxy.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values.Count;
+            int allPagesCount = ApplicationCache.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values.Count;
             Logger.LogMessageParams(string.Format("{0} ({1})",
                 message, Helper.GetRightPagesString(allPagesCount)));
             pbMain.Maximum = allPagesCount;
@@ -231,7 +231,7 @@ namespace BibleNoteLinker
 
             int processedPagesCount = 0;
             var relinkNotesManager = new RelinkAllBibleNotesManager();
-            foreach (var processedBiblePageId in OneNoteProxy.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values)
+            foreach (var processedBiblePageId in ApplicationCache.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values)
             {
                 LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
 
@@ -270,14 +270,14 @@ namespace BibleNoteLinker
             }
         }
 
-        private void CommitPagesInOneNote(string startMessage, int stage, OneNoteProxy.PageType? pagesType)
+        private void CommitPagesInOneNote(string startMessage, int stage, ApplicationCache.PageType? pagesType)
         {   
             LogHighLevelMessage(startMessage, stage, StagesCount);
             Logger.LogMessage(startMessage, true, false);
             int allPagesCount = 0;
             int processedPagesCount = 0;
             //Logger.LogMessage(startMessage, true, false);
-            OneNoteProxy.Instance.CommitAllModifiedPages(ref _oneNoteApp, false,
+            ApplicationCache.Instance.CommitAllModifiedPages(ref _oneNoteApp, false,
                 pageContent => pagesType.HasValue ? pageContent.PageType == pagesType : true,
                 pagesCount =>
                 {

@@ -72,7 +72,7 @@ namespace BibleCommon.Handlers
 
             try
             {
-                var strongTermLink = OneNoteProxy.Instance.GetDictionaryTermLink(StrongNumber, ModuleShortName);
+                var strongTermLink = ApplicationCache.Instance.GetDictionaryTermLink(StrongNumber, ModuleShortName);
 
                 return DictionaryManager.GoToTerm(ref oneNoteApp, strongTermLink);
             }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using BibleCommon.Helpers;
 using BibleCommon.Services;
+using BibleCommon.Handlers;
 
 namespace BibleNoteLinker
 {
@@ -33,7 +34,17 @@ namespace BibleNoteLinker
 
         private static Form PrepareForRunning(params string[] args)
         {
-            var result = new MainForm();            
+            Form result = null;
+
+            if (args.Contains(Consts.QuickAnalyze))
+            {
+                var handler = new QuickAnalyzeHandler();
+                handler.ExecuteCommand();
+            }
+            else
+            {
+                result = new MainForm();
+            }
 
             return result;
         }
