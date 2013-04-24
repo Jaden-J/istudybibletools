@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml.Serialization;
 using BibleCommon.Helpers;
 using System.ComponentModel;
+using System.IO;
 
 namespace BibleCommon.Common
 {
@@ -338,6 +339,14 @@ namespace BibleCommon.Common
         [XmlAttribute]
         [DefaultValue("")]
         public string Nickname { get; set; }
+
+        public string GetNicknameSafe()
+        {
+            if (!string.IsNullOrEmpty(Nickname))
+                return Nickname;
+
+            return Path.GetFileNameWithoutExtension(Name);
+        }
     }
 
     [Serializable]
