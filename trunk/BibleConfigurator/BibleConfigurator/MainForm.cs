@@ -292,7 +292,7 @@ namespace BibleConfigurator
             notebooks.Remove(SettingsManager.Instance.NotebookId_Bible);
             notebooks.Remove(SettingsManager.Instance.NotebookId_BibleStudy);
             notebooks.Remove(SettingsManager.Instance.NotebookId_BibleComments);
-            if (notebooks.ContainsKey(SettingsManager.Instance.NotebookId_BibleNotesPages))
+            if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_BibleNotesPages) && notebooks.ContainsKey(SettingsManager.Instance.NotebookId_BibleNotesPages))
                 notebooks.Remove(SettingsManager.Instance.NotebookId_BibleNotesPages);
 
 
@@ -302,8 +302,11 @@ namespace BibleConfigurator
             var commentsNotebookId = TryToSearchNotebookForNewModule(module, ContainerType.BibleComments, SettingsManager.Instance.NotebookId_BibleComments,
                 chkCreateBibleCommentsNotebookFromTemplate, cbBibleCommentsNotebook, ref notebooks, null);
 
-            TryToSearchNotebookForNewModule(module, ContainerType.BibleNotesPages, SettingsManager.Instance.NotebookId_BibleNotesPages,
-                chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, ref notebooks, commentsNotebookId);     
+            if (!SettingsManager.Instance.StoreNotesPagesInFolder)
+            {
+                TryToSearchNotebookForNewModule(module, ContainerType.BibleNotesPages, SettingsManager.Instance.NotebookId_BibleNotesPages,
+                    chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, ref notebooks, commentsNotebookId);
+            }
         }
 
         private string TryToSearchNotebookForNewModule(ModuleInfo module, ContainerType containerType, string currentNotebookId,
@@ -420,7 +423,7 @@ namespace BibleConfigurator
                 {
                     var notebookId = WaitAndSaveParameters(module, notebookType, notebookFolderPath, notebookName, notebookInfo.Nickname, notebookFolderPath, notebookType == ContainerType.Bible);                         // выйдем из метода только когда OneNote отработает
                     createFromTemplateControl.Checked = false;  // чтоб если ошибки будут потом, он заново не создавал                    
-                    selectedNotebookNameControl.Items.Add(new ComboBoxItem(notebookId, notebookInfo.Nickname));
+                    selectedNotebookNameControl.Items.Add(new ComboBoxItem(notebookId, notebookInfo.GetNicknameSafe()));
                     selectedNotebookNameControl.SelectedItem = notebookId;
                 }
             }
