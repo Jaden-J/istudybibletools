@@ -480,11 +480,14 @@ namespace BibleCommon.Common
         public string Name { get; set; }
 
         [XmlAttribute]
+        public string ShortName { get; set; }
+
+        [XmlAttribute]
         public string SectionName { get; set; }
 
         [XmlAttribute]
         [DefaultValue("")]
-        public string ChapterPageNameTemplate { get; set; }
+        public string ChapterPageNameTemplate { get; set; }        
 
         [XmlElement(typeof(Abbreviation), ElementName = "Abbreviation")]
         public List<Abbreviation> Abbreviations { get; set; }
