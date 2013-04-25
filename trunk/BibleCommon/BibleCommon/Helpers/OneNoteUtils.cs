@@ -53,14 +53,29 @@ namespace BibleCommon.Helpers
             return bibleNotebook != null;            
         }
 
-        public static void CloseNotebookSafe(ref Application oneNoteApp, string notebookId)
+        public static void CloseNotebookSafe(ref Application oneNoteApp, string notebookId, Func<bool> checkIfExternalProcessAborted = null, int attemptCount = 0)
         {
             if (NotebookExists(ref oneNoteApp, notebookId, true))
             {
-                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                try
                 {
-                    oneNoteAppSafe.CloseNotebook(notebookId);
-                });
+                    OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                    {
+                        oneNoteAppSafe.CloseNotebook(notebookId);
+                    });
+                }
+                catch (COMException ex)
+                {
+                    if (OneNoteUtils.IsError(ex, Error.hrNotYetSynchronized))
+                    {
+                        if (notebookId == SettingsManager.Instance.NotebookId_SupplementalBible && attemptCount < 3)
+                        {
+                            OneNoteLocker.UnlockSupplementalBible(ref oneNoteApp, true, checkIfExternalProcessAborted);
+                            Utils.WaitFor(1, checkIfExternalProcessAborted);
+                            CloseNotebookSafe(ref oneNoteApp, notebookId, checkIfExternalProcessAborted, attemptCount + 1);
+                        }
+                    }
+                }
             }
         }
 

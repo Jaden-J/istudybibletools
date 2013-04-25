@@ -164,9 +164,9 @@ namespace BibleCommon.Helpers
             return result;
         }
 
-        public static void WaitFor3Seconds(Func<bool> checkIfExternalProcessAborted)
+        public static void WaitFor(int seconds, Func<bool> checkIfExternalProcessAborted)
         {
-            for (var i = 0; i < 30; i++)
+            for (var i = 0; i < seconds * 10; i++)
             {
                 Thread.Sleep(100);
                 if (checkIfExternalProcessAborted != null)

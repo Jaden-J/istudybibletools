@@ -288,12 +288,12 @@ namespace BibleConfigurator
         private void TryToSearchNotebooksForNewModule(ModuleInfo module)
         {
             var notebooks = OneNoteUtils.GetExistingNotebooks(ref _oneNoteApp);
-
-            notebooks.Remove(SettingsManager.Instance.NotebookId_Bible);
-            notebooks.Remove(SettingsManager.Instance.NotebookId_BibleStudy);
-            notebooks.Remove(SettingsManager.Instance.NotebookId_BibleComments);
-            if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_BibleNotesPages) && notebooks.ContainsKey(SettingsManager.Instance.NotebookId_BibleNotesPages))
-                notebooks.Remove(SettingsManager.Instance.NotebookId_BibleNotesPages);
+            
+            //notebooks.Remove(SettingsManager.Instance.NotebookId_Bible);
+            //notebooks.Remove(SettingsManager.Instance.NotebookId_BibleStudy);
+            //notebooks.Remove(SettingsManager.Instance.NotebookId_BibleComments);
+            //if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_BibleNotesPages) && notebooks.ContainsKey(SettingsManager.Instance.NotebookId_BibleNotesPages))
+            //    notebooks.Remove(SettingsManager.Instance.NotebookId_BibleNotesPages);
 
 
             TryToSearchNotebookForNewModule(module, ContainerType.Bible, SettingsManager.Instance.NotebookId_Bible,
@@ -1824,8 +1824,10 @@ namespace BibleConfigurator
                     }
 
                     if (canContinue)
-                    {                        
+                    {
+                        BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(null, true);
                         SettingsManager.Instance.ModuleShortName = moduleInfo.ShortName;
+                        BibleParallelTranslationManager.MergeAllModulesWithMainBible();
                         ReLoadModulesInfo();
                         ReLoadParameters(SettingsManager.Instance.ModuleShortName != _originalModuleShortName);
                         tbcMain.SelectedTab = tbcMain.TabPages[0];

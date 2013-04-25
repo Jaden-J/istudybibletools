@@ -124,7 +124,7 @@ namespace BibleCommon.Services
             string moduleDirectory = GetModuleDirectory(moduleShortName);
             string filePath = Path.Combine(moduleDirectory, fileRelativePath);
             if (!File.Exists(filePath))
-                throw new InvalidModuleException(string.Format(BibleCommon.Resources.Constants.FileNotFound, filePath));
+                throw new ModuleNotFoundException(string.Format(BibleCommon.Resources.Constants.FileNotFound, filePath));
 
             return filePath;
         }
@@ -293,6 +293,8 @@ namespace BibleCommon.Services
                 var module = GetModuleInfo(moduleName);
                 CheckModule(module);
 
+                BibleParallelTranslationManager.MergeModuleWithMainBible(module);
+
                 return module;
             }
             catch (Exception ex)
@@ -391,6 +393,9 @@ namespace BibleCommon.Services
                     Logger.LogError(ex);
                 }
             }
-        }
+
+            BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(moduleShortName, false);
+            BibleParallelTranslationManager.MergeAllModulesWithMainBible();   // например, у меня основной модуль KJV. Я добавил RST, а потом - UBIO. Когда я удалю RST - надо добавить в основной модуль сокращения из UBIO (ведь раньше они не были добавлены, так как они повторялись с RST)
+        }        
     }
 }

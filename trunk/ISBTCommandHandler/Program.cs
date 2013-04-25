@@ -36,6 +36,7 @@ namespace ISBTCommandHandler
 
                         Application.EnableVisualStyles();
                         Application.SetCompatibleTextRenderingDefault(false);
+                        Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
 
                         _mainForm = new CommandForm();
                         Application.Run(_mainForm);
@@ -46,6 +47,11 @@ namespace ISBTCommandHandler
             {
                 LogError(ex, args);
             }           
+        }
+
+        static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            FormLogger.LogError(e.Exception);
         }
 
         private static bool ProcessCommandWithSimpleHandler(string[] args)

@@ -497,61 +497,82 @@ namespace BibleCommon.Services
             }
 
             return result;
-        }
-        
-        public static void MergeModuleWithMainBible(string parallelModuleName)
-        {
-            if (SettingsManager.Instance.ModuleShortName != parallelModuleName)
-            {
-                var baseModuleInfo = ModulesManager.GetModuleInfo(SettingsManager.Instance.ModuleShortName);
-                var parallelModuleInfo = ModulesManager.GetModuleInfo(parallelModuleName);                
+        }      
 
-                // merge book abbriviations
-                foreach (var baseBook in baseModuleInfo.BibleStructure.BibleBooks)
+        public static void MergeModuleWithMainBible(ModuleInfo parallelModuleInfo)
+        {
+            if (!string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName) 
+                && SettingsManager.Instance.ModuleShortName != parallelModuleInfo.ShortName)
+            {
+                try
                 {
-                    var parallelBook = parallelModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBook.Index);
-                    if (parallelBook != null)
+                    var baseModuleInfo = ModulesManager.GetModuleInfo(SettingsManager.Instance.ModuleShortName);
+
+                    // merge book abbriviations
+                    foreach (var baseBook in baseModuleInfo.BibleStructure.BibleBooks)
                     {
-                        foreach (var parallelBookAbbreviation in parallelBook.Abbreviations)
+                        var parallelBook = parallelModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBook.Index);
+                        if (parallelBook != null)
                         {
-                            if (!baseBook.Abbreviations.Exists(abbr => abbr.Value == parallelBookAbbreviation.Value))
+                            foreach (var parallelBookAbbreviation in parallelBook.Abbreviations.Where(abbr => string.IsNullOrEmpty(abbr.ModuleName)))
                             {
-                                baseBook.Abbreviations.Add(new Abbreviation(parallelBookAbbreviation.Value)
+                                if (!baseBook.Abbreviations.Exists(abbr => abbr.Value == parallelBookAbbreviation.Value))
                                 {
-                                    ModuleName = parallelModuleName,
-                                    IsFullBookName = parallelBookAbbreviation.IsFullBookName
-                                });
+                                    baseBook.Abbreviations.Add(new Abbreviation(parallelBookAbbreviation.Value)
+                                    {
+                                        ModuleName = parallelModuleInfo.ShortName,
+                                        IsFullBookName = parallelBookAbbreviation.IsFullBookName
+                                    });
+                                }
                             }
                         }
                     }
-                }
 
-                //merge alphabets
-                if (!string.IsNullOrEmpty(parallelModuleInfo.BibleStructure.Alphabet))
-                {
-                    foreach (var c in parallelModuleInfo.BibleStructure.Alphabet)
+                    //merge alphabets
+                    if (!string.IsNullOrEmpty(parallelModuleInfo.BibleStructure.Alphabet))
                     {
-                        if (!baseModuleInfo.BibleStructure.Alphabet.Contains(c))
-                            baseModuleInfo.BibleStructure.Alphabet += c;
+                        foreach (var c in parallelModuleInfo.BibleStructure.Alphabet)
+                        {
+                            if (!baseModuleInfo.BibleStructure.Alphabet.Contains(c))
+                                baseModuleInfo.BibleStructure.Alphabet += c;
+                        }
                     }
-                }
 
-                ModulesManager.UpdateModuleManifest(baseModuleInfo);
+                    ModulesManager.UpdateModuleManifest(baseModuleInfo);
+                }
+                catch (ModuleNotFoundException) { }
+            }
+        }       
+        
+        
+        public static void RemoveBookAbbreviationsFromMainBible(string parallelModuleName, bool removeAllParallelModulesAbbriviations)
+        {
+            if (!string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName)
+                && SettingsManager.Instance.ModuleShortName != parallelModuleName)
+            {
+                try
+                {
+                    var baseModuleInfo = ModulesManager.GetModuleInfo(SettingsManager.Instance.ModuleShortName);
+
+                    foreach (var baseBook in baseModuleInfo.BibleStructure.BibleBooks)
+                    {
+                        baseBook.Abbreviations.RemoveAll(abbr => 
+                            (removeAllParallelModulesAbbriviations && !string.IsNullOrEmpty(abbr.ModuleName)) 
+                            || (!removeAllParallelModulesAbbriviations && abbr.ModuleName == parallelModuleName));
+                    }
+
+                    ModulesManager.UpdateModuleManifest(baseModuleInfo);
+                }
+                catch (ModuleNotFoundException) { }
             }
         }
-        
-        public static void RemoveBookAbbreviationsFromMainBible(string parallelModuleName)
+
+        public static void MergeAllModulesWithMainBible()
         {
-            if (SettingsManager.Instance.ModuleShortName != parallelModuleName)
+            foreach (var module in ModulesManager.GetModules(true)
+                .Where(m => m.Type == Common.ModuleType.Bible || m.Type == Common.ModuleType.Strong))
             {
-                var baseModuleInfo = ModulesManager.GetModuleInfo(SettingsManager.Instance.ModuleShortName);
-
-                foreach (var baseBook in baseModuleInfo.BibleStructure.BibleBooks)
-                {
-                    baseBook.Abbreviations.RemoveAll(abbr => abbr.ModuleName == parallelModuleName);
-                }
-
-                ModulesManager.UpdateModuleManifest(baseModuleInfo);
+                BibleParallelTranslationManager.MergeModuleWithMainBible(module);
             }
         }
     }

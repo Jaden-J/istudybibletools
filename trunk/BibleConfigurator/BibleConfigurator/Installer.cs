@@ -27,14 +27,40 @@ namespace BibleConfigurator
         public Installer()
             : base()
         {
-            this.BeforeInstall += new InstallEventHandler(Installer_BeforeInstall);
+            this.AfterInstall += new InstallEventHandler(Installer_AfterInstall);
             // Attach the 'Committed' event.
             this.Committed += new InstallEventHandler(MyInstaller_Committed);
             // Attach the 'Committing' event.
             this.Committing += new InstallEventHandler(MyInstaller_Committing);
         }
 
-        void Installer_BeforeInstall(object sender, InstallEventArgs e)
+        void Installer_AfterInstall(object sender, InstallEventArgs e)
+        {
+            TryToGenerateDefaultModule();
+
+            TryToMergeAllModulesWithMainBible();
+        }
+
+        private void TryToMergeAllModulesWithMainBible()
+        {
+            try
+            {
+                if (Utils.GetProgramVersion() < new Version(4, 0))
+                {
+                    BibleParallelTranslationManager.MergeAllModulesWithMainBible();
+                }
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    Logger.LogError(ex);
+                }
+                catch { }
+            }
+        }
+
+        private void TryToGenerateDefaultModule()
         {
             try
             {
@@ -49,9 +75,13 @@ namespace BibleConfigurator
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                //todo: log it
+                try
+                {
+                    Logger.LogError(ex);
+                }
+                catch { }
             }
         }
 
