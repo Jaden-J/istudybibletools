@@ -51,6 +51,14 @@ namespace BibleCommon.Common
         }
     }
 
+    public class ModuleNotFoundException : InvalidModuleException
+    {
+        public ModuleNotFoundException(string message)
+            : base(Constants.Error_InvalidModule + " " + message)
+        {
+        }
+    }
+
     public class InvalidNotebookException : ProgramException
     {
         public InvalidNotebookException(string message)

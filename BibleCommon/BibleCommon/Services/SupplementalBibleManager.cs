@@ -133,9 +133,7 @@ namespace BibleCommon.Services
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
-            string supplementalModuleShortName = SettingsManager.Instance.SupplementalBibleModules.First().ModuleName;            
-
-            BibleParallelTranslationManager.MergeModuleWithMainBible(supplementalModuleShortName);
+            string supplementalModuleShortName = SettingsManager.Instance.SupplementalBibleModules.First().ModuleName;                        
 
             UnlockNotebooks(ref oneNoteApp, true, false, logger);
 
@@ -195,8 +193,6 @@ namespace BibleCommon.Services
 
             SettingsManager.Instance.SupplementalBibleModules.Add(new StoredModuleInfo(module.ShortName, module.Version));
             SettingsManager.Instance.Save();
-            
-            BibleParallelTranslationManager.MergeModuleWithMainBible(module.ShortName);
 
             string oldTestamentName = null;
             int? oldTestamentSectionsCount = null;
@@ -296,13 +292,12 @@ namespace BibleCommon.Services
                 return false;
         }
 
-        public static void CloseSupplementalBible(ref Application oneNoteApp, bool removeStrongDictionaryFromNotebook)
+        public static void CloseSupplementalBible(ref Application oneNoteApp, bool removeStrongDictionaryFromNotebook, Func<bool> checkIfExternalProcessAborted = null)
         {            
-            OneNoteUtils.CloseNotebookSafe(ref oneNoteApp, SettingsManager.Instance.NotebookId_SupplementalBible);
+            OneNoteUtils.CloseNotebookSafe(ref oneNoteApp, SettingsManager.Instance.NotebookId_SupplementalBible, checkIfExternalProcessAborted);
 
             foreach (var parallelModuleName in SettingsManager.Instance.SupplementalBibleModules)
-            {
-                BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(parallelModuleName.ModuleName);
+            {                
                 var moduleInfo = ModulesManager.GetModuleInfo(parallelModuleName.ModuleName);
                 if (moduleInfo.Type == Common.ModuleType.Strong)
                 {
@@ -325,7 +320,7 @@ namespace BibleCommon.Services
         {
             if (SettingsManager.Instance.SupplementalBibleModules.Count <= 1)
             {
-                CloseSupplementalBible(ref oneNoteApp, removeStrongDictionaryFromNotebook);
+                CloseSupplementalBible(ref oneNoteApp, removeStrongDictionaryFromNotebook, () => logger.AbortedByUser);
                 return RemoveResult.RemoveSupplementalBible;
             }
             else
@@ -338,8 +333,6 @@ namespace BibleCommon.Services
                 var moduleInfo = ModulesManager.GetModuleInfo(moduleShortName);
                 if (moduleInfo.Type == Common.ModuleType.Strong)
                     DictionaryManager.RemoveDictionary(ref oneNoteApp, moduleShortName, removeStrongDictionaryFromNotebook);
-
-                BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(moduleShortName);
 
                 SettingsManager.Instance.SupplementalBibleModules.Remove(storedModuleInfo);
                 SettingsManager.Instance.Save();               
