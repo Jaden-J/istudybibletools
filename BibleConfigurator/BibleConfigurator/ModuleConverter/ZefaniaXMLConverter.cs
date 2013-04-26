@@ -175,19 +175,26 @@ namespace BibleConfigurator.ModuleConverter
             var index = 0;
             foreach (var bookInfo in BibleInfo.Books)
             {
-                var bibleBookInfo = BooksInfo.Books.First(b => b.Index == bookInfo.Index);                
+                var bibleBookInfo = BooksInfo.Books.First(b => b.Index == bookInfo.Index);
+                var abbriviations = bibleBookInfo.ShortNamesXMLString
+                                            .Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                var shortName = abbriviations.FirstOrDefault(s => s.StartsWith("|"));
 
                 ModuleInfo.BibleStructure.BibleBooks.Add(
                     new BibleBookInfo()
                     {
                         Index = bibleBookInfo.Index,
                         Name = bibleBookInfo.Name,
+                        ShortName = !string.IsNullOrEmpty(shortName) ? shortName.Trim(new char[] { '|' }) : null,
                         SectionName = GetBookSectionName(bibleBookInfo.Name, index++),
                         ChapterPageNameTemplate = bibleBookInfo.ChapterPageNameTemplate,
-                        Abbreviations = bibleBookInfo.ShortNamesXMLString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(s => new Abbreviation(s.Trim(new char[] { '\'' })) { IsFullBookName = s.StartsWith("'") }).ToList()
+                        Abbreviations = abbriviations.Select(s => 
+                                                    new Abbreviation(s.Trim(new char[] { '\'', '|' })) 
+                                                    { 
+                                                        IsFullBookName = s.StartsWith("'") || s.StartsWith("|")
+                                                    }
+                                                ).ToList()
                     });
-
             }
 
             SaveToXmlFile(ModuleInfo, Constants.ManifestFileName);            
