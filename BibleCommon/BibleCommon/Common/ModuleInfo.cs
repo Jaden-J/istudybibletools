@@ -265,7 +265,8 @@ namespace BibleCommon.Common
                     return book;
                 }
 
-                var abbreviation = book.Abbreviations.FirstOrDefault(abbr => abbr.Value.Equals(s, StringComparison.OrdinalIgnoreCase)
+                var abbreviation = book.Abbreviations.FirstOrDefault(abbr => 
+                                                        abbr.Value.Equals(s, StringComparison.OrdinalIgnoreCase)
                                                         && (!endsWithDot || !abbr.IsFullBookName));
                 if (abbreviation != null)
                 {
