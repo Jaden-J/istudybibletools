@@ -52,7 +52,7 @@ namespace BibleCommon.Services
         {
             string result = string.Empty;
             ApplicationCache.PageContent notesPageDocument = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, notesPageId, ApplicationCache.PageType.NotesPage);
-            XElement tableElement = notesPageDocument.Content.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", notesPageDocument.Xnm);
+            XElement tableElement = notesPageDocument.Content.Root.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", notesPageDocument.Xnm);
             XElement targetElement = GetNotesRow(tableElement, verseNumber, isChapter, notesPageDocument.Xnm);
 
             if (targetElement != null)

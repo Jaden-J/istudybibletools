@@ -257,17 +257,10 @@ namespace BibleCommon.Common
 
             foreach (var book in BibleStructure.BibleBooks)
             {
-                if (book.Name.Equals(s, StringComparison.OrdinalIgnoreCase) || book.SectionName.Equals(s, StringComparison.OrdinalIgnoreCase))
-                {
-                    if (endsWithDot)
-                        return null;
-
-                    return book;
-                }
-
-                var abbreviation = book.Abbreviations.FirstOrDefault(abbr => 
-                                                        abbr.Value.Equals(s, StringComparison.OrdinalIgnoreCase)
-                                                        && (!endsWithDot || !abbr.IsFullBookName));
+                var abbreviation = book.AllAbbreviationsWithSectionName
+                                             .FirstOrDefault(abbr =>
+                                                 abbr.Value.Equals(s, StringComparison.OrdinalIgnoreCase)
+                                                 && (!endsWithDot || !abbr.IsFullBookName));
                 if (abbreviation != null)
                 {
                     moduleName = abbreviation.ModuleName;
@@ -492,6 +485,80 @@ namespace BibleCommon.Common
 
         [XmlElement(typeof(Abbreviation), ElementName = "Abbreviation")]
         public List<Abbreviation> Abbreviations { get; set; }
+
+        private string _friendlyShortName;
+        public string FriendlyShortName
+        {
+            get
+            {
+                if (_friendlyShortName == null)
+                {
+                    _friendlyShortName = ShortName;
+
+                    if (string.IsNullOrEmpty(_friendlyShortName))
+                    {
+                        _friendlyShortName = Name;
+                        if (_friendlyShortName.Contains(' '))
+                        {
+                            var parts = _friendlyShortName.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            if (parts.Length == 2)
+                            {
+                                _friendlyShortName = parts[1];
+
+                                if (StringUtils.IsDigit(parts[0][0]))
+                                    _friendlyShortName = parts[0][0] + _friendlyShortName;
+                            }
+                        }
+                    }
+
+                    _friendlyShortName = StringUtils.MakeFirstLetterUpper(_friendlyShortName);
+                }
+
+                return _friendlyShortName;
+            }
+        }
+
+        private List<Abbreviation> _allAbbreviations;
+        [XmlIgnore]
+        public List<Abbreviation> AllAbbreviations
+        {
+            get
+            {
+                if (_allAbbreviations == null)                
+                    _allAbbreviations = GetAllAbbreviations(false);
+                
+                return _allAbbreviations;
+            }
+        }
+
+        private List<Abbreviation> _allAbbreviationsWithSectionName;
+        [XmlIgnore]
+        public List<Abbreviation> AllAbbreviationsWithSectionName
+        {
+            get
+            {
+                if (_allAbbreviationsWithSectionName == null)
+                    _allAbbreviationsWithSectionName = GetAllAbbreviations(true);
+
+                return _allAbbreviationsWithSectionName;
+            }
+        }
+
+        private List<Abbreviation> GetAllAbbreviations(bool includeSectionName)
+        {
+            var result = new List<Abbreviation>();
+            var nameLower = Name.ToLowerInvariant();
+
+            result.Add(new Abbreviation(nameLower) { IsFullBookName = true });
+
+            Abbreviations.ForEach(abbr => abbr.Value = abbr.Value.ToLowerInvariant());  // вдруг где-то в модуле случайно указали с большой буквы            
+            result.AddRange(Abbreviations.Where(abbr => abbr.Value != nameLower));            
+
+            if (includeSectionName)
+                result.Add(new Abbreviation(SectionName.ToLowerInvariant()) { IsFullBookName = true });
+
+            return result;
+        }
     }
 
     [Serializable]
@@ -521,7 +588,7 @@ namespace BibleCommon.Common
         {
             return new Abbreviation(value);
         }
-    }
+    }    
 
     [Serializable]
     [XmlRoot(ElementName = "IStudyBibleTools_Dictionary")]

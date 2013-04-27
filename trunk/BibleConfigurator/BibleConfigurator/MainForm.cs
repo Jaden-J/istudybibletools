@@ -699,7 +699,7 @@ namespace BibleConfigurator
         private bool TryToSaveNotebookParameters(ContainerType notebookType, string notebookId, string notebookName, bool silientMode)
         {
             try
-            {                
+            {
                 var module = ModulesManager.GetCurrentModuleInfo();
 
                 string errorText;
@@ -739,8 +739,11 @@ namespace BibleConfigurator
                 }
                 else
                 {
-                    string message = string.Format(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected + "\n" + errorText, notebookName, 
-                        ContainerTypeHelper.GetContainerTypeName(notebookType));
+
+                    string message = !string.IsNullOrEmpty(notebookId)
+                                            ? string.Format(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected + "\n" + errorText, notebookName,
+                                                                        ContainerTypeHelper.GetContainerTypeName(notebookType))
+                                            : string.Format(BibleCommon.Resources.Constants.ConfiguratorNotebookNotDefinedForType, ContainerTypeHelper.GetContainerTypeName(notebookType));                                
                     
                     if (!silientMode)
                         throw new SaveParametersException(message, false);  

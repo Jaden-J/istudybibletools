@@ -49,6 +49,8 @@ namespace BibleCommon.Handlers
             }
             catch (NotConfiguredException)
             { }
+            catch (ModuleIsUndefinedException)
+            { }
             catch (Exception ex)
             {
                 FormLogger.LogError(ex);

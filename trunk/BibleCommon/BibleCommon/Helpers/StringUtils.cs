@@ -186,17 +186,14 @@ namespace BibleCommon.Helpers
 
         public static bool IsCharAlphabetical(char c, string alphabet, bool strict = false)
         {
-            if (string.IsNullOrEmpty(alphabet))
+            if (strict && string.IsNullOrEmpty(alphabet))
             {
                 if (!string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName))
                     alphabet = SettingsManager.Instance.CurrentModuleCached.BibleStructure.Alphabet;
             }
 
-            if (!string.IsNullOrEmpty(alphabet))
-                return alphabet.Contains(c)
-                        || (!strict && (c >= 'a' && c <= 'z'))
-                        || (!strict && (c >= 'A' && c <= 'Z'))
-                        || (!strict && char.IsLetter(c));
+            if (strict && !string.IsNullOrEmpty(alphabet))            
+                return alphabet.Contains(c);                                                            
             else
                 return char.IsLetter(c);
         }
@@ -834,6 +831,25 @@ namespace BibleCommon.Helpers
             for (int i = position0; i < original.Length; ++i)
                 chars[count++] = original[i];
             return new string(chars, 0, count);
+        }
+
+        /// <summary>
+        /// Делает первую букву заглавной. Для строки "1кор" вернёт "1Кор"
+        /// </summary>
+        /// <param name="bookName"></param>
+        /// <returns></returns>
+        public static string MakeFirstLetterUpper(string bookName)
+        {   
+            if (!string.IsNullOrEmpty(bookName))
+            {
+                for (var i = 0; i < bookName.Length; i++)
+                {
+                    if (char.IsLetter(bookName[i]))                    
+                        return string.Concat(bookName.Substring(0, i), char.ToUpperInvariant(bookName[i]), bookName.Substring(i + 1));                                                 
+                }
+            }
+
+            return bookName;
         }
     }
 }

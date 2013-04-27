@@ -44,9 +44,12 @@ namespace BibleCommon.Services
         public NotesPageManagerEx()
         {
             _nms = XNamespace.Get(Constants.OneNoteXmlNs);
-            foreach (var notebookInfo in SettingsManager.Instance.SelectedNotebooksForAnalyze)
-                if (!_notebooksDisplayLevel.ContainsKey(notebookInfo.NotebookId))  // на всякий пожарный
-                    _notebooksDisplayLevel.Add(notebookInfo.NotebookId, notebookInfo.DisplayLevels);
+            if (SettingsManager.Instance.SelectedNotebooksForAnalyze != null)
+            {
+                foreach (var notebookInfo in SettingsManager.Instance.SelectedNotebooksForAnalyze)
+                    if (!_notebooksDisplayLevel.ContainsKey(notebookInfo.NotebookId))  // на всякий пожарный
+                        _notebooksDisplayLevel.Add(notebookInfo.NotebookId, notebookInfo.DisplayLevels);
+            }
         }
 
         public string UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager, VersePointer vp, 
