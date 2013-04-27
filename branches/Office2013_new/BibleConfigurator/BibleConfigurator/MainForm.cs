@@ -288,12 +288,12 @@ namespace BibleConfigurator
         private void TryToSearchNotebooksForNewModule(ModuleInfo module)
         {
             var notebooks = OneNoteUtils.GetExistingNotebooks(ref _oneNoteApp);
-
-            notebooks.Remove(SettingsManager.Instance.NotebookId_Bible);
-            notebooks.Remove(SettingsManager.Instance.NotebookId_BibleStudy);
-            notebooks.Remove(SettingsManager.Instance.NotebookId_BibleComments);
-            if (notebooks.ContainsKey(SettingsManager.Instance.NotebookId_BibleNotesPages))
-                notebooks.Remove(SettingsManager.Instance.NotebookId_BibleNotesPages);
+            
+            //notebooks.Remove(SettingsManager.Instance.NotebookId_Bible);
+            //notebooks.Remove(SettingsManager.Instance.NotebookId_BibleStudy);
+            //notebooks.Remove(SettingsManager.Instance.NotebookId_BibleComments);
+            //if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_BibleNotesPages) && notebooks.ContainsKey(SettingsManager.Instance.NotebookId_BibleNotesPages))
+            //    notebooks.Remove(SettingsManager.Instance.NotebookId_BibleNotesPages);
 
 
             TryToSearchNotebookForNewModule(module, ContainerType.Bible, SettingsManager.Instance.NotebookId_Bible,
@@ -302,8 +302,11 @@ namespace BibleConfigurator
             var commentsNotebookId = TryToSearchNotebookForNewModule(module, ContainerType.BibleComments, SettingsManager.Instance.NotebookId_BibleComments,
                 chkCreateBibleCommentsNotebookFromTemplate, cbBibleCommentsNotebook, ref notebooks, null);
 
-            TryToSearchNotebookForNewModule(module, ContainerType.BibleNotesPages, SettingsManager.Instance.NotebookId_BibleNotesPages,
-                chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, ref notebooks, commentsNotebookId);     
+            if (!SettingsManager.Instance.StoreNotesPagesInFolder)
+            {
+                TryToSearchNotebookForNewModule(module, ContainerType.BibleNotesPages, SettingsManager.Instance.NotebookId_BibleNotesPages,
+                    chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, ref notebooks, commentsNotebookId);
+            }
         }
 
         private string TryToSearchNotebookForNewModule(ModuleInfo module, ContainerType containerType, string currentNotebookId,
@@ -420,7 +423,7 @@ namespace BibleConfigurator
                 {
                     var notebookId = WaitAndSaveParameters(module, notebookType, notebookFolderPath, notebookName, notebookInfo.Nickname, notebookFolderPath, notebookType == ContainerType.Bible);                         // выйдем из метода только когда OneNote отработает
                     createFromTemplateControl.Checked = false;  // чтоб если ошибки будут потом, он заново не создавал                    
-                    selectedNotebookNameControl.Items.Add(new ComboBoxItem(notebookId, notebookInfo.Nickname));
+                    selectedNotebookNameControl.Items.Add(new ComboBoxItem(notebookId, notebookInfo.GetNicknameSafe()));
                     selectedNotebookNameControl.SelectedItem = notebookId;
                 }
             }
@@ -511,7 +514,7 @@ namespace BibleConfigurator
 
             if (SettingsManager.Instance.UseProxyLinksForBibleVerses != chkUseProxyLinksForBibleVerses.Checked && !chkUseProxyLinksForBibleVerses.Checked)  // то есть мы перестали использовать прокси ссылки для стихов Библии
             {
-                OneNoteProxy.Instance.CleanBibleVersesLinksCache();    
+                ApplicationCache.Instance.CleanBibleVersesLinksCache(false);    
             }
 
             SettingsManager.Instance.UseProxyLinksForBibleVerses = chkUseProxyLinksForBibleVerses.Checked;
@@ -758,7 +761,7 @@ namespace BibleConfigurator
 
         private void SearchForCorrespondenceSectionGroups(ModuleInfo module, string notebookId)
         {
-            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, notebookId, HierarchyScope.hsSections, true);
+            ApplicationCache.HierarchyElement notebook = ApplicationCache.Instance.GetHierarchy(ref _oneNoteApp, notebookId, HierarchyScope.hsSections, true);
 
             List<ContainerType> sectionGroups = new List<ContainerType>();
 
@@ -792,7 +795,7 @@ namespace BibleConfigurator
 
         private void RenameSectionGroupsForm(string notebookId, Dictionary<string, string> renamedSectionGroups)
         {
-            OneNoteProxy.HierarchyElement notebook = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, notebookId, HierarchyScope.hsSections, true);     
+            ApplicationCache.HierarchyElement notebook = ApplicationCache.Instance.GetHierarchy(ref _oneNoteApp, notebookId, HierarchyScope.hsSections, true);     
 
             foreach (string sectionGroupId in renamedSectionGroups.Keys)
             {
@@ -810,7 +813,7 @@ namespace BibleConfigurator
             {
                 _oneNoteApp.UpdateHierarchy(notebook.Content.ToString(), Constants.CurrentOneNoteSchema);
             });
-            OneNoteProxy.Instance.RefreshHierarchyCache(ref _oneNoteApp, notebookId, HierarchyScope.hsSections);     
+            ApplicationCache.Instance.RefreshHierarchyCache(ref _oneNoteApp, notebookId, HierarchyScope.hsSections);     
         }
 
         private string CreateNotebookFromTemplate(string notebookTemplateFileName, string notebookFromTemplatePath, out string notebookFolderPath)
@@ -1101,9 +1104,9 @@ namespace BibleConfigurator
             FormExtensions.SetToolTip(btnBibleCommentsNotebookSetPath, toolTipMessage);
             FormExtensions.SetToolTip(btnBibleNotesPagesNotebookSetPath, toolTipMessage);
 
-            notesPagesFolderBrowserDialog.SelectedPath = SettingsManager.Instance.FolderPath_BibleNotesPages;                
-            notesPagesFolderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetFolder;
-            FormExtensions.SetToolTip(btnBibleNotesPagesSetFolder, BibleCommon.Resources.Constants.ConfiguratorSetFolder);            
+            notesPagesFolderBrowserDialog.SelectedPath = SettingsManager.Instance.FolderPath_BibleNotesPages;
+            notesPagesFolderBrowserDialog.Description = BibleCommon.Resources.Constants.ConfiguratorSetFolderForNotesPages;
+            FormExtensions.SetToolTip(btnBibleNotesPagesSetFolder, BibleCommon.Resources.Constants.ConfiguratorSetFolderForNotesPages);            
         }
 
       
@@ -1821,8 +1824,10 @@ namespace BibleConfigurator
                     }
 
                     if (canContinue)
-                    {                        
+                    {
+                        BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(null, true);
                         SettingsManager.Instance.ModuleShortName = moduleInfo.ShortName;
+                        BibleParallelTranslationManager.MergeAllModulesWithMainBible();
                         ReLoadModulesInfo();
                         ReLoadParameters(SettingsManager.Instance.ModuleShortName != _originalModuleShortName);
                         tbcMain.SelectedTab = tbcMain.TabPages[0];

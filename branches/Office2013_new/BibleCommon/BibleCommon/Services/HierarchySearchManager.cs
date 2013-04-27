@@ -67,7 +67,7 @@ namespace BibleCommon.Services
 
                     foreach (var subVp in verses)
                     {
-                        var subLink = OneNoteProxy.Instance.GetVersePointerLink(subVp);
+                        var subLink = ApplicationCache.Instance.GetVersePointerLink(subVp);
                         if (subLink != null)
                             this.HierarchyObjectInfo.AdditionalObjectsIds.Add(subVp, new VerseObjectInfo(subLink));
                     }
@@ -114,20 +114,20 @@ namespace BibleCommon.Services
         private static HierarchySearchResult GetHierarchyObjectInternal(ref Application oneNoteApp, string bibleNotebookId, VersePointer vp, 
             FindVerseLevel findAllVerseObjects, bool useCacheIfAvailable = true)
         {   
-            HierarchySearchResult result = new HierarchySearchResult();
+            var result = new HierarchySearchResult();
             result.ResultType = BibleHierarchySearchResultType.NotFound;
 
             if (!vp.IsValid)
                 throw new ArgumentException("versePointer is not valid");
 
-            if (useCacheIfAvailable && OneNoteProxy.Instance.IsBibleVersesLinksCacheActive)
+            if (useCacheIfAvailable && ApplicationCache.Instance.IsBibleVersesLinksCacheActive)
             {                
-                var versePointerLink = OneNoteProxy.Instance.GetVersePointerLink(vp);
+                var versePointerLink = ApplicationCache.Instance.GetVersePointerLink(vp);
                 if (versePointerLink != null)
                     return new HierarchySearchResult(ref oneNoteApp, bibleNotebookId, vp, versePointerLink, findAllVerseObjects, true);
                 else if (vp.IsChapter) // возможно стих типа "2Ин 8"
                 {
-                    if (BookHasOnlyOneChapter(ref oneNoteApp, vp, result.HierarchyObjectInfo, useCacheIfAvailable))
+                    if (BookHasOnlyOneChapter(ref oneNoteApp, vp, result.HierarchyObjectInfo, useCacheIfAvailable))  // result.HierarchyObjectInfo - пустое, но оно там и не нужно.
                     {
                         var changedVerseResult = TryToChangeVerseAsOneChapteredBookAndSearchInHierarchy(
                             ref oneNoteApp, bibleNotebookId, ref vp, findAllVerseObjects, useCacheIfAvailable, false);
@@ -166,7 +166,7 @@ namespace BibleCommon.Services
                     result.HierarchyObjectInfo.PageName = (string)targetPage.Attribute("name");
                     result.HierarchyStage = BibleHierarchyStage.Page;
 
-                    var pageContent = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, result.HierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);
+                    var pageContent = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, result.HierarchyObjectInfo.PageId, ApplicationCache.PageType.Bible);
                     VerseNumber? verseNumber;
                     string verseTextWithoutNumber;
                     XElement targetVerseEl = FindVerse(pageContent.Content, vp.IsChapter, vp.Verse.Value, pageContent.Xnm, out verseNumber, out verseTextWithoutNumber);
@@ -201,10 +201,10 @@ namespace BibleCommon.Services
 
         private static bool BookHasOnlyOneChapter(ref Application oneNoteApp, VersePointer vp, BibleHierarchyObjectInfo hierarchyObjectInfo, bool useCacheIfAvailable)
         {
-            if (useCacheIfAvailable && OneNoteProxy.Instance.IsBibleVersesLinksCacheActive)
-                return OneNoteProxy.Instance.GetVersePointerLink(new VersePointer(vp.Book.Name, 2)) == null;
-            else
-                return GetBookChaptersCount(ref oneNoteApp, hierarchyObjectInfo.SectionId) == 1;
+            if (useCacheIfAvailable && ApplicationCache.Instance.IsBibleVersesLinksCacheActive)
+                return ApplicationCache.Instance.GetVersePointerLink(new VersePointer(vp.Book.Name, 2)) == null;
+            else            
+                return GetBookChaptersCount(ref oneNoteApp, hierarchyObjectInfo.SectionId) == 1;                                               
         }
 
         private static HierarchySearchResult TryToChangeVerseAsOneChapteredBookAndSearchInHierarchy(ref Application oneNoteApp, string bibleNotebookId,
@@ -224,7 +224,7 @@ namespace BibleCommon.Services
         }
 
         private static void LoadAdditionalVersesInfo(ref Application oneNoteApp, string bibleNotebookId, VersePointer vp, FindVerseLevel findAllVerseObjects,
-            OneNoteProxy.PageContent chapterPageContent, ref HierarchySearchResult result)
+            ApplicationCache.PageContent chapterPageContent, ref HierarchySearchResult result)
         {
             List<VersePointer> verses;
             if (findAllVerseObjects == FindVerseLevel.OnlyVersesOfFirstChapter)
@@ -248,7 +248,7 @@ namespace BibleCommon.Services
                     if (additionalPageEl == null)
                         continue;
                     var additionalPageId = (string)additionalPageEl.Attribute("ID");
-                    additionalPageContent = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, additionalPageId, OneNoteProxy.PageType.Bible);
+                    additionalPageContent = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, additionalPageId, ApplicationCache.PageType.Bible);
                 }
 
                 var additionalVeseEl = FindVerse(additionalPageContent.Content, vp.IsChapter, additionalVerse.Verse.Value, additionalPageContent.Xnm,
@@ -342,7 +342,7 @@ namespace BibleCommon.Services
 
         private static XElement FindPage(ref Application oneNoteApp, string sectionId, int chapter)
         {
-            OneNoteProxy.HierarchyElement sectionDocument = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, sectionId, HierarchyScope.hsPages);
+            ApplicationCache.HierarchyElement sectionDocument = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, sectionId, HierarchyScope.hsPages);
 
             return FindChapterPage(sectionDocument.Content.Root, chapter, sectionDocument.Xnm);
         }
@@ -362,14 +362,17 @@ namespace BibleCommon.Services
 
         internal static int GetBookChaptersCount(ref Application oneNoteApp, string sectionId)
         {
-            OneNoteProxy.HierarchyElement sectionDocument = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, sectionId, HierarchyScope.hsPages);
+            if (string.IsNullOrEmpty(sectionId))
+                throw new ArgumentNullException("sectionId");
+
+            var sectionDocument = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, sectionId, HierarchyScope.hsPages);
 
             return Convert.ToInt32(sectionDocument.Content.Root.XPathEvaluate("count(one:Page)-1", sectionDocument.Xnm));
         }
 
         public static XElement FindBibleBookSection(ref Application oneNoteApp, string notebookId, string bookSectionName)
         {
-            OneNoteProxy.HierarchyElement document = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsSections);
+            ApplicationCache.HierarchyElement document = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsSections);
 
             var targetSection = document.Content.Root.XPathSelectElement(
                 string.Format("{0}one:SectionGroup[{2}]/one:Section[@name=\"{1}\"]",
@@ -420,7 +423,7 @@ namespace BibleCommon.Services
                 if (chapterPageResult.ResultType != BibleHierarchySearchResultType.NotFound 
                     && chapterPageResult.HierarchyStage == BibleHierarchyStage.Page)
                 {
-                    var pageContent = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, chapterPageResult.HierarchyObjectInfo.PageId, OneNoteProxy.PageType.Bible);
+                    var pageContent = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, chapterPageResult.HierarchyObjectInfo.PageId, ApplicationCache.PageType.Bible);
                     var table = pageContent.Content.Root.XPathSelectElement("//one:Table", pageContent.Xnm);
                     if (table != null)
                     {
@@ -430,6 +433,44 @@ namespace BibleCommon.Services
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Если кэш устареет, то мы его удалим и достанем инфу не из кэша
+        /// </summary>
+        /// <param name="oneNoteApp"></param>
+        /// <param name="bibleNotebookId"></param>
+        /// <param name="vp"></param>
+        /// <param name="action"></param>
+        public static void UseHierarchyObjectSafe(ref Application oneNoteApp, ref BibleHierarchyObjectInfo verseHierarchyObjectInfo, ref VersePointer vp, Func<BibleHierarchyObjectInfo, bool> action)
+        {
+            try
+            {
+                action(verseHierarchyObjectInfo);
+            }
+            catch (NotFoundPageException)
+            {
+                // возможно дело в устаревшем кэше       
+
+                if (verseHierarchyObjectInfo.LoadedFromCache)
+                {
+                    var fullSearchResult = HierarchySearchManager.GetHierarchyObject(
+                                                ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, ref vp, HierarchySearchManager.FindVerseLevel.AllVerses, false);
+
+                    if (fullSearchResult.FoundSuccessfully)
+                    {
+                        if (fullSearchResult.HierarchyObjectInfo.PageId != verseHierarchyObjectInfo.PageId)  // если нашли другой ID     // здесь раньше было: if (fullSearchResult.HierarchyObjectInfo.PageId != notePageId.Id)
+                        {                            
+                            if (action(fullSearchResult.HierarchyObjectInfo))   // значит действительно кэш устарел. Надо его удалить и написать об этом предупреждение                                                   
+                            {
+                                verseHierarchyObjectInfo = fullSearchResult.HierarchyObjectInfo;
+                                ApplicationCache.Instance.CleanBibleVersesLinksCache(false);
+                                Logger.LogWarning(BibleCommon.Resources.Constants.BibleVersesLinksCacheWasCleaned);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

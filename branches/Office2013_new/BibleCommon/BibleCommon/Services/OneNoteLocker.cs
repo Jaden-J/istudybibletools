@@ -142,7 +142,7 @@ namespace BibleCommon.Services
 
                     if (!success)
                     {
-                        Utils.WaitFor3Seconds(checkIfExternalProcessAborted);
+                        Utils.WaitFor(3, checkIfExternalProcessAborted);
                         WaitForHierarchyIsUnlocked(ref oneNoteApp, hierarchyId, attemptsCount + 1, checkIfExternalProcessAborted);
                     }
                 }

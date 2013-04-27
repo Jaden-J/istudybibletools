@@ -133,9 +133,7 @@ namespace BibleCommon.Services
             XmlNamespaceManager xnm = OneNoteUtils.GetOneNoteXNM();
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
-            string supplementalModuleShortName = SettingsManager.Instance.SupplementalBibleModules.First().ModuleName;            
-
-            BibleParallelTranslationManager.MergeModuleWithMainBible(supplementalModuleShortName);
+            string supplementalModuleShortName = SettingsManager.Instance.SupplementalBibleModules.First().ModuleName;                        
 
             UnlockNotebooks(ref oneNoteApp, true, false, logger);
 
@@ -158,7 +156,7 @@ namespace BibleCommon.Services
                 result = bibleTranslationManager.IterateBaseBible(
                     (chapterPageDoc, chapterPointer) =>
                     {
-                        OneNoteProxy.Instance.CommitAllModifiedPages(ref oneNoteTemp, false, pageContent => pageContent.PageType == OneNoteProxy.PageType.Bible, null, null);
+                        ApplicationCache.Instance.CommitAllModifiedPages(ref oneNoteTemp, false, pageContent => pageContent.PageType == ApplicationCache.PageType.Bible, null, null);
 
                         int styleIndex = QuickStyleManager.AddQuickStyleDef(chapterPageDoc, QuickStyleManager.StyleForStrongName, QuickStyleManager.PredefinedStyles.GrayHyperlink, xnm);
 
@@ -169,7 +167,7 @@ namespace BibleCommon.Services
                         if (!parallelVerse.IsEmpty)
                         {
                             linkResult.AddRange(
-                                LinkdPrimaryBibleAndSupplementalVerses(ref oneNoteTemp, baseVersePointer, parallelVerse, bibleIteratorArgs,
+                                LinkPrimaryBibleAndSupplementalVerses(ref oneNoteTemp, baseVersePointer, parallelVerse, bibleIteratorArgs,
                                             bibleTranslationManager.BaseModuleInfo.Type == Common.ModuleType.Strong, strongTermLinksCache,
                                             bibleTranslationManager.BaseModuleInfo.ShortName,
                                             bibleTranslationManager.BaseModuleInfo.BibleStructure.Alphabet, isOneNote2010, xnm, nms));
@@ -181,7 +179,7 @@ namespace BibleCommon.Services
                 result.Errors.AddRange(linkResult);
             }
 
-            OneNoteProxy.Instance.CommitAllModifiedPages(ref oneNoteApp, false, pageContent => pageContent.PageType == OneNoteProxy.PageType.Bible, null, null);
+            ApplicationCache.Instance.CommitAllModifiedPages(ref oneNoteApp, false, pageContent => pageContent.PageType == ApplicationCache.PageType.Bible, null, null);
 
             return result;
         }
@@ -195,8 +193,6 @@ namespace BibleCommon.Services
 
             SettingsManager.Instance.SupplementalBibleModules.Add(new StoredModuleInfo(module.ShortName, module.Version));
             SettingsManager.Instance.Save();
-            
-            BibleParallelTranslationManager.MergeModuleWithMainBible(module.ShortName);
 
             string oldTestamentName = null;
             int? oldTestamentSectionsCount = null;
@@ -296,13 +292,12 @@ namespace BibleCommon.Services
                 return false;
         }
 
-        public static void CloseSupplementalBible(ref Application oneNoteApp, bool removeStrongDictionaryFromNotebook)
+        public static void CloseSupplementalBible(ref Application oneNoteApp, bool removeStrongDictionaryFromNotebook, Func<bool> checkIfExternalProcessAborted = null)
         {            
-            OneNoteUtils.CloseNotebookSafe(ref oneNoteApp, SettingsManager.Instance.NotebookId_SupplementalBible);
+            OneNoteUtils.CloseNotebookSafe(ref oneNoteApp, SettingsManager.Instance.NotebookId_SupplementalBible, checkIfExternalProcessAborted);
 
             foreach (var parallelModuleName in SettingsManager.Instance.SupplementalBibleModules)
-            {
-                BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(parallelModuleName.ModuleName);
+            {                
                 var moduleInfo = ModulesManager.GetModuleInfo(parallelModuleName.ModuleName);
                 if (moduleInfo.Type == Common.ModuleType.Strong)
                 {
@@ -325,7 +320,7 @@ namespace BibleCommon.Services
         {
             if (SettingsManager.Instance.SupplementalBibleModules.Count <= 1)
             {
-                CloseSupplementalBible(ref oneNoteApp, removeStrongDictionaryFromNotebook);
+                CloseSupplementalBible(ref oneNoteApp, removeStrongDictionaryFromNotebook, () => logger.AbortedByUser);
                 return RemoveResult.RemoveSupplementalBible;
             }
             else
@@ -338,8 +333,6 @@ namespace BibleCommon.Services
                 var moduleInfo = ModulesManager.GetModuleInfo(moduleShortName);
                 if (moduleInfo.Type == Common.ModuleType.Strong)
                     DictionaryManager.RemoveDictionary(ref oneNoteApp, moduleShortName, removeStrongDictionaryFromNotebook);
-
-                BibleParallelTranslationManager.RemoveBookAbbreviationsFromMainBible(moduleShortName);
 
                 SettingsManager.Instance.SupplementalBibleModules.Remove(storedModuleInfo);
                 SettingsManager.Instance.Save();               
@@ -399,15 +392,15 @@ namespace BibleCommon.Services
             }
         }      
 
-        private static List<Exception> LinkdPrimaryBibleAndSupplementalVerses(ref Application oneNoteApp, SimpleVersePointer baseVersePointer,
+        private static List<Exception> LinkPrimaryBibleAndSupplementalVerses(ref Application oneNoteApp, SimpleVersePointer baseVersePointer,
             SimpleVerse parallelVerse, BibleIteratorArgs bibleIteratorArgs, bool isStrong, Dictionary<string, string> strongTermLinksCache, 
             string strongModuleShortName, string alphabet, bool isOneNote2010, XmlNamespaceManager xnm, XNamespace nms)
         {
             var result = new List<Exception>();            
 
-            var svp = parallelVerse.ToVersePointer(SettingsManager.Instance.CurrentModuleCached);
+            var parallelVersePointer = parallelVerse.ToVersePointer(SettingsManager.Instance.CurrentModuleCached);
             var primaryBibleObjectsSearchResult = HierarchySearchManager.GetHierarchyObject(ref oneNoteApp,
-                    SettingsManager.Instance.NotebookId_Bible, ref svp, HierarchySearchManager.FindVerseLevel.AllVerses);
+                    SettingsManager.Instance.NotebookId_Bible, ref parallelVersePointer, HierarchySearchManager.FindVerseLevel.AllVerses);
 
             if (primaryBibleObjectsSearchResult.ResultType != BibleHierarchySearchResultType.Successfully
                 || primaryBibleObjectsSearchResult.HierarchyStage != BibleHierarchyStage.ContentPlaceholder)
@@ -423,7 +416,7 @@ namespace BibleCommon.Services
             var baseVerseElementId = (string)baseVerseEl.Parent.Attribute("objectID");            
 
             LinkMainBibleVersesToSupplementalBibleVerse(ref oneNoteApp, baseChapterPageId, baseVerseElementId, parallelVerse, primaryBibleObjectsSearchResult, xnm, nms);
-            LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(ref oneNoteApp, baseVersePointer, baseVerseEl, baseVerseNumber, verseTextWithoutNumber, primaryBibleObjectsSearchResult, 
+            LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(ref oneNoteApp, baseVersePointer, baseVerseEl, baseVerseNumber, parallelVersePointer, verseTextWithoutNumber, primaryBibleObjectsSearchResult, 
                 isStrong, bibleIteratorArgs.StrongStyleIndex, strongTermLinksCache, strongModuleShortName, alphabet, isOneNote2010, ref result, nms);
 
             return result;
@@ -482,8 +475,8 @@ namespace BibleCommon.Services
         }
 
         private static void LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(ref Application oneNoteApp, 
-            SimpleVersePointer baseVersePointer, XElement baseVerseEl, VerseNumber? baseVerseNumber, string verseTextWithoutNumber,
-            BibleSearchResult primaryBibleObjectsSearchResult,
+            SimpleVersePointer baseVersePointer, XElement baseVerseEl, VerseNumber? baseVerseNumber, VersePointer parallelVersePointer,
+            string verseTextWithoutNumber, BibleSearchResult primaryBibleObjectsSearchResult,
             bool isStrong, int strongStyleIndex, Dictionary<string, string> strongTermLinksCache, string strongModuleShortName, string alphabet, bool isOneNote2010,
             ref List<Exception> result, XNamespace nms)
         {
@@ -493,9 +486,13 @@ namespace BibleCommon.Services
                         string.Format("baseVerseNumber != baseVersePointer (baseVerseNumber = '{0}', baseVersePointer = '{1}')", baseVerseNumber, baseVersePointer)));
 
             string linkToParallelVerse = OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, baseVerseNumber.ToString(),
-                primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseInfo.ProxyHref,
-                primaryBibleObjectsSearchResult.HierarchyObjectInfo.PageId, primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseContentObjectId, 
-                Consts.Constants.QueryParameter_BibleVerse);
+                                            SettingsManager.Instance.UseProxyLinksForBibleVerses 
+                                                ? OpenBibleVerseHandler.GetCommandUrlStatic(parallelVersePointer, SettingsManager.Instance.ModuleShortName) 
+                                                : primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseInfo.ProxyHref,
+                                            primaryBibleObjectsSearchResult.HierarchyObjectInfo.PageId, primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseContentObjectId, 
+                                            SettingsManager.Instance.UseProxyLinksForBibleVerses 
+                                                ? null
+                                                : Consts.Constants.QueryParameter_BibleVerse);
 
             string versePart = verseTextWithoutNumber;
 
@@ -543,9 +540,9 @@ namespace BibleCommon.Services
             }
         }
 
-        private static OneNoteProxy.PageContent PrepareMainBibleTable(ref Application oneNoteApp, string mainBibleChapterPageId)
+        private static ApplicationCache.PageContent PrepareMainBibleTable(ref Application oneNoteApp, string mainBibleChapterPageId)
         {
-            var parallelChapterPageDoc = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, mainBibleChapterPageId, OneNoteProxy.PageType.Bible);
+            var parallelChapterPageDoc = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, mainBibleChapterPageId, ApplicationCache.PageType.Bible);
             var parallelBibleTableElement = NotebookGenerator.GetPageTable(parallelChapterPageDoc.Content, parallelChapterPageDoc.Xnm);
 
             var columnsCount = parallelBibleTableElement.XPathSelectElements("one:Columns/one:Column", parallelChapterPageDoc.Xnm).Count();

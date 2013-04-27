@@ -48,13 +48,13 @@ namespace BibleCommon.Services
                         result = pageId;
                     }
                     else if (createIfNeeded)
-                        throw new NotFoundVerseLinkPageExceptions(BibleCommon.Resources.Constants.VerseLinkManagerCommentPageNotFound + exceptionResolveWay);
+                        throw new NotFoundVerseLinkPageException(BibleCommon.Resources.Constants.VerseLinkManagerCommentPageNotFound + exceptionResolveWay);
                 }
                 else if (createIfNeeded)
-                    throw new NotFoundVerseLinkPageExceptions(BibleCommon.Resources.Constants.VerseLinkManagerCommentSectionNotFound + exceptionResolveWay);
+                    throw new NotFoundVerseLinkPageException(BibleCommon.Resources.Constants.VerseLinkManagerCommentSectionNotFound + exceptionResolveWay);
             }
             else if (createIfNeeded)
-                throw new NotFoundVerseLinkPageExceptions(BibleCommon.Resources.Constants.VerseLinkManagerCommentSectionGroupNotFound + exceptionResolveWay);
+                throw new NotFoundVerseLinkPageException(BibleCommon.Resources.Constants.VerseLinkManagerCommentSectionGroupNotFound + exceptionResolveWay);
 
             return result;
         }
@@ -63,8 +63,8 @@ namespace BibleCommon.Services
         private static string FindDescriptionSectionGroupForBiblePage(ref Application oneNoteApp,
             string bibleSectionId, bool createIfNeeded, bool isSummaryNotesPage, bool refreshCache)
         {
-            OneNoteProxy.HierarchyElement bibleDocument = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, HierarchyScope.hsSections, refreshCache);
-            OneNoteProxy.HierarchyElement commentsDocument = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, 
+            ApplicationCache.HierarchyElement bibleDocument = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, HierarchyScope.hsSections, refreshCache);
+            ApplicationCache.HierarchyElement commentsDocument = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, 
                 isSummaryNotesPage ? SettingsManager.Instance.NotebookId_BibleNotesPages : SettingsManager.Instance.NotebookId_BibleComments, 
                 HierarchyScope.hsSections, refreshCache);
 
@@ -134,7 +134,7 @@ namespace BibleCommon.Services
         private static string FindDescriptionSectionForBiblePage(ref Application oneNoteApp,
             string biblePageName, string targetSectionGroupId, bool createIfNeeded, bool refreshCache)
         {
-            OneNoteProxy.HierarchyElement sectionGroupDocument = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, targetSectionGroupId, HierarchyScope.hsSections, refreshCache);            
+            ApplicationCache.HierarchyElement sectionGroupDocument = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, targetSectionGroupId, HierarchyScope.hsSections, refreshCache);            
             string sectionGroupName = (string)sectionGroupDocument.Content.Root.Attribute("name");
 
             if (sectionGroupName.IndexOf(biblePageName) != -1)
@@ -215,7 +215,7 @@ namespace BibleCommon.Services
             bool isSummaryNotesPage, string verseLinkParentPageId, int pageLevel, bool createIfNeeded, out bool pageWasCreated)
         {
             pageWasCreated = false;
-            OneNoteProxy.HierarchyElement sectionDocument = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, sectionId, HierarchyScope.hsPages);            
+            ApplicationCache.HierarchyElement sectionDocument = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, sectionId, HierarchyScope.hsPages);            
 
             VersePointer vp = GetVersePointer(bibleSectionName, biblePageName);
 
@@ -242,7 +242,7 @@ namespace BibleCommon.Services
                     });
                     pageWasCreated = true;
 
-                    OneNoteProxy.PageContent biblePageDoc = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, biblePageId, OneNoteProxy.PageType.Bible);
+                    ApplicationCache.PageContent biblePageDoc = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, biblePageId, ApplicationCache.PageType.Bible);
                     string biblePageTitleId = (string)biblePageDoc.Content.Root
                         .XPathSelectElement("one:Title/one:OE", biblePageDoc.Xnm).Attribute("objectID");
 
@@ -260,9 +260,9 @@ namespace BibleCommon.Services
 
                     var pageEl = SetPageName(ref oneNoteApp, pageId, pageName, isSummaryNotesPage, pageLevel);              
 
-                    OneNoteProxy.Instance.RegisterVerseLinkSortPage(sectionId, pageId, verseLinkParentPageId, pageLevel);         
+                    ApplicationCache.Instance.RegisterVerseLinkSortPage(sectionId, pageId, verseLinkParentPageId, pageLevel);         
            
-                    var sectionHierarchyCache = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, sectionId, HierarchyScope.hsPages);
+                    var sectionHierarchyCache = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, sectionId, HierarchyScope.hsPages);
                     sectionHierarchyCache.Content.Root.Add(pageEl); // обновляем кэш иерархии
                 }
             }
@@ -274,7 +274,7 @@ namespace BibleCommon.Services
 
         public static void SortVerseLinkPages(ref Application oneNoteApp, string sectionId, string newPageId, string verseLinkParentPageId, int pageLevel)
         {
-            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, sectionId, HierarchyScope.hsPages);
+            ApplicationCache.HierarchyElement hierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, sectionId, HierarchyScope.hsPages);
             var newPage = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Page[@ID=\"{0}\"]", newPageId), hierarchy.Xnm);
             string newPageName = (string)newPage.Attribute("name");
 
@@ -353,7 +353,7 @@ namespace BibleCommon.Services
         {
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
-            var pageContent = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, pageId, isSummaryNotesPage ? OneNoteProxy.PageType.NotesPage : OneNoteProxy.PageType.CommentPage);
+            var pageContent = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, pageId, isSummaryNotesPage ? ApplicationCache.PageType.NotesPage : ApplicationCache.PageType.CommentPage);
             pageContent.Content.Root.SetAttributeValue("pageLevel", pageLevel);
             var title = pageContent.Content.Root.XPathSelectElement("one:Title/one:OE/one:T", pageContent.Xnm);
             if (title != null)

@@ -20,7 +20,7 @@ namespace BibleCommon.Services
     /// <summary>
     /// Кэш OneNote
     /// </summary>
-    public class OneNoteProxy
+    public class ApplicationCache
     {
 
         #region Helper classes       
@@ -46,37 +46,7 @@ namespace BibleCommon.Services
             }
         }
 
-        public class BiblePageId
-        {
-            public string SectionId { get; set; }
-            public string PageId { get; set; }
-            public string PageName { get; set; }
-            public VersePointer ChapterPointer { get; set; }
-
-            public override int GetHashCode()
-            {
-                if (ChapterPointer != null)
-                    return ChapterPointer.GetHashCode();
-                else
-                    return SectionId.GetHashCode() ^ PageId.GetHashCode() ^ PageName.GetHashCode();
-            }
-
-            public override bool Equals(object obj)
-            {
-                if (obj == null)
-                    return false;
-
-                BiblePageId otherObject = (BiblePageId)obj;                
-
-                if (ChapterPointer != null)
-                    return ChapterPointer == otherObject.ChapterPointer;
-                else
-                    return SectionId == otherObject.SectionId
-                            && PageId == otherObject.PageId
-                            && PageName == otherObject.PageName;
-            }
-            
-        }
+      
 
         public class CommentPageId 
         {
@@ -158,8 +128,8 @@ namespace BibleCommon.Services
 
         private static object _locker = new object();
 
-        private static volatile OneNoteProxy _instance = null;
-        public static OneNoteProxy Instance
+        private static volatile ApplicationCache _instance = null;
+        public static ApplicationCache Instance
         {
             get
             {
@@ -169,7 +139,7 @@ namespace BibleCommon.Services
                     {
                         if (_instance == null)
                         {
-                            _instance = new OneNoteProxy();
+                            _instance = new ApplicationCache();
                         }
                     }
                 }
@@ -178,7 +148,7 @@ namespace BibleCommon.Services
             }
         }
 
-        protected OneNoteProxy()
+        protected ApplicationCache()
         {
 
         }
@@ -186,7 +156,7 @@ namespace BibleCommon.Services
         private Dictionary<OneNoteHierarchyContentId, HierarchyElement> _hierarchyContentCache = new Dictionary<OneNoteHierarchyContentId, HierarchyElement>();
         private Dictionary<string, PageContent> _pageContentCache = new Dictionary<string, PageContent>();
         private Dictionary<CommentPageId, string> _commentPagesIdsCache = new Dictionary<CommentPageId, string>();
-        private Dictionary<VersePointer, OneNoteProxy.BiblePageId> _processedBiblePages = new Dictionary<VersePointer, BiblePageId>();
+        private Dictionary<VersePointer, BibleHierarchyObjectInfo> _processedBiblePages = new Dictionary<VersePointer, BibleHierarchyObjectInfo>();
         private Dictionary<LinkId, string> _linksCache = new Dictionary<LinkId, string>();        
         private HashSet<SimpleVersePointer> _processedVerses = new HashSet<SimpleVersePointer>();
         private List<SortPageInfo> _sortVerseLinkPagesInfo = new List<SortPageInfo>();
@@ -222,7 +192,7 @@ namespace BibleCommon.Services
         {
             lock (_locker)
             {
-                _instance = new OneNoteProxy();
+                _instance = new ApplicationCache();
 
                 _instance._isBibleVersesLinksCacheActive = BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible);
                 if (_instance._isBibleVersesLinksCacheActive.GetValueOrDefault(false))                
@@ -308,7 +278,7 @@ namespace BibleCommon.Services
                         oneNoteAppSafe.GetHyperlinkToObject(pageId, objectId, out link);
                     });
 
-                    if (useProxyLinkIfAvailable && SettingsManager.Instance.UseProxyLinksForLinks)
+                    if (useProxyLinkIfAvailable && SettingsManager.Instance.UseProxyLinksForLinks) 
                         link = GetProxyLink(link, pageId, objectId);                    
 
                     //if (!_linksCache.ContainsKey(key))   // пока в этом нет смысла
@@ -329,7 +299,7 @@ namespace BibleCommon.Services
             return NavigateToHandler.GetCommandUrlStatic(link, pageId, objectId);            
         }
 
-        public Dictionary<VersePointer, OneNoteProxy.BiblePageId> BiblePagesWithUpdatedLinksToNotesPages
+        public Dictionary<VersePointer, BibleHierarchyObjectInfo> BiblePagesWithUpdatedLinksToNotesPages
         {
             get
             {
@@ -358,19 +328,9 @@ namespace BibleCommon.Services
         {
             if (!_processedBiblePages.ContainsKey(chapterPointer))
             {
-                var pageId = new BiblePageId()
-                {
-                    ChapterPointer = chapterPointer
-                };
+                verseHierarchyObjectInfo.ChapterPointer = chapterPointer;
 
-                if (verseHierarchyObjectInfo != null)
-                {
-                    pageId.SectionId = verseHierarchyObjectInfo.SectionId;
-                    pageId.PageId = verseHierarchyObjectInfo.PageId;
-                    pageId.PageName = verseHierarchyObjectInfo.PageName;
-                }
-
-                _processedBiblePages.Add(chapterPointer, pageId);
+                _processedBiblePages.Add(chapterPointer, verseHierarchyObjectInfo);
             }
         }
 
@@ -494,7 +454,7 @@ namespace BibleCommon.Services
                     catch (COMException ex)
                     {
                         if (OneNoteUtils.IsError(ex, Error.hrObjectDoesNotExist))
-                            throw new Exception("Page does not exists.");
+                            throw new NotFoundPageException("Page does not exists.");
                         else
                             throw;
                     }
@@ -619,11 +579,17 @@ namespace BibleCommon.Services
             }            
         }
 
-        public void CleanBibleVersesLinksCache()
+        public void CleanBibleVersesLinksCache(bool generateFullBibleVersesCacheNextTime)
         {
             _bibleVersesLinks = null;
             _isBibleVersesLinksCacheActive = false;
-            BibleVersesLinksCacheManager.RemoveCacheFile(SettingsManager.Instance.NotebookId_Bible);            
+            BibleVersesLinksCacheManager.RemoveCacheFile(SettingsManager.Instance.NotebookId_Bible);
+
+            if (generateFullBibleVersesCacheNextTime)
+            {
+                SettingsManager.Instance.GenerateFullBibleVersesCache = true;
+                SettingsManager.Instance.Save();
+            }
         }
 
         public VersePointerLink GetVersePointerLink(VersePointer vp)

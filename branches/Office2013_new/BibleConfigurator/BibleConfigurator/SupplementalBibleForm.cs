@@ -311,7 +311,7 @@ namespace BibleConfigurator
                 }
             }
 
-            SupplementalBibleManager.CloseSupplementalBible(ref _oneNoteApp, removeStrongDictionaryFromNotebook);
+            SupplementalBibleManager.CloseSupplementalBible(ref _oneNoteApp, removeStrongDictionaryFromNotebook, () => Logger.AbortedByUser);
         }
 
         protected override bool IsModuleSupported(ModuleInfo moduleInfo)

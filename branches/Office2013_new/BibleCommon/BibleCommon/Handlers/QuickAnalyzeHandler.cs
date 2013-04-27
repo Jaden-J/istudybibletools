@@ -38,7 +38,7 @@ namespace BibleCommon.Handlers
                 noteLinkManager.LinkPageVerses(ref oneNoteApp, currentPage.NotebookId, currentPage.Id, NoteLinkManager.AnalyzeDepth.SetVersesLinks, false, null);
                 noteLinkManager.SetCursorOnNearestVerse(noteLinkManager.LastAnalyzedVerse);
                 
-                OneNoteProxy.Instance.CommitAllModifiedPages(ref oneNoteApp, true, null, null, null);
+                ApplicationCache.Instance.CommitAllModifiedPages(ref oneNoteApp, true, null, null, null);
             }
             catch (Exception ex)
             {

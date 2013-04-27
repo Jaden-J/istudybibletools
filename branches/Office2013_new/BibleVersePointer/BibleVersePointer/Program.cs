@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using BibleCommon.Helpers;
 using BibleCommon.Services;
+using System.Threading;
 
 namespace BibleVersePointer
 {
@@ -19,6 +20,7 @@ namespace BibleVersePointer
             {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
+                Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
 
                 Form form = PrepareForRunning(args);
 
@@ -27,6 +29,11 @@ namespace BibleVersePointer
                     Application.Run(form);
                 }
             });
+        }
+
+        static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            FormLogger.LogError(e.Exception);
         }
 
         private static Form PrepareForRunning(params string[] args)

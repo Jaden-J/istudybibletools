@@ -488,8 +488,26 @@ namespace BibleCommon.Common
         }
 
         public string GetFriendlyFullVerseName()
-        {   
-            return string.Format("{0} {1}", Book != null ? Book.Name : string.Empty, GetFullMultiVerseString());            
+        {
+            string bookName = Book.ShortName;            
+            
+            if (string.IsNullOrEmpty(bookName))
+            {
+                bookName = Book.Name;
+                if (bookName.Contains(' '))
+                {
+                    var parts = bookName.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length == 2)
+                    {
+                        bookName = parts[1];
+
+                        if (StringUtils.IsDigit(parts[0][0]))
+                            bookName = parts[0][0] + bookName;
+                    }
+                }
+            }
+
+            return string.Format("{0} {1}", bookName, GetFullMultiVerseString());            
         }
 
         public string ChapterName
@@ -502,6 +520,12 @@ namespace BibleCommon.Common
 
         public VersePointer(VersePointer chapterPointer, int verse)
             : this(chapterPointer, verse, null)
+        {
+
+        }
+
+        public VersePointer(VersePointer chapterPointer, VerseNumber verseNumber)
+            : this(chapterPointer, verseNumber.Verse, verseNumber.TopVerse)
         {
 
         }

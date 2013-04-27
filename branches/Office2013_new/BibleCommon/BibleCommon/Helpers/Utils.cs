@@ -17,6 +17,9 @@ namespace BibleCommon.Helpers
 {
     public static class Utils
     {
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern int GetSystemMetrics(int nIndex);
+
         public static Version GetProgramVersion()
         {
             var assembly = Assembly.GetExecutingAssembly();
@@ -161,9 +164,9 @@ namespace BibleCommon.Helpers
             return result;
         }
 
-        public static void WaitFor3Seconds(Func<bool> checkIfExternalProcessAborted)
+        public static void WaitFor(int seconds, Func<bool> checkIfExternalProcessAborted)
         {
-            for (var i = 0; i < 30; i++)
+            for (var i = 0; i < seconds * 10; i++)
             {
                 Thread.Sleep(100);
                 if (checkIfExternalProcessAborted != null)
@@ -173,6 +176,24 @@ namespace BibleCommon.Helpers
                 }
                 System.Windows.Forms.Application.DoEvents();
             }
-        }   
+        }        
+
+        public static bool TouchInputAvailable()
+        {
+            var NID_READY = 0x80;
+            var NID_MULTI_INPUT = 0x40;
+            var SM_DIGITIZER = 94;
+            var value = GetSystemMetrics(SM_DIGITIZER);
+
+            if ((value & NID_READY) == NID_READY)                 // stack ready 
+            {
+                if ((value & NID_MULTI_INPUT) == NID_MULTI_INPUT)           // digitizer is multitouch 
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

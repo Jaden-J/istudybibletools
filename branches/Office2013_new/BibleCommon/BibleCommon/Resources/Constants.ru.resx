@@ -822,8 +822,8 @@
   <data name="UpdatingPageInOneNote" xml:space="preserve">
     <value>Обновление страницы в OneNote</value>
   </data>
-  <data name="ConfiguratorSetFolder" xml:space="preserve">
-    <value>Укажите папку</value>
+  <data name="ConfiguratorSetFolderForNotesPages" xml:space="preserve">
+    <value>Укажите папку для хранения страниц "Сводные заметок"</value>
   </data>
   <data name="ContainerTypeBible" xml:space="preserve">
     <value>Библия</value>
