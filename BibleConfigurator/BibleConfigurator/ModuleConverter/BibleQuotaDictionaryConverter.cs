@@ -209,7 +209,7 @@ namespace BibleConfigurator.ModuleConverter
             if (termDescription.StartsWith(Environment.NewLine))
                 termDescription = termDescription.Remove(0, Environment.NewLine.Length);
 
-            var termTable = NotebookGenerator.GenerateTableElement(false, new CellInfo(SettingsManager.Instance.PageWidth_Bible - 10));
+            var termTable = NotebookGenerator.GenerateTableElement(false, xnm, new CellInfo(SettingsManager.Instance.PageWidth_Bible - 10));
             NotebookGenerator.AddRowToTable(termTable, NotebookGenerator.GetCell(termDescription, Locale, nms));
             var userNotesCell = NotebookGenerator.GetCell(UserNotesString, Locale, nms);
             QuickStyleManager.SetQuickStyleDefForCell(userNotesCell, pageInfo.StyleIndex, xnm);

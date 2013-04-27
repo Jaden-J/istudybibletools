@@ -121,7 +121,7 @@ namespace BibleConfigurator.Tools
 
             var allPages = ApplicationCache.Instance.GetHierarchy(ref _oneNoteApp, SettingsManager.Instance.NotebookId_BibleNotesPages, HierarchyScope.hsPages, true);
 
-            foreach(var page in allPages.Content.XPathSelectElements("//one:Page", allPages.Xnm))
+            foreach(var page in allPages.Content.Root.XPathSelectElements("//one:Page", allPages.Xnm))
             {
                 if (!OneNoteUtils.IsRecycleBin(page))
                 {

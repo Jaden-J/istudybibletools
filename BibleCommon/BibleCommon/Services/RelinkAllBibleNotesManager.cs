@@ -36,7 +36,7 @@ namespace BibleCommon.Services
             }
 
             foreach (XElement textElement in biblePageDocument.Content.Root
-                .XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[2]/one:OEChildren/one:OE/one:T", biblePageDocument.Xnm))
+                .XPathSelectElements("//one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[2]/one:OEChildren/one:OE/one:T", biblePageDocument.Xnm))
             {
                 OneNoteUtils.NormalizeTextElement(textElement);
 

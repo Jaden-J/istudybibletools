@@ -114,7 +114,6 @@ namespace BibleCommon.Services
                         NotNeedToUpdateChapter = !RemoveChapterParallelTranslation(chapterPageDoc, moduleInfo, xnm) 
                     };                    
                 }, true, false, null);
-
         }
 
         internal static bool RemoveChapterParallelTranslation(XDocument chapterPageDoc, ModuleInfo moduleInfo, XmlNamespaceManager xnm)
@@ -514,9 +513,9 @@ namespace BibleCommon.Services
                         var parallelBook = parallelModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBook.Index);
                         if (parallelBook != null)
                         {
-                            foreach (var parallelBookAbbreviation in parallelBook.Abbreviations.Where(abbr => string.IsNullOrEmpty(abbr.ModuleName)))
+                            foreach (var parallelBookAbbreviation in parallelBook.AllAbbreviations.Where(abbr => string.IsNullOrEmpty(abbr.ModuleName)))
                             {
-                                if (!baseBook.Abbreviations.Exists(abbr => abbr.Value == parallelBookAbbreviation.Value))
+                                if (!baseBook.AllAbbreviations.Exists(abbr => abbr.Value == parallelBookAbbreviation.Value))
                                 {
                                     baseBook.Abbreviations.Add(new Abbreviation(parallelBookAbbreviation.Value)
                                     {

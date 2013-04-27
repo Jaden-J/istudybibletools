@@ -39,7 +39,7 @@ namespace BibleCommon.Services
             if (!string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName))
                 return GetModuleInfo(SettingsManager.Instance.ModuleShortName);
 
-            throw new InvalidModuleException(BibleCommon.Resources.Constants.CurrentModuleIsUndefined);
+            throw new ModuleIsUndefinedException(BibleCommon.Resources.Constants.CurrentModuleIsUndefined);
         }
 
 
@@ -48,7 +48,7 @@ namespace BibleCommon.Services
             if (!string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName))
                 return GetModuleBibleInfo(SettingsManager.Instance.ModuleShortName);
 
-            throw new InvalidModuleException(BibleCommon.Resources.Constants.CurrentModuleIsUndefined);
+            throw new ModuleIsUndefinedException(BibleCommon.Resources.Constants.CurrentModuleIsUndefined);
         }
 
         public static string GetCurrentModuleDirectiory()
