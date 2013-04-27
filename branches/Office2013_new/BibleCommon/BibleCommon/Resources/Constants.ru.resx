@@ -852,4 +852,7 @@
   <data name="StopNotesAnalysis" xml:space="preserve">
     <value>Вы действительно хотите остановить анализ заметок?</value>
   </data>
+  <data name="ConfiguratorNotebookNotDefinedForType" xml:space="preserve">
+    <value>Не указана записная книжка для типа '{0}'.</value>
+  </data>
 </root>

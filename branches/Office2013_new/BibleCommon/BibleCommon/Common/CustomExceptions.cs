@@ -54,7 +54,15 @@ namespace BibleCommon.Common
     public class ModuleNotFoundException : InvalidModuleException
     {
         public ModuleNotFoundException(string message)
-            : base(Constants.Error_InvalidModule + " " + message)
+            : base(message)
+        {
+        }
+    }
+
+    public class ModuleIsUndefinedException : InvalidModuleException
+    {
+        public ModuleIsUndefinedException(string message)
+            : base(message)
         {
         }
     }

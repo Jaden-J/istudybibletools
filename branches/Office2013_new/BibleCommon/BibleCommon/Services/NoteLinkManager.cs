@@ -162,7 +162,7 @@ namespace BibleCommon.Services
                 {
                     var dictionaryName = dictionaryMetaData.Split(new char[] { ',' })[0];
 
-                    foreach (XElement oeParent in notePageDocument.Content.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row", notePageDocument.Xnm))
+                    foreach (XElement oeParent in notePageDocument.Content.Root.XPathSelectElements("//one:Outline/one:OEChildren/one:OE/one:Table/one:Row", notePageDocument.Xnm))
                     {
                         var termEl = oeParent.XPathSelectElement("one:Cell[1]/one:OEChildren/one:OE/one:T", notePageDocument.Xnm);
                         var termName = StringUtils.GetText(termEl.Value);

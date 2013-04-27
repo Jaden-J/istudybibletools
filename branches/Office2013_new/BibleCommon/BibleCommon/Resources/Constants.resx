@@ -855,4 +855,7 @@ Please take notice:
   <data name="StopNotesAnalysis" xml:space="preserve">
     <value>Are you sure you want to cancel the Notes Analysis?</value>
   </data>
+  <data name="ConfiguratorNotebookNotDefinedForType" xml:space="preserve">
+    <value>Notebook is not specified for type '{0}'.</value>
+  </data>
 </root>

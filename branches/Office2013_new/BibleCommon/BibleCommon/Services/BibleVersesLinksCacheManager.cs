@@ -93,15 +93,11 @@ namespace BibleCommon.Services
             XmlNamespaceManager xnm;
             var pageId = (string)page.PageElement.Attribute("ID");
             var pageName = (string)page.PageElement.Attribute("name");
-            var pageDoc = OneNoteUtils.GetPageContent(ref oneNoteApp, pageId, out xnm);
+            var pageDoc = OneNoteUtils.GetPageContent(ref oneNoteApp, pageId, out xnm);            
 
-            var tableEl = NotebookGenerator.GetPageTable(pageDoc, xnm);
-            if (tableEl == null)
-                return;
+            AddChapterPointer(ref oneNoteApp, notebookId, toGenerateHref, section, pageDoc, pageId, pageName, chapterNumber, ref result, xnm);
 
-            AddChapterPointer(ref oneNoteApp, notebookId, toGenerateHref, section, pageDoc, pageId, pageName, chapterNumber, ref result, xnm);          
-            
-            foreach (var cellTextEl in tableEl.XPathSelectElements("one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
+            foreach (var cellTextEl in pageDoc.Root.XPathSelectElements("//one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
             {
                 AddVersePointer(ref oneNoteApp, notebookId, toGenerateHref, section, pageDoc, pageId, pageName, chapterNumber, cellTextEl, ref result, xnm);          
             }

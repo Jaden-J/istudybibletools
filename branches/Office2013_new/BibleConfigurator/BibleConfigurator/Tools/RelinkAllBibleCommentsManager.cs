@@ -95,7 +95,7 @@ namespace BibleConfigurator.Tools
             XDocument pageDocument = OneNoteUtils.GetXDocument(pageContent, out xnm);            
             bool wasModified = false;
 
-            foreach (XElement textElement in pageDocument.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
+            foreach (XElement textElement in pageDocument.Root.XPathSelectElements("//one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
             {
                 OneNoteUtils.NormalizeTextElement(textElement);
 

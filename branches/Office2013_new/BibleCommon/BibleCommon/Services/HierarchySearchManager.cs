@@ -287,20 +287,20 @@ namespace BibleCommon.Services
             if (!isChapter)
             {
                 string[] searchPatterns = new string[] { 
-                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[starts-with(.,'{0} ')]",
-                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[starts-with(.,'{0} ')]",
-                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[starts-with(.,'{0}&nbsp;')]",
-                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[starts-with(.,'{0}&nbsp;')]",
-                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>{0}<')]",
-                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[contains(.,'>{0}<')]",
-                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>{0}&nbsp;')]",
-                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[contains(.,'>{0}&nbsp;')]",
-                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>{0} ')]",
-                    "/one:Page/one:Outline/one:OEChildren/one:OE/one:T[contains(.,'>{0} ')]" };
+                    "//one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[starts-with(.,'{0} ')]",
+                    "//one:Outline/one:OEChildren/one:OE/one:T[starts-with(.,'{0} ')]",
+                    "//one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[starts-with(.,'{0}&nbsp;')]",
+                    "//one:Outline/one:OEChildren/one:OE/one:T[starts-with(.,'{0}&nbsp;')]",
+                    "//one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>{0}<')]",
+                    "//one:Outline/one:OEChildren/one:OE/one:T[contains(.,'>{0}<')]",
+                    "//one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>{0}&nbsp;')]",
+                    "//one:Outline/one:OEChildren/one:OE/one:T[contains(.,'>{0}&nbsp;')]",
+                    "//one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T[contains(.,'>{0} ')]",
+                    "//one:Outline/one:OEChildren/one:OE/one:T[contains(.,'>{0} ')]" };
 
                 foreach (string pattern in searchPatterns)
                 {
-                    pointerElement = pageContent.XPathSelectElement(string.Format(pattern, verse), xnm);
+                    pointerElement = pageContent.Root.XPathSelectElement(string.Format(pattern, verse), xnm);
 
                     if (pointerElement != null)
                     {                        
@@ -329,8 +329,8 @@ namespace BibleCommon.Services
             verseNumber = null;
             verseTextWithoutNumber = null;
 
-            foreach (var textEl in pageContent.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm)
-                .Union(pageContent.Root.XPathSelectElements("one:Outline/one:OEChildren/one:OE/one:T", xnm)))
+            foreach (var textEl in pageContent.Root.XPathSelectElements("//one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm)
+                .Union(pageContent.Root.XPathSelectElements("//one:Outline/one:OEChildren/one:OE/one:T", xnm))) 
             {
                 verseNumber = VerseNumber.GetFromVerseText(textEl.Value, out verseTextWithoutNumber);
                 if (verseNumber.HasValue && verseNumber.Value.IsVerseBelongs(verse))
@@ -424,11 +424,9 @@ namespace BibleCommon.Services
                     && chapterPageResult.HierarchyStage == BibleHierarchyStage.Page)
                 {
                     var pageContent = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, chapterPageResult.HierarchyObjectInfo.PageId, ApplicationCache.PageType.Bible);
-                    var table = pageContent.Content.Root.XPathSelectElement("//one:Table", pageContent.Xnm);
-                    if (table != null)
-                    {
-                        return table.XPathSelectElements("one:Row", pageContent.Xnm).Count();
-                    }
+                    var table = NotebookGenerator.GetPageTable(pageContent.Content, pageContent.Xnm);
+                    if (table != null)                    
+                        return table.XPathSelectElements("one:Row", pageContent.Xnm).Count();                    
                 }
             }
 
