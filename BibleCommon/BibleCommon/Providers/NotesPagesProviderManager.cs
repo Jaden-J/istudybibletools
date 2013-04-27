@@ -19,7 +19,7 @@ namespace BibleCommon.Providers
 
         public bool ForceUpdateProvider { get; set; }  // если force и анализируем все страницы, то обновляем провайдер и очищаем старые страницы
         public Dictionary<string, INotesPageManager> _managers = new Dictionary<string, INotesPageManager>();
-        List<INotesPageManager> _registeredManagers = new List<INotesPageManager>() { new NotesPageManager(), new NotesPageManagerEx() };
+        private List<INotesPageManager> _registeredManagers = new List<INotesPageManager>() { new NotesPageManager(), new NotesPageManagerEx() };
         public INotesPageManager _defaultManager;
 
         public string ManagerName

@@ -367,6 +367,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Notebook is not specified for type &apos;{0}&apos;..
+        /// </summary>
+        public static string ConfiguratorNotebookNotDefinedForType {
+            get {
+                return ResourceManager.GetString("ConfiguratorNotebookNotDefinedForType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Notebook template is not found at.
         /// </summary>
         public static string ConfiguratorNotebookTemplateNotFound {
@@ -376,7 +385,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Delete all pages &quot;Summary of Notes&quot; and references to them?.
+        ///   Looks up a localized string similar to Delete all pages &quot;Summary of Notes&quot; and references to them?.
         /// </summary>
         public static string ConfiguratorQuestionDeleteAllNotesPages {
             get {
@@ -412,7 +421,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Specify the folder for &quot;Notes Pages&quot; files.
+        ///   Looks up a localized string similar to Specify the folder for &quot;Notes Pages&quot; files.
         /// </summary>
         public static string ConfiguratorSetFolderForNotesPages {
             get {
@@ -1011,7 +1020,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на It is recommended to index the Bible for performance optimization. This operation takes about {0} minutes. Start indexing the Bible now?.
+        ///   Looks up a localized string similar to It is recommended to index the Bible for performance optimization. This operation takes about {0} minutes. Start indexing the Bible now?.
         /// </summary>
         public static string IndexBibleQuestion {
             get {
@@ -1020,7 +1029,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на The Bible is not indexed. It is recommended to index the Bible for performance optimization. This operation takes about {0} minutes. Start indexing the Bible now? This message will be displayed each time you start OneNote, while the Bible is not indexed..
+        ///   Looks up a localized string similar to The Bible is not indexed. It is recommended to index the Bible for performance optimization. This operation takes about {0} minutes. Start indexing the Bible now? This message will be displayed each time you start OneNote, while the Bible is not indexed..
         /// </summary>
         public static string IndexBibleQuestionAtStartUp {
             get {
@@ -1974,7 +1983,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Are you sure you want to cancel the Notes Analysis?.
+        ///   Looks up a localized string similar to Are you sure you want to cancel the Notes Analysis?.
         /// </summary>
         public static string StopNotesAnalysis {
             get {
@@ -1983,7 +1992,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Saved successfully.
+        ///   Looks up a localized string similar to Saved successfully.
         /// </summary>
         public static string SuccessfullySaved {
             get {

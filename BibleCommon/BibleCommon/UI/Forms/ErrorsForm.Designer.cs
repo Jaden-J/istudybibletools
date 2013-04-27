@@ -41,6 +41,7 @@
             this.lbErrors.FormattingEnabled = true;
             resources.ApplyResources(this.lbErrors, "lbErrors");
             this.lbErrors.Name = "lbErrors";
+            this.lbErrors.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lbErrors_MouseDoubleClick);
             // 
             // btnOk
             // 

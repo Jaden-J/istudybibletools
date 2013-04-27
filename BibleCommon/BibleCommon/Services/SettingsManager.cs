@@ -586,10 +586,7 @@ namespace BibleCommon.Services
             this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
             this.UseProxyLinksForStrong = Consts.Constants.Default_UseProxyLinksForStrong;
             this.UseProxyLinksForBibleVerses = Consts.Constants.Default_UseProxyLinksForBibleVerses;
-            this.UseProxyLinksForLinks = !OneNoteUtils.IsOneNote2010Cached;
-            this.FolderPath_BibleNotesPages = Utils.GetNotesPagesFolderPath();
-
-            this.GenerateFullBibleVersesCache = false;
+            this.UseProxyLinksForLinks = !OneNoteUtils.IsOneNote2010Cached;                        
 
             LoadDefaultLocalazibleSettings();
         }

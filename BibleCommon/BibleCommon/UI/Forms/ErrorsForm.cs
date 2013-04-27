@@ -116,6 +116,14 @@ namespace BibleCommon.UI.Forms
         {
             if (!string.IsNullOrEmpty(LogFilePath))
                 Process.Start(LogFilePath);
+        }
+
+        private void lbErrors_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            //if (lbErrors.SelectedItem != null)
+            //{
+
+            //}
         }        
     }
 }

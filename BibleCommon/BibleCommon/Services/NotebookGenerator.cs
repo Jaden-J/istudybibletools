@@ -107,18 +107,19 @@ namespace BibleCommon.Services
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);           
 
-            var tableEl = GenerateTableElement(bordersVisible, cells);
+            var tableEl = GenerateTableElement(bordersVisible, xnm, cells);
+            var oeEl = new XElement(nms + "OE", tableEl);
+            OneNoteUtils.UpdateElementMetaData(oeEl, Constants.Key_Table, "true", xnm);
 
             pageDoc.Root.Add(new XElement(nms + "Outline",
                                             new XElement(nms + "OEChildren",
-                                              new XElement(nms + "OE",
-                                                    tableEl                  
-                                                  ))));
+                                                oeEl
+                                              )));
 
             return tableEl;
         }
 
-        public static XElement GenerateTableElement(bool bordersVisible, params CellInfo[] cells)
+        public static XElement GenerateTableElement(bool bordersVisible, XmlNamespaceManager xnm, params CellInfo[] cells)
         {
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);           
 
@@ -129,7 +130,7 @@ namespace BibleCommon.Services
                 columns.Add(new XElement(nms + "Column", new XAttribute("index", i), new XAttribute("width", cells[i].Width), new XAttribute("isLocked", true)));
             }
 
-            var tableEl = new XElement(new XElement(nms + "Table", new XAttribute("bordersVisible", bordersVisible), columns));
+            var tableEl = new XElement(nms + "Table", new XAttribute("bordersVisible", bordersVisible), columns);            
 
             return tableEl;                
         }
@@ -141,7 +142,11 @@ namespace BibleCommon.Services
 
         public static XElement GetPageTable(XDocument pageDoc, XmlNamespaceManager xnm)
         {
-            return pageDoc.Root.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", xnm);            
+            var result = pageDoc.Root.XPathSelectElement(string.Format("//one:Outline/one:OEChildren/one:OE[./one:Meta[@name=\"{0}\"]]/one:Table", Constants.Key_Table), xnm);
+            if (result == null)
+                result = pageDoc.Root.XPathSelectElement("//one:Outline/one:OEChildren/one:OE/one:Table", xnm);
+
+            return result;
         }
 
         public static XElement AddRowToTable(XElement tableElement, params XElement[] cells)
