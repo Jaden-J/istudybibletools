@@ -77,6 +77,8 @@ namespace BibleCommon.Handlers
                 }
                 else
                     NotesPageType = Common.NotesPageType.Verse;
+
+                // дальнейшая обработка осуществляется в CommandForm.ProcessCommandLine()
             }
             catch (InvalidModuleException imEx)
             {

@@ -13,6 +13,7 @@ using BibleCommon.Consts;
 using BibleCommon.Services;
 using System.Runtime.InteropServices;
 using BibleCommon.Common;
+using BibleCommon.Handlers;
 
 namespace BibleVerseLinkerEx
 {
@@ -40,10 +41,11 @@ namespace BibleVerseLinkerEx
         /// </summary>
         /// <returns></returns>
         private XElement FindSelectedText(string pageId, out XDocument document,
-            out VerseNumber? verseNumber, out string currentObjectId, out XmlNamespaceManager xnm)
+            out VerseNumber? verseNumber, out VersePointer versePointer, out string currentObjectId, out XmlNamespaceManager xnm)
         {
             verseNumber = null;
             currentObjectId = null;
+            versePointer = null;
 
             string pageContentXml = null;
             OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
@@ -58,9 +60,33 @@ namespace BibleVerseLinkerEx
             {
                 OneNoteUtils.NormalizeTextElement(pointerElement);
                 verseNumber = VerseNumber.GetFromVerseText(pointerElement.Parent.Value);
-                currentObjectId = (string)pointerElement.Parent.Attribute("objectID");                
+                currentObjectId = (string)pointerElement.Parent.Attribute("objectID");
+
+                if (verseNumber.HasValue)
+                    versePointer = TryToExtractVersePointer(document, verseNumber.Value);             
 
                 return pointerElement;
+            }
+
+            return null;
+        }
+
+        private VersePointer TryToExtractVersePointer(XDocument document, VerseNumber verseNumber)
+        {
+            try
+            {
+                var chapterName = (string)document.Root.Attribute("name");
+                var parts = chapterName.Split(new string[] { ". " }, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length == 2)                
+                    chapterName = string.Format("{0} {1}", parts[1], StringUtils.GetStringFirstNumber(parts[0]));
+
+                var versePointer = new VersePointer(string.Format("{0}:{1}", chapterName, verseNumber));
+                if (versePointer.IsValid)
+                    return versePointer;
+            }
+            catch (Exception ex)
+            {
+                BibleCommon.Services.Logger.LogError(ex);
             }
 
             return null;
@@ -104,8 +130,9 @@ namespace BibleVerseLinkerEx
                 XDocument currentPageDocument;
                 XmlNamespaceManager xnm;
                 VerseNumber? verseNumber;
+                VersePointer versePointer;
                 string currentObjectId;
-                XElement selectedElement = FindSelectedText(currentPageId, out currentPageDocument, out verseNumber, out currentObjectId, out xnm);
+                XElement selectedElement = FindSelectedText(currentPageId, out currentPageDocument, out verseNumber, out versePointer, out currentObjectId, out xnm);
                 string selectedHtml = selectedElement != null ? ShellText(selectedElement.Value) : string.Empty;                
                 string selectedText = ShellText(StringUtils.GetText(selectedHtml));
                 bool selectedTextFound = !string.IsNullOrEmpty(selectedText);
@@ -121,7 +148,6 @@ namespace BibleVerseLinkerEx
                         //todo: log it
                     }
                 }
-
 
                 string currentPageName = (string)currentPageDocument.Root.Attribute("name");
 
@@ -141,7 +167,7 @@ namespace BibleVerseLinkerEx
                 {
                     string newObjectContent = string.Empty;
                     if (selectedTextFound)
-                        newObjectContent = GetNewObjectContent(currentPageId, currentObjectId, selectedText, verseNumber);
+                        newObjectContent = GetNewObjectContent(currentPageId, currentObjectId, versePointer, selectedText, verseNumber);
 
                     string objectId = UpdateDescriptionPage(verseLinkPageId, newObjectContent, verseNumber);
 
@@ -177,23 +203,32 @@ namespace BibleVerseLinkerEx
         public void SortCommentsPages()
         {
             //Сортировка страниц 'Сводные заметок'
-            foreach (var sortPageInfo in OneNoteProxy.Instance.SortVerseLinkPagesInfo)
+            foreach (var sortPageInfo in ApplicationCache.Instance.SortVerseLinkPagesInfo)
             {
                 VerseLinkManager.SortVerseLinkPages(ref _oneNoteApp,
                     sortPageInfo.SectionId, sortPageInfo.PageId, sortPageInfo.ParentPageId, sortPageInfo.PageLevel);
             }
 
-            OneNoteProxy.Instance.CommitAllModifiedHierarchy(ref _oneNoteApp, null, null);
+            ApplicationCache.Instance.CommitAllModifiedHierarchy(ref _oneNoteApp, null, null);
         }
 
-        private string GetNewObjectContent(string currentPageId, string currentObjectId, string pointerValueString, VerseNumber? verseNumber)
+        private string GetNewObjectContent(string currentPageId, string currentObjectId, VersePointer versePointer, string pointerValueString, VerseNumber? verseNumber)
         {
             string newContent;
 
             if (verseNumber != null)
-            {
+            {   
+                var useBibleVerseHandler = SettingsManager.Instance.UseProxyLinksForBibleVerses && versePointer != null;
+                string linkToCurrentObject = OneNoteUtils.GetOrGenerateLinkHref(ref _oneNoteApp,
+                                                useBibleVerseHandler
+                                                    ? OpenBibleVerseHandler.GetCommandUrlStatic(versePointer, SettingsManager.Instance.ModuleShortName) 
+                                                    : null,
+                                                currentPageId, currentObjectId, true,
+                                                useBibleVerseHandler
+                                                    ? null
+                                                    : Constants.QueryParameter_BibleVerse);
+
                 bool pointerValueIsVerseNumber = verseNumber.ToString() == pointerValueString;
-                string linkToCurrentObject = OneNoteProxy.Instance.GenerateHref(ref _oneNoteApp, currentPageId, currentObjectId);
                 newContent = string.Format("<a href=\"{0}\">:{1}</a>{2}<b>{3}</b>", linkToCurrentObject, verseNumber,
                     !pointerValueIsVerseNumber ? "&nbsp" : string.Empty,
                     !pointerValueIsVerseNumber ? pointerValueString : string.Empty);
@@ -215,7 +250,7 @@ namespace BibleVerseLinkerEx
         public string UpdateDescriptionPage(string pageId, string pointerValueString, VerseNumber? verseNumber)
         {
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
-            var pageContent = OneNoteProxy.Instance.GetPageContent(ref _oneNoteApp, pageId, OneNoteProxy.PageType.CommentPage);
+            var pageContent = ApplicationCache.Instance.GetPageContent(ref _oneNoteApp, pageId, ApplicationCache.PageType.CommentPage);
 
             XElement newCommentElement = new XElement(nms + "Outline",
                                             new XElement(nms + "Size", new XAttribute("width", "500"), new XAttribute("height", 15)),
@@ -273,7 +308,7 @@ namespace BibleVerseLinkerEx
 
             pageContent.WasModified = true;
 
-            OneNoteProxy.Instance.CommitAllModifiedPages(ref _oneNoteApp, false, pc => pc.PageType == OneNoteProxy.PageType.CommentPage, null, null);
+            ApplicationCache.Instance.CommitAllModifiedPages(ref _oneNoteApp, false, pc => pc.PageType == ApplicationCache.PageType.CommentPage, null, null);
 
             XElement addedObject = GetLastPageObject(pageId, GetOutlinePosition(pageContent.Content, newCommentElement, pageContent.Xnm));
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml.Serialization;
 using BibleCommon.Helpers;
 using System.ComponentModel;
+using System.IO;
 
 namespace BibleCommon.Common
 {
@@ -264,7 +265,8 @@ namespace BibleCommon.Common
                     return book;
                 }
 
-                var abbreviation = book.Abbreviations.FirstOrDefault(abbr => abbr.Value.Equals(s, StringComparison.OrdinalIgnoreCase)
+                var abbreviation = book.Abbreviations.FirstOrDefault(abbr => 
+                                                        abbr.Value.Equals(s, StringComparison.OrdinalIgnoreCase)
                                                         && (!endsWithDot || !abbr.IsFullBookName));
                 if (abbreviation != null)
                 {
@@ -338,6 +340,14 @@ namespace BibleCommon.Common
         [XmlAttribute]
         [DefaultValue("")]
         public string Nickname { get; set; }
+
+        public string GetNicknameSafe()
+        {
+            if (!string.IsNullOrEmpty(Nickname))
+                return Nickname;
+
+            return Path.GetFileNameWithoutExtension(Name);
+        }
     }
 
     [Serializable]
@@ -471,11 +481,14 @@ namespace BibleCommon.Common
         public string Name { get; set; }
 
         [XmlAttribute]
+        public string ShortName { get; set; }
+
+        [XmlAttribute]
         public string SectionName { get; set; }
 
         [XmlAttribute]
         [DefaultValue("")]
-        public string ChapterPageNameTemplate { get; set; }
+        public string ChapterPageNameTemplate { get; set; }        
 
         [XmlElement(typeof(Abbreviation), ElementName = "Abbreviation")]
         public List<Abbreviation> Abbreviations { get; set; }

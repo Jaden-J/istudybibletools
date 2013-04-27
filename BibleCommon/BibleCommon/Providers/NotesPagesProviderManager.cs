@@ -56,7 +56,7 @@ namespace BibleCommon.Providers
 
         private INotesPageManager GetNotesPageProvider(ref Microsoft.Office.Interop.OneNote.Application oneNoteApp, string notesPageId, int? notesPageWidth)
         {
-            var notesPageDocument = OneNoteProxy.Instance.GetPageContent(ref oneNoteApp, notesPageId, OneNoteProxy.PageType.NotesPage);
+            var notesPageDocument = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, notesPageId, ApplicationCache.PageType.NotesPage);
 
             var pageMetadata = OneNoteUtils.GetElementMetaData(notesPageDocument.Content.Root, Consts.Constants.Key_NotesPageManagerName, notesPageDocument.Xnm);
 

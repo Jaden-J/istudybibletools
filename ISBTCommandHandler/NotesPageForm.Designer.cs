@@ -52,12 +52,10 @@ namespace ISBTCommandHandler
             // 
             // scMain.Panel1
             // 
-            resources.ApplyResources(this.scMain.Panel1, "scMain.Panel1");
             this.scMain.Panel1.Controls.Add(this.wbNotesPage);
             // 
             // scMain.Panel2
             // 
-            resources.ApplyResources(this.scMain.Panel2, "scMain.Panel2");
             this.scMain.Panel2.Controls.Add(this.btnScaleDown);
             this.scMain.Panel2.Controls.Add(this.btnScaleUp);
             this.scMain.Panel2.Controls.Add(this.tbScale);
@@ -71,7 +69,7 @@ namespace ISBTCommandHandler
             resources.ApplyResources(this.wbNotesPage, "wbNotesPage");
             this.wbNotesPage.MinimumSize = new System.Drawing.Size(20, 20);
             this.wbNotesPage.Name = "wbNotesPage";
-            this.wbNotesPage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.wbNotesPage_DocumentCompleted);
+            this.wbNotesPage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.wbNotesPage_DocumentCompleted);            
             this.wbNotesPage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.wbNotesPage_Navigating);
             // 
             // btnScaleDown
@@ -122,14 +120,15 @@ namespace ISBTCommandHandler
             // 
             // NotesPageForm
             // 
-            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            resources.ApplyResources(this, "$this");
             this.Controls.Add(this.scMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "NotesPageForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.NotesPageForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NotesPageForm_FormClosed);
             this.Load += new System.EventHandler(this.NotesPageForm_Load);
+            this.Shown += new System.EventHandler(this.NotesPageForm_Shown);
             this.scMain.Panel1.ResumeLayout(false);
             this.scMain.Panel2.ResumeLayout(false);
             this.scMain.Panel2.PerformLayout();

@@ -20,6 +20,9 @@ namespace BibleCommon.Helpers
 {
     public static class OneNoteUtils
     {
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
         private static bool? _isOneNote2010;
         public static bool IsOneNote2010Cached
         {
@@ -45,32 +48,47 @@ namespace BibleCommon.Helpers
 
         public static bool NotebookExists(ref Application oneNoteApp, string notebookId, bool refreshCache = false)
         {
-            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks, refreshCache);
+            ApplicationCache.HierarchyElement hierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks, refreshCache);
             XElement bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@ID=\"{0}\"]", notebookId), hierarchy.Xnm);
             return bibleNotebook != null;            
         }
 
-        public static void CloseNotebookSafe(ref Application oneNoteApp, string notebookId)
+        public static void CloseNotebookSafe(ref Application oneNoteApp, string notebookId, Func<bool> checkIfExternalProcessAborted = null, int attemptCount = 0)
         {
             if (NotebookExists(ref oneNoteApp, notebookId, true))
             {
-                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                try
                 {
-                    oneNoteAppSafe.CloseNotebook(notebookId);
-                });
+                    OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                    {
+                        oneNoteAppSafe.CloseNotebook(notebookId);
+                    });
+                }
+                catch (COMException ex)
+                {
+                    if (OneNoteUtils.IsError(ex, Error.hrNotYetSynchronized))
+                    {
+                        if (notebookId == SettingsManager.Instance.NotebookId_SupplementalBible && attemptCount < 3)
+                        {
+                            OneNoteLocker.UnlockSupplementalBible(ref oneNoteApp, true, checkIfExternalProcessAborted);
+                            Utils.WaitFor(1, checkIfExternalProcessAborted);
+                            CloseNotebookSafe(ref oneNoteApp, notebookId, checkIfExternalProcessAborted, attemptCount + 1);
+                        }
+                    }
+                }
             }
         }
 
         public static bool RootSectionGroupExists(ref Application oneNoteApp, string notebookId, string sectionGroupId)
         {
-            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsChildren);
+            ApplicationCache.HierarchyElement hierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsChildren);
             XElement sectionGroup = hierarchy.Content.Root.XPathSelectElement(string.Format("one:SectionGroup[@ID=\"{0}\"]", sectionGroupId), hierarchy.Xnm);
             return sectionGroup != null;
         }
 
         public static string GetNotebookIdByName(ref Application oneNoteApp, string notebookName, bool refreshCache)
         {
-            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks, refreshCache);
+            ApplicationCache.HierarchyElement hierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks, refreshCache);
             XElement bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@name=\"{0}\"]", notebookName), hierarchy.Xnm);
             if (bibleNotebook == null)
                 bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@nickname=\"{0}\"]", notebookName), hierarchy.Xnm);
@@ -85,7 +103,7 @@ namespace BibleCommon.Helpers
         public static string GetNotebookIdByPath(ref Application oneNoteApp, string localPath, bool refreshCache, out string notebookName)
         {
             notebookName = null;
-            var hierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks, refreshCache);
+            var hierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks, refreshCache);
             var bibleNotebook = hierarchy.Content.Root.XPathSelectElement(string.Format("one:Notebook[@path=\"{0}\"]", localPath), hierarchy.Xnm);            
             if (bibleNotebook != null)
             {
@@ -98,13 +116,13 @@ namespace BibleCommon.Helpers
 
         public static string GetNotebookElementNickname(ref Application oneNoteApp, string elementId)
         {
-            OneNoteProxy.HierarchyElement doc = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, elementId, HierarchyScope.hsSelf);
+            ApplicationCache.HierarchyElement doc = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, elementId, HierarchyScope.hsSelf);
             return (string)doc.Content.Root.Attribute("nickname");
         }
 
         public static string GetHierarchyElementName(ref Application oneNoteApp, string elementId)
         {   
-            OneNoteProxy.HierarchyElement doc = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, elementId, HierarchyScope.hsSelf);
+            ApplicationCache.HierarchyElement doc = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, elementId, HierarchyScope.hsSelf);
             return (string)doc.Content.Root.Attribute("name");
         }
 
@@ -227,10 +245,13 @@ namespace BibleCommon.Helpers
             if (!string.IsNullOrEmpty(objectHref))
                 link = objectHref;
             else
-                link = OneNoteProxy.Instance.GenerateHref(ref oneNoteApp, pageId, objectId, useProxyLinkIfAvailable);
+                link = ApplicationCache.Instance.GenerateHref(ref oneNoteApp, pageId, objectId, useProxyLinkIfAvailable);
 
             foreach (var param in additionalLinkQueryParameters)
-                link += "&" + param;
+            {
+                if (!string.IsNullOrEmpty(param))
+                    link += "&" + param;
+            }
 
             return link;
         }
@@ -514,7 +535,7 @@ namespace BibleCommon.Helpers
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
 
-            OneNoteProxy.HierarchyElement hierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks, true);
+            ApplicationCache.HierarchyElement hierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks, true);
 
             foreach (XElement notebook in hierarchy.Content.Root.XPathSelectElements("one:Notebook", hierarchy.Xnm))
             {
@@ -560,7 +581,8 @@ namespace BibleCommon.Helpers
                 if (window != null)
                 {
                     //window.Active = false;
-                    window.Active = true;
+                    //window.Active = true;
+                    SetForegroundWindow(new IntPtr((long)window.WindowHandle));
                 }
 
                 //oneNoteAppSafe.NavigateTo(oneNoteAppSafe.Windows.CurrentWindow.CurrentPageId);

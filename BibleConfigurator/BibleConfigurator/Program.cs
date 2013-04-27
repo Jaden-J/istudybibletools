@@ -38,6 +38,7 @@ namespace BibleConfigurator
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
+                Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
 
                 bool silent;
                 Action action;
@@ -53,8 +54,10 @@ namespace BibleConfigurator
                         if (action != null)
                             action();
 
-                        if (form != null)                        
-                            Application.Run(form);                                                
+                        if (form != null)
+                        {   
+                            Application.Run(form);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -147,7 +150,7 @@ namespace BibleConfigurator
                                     {
                                         var mainForm = new MainForm(args);
                                         ((MainForm)mainForm).ToIndexBible = true;
-                                        ((MainForm)mainForm).CommitChangesAfterLoad = true;
+                                        ((MainForm)mainForm).CommitChangesAfterLoad = true;                                        
                                         Application.Run(mainForm);
                                     }
                                 }

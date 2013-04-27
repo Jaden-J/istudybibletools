@@ -23,6 +23,7 @@ namespace ISBTCommandHandler
 
         private string _titleAtStart;
         private bool _suppressTbScaleLayout;
+        private bool _touchInputAvailable;
 
         protected OpenBibleVerseHandler OpenBibleVerseHandler { get; set; }
         protected NavigateToHandler NavigateToHandler { get; set; }
@@ -89,9 +90,11 @@ namespace ISBTCommandHandler
             SetCheckboxes();
             SetLocation();
             SetSize();
-            SetScale();
-            wbNotesPage.Focus();            
-        }
+            SetScale();            
+            wbNotesPage.Focus();
+
+            _touchInputAvailable = Utils.TouchInputAvailable();
+        }        
 
         private void SetScale()
         {
@@ -134,7 +137,7 @@ namespace ISBTCommandHandler
                 var x = int.Parse(positionParts[0]);
                 var y = int.Parse(positionParts[1]);
 
-                if (x > 0 && y > 0)
+                if (x >= 0 && y >= 0)                
                     this.Location = new Point(x, y);
                 else
                     SetDefaultPosition();
@@ -192,6 +195,14 @@ namespace ISBTCommandHandler
         private void wbNotesPage_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             tbScale_TextChanged(this, null);
+
+            if (_touchInputAvailable)
+            {
+                var styleEl = wbNotesPage.Document.CreateElement("style");
+                styleEl.SetAttribute("type", "text/css");
+                styleEl.InnerHtml = " li.pageLevel { padding-bottom:5px; } .subLinks { padding-top:5px; } ";
+                wbNotesPage.Document.Body.AppendChild(styleEl);
+            }
         }
 
         private void tbScale_TextChanged(object sender, EventArgs e)
@@ -239,5 +250,15 @@ namespace ISBTCommandHandler
 
             return Convert.ToInt32(scale);                
         }
+
+        private bool _firstShown = true;
+        private void NotesPageForm_Shown(object sender, EventArgs e)
+        {
+            if (_firstShown)
+            {
+                this.Focus();                
+                _firstShown = false;
+            }            
+        }        
     }
 }

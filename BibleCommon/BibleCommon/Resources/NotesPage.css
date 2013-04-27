@@ -15,6 +15,14 @@
 {
     margin-left:20px;        
 }                  
+.subLink
+{   
+    padding-left:5px;    
+}
+.subLinkMultiVerse
+{
+    padding-left:4px;
+}
 .levelChilds
 {
     margin-top:3px;
@@ -33,10 +41,6 @@
     margin-bottom:3px;
     display:inline;
 }           
-.subLink
-{                
-    margin:1px;
-}            
 .hidden
 {
     display:none;

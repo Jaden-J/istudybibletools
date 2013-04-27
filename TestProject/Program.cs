@@ -27,14 +27,17 @@ using System.Globalization;
 
 
 namespace TestProject
-{    
+{
     class Program
     {
         private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\IStudyBibleTools\ForGenerating";
         private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp";
 
-        private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;       
-       
+        private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
+
+        
+
+      
 
         [STAThread]
         unsafe static void Main(string[] args)
@@ -43,10 +46,10 @@ namespace TestProject
 
             sw.Start();
 
+            //_oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
+
             try
             {              
-
-                
                 //Console.WriteLine(Regex.Replace("<br>no<", string.Format("(^|[^0-9a-zA-Z]){0}($|[^0-9a-zA-Z<])", "no"), @"$1aeasdasds$2", RegexOptions.IgnoreCase));
                 //return;
 
@@ -130,7 +133,7 @@ namespace TestProject
             foreach (var pageEl in pagesEls)
             {
                 var pageId = (string)pageEl.Attribute("ID");
-                OneNoteProxy.Instance.GetPageContent(ref _oneNoteApp, pageId, OneNoteProxy.PageType.NotePage);
+                ApplicationCache.Instance.GetPageContent(ref _oneNoteApp, pageId, ApplicationCache.PageType.NotePage);
 
                 Console.Write(".");
             }
@@ -365,7 +368,7 @@ namespace TestProject
 
           //  var result = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
 
-            var verse = OneNoteProxy.Instance.GetVersePointerLink(new VersePointer("Фил 6"));
+            var verse = ApplicationCache.Instance.GetVersePointerLink(new VersePointer("Фил 6"));
         }
 
         private static void SearchStrongTerm(string[] args)
@@ -637,7 +640,7 @@ namespace TestProject
             var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
             string notebookId = OneNoteUtils.GetNotebookIdByName(ref oneNoteApp, "Biblia", false);
 
-            var pages = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, false);
+            var pages = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notebookId, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, false);
             foreach (var page in pages.Content.Root.XPathSelectElements("//one:Page", pages.Xnm))
             {
                 string pageId = (string)page.Attribute("ID");

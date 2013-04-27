@@ -63,7 +63,7 @@ namespace BibleCommon.Services
 
         public NotebookInfo GetNotebookPages(ref Application oneNoteApp, string notebookId, string sectionGroupId, Func<PageInfo, bool> filter)
         {
-            OneNoteProxy.HierarchyElement notebookElement = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsPages);
+            ApplicationCache.HierarchyElement notebookElement = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsPages);
 
             XElement sectionGroup = string.IsNullOrEmpty(sectionGroupId)
                                         ? notebookElement.Content.Root
@@ -145,7 +145,12 @@ namespace BibleCommon.Services
 
         public void ProcessHierarchyElement(HierarchyElementInfo hierarchyElement, XElement xElement)
         {
-            hierarchyElement.Title = (string)xElement.Attribute("name");
+            var nickNameAttr = xElement.Attribute("nickname");
+            if (nickNameAttr != null)
+                hierarchyElement.Title = nickNameAttr.Value;
+            else
+                hierarchyElement.Title = (string)xElement.Attribute("name");
+
             hierarchyElement.Id = (string)xElement.Attribute("ID");
         }
     }

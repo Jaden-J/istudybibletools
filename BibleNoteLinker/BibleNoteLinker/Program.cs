@@ -4,6 +4,8 @@ using System.Linq;
 using System.Windows.Forms;
 using BibleCommon.Helpers;
 using BibleCommon.Services;
+using BibleCommon.Handlers;
+using System.Threading;
 
 namespace BibleNoteLinker
 {
@@ -15,9 +17,9 @@ namespace BibleNoteLinker
         [STAThread]
         static void Main(params string[] args)
         {
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
 
             var form = PrepareForRunning(args);
 
@@ -31,9 +33,24 @@ namespace BibleNoteLinker
 
         }
 
+        static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            FormLogger.LogError(e.Exception);
+        }
+
         private static Form PrepareForRunning(params string[] args)
         {
-            var result = new MainForm();            
+            Form result = null;
+
+            if (args.Contains(Consts.QuickAnalyze))
+            {
+                var handler = new QuickAnalyzeHandler();
+                handler.ExecuteCommand();
+            }
+            else
+            {
+                result = new MainForm();
+            }
 
             return result;
         }

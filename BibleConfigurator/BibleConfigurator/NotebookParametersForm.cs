@@ -54,11 +54,11 @@ namespace BibleConfigurator
             if (_firstLoad)
             {
                 RenamedSectionGroups = new Dictionary<string, string>();
-                OneNoteProxy.HierarchyElement notebook = null;
+                ApplicationCache.HierarchyElement notebook = null;
 
                 try
                 {
-                    notebook = OneNoteProxy.Instance.GetHierarchy(ref _oneNoteApp, _notebookId, HierarchyScope.hsSections, true);
+                    notebook = ApplicationCache.Instance.GetHierarchy(ref _oneNoteApp, _notebookId, HierarchyScope.hsSections, true);
 
                     OriginalSectionGroups = GetAllSectionGroups(notebook);
 
@@ -86,7 +86,7 @@ namespace BibleConfigurator
             cb.SelectedIndex = 0;
         }
 
-        private Dictionary<ContainerType, SectionGroupDTO> GetAllSectionGroups(OneNoteProxy.HierarchyElement notebook)
+        private Dictionary<ContainerType, SectionGroupDTO> GetAllSectionGroups(ApplicationCache.HierarchyElement notebook)
         {
             Dictionary<ContainerType, SectionGroupDTO> result = new Dictionary<ContainerType, SectionGroupDTO>();
             

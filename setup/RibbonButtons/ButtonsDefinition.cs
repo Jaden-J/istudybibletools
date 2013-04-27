@@ -144,11 +144,11 @@ namespace RibbonButtons
                         programClassName = BibleNoteLinkerProgramClassName;
                         break;
                     case "QuickNoteLinkerButton":
-                        //path = Path.Combine(Utils.GetCurrentDirectory(), BibleNoteLinkerPath);
-                        //args = "-quickAnalyze";
-                        //programClassName = BibleNoteLinkerProgramClassName;
-                        //loadInSameProcess = true;
-                        path = "isbtQuickAnalyze:currentPage";
+                        path = Path.Combine(Utils.GetCurrentDirectory(), BibleNoteLinkerPath);
+                        args = "-quickAnalyze";
+                        programClassName = BibleNoteLinkerProgramClassName;
+                        loadInSameProcess = true;
+                        //path = "isbtQuickAnalyze:currentPage";
                         break;
                     case "ConfigureButton":
                         path = Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath);

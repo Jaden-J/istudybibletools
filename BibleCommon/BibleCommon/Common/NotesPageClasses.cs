@@ -140,7 +140,7 @@ namespace BibleCommon.Common
         }             
 
         public void Serialize(ref Application oneNoteApp)
-        {
+        {            
             var chapterVersePointer = VersesNotesPageData.First().Key.GetChapterPointer();
             
 
@@ -148,7 +148,7 @@ namespace BibleCommon.Common
                         new XElement("html", 
                             new XElement("head", 
                                 new XElement("meta", new XAttribute("http-equiv", "X-UA-Compatible"), new XAttribute("content", "IE=edge")),
-                                new XElement("title", string.Format("{0} {1}", PageName,  chapterVersePointer.ChapterName)),
+                                new XElement("title", string.Format("{0} [{1}]", PageName,  chapterVersePointer.ChapterName)),
                                 new XElement("link", new XAttribute("type", "text/css"), new XAttribute("rel", "stylesheet"), new XAttribute("href", "../../../" + Constants.NotesPageStyleFileName)),
                                 new XElement("script", new XAttribute("type", "text/javascript"), new XAttribute("src", "../../../" + Constants.NotesPageScriptFileName), ";")
                             )));
@@ -186,14 +186,14 @@ namespace BibleCommon.Common
                                                     Resources.Constants.DetailedChapterNotes);
                 }
             }
-            else if (NotesPageType == Common.NotesPageType.Verse)
+            else // для страниц заметок стихов и подробных заметок главы
             {
                 pageTitleAdditionalLinkEl = new XElement("a",
                                                     new XAttribute("class", "chapterNotesPage"),
                                                     new XAttribute("href",
                                                         OpenNotesPageHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName, Common.NotesPageType.Chapter)),
                                                     Resources.Constants.ChapterNotes);
-            }
+            }            
 
             bodyEl.Add(new XElement("table", new XAttribute("class", "pageTitle"), new XAttribute("cellpadding", "0"), new XAttribute("cellspacing", "0"),
                         new XElement("tr",
@@ -320,7 +320,11 @@ namespace BibleCommon.Common
             }
             else
             {
-                var subLinksEl = levelEl.AddEl(new XElement("div", new XAttribute("class", "subLinks")));
+                var subLinksEl = levelEl.AddEl(new XElement("table", 
+                                                new XAttribute("class", "subLinks"),
+                                                new XAttribute("cellpadding", "0"),
+                                                new XAttribute("cellspacing", "0")));
+                subLinksEl = subLinksEl.AddEl(new XElement("tr"));
                 
                 var linkIndex = 0;
                 foreach (var pageLink in pageLevel.PageLinks)
@@ -339,7 +343,7 @@ namespace BibleCommon.Common
             if (linkIndex > 0)
             {
                 subLinksEl.Add(
-                    new XElement("span",
+                    new XElement("td",
                         new XAttribute("class", "subLinkDelimeter"),
                         Resources.Constants.VerseLinksDelimiter));
             }
@@ -349,18 +353,16 @@ namespace BibleCommon.Common
                            ? " importantVerseLink"
                            : string.Empty;
 
-            var subLinkEl = subLinksEl.AddEl(new XElement("span", new XAttribute("class", "subLink")));            
-
-            subLinkEl.Add(
-                new XElement("a",
-                    new XAttribute("class", "subLinkLink" + importantClassName),
-                    new XAttribute("href", pageLink.GetHref(ref oneNoteApp)),
-                    string.Format(Resources.Constants.VerseLinkTemplate, linkIndex + 1)));
+            subLinksEl.Add(new XElement("td", new XAttribute("class", "subLink"),
+                                new XElement("a",
+                                    new XAttribute("class", "subLinkLink" + importantClassName),
+                                    new XAttribute("href", pageLink.GetHref(ref oneNoteApp)),
+                                    string.Format(Resources.Constants.VerseLinkTemplate, linkIndex + 1))));         
 
             if (!string.IsNullOrEmpty(pageLink.MultiVerseString))
             {
-                subLinkEl.Add(
-                    new XElement("span",
+                subLinksEl.Add(
+                    new XElement("td",
                         new XAttribute("class", "subLinkMultiVerse" + importantClassName),
                         pageLink.MultiVerseString));
             }            
@@ -608,7 +610,7 @@ namespace BibleCommon.Common
             levelWasFound = false;
             XElement parentHierarchy, noteLinkInHierarchy = null;
 
-            var notebookHierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, notePageHierarchyElInfo.NotebookId, HierarchyScope.hsPages);  //from cache            
+            var notebookHierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notePageHierarchyElInfo.NotebookId, HierarchyScope.hsPages);  //from cache            
             if (level.HierarchyType != HierarchyElementType.Notebook)
             {
                 noteLinkInHierarchy = notebookHierarchy.Content.Root.XPathSelectElement(
@@ -618,7 +620,7 @@ namespace BibleCommon.Common
                 parentHierarchy = noteLinkInHierarchy.Parent;
             }
             else
-                parentHierarchy = OneNoteProxy.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks).Content.Root;
+                parentHierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks).Content.Root;
 
             if (noteLinkInHierarchy == null)
                 noteLinkInHierarchy = parentHierarchy.XPathSelectElement(string.Format("*[@ID=\"{0}\"]", notePageHierarchyElInfo.Id), notebookHierarchy.Xnm);

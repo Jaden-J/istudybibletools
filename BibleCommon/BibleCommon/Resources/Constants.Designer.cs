@@ -376,7 +376,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete all pages &quot;Summary of Notes&quot; and references to them?.
+        ///   Ищет локализованную строку, похожую на Delete all pages &quot;Summary of Notes&quot; and references to them?.
         /// </summary>
         public static string ConfiguratorQuestionDeleteAllNotesPages {
             get {
@@ -412,11 +412,11 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specify folder path.
+        ///   Ищет локализованную строку, похожую на Specify the folder for &quot;Notes Pages&quot; files.
         /// </summary>
-        public static string ConfiguratorSetFolder {
+        public static string ConfiguratorSetFolderForNotesPages {
             get {
-                return ResourceManager.GetString("ConfiguratorSetFolder", resourceCulture);
+                return ResourceManager.GetString("ConfiguratorSetFolderForNotesPages", resourceCulture);
             }
         }
         
@@ -1011,7 +1011,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to It is recommended to index the Bible for performance optimization. This operation takes about {0} minutes. Start indexing the Bible now?.
+        ///   Ищет локализованную строку, похожую на It is recommended to index the Bible for performance optimization. This operation takes about {0} minutes. Start indexing the Bible now?.
         /// </summary>
         public static string IndexBibleQuestion {
             get {
@@ -1020,7 +1020,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The Bible is not indexed. It is recommended to index the Bible for performance optimization. This operation takes about {0} minutes. Start indexing the Bible now? This message will be displayed each time you start OneNote, while the Bible is not indexed..
+        ///   Ищет локализованную строку, похожую на The Bible is not indexed. It is recommended to index the Bible for performance optimization. This operation takes about {0} minutes. Start indexing the Bible now? This message will be displayed each time you start OneNote, while the Bible is not indexed..
         /// </summary>
         public static string IndexBibleQuestionAtStartUp {
             get {
@@ -1974,7 +1974,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to cancel the Notes Analysis?.
+        ///   Ищет локализованную строку, похожую на Are you sure you want to cancel the Notes Analysis?.
         /// </summary>
         public static string StopNotesAnalysis {
             get {
@@ -1983,7 +1983,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Saved successfully.
+        ///   Ищет локализованную строку, похожую на Saved successfully.
         /// </summary>
         public static string SuccessfullySaved {
             get {

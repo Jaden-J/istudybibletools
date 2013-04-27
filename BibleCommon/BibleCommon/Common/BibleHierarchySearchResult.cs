@@ -63,19 +63,48 @@ namespace BibleCommon.Common
         /// <returns></returns>
         public string GetProxyHref()
         {
-            if (SettingsManager.Instance.UseProxyLinksForLinks && !OneNoteProxy.IsProxyLink(Href) && !string.IsNullOrEmpty(Href))
-                return OneNoteProxy.GetProxyLink(Href, PageId, ObjectId);
+            if (SettingsManager.Instance.UseProxyLinksForLinks && !ApplicationCache.IsProxyLink(Href) && !string.IsNullOrEmpty(Href))
+                return ApplicationCache.GetProxyLink(Href, PageId, ObjectId);
 
             return Href;
         }        
     }
 
-    [Serializable]
-    public class BibleHierarchyObjectInfo
+    public class BiblePageId
     {
         public string SectionId { get; set; }
         public string PageId { get; set; }
         public string PageName { get; set; }
+        public VersePointer ChapterPointer { get; set; }
+
+        public override int GetHashCode()
+        {
+            if (ChapterPointer != null)
+                return ChapterPointer.GetHashCode();
+            else
+                return SectionId.GetHashCode() ^ PageId.GetHashCode() ^ PageName.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            BiblePageId otherObject = (BiblePageId)obj;
+
+            if (ChapterPointer != null)
+                return ChapterPointer == otherObject.ChapterPointer;
+            else
+                return SectionId == otherObject.SectionId
+                        && PageId == otherObject.PageId
+                        && PageName == otherObject.PageName;
+        }
+
+    }
+
+    [Serializable]
+    public class BibleHierarchyObjectInfo : BiblePageId
+    {   
         public VerseObjectInfo VerseInfo { get; set; }
         public Dictionary<VersePointer, VerseObjectInfo> AdditionalObjectsIds { get; set; }  // пока заполняется только при поиске в Библии в OneNote (в HierarchySearchManager)
         public bool LoadedFromCache { get; set; }
@@ -126,6 +155,20 @@ namespace BibleCommon.Common
         {
             this.AdditionalObjectsIds = new Dictionary<VersePointer, VerseObjectInfo>();
         }
+
+        // пока это нигде не нужно
+        //public override int GetHashCode()   
+        //{
+        //    return base.GetHashCode() ^ ((object)VerseNumber ?? (object)VerseContentObjectId).GetHashCode();
+        //}
+
+        //public override bool Equals(object obj)
+        //{
+        //    var otherObj = (BibleHierarchyObjectInfo)obj;
+        //    return base.Equals(obj) 
+        //        && (this.VerseNumber == otherObj.VerseNumber
+        //            || this.VerseContentObjectId == otherObj.VerseContentObjectId);
+        //}
     }
 
     public class BibleSearchResult

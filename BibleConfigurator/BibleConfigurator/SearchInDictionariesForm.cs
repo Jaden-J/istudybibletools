@@ -92,7 +92,7 @@ namespace BibleConfigurator
                     var moduleInfo = ModulesManager.GetModuleInfo(module.ModuleName);
                     if (moduleInfo.Type == ModuleType.Dictionary)
                     {
-                        var dictionaryModuleInfo = OneNoteProxy.Instance.GetModuleDictionary(moduleInfo.ShortName);
+                        var dictionaryModuleInfo = ApplicationCache.Instance.GetModuleDictionary(moduleInfo.ShortName);
                         _modulesTermSets.Add(moduleInfo.ShortName, dictionaryModuleInfo);
                         _modules.Add(moduleInfo.DisplayName, moduleInfo);
 
@@ -235,7 +235,7 @@ namespace BibleConfigurator
                 if (!DictionaryTermsCacheManager.CacheIsActive(moduleShortName))
                     throw new Exception(string.Format(BibleCommon.Resources.Constants.DictionaryCacheFileNotFound, moduleShortName));
 
-                var link = OneNoteProxy.Instance.GetDictionaryTermLink(term.ToLower(), moduleShortName);
+                var link = ApplicationCache.Instance.GetDictionaryTermLink(term.ToLower(), moduleShortName);
 
                 if (!DictionaryManager.GoToTerm(ref _oneNoteApp, link))
                 {
