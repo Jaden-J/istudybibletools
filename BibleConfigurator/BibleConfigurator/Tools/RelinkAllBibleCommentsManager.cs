@@ -46,13 +46,7 @@ namespace BibleConfigurator.Tools
                 }
 
                 int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleShortName, true);
-                _form.PrepareForLongProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.RelinkBibleCommentsManagerStartMessage);
-
-                //для тестирования
-                //RelinkPageComments(_oneNoteApp.Windows.CurrentWindow.CurrentSectionId, 
-                //    _oneNoteApp.Windows.CurrentWindow.CurrentPageId, 
-                //    OneNoteUtils.GetHierarchyElementName(_oneNoteApp, _oneNoteApp.Windows.CurrentWindow.CurrentPageId));
-                //return;
+                _form.PrepareForLongProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.RelinkBibleCommentsManagerStartMessage);                
 
                 NotebookIteratorHelper.Iterate(ref _oneNoteApp,
                     SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
@@ -130,14 +124,12 @@ namespace BibleConfigurator.Tools
             if (!string.IsNullOrEmpty(commentPageId))
             {
                 string commentObjectId = GetComentObjectId(commentPageId, commentText, null, 0);
-                if (!string.IsNullOrEmpty(commentObjectId))
-                {
-                    string newCommentLink = OneNoteUtils.GenerateLink(ref _oneNoteApp, commentText, commentPageId, commentObjectId);
 
-                    textElement.Value = textElement.Value.Replace(commentLink, newCommentLink);
+                string newCommentLink = OneNoteUtils.GenerateLink(ref _oneNoteApp, commentText, commentPageId, commentObjectId);
 
-                    return true;
-                }
+                textElement.Value = textElement.Value.Replace(commentLink, newCommentLink);
+
+                return true;
             }
 
             return false;
@@ -212,7 +204,7 @@ namespace BibleConfigurator.Tools
                             string textBefore = StringUtils.GetPrevString(el.Value, verseStartIndex + 1, new SearchMissInfo(verseStartIndex, SearchMissInfo.MissMode.CancelOnNextMiss),
                                     out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.NotSpecified).Replace("&nbsp;", "");
 
-                            if (textBefore.Length == 0)  // чотб убедиться, что мы взяли текст в начале строки
+                            if (textBefore.Length == 0)  // чтоб убедиться, что мы взяли текст в начале строки
                             {
                                 int verseEndIndex = el.Value.IndexOf("<", verseStartIndex + 1);
 

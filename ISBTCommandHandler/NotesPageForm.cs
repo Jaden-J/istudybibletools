@@ -47,8 +47,8 @@ namespace ISBTCommandHandler
             try
             {
                 base.OnMouseWheel(e);
-                if ((!wbNotesPage.Focused || !wbNotesPage.RectangleToScreen(wbNotesPage.ClientRectangle).Contains(Cursor.Position))
-                    && this.RectangleToScreen(this.ClientRectangle).Contains(Cursor.Position))
+                if (//(!wbNotesPage.Focused || !wbNotesPage.RectangleToScreen(wbNotesPage.ClientRectangle).Contains(Cursor.Position)) && 
+                    this.RectangleToScreen(this.ClientRectangle).Contains(Cursor.Position))
                 {
                     wbNotesPage.Scroll(e);
                 }
@@ -78,7 +78,8 @@ namespace ISBTCommandHandler
                     if (this.WindowState != FormWindowState.Normal)
                         this.WindowState = FormWindowState.Normal;
 
-                    this.SetFocus();                    
+                    this.SetFocus();
+                    wbNotesPage.Focus();
 
                     this.Text = string.Format("{0} ({1})", _titleAtStart, vp.GetFriendlyFullVerseName());
                 }
@@ -161,7 +162,7 @@ namespace ISBTCommandHandler
             {
                 if (chkCloseOnClick.Checked)
                     this.Hide();                
-            }            
+            }                        
         }
 
         private void chkAlwaysOnTop_CheckedChanged(object sender, EventArgs e)
@@ -259,6 +260,6 @@ namespace ISBTCommandHandler
                 this.Focus();                
                 _firstShown = false;
             }            
-        }        
+        }     
     }
 }

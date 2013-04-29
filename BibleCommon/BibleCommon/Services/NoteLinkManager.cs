@@ -355,7 +355,7 @@ namespace BibleCommon.Services
                             chapterInfo.ChapterPosition, true,
                             chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
                             notePageId, chapterInfo.TextElementObjectId, true,
-                            NotesPageType.Chapter, SettingsManager.Instance.PageWidth_Notes, 1, chapterInfo.IsImportantChapter,
+                            NotesPageType.Chapter, chapterInfo.IsImportantChapter,
                             (chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
                                 || chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName) ? true : force, false);
                     }
@@ -368,7 +368,7 @@ namespace BibleCommon.Services
                                 chapterInfo.ChapterPosition, true,
                                 chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
                                 notePageId, chapterInfo.TextElementObjectId, false,
-                                NotesPageType.Detailed, SettingsManager.Instance.PageWidth_RubbishNotes, 1, chapterInfo.IsImportantChapter,
+                                NotesPageType.Detailed, chapterInfo.IsImportantChapter,
                                 (chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
                                     || chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName) ? true : force, false);
                         }
@@ -863,7 +863,7 @@ namespace BibleCommon.Services
                 if (TryLinkVerseToNotesPage(ref oneNoteApp, vp, verseWeight, searchResult.ResultType, versePosition,
                         notePageId, notePageContentObjectId, linkDepth,
                         !SettingsManager.Instance.UseDifferentPagesForEachVerse || (vp.IsChapter && !needToQueueIfChapter), SettingsManager.Instance.ExcludedVersesLinking,
-                        NotesPageType.Chapter, SettingsManager.Instance.PageWidth_Notes, 1, 
+                        NotesPageType.Chapter, 
                         globalChapterSearchResult, pageChaptersSearchResult,
                         isInBrackets, isExcluded, isImportantVerse, force, !needToQueueIfChapter, processAsExtendedVerse,
                         out localHierarchySearchResult, ref processedVerses, hsr =>
@@ -954,7 +954,7 @@ namespace BibleCommon.Services
                     TryLinkVerseToNotesPage(ref oneNoteApp, vp, verseWeight, searchResult.ResultType, versePosition,
                         notePageId, notePageContentObjectId, linkDepth,
                         true, SettingsManager.Instance.ExcludedVersesLinking,
-                        NotesPageType.Verse, SettingsManager.Instance.PageWidth_Notes, 2, 
+                        NotesPageType.Verse, 
                         globalChapterSearchResult, pageChaptersSearchResult,
                         isInBrackets, isExcluded, isImportantVerse, force, !needToQueueIfChapter, processAsExtendedVerse, out localHierarchySearchResult, ref processedVerses, null);
                 }
@@ -987,7 +987,7 @@ namespace BibleCommon.Services
                     TryLinkVerseToNotesPage(ref oneNoteApp, vp, verseWeight, searchResult.ResultType, versePosition,
                         notePageId, notePageContentObjectId, linkDepth,
                         false, SettingsManager.Instance.RubbishPage_ExcludedVersesLinking, 
-                        NotesPageType.Detailed, SettingsManager.Instance.PageWidth_RubbishNotes, 1, 
+                        NotesPageType.Detailed, 
                         globalChapterSearchResult, pageChaptersSearchResult,
                         isInBrackets, isExcluded, isImportantVerse, force, !needToQueueIfChapter, processAsExtendedVerse, out localHierarchySearchResult, ref processedVerses, null);                
 
@@ -1064,7 +1064,7 @@ namespace BibleCommon.Services
             VersePointerSearchResult.SearchResultType resultType, XmlCursorPosition versePosition,
             HierarchyElementInfo notePageId, string notePageContentObjectId, AnalyzeDepth linkDepth,
             bool createLinkToNotesPage, bool excludedVersesLinking, 
-            NotesPageType notesPageType, int notesPageWidth, int notesPageLevel, 
+            NotesPageType notesPageType, 
             VersePointerSearchResult globalChapterSearchResult, List<VersePointerSearchResult> pageChaptersSearchResult,
             bool isInBrackets, bool isExcluded, bool isImportantVerse, bool force, bool forceAnalyzeChapter, bool processAsExtendedVerse,
             out BibleSearchResult hierarchySearchResult, ref List<SimpleVersePointer> processedVerses,
@@ -1156,8 +1156,8 @@ namespace BibleCommon.Services
                                 var verses = LinkVerseToNotesPage(ref oneNoteApp, vp, verseWeight, versePosition, isChapter,
                                     hierarchySearchResult.HierarchyObjectInfo,
                                     notePageId,
-                                    notePageContentObjectId, createLinkToNotesPage, notesPageType, notesPageWidth,
-                                    notesPageLevel, isImportantVerse, force, processAsExtendedVerse);
+                                    notePageContentObjectId, createLinkToNotesPage, notesPageType, 
+                                    isImportantVerse, force, processAsExtendedVerse);
 
                                 if (processedVerses != null)
                                     processedVerses.AddRange(verses);
@@ -1263,7 +1263,7 @@ namespace BibleCommon.Services
         private List<SimpleVersePointer> LinkVerseToNotesPage(ref Application oneNoteApp, VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition, bool isChapter,
             BibleHierarchyObjectInfo verseHierarchyObjectInfo,
             HierarchyElementInfo notePageId, string notePageContentObjectId, bool createLinkToNotesPage,
-            NotesPageType notesPageType, int notesPageWidth, int notesPageLevel, bool isImportantVerse, bool force, bool processAsExtendedVerse)
+            NotesPageType notesPageType, bool isImportantVerse, bool force, bool processAsExtendedVerse)
         {
             bool notesPageWasCreatedOrRowAdded;
             var notesPageName = GetNotesPageName(notesPageType, vp, verseHierarchyObjectInfo);
@@ -1271,12 +1271,12 @@ namespace BibleCommon.Services
             if (!SettingsManager.Instance.StoreNotesPagesInFolder)
             {
                 notesPageWasCreatedOrRowAdded = LinkVerseToNotesPageInOneNote(ref oneNoteApp, vp, verseWeight, versePosition, isChapter, ref verseHierarchyObjectInfo, notePageId, notePageContentObjectId, createLinkToNotesPage,
-                    notesPageType, notesPageName, notesPageWidth, notesPageLevel, isImportantVerse, force, processAsExtendedVerse);
+                    notesPageType, notesPageName, isImportantVerse, force, processAsExtendedVerse);
             }
             else
             {
                 notesPageWasCreatedOrRowAdded = LinkVerseToNotesPageInFileSystem(ref oneNoteApp, vp, verseWeight, versePosition, isChapter, verseHierarchyObjectInfo, notePageId, notePageContentObjectId, createLinkToNotesPage,
-                    notesPageType, notesPageName, notesPageWidth, notesPageLevel, isImportantVerse, force, processAsExtendedVerse);
+                    notesPageType, notesPageName, isImportantVerse, force, processAsExtendedVerse);
             }
 
             var key = new NotePageProcessedVerseId() { NotePageId = notePageId.UniqueName, NotesPageName = notesPageName };
@@ -1295,7 +1295,7 @@ namespace BibleCommon.Services
         private bool LinkVerseToNotesPageInFileSystem(ref Application oneNoteApp, VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition, bool isChapter,
             BibleHierarchyObjectInfo verseHierarchyObjectInfo,
             HierarchyElementInfo notePageId, string notePageContentObjectId, bool createLinkToNotesPage,
-            NotesPageType notesPageType, string notesPageName, int notesPageWidth, int notesPageLevel, bool isImportantVerse, bool force, bool processAsExtendedVerse)
+            NotesPageType notesPageType, string notesPageName, bool isImportantVerse, bool force, bool processAsExtendedVerse)
         {
             var pageWasAdded = NotesPageManagerFS.UpdateNotesPage(ref oneNoteApp, this, vp, verseWeight, versePosition, isChapter, 
                                         verseHierarchyObjectInfo,
@@ -1333,15 +1333,16 @@ namespace BibleCommon.Services
         private bool LinkVerseToNotesPageInOneNote(ref Application oneNoteApp, VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition, bool isChapter,
             ref BibleHierarchyObjectInfo verseHierarchyObjectInfo,
             HierarchyElementInfo notePageId, string notePageContentObjectId, bool createLinkToNotesPage,
-            NotesPageType notesPageType, string notesPageName, int notesPageWidth, int notesPageLevel, bool isImportantVerse, bool force, bool processAsExtendedVerse)
+            NotesPageType notesPageType, string notesPageName, bool isImportantVerse, bool force, bool processAsExtendedVerse)
         {
-            string biblePageName = verseHierarchyObjectInfo.PageName;
-            
-            string notesParentPageName = notesPageType == NotesPageType.Verse ? SettingsManager.Instance.PageName_Notes : null;            
+            var biblePageName = verseHierarchyObjectInfo.PageName;            
+            var notesParentPageName = notesPageType == NotesPageType.Verse ? SettingsManager.Instance.PageName_Notes : null;
+            var notesPageLevel = notesPageType == NotesPageType.Verse ? 2 : 1;
+            var notesPageWidth = notesPageType == NotesPageType.Detailed ? SettingsManager.Instance.PageWidth_RubbishNotes : SettingsManager.Instance.PageWidth_Notes;            
 
             string notesPageId = null;
-            bool pageWasCreated = false;
-            bool rowWasAdded = false;
+            var pageWasCreated = false;
+            var rowWasAdded = false;
 
             try
             {

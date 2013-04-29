@@ -12,6 +12,6 @@
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>"isbtQuickAnalyze:"</StartArguments>
+    <StartArguments>"isbtNotesPage:rst/43%2013;От%20Иоанна%2013;Chapter"</StartArguments>
   </PropertyGroup>
 </Project>
