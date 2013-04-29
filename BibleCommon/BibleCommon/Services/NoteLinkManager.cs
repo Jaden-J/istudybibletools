@@ -192,10 +192,9 @@ namespace BibleCommon.Services
                     ProcessChapters(ref oneNoteApp, foundChapters, notePageHierarchyInfo, linkDepth, force);                                       
                 }
 
-                notePageDocument.WasModified = _pageContentWasChanged;
-
                 if (linkDepth >= AnalyzeDepth.Full)   // если SetVersesLinks, то мы позже обновим, так как нам надо ещё поставить курсор в нужное место
                 {
+                    notePageDocument.WasModified = _pageContentWasChanged;
                     if (_pageContentWasChanged)
                     {
                         notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
@@ -206,7 +205,9 @@ namespace BibleCommon.Services
                     }
                     else
                         ApplicationCache.Instance.RemovePageContentFromCache(pageId, PageInfo.piBasic);
-                }                
+                }   
+                else
+                    notePageDocument.WasModified = true;
             }
             catch (ProcessAbortedByUserException)
             {                
