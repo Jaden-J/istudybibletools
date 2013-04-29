@@ -69,7 +69,7 @@ namespace ISBTCommandHandler
             resources.ApplyResources(this.wbNotesPage, "wbNotesPage");
             this.wbNotesPage.MinimumSize = new System.Drawing.Size(20, 20);
             this.wbNotesPage.Name = "wbNotesPage";
-            this.wbNotesPage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.wbNotesPage_DocumentCompleted);            
+            this.wbNotesPage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.wbNotesPage_DocumentCompleted);
             this.wbNotesPage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.wbNotesPage_Navigating);
             // 
             // btnScaleDown
@@ -128,7 +128,7 @@ namespace ISBTCommandHandler
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.NotesPageForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NotesPageForm_FormClosed);
             this.Load += new System.EventHandler(this.NotesPageForm_Load);
-            this.Shown += new System.EventHandler(this.NotesPageForm_Shown);
+            this.Shown += new System.EventHandler(this.NotesPageForm_Shown);            
             this.scMain.Panel1.ResumeLayout(false);
             this.scMain.Panel2.ResumeLayout(false);
             this.scMain.Panel2.PerformLayout();
