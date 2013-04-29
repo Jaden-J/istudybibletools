@@ -38,8 +38,8 @@ namespace RibbonButtons
         #endregion
 
         #region IDTExtensibility2 Members
-
-        ApplicationClass onApp;
+        
+        Microsoft.Office.Interop.OneNote.Application onApp;
 
 		public void OnConnection(object Application, ext_ConnectMode ConnectMode, object AddInInst, ref Array custom)
 		{
@@ -49,7 +49,7 @@ namespace RibbonButtons
 
             try
             {
-                onApp = (ApplicationClass)Application;
+                //onApp = (Application)Application;
 
                 AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 RunProgram(Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath), BibleConfiguratorProgramClassName, "-runOnOneNoteStarts", false);
@@ -198,7 +198,7 @@ namespace RibbonButtons
             }
 		}
 
-        private void RunProgram(string programPath, string programClassName, string args, bool loadInSameProcess = true)
+        private void RunProgram(string programPath, string programClassName, string args, bool loadInSameProcess)
         {
             if (loadInSameProcess)
             {
