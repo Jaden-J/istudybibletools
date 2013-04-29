@@ -117,7 +117,7 @@ namespace BibleCommon.Services
         public void LinkPageVerses(ref Application oneNoteApp, string notebookId, string pageId, AnalyzeDepth linkDepth, bool force, bool? doNotAnalyze)
         {
             try
-            {   
+            {
                 _notesPagesProviderManager.ForceUpdateProvider = AnalyzeAllPages && force && linkDepth >= AnalyzeDepth.Full;
 
                 bool wasModified = false;
@@ -140,7 +140,7 @@ namespace BibleCommon.Services
                 }
 
                 if (doNotAnalyze.GetValueOrDefault(false) || StringUtils.IndexOfAny(notePageName, Constants.DoNotAnalyzeSymbol1, Constants.DoNotAnalyzeSymbol2) > -1)
-                    IsExcludedCurrentNotePage = true;               
+                    IsExcludedCurrentNotePage = true;
 
                 HierarchyElementInfo notePageHierarchyInfo;
 
@@ -149,7 +149,7 @@ namespace BibleCommon.Services
                 else
                     notePageHierarchyInfo = GetPageHierarchyInfo(ref oneNoteApp, notebookId, notePageDocument, pageId, notePageName, false);
 
-                var foundChapters = new List<FoundChapterInfo>();                
+                var foundChapters = new List<FoundChapterInfo>();
 
                 List<VersePointerSearchResult> pageChaptersSearchResult = ProcessPageTitle(ref oneNoteApp, notePageDocument.Content,
                     notePageHierarchyInfo, ref foundChapters, notePageDocument.Xnm, linkDepth, force, isSummaryNotesPage,
@@ -189,13 +189,14 @@ namespace BibleCommon.Services
 
                 if (foundChapters.Count > 0)  // то есть имеются главы, которые указаны в тексте именно как главы, без стихов, и на которые надо делать тоже ссылки
                 {
-                    ProcessChapters(ref oneNoteApp, foundChapters, notePageHierarchyInfo, linkDepth, force);                                       
+                    ProcessChapters(ref oneNoteApp, foundChapters, notePageHierarchyInfo, linkDepth, force);
                 }
 
-                if (linkDepth >= AnalyzeDepth.Full)   // если SetVersesLinks, то мы позже обновим, так как нам надо ещё поставить курсор в нужное место
+                notePageDocument.WasModified = _pageContentWasChanged;
+
+                if (_pageContentWasChanged)
                 {
-                    notePageDocument.WasModified = _pageContentWasChanged;
-                    if (_pageContentWasChanged)
+                    if (linkDepth >= AnalyzeDepth.Full)   // если SetVersesLinks, то мы позже обновим, так как нам надо ещё поставить курсор в нужное место
                     {
                         notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
 
@@ -203,14 +204,16 @@ namespace BibleCommon.Services
                         System.Windows.Forms.Application.DoEvents();
                         ApplicationCache.Instance.CommitModifiedPage(ref oneNoteApp, notePageDocument, false);
                     }
-                    else
-                        ApplicationCache.Instance.RemovePageContentFromCache(pageId, PageInfo.piBasic);
-                }   
+                }
                 else
-                    notePageDocument.WasModified = true;
+                {
+                    LastAnalyzedVerse = null;
+
+                    ApplicationCache.Instance.RemovePageContentFromCache(pageId, PageInfo.piBasic);
+                }
             }
             catch (ProcessAbortedByUserException)
-            {                
+            {
             }
             catch (Exception ex)
             {
