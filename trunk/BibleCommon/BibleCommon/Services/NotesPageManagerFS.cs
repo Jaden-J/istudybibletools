@@ -57,7 +57,7 @@ namespace BibleCommon.Services
                 pageLinkLevel.SetPageTitleLinkHref(notePageInfo.Id, notePageInfo.UniqueNoteTitleId);
             }
 
-            if (!processAsExtendedVerse)
+            if (!processAsExtendedVerse || !vp.IsFirstVerseInParentVerse())
             {
                 pageLinkLevel.AddPageLink(new NotesPageLink()
                                             {
@@ -88,7 +88,7 @@ namespace BibleCommon.Services
             if (pageLinkLevel != null)
             {
                 var key = new NoteLinkManager.NotePageProcessedVerseId() { NotePageId = id, NotesPageName = notesPageName };
-                if (force && !noteLinkManager.ContainsNotePageProcessedVerse(key, vp) && !processAsExtendedVerse)  // если в первый раз и force и не расширенный стих
+                if (force && !noteLinkManager.ContainsNotePageProcessedVerse(key, vp) && !processAsExtendedVerse)  // если в первый раз и force и не расширенный стих. Важно: если у нас force, то processAsExtendedVerse будет false
                 {  // удаляем старые ссылки на текущую страницу, так как мы начали новый анализ с параметром "force" и мы только в первый раз зашли сюда
                     pageLinkLevel.Parent.Levels.Remove(pageLinkLevel.Id);
                     pageLinkLevel = null;

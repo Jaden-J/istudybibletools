@@ -343,21 +343,24 @@ namespace BibleCommon.Services
         {
             Logger.LogMessage(BibleCommon.Resources.Constants.NoteLinkManagerChapterProcessing, true, false);
 
-            if (linkDepth >= AnalyzeDepth.Full && !IsExcludedCurrentNotePage)
+            if (linkDepth >= AnalyzeDepth.Full)
             {
                 foreach (var chapterInfo in foundChapters)
                 {
                     Logger.LogMessage(".", false, false, false);
 
-                    if (!SettingsManager.Instance.ExcludedVersesLinking)   // иначе мы её обработали сразу же, когда встретили
+                    if (!IsExcludedCurrentNotePage)
                     {
-                        LinkVerseToNotesPage(ref oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, chapterInfo.ChapterWeight, 
-                            chapterInfo.ChapterPosition, true,
-                            chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
-                            notePageId, chapterInfo.TextElementObjectId, true,
-                            NotesPageType.Chapter, chapterInfo.IsImportantChapter,
-                            (chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
-                                || chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName) ? true : force, false);
+                        if (!SettingsManager.Instance.ExcludedVersesLinking)   // иначе мы её обработали сразу же, когда встретили
+                        {
+                            LinkVerseToNotesPage(ref oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, chapterInfo.ChapterWeight,
+                                chapterInfo.ChapterPosition, true,
+                                chapterInfo.HierarchySearchResult.HierarchyObjectInfo,
+                                notePageId, chapterInfo.TextElementObjectId, true,
+                                NotesPageType.Chapter, chapterInfo.IsImportantChapter,
+                                (chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
+                                    || chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName) ? true : force, false);
+                        }
                     }
 
                     if (SettingsManager.Instance.RubbishPage_Use)
