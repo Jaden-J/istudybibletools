@@ -67,8 +67,8 @@ namespace ISBTCommandHandler
                     FormLogger.LogMessage(BibleCommon.Resources.Constants.VerseIsNotMentioned);
                 else
                 {
-                    if (!vp.IsChapter && !SettingsManager.Instance.UseDifferentPagesForEachVerse)
-                        verseNotesPageFilePath += "#" + vp.Verse.Value;
+                    //if (!vp.IsChapter && !SettingsManager.Instance.UseDifferentPagesForEachVerse)
+                    //    verseNotesPageFilePath += "#" + vp.Verse.Value;
 
                     wbNotesPage.Url = new Uri(verseNotesPageFilePath);
 
