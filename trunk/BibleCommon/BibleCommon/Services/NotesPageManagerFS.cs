@@ -19,21 +19,21 @@ namespace BibleCommon.Services
             VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition, bool isChapter,
             BibleHierarchyObjectInfo verseHierarchyObjectInfo, 
             HierarchyElementInfo notePageInfo, string notePageContentObjectId, NotesPageType notesPageType, string notesPageName,
-            bool isImportantVerse, bool force, bool processAsExtendedVerse, bool toDeserializeIfExists)
+            bool isImportantVerse, bool force, bool processAsExtendedVerse, bool toDeserializeIfExists, NoteLinkManager.DetailedLink isDetailedLink)
         {
             var notesPageFilePath = OpenNotesPageHandler.GetNotesPageFilePath(vp, notesPageType);             
             var notesPageData = ApplicationCache.Instance.GetNotesPageData(notesPageFilePath, notesPageName, notesPageType, vp.IsChapter ? vp : vp.GetChapterPointer(), toDeserializeIfExists);
 
             var verseNotesPageData = notesPageData.GetVerseNotesPageData(vp);
 
-            AddNotePageLink(ref oneNoteApp, notesPageFilePath, notesPageName, verseNotesPageData, notePageInfo, notePageContentObjectId, verseWeight, versePosition, vp, noteLinkManager, force, processAsExtendedVerse);
+            AddNotePageLink(ref oneNoteApp, notesPageFilePath, notesPageName, verseNotesPageData, notePageInfo, notePageContentObjectId, verseWeight, versePosition, vp, noteLinkManager, force, processAsExtendedVerse, isDetailedLink);
 
             return notesPageData.IsNew;
         }
 
         private static void AddNotePageLink(ref Application oneNoteApp, string notesPageFilePath, string notesPageName, VerseNotesPageData verseNotesPageData,
-            HierarchyElementInfo notePageInfo, string notePageContentObjectId, decimal verseWeight, XmlCursorPosition versePosition, 
-            VersePointer vp, NoteLinkManager noteLinkManager, bool force, bool processAsExtendedVerse)
+            HierarchyElementInfo notePageInfo, string notePageContentObjectId, decimal verseWeight, XmlCursorPosition versePosition,
+            VersePointer vp, NoteLinkManager noteLinkManager, bool force, bool processAsExtendedVerse, NoteLinkManager.DetailedLink isDetailedLink)
         {            
             NotesPageHierarchyLevelBase parentLevel = verseNotesPageData;
             if (notePageInfo.Parent != null)
@@ -57,15 +57,26 @@ namespace BibleCommon.Services
                 pageLinkLevel.SetPageTitleLinkHref(notePageInfo.Id, notePageInfo.UniqueNoteTitleId);
             }
 
-            if (!processAsExtendedVerse || !vp.IsFirstVerseInParentVerse())
+            if (isDetailedLink != NoteLinkManager.DetailedLink.ChangeDetailedOnNotDetailed)
             {
-                pageLinkLevel.AddPageLink(new NotesPageLink()
-                                            {
-                                                VersePosition = versePosition,
-                                                VerseWeight = verseWeight,
-                                                PageId = notePageInfo.Id,
-                                                ContentObjectId = notePageContentObjectId
-                                            }, vp);
+                if (!processAsExtendedVerse || !vp.IsFirstVerseInParentVerse())
+                {
+                    pageLinkLevel.AddPageLink(new NotesPageLink()
+                                                {
+                                                    VersePosition = versePosition,
+                                                    VerseWeight = verseWeight,
+                                                    PageId = notePageInfo.Id,
+                                                    ContentObjectId = notePageContentObjectId,
+                                                    IsDetailed = isDetailedLink == NoteLinkManager.DetailedLink.Yes,
+                                                    VersePointer = vp
+                                                }, vp);
+                }
+            }
+            else
+            {
+                var notePageLink = pageLinkLevel.PageLinks.FirstOrDefault(link => object.ReferenceEquals(link.VersePointer, vp));
+                if (notePageLink != null)
+                    notePageLink.IsDetailed = false;
             }
         }
 

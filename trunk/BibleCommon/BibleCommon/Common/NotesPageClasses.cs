@@ -175,18 +175,7 @@ namespace BibleCommon.Common
             var chapterLinkHref = OpenBibleVerseHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName);
 
             XObject pageTitleAdditionalLinkEl = new XCData(string.Empty);
-            if (NotesPageType == Common.NotesPageType.Chapter) 
-            {
-                if (SettingsManager.Instance.RubbishPage_Use)
-                {
-                    pageTitleAdditionalLinkEl = new XElement("a",
-                                                    new XAttribute("class", "chapterNotesPage"),
-                                                    new XAttribute("href",
-                                                        OpenNotesPageHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName, Common.NotesPageType.Detailed)),
-                                                    Resources.Constants.DetailedChapterNotes);
-                }
-            }
-            else // для страниц заметок стихов и подробных заметок главы
+            if (NotesPageType != Common.NotesPageType.Chapter)             
             {
                 pageTitleAdditionalLinkEl = new XElement("a",
                                                     new XAttribute("class", "chapterNotesPage"),
@@ -310,9 +299,13 @@ namespace BibleCommon.Common
             {
                 var pageLink = pageLevel.PageLinks[0];
                 pageLevel.SetPageTitleLinkHref(pageLink.GetHref(ref oneNoteApp));
+
+                if (pageLink.IsDetailed)
+                    levelTitleLinkElClass += " detailed";
+
                 if (!string.IsNullOrEmpty(pageLink.MultiVerseString))
                 {
-                    levelTitleEl.Add(
+                    levelTitleEl.AddEl(
                         new XElement("span",
                             new XAttribute("class", "subLinkMultiVerse"),
                             pageLink.MultiVerseString));
@@ -353,9 +346,11 @@ namespace BibleCommon.Common
                            ? " importantVerseLink"
                            : string.Empty;
 
+            var detailedClassName = pageLink.IsDetailed ? " detailed" : string.Empty;                        
+
             subLinksEl.Add(new XElement("td", new XAttribute("class", "subLink"),
                                 new XElement("a",
-                                    new XAttribute("class", "subLinkLink" + importantClassName),
+                                    new XAttribute("class", "subLinkLink" + importantClassName + detailedClassName),
                                     new XAttribute("href", pageLink.GetHref(ref oneNoteApp)),
                                     string.Format(Resources.Constants.VerseLinkTemplate, linkIndex + 1))));         
 
@@ -698,6 +693,8 @@ namespace BibleCommon.Common
         public XmlCursorPosition? VersePosition { get; set; }
         public decimal VerseWeight { get; set; }
         public string MultiVerseString { get; set; }
+        public bool IsDetailed { get; set; }
+        public VersePointer VersePointer { get; set; }
 
         public string GetHref(ref Application oneNoteApp)
         {
@@ -705,7 +702,8 @@ namespace BibleCommon.Common
             {
                 _href = OneNoteUtils.GetOrGenerateLinkHref(ref oneNoteApp, null, PageId, ContentObjectId, true,
                                 string.Format("{0}={1}", Constants.QueryParameterKey_VersePosition, VersePosition),
-                                string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, VerseWeight));
+                                string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, VerseWeight),
+                                string.Format("{0}={1}", Constants.QueryParameterKey_IsDetailedLink, IsDetailed));
             }
 
             return _href;
@@ -733,6 +731,10 @@ namespace BibleCommon.Common
                     var verseWeightString = StringUtils.GetQueryParameterValue(_href, Constants.QueryParameterKey_VerseWeight);
                     if (!string.IsNullOrEmpty(verseWeightString))
                         VerseWeight = decimal.Parse(verseWeightString);
+
+                    var isDetailedLink = StringUtils.GetQueryParameterValue(_href, Constants.QueryParameterKey_IsDetailedLink);
+                    if (!string.IsNullOrEmpty(isDetailedLink))
+                        IsDetailed = bool.Parse(isDetailedLink);
                 }
 
                 WasParsed = true;
