@@ -428,6 +428,19 @@ namespace BibleCommon.Common
             return string.Format("{0} {1}:{2}", Book != null ? Book.Name : string.Empty, Chapter, Verse.GetValueOrDefault());
         }
 
+        /// <summary>
+        /// Если стих является subverse и стих является первым в родительском стихе, то возвращает true, иначе - false 
+        /// </summary>
+        public bool IsFirstVerseInParentVerse()
+        {
+            if (ParentVersePointer != null)
+            {
+                return this.Verse == ParentVersePointer.Verse;
+            }
+
+            return false;
+        }
+
 
         /// <summary>
         /// Новый термин: MultiVerseString - строка в стихе после названия книги. (*| 5:6, :6, :6-7, 5-6...)
