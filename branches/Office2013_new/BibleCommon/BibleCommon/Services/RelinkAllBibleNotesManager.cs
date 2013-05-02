@@ -63,12 +63,12 @@ namespace BibleCommon.Services
         private bool RelinkBiblePageNote(ref Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName, XElement textElement, VersePointer vp, VerseNumber? verseNumber)
         {
             bool wasModified = false;
-            if (SettingsManager.Instance.StoreNotesPagesInFolder
-                // || (SettingsManager.Instance.UseDifferentPagesForEachVerse && SettingsManager.Instance.UseProxyLinksForLinks)   //todo: наверное это не будем делать, сложно будет правильно обрабатывать в OpenNotesPageHandler
-                )
+            if (SettingsManager.Instance.StoreNotesPagesInFolder)
             {
                 var link = OpenNotesPageHandler.GetCommandUrlStatic(vp, SettingsManager.Instance.ModuleShortName, 
-                                                        SettingsManager.Instance.UseDifferentPagesForEachVerse && !vp.IsChapter ? NotesPageType.Verse : NotesPageType.Chapter);                
+                                                                                !vp.IsChapter 
+                                                                                    ? NotesPageType.Verse 
+                                                                                    : NotesPageType.Chapter);                
                 string newNotesPageLink = string.Format("<font size='2pt'>{0}</font>",
                                 OneNoteUtils.GetLink(SettingsManager.Instance.PageName_Notes, link));
 

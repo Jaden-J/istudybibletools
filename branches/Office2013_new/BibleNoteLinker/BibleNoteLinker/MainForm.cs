@@ -36,6 +36,9 @@ namespace BibleNoteLinker
 
         private void btnOk_Click(object sender, EventArgs e)
         {
+            btnOk.Enabled = false;
+            Application.DoEvents();
+
             if (_wasAnalyzed)
             {
                 this.Close();
@@ -45,6 +48,7 @@ namespace BibleNoteLinker
             if (!SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
             {
                 MessageBox.Show(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
+                this.Close();
                 return;
             }
 
