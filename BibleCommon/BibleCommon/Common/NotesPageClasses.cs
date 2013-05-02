@@ -149,7 +149,8 @@ namespace BibleCommon.Common
                             new XElement("head", 
                                 new XElement("meta", new XAttribute("http-equiv", "X-UA-Compatible"), new XAttribute("content", "IE=edge")),
                                 new XElement("title", string.Format("{0} [{1}]", PageName,  chapterVersePointer.ChapterName)),
-                                new XElement("link", new XAttribute("type", "text/css"), new XAttribute("rel", "stylesheet"), new XAttribute("href", "../../../" + Constants.NotesPageStyleFileName)),
+                                new XElement("link", new XAttribute("type", "text/css"), new XAttribute("rel", "stylesheet"), new XAttribute("href", "../../../" + Constants.NotesPageStyleFileName)),                                
+                                new XElement("script", new XAttribute("type", "text/javascript"), new XAttribute("src", "../../../" + Constants.NotesPageJQueryScriptFileName), ";"),
                                 new XElement("script", new XAttribute("type", "text/javascript"), new XAttribute("src", "../../../" + Constants.NotesPageScriptFileName), ";")
                             )));
 
@@ -172,41 +173,52 @@ namespace BibleCommon.Common
 
         private void AddPageTitle(XElement bodyEl, VersePointer chapterVersePointer)
         {            
-            var chapterLinkHref = OpenBibleVerseHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName);
+            var chapterLinkHref = OpenBibleVerseHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName);         
 
-            XObject pageTitleAdditionalLinkEl = new XCData(string.Empty);
-            if (NotesPageType != Common.NotesPageType.Chapter)             
+            bodyEl.Add(new XElement("table", new XAttribute("class", "pageTitleText"), new XAttribute("cellpadding", "0"), new XAttribute("cellspacing", "0"),
+                            new XElement("tr",
+                                new XElement("td",
+                                    new XAttribute("class", "pageTitleText"),
+                                    PageName),
+                                new XElement("td",
+                                    new XAttribute("class", "pageTitleLink"),
+                                    "["),
+                                new XElement("td",
+                                    new XAttribute("class", "pageTitleLink"),
+                                    new XElement("a",
+                                        new XAttribute("class", "pageTitleLink"),
+                                        new XAttribute("href", chapterLinkHref),
+                                        chapterVersePointer.ChapterName)),
+                                new XElement("td",
+                                    new XAttribute("class", "pageTitleLink"),
+                                    "]"))));
+
+
+            XObject pageTitleAdditionalLinkEl = new XCData("&nbsp;");
+            if (NotesPageType != Common.NotesPageType.Chapter)
             {
                 pageTitleAdditionalLinkEl = new XElement("a",
                                                     new XAttribute("class", "chapterNotesPage"),
                                                     new XAttribute("href",
                                                         OpenNotesPageHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName, Common.NotesPageType.Chapter)),
                                                     Resources.Constants.ChapterNotes);
-            }            
+            }
 
-            bodyEl.Add(new XElement("table", new XAttribute("class", "pageTitle"), new XAttribute("cellpadding", "0"), new XAttribute("cellspacing", "0"),
-                        new XElement("tr",
-                            new XElement("td", new XAttribute("class", "tdPageTitle"),
-                                new XElement("table", new XAttribute("class", "pageTitleText"), new XAttribute("cellpadding", "0"), new XAttribute("cellspacing", "0"),
-                                    new XElement("tr",
-                                        new XElement("td",
-                                            new XAttribute("class", "pageTitleText"),
-                                            PageName),
-                                        new XElement("td",
-                                            new XAttribute("class", "pageTitleLink"),
-                                            "["),
-                                        new XElement("td",
-                                            new XAttribute("class", "pageTitleLink"),
-                                            new XElement("a",
-                                                new XAttribute("class", "pageTitleLink"),
-                                                new XAttribute("href", chapterLinkHref),
-                                                chapterVersePointer.ChapterName)),
-                                        new XElement("td",
-                                            new XAttribute("class", "pageTitleLink"),
-                                            "]")))),
-                            new XElement("td", new XAttribute("class", "tdChapterNotesPage"),
-                                    pageTitleAdditionalLinkEl)
-                        )));
+            bodyEl.Add(new XElement("table", new XAttribute("class", "pageTitleRightBlock"), new XAttribute("cellpadding", "0"), new XAttribute("cellspacing", "0"),
+                            new XElement("tr",
+                                new XElement("td", new XAttribute("class", "chapterNotesPage"),
+                                     pageTitleAdditionalLinkEl)),
+                            new XElement("tr",
+                                new XElement("td", new XAttribute("class", "detailedNotes"),
+                                    new XElement("input",
+                                        new XAttribute("type", "checkbox"),
+                                        new XAttribute("class", "detailedNotes"),
+                                        new XAttribute("id", "chkDetailedNotes")),
+                                    new XElement("label",
+                                        new XAttribute("for", "chkDetailedNotes"),
+                                        new XAttribute("class", "detailedNotes"),
+                                        Resources.Constants.DetailedNotes)
+                            ))));
         }
 
         private void SerializeLevel(ref Application oneNoteApp, NotesPageHierarchyLevelBase hierarchyLevel, XElement parentEl, int levelIndex, int? index)

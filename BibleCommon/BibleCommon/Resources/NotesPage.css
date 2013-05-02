@@ -1,8 +1,34 @@
-﻿.pageTitle
+﻿table.pageTitleText
 {
     font-size:15pt;
-    font-weight:bold;
+    font-weight:bold;        
+    white-space:nowrap;
 } 
+.pageTitleLink
+{
+    font-size:small;
+}
+td.pageTitleText
+{
+    padding-right:5px;
+}
+td.pageTitleLink
+{    
+    padding-top:4px;
+}
+a.pageTitleLink
+{
+    padding-left:1px;
+    padding-right:1px;
+}
+table.pageTitleRightBlock
+{
+    width:100%;
+    text-align:right;
+    position:absolute;
+    padding-right:10px;
+    top:12px;
+}
 .verseLevel
 {
     margin-left:18px;    
@@ -46,40 +72,33 @@
 {
     display:none;
 }
-.pageTitleLink
-{
-    font-size:small;
-}
-td.pageTitleText
-{
-    padding-right:5px;
-}
-td.pageTitleLink
-{    
-    padding-top:4px;
-}
-a.pageTitleLink
-{
-    padding-left:1px;
-    padding-right:1px;
-}
-.chapterNotesPage
+
+a.chapterNotesPage
 {
     font-size:small;	
 }
-.pageTitle
-{
-	width:100%;
-}
-.tdPageTitle
-{	
-	white-space:nowrap;
-}
-.tdChapterNotesPage
+td.chapterNotesPage
 {	
 	text-align:right;
 	padding-right:5px;
 	white-space:nowrap;
+}
+td.detailedNotes
+{	
+	text-align:right;
+	padding-right:5px;
+	white-space:nowrap;			
+	cursor:pointer;    
+}
+input.detailedNotes 
+{
+    vertical-align:middle;
+    margin-bottom:2px;
+}
+label.detailedNotes 
+{    
+    font-size:small;    
+    font-weight:bold;
 }
 .importantVerseLink
 {
@@ -137,4 +156,3 @@ li.level8
 {
     list-style-type:lower-alpha;
 }
- 

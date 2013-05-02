@@ -858,4 +858,7 @@ Please take notice:
   <data name="ConfiguratorNotebookNotDefinedForType" xml:space="preserve">
     <value>Notebook is not specified for type '{0}'.</value>
   </data>
+  <data name="DetailedNotes" xml:space="preserve">
+    <value>Detailed Notes</value>
+  </data>
 </root>

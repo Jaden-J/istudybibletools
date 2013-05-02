@@ -700,6 +700,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Detailed Notes.
+        /// </summary>
+        public static string DetailedNotes {
+            get {
+                return ResourceManager.GetString("DetailedNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dictionaries Management.
         /// </summary>
         public static string DictionariesManagement {
