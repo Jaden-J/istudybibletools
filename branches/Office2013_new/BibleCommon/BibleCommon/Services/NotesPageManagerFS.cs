@@ -169,6 +169,7 @@ namespace BibleCommon.Services
         public static void UpdateNotesPageJsFile()
         {
             UpdateNotesPageFile("BibleCommon.Resources.NotesPage.js", Consts.Constants.NotesPageScriptFileName);
+            UpdateNotesPageFile("BibleCommon.Resources.JQuery.js", Consts.Constants.NotesPageJQueryScriptFileName);
         }
 
         private static void UpdateNotesPageFile(string fileResourceName, string fileName)
