@@ -1311,7 +1311,8 @@ namespace BibleConfigurator
             chkRubbishExcludedVersesLinking.Enabled = !chkDefaultParameters.Checked;
             chkUseProxyLinksForStrong.Enabled = !chkDefaultParameters.Checked;
 
-            chkUseRubbishPage_CheckedChanged(this, new EventArgs());            
+            chkUseRubbishPage_CheckedChanged(this, null);
+            chkUseFolderForBibleNotesPages_CheckedChanged(this, null);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -1970,7 +1971,10 @@ namespace BibleConfigurator
             tbBibleNotesPagesFolder.Enabled = chkUseFolderForBibleNotesPages.Checked;
             btnBibleNotesPagesSetFolder.Enabled = chkUseFolderForBibleNotesPages.Checked;
 
-            chkCreateBibleNotesPagesNotebookFromTemplate_CheckedChanged(this, null);            
+            chkCreateBibleNotesPagesNotebookFromTemplate_CheckedChanged(this, null);
+
+            tbRubbishNotesPageWidth.Enabled = !chkUseFolderForBibleNotesPages.Checked;
+            tbNotesPageWidth.Enabled = !chkUseFolderForBibleNotesPages.Checked;
         }
 
         private void btnBibleNotesPagesSetFolder_Click(object sender, EventArgs e)

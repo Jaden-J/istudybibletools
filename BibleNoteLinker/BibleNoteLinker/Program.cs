@@ -59,7 +59,7 @@ namespace BibleNoteLinker
         public static void RunFromAnotherApp(params string[] args)
         {
             try
-            {
+            {   
                 if (_firstLoad)
                 {
                     try
@@ -71,7 +71,7 @@ namespace BibleNoteLinker
                     _firstLoad = false;
                 }
 
-                Form form = PrepareForRunning(args);
+                var form = PrepareForRunning(args);
 
                 if (form != null)
                 {
