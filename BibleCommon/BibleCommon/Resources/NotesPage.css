@@ -1,4 +1,32 @@
-﻿table.pageTitleText
+﻿img.minus
+{    
+    vertical-align:middle;            
+    cursor:pointer;            
+    position:relative; 
+    left:-42px; 
+    top:-2px;
+    min-width:16px;    
+    max-height:16px;    
+}
+
+img.verseLevel.minus
+{
+    left:-25px; 
+}
+
+span.levelTitleText
+{
+    position:relative; 
+    left:-20px; 
+}
+
+a.verseLink
+{
+    position:relative; 
+    left:-20px; 
+}
+
+table.pageTitleText
 {
     font-size:15pt;
     font-weight:bold;        
@@ -22,18 +50,46 @@ a.pageTitleLink
     padding-right:1px;
 }
 table.pageTitleRightBlock
-{
-    width:100%;
+{   
+    width:100%;    
     text-align:right;
-    position:absolute;
-    padding-right:10px;
+    position:absolute;    
     top:12px;
+    left:0px;
 }
-.verseLevel
+a.chapterNotesPage
+{
+    font-size:small;	
+}
+td.chapterNotesPage
+{	
+	white-space:nowrap;
+	padding-right:10px;
+}
+td.detailedNotes
+{
+    padding-right:10px;
+}
+input.detailedNotes, label.detailedNotes
+{	
+	white-space:nowrap;			
+	cursor:pointer;    	
+}
+input.detailedNotes 
+{
+    vertical-align:middle;
+    margin-bottom:2px;
+}
+label.detailedNotes 
+{    
+    font-size:small;    
+    font-weight:bold;
+}
+div.verseLevel
 {
     margin-left:18px;    
 }            
-.verseLevel > .levelChilds
+div.verseLevel > .levelChilds
 {
     margin-left:15px;    
 }
@@ -61,6 +117,7 @@ table.pageTitleRightBlock
     margin-top:3px;
     margin-bottom:3px;    
     display:inline;
+    
 }                  
 .pageLevelTitle
 {                
@@ -71,34 +128,6 @@ table.pageTitleRightBlock
 .hidden
 {
     display:none;
-}
-
-a.chapterNotesPage
-{
-    font-size:small;	
-}
-td.chapterNotesPage
-{	
-	text-align:right;
-	padding-right:5px;
-	white-space:nowrap;
-}
-td.detailedNotes
-{	
-	text-align:right;
-	padding-right:5px;
-	white-space:nowrap;			
-	cursor:pointer;    
-}
-input.detailedNotes 
-{
-    vertical-align:middle;
-    margin-bottom:2px;
-}
-label.detailedNotes 
-{    
-    font-size:small;    
-    font-weight:bold;
 }
 .importantVerseLink
 {

@@ -104,6 +104,7 @@ namespace BibleNoteLinker
             {
                 NotesPageManagerFS.UpdateNotesPageCssFile();
                 NotesPageManagerFS.UpdateNotesPageJsFile();
+                NotesPageManagerFS.UpdateNotesPageImages();                
             }
 
             OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
@@ -240,7 +241,7 @@ namespace BibleNoteLinker
                     var vp = processedBiblePageId.ChapterPointer;
                     if (string.IsNullOrEmpty(processedBiblePageId.PageId))
                     {                        
-                        var hierarchySearchResult = HierarchySearchManager.GetHierarchyObject(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Bible, ref vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);
+                        var hierarchySearchResult = HierarchySearchManager.GetHierarchyObject(ref _oneNoteApp, SettingsManager.Instance.NotebookId_Bible, ref vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse, null, null);
                         if (hierarchySearchResult.FoundSuccessfully)
                         {
                             processedBiblePageId.SectionId = hierarchySearchResult.HierarchyObjectInfo.SectionId;
@@ -258,7 +259,7 @@ namespace BibleNoteLinker
                             relinkNotesManager.RelinkBiblePageNotes(ref _oneNoteApp, verseHierarchyInfoSafe.SectionId, verseHierarchyInfoSafe.PageId,
                                                         verseHierarchyInfoSafe.PageName, vp);
                             return true;
-                        });
+                        }, null, null);
                     }
                 }
                 catch (Exception ex)

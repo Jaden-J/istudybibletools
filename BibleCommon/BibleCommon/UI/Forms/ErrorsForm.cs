@@ -17,17 +17,24 @@ namespace BibleCommon.UI.Forms
     public partial class ErrorsForm : Form
     {
         public List<ErrorsList> AllErrors { get; set; }
+        private Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
 
         public string LogFilePath { get; set; }
 
         public ErrorsForm()
         {
-            AllErrors = new List<ErrorsList>();
+            AllErrors = new List<ErrorsList>();            
 
             InitializeComponent();            
         }
 
         public ErrorsForm(List<string> errors)
+            : this()
+        {
+            AllErrors.Add(new ErrorsList(errors));
+        }
+
+        public ErrorsForm(List<LogItem> errors)
             : this()
         {
             AllErrors.Add(new ErrorsList(errors));
@@ -57,12 +64,14 @@ namespace BibleCommon.UI.Forms
 
                         int index = 1;
 
-                        foreach (string error in errors)
+                        foreach (LogItem item in errors)
                         {
-                            lbErrors.Items.Add(string.Format("{0}. {1}", index++, error));
+                            var errorItem = item;
+                            errorItem.Message = string.Format("{0}. {1}", index++, errorItem.Message);
+                            lbErrors.Items.Add(errorItem);
 
                             //int width = Convert.ToInt32(error.Length * 5.75);
-                            int width = (int)g.MeasureString(error, lbErrors.Font).Width + 100;
+                            int width = (int)g.MeasureString(errorItem, lbErrors.Font).Width + 100;
                             if (width > lbErrors.HorizontalExtent)
                                 lbErrors.HorizontalExtent = width;
                         }
@@ -116,14 +125,34 @@ namespace BibleCommon.UI.Forms
         {
             if (!string.IsNullOrEmpty(LogFilePath))
                 Process.Start(LogFilePath);
+        }      
+
+        private void lbErrors_MouseClick(object sender, MouseEventArgs e)
+        {
+            TryToGoToErrorObject();
         }
 
-        private void lbErrors_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void TryToGoToErrorObject()
         {
-            //if (lbErrors.SelectedItem != null)
-            //{
+            if (lbErrors.SelectedItem != null)
+            {
+                if (lbErrors.SelectedItem is LogItem)
+                {
+                    var item = (LogItem)lbErrors.SelectedItem;
+                    if (!string.IsNullOrEmpty(item.PageId) && !string.IsNullOrEmpty(item.ContentObjectId))
+                    {
+                        OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
+                        {
+                            _oneNoteApp.NavigateTo(item.PageId, item.ContentObjectId);
+                        });
+                    }
+                }
+            }
+        }
 
-            //}
-        }        
+        private void ErrorsForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
+        }
     }
 }

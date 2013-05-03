@@ -171,6 +171,19 @@ namespace BibleCommon.Common
             xdoc.Save(this.FilePath);
         }
 
+        public VerseNotesPageData GetVerseNotesPageData(VersePointer vp)
+        {
+            if (!VersesNotesPageData.ContainsKey(vp))
+            {
+                var vnpd = new VerseNotesPageData(vp);
+                VersesNotesPageData.Add(vp, vnpd);
+
+                return vnpd;
+            }
+            else
+                return VersesNotesPageData[vp];
+        }
+
         private void AddPageTitle(XElement bodyEl, VersePointer chapterVersePointer)
         {            
             var chapterLinkHref = OpenBibleVerseHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName);         
@@ -194,7 +207,7 @@ namespace BibleCommon.Common
                                     "]"))));
 
 
-            XObject pageTitleAdditionalLinkEl = new XCData("&nbsp;");
+            XObject pageTitleAdditionalLinkEl;
             if (NotesPageType != Common.NotesPageType.Chapter)
             {
                 pageTitleAdditionalLinkEl = new XElement("a",
@@ -203,6 +216,8 @@ namespace BibleCommon.Common
                                                         OpenNotesPageHandler.GetCommandUrlStatic(chapterVersePointer, SettingsManager.Instance.ModuleShortName, Common.NotesPageType.Chapter)),
                                                     Resources.Constants.ChapterNotes);
             }
+            else
+                pageTitleAdditionalLinkEl = new XElement("br");
 
             bodyEl.Add(new XElement("table", new XAttribute("class", "pageTitleRightBlock"), new XAttribute("cellpadding", "0"), new XAttribute("cellspacing", "0"),
                             new XElement("tr",
@@ -225,7 +240,7 @@ namespace BibleCommon.Common
         {
             var levelEl = parentEl.AddEl(
                                     new XElement(hierarchyLevel is VerseNotesPageData ? "div" : "li", 
-                                        new XAttribute("class", GetLevelClassName(hierarchyLevel, levelIndex))));            
+                                        new XAttribute("class", GetLevelClassName(hierarchyLevel, levelIndex))));                       
 
             if (hierarchyLevel is NotesPagePageLevel)
             {
@@ -239,9 +254,12 @@ namespace BibleCommon.Common
 
                     if (hierarchyLevel.Levels.Count > 0)  // хотя по идеи не может у него не быть детей то...
                     {
+                        var className = "levelChilds level" + (levelIndex + 1);
+                        if (hierarchyLevel is NotesPageHierarchyLevel && ((NotesPageHierarchyLevel)hierarchyLevel).Collapsed)
+                            className += " hidden";
                         levelEl = levelEl.AddEl(
                                             new XElement("ol",
-                                                new XAttribute("class", "levelChilds level" + (levelIndex + 1))));
+                                                new XAttribute("class", className)));
 
                         var childIndex = 0;
                         foreach (var childHierarchyLevel in hierarchyLevel.Levels.Values)
@@ -251,7 +269,7 @@ namespace BibleCommon.Common
                     }
                 }
             }                                    
-        }
+        }       
 
         private HierarchyElementType GetHierarchyTypeFromClassName(string className)
         {
@@ -377,6 +395,8 @@ namespace BibleCommon.Common
 
         private void GenerateHierarchyLevel(NotesPageHierarchyLevelBase hierarchyLevel, XElement levelEl, int level, int? index)
         {
+            AddImgCollapse(hierarchyLevel, levelEl);                    
+
             var levelTitleEl = levelEl.AddEl(new XElement("p", new XAttribute("class", "levelTitle")));
 
             if (hierarchyLevel is VerseNotesPageData)
@@ -400,29 +420,30 @@ namespace BibleCommon.Common
 
                 levelEl.Add(new XAttribute(Constants.NotesPageElementAttributeName_SyncId, ((NotesPageHierarchyLevel)hierarchyLevel).Id));                
             }
-        }        
+        }
+
+        private void AddImgCollapse(NotesPageHierarchyLevelBase hierarchyLevel, XElement levelEl)
+        {
+            var className = hierarchyLevel is VerseNotesPageData ? "verseLevel minus" : "minus";
+            var imgFileName = "none.png";
+            if (hierarchyLevel is NotesPageHierarchyLevel && ((NotesPageHierarchyLevel)hierarchyLevel).Collapsed)
+            {
+                className += " collapsed";
+                imgFileName = "plus.png";
+            }
+
+            levelEl.Add(new XElement("img", new XAttribute("class", className), new XAttribute("src", "../../../images/" + imgFileName)));
+        }
 
         private string GetDisplayLevel(int level, int? index)
         {
             return "A.";            
-        }        
-
-        public VerseNotesPageData GetVerseNotesPageData(VersePointer vp)
-        {
-            if (!VersesNotesPageData.ContainsKey(vp))
-            {
-                var vnpd = new VerseNotesPageData(vp);
-                VersesNotesPageData.Add(vp, vnpd);
-                return vnpd;
-            }
-            else
-                return VersesNotesPageData[vp];
-        }
+        }               
     }
 
     public class VerseNotesPageData : NotesPageHierarchyLevelBase, IComparable<VerseNotesPageData>
     {
-        public VersePointer Verse { get; set; }
+        public VersePointer Verse { get; set; }        
 
         public Dictionary<string, NotesPagePageLevel> AllPagesLevels { get; set; }
 
@@ -550,7 +571,7 @@ namespace BibleCommon.Common
 
         public NotesPageHierarchyLevelBase Parent { get; set; }
         public VerseNotesPageData Root { get; set; }
-        
+        public bool Collapsed { get; set; }
 
         public NotesPageHierarchyLevel()
             : base()
@@ -597,7 +618,7 @@ namespace BibleCommon.Common
 
     public abstract class NotesPageHierarchyLevelBase
     {
-        public OrderedDictionary<string, NotesPageHierarchyLevel> Levels { get; set; }
+        public OrderedDictionary<string, NotesPageHierarchyLevel> Levels { get; set; }        
 
         public virtual void AddLevel(ref Application oneNoteApp, NotesPageHierarchyLevel level, HierarchyElementInfo notePageHierarchyElInfo, bool toSort)
         {

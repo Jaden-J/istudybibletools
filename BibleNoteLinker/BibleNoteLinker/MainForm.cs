@@ -261,7 +261,7 @@ namespace BibleNoteLinker
 
         private void llblShowErrors_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            var messages = new List<string>();   
+            var messages = new List<LogItem>();   
             messages.AddRange(Logger.Errors);              // если не было ошибок, то и так будет пустой список
             messages.AddRange(Logger.Warnings);
 
