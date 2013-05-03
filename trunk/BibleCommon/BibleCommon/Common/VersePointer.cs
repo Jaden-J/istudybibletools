@@ -841,7 +841,7 @@ namespace BibleCommon.Common
                         {
                             topVerse = HierarchySearchManager.GetChapterVersesCount(
                                             ref oneNoteApp, args.BibleNotebookId,
-                                            VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex))
+                                            VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex), null, null)
                                             .GetValueOrDefault(0);
                         }
 

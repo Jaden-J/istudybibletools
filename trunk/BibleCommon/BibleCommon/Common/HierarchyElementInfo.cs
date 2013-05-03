@@ -141,5 +141,13 @@ namespace BibleCommon.Common
                 return null;
             }
         }
+
+        public int GetLevel()
+        {
+            if (Parent != null)
+                return Parent.GetLevel() + 1;
+            else
+                return 1;
+        }
     }
 }

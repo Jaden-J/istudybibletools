@@ -400,7 +400,7 @@ namespace BibleCommon.Services
 
             var parallelVersePointer = parallelVerse.ToVersePointer(SettingsManager.Instance.CurrentModuleCached);
             var primaryBibleObjectsSearchResult = HierarchySearchManager.GetHierarchyObject(ref oneNoteApp,
-                    SettingsManager.Instance.NotebookId_Bible, ref parallelVersePointer, HierarchySearchManager.FindVerseLevel.AllVerses);
+                    SettingsManager.Instance.NotebookId_Bible, ref parallelVersePointer, HierarchySearchManager.FindVerseLevel.AllVerses, null, null);
 
             if (primaryBibleObjectsSearchResult.ResultType != BibleHierarchySearchResultType.Successfully
                 || primaryBibleObjectsSearchResult.HierarchyStage != BibleHierarchyStage.ContentPlaceholder)

@@ -188,6 +188,8 @@
             // chkUseFolderForBibleNotesPages
             // 
             resources.ApplyResources(this.chkUseFolderForBibleNotesPages, "chkUseFolderForBibleNotesPages");
+            this.chkUseFolderForBibleNotesPages.Checked = true;
+            this.chkUseFolderForBibleNotesPages.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkUseFolderForBibleNotesPages.Name = "chkUseFolderForBibleNotesPages";
             this.chkUseFolderForBibleNotesPages.UseVisualStyleBackColor = true;
             this.chkUseFolderForBibleNotesPages.CheckedChanged += new System.EventHandler(this.chkUseFolderForBibleNotesPages_CheckedChanged);

@@ -219,6 +219,13 @@ namespace BibleConfigurator
             if (chkNotebookBibleGenerate.Checked)
             {
                 AddMarkingWordsSection(converter.BibleNotebookId);
+
+                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
+                {
+                    _oneNoteApp.SyncHierarchy(converter.BibleNotebookId);
+                });
+                Utils.WaitFor(30);
+
                 PublishNotebook(converter.BibleNotebookId, Path.Combine(tbResultDirectory.Text, NotebookBibleName + BibleCommon.Consts.Constants.FileExtensionOnepkg), true);
             }
             else
@@ -328,7 +335,6 @@ namespace BibleConfigurator
             }                              
         }
 
-
         private void AddMarkingWordsSection(string notebookId)
         {
             if (string.IsNullOrEmpty(MarkingWordsSectionFilePath))
@@ -340,10 +346,17 @@ namespace BibleConfigurator
             var markingWordsSectionName = Path.GetFileName(MarkingWordsSectionFilePath);
 
             File.Copy(MarkingWordsSectionFilePath, Path.Combine(notebookPath, markingWordsSectionName), true);
-            string markingWordsSectionId;
+            string markingWordsSectionId = null;
             OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                _oneNoteApp.OpenHierarchy(markingWordsSectionName, notebookId, out markingWordsSectionId, CreateFileType.cftSection);
+                _oneNoteApp.OpenHierarchy(markingWordsSectionName, notebookId, out markingWordsSectionId, CreateFileType.cftSection);               
+            });
+
+            Utils.WaitFor(3);
+
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
+            {               
+                _oneNoteApp.SyncHierarchy(markingWordsSectionId);
             });
         }
 
@@ -351,7 +364,6 @@ namespace BibleConfigurator
         {
             if (File.Exists(targetFilePath))
                 File.Delete(targetFilePath);
-
 
             AddFileForWatching(targetFilePath, closeNotebook ? notebookId : null);
             OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>

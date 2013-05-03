@@ -8,17 +8,17 @@ namespace BibleCommon.Services
 {
     public static class BibleContentSearchManager
     {
-        public static bool CheckVerseForExisting(ref VersePointer vp)
+        public static bool CheckVerseForExisting(ref VersePointer vp, string pageId, string contentObjectId)
         {
-            return GetHierarchyObject(ref vp).FoundSuccessfully;
+            return GetHierarchyObject(ref vp, pageId, contentObjectId).FoundSuccessfully;
         }
 
-        public static BibleSearchResult GetHierarchyObject(ref VersePointer vp)
+        public static BibleSearchResult GetHierarchyObject(ref VersePointer vp, string pageId, string contentObjectId)
         {
-            return GetHierarchyObjectInternal(ref vp, true);
+            return GetHierarchyObjectInternal(ref vp, true, pageId, contentObjectId);
         }
 
-        private static BibleSearchResult GetHierarchyObjectInternal(ref VersePointer vp, bool checkForOneChapteredBook)
+        private static BibleSearchResult GetHierarchyObjectInternal(ref VersePointer vp, bool checkForOneChapteredBook, string pageId, string contentObjectId)
         {
             VerseNumber verseNumber;
             BibleSearchResult hierarchySearchResult = null;
@@ -45,7 +45,7 @@ namespace BibleCommon.Services
             {
                 if (SettingsManager.Instance.CurrentBibleContentCached.BookHasOnlyOneChapter(svp))
                 {
-                    var changedVerseResult = TryToChangeVerseAsOneChapteredBookAndSearchInHierarchy(ref vp);
+                    var changedVerseResult = TryToChangeVerseAsOneChapteredBookAndSearchInHierarchy(ref vp, pageId, contentObjectId);
                     if (changedVerseResult != null)
                         return changedVerseResult;
                 }
@@ -57,17 +57,17 @@ namespace BibleCommon.Services
                 {
                     ResultType = BibleHierarchySearchResultType.NotFound
                 };
-                BibleCommon.Services.Logger.LogWarning(BibleCommon.Resources.Constants.VerseNotFound, vp.OriginalVerseName);
+                BibleCommon.Services.Logger.LogWarning(pageId, contentObjectId, BibleCommon.Resources.Constants.VerseNotFound, vp.OriginalVerseName);
             }
 
             return hierarchySearchResult;
         }
 
-        private static BibleSearchResult TryToChangeVerseAsOneChapteredBookAndSearchInHierarchy(ref VersePointer vp)
+        private static BibleSearchResult TryToChangeVerseAsOneChapteredBookAndSearchInHierarchy(ref VersePointer vp, string pageId, string contentObjectId)
         {
             var modifiedVp = new VersePointer(vp.OriginalVerseName);
             modifiedVp.ChangeVerseAsOneChapteredBook();
-            var changedVerseResult = GetHierarchyObjectInternal(ref modifiedVp, false);
+            var changedVerseResult = GetHierarchyObjectInternal(ref modifiedVp, false, pageId, contentObjectId);
             if (changedVerseResult.FoundSuccessfully)
             {
                 vp.ChangeVerseAsOneChapteredBook();

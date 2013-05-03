@@ -855,4 +855,7 @@
   <data name="ConfiguratorNotebookNotDefinedForType" xml:space="preserve">
     <value>Не указана записная книжка для типа '{0}'.</value>
   </data>
+  <data name="DetailedNotes" xml:space="preserve">
+    <value>Подробные заметки</value>
+  </data>
 </root>

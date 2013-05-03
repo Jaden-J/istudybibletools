@@ -10,31 +10,31 @@ namespace BibleCommon.Providers
 {
     public static class BibleHierarchySearchProvider
     {
-        public static BibleSearchResult GetHierarchyObject(ref Application oneNoteApp, ref VersePointer vp, NoteLinkManager.AnalyzeDepth? linkDepth)
+        public static BibleSearchResult GetHierarchyObject(ref Application oneNoteApp, ref VersePointer vp, NoteLinkManager.AnalyzeDepth? linkDepth, string pageId, string contentObjectId)
         {
             if (SettingsManager.Instance.UseProxyLinksForBibleVerses && SettingsManager.Instance.CanUseBibleContent
                 && (SettingsManager.Instance.StoreNotesPagesInFolder || linkDepth.GetValueOrDefault() < NoteLinkManager.AnalyzeDepth.Full))
             {
-                return BibleContentSearchManager.GetHierarchyObject(ref vp);
+                return BibleContentSearchManager.GetHierarchyObject(ref vp, pageId, contentObjectId);
             }
             else
             {
                 return HierarchySearchManager.GetHierarchyObject(
-                                                    ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, ref vp, HierarchySearchManager.FindVerseLevel.AllVerses);
+                                                    ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, ref vp, HierarchySearchManager.FindVerseLevel.AllVerses, pageId, contentObjectId);
             }
         }
 
-        public static bool CheckVerseForExisting(ref Application oneNoteApp, ref VersePointer vp)
+        public static bool CheckVerseForExisting(ref Application oneNoteApp, ref VersePointer vp, string pageId, string contentObjectId)
         {
             if (SettingsManager.Instance.CanUseBibleContent)
             {
-                return BibleContentSearchManager.GetHierarchyObject(ref vp).FoundSuccessfully;
+                return BibleContentSearchManager.GetHierarchyObject(ref vp, pageId, contentObjectId).FoundSuccessfully;
             }
             else
             {
                 return HierarchySearchManager.GetHierarchyObject(
                                                     ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, ref vp,
-                                                    HierarchySearchManager.FindVerseLevel.OnlyVersesOfFirstChapter).FoundSuccessfully;
+                                                    HierarchySearchManager.FindVerseLevel.OnlyVersesOfFirstChapter, pageId, contentObjectId).FoundSuccessfully;
             }
         }
     }
