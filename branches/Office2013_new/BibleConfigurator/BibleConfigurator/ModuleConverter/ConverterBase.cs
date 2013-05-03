@@ -126,6 +126,9 @@ namespace BibleConfigurator.ModuleConverter
             
             //UpdateNotebookProperties(externalModuleInfo);            
 
+            if (GenerateBibleNotebook)
+                Utils.WaitFor(3);
+
             ProcessBibleBooks(externalModuleInfo);
 
             GenerateManifest(externalModuleInfo);

@@ -284,7 +284,7 @@ namespace BibleConfigurator
                 if (!useExistingNotebook)
                 {
                     selectedModuleInfo = ((ModuleInfo)CbModule.SelectedItem);
-                    errors = CommitChanges(selectedModuleInfo);
+                    errors = CommitChanges(selectedModuleInfo).ConvertAll(item => item.Message);
                 }
                 else
                 {

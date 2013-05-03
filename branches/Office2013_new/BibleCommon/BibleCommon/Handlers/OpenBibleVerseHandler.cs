@@ -85,7 +85,7 @@ namespace BibleCommon.Handlers
 
         private bool GoToVerse(ref Application oneNoteApp, VersePointer vp)
         {
-            var result = HierarchySearchManager.GetHierarchyObject(ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, ref vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse);
+            var result = HierarchySearchManager.GetHierarchyObject(ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, ref vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse, null, null);
 
             if (result.ResultType != BibleHierarchySearchResultType.NotFound
                 && (result.HierarchyStage == BibleHierarchyStage.ContentPlaceholder || result.HierarchyStage == BibleHierarchyStage.Page))

@@ -9,6 +9,28 @@ using System.Drawing;
 
 namespace BibleCommon.Services
 {
+    public struct LogItem
+    {
+        public string Message { get; set; }
+        public string PageId { get; set; }
+        public string ContentObjectId { get; set; }
+
+        public override string ToString()
+        {
+            return Message;
+        }
+
+        public static implicit operator string(LogItem item)
+        {
+            return item.Message;
+        }
+
+        public static implicit operator LogItem(string message)
+        {
+            return new LogItem() { Message = message };
+        }
+    }
+
     public static class Logger
     {
         public enum Severity
@@ -26,8 +48,8 @@ namespace BibleCommon.Services
         private static StreamWriter _streamWriter = null;
         private static ListBox _lb = null;
 
-        public static List<string> Errors { get; set; }
-        public static List<string> Warnings { get; set; }
+        public static List<LogItem> Errors { get; set; }
+        public static List<LogItem> Warnings { get; set; }
 
         public static string LogFilePath
         {
@@ -70,8 +92,8 @@ namespace BibleCommon.Services
 
                 _streamWriter = new StreamWriter(_fileStream, Encoding.UTF8);
 
-                Errors = new List<string>();
-                Warnings = new List<string>();
+                Errors = new List<LogItem>();
+                Warnings = new List<LogItem>();
 
                 _isInitialized = true;
             }
@@ -110,20 +132,21 @@ namespace BibleCommon.Services
             }
         }
 
-        public static void LogMessage(string message, bool leveled, bool newLine, bool writeDateTime = true, bool silient = false, Severity severity = Severity.Info)
+        public static void LogMessage(string message, bool leveled, bool newLine,
+            bool writeDateTime = true, bool silient = false, Severity severity = Severity.Info, string pageId = null, string contentObjectId = null)
         {
-            LogMessageToFileAndConsole(false, string.Empty, null, writeDateTime, silient, severity);
+            LogMessageToFileAndConsole(false, string.Empty, null, writeDateTime, silient, severity, pageId, contentObjectId);
 
             if (leveled)
                 for (int i = 0; i < _level; i++)
-                    LogMessageToFileAndConsole(false, "  ", null, false, silient, severity);
+                    LogMessageToFileAndConsole(false, "  ", null, false, silient, severity, pageId, contentObjectId);
 
-            LogMessageToFileAndConsole(newLine, message, null, false, silient, severity);
+            LogMessageToFileAndConsole(newLine, message, null, false, silient, severity, pageId, contentObjectId);
         }
 
 
         private static bool _newLineForListBox = false;
-        private static void LogMessageToFileAndConsole(bool newLine, string message, string messageEx, bool writeDateTime, bool silient, Severity severity)
+        private static void LogMessageToFileAndConsole(bool newLine, string message, string messageEx, bool writeDateTime, bool silient, Severity severity, string pageId, string contentObjectId)
         {
             if (!_isInitialized)
             {
@@ -182,14 +205,27 @@ namespace BibleCommon.Services
 
             if (severity == Severity.Error)
             {
-                if (Errors != null)
-                    Errors.Add(message);
+                if (Errors != null && !string.IsNullOrEmpty(message) && !string.IsNullOrEmpty(message.Trim()))
+                {
+                    Errors.Add(new LogItem()
+                    {
+                        Message = message,
+                        PageId = pageId,
+                        ContentObjectId = contentObjectId
+                    });
+                }
             }
             else if (severity == Severity.Warning)
             {
-                if (Warnings != null)
-                    if (!string.IsNullOrEmpty(message) && !string.IsNullOrEmpty(message.Trim()))
-                        Warnings.Add(message);
+                if (Warnings != null && !string.IsNullOrEmpty(message) && !string.IsNullOrEmpty(message.Trim()))
+                {
+                    Warnings.Add(new LogItem()
+                    {
+                        Message = message,
+                        PageId = pageId,
+                        ContentObjectId = contentObjectId
+                    });
+                }
             }
         }
 
@@ -219,6 +255,12 @@ namespace BibleCommon.Services
             WarningWasLogged = true;
         }
 
+        public static void LogWarning(string pageId, string contentObjectId, string message, params object[] args)
+        {
+            LogMessage("Warning: " + FormatString(message, args), true, true, true, false, Severity.Warning, pageId, contentObjectId);
+            WarningWasLogged = true;
+        }
+
         /// <summary>
         /// Log only to log
         /// </summary>
@@ -236,7 +278,7 @@ namespace BibleCommon.Services
 
         public static void LogError(string message, Exception ex)
         {
-            LogMessageToFileAndConsole(true, string.Format("{0}{1} {2}", _errorText, message, OneNoteUtils.ParseError(ex.Message)), string.Format("{0} {1}", message, ex.ToString()), true, false, Severity.Error);
+            LogMessageToFileAndConsole(true, string.Format("{0}{1} {2}", _errorText, message, OneNoteUtils.ParseError(ex.Message)), string.Format("{0} {1}", message, ex.ToString()), true, false, Severity.Error, null, null);
             ErrorWasLogged = true;   
         }
 
@@ -247,7 +289,7 @@ namespace BibleCommon.Services
 
         public static void LogError(string message, params object[] args)
         {
-            LogMessageToFileAndConsole(true, _errorText + FormatString(message, args), null, true, false, Severity.Error);
+            LogMessageToFileAndConsole(true, _errorText + FormatString(message, args), null, true, false, Severity.Error, null, null);
             ErrorWasLogged = true;
         }
 

@@ -206,6 +206,7 @@ namespace BibleConfigurator
                         SettingsManager.Instance.NotebookId_BibleNotesPages = string.Empty;
                         NotesPageManagerFS.UpdateNotesPageCssFile();
                         NotesPageManagerFS.UpdateNotesPageJsFile();
+                        NotesPageManagerFS.UpdateNotesPageImages();
                     }
                 }
 
@@ -964,7 +965,9 @@ namespace BibleConfigurator
                 cbBibleStudyNotebook.Items.Add(cbItem);
             }
 
-            if (module.UseSingleNotebook() || IsModerator || SettingsManager.Instance.IsSingleNotebook)
+            var useSingleNotebook = module.UseSingleNotebook() || IsModerator || SettingsManager.Instance.IsSingleNotebook;
+
+            if (useSingleNotebook)
             {
                 var defaultNotebookName = "";
                 if (module.UseSingleNotebook())
@@ -997,8 +1000,9 @@ namespace BibleConfigurator
                                                     ? _notebooks[bibleNotesPagesNotebookId]
                                                     : Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.BibleNotesPages).Name),
                                       _notebooks, SettingsManager.Instance.NotebookId_BibleNotesPages, cbBibleNotesPagesNotebook, chkCreateBibleNotesPagesNotebookFromTemplate);
-
-                chkUseFolderForBibleNotesPages.Checked = false;
+                
+                if (!useSingleNotebook)
+                    chkUseFolderForBibleNotesPages.Checked = false;
             }
 
             tbBibleNotesPagesFolder.Text = SettingsManager.Instance.FolderPath_BibleNotesPages;
@@ -1149,9 +1153,12 @@ namespace BibleConfigurator
                 chkCreateBibleNotebookFromTemplate_CheckedChanged(this, null);
                 chkCreateBibleCommentsNotebookFromTemplate_CheckedChanged(this, null);
                 chkCreateBibleStudyNotebookFromTemplate_CheckedChanged(this, null);
-                chkCreateBibleNotesPagesNotebookFromTemplate_CheckedChanged(this, null);
-                chkUseFolderForBibleNotesPages_CheckedChanged(this, null);
-            }            
+
+                SetNotesPagesNotebookControlsAbility();                                
+            }
+
+            SetNotesPageAnalyzeControlsAbility();
+            SetRubbishControlsAbility();                
         }
 
         private void chkCreateSingleNotebookFromTemplate_CheckedChanged(object sender, EventArgs e)
@@ -1175,8 +1182,7 @@ namespace BibleConfigurator
 
         private void chkCreateBibleNotesPagesNotebookFromTemplate_CheckedChanged(object sender, EventArgs e)
         {
-            cbBibleNotesPagesNotebook.Enabled = chkCreateBibleNotesPagesNotebookFromTemplate.Enabled && !chkCreateBibleNotesPagesNotebookFromTemplate.Checked;
-            btnBibleNotesPagesNotebookSetPath.Enabled = chkCreateBibleNotesPagesNotebookFromTemplate.Enabled && chkCreateBibleNotesPagesNotebookFromTemplate.Checked;
+            SetNotesPagesNotebookControlsAbility();
         }
 
         private void chkCreateBibleStudyNotebookFromTemplate_CheckedChanged(object sender, EventArgs e)
@@ -1310,6 +1316,8 @@ namespace BibleConfigurator
             chkRubbishExpandMultiVersesLinking.Enabled = !chkDefaultParameters.Checked;
             chkRubbishExcludedVersesLinking.Enabled = !chkDefaultParameters.Checked;
             chkUseProxyLinksForStrong.Enabled = !chkDefaultParameters.Checked;
+            chkUseProxyLinksForBibleVerses.Enabled = !chkDefaultParameters.Checked;
+            chkUseProxyLinksForLinks.Enabled = !chkDefaultParameters.Checked;
 
             chkUseRubbishPage_CheckedChanged(this, null);
             chkUseFolderForBibleNotesPages_CheckedChanged(this, null);
@@ -1382,10 +1390,7 @@ namespace BibleConfigurator
 
         private void chkUseRubbishPage_CheckedChanged(object sender, EventArgs e)
         {
-            tbRubbishNotesPageName.Enabled = chkUseRubbishPage.Enabled && chkUseRubbishPage.Checked;
-            tbRubbishNotesPageWidth.Enabled = chkUseRubbishPage.Enabled && chkUseRubbishPage.Checked;
-            chkRubbishExpandMultiVersesLinking.Enabled = chkUseRubbishPage.Enabled && chkUseRubbishPage.Checked;
-            chkRubbishExcludedVersesLinking.Enabled = chkUseRubbishPage.Enabled && chkUseRubbishPage.Checked;            
+            SetRubbishControlsAbility();
         }
 
         private void btnDeleteNotesPages_Click(object sender, EventArgs e)
@@ -1965,16 +1970,10 @@ namespace BibleConfigurator
 
         private void chkUseFolderForBibleNotesPages_CheckedChanged(object sender, EventArgs e)
         {
-            cbBibleNotesPagesNotebook.Enabled = !chkUseFolderForBibleNotesPages.Checked;
-            chkCreateBibleNotesPagesNotebookFromTemplate.Enabled = !chkUseFolderForBibleNotesPages.Checked;
+            SetNotesPagesNotebookControlsAbility();
 
-            tbBibleNotesPagesFolder.Enabled = chkUseFolderForBibleNotesPages.Checked;
-            btnBibleNotesPagesSetFolder.Enabled = chkUseFolderForBibleNotesPages.Checked;
-
-            chkCreateBibleNotesPagesNotebookFromTemplate_CheckedChanged(this, null);
-
-            tbRubbishNotesPageWidth.Enabled = !chkUseFolderForBibleNotesPages.Checked;
-            tbNotesPageWidth.Enabled = !chkUseFolderForBibleNotesPages.Checked;
+            SetNotesPageAnalyzeControlsAbility();
+            SetRubbishControlsAbility();
         }
 
         private void btnBibleNotesPagesSetFolder_Click(object sender, EventArgs e)
@@ -1992,6 +1991,43 @@ namespace BibleConfigurator
         {
             if (string.IsNullOrEmpty(tbBibleNotesPagesFolder.Text))
                 btnBibleNotesPagesSetFolder_Click(this, null);
-        }                                             
+        }
+
+        private void SetNotesPagesNotebookControlsAbility()
+        {
+            chkCreateBibleNotesPagesNotebookFromTemplate.Enabled = chkUseFolderForBibleNotesPages.Enabled && !chkUseFolderForBibleNotesPages.Checked;
+
+            cbBibleNotesPagesNotebook.Enabled = (chkUseFolderForBibleNotesPages.Enabled && !chkUseFolderForBibleNotesPages.Checked)
+                                                && (chkCreateBibleNotesPagesNotebookFromTemplate.Enabled && !chkCreateBibleNotesPagesNotebookFromTemplate.Checked);            
+
+            tbBibleNotesPagesFolder.Enabled = chkUseFolderForBibleNotesPages.Enabled && chkUseFolderForBibleNotesPages.Checked;
+            btnBibleNotesPagesSetFolder.Enabled = chkUseFolderForBibleNotesPages.Enabled && chkUseFolderForBibleNotesPages.Checked;
+            
+            btnBibleNotesPagesNotebookSetPath.Enabled = chkCreateBibleNotesPagesNotebookFromTemplate.Enabled && chkCreateBibleNotesPagesNotebookFromTemplate.Checked;
+        }
+
+        private void SetNotesPageAnalyzeControlsAbility()
+        {
+            var storeNotesPageInFolder = !chkUseFolderForBibleNotesPages.Enabled || !chkUseFolderForBibleNotesPages.Checked;
+
+            chkExcludedVersesLinking.Enabled = storeNotesPageInFolder && !chkDefaultParameters.Checked;
+            chkExpandMultiVersesLinking.Enabled = storeNotesPageInFolder && !chkDefaultParameters.Checked;
+            chkUseDifferentPages.Enabled = storeNotesPageInFolder && !chkDefaultParameters.Checked;
+            tbNotesPageWidth.Enabled = storeNotesPageInFolder && !chkDefaultParameters.Checked;
+        }
+
+        private void SetRubbishControlsAbility()
+        {
+            var storeNotesPageInFolder = !chkUseFolderForBibleNotesPages.Enabled || !chkUseFolderForBibleNotesPages.Checked;
+
+            chkUseRubbishPage.Enabled = storeNotesPageInFolder && !chkDefaultParameters.Checked;
+
+            var useRubbishPage = chkUseRubbishPage.Enabled && chkUseRubbishPage.Checked;
+
+            tbRubbishNotesPageWidth.Enabled = storeNotesPageInFolder && !chkDefaultParameters.Checked && useRubbishPage;
+            tbRubbishNotesPageName.Enabled = storeNotesPageInFolder && !chkDefaultParameters.Checked && useRubbishPage;
+            chkRubbishExcludedVersesLinking.Enabled = storeNotesPageInFolder && !chkDefaultParameters.Checked && useRubbishPage;
+            chkRubbishExpandMultiVersesLinking.Enabled = storeNotesPageInFolder && !chkDefaultParameters.Checked && useRubbishPage;            
+        }
     }
 }

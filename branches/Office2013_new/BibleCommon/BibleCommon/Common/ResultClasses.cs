@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BibleCommon.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,12 +12,17 @@ namespace BibleCommon.Common
         internal bool WasModified { get; set; }
     }
 
-    public class ErrorsList : List<string>
+    public class ErrorsList : List<LogItem>
     {
         public string ErrorsDecription { get; set; }
 
-        public ErrorsList(IEnumerable<string> collection)
+        public ErrorsList(IEnumerable<LogItem> collection)
             : base(collection)
+        {
+        }
+
+        public ErrorsList(IEnumerable<string> collection)
+            : base(collection.ToList().ConvertAll<LogItem>(s => new LogItem() { Message = s }))
         {
         }
     }

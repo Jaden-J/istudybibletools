@@ -46,7 +46,7 @@ namespace BibleCommon.Services
 
                 if (verseNumber.HasValue)
                 {
-                    VersePointer vp = new VersePointer(chapterPointer, verseNumber.Value.Verse);
+                    VersePointer vp = new VersePointer(chapterPointer, verseNumber.Value);
 
                     if (ApplicationCache.Instance.ProcessedVersesOnBiblePagesWithUpdatedLinksToNotesPages.Contains(vp.ToSimpleVersePointer()))  // если мы обрабатывали этот стих
                     {

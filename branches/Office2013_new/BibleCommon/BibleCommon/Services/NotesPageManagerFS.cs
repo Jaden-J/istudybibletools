@@ -14,6 +14,7 @@ namespace BibleCommon.Services
     public static class NotesPageManagerFS
     {
         private static Dictionary<string, HashSet<string>> _processedNodes = new Dictionary<string, HashSet<string>>();  // список актуализированных узлов в рамках текущей сессии анализа заметок
+        private static Dictionary<string, int?> _notebooksDisplayLevel;
 
         public static bool UpdateNotesPage(ref Application oneNoteApp, NoteLinkManager noteLinkManager,
             VersePointer vp, decimal verseWeight, XmlCursorPosition versePosition, bool isChapter,
@@ -21,6 +22,9 @@ namespace BibleCommon.Services
             HierarchyElementInfo notePageInfo, string notePageContentObjectId, NotesPageType notesPageType, string notesPageName,
             bool isImportantVerse, bool force, bool processAsExtendedVerse, bool toDeserializeIfExists, NoteLinkManager.DetailedLink isDetailedLink)
         {
+            if (_notebooksDisplayLevel == null)
+                LoadNotebooksDisplayLevel();            
+
             var notesPageFilePath = OpenNotesPageHandler.GetNotesPageFilePath(vp, notesPageType);             
             var notesPageData = ApplicationCache.Instance.GetNotesPageData(notesPageFilePath, notesPageName, notesPageType, vp.IsChapter ? vp : vp.GetChapterPointer(), toDeserializeIfExists);
 
@@ -29,7 +33,7 @@ namespace BibleCommon.Services
             AddNotePageLink(ref oneNoteApp, notesPageFilePath, notesPageName, verseNotesPageData, notePageInfo, notePageContentObjectId, verseWeight, versePosition, vp, noteLinkManager, force, processAsExtendedVerse, isDetailedLink);
 
             return notesPageData.IsNew;
-        }
+        }               
 
         private static void AddNotePageLink(ref Application oneNoteApp, string notesPageFilePath, string notesPageName, VerseNotesPageData verseNotesPageData,
             HierarchyElementInfo notePageInfo, string notePageContentObjectId, decimal verseWeight, XmlCursorPosition versePosition,
@@ -114,19 +118,21 @@ namespace BibleCommon.Services
 
         private static NotesPageHierarchyLevelBase CreateParentTreeStructure(ref Application oneNoteApp, NotesPageHierarchyLevelBase parentLevel, HierarchyElementInfo hierarchyElementInfo,
             string notebookId, string notesPageFilePath, string notesPageName, VersePointer vp)
-        {
-            NotesPageHierarchyLevelBase parent = parentLevel;
+        {            
             if (hierarchyElementInfo.Parent != null)
                 parentLevel = CreateParentTreeStructure(ref oneNoteApp, parentLevel, hierarchyElementInfo.Parent, notebookId, notesPageFilePath, notesPageName, vp);
 
             if (!parentLevel.Levels.ContainsKey(hierarchyElementInfo.UniqueName))
             {
+                var displayLevel = GetDisplayLevel(notebookId);   
+
                 var notesPageLevel = new NotesPageHierarchyLevel() 
                 { 
                     Id = hierarchyElementInfo.UniqueName, 
                     Title = hierarchyElementInfo.Title, 
                     HierarchyType = hierarchyElementInfo.Type,
-                    OneNoteId = hierarchyElementInfo.Id
+                    OneNoteId = hierarchyElementInfo.Id,
+                    Collapsed = hierarchyElementInfo.GetLevel() == displayLevel.GetValueOrDefault(int.MaxValue)                    
                 };
                 parentLevel.AddLevel(ref oneNoteApp, notesPageLevel, hierarchyElementInfo, true);
                 return notesPageLevel;
@@ -172,17 +178,43 @@ namespace BibleCommon.Services
             UpdateNotesPageFile("BibleCommon.Resources.JQuery.js", Consts.Constants.NotesPageJQueryScriptFileName);
         }
 
+        public static void UpdateNotesPageImages()
+        {
+            var folder = Path.Combine(SettingsManager.Instance.FolderPath_BibleNotesPages, "images");
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            UpdateNotesPageFile("BibleCommon.Resources.images.none.png", "images/none.png");
+            UpdateNotesPageFile("BibleCommon.Resources.images.minus.png", "images/minus.png");
+            UpdateNotesPageFile("BibleCommon.Resources.images.plus.png", "images/plus.png");            
+        }
+
         private static void UpdateNotesPageFile(string fileResourceName, string fileName)
         {
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(fileResourceName))
             {
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    var content = reader.ReadToEnd();
-                    File.WriteAllText(Path.Combine(SettingsManager.Instance.FolderPath_BibleNotesPages, fileName), content);
-                }
+                File.WriteAllBytes(Path.Combine(SettingsManager.Instance.FolderPath_BibleNotesPages, fileName), Utils.ReadStream(stream));
             }
         }
 
+        private static int? GetDisplayLevel(string notebookId)
+        {
+            int? displayLevel = null;
+            if (_notebooksDisplayLevel.ContainsKey(notebookId))
+                displayLevel = _notebooksDisplayLevel[notebookId];
+
+            return displayLevel;
+        }
+
+        private static void LoadNotebooksDisplayLevel()
+        {
+            _notebooksDisplayLevel = new Dictionary<string, int?>();
+            if (SettingsManager.Instance.SelectedNotebooksForAnalyze != null)
+            {
+                foreach (var notebookInfo in SettingsManager.Instance.SelectedNotebooksForAnalyze)
+                    if (!_notebooksDisplayLevel.ContainsKey(notebookInfo.NotebookId))  // на всякий пожарный
+                        _notebooksDisplayLevel.Add(notebookInfo.NotebookId, notebookInfo.DisplayLevels);
+            }
+        }
     }
 }
