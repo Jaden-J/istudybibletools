@@ -16,6 +16,7 @@ using BibleCommon.Helpers;
 
 namespace ISBTCommandHandler
 {
+    [ComVisible(true)]
     public partial class NotesPageForm : Form
     {
         private const double FormHeightProportion = 0.95;  // от всего экрана
@@ -23,7 +24,7 @@ namespace ISBTCommandHandler
 
         private string _titleAtStart;
         private bool _suppressTbScaleLayout;
-        private bool _touchInputAvailable;
+        private bool _touchInputAvailable;        
 
         protected OpenBibleVerseHandler OpenBibleVerseHandler { get; set; }
         protected NavigateToHandler NavigateToHandler { get; set; }
@@ -38,6 +39,7 @@ namespace ISBTCommandHandler
 
             OpenBibleVerseHandler = new OpenBibleVerseHandler();
             NavigateToHandler = new NavigateToHandler();
+            wbNotesPage.ObjectForScripting = this;
 
             _titleAtStart = this.Text;                        
         }
@@ -57,6 +59,11 @@ namespace ISBTCommandHandler
             {
                 FormLogger.LogError(ex);
             }
+        }
+
+        public void chkDetailedNodes_Changed(bool isChecked)
+        {
+            Properties.Settings.Default.NotesPageFormShowDetailedNotes = isChecked;
         }
 
         public void OpenNotesPage(VersePointer vp, string verseNotesPageFilePath)
@@ -196,6 +203,7 @@ namespace ISBTCommandHandler
         private void wbNotesPage_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             tbScale_TextChanged(this, null);
+            wbNotesPage.Document.InvokeScript("initDetailedNotes", new object[] { Properties.Settings.Default.NotesPageFormShowDetailedNotes });
 
             if (_touchInputAvailable)
             {

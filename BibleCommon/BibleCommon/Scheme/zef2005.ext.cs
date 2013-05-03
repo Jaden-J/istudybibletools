@@ -207,7 +207,7 @@ namespace BibleCommon.Scheme
         public static string GetFullVerseString(int verseNumber, int? topVerseNumber, string verseText)
         {
             string verseNumberString = topVerseNumber.HasValue ? string.Format("{0}-{1}", verseNumber, topVerseNumber) : verseNumber.ToString();
-            return string.Format("{0}<span> </span>{1}", verseNumberString, ShellVerseText(verseText));
+            return string.Format("<span style='vertical-align:super'>{0}</span><span> </span>{1}", verseNumberString, ShellVerseText(verseText));
         }
 
         private static string ShellVerseText(string verseText)

@@ -323,7 +323,17 @@ namespace BibleCommon.Services
                 oneNoteAppSafe.GetSpecialLocation(SpecialLocation.slDefaultNotebookFolder, out defaultNotebookFolderPath);
             });
 
-            return CreateNotebook(ref oneNoteApp, notebookName, defaultNotebookFolderPath, null);
+            var notebookId = CreateNotebook(ref oneNoteApp, notebookName, defaultNotebookFolderPath, null);
+
+            if (!string.IsNullOrEmpty(notebookId))
+            {
+                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                {
+                    oneNoteAppSafe.SyncHierarchy(notebookId);
+                });
+            }
+
+            return notebookId;
         }
 
         public static void TryToRenameNotebookSafe(ref Application oneNoteApp, string notebookId, string notebookNickname)

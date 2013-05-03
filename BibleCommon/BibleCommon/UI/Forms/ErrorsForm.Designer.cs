@@ -41,7 +41,7 @@
             this.lbErrors.FormattingEnabled = true;
             resources.ApplyResources(this.lbErrors, "lbErrors");
             this.lbErrors.Name = "lbErrors";
-            this.lbErrors.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lbErrors_MouseDoubleClick);
+            this.lbErrors.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lbErrors_MouseClick);            
             // 
             // btnOk
             // 
@@ -82,6 +82,7 @@
             this.Name = "ErrorsForm";
             this.ShowInTaskbar = false;
             this.TopMost = true;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ErrorsForm_FormClosed);
             this.Load += new System.EventHandler(this.Errors_Load);
             this.ResumeLayout(false);
 
