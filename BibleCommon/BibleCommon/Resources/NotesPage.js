@@ -1,5 +1,5 @@
 ﻿$(function () {
-    bindEvents();    
+    bindEvents();
 });
 
 
@@ -8,20 +8,20 @@ function bindEvents() {
     chkDetailedNodes.click(chkDetailedNodes_click);
 
     $("img.minus").mouseenter(minus_mouseIn).mouseleave(minus_mouseOut).click(minus_click);
-    $("span.levelTitleText, a.verseLink").mouseenter(level_mouseIn).mouseleave(level_mouseOut);    
+    $("span.levelTitleText, a.verseLink").mouseenter(level_mouseIn).mouseleave(level_mouseOut);
 }
 
 function minus_click(event) {
     var $target = $(event.target);
     if (!$target.hasClass("collapsed")) {
         $target.addClass("collapsed");
-        $target.attr("src", "../../../images/plus.png");        
-        $target.parent().children("ol.levelChilds").addClass("hidden");
+        $target.attr("src", "../../../images/plus.png");
+        $target.parent().children("ol.levelChilds").addClass("collapsedLevel");
     }
     else {
         $target.removeClass("collapsed");
         $target.attr("src", "../../../images/minus.png");
-        $target.parent().children("ol.levelChilds").removeClass("hidden");
+        $target.parent().children("ol.levelChilds").removeClass("collapsedLevel");
     }
 }
 
@@ -58,7 +58,7 @@ function processMinusImgOut(img) {
 }
 
 function initDetailedNotes(showDetailedNotes) {
-    var chkDetailedNodes = $("#chkDetailedNotes");    
+    var chkDetailedNodes = $("#chkDetailedNotes");
     chkDetailedNodes.attr('checked', showDetailedNotes);
 
     var detailedEls = $(".detailed");
@@ -66,32 +66,38 @@ function initDetailedNotes(showDetailedNotes) {
         chkDetailedNodes.attr("disabled", "disabled");
     }
     else if (!showDetailedNotes) {
-        setDetailedStyle(detailedEls, "none");
+        setDetailedStyle(detailedEls, true);
     }
 }
 
 function chkDetailedNodes_click() {
     var chkDetailedNodes = $("#chkDetailedNotes");
     var checked = chkDetailedNodes.is(":checked");
-    var display = checked ? "block" : "none";
+    var toHide = checked ? false : true;
 
     var detailedEls = $(".detailed");
-    setDetailedStyle(detailedEls, display);
+    setDetailedStyle(detailedEls, toHide);
 
     window.external.chkDetailedNodes_Changed(checked);
 }
 
-function setDetailedStyle(elements, display) {
+function setDetailedStyle(elements, toHide) {
     for (var i = 0; i < elements.length; i++) {
         var el = elements[i];
-        setDetailedParentStyle(el, display);
+        setDetailedParentStyle(el, toHide);
     }
 }
 
-function setDetailedParentStyle(el, display) {
-    var selector = "." + el.className.replace(" ", ".")
-    if ($(el.parentNode).children(selector).length == 1)
-        setDetailedParentStyle(el.parentNode, display);
-    else
-        el.style.display = display;
+function setDetailedParentStyle(el, toHide) {
+    var selector = "." + el.className.replace(" ", ".").replace("collapsedLevel", "");
+
+    var parent = $(el.parentNode);
+    if (parent.children(selector).length == parent.children().length)
+        setDetailedParentStyle(el.parentNode, toHide);
+    else {
+        if (toHide)
+            $(el).addClass("hiddenDetailed")
+        else
+            $(el).removeClass("hiddenDetailed")
+    }
 }

@@ -19,7 +19,14 @@ namespace BibleCommon.Helpers
 
         public static IEnumerable<XElement> GetByClass(this XContainer container, string tagName, string className)
         {
-            return container.Elements(tagName).Where(el => el.Attribute("class").Value == className);
+            return container.Elements(tagName).Where(el => 
+                {
+                    var classAttrValue = (string)el.Attribute("class");
+                    if (!string.IsNullOrEmpty(classAttrValue))
+                        return classAttrValue.Split(new char[] { ' ' }).Contains(className);
+                    else
+                        return false;
+                });
         }
     }
 
