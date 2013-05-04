@@ -92,12 +92,13 @@ namespace BibleCommon.Common
                 Id = levelEl.Attribute(Constants.NotesPageElementAttributeName_SyncId).Value,
                 Title = aEl.Value                
             };
-            var subLinksEl = levelEl.Element("div");
+            var subLinksEl = levelEl.Element("table");
             if (subLinksEl != null)
-            {                
+            {
+                subLinksEl = subLinksEl.Element("tr");
                 pageLevel.SetPageTitleLinkHref(aEl.Attribute("href").Value);
 
-                foreach (var subLinkEl in subLinksEl.GetByClass("span", "subLink"))
+                foreach (var subLinkEl in subLinksEl.GetByClass("td", "subLink"))
                 {
                     pageLevel.AddPageLink(GetNotesPageLink(subLinkEl.Element("a")));                    
                 }
@@ -125,12 +126,13 @@ namespace BibleCommon.Common
 
         private void AddHierarchyLevelSubLevel(XElement levelEl, NotesPageHierarchyLevelBase parentLevel)
         {
-            var title = levelEl.Element("p").GetByClass("span", "levelTitleText").First().Value;
+            var title = levelEl.Element("p").GetByClass("span", "levelTitleText").First().Value;            
             var level = new NotesPageHierarchyLevel()
             {
                 Id = levelEl.Attribute(Constants.NotesPageElementAttributeName_SyncId).Value,
                 HierarchyType = GetHierarchyTypeFromClassName(levelEl.Attribute("class").Value),
-                Title = title
+                Title = title,
+                Collapsed = levelEl.Element("ol").Attribute("class").Value.Contains("collapsedLevel")
             };
 
             Application oneNoteApp = null;
@@ -256,7 +258,7 @@ namespace BibleCommon.Common
                     {
                         var className = "levelChilds level" + (levelIndex + 1);
                         if (hierarchyLevel is NotesPageHierarchyLevel && ((NotesPageHierarchyLevel)hierarchyLevel).Collapsed)
-                            className += " hidden";
+                            className += " collapsedLevel";
                         levelEl = levelEl.AddEl(
                                             new XElement("ol",
                                                 new XAttribute("class", className)));
@@ -323,7 +325,9 @@ namespace BibleCommon.Common
             var levelTitleLinkElClass = "levelTitleLink";
             var summarySubLinksWight = pageLevel.PageLinks.Sum(pl => pl.VerseWeight);
             if (summarySubLinksWight >= Constants.ImportantVerseWeight)
-                levelTitleLinkElClass += " importantVerseLink";            
+                levelTitleLinkElClass += " importantVerseLink";
+
+            var hiddenAllPageLevel = false;
 
             if (pageLevel.PageLinks.Count == 1)
             {
@@ -331,7 +335,7 @@ namespace BibleCommon.Common
                 pageLevel.SetPageTitleLinkHref(pageLink.GetHref(ref oneNoteApp));
 
                 if (pageLink.IsDetailed)
-                    levelTitleLinkElClass += " detailed";
+                    hiddenAllPageLevel = true;                    
 
                 if (!string.IsNullOrEmpty(pageLink.MultiVerseString))
                 {
@@ -355,6 +359,15 @@ namespace BibleCommon.Common
                     GeneratePageLinkLevel(ref oneNoteApp, pageLink, subLinksEl, linkIndex);
                     linkIndex++;
                 }
+
+                if (pageLevel.PageLinks.All(pl => pl.IsDetailed))
+                    hiddenAllPageLevel = true;
+            }
+
+            if (hiddenAllPageLevel)
+            {
+                levelTitleLinkElClass += " detailed";
+                levelEl.SetAttributeValue("class", levelEl.Attribute("class").Value + " detailed");
             }
 
             levelTitleLinkEl.Add(new XAttribute("class", levelTitleLinkElClass));
@@ -363,20 +376,20 @@ namespace BibleCommon.Common
 
         private void GeneratePageLinkLevel(ref Application oneNoteApp, NotesPageLink pageLink, XElement subLinksEl, int linkIndex)
         {
+            var detailedClassName = pageLink.IsDetailed ? " detailed" : string.Empty;                        
+
             if (linkIndex > 0)
             {
                 subLinksEl.Add(
-                    new XElement("td",
-                        new XAttribute("class", "subLinkDelimeter"),
+                    new XElement("td",                        
+                        new XAttribute("class", "subLinkDelimeter" + detailedClassName),
                         Resources.Constants.VerseLinksDelimiter));
             }
 
             var importantClassName =
                        pageLink.VerseWeight >= Constants.ImportantVerseWeight
                            ? " importantVerseLink"
-                           : string.Empty;
-
-            var detailedClassName = pageLink.IsDetailed ? " detailed" : string.Empty;                        
+                           : string.Empty;            
 
             subLinksEl.Add(new XElement("td", new XAttribute("class", "subLink"),
                                 new XElement("a",
