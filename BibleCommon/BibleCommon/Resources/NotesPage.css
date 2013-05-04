@@ -125,7 +125,11 @@ div.verseLevel > .levelChilds
     margin-bottom:3px;
     display:inline;
 }           
-.hidden
+.collapsedLevel
+{
+    display:none;
+}
+.hiddenDetailed
 {
     display:none;
 }
