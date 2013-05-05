@@ -1,5 +1,8 @@
 ﻿$(function () {
     bindEvents();
+
+
+   
 });
 
 
@@ -89,10 +92,10 @@ function setDetailedStyle(elements, toHide) {
 }
 
 function setDetailedParentStyle(el, toHide) {
-    var selector = "." + el.className.replace(" ", ".").replace("collapsedLevel", "");
+    var selector = "." + el.className.replace(" collapsedLevel", "").replace(" detailed", "").replace(" hiddenDetailed", "").replace(/ /g, '.');
 
     var parent = $(el.parentNode);
-    if (parent.children(selector).length == parent.children().length)
+    if (!parent.hasClass("verseLevel") && parent.children(selector).length == 1)
         setDetailedParentStyle(el.parentNode, toHide);
     else {
         if (toHide)

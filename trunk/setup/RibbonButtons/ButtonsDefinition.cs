@@ -39,7 +39,7 @@ namespace RibbonButtons
 
         #region IDTExtensibility2 Members
         
-        Microsoft.Office.Interop.OneNote.Application onApp;
+        //Microsoft.Office.Interop.OneNote.IApplication onApp;
 
 		public void OnConnection(object Application, ext_ConnectMode ConnectMode, object AddInInst, ref Array custom)
 		{
@@ -49,7 +49,7 @@ namespace RibbonButtons
 
             try
             {
-                //onApp = (Application)Application;
+                //onApp = (IApplication)Application;
 
                 AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
                 RunProgram(Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath), BibleConfiguratorProgramClassName, "-runOnOneNoteStarts", false);
@@ -83,14 +83,14 @@ namespace RibbonButtons
 		{
             RunProgram("isbtExitApplication:exit", null, null, false);  // закрываем кэш
 			//Clean up. Application is closing
-			onApp = null;
+			//onApp = null;
 			GC.Collect();
 			GC.WaitForPendingFinalizers();            
 		}
 		public void OnBeginShutdown(ref System.Array custom)
 		{
-			if (onApp != null)
-				onApp = null;
+			//if (onApp != null)
+			//	onApp = null;
 		}
 		public void OnStartupComplete(ref Array custom) { }
 		public void OnAddInsUpdate(ref Array custom) { }        
