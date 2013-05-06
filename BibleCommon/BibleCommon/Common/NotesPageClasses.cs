@@ -353,10 +353,10 @@ namespace BibleCommon.Common
                                                 new XAttribute("cellspacing", "0")));
                 subLinksEl = subLinksEl.AddEl(new XElement("tr"));
                 
-                var linkIndex = 0;
+                var linkIndex = 0;                
                 foreach (var pageLink in pageLevel.PageLinks)
                 {
-                    GeneratePageLinkLevel(ref oneNoteApp, pageLink, subLinksEl, linkIndex);
+                    GeneratePageLinkLevel(ref oneNoteApp, pageLink, subLinksEl, linkIndex, linkIndex == pageLevel.PageLinks.Count - 1);
                     linkIndex++;
                 }
 
@@ -364,36 +364,25 @@ namespace BibleCommon.Common
                     hiddenAllPageLevel = true;
             }
 
-            if (hiddenAllPageLevel)
-            {
-                levelTitleLinkElClass += " detailed";
-                levelEl.SetAttributeValue("class", levelEl.Attribute("class").Value + " detailed");
-            }
+            if (hiddenAllPageLevel)                            
+                levelEl.SetAttributeValue("class", levelEl.Attribute("class").Value + " detailed");            
 
             levelTitleLinkEl.Add(new XAttribute("class", levelTitleLinkElClass));
             levelTitleLinkEl.Add(new XAttribute("href", pageLevel.GetPageTitleLinkHref(ref oneNoteApp)));
         }
 
-        private void GeneratePageLinkLevel(ref Application oneNoteApp, NotesPageLink pageLink, XElement subLinksEl, int linkIndex)
+        private void GeneratePageLinkLevel(ref Application oneNoteApp, NotesPageLink pageLink, XElement subLinksEl, int linkIndex, bool isLast)
         {
-            var detailedClassName = pageLink.IsDetailed ? " detailed" : string.Empty;                        
-
-            if (linkIndex > 0)
-            {
-                subLinksEl.Add(
-                    new XElement("td",                        
-                        new XAttribute("class", "subLinkDelimeter" + detailedClassName),
-                        Resources.Constants.VerseLinksDelimiter));
-            }
+            var detailedClassName = pageLink.IsDetailed ? " detailed" : string.Empty;                                    
 
             var importantClassName =
                        pageLink.VerseWeight >= Constants.ImportantVerseWeight
                            ? " importantVerseLink"
-                           : string.Empty;            
+                           : string.Empty;
 
-            subLinksEl.Add(new XElement("td", new XAttribute("class", "subLink"),
+            subLinksEl.Add(new XElement("td", new XAttribute("class", "subLink" + detailedClassName),
                                 new XElement("a",
-                                    new XAttribute("class", "subLinkLink" + importantClassName + detailedClassName),
+                                    new XAttribute("class", "subLinkLink" + importantClassName),
                                     new XAttribute("href", pageLink.GetHref(ref oneNoteApp)),
                                     string.Format(Resources.Constants.VerseLinkTemplate, linkIndex + 1))));         
 
@@ -401,9 +390,17 @@ namespace BibleCommon.Common
             {
                 subLinksEl.Add(
                     new XElement("td",
-                        new XAttribute("class", "subLinkMultiVerse" + importantClassName),
+                        new XAttribute("class", "subLinkMultiVerse" + importantClassName + detailedClassName),
                         pageLink.MultiVerseString));
-            }            
+            }
+
+            if (!isLast)
+            {
+                subLinksEl.Add(
+                    new XElement("td",
+                        new XAttribute("class", "subLinkDelimeter" + detailedClassName),
+                        Resources.Constants.VerseLinksDelimiter));
+            }
         }        
 
         private void GenerateHierarchyLevel(NotesPageHierarchyLevelBase hierarchyLevel, XElement levelEl, int level, int? index)

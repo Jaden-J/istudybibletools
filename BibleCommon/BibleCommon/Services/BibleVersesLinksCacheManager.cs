@@ -66,7 +66,7 @@ namespace BibleCommon.Services
             foreach (NotebookIterator.SectionInfo section in sectionGroup.Sections)
             {
                 BibleCommon.Services.Logger.LogMessageParams("section: " + section.Title);
-
+                
                 foreach (NotebookIterator.PageInfo page in section.Pages)
                 {
                     logger.LogMessage(page.Title);
@@ -83,23 +83,26 @@ namespace BibleCommon.Services
             }
         }
 
-        private static void ProcessPage(ref Application oneNoteApp, string notebookId, bool toGenerateHref, NotebookIterator.PageInfo page, NotebookIterator.SectionInfo section,
+        private static void ProcessPage(ref Application oneNoteApp, string notebookId, bool toGenerateHref, NotebookIterator.PageInfo page, NotebookIterator.SectionInfo section, 
             ref Dictionary<string, string> result)
         {
-            int? chapterNumber = StringUtils.GetStringFirstNumber(page.Title);
-            if (!chapterNumber.HasValue)
-                return;
-
-            XmlNamespaceManager xnm;
-            var pageId = (string)page.PageElement.Attribute("ID");
-            var pageName = (string)page.PageElement.Attribute("name");
-            var pageDoc = OneNoteUtils.GetPageContent(ref oneNoteApp, pageId, out xnm);            
-
-            AddChapterPointer(ref oneNoteApp, notebookId, toGenerateHref, section, pageDoc, pageId, pageName, chapterNumber, ref result, xnm);
-
-            foreach (var cellTextEl in pageDoc.Root.XPathSelectElements("//one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
+            if (!section.Title.Contains(page.Title))   // иначе эта страница книги
             {
-                AddVersePointer(ref oneNoteApp, notebookId, toGenerateHref, section, pageDoc, pageId, pageName, chapterNumber, cellTextEl, ref result, xnm);          
+                int? chapterNumber = StringUtils.GetStringFirstNumber(page.Title);
+                if (!chapterNumber.HasValue)
+                    return;
+
+                XmlNamespaceManager xnm;
+                var pageId = (string)page.PageElement.Attribute("ID");
+                var pageName = (string)page.PageElement.Attribute("name");
+                var pageDoc = OneNoteUtils.GetPageContent(ref oneNoteApp, pageId, out xnm);
+
+                AddChapterPointer(ref oneNoteApp, notebookId, toGenerateHref, section, pageDoc, pageId, pageName, chapterNumber, ref result, xnm);
+
+                foreach (var cellTextEl in pageDoc.Root.XPathSelectElements("//one:Table/one:Row/one:Cell[1]/one:OEChildren/one:OE/one:T", xnm))
+                {
+                    AddVersePointer(ref oneNoteApp, notebookId, toGenerateHref, section, pageDoc, pageId, pageName, chapterNumber, cellTextEl, ref result, xnm);
+                }
             }
         }
 

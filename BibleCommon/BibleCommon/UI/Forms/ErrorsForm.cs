@@ -143,8 +143,9 @@ namespace BibleCommon.UI.Forms
                     {
                         OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
                         {
-                            _oneNoteApp.NavigateTo(item.PageId, item.ContentObjectId);
+                            _oneNoteApp.NavigateTo(item.PageId, item.ContentObjectId);                            
                         });
+                        OneNoteUtils.SetActiveCurrentWindow(ref _oneNoteApp);
                     }
                 }
             }

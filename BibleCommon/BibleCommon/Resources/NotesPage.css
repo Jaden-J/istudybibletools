@@ -105,6 +105,7 @@ div.verseLevel > .levelChilds
 {
     padding-left:4px;
     white-space:nowrap;
+    font-style:italic;
 }
 .levelChilds
 {
@@ -136,10 +137,6 @@ div.verseLevel > .levelChilds
 .importantVerseLink
 {
     font-weight:bold;
-}
-.subLinkMultiVerse
-{
-    font-style:italic;
 }
 li.level6:before, li.level7:before 
 {
