@@ -94,7 +94,7 @@ namespace BibleCommon.Services
             }
             catch (InvalidModuleException)
             {
-                result = 1189;
+                result = 1189;  // столько глав в rst
             }
 
             return result;
@@ -145,9 +145,16 @@ namespace BibleCommon.Services
 
         private static T Dessirialize<T>(string xmlFilePath)
         {
-            using (var ms = new MemoryStream(File.ReadAllBytes(xmlFilePath)))
+            try
             {
-                return ((T)GetXmlSerializer(typeof(T)).Deserialize(ms));
+                using (var ms = new MemoryStream(File.ReadAllBytes(xmlFilePath)))
+                {
+                    return ((T)GetXmlSerializer(typeof(T)).Deserialize(ms));
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidModuleException(ex.Message);
             }
         }
 

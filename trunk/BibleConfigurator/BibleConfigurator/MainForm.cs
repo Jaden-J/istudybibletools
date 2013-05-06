@@ -340,14 +340,40 @@ namespace BibleConfigurator
 
         private bool AreThereUnindexedDictionaries()
         {
-            foreach (var dictionaryInfo in SettingsManager.Instance.DictionariesModules)
+            try
             {
-                if (!DictionaryTermsCacheManager.CacheIsActive(dictionaryInfo.ModuleName))
+                var modulesToDelete = new List<StoredModuleInfo>();
+                foreach (var dictionaryInfo in SettingsManager.Instance.DictionariesModules)
                 {
-                    var moduleInfo = ModulesManager.GetModuleInfo(dictionaryInfo.ModuleName);
-                    if (moduleInfo != null && moduleInfo.Type != ModuleType.Strong)                        
-                    return true;
+                    try
+                    {
+                        if (!DictionaryTermsCacheManager.CacheIsActive(dictionaryInfo.ModuleName))
+                        {
+                            var moduleInfo = ModulesManager.GetModuleInfo(dictionaryInfo.ModuleName);
+                            if (moduleInfo != null && moduleInfo.Type != ModuleType.Strong)
+                                return true;
+                        }
+                    }
+                    catch (ModuleNotFoundException)
+                    {
+                        modulesToDelete.Add(dictionaryInfo);
+                    }
+                    catch (InvalidModuleException ex)
+                    {
+                        FormLogger.LogError(ex);
+                        DeleteModuleWithConfirm(dictionaryInfo.ModuleName, false);
+                        modulesToDelete.Add(dictionaryInfo);
+                    }
+                }
+
+                foreach (var moduleInfo in modulesToDelete)
+                {
+                    SettingsManager.Instance.DictionariesModules.Remove(moduleInfo);
+                }
             }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
             }
 
             return false;
@@ -1614,7 +1640,7 @@ namespace BibleConfigurator
                     try
                     {
                         FormLogger.LogMessage(string.Format(BibleCommon.Resources.Constants.ModuleUploadError, moduleDirectory, ex.Message));
-                        if (DeleteModuleWithConfirm(module.ShortName))
+                        if (DeleteModuleWithConfirm(module.ShortName, true))
                             return;
                     }
                     finally
@@ -1877,17 +1903,20 @@ namespace BibleConfigurator
                     && !string.IsNullOrEmpty(SettingsManager.Instance.GetValidDictionariesNotebookId(ref _oneNoteApp, true)))
                 FormLogger.LogError(BibleCommon.Resources.Constants.ModuleCannotBeDeleted_DictionaryModule);
             else
-                DeleteModuleWithConfirm(moduleName);
+                DeleteModuleWithConfirm(moduleName, true);
         }
 
-        private bool DeleteModuleWithConfirm(string moduleName)
+        private bool DeleteModuleWithConfirm(string moduleName, bool toReloadModules)
         {
-            if (MessageBox.Show(BibleCommon.Resources.Constants.DeleteThisModuleQuestion, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)  
-               == System.Windows.Forms.DialogResult.Yes)
+            using (var form = new MessageForm(BibleCommon.Resources.Constants.DeleteThisModuleQuestion, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
             {
-                ModulesManager.DeleteModule(moduleName);                
-                ReLoadModulesInfo();
-                return true;
+                if (form.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
+                {
+                    ModulesManager.DeleteModule(moduleName);
+                    if (toReloadModules)
+                        ReLoadModulesInfo();
+                    return true;
+                }
             }
 
             return false;
