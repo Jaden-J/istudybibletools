@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using BibleCommon.Services;
 using System.IO;
 using BibleCommon.Helpers;
+using System.Diagnostics;
 
 namespace ISBTCommandHandler
 {
@@ -22,10 +23,38 @@ namespace ISBTCommandHandler
         private const double FormHeightProportion = 0.95;  // от всего экрана
         private const double FormWidthProportion = 0.33;
 
-        private string _titleAtStart;
-        private bool _suppressTbScaleLayout;
-        private bool _touchInputAvailable;        
+        private string _titleAtStart;        
+        private bool _touchInputAvailable;
 
+        private string _verseNotesPageFilePath;
+        protected string VerseNotesPageFilePath
+        {
+            get
+            {
+                return _verseNotesPageFilePath;
+            }
+            set
+            {
+                _verseNotesPageFilePath = value;
+                _filesInCurrentDirectory = null;
+            }
+        }
+
+        private List<string> _filesInCurrentDirectory;
+        protected List<string> FilesInCurrentDirectory
+        {
+            get
+            {
+                if (_filesInCurrentDirectory == null)
+                {
+                    _filesInCurrentDirectory = Directory.GetFiles(Path.GetDirectoryName(VerseNotesPageFilePath)).OrderBy(file => file).ToList();
+                }
+
+                return _filesInCurrentDirectory;
+            }
+        }
+
+        protected VersePointer VersePointer { get; set; }
         protected OpenBibleVerseHandler OpenBibleVerseHandler { get; set; }
         protected NavigateToHandler NavigateToHandler { get; set; }
 
@@ -67,17 +96,20 @@ namespace ISBTCommandHandler
         }
 
         public void OpenNotesPage(VersePointer vp, string verseNotesPageFilePath)
-        {   
-            if (!string.IsNullOrEmpty(verseNotesPageFilePath))
+        {
+            this.VerseNotesPageFilePath = verseNotesPageFilePath;
+            this.VersePointer = vp;
+
+            if (!string.IsNullOrEmpty(VerseNotesPageFilePath))
             {
-                if (!File.Exists(verseNotesPageFilePath))
+                if (!File.Exists(VerseNotesPageFilePath))
                     FormLogger.LogMessage(BibleCommon.Resources.Constants.VerseIsNotMentioned);
                 else
                 {
                     //if (!vp.IsChapter && !SettingsManager.Instance.UseDifferentPagesForEachVerse)
                     //    verseNotesPageFilePath += "#" + vp.Verse.Value;
 
-                    wbNotesPage.Url = new Uri(verseNotesPageFilePath);
+                    wbNotesPage.Url = new Uri(VerseNotesPageFilePath);
 
                     if (!this.Visible)                    
                         this.Show();                                            
@@ -88,7 +120,9 @@ namespace ISBTCommandHandler
                     this.SetFocus();
                     wbNotesPage.Focus();
 
-                    this.Text = string.Format("{0} ({1})", _titleAtStart, vp.GetFriendlyFullVerseName());
+                    this.Text = string.Format("{0} ({1})", _titleAtStart, VersePointer.GetFriendlyFullVerseName());
+
+                    SetNavigationButtonsAvailability();
                 }
             }
         }        
@@ -97,18 +131,15 @@ namespace ISBTCommandHandler
         {
             SetCheckboxes();
             SetLocation();
-            SetSize();
-            SetScale();            
+            SetSize();                      
             wbNotesPage.Focus();
 
             _touchInputAvailable = Utils.TouchInputAvailable();
-        }        
+        }
 
         private void SetScale()
-        {
-            _suppressTbScaleLayout = true;
-            tbScale.Text = Properties.Settings.Default.NotesPageFormScale.ToString();
-            _suppressTbScaleLayout = false;
+        {            
+            wbNotesPage.Zoom(Properties.Settings.Default.NotesPageFormScale);
         }
 
         private void SetCheckboxes()
@@ -182,8 +213,7 @@ namespace ISBTCommandHandler
             Properties.Settings.Default.NotesPageFormAlwaysOnTop = chkAlwaysOnTop.Checked;
             Properties.Settings.Default.NotesPageFormCloseOnClick = chkCloseOnClick.Checked;
             Properties.Settings.Default.NotesPageFormPosition = string.Format("{0};{1}", this.Left, this.Top);
-            Properties.Settings.Default.NotesPageFormSize= string.Format("{0};{1}", this.Width, this.Height);
-            Properties.Settings.Default.NotesPageFormScale = GetInputScale();
+            Properties.Settings.Default.NotesPageFormSize= string.Format("{0};{1}", this.Width, this.Height);            
 
             Properties.Settings.Default.Save();
         }
@@ -202,7 +232,7 @@ namespace ISBTCommandHandler
         
         private void wbNotesPage_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            tbScale_TextChanged(this, null);
+            SetScale();            
             wbNotesPage.Document.InvokeScript("initDetailedNotes", new object[] { Properties.Settings.Default.NotesPageFormShowDetailedNotes });
 
             if (_touchInputAvailable)
@@ -212,53 +242,23 @@ namespace ISBTCommandHandler
                 styleEl.InnerHtml = " li.pageLevel { padding-bottom:5px; } .subLinks { padding-top:5px; } ";
                 wbNotesPage.Document.Body.AppendChild(styleEl);
             }
-        }
-
-        private void tbScale_TextChanged(object sender, EventArgs e)
-        {
-            if (!_suppressTbScaleLayout)
-            {
-                var scale = GetInputScale();
-                //var k = scale > 10 ? 0.1 : 0.05;
-                //k = (float)(1 + (scale - 10) * k);
-                wbNotesPage.Zoom(scale);
-
-                if (!tbScale.Text.EndsWith("%"))
-                {
-                    _suppressTbScaleLayout = true;
-                    tbScale.Text += "%";
-                    _suppressTbScaleLayout = false;
-                }
-            }
-        }
-
-        private void tbScale_KeyPress(object sender, KeyPressEventArgs e)
-        {   
-            e.Handled = true;
-        }
+        }                        
 
         private void btnScaleUp_Click(object sender, EventArgs e)
         {
-            var scale = GetInputScale();
-            if (scale < 200)
-                tbScale.Text = (scale + 5).ToString();
+            if (Properties.Settings.Default.NotesPageFormScale < 200)
+                Properties.Settings.Default.NotesPageFormScale += 5;
+
+            SetScale();
         }
 
         private void btnScaleDown_Click(object sender, EventArgs e)
         {
-            var scale = GetInputScale();
-            if (scale > 50)
-                tbScale.Text = (scale - 5).ToString();
-        }
+            if (Properties.Settings.Default.NotesPageFormScale > 50)
+                Properties.Settings.Default.NotesPageFormScale -= 5;
 
-        private int GetInputScale()
-        {
-            var scale = tbScale.Text;
-            if (scale.EndsWith("%"))
-                scale = scale.Remove(scale.Length - 1);
-
-            return Convert.ToInt32(scale);                
-        }
+            SetScale();
+        }        
 
         private bool _firstShown = true;
         private void NotesPageForm_Shown(object sender, EventArgs e)
@@ -268,6 +268,38 @@ namespace ISBTCommandHandler
                 this.Focus();                
                 _firstShown = false;
             }            
-        }     
+        }
+        
+        private void SetNavigationButtonsAvailability()
+        {
+            if (FilesInCurrentDirectory.First() != VerseNotesPageFilePath)
+                btnPrev.Enabled = true;
+            else
+                btnPrev.Enabled = false;
+
+            if (FilesInCurrentDirectory.Last() != VerseNotesPageFilePath)
+                btnNext.Enabled = true;
+            else
+                btnNext.Enabled = false;
+        }
+
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            var nextFile = FilesInCurrentDirectory[FilesInCurrentDirectory.IndexOf(VerseNotesPageFilePath) + 1];
+            OpenAnotherFile(nextFile);
+        }
+
+        private void btnPrev_Click(object sender, EventArgs e)
+        {
+            var prevFile = FilesInCurrentDirectory[FilesInCurrentDirectory.IndexOf(VerseNotesPageFilePath) - 1];
+            OpenAnotherFile(prevFile);
+        }
+
+        private void OpenAnotherFile(string file)
+        {
+            var verseNumber = VerseNumber.Parse(Path.GetFileNameWithoutExtension(file));
+            var vp = new VersePointer(VersePointer, verseNumber);
+            OpenNotesPage(vp, file);            
+        }
     }
 }
