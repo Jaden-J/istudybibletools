@@ -144,7 +144,7 @@ namespace BibleConfigurator
                 if (_errorsForm.AllErrors.Any(errors => errors.Count > 0))
                     _errorsForm.ShowDialog();
                 else
-                    MessageBox.Show("There is no errors");
+                    MessageBox.Show("There are no errors");
 
                 if (AutoStart)
                     Close();

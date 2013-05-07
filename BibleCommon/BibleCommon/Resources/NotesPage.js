@@ -2,7 +2,6 @@
     bindEvents();
 });
 
-
 function bindEvents() {
     var chkDetailedNodes = $("#chkDetailedNotes");
     chkDetailedNodes.click(chkDetailedNodes_click);
@@ -73,19 +72,21 @@ function initDetailedNotes(showDetailedNotes) {
 function chkDetailedNodes_click() {
     var chkDetailedNodes = $("#chkDetailedNotes");
     var checked = chkDetailedNodes.is(":checked");
-    var toHide = checked ? false : true;
-
-
-    if (toHide) {
-        var detailedEls = $(".detailed");
-        hideDetailedElements(detailedEls, toHide);
-    }
-    else {
-        var hiddenElemenents = $(".hiddenDetailed");
-        hiddenElemenents.removeClass("hiddenDetailed");
-    }
 
     window.external.chkDetailedNodes_Changed(checked);
+
+    document.location = document.location;
+
+    //    При таком подходе не обновляется нумерация у списков
+    //    if (!checked) {
+    //        var detailedEls = $(".detailed");
+    //        hideDetailedElements(detailedEls);
+    //    }
+    //    else {
+    //        var hiddenElemenents = $(".hiddenDetailed");
+    //        hiddenElemenents.removeClass("hiddenDetailed");
+    //    }    
+
 }
 
 function hideDetailedElements(elements) {
