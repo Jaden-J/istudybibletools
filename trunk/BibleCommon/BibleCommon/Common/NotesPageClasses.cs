@@ -29,7 +29,7 @@ namespace BibleCommon.Common
         NotesPageType NotesPageType { get; set; }
         public VersePointer ChapterPoiner { get; set; }        
 
-        public Dictionary<VersePointer, VerseNotesPageData> VersesNotesPageData { get; set; }
+        public Dictionary<VerseNumber, VerseNotesPageData> VersesNotesPageData { get; set; }
 
         public NotesPageData(string filePath, string pageName, NotesPageType notesPageType, VersePointer chapterPointer, bool toDeserializeIfExists)
         {
@@ -38,7 +38,7 @@ namespace BibleCommon.Common
             this.NotesPageType = notesPageType;
             this.ChapterPoiner = chapterPointer;
 
-            this.VersesNotesPageData = new Dictionary<VersePointer, VerseNotesPageData>();
+            this.VersesNotesPageData = new Dictionary<VerseNumber, VerseNotesPageData>();
 
             if (toDeserializeIfExists && File.Exists(this.FilePath))            
                 Deserialize();            
@@ -62,7 +62,7 @@ namespace BibleCommon.Common
                     vp = ChapterPoiner;
 
                 var verseNotesPageData = new VerseNotesPageData(vp);
-                VersesNotesPageData.Add(vp, verseNotesPageData);
+                VersesNotesPageData.Add(vp.VerseNumber, verseNotesPageData);
 
                 AddHierarchySubLevels(levelEl, verseNotesPageData);
             }            
@@ -100,26 +100,26 @@ namespace BibleCommon.Common
 
                 foreach (var subLinkEl in subLinksEl.GetByClass("td", "subLink"))
                 {
-                    pageLevel.AddPageLink(GetNotesPageLink(subLinkEl.Element("a")));                    
+                    pageLevel.AddPageLink(GetNotesPageLink(subLinkEl.Element("a"), subLinkEl.Parent, "td"));                    
                 }
             }
             else
             {
-                pageLevel.AddPageLink(GetNotesPageLink(aEl));                
+                pageLevel.AddPageLink(GetNotesPageLink(aEl, aEl.Parent, "span"));                
             }
 
             Application oneNoteApp = null;
             parentLevel.AddLevel(ref oneNoteApp, pageLevel, null, false);
         }
 
-        private NotesPageLink GetNotesPageLink(XElement aEl)
+        private NotesPageLink GetNotesPageLink(XElement aEl, XElement multiVerseParentEl, string multiVerseTagName)
         {
             var href = aEl.Attribute("href").Value;
-            var multiVerseSpanEl = aEl.Parent.GetByClass("span", "subLinkMultiVerse").FirstOrDefault();
+            var multiVerseEl = multiVerseParentEl.GetByClass(multiVerseTagName, "subLinkMultiVerse").FirstOrDefault();            
 
             var pageLink = new NotesPageLink(href);
-            if (multiVerseSpanEl != null)
-                pageLink.MultiVerseString = multiVerseSpanEl.Value;
+            if (multiVerseEl != null)
+                pageLink.MultiVerseString = multiVerseEl.Value;
 
             return pageLink;
         }
@@ -143,8 +143,7 @@ namespace BibleCommon.Common
 
         public void Serialize(ref Application oneNoteApp)
         {            
-            var chapterVersePointer = VersesNotesPageData.First().Key.GetChapterPointer();
-            
+            var chapterVersePointer = VersesNotesPageData.First().Value.Verse.GetChapterPointer();            
 
             var xdoc = new XDocument(
                         new XElement("html", 
@@ -175,15 +174,15 @@ namespace BibleCommon.Common
 
         public VerseNotesPageData GetVerseNotesPageData(VersePointer vp)
         {
-            if (!VersesNotesPageData.ContainsKey(vp))
+            if (!VersesNotesPageData.ContainsKey(vp.VerseNumber))
             {
                 var vnpd = new VerseNotesPageData(vp);
-                VersesNotesPageData.Add(vp, vnpd);
+                VersesNotesPageData.Add(vp.VerseNumber, vnpd);
 
                 return vnpd;
             }
             else
-                return VersesNotesPageData[vp];
+                return VersesNotesPageData[vp.VerseNumber];
         }
 
         private void AddPageTitle(XElement bodyEl, VersePointer chapterVersePointer)
@@ -697,9 +696,11 @@ namespace BibleCommon.Common
                             if (notePageHierarchyElInfo.Type == HierarchyElementType.Page)
                             {
                                 existingLinkInHierarchy = parentHierarchy.XPathSelectElement(
-                                            string.Format("one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]",
-                                                Constants.Key_SyncId, otherLevel.Id),
+                                            string.Format("one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", Constants.Key_SyncId, otherLevel.Id),
                                             notebookHierarchy.Xnm);
+
+                                if (existingLinkInHierarchy == null)  // ещё не обновили метаданные в кэше                                
+                                    existingLinkInHierarchy = parentHierarchy.XPathSelectElement(string.Format("one:Page[@ID='{0}']", otherLevel.Id), notebookHierarchy.Xnm);                                
                             }
                             else
                             {

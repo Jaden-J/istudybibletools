@@ -38,7 +38,7 @@ namespace BibleCommon.Scheme
                 return _booksDictionary;
             }
         }
-
+        
         public bool VerseExists(SimpleVersePointer vp, string moduleShortName, out VerseNumber verseNumber)
         {
             verseNumber = vp.VerseNumber;
@@ -46,7 +46,8 @@ namespace BibleCommon.Scheme
             {
                 bool isEmpty;
                 bool isFullVerse;
-                this.BooksDictionary[vp.BookIndex].GetVerseContent(vp, moduleShortName, string.Empty, out verseNumber, out isEmpty, out isFullVerse);
+                bool isPartOfBigVerse;
+                this.BooksDictionary[vp.BookIndex].GetVerseContent(vp, moduleShortName, string.Empty, true, out verseNumber, out isEmpty, out isFullVerse, out isPartOfBigVerse);
                 return true;
             }
             catch (VerseNotFoundException)
@@ -88,11 +89,13 @@ namespace BibleCommon.Scheme
             }
         }        
 
-        public string GetVerseContent(SimpleVersePointer versePointer, string moduleShortName, string strongPrefix, 
-            out VerseNumber verseNumber, out bool isEmpty, out bool isFullVerse)
+        public string GetVerseContent(SimpleVersePointer versePointer, string moduleShortName, string strongPrefix, bool getVerseNumberForEmptyVerses, 
+            out VerseNumber verseNumber, out bool isEmpty, out bool isFullVerse, out bool isPartOfBigVerse)
         {
             isFullVerse = true;
             isEmpty = false;
+            isPartOfBigVerse = false;
+
             verseNumber = versePointer.VerseNumber;
 
             if (versePointer.IsEmpty)
@@ -109,11 +112,9 @@ namespace BibleCommon.Scheme
             if (versePointer.IsChapter)            
                 return string.Empty;            
 
-            var verse = chapter.GetVerse(versePointer, moduleShortName);
+            var verse = chapter.GetVerse(versePointer, moduleShortName, getVerseNumberForEmptyVerses, out verseNumber, out isPartOfBigVerse);
             if (verse == null)
-                throw new VerseNotFoundException(versePointer, moduleShortName, BaseVersePointerException.Severity.Warning);
-
-            verseNumber = verse.VerseNumber;
+                throw new VerseNotFoundException(versePointer, moduleShortName, BaseVersePointerException.Severity.Warning);            
 
             if (verse.IsEmpty)
             {
@@ -151,10 +152,12 @@ namespace BibleCommon.Scheme
         /// <param name="isEmpty"></param>
         /// <param name="isFullVerses">Запрашиваемые стихи являются полными. А то стих может быть "Текст стиха|". То есть вроде как две части стиха, но первая часть равна всему стиху.</param>
         /// <param name="isDiscontinuous">Прерывистые стихи. Например: 8,22. </param>
+        /// <param name="isPartOfBigVerse">Часть "бОльшего стиха". Например, если стих :3 а в ibs :2-4 - это один стих.</param>
         /// <param name="notFoundVerses"></param>
         /// <returns></returns>
         public string GetVersesContent(List<SimpleVersePointer> verses, string moduleShortName, string strongPrefix, 
-            out int? topVerse, out bool isEmpty, out bool isFullVerses, out bool isDiscontinuous, out List<SimpleVersePointer> notFoundVerses, out List<SimpleVersePointer> emptyVerses)
+            out int? topVerse, out bool isEmpty, out bool isFullVerses, out bool isDiscontinuous, out bool isPartOfBigVerse,
+            out List<SimpleVersePointer> notFoundVerses, out List<SimpleVersePointer> emptyVerses)
         {
             var contents = new List<string>();
             notFoundVerses = new List<SimpleVersePointer>();
@@ -165,13 +168,14 @@ namespace BibleCommon.Scheme
 
             isEmpty = true;
             isFullVerses = true;
-            isDiscontinuous = false;                        
+            isDiscontinuous = false;
+            isPartOfBigVerse = false;
 
             foreach (var verse in verses)
             {
                 bool localIsEmpty, localIsFullVerse;
                 VerseNumber vn;
-                var verseContent = GetVerseContent(verse, moduleShortName, strongPrefix, out vn, out localIsEmpty, out localIsFullVerse);
+                var verseContent = GetVerseContent(verse, moduleShortName, strongPrefix, false, out vn, out localIsEmpty, out localIsFullVerse, out isPartOfBigVerse);
                 contents.Add(verseContent);
 
                 if (!localIsEmpty)
@@ -182,8 +186,8 @@ namespace BibleCommon.Scheme
                         localIsEmpty = true;
                 }
 
-                if (localIsEmpty)
-                    emptyVerses.Add(verse);
+                if (localIsEmpty)                
+                    emptyVerses.Add(verse);                                    
 
                 isEmpty = isEmpty && localIsEmpty;
                 isFullVerses = isFullVerses && localIsFullVerse;
@@ -243,17 +247,33 @@ namespace BibleCommon.Scheme
         }       
 
         private Dictionary<int, VERS> _versesDictionary;
-        public VERS GetVerse(SimpleVersePointer verse, string moduleShortName)
+        public VERS GetVerse(SimpleVersePointer versePointer, string moduleShortName, bool getVerseNumberForEmptyVerses, out VerseNumber verseNumber, out bool isPartOfBigVerse)
         {
+            VERS result = null;
+            isPartOfBigVerse = false;
+            verseNumber = versePointer.VerseNumber;
+
             if (_versesDictionary == null)
-                LoadVersesDictionary(verse, moduleShortName);
+                LoadVersesDictionary(versePointer, moduleShortName);            
 
-            if (_versesDictionary.ContainsKey(verse.Verse))
-                return _versesDictionary[verse.Verse];
-            else if (Verses.Any(v => v.IsMultiVerse && (v.Index <= verse.Verse && verse.Verse <= v.TopIndex)))
-                return VERS.Empty;
+            if (_versesDictionary.ContainsKey(versePointer.Verse))
+            {
+                result = _versesDictionary[versePointer.Verse];
+                verseNumber = result.VerseNumber;                
+            }
+            else
+            {
+                result = Verses.FirstOrDefault(v => v.IsMultiVerse && (v.Index <= versePointer.Verse && versePointer.Verse <= v.TopIndex));
+                if (result != null)
+                {
+                    if (getVerseNumberForEmptyVerses)
+                        verseNumber = result.VerseNumber;
+                    isPartOfBigVerse = true;
+                    result = VERS.Empty;  // так как стих является частью бОльшего стиха
+                }
+            }
 
-            return null;
+            return result;
         }
 
         private void LoadVersesDictionary(SimpleVersePointer verse, string moduleShortName)

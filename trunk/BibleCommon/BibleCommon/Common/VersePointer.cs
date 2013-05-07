@@ -12,7 +12,7 @@ using BibleCommon.Contracts;
 namespace BibleCommon.Common
 {
     [Serializable]
-    public struct VerseNumber
+    public struct VerseNumber: IComparable<VerseNumber>
     {
         public int Verse;
         public int? TopVerse;
@@ -150,7 +150,12 @@ namespace BibleCommon.Common
         public static bool operator !=(VerseNumber vn1, VerseNumber vn2)
         {
             return !(vn1 == vn2);
-        }        
+        }
+
+        public int CompareTo(VerseNumber other)
+        {
+            return this.Verse.CompareTo(other.Verse);
+        }
     }
 
     /// <summary>
@@ -315,7 +320,6 @@ namespace BibleCommon.Common
 
     public class SimpleVerse : SimpleVersePointer
     {
-
         /// <summary>
         /// Строка, соответствующая номерам/номеру стиха. Может быть: "5", "5-6", "6:5-6"
         /// </summary>
@@ -330,6 +334,11 @@ namespace BibleCommon.Common
         /// Текст стиха без номера
         /// </summary>
         public string VerseContent { get; set; }
+
+        /// <summary>
+        /// Часть "бОльшего стиха". Например, если стих :3 а в ibs :2-4 - это один стих. Используется только в одном месте, не везде может быть правильно инициилизировано.
+        /// </summary>
+        public bool IsPartOfBigVerse { get; set; }
 
         public string GetVerseFullString()
         {
@@ -455,14 +464,14 @@ namespace BibleCommon.Common
                 else if (TopChapter != null && IsChapter)
                     return string.Format("{0}-{1}", Chapter, TopChapter);
                 else
-                    return string.Format("{0}:{1}-{2}", Chapter, Verse, TopVerse);
+                    return string.Format("{0}:{1}", Chapter, VerseNumber);
             }
             else
             {
                 if (IsChapter)
                     return string.Format("{0}", Chapter);
                 else
-                    return string.Format("{0}:{1}", Chapter, Verse);
+                    return string.Format("{0}:{1}", Chapter, VerseNumber);
             }            
         }
 
