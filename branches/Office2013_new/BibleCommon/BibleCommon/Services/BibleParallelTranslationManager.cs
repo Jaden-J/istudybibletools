@@ -211,7 +211,7 @@ namespace BibleCommon.Services
                     }
                 }
                 else
-                    _result.NotFoundBibleVerses.Add(baseBookInfo.Name);
+                    _result.NotFoundBibleVerses.Add(baseBookInfo.Name);                
             }
 
             return _result;
@@ -391,13 +391,14 @@ namespace BibleCommon.Services
             var firstParallelVerse = parallelVersePointers.First();
             int? topLastVerse = null;
             bool isEmpty = false;
+            bool isPartOfBigVerse;
 
 
             bool isFullVerses, isDiscontinuous;
             List<SimpleVersePointer> notFoundVerses;
             List<SimpleVersePointer> emptyVerses;
             verseContent = parallelBookContent.GetVersesContent(parallelVersePointers, this.ParallelModuleInfo.ShortName, strongPrefix,
-                                        out topLastVerse, out isEmpty, out isFullVerses, out isDiscontinuous, out notFoundVerses, out emptyVerses);
+                                        out topLastVerse, out isEmpty, out isFullVerses, out isDiscontinuous, out isPartOfBigVerse, out notFoundVerses, out emptyVerses);
 
             if (!isEmpty)
             {
@@ -432,7 +433,8 @@ namespace BibleCommon.Services
             return new SimpleVerse(firstParallelVerse, verseNumberContent, verseContent)
             {
                 VerseNumber = new VerseNumber(firstParallelVerse.Verse, topLastVerse),
-                IsEmpty = firstParallelVerse.IsEmpty || isEmpty
+                IsEmpty = firstParallelVerse.IsEmpty || isEmpty,
+                IsPartOfBigVerse = isPartOfBigVerse
             };
         }
 

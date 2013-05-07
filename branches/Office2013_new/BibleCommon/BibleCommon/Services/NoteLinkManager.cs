@@ -1271,7 +1271,10 @@ namespace BibleCommon.Services
             }
 
             var key = new NotePageProcessedVerseId() { NotePageId = notePageId.UniqueName, NotesPageName = notesPageName };
-            var processedVerses = AddNotePageProcessedVerse(key, vp, verseHierarchyObjectInfo.VerseNumber);            
+            var processedVerses = AddNotePageProcessedVerse(key, vp, verseHierarchyObjectInfo.VerseNumber);
+
+            if (createLinkToNotesPage && SettingsManager.Instance.StoreNotesPagesInFolder && isDetailedLink == DetailedLink.Yes)
+                createLinkToNotesPage = false;
 
             if (createLinkToNotesPage && (notesPageWasCreatedOrRowAdded || force || isChapter))
             {

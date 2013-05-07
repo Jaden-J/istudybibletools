@@ -164,7 +164,7 @@ namespace BibleCommon.Services
                     }, true, true,
                     (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
                     {
-                        if (!parallelVerse.IsEmpty)
+                        if (!parallelVerse.IsEmpty || parallelVerse.IsPartOfBigVerse)
                         {
                             linkResult.AddRange(
                                 LinkPrimaryBibleAndSupplementalVerses(ref oneNoteTemp, baseVersePointer, parallelVerse, bibleIteratorArgs,
@@ -415,7 +415,9 @@ namespace BibleCommon.Services
             var baseChapterPageId = (string)bibleIteratorArgs.ChapterDocument.Root.Attribute("ID");
             var baseVerseElementId = (string)baseVerseEl.Parent.Attribute("objectID");            
 
+            if (!parallelVerse.IsEmpty)
             LinkMainBibleVersesToSupplementalBibleVerse(ref oneNoteApp, baseChapterPageId, baseVerseElementId, parallelVerse, primaryBibleObjectsSearchResult, xnm, nms);
+
             LinkSupplementalBibleVerseToMainBibleVerseAndToStrongDictionary(ref oneNoteApp, baseVersePointer, baseVerseEl, baseVerseNumber, parallelVersePointer, verseTextWithoutNumber, primaryBibleObjectsSearchResult, 
                 isStrong, bibleIteratorArgs.StrongStyleIndex, strongTermLinksCache, strongModuleShortName, alphabet, isOneNote2010, ref result, nms);
 

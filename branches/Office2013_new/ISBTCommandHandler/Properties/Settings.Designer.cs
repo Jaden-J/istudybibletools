@@ -49,7 +49,7 @@ namespace ISBTCommandHandler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool NotesPageFormCloseOnClick {
             get {
                 return ((bool)(this["NotesPageFormCloseOnClick"]));
@@ -61,7 +61,7 @@ namespace ISBTCommandHandler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool NotesPageFormAlwaysOnTop {
             get {
                 return ((bool)(this["NotesPageFormAlwaysOnTop"]));
