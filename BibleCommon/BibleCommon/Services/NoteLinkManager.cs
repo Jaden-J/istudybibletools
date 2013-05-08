@@ -567,7 +567,7 @@ namespace BibleCommon.Services
                 globalChapterSearchResult = globalChapterSearchResultTemp;
                 prevResult = prevResultTemp;
 
-                if (correctVerses.Count > 0)
+                if (correctVerses.Count > 0 && SettingsManager.Instance.StoreNotesPagesInFolder)
                 {
                     //формируем ссылку на этот абзац, чтобы она сохранилась в кэше, чтобы быстрее позже формировались и сохранялись сводные заметок, чтобы можно было точнее оценивать время до конца анализа на основании хода первого этапа
                     ApplicationCache.Instance.GenerateHref(ref oneNoteApp, notePageInfo.Id, (string)textElement.Parent.Attribute("objectID"));

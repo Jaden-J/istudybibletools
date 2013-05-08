@@ -701,8 +701,6 @@ namespace BibleCommon.Services
             return el;
         }
 
-
-
         private static ListNumberInfo GetListNumberInfo(int level)
         {
             var result = new ListNumberInfo();

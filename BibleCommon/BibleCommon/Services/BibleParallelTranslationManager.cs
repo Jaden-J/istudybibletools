@@ -515,9 +515,9 @@ namespace BibleCommon.Services
                         var parallelBook = parallelModuleInfo.BibleStructure.BibleBooks.FirstOrDefault(b => b.Index == baseBook.Index);
                         if (parallelBook != null)
                         {
-                            foreach (var parallelBookAbbreviation in parallelBook.AllAbbreviations.Where(abbr => string.IsNullOrEmpty(abbr.ModuleName)))
+                            foreach (var parallelBookAbbreviation in parallelBook.AllAbbreviations.Values.Where(abbr => string.IsNullOrEmpty(abbr.ModuleName)))
                             {
-                                if (!baseBook.AllAbbreviations.Exists(abbr => abbr.Value == parallelBookAbbreviation.Value))
+                                if (!baseBook.AllAbbreviations.ContainsKey(parallelBookAbbreviation.Value))
                                 {
                                     baseBook.Abbreviations.Add(new Abbreviation(parallelBookAbbreviation.Value)
                                     {
