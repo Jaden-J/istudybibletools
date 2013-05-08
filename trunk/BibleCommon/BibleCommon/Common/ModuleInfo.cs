@@ -257,10 +257,20 @@ namespace BibleCommon.Common
 
             foreach (var book in BibleStructure.BibleBooks)
             {
-                var abbreviation = book.AllAbbreviationsWithSectionName
-                                             .FirstOrDefault(abbr =>
-                                                 abbr.Value.Equals(s, StringComparison.OrdinalIgnoreCase)
-                                                 && (!endsWithDot || !abbr.IsFullBookName));
+                Abbreviation abbreviation = null;
+
+                if (book.AllAbbreviationsWithSectionName.ContainsKey(s))
+                {
+                    abbreviation = book.AllAbbreviationsWithSectionName[s];
+                    if (endsWithDot && abbreviation.IsFullBookName)
+                        abbreviation = null;
+                }
+
+                //var abbreviation = book.AllAbbreviationsWithSectionName
+                //                             .FirstOrDefault(abbr =>
+                //                                 abbr.Value.Equals(s, StringComparison.OrdinalIgnoreCase)
+                //                                 && (!endsWithDot || !abbr.IsFullBookName));
+
                 if (abbreviation != null)
                 {
                     moduleName = abbreviation.ModuleName;
@@ -518,9 +528,9 @@ namespace BibleCommon.Common
             }
         }
 
-        private List<Abbreviation> _allAbbreviations;
+        private Dictionary<string, Abbreviation> _allAbbreviations;
         [XmlIgnore]
-        public List<Abbreviation> AllAbbreviations
+        public Dictionary<string, Abbreviation> AllAbbreviations
         {
             get
             {
@@ -531,9 +541,9 @@ namespace BibleCommon.Common
             }
         }
 
-        private List<Abbreviation> _allAbbreviationsWithSectionName;
+        private Dictionary<string, Abbreviation> _allAbbreviationsWithSectionName;
         [XmlIgnore]
-        public List<Abbreviation> AllAbbreviationsWithSectionName
+        public Dictionary<string, Abbreviation> AllAbbreviationsWithSectionName
         {
             get
             {
@@ -544,18 +554,23 @@ namespace BibleCommon.Common
             }
         }
 
-        private List<Abbreviation> GetAllAbbreviations(bool includeSectionName)
+        private Dictionary<string, Abbreviation> GetAllAbbreviations(bool includeSectionName)
         {
-            var result = new List<Abbreviation>();
+            var result = new Dictionary<string, Abbreviation>(StringComparer.OrdinalIgnoreCase);
             var nameLower = Name.ToLowerInvariant();
 
-            result.Add(new Abbreviation(nameLower) { IsFullBookName = true });
+            result.Add(nameLower, new Abbreviation(nameLower) { IsFullBookName = true });
 
             Abbreviations.ForEach(abbr => abbr.Value = abbr.Value.ToLowerInvariant());  // вдруг где-то в модуле случайно указали с большой буквы            
-            result.AddRange(Abbreviations.Where(abbr => abbr.Value != nameLower));            
+
+            foreach(var abbr in Abbreviations.Where(abbr => abbr.Value != nameLower))
+                result.Add(abbr.Value, abbr);
 
             if (includeSectionName)
-                result.Add(new Abbreviation(SectionName.ToLowerInvariant()) { IsFullBookName = true });
+            {
+                var sectionNameLower = SectionName.ToLowerInvariant();
+                result.Add(sectionNameLower, new Abbreviation(sectionNameLower) { IsFullBookName = true });
+            }
 
             return result;
         }
