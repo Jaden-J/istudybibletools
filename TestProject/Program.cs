@@ -33,9 +33,7 @@ namespace TestProject
         private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\IStudyBibleTools\ForGenerating";
         private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp";
 
-        private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
-
-        
+        private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;        
 
       
 
