@@ -40,14 +40,28 @@ namespace ISBTCommandHandler
             }
         }
 
-        private List<string> _filesInCurrentDirectory;
-        protected List<string> FilesInCurrentDirectory
+        private OrderedDictionary<VerseNumber, string> _filesInCurrentDirectory;
+        protected OrderedDictionary<VerseNumber, string> FilesInCurrentDirectory
         {
             get
             {
                 if (_filesInCurrentDirectory == null)
                 {
-                    _filesInCurrentDirectory = Directory.GetFiles(Path.GetDirectoryName(VerseNotesPageFilePath)).OrderBy(file => file).ToList();
+                    _filesInCurrentDirectory = new OrderedDictionary<VerseNumber, string>();
+
+                    foreach(var file in Directory.GetFiles(Path.GetDirectoryName(VerseNotesPageFilePath)))
+                    {
+                        try
+                        {
+                            _filesInCurrentDirectory.Add(GetFileVerseNumber(file), file);
+                        }
+                        catch (Exception ex)
+                        {
+                            BibleCommon.Services.Logger.LogError(ex);
+                        }
+                    }
+
+                    _filesInCurrentDirectory.SortKeys();
                 }
 
                 return _filesInCurrentDirectory;
@@ -272,12 +286,12 @@ namespace ISBTCommandHandler
         
         private void SetNavigationButtonsAvailability()
         {
-            if (FilesInCurrentDirectory.First() != VerseNotesPageFilePath)
+            if (FilesInCurrentDirectory.First().Value != VerseNotesPageFilePath)
                 btnPrev.Enabled = true;
             else
                 btnPrev.Enabled = false;
 
-            if (FilesInCurrentDirectory.Last() != VerseNotesPageFilePath)
+            if (FilesInCurrentDirectory.Last().Value != VerseNotesPageFilePath)
                 btnNext.Enabled = true;
             else
                 btnNext.Enabled = false;
@@ -285,13 +299,13 @@ namespace ISBTCommandHandler
 
         private void btnNext_Click(object sender, EventArgs e)
         {
-            var nextFile = FilesInCurrentDirectory[FilesInCurrentDirectory.IndexOf(VerseNotesPageFilePath) + 1];
+            var nextFile = FilesInCurrentDirectory[FilesInCurrentDirectory.IndexOf(GetFileVerseNumber(VerseNotesPageFilePath)) + 1];
             OpenAnotherFile(nextFile);
         }
 
         private void btnPrev_Click(object sender, EventArgs e)
         {
-            var prevFile = FilesInCurrentDirectory[FilesInCurrentDirectory.IndexOf(VerseNotesPageFilePath) - 1];
+            var prevFile = FilesInCurrentDirectory[FilesInCurrentDirectory.IndexOf(GetFileVerseNumber(VerseNotesPageFilePath)) - 1];
             OpenAnotherFile(prevFile);
         }
 
@@ -300,6 +314,11 @@ namespace ISBTCommandHandler
             var verseNumber = VerseNumber.Parse(Path.GetFileNameWithoutExtension(file));
             var vp = new VersePointer(VersePointer, verseNumber);
             OpenNotesPage(vp, file);            
+        }
+
+        private static VerseNumber GetFileVerseNumber(string file)
+        {
+            return VerseNumber.Parse(Path.GetFileNameWithoutExtension(file));
         }
     }
 }
