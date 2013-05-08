@@ -91,7 +91,7 @@ namespace BibleCommon.Services
             rowWasAdded = false;
 
             var rootElement = notesPageDocument.Content.Root.XPathSelectElement(
-                                            string.Format("one:Outline/one:OEChildren/one:OE/one:Meta[@name=\"{0}\" and @content=\"{1}\"]", Constants.Key_Verse, vp.Verse.GetValueOrDefault(0)),
+                                            string.Format("one:Outline/one:OEChildren/one:OE/one:Meta[@name=\"{0}\" and @content=\"{1}\"]", Constants.Key_Verse, vp.VerseNumber),
                                             notesPageDocument.Xnm);
 
 
@@ -148,15 +148,15 @@ namespace BibleCommon.Services
                                             )),
                                 new XElement(_nms + "OEChildren")
                             );
-            OneNoteUtils.UpdateElementMetaData(rootElement, Constants.Key_Verse, vp.Verse.GetValueOrDefault(0).ToString(), notesPageDocument.Xnm);
+            OneNoteUtils.UpdateElementMetaData(rootElement, Constants.Key_Verse, vp.VerseNumber.ToString(), notesPageDocument.Xnm);
 
             XElement prevOE = null;
             if (!isChapter)  // иначе добавляем первым
             {
                 foreach (var oeMEta in rootElParent.XPathSelectElements(string.Format("one:OE/one:Meta[@name=\"{0}\"]", Constants.Key_Verse), notesPageDocument.Xnm))
                 {
-                    var verse = int.Parse((string)oeMEta.Attribute("content"));
-                    if (verse > vp.Verse)
+                    var verseNumber = VerseNumber.Parse((string)oeMEta.Attribute("content"));
+                    if (verseNumber > vp.VerseNumber)
                         break;
 
                     prevOE = oeMEta.Parent;
@@ -178,7 +178,7 @@ namespace BibleCommon.Services
 
             targetElement = notesPageDocument.Content.Root.XPathSelectElement(
                                         string.Format("one:Outline/one:OEChildren/one:OE/one:Meta[@name=\"{0}\" and @content=\"{1}\"]",
-                                                                Constants.Key_Verse, verseNumber.GetValueOrDefault(new VerseNumber(0)).Verse),
+                                                                Constants.Key_Verse, verseNumber.GetValueOrDefault()),
                                         notesPageDocument.Xnm);
 
             if (targetElement != null)
@@ -343,7 +343,7 @@ namespace BibleCommon.Services
                                             new XElement(_nms + "OE",
                                                 new XElement(_nms + "T",
                                                     new XCData(
-                                                        string.Join(Resources.Constants.VerseLinksDelimiter, arrayOfLinks
+                                                        string.Join(Resources.Constants.VerseLinksDelimiter + " ", arrayOfLinks
                                                         )))));
 
             suchNoteLink.Parent.Add(verseLinksElement);
@@ -409,7 +409,7 @@ namespace BibleCommon.Services
             for (int index = 0; index < links.Count; index++)
             {
                 existingVerseLinksElement.Value += string.Concat(
-                                                        index == 0 ? string.Empty : Resources.Constants.VerseLinksDelimiter,
+                                                        index == 0 ? string.Empty : Resources.Constants.VerseLinksDelimiter + " ",
                                                         OneNoteUtils.GetLink(
                                                                         GetVerseLinkTitle(
                                                                                 string.Format(Resources.Constants.VerseLinkTemplate, index + 1),
