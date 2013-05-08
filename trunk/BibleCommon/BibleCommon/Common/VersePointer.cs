@@ -152,6 +152,26 @@ namespace BibleCommon.Common
             return !(vn1 == vn2);
         }
 
+        public static bool operator >(VerseNumber vn1, VerseNumber vn2)
+        {
+            return vn1.CompareTo(vn2) > 0;
+        }
+
+        public static bool operator >=(VerseNumber vn1, VerseNumber vn2)
+        {
+            return vn1.CompareTo(vn2) >= 0;
+        }
+
+        public static bool operator <(VerseNumber vn1, VerseNumber vn2)
+        {
+            return vn1.CompareTo(vn2) < 0;
+        }
+
+        public static bool operator <=(VerseNumber vn1, VerseNumber vn2)
+        {
+            return vn1.CompareTo(vn2) <= 0;
+        }
+
         public int CompareTo(VerseNumber other)
         {
             return this.Verse.CompareTo(other.Verse);

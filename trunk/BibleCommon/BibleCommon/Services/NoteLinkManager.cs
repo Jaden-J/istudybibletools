@@ -577,8 +577,6 @@ namespace BibleCommon.Services
             return result;
         }
 
-
-
         private ProcessFoundVerseResult ProcessFoundVerse(ref Application oneNoteApp, int cursorPosition, ref FoundVerseInfo verseInfo, XElement textElement,
             HierarchyElementInfo notePageId, ref List<FoundChapterInfo> foundChapters, List<VersePointerSearchResult> pageChaptersSearchResult, 
             AnalyzeDepth linkDepth, bool force, bool isTitle, Action<VersePointerSearchResult> onVersePointerFound)
