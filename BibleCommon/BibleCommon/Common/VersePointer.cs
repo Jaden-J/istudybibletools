@@ -193,6 +193,11 @@ namespace BibleCommon.Common
         public bool IsApocrypha { get; set; }
         public bool SkipCheck { get; set; }
 
+        /// <summary>
+        /// Часть "бОльшего стиха". Например, если стих :3 а в ibs :2-4 - это один стих. Используется только в одном месте, не везде может быть правильно инициилизировано.
+        /// </summary>
+        public bool IsPartOfBigVerse { get; set; }
+
         public bool IsMultiVerse
         {
             get
@@ -307,6 +312,7 @@ namespace BibleCommon.Common
             verse.PartIndex = this.PartIndex;            
             verse.SkipCheck = this.SkipCheck;
             verse.EmptyVerseContent = this.EmptyVerseContent;
+            verse.IsPartOfBigVerse = this.IsPartOfBigVerse;
         }
 
         public SimpleVersePointer GetChapterPointer()
@@ -353,12 +359,7 @@ namespace BibleCommon.Common
         /// <summary>
         /// Текст стиха без номера
         /// </summary>
-        public string VerseContent { get; set; }
-
-        /// <summary>
-        /// Часть "бОльшего стиха". Например, если стих :3 а в ibs :2-4 - это один стих. Используется только в одном месте, не везде может быть правильно инициилизировано.
-        /// </summary>
-        public bool IsPartOfBigVerse { get; set; }
+        public string VerseContent { get; set; }        
 
         public string GetVerseFullString()
         {
@@ -392,7 +393,7 @@ namespace BibleCommon.Common
             if (!string.IsNullOrEmpty(verseNumberString))
                 this.VerseNumberString = verseNumberString;
             else
-                this.VerseNumberString = versePointer.Verse.ToString();            
+                this.VerseNumberString = versePointer.VerseNumber.ToString();            
         }
 
         public override object Clone()
