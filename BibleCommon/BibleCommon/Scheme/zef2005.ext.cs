@@ -259,7 +259,8 @@ namespace BibleCommon.Scheme
             if (_versesDictionary.ContainsKey(versePointer.Verse))
             {
                 result = _versesDictionary[versePointer.Verse];
-                verseNumber = result.VerseNumber;                
+                verseNumber = result.VerseNumber;
+                isPartOfBigVerse = verseNumber.IsMultiVerse;
             }
             else
             {
