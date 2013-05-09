@@ -991,9 +991,9 @@ namespace BibleConfigurator
                 cbBibleStudyNotebook.Items.Add(cbItem);
             }
 
-            var useSingleNotebook = module.UseSingleNotebook() || IsModerator || SettingsManager.Instance.IsSingleNotebook;
+            var canUseSingleNotebook = module.UseSingleNotebook() || IsModerator || SettingsManager.Instance.IsSingleNotebook;
 
-            if (useSingleNotebook)
+            if (canUseSingleNotebook)
             {
                 var defaultNotebookName = "";
                 if (module.UseSingleNotebook())
@@ -1015,19 +1015,19 @@ namespace BibleConfigurator
                 Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.BibleComments).Name),
                 _notebooks, SettingsManager.Instance.NotebookId_BibleComments, cbBibleCommentsNotebook, chkCreateBibleCommentsNotebookFromTemplate);
 
-            if (SettingsManager.Instance.StoreNotesPagesInFolder || !_notebooks.ContainsKey(SettingsManager.Instance.NotebookId_BibleNotesPages))
-            {   
-                chkUseFolderForBibleNotesPages.Checked = true; 
-            }
-            else
-            {
-                SetNotebookParameters(rbMultiNotebook.Checked, 
-                                      !string.IsNullOrEmpty(bibleNotesPagesNotebookId) 
+            SetNotebookParameters(rbMultiNotebook.Checked,
+                                      !string.IsNullOrEmpty(bibleNotesPagesNotebookId)
                                                     ? _notebooks[bibleNotesPagesNotebookId]
                                                     : Path.GetFileNameWithoutExtension(module.GetNotebook(ContainerType.BibleNotesPages).Name),
                                       _notebooks, SettingsManager.Instance.NotebookId_BibleNotesPages, cbBibleNotesPagesNotebook, chkCreateBibleNotesPagesNotebookFromTemplate);
-                
-                if (!useSingleNotebook)
+
+
+            if (SettingsManager.Instance.StoreNotesPagesInFolder || !_notebooks.ContainsKey(SettingsManager.Instance.NotebookId_BibleNotesPages))
+            {
+                chkUseFolderForBibleNotesPages.Checked = true;
+            }
+            else if (rbMultiNotebook.Checked)
+            {
                     chkUseFolderForBibleNotesPages.Checked = false;
             }
 

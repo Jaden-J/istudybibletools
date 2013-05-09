@@ -111,9 +111,11 @@ namespace BibleNoteLinker
             {
                 if (_oneNoteApp.Windows.CurrentWindow != null && currentPage != null)
                 {
-                    _oneNoteApp.NavigateTo(currentPage.Id, null);
+                    _oneNoteApp.NavigateTo(currentPage.Id, null);                    
                 }
-            });            
+            });
+
+            //OneNoteUtils.SetActiveCurrentWindow(ref _oneNoteApp);
         }
 
         private int GetStagesCount()
