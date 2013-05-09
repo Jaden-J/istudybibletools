@@ -82,7 +82,7 @@ namespace ISBTCommandHandler
 
             OpenBibleVerseHandler = new OpenBibleVerseHandler();
             NavigateToHandler = new NavigateToHandler();
-            wbNotesPage.ObjectForScripting = this;
+            wbNotesPage.ObjectForScripting = this;            
 
             _titleAtStart = this.Text;                        
         }

@@ -80,6 +80,7 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_SupplementalBibleLinkName = "SupplementalBibleLinkName";
         public static readonly string ParameterName_DictionariesModules = "DictionariesModules";
         public static readonly string ParameterName_SelectedNotebooksForAnalyze = "SelectedNotebooksForAnalyze";
+        public static readonly string ParameterName_ShownMessages = "ShownMessages";
         
 
         public static readonly string ParameterName_PageWidthNotes = "Width_NotesPage";
