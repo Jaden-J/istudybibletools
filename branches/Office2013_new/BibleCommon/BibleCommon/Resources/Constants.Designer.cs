@@ -2010,6 +2010,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to It is recommended to keep the pages &quot;Summary of Notes&quot; in a folder. This will improve the performance and stability of the program. Change the settings to recommended, close the notebook &quot;Summary of Notes&quot; and run the analysis of all the pages?.
+        /// </summary>
+        public static string SuggestUsingFolderForNotesPages {
+            get {
+                return ResourceManager.GetString("SuggestUsingFolderForNotesPages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This form is designed for the Supplemental Bible management. 
         ///
         ///Please take notice:

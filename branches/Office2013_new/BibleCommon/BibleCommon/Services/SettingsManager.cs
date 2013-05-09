@@ -86,7 +86,7 @@ namespace BibleCommon.Services
                 return this.NotebookId;
         }
     }
-
+   
     public class SettingsManager
     {
         #region Properties
@@ -171,7 +171,9 @@ namespace BibleCommon.Services
         public int PageWidth_Bible { get; set; }
         public List<StoredModuleInfo> SupplementalBibleModules { get; set; }
         public string SupplementalBibleLinkName { get; set; }        
-        public List<StoredModuleInfo> DictionariesModules { get; set; }        
+        public List<StoredModuleInfo> DictionariesModules { get; set; }
+
+        public List<int> ShownMessages { get; set; }
         
         /// <summary>
         /// Использовать ли промежуточные ссылки для номеров стронга.
@@ -401,6 +403,7 @@ namespace BibleCommon.Services
         {
             SupplementalBibleModules = new List<StoredModuleInfo>();
             DictionariesModules = new List<StoredModuleInfo>();
+            ShownMessages = new List<int>();
         }
 
         private void LoadSettingsFromFile()
@@ -535,6 +538,8 @@ namespace BibleCommon.Services
                                                         GetDefaultNotebooksForAnalyze(), GetNotebooksForAnalyze);
 
             this.FolderPath_BibleNotesPages = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_FolderPathBibleNotesPages, Utils.GetNotesPagesFolderPath());
+            this.ShownMessages = GetParameterValue<List<int>>(xdoc, Consts.Constants.ParameterName_ShownMessages, new List<int>(), 
+                                                s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(code => int.Parse(code)));
         }
 
         private T GetParameterValue<T>(XDocument xdoc, string parameterName, object defaultValue = null, Func<string, T> convertFunc = null)
@@ -664,7 +669,8 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_UseProxyLinksForStrong, UseProxyLinksForStrong),
                                   new XElement(Consts.Constants.ParameterName_UseProxyLinksForLinks, UseProxyLinksForLinks),
                                   new XElement(Consts.Constants.ParameterName_UseProxyLinksForBibleVerses, UseProxyLinksForBibleVerses),
-                                  new XElement(Consts.Constants.ParameterName_GenerateFullBibleVersesCache, GenerateFullBibleVersesCache)
+                                  new XElement(Consts.Constants.ParameterName_GenerateFullBibleVersesCache, GenerateFullBibleVersesCache),
+                                  new XElement(Consts.Constants.ParameterName_ShownMessages, string.Join(";", this.ShownMessages.ToArray()))
                                   );
 
                     if (SelectedNotebooksForAnalyze != null && SelectedNotebooksForAnalyzeIsNotAsDefault())
