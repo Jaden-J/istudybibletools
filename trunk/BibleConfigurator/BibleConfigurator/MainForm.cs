@@ -199,14 +199,14 @@ namespace BibleConfigurator
                     {
                         SaveMultiNotebookParameters(module, ContainerType.BibleNotesPages,
                             chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, BibleNotesPagesNotebookFromTemplatePath);
+
+                        ShownMessagesManager.SetMessageWasShown(ShownMessagesManager.MessagesCodes.SuggestUsingFolderForNotesPages);
                     }
                     else
                     {
                         SettingsManager.Instance.FolderPath_BibleNotesPages = notesPagesFolderBrowserDialog.SelectedPath;
                         SettingsManager.Instance.NotebookId_BibleNotesPages = string.Empty;
-                        NotesPageManagerFS.UpdateNotesPageCssFile();
-                        NotesPageManagerFS.UpdateNotesPageJsFile();
-                        NotesPageManagerFS.UpdateNotesPageImages();
+                        NotesPageManagerFS.UpdateResources();                        
                     }
                 }
 

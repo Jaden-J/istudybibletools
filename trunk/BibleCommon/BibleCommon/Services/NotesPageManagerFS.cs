@@ -167,18 +167,25 @@ namespace BibleCommon.Services
             return string.Format("{0}_{1}", notesPageName, vp);
         }
 
-        public static void UpdateNotesPageCssFile()
+        public static void UpdateResources()
+        {
+            UpdateNotesPageCssFile();
+            UpdateNotesPageJsFile();
+            UpdateNotesPageImages();
+        }
+
+        private static void UpdateNotesPageCssFile()
         {
             UpdateNotesPageFile("BibleCommon.Resources.NotesPage.css", Consts.Constants.NotesPageStyleFileName);            
         }
 
-        public static void UpdateNotesPageJsFile()
+        private static void UpdateNotesPageJsFile()
         {
             UpdateNotesPageFile("BibleCommon.Resources.NotesPage.js", Consts.Constants.NotesPageScriptFileName);
             UpdateNotesPageFile("BibleCommon.Resources.JQuery.js", Consts.Constants.NotesPageJQueryScriptFileName);
         }
 
-        public static void UpdateNotesPageImages()
+        private static void UpdateNotesPageImages()
         {
             var folder = Path.Combine(SettingsManager.Instance.FolderPath_BibleNotesPages, "images");
             if (!Directory.Exists(folder))

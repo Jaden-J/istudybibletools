@@ -102,9 +102,7 @@ namespace BibleNoteLinker
 
             if (SettingsManager.Instance.StoreNotesPagesInFolder && chkForce.Checked && rbAnalyzeAllPages.Checked)
             {
-                NotesPageManagerFS.UpdateNotesPageCssFile();
-                NotesPageManagerFS.UpdateNotesPageJsFile();
-                NotesPageManagerFS.UpdateNotesPageImages();                
+                NotesPageManagerFS.UpdateResources();
             }
 
             OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
