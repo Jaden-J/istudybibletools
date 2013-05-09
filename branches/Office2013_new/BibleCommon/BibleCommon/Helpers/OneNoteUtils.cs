@@ -322,6 +322,10 @@ namespace BibleCommon.Helpers
                 }
             }
 
+            var pageTitleEl = pageContent.Root.XPathSelectElement("one:Title", xnm);                // могли случайно удалить заголовок со страницы
+            if (pageTitleEl != null && !pageTitleEl.HasElements && !pageTitleEl.HasAttributes)
+                pageTitleEl.Remove();
+
             try
             {
                 try
@@ -340,6 +344,8 @@ namespace BibleCommon.Helpers
                             Thread.Sleep(500);
                             UpdatePageContentSafeInternal(ref oneNoteApp, pageContent, xnm, attemptsCount + 1);
                         }
+                        else
+                            throw;
                     }
                     else
                         throw;

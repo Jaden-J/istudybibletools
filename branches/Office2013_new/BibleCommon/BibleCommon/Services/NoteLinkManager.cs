@@ -66,12 +66,10 @@ namespace BibleCommon.Services
         {
             public int Index { get; set; }
             public VersePointerSearchResult SearchResult { get; set; }
-            public VerseRecognitionManager.LinkInfo LinkInfo { get; set; }
-            public bool IsInBrackets { get; set; }
-            public bool IsExcluded { get; set; }
+            public VerseRecognitionManager.LinkInfo LinkInfo { get; set; }            
             public int CursorPosition { get; set; }
             public VersePointerSearchResult GlobalChapterSearchResult { get; set; }
-            public bool IsImportantVerse { get; set; }
+            public VerseRecognitionManager.VerseScopeInfo VerseScopeInfo { get; set; }
             public XmlCursorPosition VersePosition { get; set; }
         }
 
@@ -493,7 +491,7 @@ namespace BibleCommon.Services
         /// <param name="noteSectionGroupName"></param>
         /// <param name="noteSectionName"></param>
         /// <param name="notePageName"></param>
-        /// <param name="notePageId"></param>
+        /// <param name="notePageInfo"></param>
         /// <param name="processedVerses"></param>
         /// <param name="foundChapters"></param>
         /// <param name="globalChapterSearchResult"></param>
@@ -504,7 +502,7 @@ namespace BibleCommon.Services
         /// <param name="isTitle">анализируем ли заголовок</param>
         /// <param name="onVersePointerFound"></param>
         /// <returns></returns>
-        private bool ProcessTextElement(ref Application oneNoteApp, XElement textElement, HierarchyElementInfo notePageId, ref List<FoundChapterInfo> foundChapters,
+        private bool ProcessTextElement(ref Application oneNoteApp, XElement textElement, HierarchyElementInfo notePageInfo, ref List<FoundChapterInfo> foundChapters,
             ref VersePointerSearchResult globalChapterSearchResult, ref VersePointerSearchResult prevResult, 
             List<VersePointerSearchResult> pageChaptersSearchResult,
             AnalyzeDepth linkDepth, bool force, bool isTitle, bool isSummaryNotesPage, Action<VersePointerSearchResult> onVersePointerFound)
@@ -547,7 +545,7 @@ namespace BibleCommon.Services
 
                     if (correctVerses.ContainsKey(verseInfo.Index))
                     {
-                        var processVerseResult = ProcessFoundVerse(ref oneNoteAppLocal, cursorPosition, ref verseInfo, textElement, notePageId, ref foundChaptersLocal, pageChaptersSearchResult, linkDepth, force, isTitle, onVersePointerFound);
+                        var processVerseResult = ProcessFoundVerse(ref oneNoteAppLocal, cursorPosition, ref verseInfo, textElement, notePageInfo, ref foundChaptersLocal, pageChaptersSearchResult, linkDepth, force, isTitle, onVersePointerFound);
                         cursorPosition = processVerseResult.CursorPosition;
                         if (processVerseResult.WasModified)
                             result = processVerseResult.WasModified;
@@ -568,12 +566,16 @@ namespace BibleCommon.Services
 
                 globalChapterSearchResult = globalChapterSearchResultTemp;
                 prevResult = prevResultTemp;
+
+                if (correctVerses.Count > 0 && SettingsManager.Instance.StoreNotesPagesInFolder)
+                {
+                    //формируем ссылку на этот абзац, чтобы она сохранилась в кэше, чтобы быстрее позже формировались и сохранялись сводные заметок, чтобы можно было точнее оценивать время до конца анализа на основании хода первого этапа
+                    ApplicationCache.Instance.GenerateHref(ref oneNoteApp, notePageInfo.Id, (string)textElement.Parent.Attribute("objectID"));
+            }
             }
 
             return result;
         }
-
-
 
         private ProcessFoundVerseResult ProcessFoundVerse(ref Application oneNoteApp, int cursorPosition, ref FoundVerseInfo verseInfo, XElement textElement,
             HierarchyElementInfo notePageId, ref List<FoundChapterInfo> foundChapters, List<VersePointerSearchResult> pageChaptersSearchResult, 
@@ -603,7 +605,7 @@ namespace BibleCommon.Services
                                             textElementValue,
                                             notePageId, textElementObjectId,
                                             linkDepth, verseInfo.GlobalChapterSearchResult, pageChaptersSearchResult,
-                                            verseInfo.LinkInfo, verseInfo.IsInBrackets, verseInfo.IsExcluded, verseInfo.IsImportantVerse, force,
+                                            verseInfo.LinkInfo, verseInfo.VerseScopeInfo, force,
                                             out cursorPosition, out hierarchySearchResult, out needToQueueIfChapter, out verseWeight, out versePosition);
 
                 verseInfo.VersePosition = versePosition;
@@ -639,7 +641,7 @@ namespace BibleCommon.Services
                                 TextElementObjectId = textElementObjectId,
                                 VersePointerSearchResult = verseInfo.SearchResult,
                                 HierarchySearchResult = hierarchySearchResult,
-                                IsImportantChapter = verseInfo.IsImportantVerse,
+                                IsImportantChapter = verseInfo.VerseScopeInfo.IsImportantVerse,
                                 ChapterWeight = verseWeight,
                                 ChapterPosition = versePosition
                             });
@@ -710,17 +712,16 @@ namespace BibleCommon.Services
                     int textBreakIndex;
                     int htmlBreakIndex;
                     VerseRecognitionManager.LinkInfo linkInfo;
-                    bool isInBrackets;
-                    bool isExcluded;
-                    bool isImportantVerse;
-                    if (VerseRecognitionManager.CanProcessAtNumberPosition(textElement, cursorPosition, 
-                        out number, out textBreakIndex, out htmlBreakIndex, out linkInfo, out isInBrackets, out isExcluded, out isImportantVerse))
-                    {
-                        isImportantVerse = isImportantVerse || isTitle;
+                    VerseRecognitionManager.VerseScopeInfo verseScopeInfo;
+                    if (VerseRecognitionManager.CanProcessAtNumberPosition(textElement, cursorPosition,
+                        out number, out textBreakIndex, out htmlBreakIndex, out linkInfo, out verseScopeInfo))
+                    {                        
                         var searchResult = VerseRecognitionManager.GetValidVersePointer(textElement,
                             cursorPosition, textBreakIndex - 1, number,
                             globalChapterSearchResult,
-                            localChapterName, prevResult, linkInfo.IsLink, isInBrackets, isTitle);
+                            localChapterName, prevResult, linkInfo.IsLink, verseScopeInfo, isTitle);
+
+                        verseScopeInfo.IsImportantVerse = verseScopeInfo.IsImportantVerse || isTitle;
 
                         if (searchResult.ResultType != VersePointerSearchResult.SearchResultType.Nothing && isSummaryNotesPage)
                             if (searchResult.VersePointer != null && searchResult.VersePointer.IsMultiVerse)  // если находимся на странице сводной заметок и нашли мультивёрс ссылку (например :4-7) - то такие ссылки не обрабатываем
@@ -742,11 +743,9 @@ namespace BibleCommon.Services
                                                                  Index = verseIndex++,
                                                                  SearchResult = searchResult,
                                                                  LinkInfo = linkInfo,
-                                                                 IsInBrackets = isInBrackets,
-                                                                 IsExcluded = isExcluded,
+                                                                 VerseScopeInfo = verseScopeInfo,                                                                 
                                                                  CursorPosition = cursorPosition,
-                                                                 GlobalChapterSearchResult = globalChapterSearchResult,
-                                                                 IsImportantVerse = isImportantVerse
+                                                                 GlobalChapterSearchResult = globalChapterSearchResult                                                                 
                                                              });
 
 
@@ -797,7 +796,7 @@ namespace BibleCommon.Services
         private string ProcessVerse(ref Application oneNoteApp, VersePointerSearchResult searchResult,
             string textElementValue, HierarchyElementInfo notePageInfo, string notePageContentObjectId,
             AnalyzeDepth linkDepth, VersePointerSearchResult globalChapterSearchResult, List<VersePointerSearchResult> pageChaptersSearchResult,
-            VerseRecognitionManager.LinkInfo linkInfo, bool isInBrackets, bool isExcluded, bool isImportantVerse, bool force,
+            VerseRecognitionManager.LinkInfo linkInfo, VerseRecognitionManager.VerseScopeInfo verseScopeInfo, bool force,
             out int newEndVerseIndex, out BibleSearchResult hierarchySearchResult, out bool needToQueueIfChapter, 
             out decimal verseWeight, out XmlCursorPosition versePosition)
         {
@@ -856,7 +855,7 @@ namespace BibleCommon.Services
             if (verses.Count == 0)
                 verses.Add(searchResult.VersePointer);
 
-            if (isImportantVerse)
+            if (verseScopeInfo.IsImportantVerse)
                 verseWeight = Constants.ImportantVerseWeight;
             else
                 verseWeight = decimal.Round(verseWeight, 2, MidpointRounding.AwayFromZero);
@@ -877,7 +876,7 @@ namespace BibleCommon.Services
                         SettingsManager.Instance.ExcludedVersesLinking,
                         NotesPageType.Chapter, 
                         globalChapterSearchResult, pageChaptersSearchResult,
-                        isInBrackets, isExcluded, isImportantVerse, force, !needToQueueIfChapter, processAsExtendedVerse,
+                        verseScopeInfo, force, !needToQueueIfChapter, processAsExtendedVerse,
                         out localHierarchySearchResult, ref processedVerses, hsr =>
                         {
                             if (first)                            
@@ -968,7 +967,7 @@ namespace BibleCommon.Services
                         true, SettingsManager.Instance.ExcludedVersesLinking,
                         NotesPageType.Verse, 
                         globalChapterSearchResult, pageChaptersSearchResult,
-                        isInBrackets, isExcluded, isImportantVerse, force, !needToQueueIfChapter, processAsExtendedVerse, out localHierarchySearchResult, ref processedVerses, null);
+                        verseScopeInfo, force, !needToQueueIfChapter, processAsExtendedVerse, out localHierarchySearchResult, ref processedVerses, null);
                 }
 
                 first = false;
@@ -1001,7 +1000,7 @@ namespace BibleCommon.Services
                         false, SettingsManager.Instance.RubbishPage_ExcludedVersesLinking, 
                         NotesPageType.Detailed, 
                         globalChapterSearchResult, pageChaptersSearchResult,
-                        isInBrackets, isExcluded, isImportantVerse, force, !needToQueueIfChapter, processAsExtendedVerse, out localHierarchySearchResult, ref processedVerses, null);                
+                        verseScopeInfo, force, !needToQueueIfChapter, processAsExtendedVerse, out localHierarchySearchResult, ref processedVerses, null);                
 
                     System.Windows.Forms.Application.DoEvents();
                 }
@@ -1078,7 +1077,7 @@ namespace BibleCommon.Services
             bool createLinkToNotesPage, bool excludedVersesLinking, 
             NotesPageType notesPageType, 
             VersePointerSearchResult globalChapterSearchResult, List<VersePointerSearchResult> pageChaptersSearchResult,
-            bool isInBrackets, bool isExcluded, bool isImportantVerse, bool force, bool forceAnalyzeChapter, bool processAsExtendedVerse,
+            VerseRecognitionManager.VerseScopeInfo verseScopeInfo, bool force, bool forceAnalyzeChapter, bool processAsExtendedVerse,
             out BibleSearchResult hierarchySearchResult, ref List<SimpleVersePointer> processedVerses,
             Action<BibleSearchResult> onHierarchyElementFound)
         {
@@ -1106,7 +1105,7 @@ namespace BibleCommon.Services
                         if (!excludedVersesLinking                                          // иначе всё равно привязываем
                             || SettingsManager.Instance.StoreNotesPagesInFolder)  
                             {
-                                if (isExcluded || IsExcludedCurrentNotePage)
+                            if (verseScopeInfo.IsExcluded || IsExcludedCurrentNotePage)
                             {
                                     canContinue = false;
                             }
@@ -1122,7 +1121,7 @@ namespace BibleCommon.Services
                                 && VersePointerSearchResult.IsVerseWithoutChapter(resultType)
                                 && globalChapterSearchResult != null
                                 && globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString
-                                && !isInBrackets
+                                && !verseScopeInfo.IsInBrackets
                                 && globalChapterSearchResult.VersePointer.IsMultiVerse
                                 && globalChapterSearchResult.VersePointer.IsInVerseRange(vp))
                                         {
@@ -1132,7 +1131,7 @@ namespace BibleCommon.Services
 
                             if (canContinue
                                 && pageChaptersSearchResult != null
-                                && !isInBrackets
+                                && !verseScopeInfo.IsInBrackets
                                 && pageChaptersSearchResult.Any(pcsr => (pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
                                                             || pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName)
                                                         && pcsr.VersePointer.Book.Name == vp.Book.Name
@@ -1148,7 +1147,7 @@ namespace BibleCommon.Services
                                     hierarchySearchResult.HierarchyObjectInfo,
                                     notePageInfo,
                                 notePageContentObjectId, createLinkToNotesPage, notesPageType,
-                                isImportantVerse, force, processAsExtendedVerse, !canContinue ? DetailedLink.Yes : DetailedLink.No);
+                                verseScopeInfo.IsImportantVerse, force, processAsExtendedVerse, !canContinue ? DetailedLink.Yes : DetailedLink.No);
 
                                 if (processedVerses != null)
                                     processedVerses.AddRange(verses);

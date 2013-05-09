@@ -144,9 +144,7 @@ namespace BibleCommon.Services
 
             if (verseNumber.HasValue)
             {
-                VersePointer versePointer = new VersePointer(section.Title, chapterNumber.Value, verseNumber.Value.Verse, verseNumber.Value.TopVerse);
-                if (!versePointer.IsValid)
-                    versePointer = new VersePointer(section.Title.Substring(4), chapterNumber.Value, verseNumber.Value.Verse, verseNumber.Value.TopVerse);  // иначе не понимает такие строки как "09. 1-я Царств 1:1"
+                VersePointer versePointer = new VersePointer(GetBookNameFromSectionTitle(section.Title), chapterNumber.Value, verseNumber.Value.Verse, verseNumber.Value.TopVerse);                
 
                 AddItemToResult(ref oneNoteApp, versePointer, notebookId, toGenerateHref, section, pageId, pageName, cellTextEl, false, ref result);
             }      
@@ -159,12 +157,23 @@ namespace BibleCommon.Services
             var pageTitleEl = NotebookGenerator.GetPageTitle(pageDoc, xnm);
             if (pageTitleEl != null)
             {
-                VersePointer chapterPointer = new VersePointer(section.Title, chapterNumber.Value);
-                if (!chapterPointer.IsValid)
-                    chapterPointer = new VersePointer(section.Title.Substring(4), chapterNumber.Value);
+                VersePointer chapterPointer = new VersePointer(GetBookNameFromSectionTitle(section.Title), chapterNumber.Value);                
 
                 AddItemToResult(ref oneNoteApp, chapterPointer, notebookId, toGenerateHref, section, pageId, pageName, pageTitleEl, true, ref result);                
             }
-        }        
+        }
+
+        private static string GetBookNameFromSectionTitle(string sectionTitle)
+        {
+            if (sectionTitle.Length > 4)
+            {
+                if (sectionTitle[2] == '.' && char.IsDigit(sectionTitle[0]) && char.IsDigit(sectionTitle[1]))                   // иначе не понимает такие строки как "09. 1-я Царств 1:1"
+                    sectionTitle = sectionTitle.Substring(4);
+                //else if (sectionTitle[3] == '.' && char.IsDigit(sectionTitle[0]) && char.IsDigit(sectionTitle[1]) && char.IsDigit(sectionTitle[2]))   // это если книг будет больше 100
+                //    sectionTitle = sectionTitle.Substring(5);
+            }
+
+            return sectionTitle;
+        }
     }
 }
