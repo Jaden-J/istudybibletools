@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Threading;
 using BibleCommon.Helpers;
+using BibleCommon.UI.Forms;
 
 namespace BibleNoteLinker
 {
@@ -61,6 +62,7 @@ namespace BibleNoteLinker
 
             try
             {
+                CheckForSuggestions();
                 PrepareForAnalyze();
 
                 DateTime dt = DateTime.Now;
@@ -108,6 +110,28 @@ namespace BibleNoteLinker
             Logger.Done();
         }
 
+        private void CheckForSuggestions()
+        {
+            if (!SettingsManager.Instance.StoreNotesPagesInFolder && !ShownMessagesManager.GetMessageWasShown(ShownMessagesManager.MessagesCodes.SuggestUsingFolderForNotesPages))
+            {
+                using (var form = new MessageForm(BibleCommon.Resources.Constants.SuggestUsingFolderForNotesPages, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                {
+                    if (form.ShowDialog() == System.Windows.Forms.DialogResult.Yes)
+                    {
+
+                        if (SettingsManager.Instance.NotebookId_BibleNotesPages != SettingsManager.Instance.NotebookId_BibleComments)
+                            OneNoteUtils.CloseNotebookSafe(ref _oneNoteApp, SettingsManager.Instance.NotebookId_BibleNotesPages);
+                        SettingsManager.Instance.NotebookId_BibleNotesPages = string.Empty;
+                        chkForce.Checked = true;
+                        rbAnalyzeAllPages.Checked = true;                        
+                    }
+
+                    ShownMessagesManager.SetMessageWasShown(ShownMessagesManager.MessagesCodes.SuggestUsingFolderForNotesPages);
+                    SettingsManager.Instance.Save();
+                }
+            }
+        }
+
         private void PrepareForAnalyze()
         {
             lbLog.Items.Clear();
@@ -123,7 +147,9 @@ namespace BibleNoteLinker
             this.TopMost = false;
 
             llblShowErrors.Visible = false;
-            LogHighLevelMessage(BibleCommon.Resources.Constants.NoteLinkerInitialization, null, null);            
+            LogHighLevelMessage(BibleCommon.Resources.Constants.NoteLinkerInitialization, null, null);           
+
+            Application.DoEvents();
         }
 
 

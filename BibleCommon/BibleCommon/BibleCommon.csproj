@@ -125,6 +125,7 @@
     <Compile Include="Services\QuickStyleManager.cs" />
     <Compile Include="Services\RelinkAllBibleNotesManager.cs" />
     <Compile Include="Services\SettingsManager.cs" />
+    <Compile Include="Services\ShownMessagesManager.cs" />
     <Compile Include="Services\SupplementalBibleManager.cs" />
     <Compile Include="Services\VerseLinkManager.cs" />
     <Compile Include="Common\VersePointer.cs" />
