@@ -402,7 +402,7 @@ namespace BibleCommon.Services
 
             if (!isEmpty)
             {
-                verseNumberContent = GetVersesNumberString(baseVersePointer, parallelVersePointers, topLastVerse, isFullVerses, isDiscontinuous, emptyVerses);
+                verseNumberContent = GetVersesNumberString(baseVersePointer, parallelVersePointers, topLastVerse, isFullVerses, isDiscontinuous, isPartOfBigVerse, emptyVerses);
 
                 if (verseContent == null)
                 {
@@ -439,7 +439,7 @@ namespace BibleCommon.Services
         }
 
         private string GetVersesNumberString(SimpleVersePointer baseVersePointer, ComparisonVersesInfo parallelVersePointers, 
-                                                int? topVerse, bool isFullVerses, bool isDiscontinuous, List<SimpleVersePointer> emptyVerses)
+                                                int? topVerse, bool isFullVerses, bool isDiscontinuous, bool isPartOfBigVerse, List<SimpleVersePointer> emptyVerses)
         {
             string result = string.Empty;
             var notEmptyVerses = parallelVersePointers.Where(v => !v.IsEmpty && !emptyVerses.Contains(v));
@@ -459,6 +459,9 @@ namespace BibleCommon.Services
                                                     isDiscontinuous ? ',' : '-',
                                                     GetVerseNumberString(lastVerse, topVerse, firstParallelVerse.Chapter, isFullVerses));
                     }
+                    else if (isPartOfBigVerse && topVerse.HasValue)
+                        result += "-" + topVerse;
+
                 }
             }
 
