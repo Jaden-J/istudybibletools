@@ -206,10 +206,11 @@ namespace BibleConfigurator
 
                     if (!chkUseFolderForBibleNotesPages.Checked)
                     {
-                        SaveMultiNotebookParameters(module, ContainerType.BibleNotesPages,
-                            chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, BibleNotesPagesNotebookFromTemplatePath);
+                        if (chkCreateBibleNotesPagesNotebookFromTemplate.Checked)
+                            ShownMessagesManager.SetMessageWasShown(ShownMessagesManager.MessagesCodes.SuggestUsingFolderForNotesPages);
 
-                        ShownMessagesManager.SetMessageWasShown(ShownMessagesManager.MessagesCodes.SuggestUsingFolderForNotesPages);
+                        SaveMultiNotebookParameters(module, ContainerType.BibleNotesPages,
+                            chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, BibleNotesPagesNotebookFromTemplatePath);                        
                     }
                     else
                     {
