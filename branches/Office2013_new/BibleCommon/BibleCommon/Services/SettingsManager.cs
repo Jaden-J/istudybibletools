@@ -670,7 +670,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_UseProxyLinksForLinks, UseProxyLinksForLinks),
                                   new XElement(Consts.Constants.ParameterName_UseProxyLinksForBibleVerses, UseProxyLinksForBibleVerses),
                                   new XElement(Consts.Constants.ParameterName_GenerateFullBibleVersesCache, GenerateFullBibleVersesCache),
-                                  new XElement(Consts.Constants.ParameterName_ShownMessages, string.Join(";", this.ShownMessages.ToArray()))
+                                  new XElement(Consts.Constants.ParameterName_ShownMessages, string.Join(";", this.ShownMessages.ConvertAll(m => m.ToString()).ToArray()))
                                   );
 
                     if (SelectedNotebooksForAnalyze != null && SelectedNotebooksForAnalyzeIsNotAsDefault())
