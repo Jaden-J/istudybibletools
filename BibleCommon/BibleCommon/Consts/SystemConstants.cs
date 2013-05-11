@@ -7,6 +7,6 @@ namespace BibleCommon.Consts
 {
     public static class SystemConstants
     {
-        public static readonly bool IsOneNote2010 = false;
+        public static readonly bool IsOneNote2010 = true;
     }
 }
