@@ -21,30 +21,7 @@ namespace BibleCommon.Helpers
     public static class OneNoteUtils
     {
         [DllImport("user32.dll")]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        private static bool? _isOneNote2010;
-        public static bool IsOneNote2010Cached
-        {
-            get
-            {
-                if (!_isOneNote2010.HasValue)
-                {                    
-                    var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
-                    try
-                    {
-                        var assembly = oneNoteApp.GetType().Assembly;
-                        _isOneNote2010 = assembly.GetName().Version < new Version(15, 0, 0, 0);
-                    }
-                    finally
-                    {
-                        OneNoteUtils.ReleaseOneNoteApp(ref oneNoteApp);
-                    }
-                }
-
-                return _isOneNote2010.Value;
-            }
-        }
+        private static extern bool SetForegroundWindow(IntPtr hWnd);        
 
         public static bool NotebookExists(ref Application oneNoteApp, string notebookId, bool refreshCache = false)
         {
