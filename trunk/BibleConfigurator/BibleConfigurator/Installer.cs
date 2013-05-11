@@ -43,7 +43,7 @@ namespace BibleConfigurator
         {
             try
             {                
-                if (Utils.GetProgramVersion() < new Version(4, 0))
+                if (Utils.GetProgramVersion() < new Version(3, 0))
                 {
                     BibleParallelTranslationManager.MergeAllModulesWithMainBible();
                 }
