@@ -87,6 +87,7 @@
     <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Helpers\XmlExtensions.cs" />
     <Compile Include="Providers\BibleHierarchySearchProvider.cs" />
+    <Compile Include="Providers\NotesPagesProviderManager.cs" />
     <Compile Include="Resources\Constants.ru.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -118,7 +119,6 @@
     <Compile Include="Services\NotesPageManager.cs" />
     <Compile Include="Services\NotesPageManagerEx.cs" />
     <Compile Include="Services\NotesPageManagerFS.cs" />
-    <Compile Include="Providers\NotesPagesProviderManager.cs" />
     <Compile Include="Services\OneNoteLocker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\HierarchySearchManager.cs" />
