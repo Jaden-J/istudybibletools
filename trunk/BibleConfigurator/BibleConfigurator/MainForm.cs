@@ -169,6 +169,15 @@ namespace BibleConfigurator
             {
                 FormLogger.Initialize();
 
+                if ((chkCreateBibleNotebookFromTemplate.Enabled && chkCreateBibleNotebookFromTemplate.Checked)
+                    || (chkCreateBibleStudyNotebookFromTemplate.Enabled && chkCreateBibleStudyNotebookFromTemplate.Checked)
+                    || (chkCreateBibleCommentsNotebookFromTemplate.Enabled && chkCreateBibleCommentsNotebookFromTemplate.Checked)
+                    || (chkCreateBibleNotesPagesNotebookFromTemplate.Enabled && chkCreateBibleNotesPagesNotebookFromTemplate.Checked)
+                    || (chkCreateSingleNotebookFromTemplate.Enabled && chkCreateSingleNotebookFromTemplate.Checked))
+                {
+                    tbcMain.SelectedTab = tbcMain.TabPages[tpNotebooks.Name];
+                }
+
                 if (rbSingleNotebook.Checked && (module.UseSingleNotebook() || IsModerator || SettingsManager.Instance.IsSingleNotebook))
                 {
                     SaveSingleNotebookParameters(module);
@@ -265,7 +274,7 @@ namespace BibleConfigurator
                     LoadParameters(module, null);
 
                 lblWarning.Visible = lblWarningVisibilityBefore;
-                tbcMain.SelectedTab = tbcMain.TabPages[tabPage1.Name];
+                tbcMain.SelectedTab = tbcMain.TabPages[tpNotebooks.Name];
             }
             finally
             {
@@ -896,7 +905,7 @@ namespace BibleConfigurator
 
                     if (ShowModulesTabAtStartUp)
                     {                        
-                        tbcMain.SelectedTab = tbcMain.TabPages[tabPage4.Name];
+                        tbcMain.SelectedTab = tbcMain.TabPages[tpModules.Name];
                         _wasLoadedModulesInfo = false;                        
 
                         if (NeedToSaveChangesAfterLoadingModuleAtStartUp)
@@ -913,7 +922,7 @@ namespace BibleConfigurator
                     SetNotebooksDefaultPaths();
 
                     if (!SettingsManager.Instance.CurrentModuleIsCorrect())
-                        tbcMain.SelectedTab = tbcMain.TabPages[tabPage4.Name];                    
+                        tbcMain.SelectedTab = tbcMain.TabPages[tpModules.Name];                    
                     else
                     {
                         var module = ModulesManager.GetCurrentModuleInfo();
@@ -1467,7 +1476,7 @@ namespace BibleConfigurator
         private void tabPage1_Enter(object sender, EventArgs e)
         {
             if (!_firstShown && !SettingsManager.Instance.CurrentModuleIsCorrect())            
-                tbcMain.SelectedTab = tbcMain.TabPages[tabPage4.Name];
+                tbcMain.SelectedTab = tbcMain.TabPages[tpModules.Name];
         }
 
         private void btnUploadModule_Click(object sender, EventArgs e)
@@ -1865,7 +1874,7 @@ namespace BibleConfigurator
                         BibleParallelTranslationManager.MergeAllModulesWithMainBible();
                         ReLoadModulesInfo();
                         ReLoadParameters(SettingsManager.Instance.ModuleShortName != _originalModuleShortName);
-                        tbcMain.SelectedTab = tbcMain.TabPages[0];
+                        tbcMain.SelectedTab = tbcMain.TabPages[tpNotebooks.Name];
                     }
                     break;
                 case ModuleType.Strong:

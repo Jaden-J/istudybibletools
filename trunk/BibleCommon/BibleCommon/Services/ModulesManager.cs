@@ -300,7 +300,8 @@ namespace BibleCommon.Services
                 var module = GetModuleInfo(moduleName);
                 CheckModule(module);
 
-                BibleParallelTranslationManager.MergeModuleWithMainBible(module);
+                if (!BibleParallelTranslationManager.MergeModuleWithMainBible(module))
+                    BibleParallelTranslationManager.MergeAllModulesWithMainBible();
 
                 return module;
             }

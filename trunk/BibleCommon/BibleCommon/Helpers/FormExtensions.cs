@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Security.Principal;
 using System.Reflection;
 using System.Threading;
+using BibleCommon.UI.Forms;
 
 namespace BibleCommon.Helpers
 {
@@ -108,7 +109,12 @@ namespace BibleCommon.Helpers
                 else
                 {
                     if (!silent)
-                        MessageBox.Show(messageIfSecondInstance, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    {
+                        using (var form = new MessageForm(messageIfSecondInstance, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning))
+                        {
+                            form.ShowDialog();
+                        }
+                    }
 
                     BibleCommon.Services.Logger.Done();
                 }

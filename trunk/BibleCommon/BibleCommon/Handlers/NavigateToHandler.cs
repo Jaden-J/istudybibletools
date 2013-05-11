@@ -160,7 +160,7 @@ namespace BibleCommon.Handlers
         {
             var result = Regex.Replace(newPath, @"//\D:\\", "//" + Path.GetPathRoot(Environment.SystemDirectory));
             if (result == newPath)
-                result = Regex.Replace(newPath, @"//\S{1,15}/", "//" + Path.GetPathRoot(Environment.SystemDirectory));
+                result = Regex.Replace(newPath, @"//\\\\\S{1,15}\\", "//" + Path.GetPathRoot(Environment.SystemDirectory));
 
             return result;
         }
