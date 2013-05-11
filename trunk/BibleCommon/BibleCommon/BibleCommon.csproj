@@ -65,7 +65,8 @@
     <Compile Include="Common\ResultClasses.cs" />
     <Compile Include="Common\VersePointerSearchResult.cs" />
     <Compile Include="Common\XmlCursorPosition.cs" />
-    <Compile Include="Consts\Consts.cs" />
+    <Compile Include="Consts\Constants.cs" />
+    <Compile Include="Consts\SystemConstants.cs" />
     <Compile Include="Contracts\ICustomLogger.cs" />
     <Compile Include="Contracts\INotesPageManager.cs" />
     <Compile Include="Contracts\IProtocolHandler.cs" />
