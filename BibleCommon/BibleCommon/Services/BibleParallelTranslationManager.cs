@@ -503,7 +503,7 @@ namespace BibleCommon.Services
             return result;
         }      
 
-        public static void MergeModuleWithMainBible(ModuleInfo parallelModuleInfo)
+        public static bool MergeModuleWithMainBible(ModuleInfo parallelModuleInfo)
         {
             if (!string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName) 
                 && SettingsManager.Instance.ModuleShortName != parallelModuleInfo.ShortName)
@@ -543,9 +543,13 @@ namespace BibleCommon.Services
                     }
 
                     ModulesManager.UpdateModuleManifest(baseModuleInfo);
+
+                    return true;
                 }
                 catch (ModuleNotFoundException) { }
             }
+
+            return false;
         }       
         
         

@@ -157,7 +157,7 @@
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;chkUseFolderForBibleNotesPages.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;chkUseFolderForBibleNotesPages.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -184,7 +184,7 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnBibleNotesPagesSetFolder.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;btnBibleNotesPagesSetFolder.ZOrder" xml:space="preserve">
     <value>1</value>
@@ -205,7 +205,7 @@
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;tbBibleNotesPagesFolder.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;tbBibleNotesPagesFolder.ZOrder" xml:space="preserve">
     <value>2</value>
@@ -229,7 +229,7 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnBibleNotesPagesNotebookSetPath.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;btnBibleNotesPagesNotebookSetPath.ZOrder" xml:space="preserve">
     <value>3</value>
@@ -256,7 +256,7 @@
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label8.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
     <value>4</value>
@@ -283,7 +283,7 @@
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;chkCreateBibleNotesPagesNotebookFromTemplate.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;chkCreateBibleNotesPagesNotebookFromTemplate.ZOrder" xml:space="preserve">
     <value>5</value>
@@ -304,7 +304,7 @@
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;cbBibleNotesPagesNotebook.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;cbBibleNotesPagesNotebook.ZOrder" xml:space="preserve">
     <value>6</value>
@@ -328,7 +328,7 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnBibleStudyNotebookSetPath.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;btnBibleStudyNotebookSetPath.ZOrder" xml:space="preserve">
     <value>7</value>
@@ -352,7 +352,7 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnBibleCommentsNotebookSetPath.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;btnBibleCommentsNotebookSetPath.ZOrder" xml:space="preserve">
     <value>8</value>
@@ -376,7 +376,7 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnBibleNotebookSetPath.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;btnBibleNotebookSetPath.ZOrder" xml:space="preserve">
     <value>9</value>
@@ -400,7 +400,7 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnSingleNotebookSetPath.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;btnSingleNotebookSetPath.ZOrder" xml:space="preserve">
     <value>10</value>
@@ -424,7 +424,7 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnSingleNotebookParameters.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;btnSingleNotebookParameters.ZOrder" xml:space="preserve">
     <value>11</value>
@@ -451,7 +451,7 @@
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label4.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
     <value>12</value>
@@ -478,7 +478,7 @@
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;chkCreateBibleStudyNotebookFromTemplate.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;chkCreateBibleStudyNotebookFromTemplate.ZOrder" xml:space="preserve">
     <value>13</value>
@@ -499,7 +499,7 @@
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;cbBibleStudyNotebook.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;cbBibleStudyNotebook.ZOrder" xml:space="preserve">
     <value>14</value>
@@ -526,7 +526,7 @@
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label3.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
     <value>15</value>
@@ -553,7 +553,7 @@
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;chkCreateBibleCommentsNotebookFromTemplate.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;chkCreateBibleCommentsNotebookFromTemplate.ZOrder" xml:space="preserve">
     <value>16</value>
@@ -574,7 +574,7 @@
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;cbBibleCommentsNotebook.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;cbBibleCommentsNotebook.ZOrder" xml:space="preserve">
     <value>17</value>
@@ -601,7 +601,7 @@
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label2.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
     <value>18</value>
@@ -628,7 +628,7 @@
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;chkCreateBibleNotebookFromTemplate.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;chkCreateBibleNotebookFromTemplate.ZOrder" xml:space="preserve">
     <value>19</value>
@@ -649,7 +649,7 @@
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;cbBibleNotebook.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;cbBibleNotebook.ZOrder" xml:space="preserve">
     <value>20</value>
@@ -676,7 +676,7 @@
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;lblSelectSingleNotebook.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;lblSelectSingleNotebook.ZOrder" xml:space="preserve">
     <value>21</value>
@@ -703,7 +703,7 @@
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;chkCreateSingleNotebookFromTemplate.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;chkCreateSingleNotebookFromTemplate.ZOrder" xml:space="preserve">
     <value>22</value>
@@ -724,7 +724,7 @@
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;cbSingleNotebook.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;cbSingleNotebook.ZOrder" xml:space="preserve">
     <value>23</value>
@@ -751,7 +751,7 @@
     <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;rbMultiNotebook.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;rbMultiNotebook.ZOrder" xml:space="preserve">
     <value>24</value>
@@ -778,36 +778,36 @@
     <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;rbSingleNotebook.Parent" xml:space="preserve">
-    <value>tabPage1</value>
+    <value>tpNotebooks</value>
   </data>
   <data name="&gt;&gt;rbSingleNotebook.ZOrder" xml:space="preserve">
     <value>25</value>
   </data>
-  <data name="tabPage1.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="tpNotebooks.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>
-  <data name="tabPage1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+  <data name="tpNotebooks.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 3, 3</value>
   </data>
-  <data name="tabPage1.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="tpNotebooks.Size" type="System.Drawing.Size, System.Drawing">
     <value>656, 352</value>
   </data>
-  <data name="tabPage1.TabIndex" type="System.Int32, mscorlib">
+  <data name="tpNotebooks.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="tabPage1.Text" xml:space="preserve">
+  <data name="tpNotebooks.Text" xml:space="preserve">
     <value>OneNote parameters</value>
   </data>
-  <data name="&gt;&gt;tabPage1.Name" xml:space="preserve">
-    <value>tabPage1</value>
+  <data name="&gt;&gt;tpNotebooks.Name" xml:space="preserve">
+    <value>tpNotebooks</value>
   </data>
-  <data name="&gt;&gt;tabPage1.Type" xml:space="preserve">
+  <data name="&gt;&gt;tpNotebooks.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;tabPage1.Parent" xml:space="preserve">
+  <data name="&gt;&gt;tpNotebooks.Parent" xml:space="preserve">
     <value>tbcMain</value>
   </data>
-  <data name="&gt;&gt;tabPage1.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;tpNotebooks.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <data name="chkUseProxyLinksForBibleVerses.AutoSize" type="System.Boolean, mscorlib">
@@ -1741,7 +1741,7 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnDictionariesManagement.Parent" xml:space="preserve">
-    <value>tabPage4</value>
+    <value>tpModules</value>
   </data>
   <data name="&gt;&gt;btnDictionariesManagement.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -1765,7 +1765,7 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnSupplementalBibleManagement.Parent" xml:space="preserve">
-    <value>tabPage4</value>
+    <value>tpModules</value>
   </data>
   <data name="&gt;&gt;btnSupplementalBibleManagement.ZOrder" xml:space="preserve">
     <value>1</value>
@@ -1792,7 +1792,7 @@
     <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;hlModules.Parent" xml:space="preserve">
-    <value>tabPage4</value>
+    <value>tpModules</value>
   </data>
   <data name="&gt;&gt;hlModules.ZOrder" xml:space="preserve">
     <value>2</value>
@@ -1819,7 +1819,7 @@
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;lblModulesLink.Parent" xml:space="preserve">
-    <value>tabPage4</value>
+    <value>tpModules</value>
   </data>
   <data name="&gt;&gt;lblModulesLink.ZOrder" xml:space="preserve">
     <value>3</value>
@@ -1843,7 +1843,7 @@
     <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;pnModules.Parent" xml:space="preserve">
-    <value>tabPage4</value>
+    <value>tpModules</value>
   </data>
   <data name="&gt;&gt;pnModules.ZOrder" xml:space="preserve">
     <value>4</value>
@@ -1870,7 +1870,7 @@
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;lblMustSelectModule.Parent" xml:space="preserve">
-    <value>tabPage4</value>
+    <value>tpModules</value>
   </data>
   <data name="&gt;&gt;lblMustSelectModule.ZOrder" xml:space="preserve">
     <value>5</value>
@@ -1897,7 +1897,7 @@
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;lblMustUploadModule.Parent" xml:space="preserve">
-    <value>tabPage4</value>
+    <value>tpModules</value>
   </data>
   <data name="&gt;&gt;lblMustUploadModule.ZOrder" xml:space="preserve">
     <value>6</value>
@@ -1921,36 +1921,36 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnUploadModule.Parent" xml:space="preserve">
-    <value>tabPage4</value>
+    <value>tpModules</value>
   </data>
   <data name="&gt;&gt;btnUploadModule.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
-  <data name="tabPage4.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="tpModules.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>
-  <data name="tabPage4.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+  <data name="tpModules.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 3, 3</value>
   </data>
-  <data name="tabPage4.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="tpModules.Size" type="System.Drawing.Size, System.Drawing">
     <value>656, 352</value>
   </data>
-  <data name="tabPage4.TabIndex" type="System.Int32, mscorlib">
+  <data name="tpModules.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
   </data>
-  <data name="tabPage4.Text" xml:space="preserve">
+  <data name="tpModules.Text" xml:space="preserve">
     <value>Modules</value>
   </data>
-  <data name="&gt;&gt;tabPage4.Name" xml:space="preserve">
-    <value>tabPage4</value>
+  <data name="&gt;&gt;tpModules.Name" xml:space="preserve">
+    <value>tpModules</value>
   </data>
-  <data name="&gt;&gt;tabPage4.Type" xml:space="preserve">
+  <data name="&gt;&gt;tpModules.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;tabPage4.Parent" xml:space="preserve">
+  <data name="&gt;&gt;tpModules.Parent" xml:space="preserve">
     <value>tbcMain</value>
   </data>
-  <data name="&gt;&gt;tabPage4.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;tpModules.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
   <data name="tbcMain.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">

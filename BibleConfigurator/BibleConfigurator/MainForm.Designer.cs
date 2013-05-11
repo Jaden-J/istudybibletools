@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tbcMain = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tpNotebooks = new System.Windows.Forms.TabPage();
             this.chkUseFolderForBibleNotesPages = new System.Windows.Forms.CheckBox();
             this.btnBibleNotesPagesSetFolder = new System.Windows.Forms.Button();
             this.tbBibleNotesPagesFolder = new System.Windows.Forms.TextBox();
@@ -92,7 +92,7 @@
             this.btnResizeBibleTables = new System.Windows.Forms.Button();
             this.btnDeleteNotesPages = new System.Windows.Forms.Button();
             this.btnRelinkComments = new System.Windows.Forms.Button();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.tpModules = new System.Windows.Forms.TabPage();
             this.btnDictionariesManagement = new System.Windows.Forms.Button();
             this.btnSupplementalBibleManagement = new System.Windows.Forms.Button();
             this.hlModules = new System.Windows.Forms.LinkLabel();
@@ -115,12 +115,12 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.tbcMain.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.tpNotebooks.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage3.SuspendLayout();
-            this.tabPage4.SuspendLayout();
+            this.tpModules.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -144,46 +144,46 @@
             // 
             // tbcMain
             // 
-            this.tbcMain.Controls.Add(this.tabPage1);
+            this.tbcMain.Controls.Add(this.tpNotebooks);
             this.tbcMain.Controls.Add(this.tabPage2);
             this.tbcMain.Controls.Add(this.tabPage3);
-            this.tbcMain.Controls.Add(this.tabPage4);
+            this.tbcMain.Controls.Add(this.tpModules);
             resources.ApplyResources(this.tbcMain, "tbcMain");
             this.tbcMain.Name = "tbcMain";
             this.tbcMain.SelectedIndex = 0;
             // 
-            // tabPage1
+            // tpNotebooks
             // 
-            this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage1.Controls.Add(this.chkUseFolderForBibleNotesPages);
-            this.tabPage1.Controls.Add(this.btnBibleNotesPagesSetFolder);
-            this.tabPage1.Controls.Add(this.tbBibleNotesPagesFolder);
-            this.tabPage1.Controls.Add(this.btnBibleNotesPagesNotebookSetPath);
-            this.tabPage1.Controls.Add(this.label8);
-            this.tabPage1.Controls.Add(this.chkCreateBibleNotesPagesNotebookFromTemplate);
-            this.tabPage1.Controls.Add(this.cbBibleNotesPagesNotebook);
-            this.tabPage1.Controls.Add(this.btnBibleStudyNotebookSetPath);
-            this.tabPage1.Controls.Add(this.btnBibleCommentsNotebookSetPath);
-            this.tabPage1.Controls.Add(this.btnBibleNotebookSetPath);
-            this.tabPage1.Controls.Add(this.btnSingleNotebookSetPath);
-            this.tabPage1.Controls.Add(this.btnSingleNotebookParameters);
-            this.tabPage1.Controls.Add(this.label4);
-            this.tabPage1.Controls.Add(this.chkCreateBibleStudyNotebookFromTemplate);
-            this.tabPage1.Controls.Add(this.cbBibleStudyNotebook);
-            this.tabPage1.Controls.Add(this.label3);
-            this.tabPage1.Controls.Add(this.chkCreateBibleCommentsNotebookFromTemplate);
-            this.tabPage1.Controls.Add(this.cbBibleCommentsNotebook);
-            this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Controls.Add(this.chkCreateBibleNotebookFromTemplate);
-            this.tabPage1.Controls.Add(this.cbBibleNotebook);
-            this.tabPage1.Controls.Add(this.lblSelectSingleNotebook);
-            this.tabPage1.Controls.Add(this.chkCreateSingleNotebookFromTemplate);
-            this.tabPage1.Controls.Add(this.cbSingleNotebook);
-            this.tabPage1.Controls.Add(this.rbMultiNotebook);
-            this.tabPage1.Controls.Add(this.rbSingleNotebook);
-            resources.ApplyResources(this.tabPage1, "tabPage1");
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Enter += new System.EventHandler(this.tabPage1_Enter);
+            this.tpNotebooks.BackColor = System.Drawing.SystemColors.Control;
+            this.tpNotebooks.Controls.Add(this.chkUseFolderForBibleNotesPages);
+            this.tpNotebooks.Controls.Add(this.btnBibleNotesPagesSetFolder);
+            this.tpNotebooks.Controls.Add(this.tbBibleNotesPagesFolder);
+            this.tpNotebooks.Controls.Add(this.btnBibleNotesPagesNotebookSetPath);
+            this.tpNotebooks.Controls.Add(this.label8);
+            this.tpNotebooks.Controls.Add(this.chkCreateBibleNotesPagesNotebookFromTemplate);
+            this.tpNotebooks.Controls.Add(this.cbBibleNotesPagesNotebook);
+            this.tpNotebooks.Controls.Add(this.btnBibleStudyNotebookSetPath);
+            this.tpNotebooks.Controls.Add(this.btnBibleCommentsNotebookSetPath);
+            this.tpNotebooks.Controls.Add(this.btnBibleNotebookSetPath);
+            this.tpNotebooks.Controls.Add(this.btnSingleNotebookSetPath);
+            this.tpNotebooks.Controls.Add(this.btnSingleNotebookParameters);
+            this.tpNotebooks.Controls.Add(this.label4);
+            this.tpNotebooks.Controls.Add(this.chkCreateBibleStudyNotebookFromTemplate);
+            this.tpNotebooks.Controls.Add(this.cbBibleStudyNotebook);
+            this.tpNotebooks.Controls.Add(this.label3);
+            this.tpNotebooks.Controls.Add(this.chkCreateBibleCommentsNotebookFromTemplate);
+            this.tpNotebooks.Controls.Add(this.cbBibleCommentsNotebook);
+            this.tpNotebooks.Controls.Add(this.label2);
+            this.tpNotebooks.Controls.Add(this.chkCreateBibleNotebookFromTemplate);
+            this.tpNotebooks.Controls.Add(this.cbBibleNotebook);
+            this.tpNotebooks.Controls.Add(this.lblSelectSingleNotebook);
+            this.tpNotebooks.Controls.Add(this.chkCreateSingleNotebookFromTemplate);
+            this.tpNotebooks.Controls.Add(this.cbSingleNotebook);
+            this.tpNotebooks.Controls.Add(this.rbMultiNotebook);
+            this.tpNotebooks.Controls.Add(this.rbSingleNotebook);
+            resources.ApplyResources(this.tpNotebooks, "tpNotebooks");
+            this.tpNotebooks.Name = "tpNotebooks";
+            this.tpNotebooks.Enter += new System.EventHandler(this.tabPage1_Enter);
             // 
             // chkUseFolderForBibleNotesPages
             // 
@@ -599,20 +599,20 @@
             this.btnRelinkComments.UseVisualStyleBackColor = true;
             this.btnRelinkComments.Click += new System.EventHandler(this.btnRelinkComments_Click);
             // 
-            // tabPage4
+            // tpModules
             // 
-            this.tabPage4.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage4.Controls.Add(this.btnDictionariesManagement);
-            this.tabPage4.Controls.Add(this.btnSupplementalBibleManagement);
-            this.tabPage4.Controls.Add(this.hlModules);
-            this.tabPage4.Controls.Add(this.lblModulesLink);
-            this.tabPage4.Controls.Add(this.pnModules);
-            this.tabPage4.Controls.Add(this.lblMustSelectModule);
-            this.tabPage4.Controls.Add(this.lblMustUploadModule);
-            this.tabPage4.Controls.Add(this.btnUploadModule);
-            resources.ApplyResources(this.tabPage4, "tabPage4");
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Enter += new System.EventHandler(this.tabPage4_Enter);
+            this.tpModules.BackColor = System.Drawing.SystemColors.Control;
+            this.tpModules.Controls.Add(this.btnDictionariesManagement);
+            this.tpModules.Controls.Add(this.btnSupplementalBibleManagement);
+            this.tpModules.Controls.Add(this.hlModules);
+            this.tpModules.Controls.Add(this.lblModulesLink);
+            this.tpModules.Controls.Add(this.pnModules);
+            this.tpModules.Controls.Add(this.lblMustSelectModule);
+            this.tpModules.Controls.Add(this.lblMustUploadModule);
+            this.tpModules.Controls.Add(this.btnUploadModule);
+            resources.ApplyResources(this.tpModules, "tpModules");
+            this.tpModules.Name = "tpModules";
+            this.tpModules.Enter += new System.EventHandler(this.tabPage4_Enter);
             // 
             // btnDictionariesManagement
             // 
@@ -725,8 +725,8 @@
             this.splitContainer1.Panel2.PerformLayout();
             this.splitContainer1.ResumeLayout(false);
             this.tbcMain.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
+            this.tpNotebooks.ResumeLayout(false);
+            this.tpNotebooks.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -734,8 +734,8 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
-            this.tabPage4.ResumeLayout(false);
-            this.tabPage4.PerformLayout();
+            this.tpModules.ResumeLayout(false);
+            this.tpModules.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -744,7 +744,7 @@
 
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.Windows.Forms.TabControl tbcMain;
-        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tpNotebooks;
         private System.Windows.Forms.Button btnSingleNotebookParameters;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox chkCreateBibleStudyNotebookFromTemplate;
@@ -803,7 +803,7 @@
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox cbLanguage;
-        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.TabPage tpModules;
         private System.Windows.Forms.Button btnUploadModule;
         private System.Windows.Forms.Label lblMustUploadModule;
         private System.Windows.Forms.Label lblMustSelectModule;
