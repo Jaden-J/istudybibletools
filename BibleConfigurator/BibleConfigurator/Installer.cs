@@ -26,15 +26,13 @@ namespace BibleConfigurator
     {
         public Installer()
             : base()
-        {
-            this.AfterInstall += new InstallEventHandler(Installer_AfterInstall);
+        {   
             // Attach the 'Committed' event.
-            this.Committed += new InstallEventHandler(MyInstaller_Committed);
-            // Attach the 'Committing' event.
-            this.Committing += new InstallEventHandler(MyInstaller_Committing);
+            this.Committed += new InstallEventHandler(MyInstaller_Committed);            
         }
 
-        void Installer_AfterInstall(object sender, InstallEventArgs e)
+        // Event handler for 'Committed' event.
+        private void MyInstaller_Committed(object sender, InstallEventArgs e)
         {
             TryToGenerateDefaultModule();
 
@@ -44,7 +42,7 @@ namespace BibleConfigurator
         private void TryToMergeAllModulesWithMainBible()
         {
             try
-            {
+            {                
                 if (Utils.GetProgramVersion() < new Version(4, 0))
                 {
                     BibleParallelTranslationManager.MergeAllModulesWithMainBible();
@@ -83,20 +81,7 @@ namespace BibleConfigurator
                 }
                 catch { }
             }
-        }
-
-        // Event handler for 'Committing' event.
-        private void MyInstaller_Committing(object sender, InstallEventArgs e)
-        {            
-            //Console.WriteLine("Committing Event occurred.");
-            
-        }
-
-        // Event handler for 'Committed' event.
-        private void MyInstaller_Committed(object sender, InstallEventArgs e)
-        {
-         
-        }
+        }                
 
         // Override the 'Install' method.
         public override void Install(IDictionary savedState)
