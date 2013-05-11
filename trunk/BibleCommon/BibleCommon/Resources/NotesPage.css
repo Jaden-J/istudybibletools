@@ -1,4 +1,10 @@
-﻿img.minus
+﻿body
+{
+	font-size: 16px;
+}
+
+
+img.minus
 {    
     vertical-align:middle;            
     cursor:pointer;            
@@ -28,13 +34,13 @@ a.verseLink
 
 table.pageTitleText
 {
-    font-size:15pt;
+    font-size:21px;
     font-weight:bold;        
     white-space:nowrap;
 } 
 .pageTitleLink
 {
-    font-size:small;
+    font-size:13.3px;
 }
 td.pageTitleText
 {
@@ -59,7 +65,7 @@ table.pageTitleRightBlock
 }
 a.chapterNotesPage
 {
-    font-size:small;	
+    font-size:13.3px;	
 }
 td.chapterNotesPage
 {	
@@ -82,7 +88,7 @@ input.detailedNotes
 }
 label.detailedNotes 
 {    
-    font-size:small;    
+    font-size:13.3px;    
     font-weight:bold;
 }
 div.verseLevel
