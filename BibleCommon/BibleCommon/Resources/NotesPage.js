@@ -75,18 +75,16 @@ function chkDetailedNodes_click() {
 
     window.external.chkDetailedNodes_Changed(checked);
 
-    document.location = document.location;
-
-    //    При таком подходе не обновляется нумерация у списков
-    //    if (!checked) {
-    //        var detailedEls = $(".detailed");
-    //        hideDetailedElements(detailedEls);
-    //    }
-    //    else {
-    //        var hiddenElemenents = $(".hiddenDetailed");
-    //        hiddenElemenents.removeClass("hiddenDetailed");
-    //    }    
-
+    //document.location = document.location;   // если будут проблемы с обновлением нумерации у списков, раскомментировать эту линию и закомментировать последующие.
+    
+    if (!checked) {
+        var detailedEls = $(".detailed");
+        hideDetailedElements(detailedEls);
+    }
+    else {
+        var hiddenElemenents = $(".hiddenDetailed");
+        hiddenElemenents.removeClass("hiddenDetailed");
+    }    
 }
 
 function hideDetailedElements(elements) {
@@ -99,18 +97,13 @@ function hideDetailedElements(elements) {
 function hideDetailedElement(el) {
 
     var $el = $(el);
-    var $parent = $(el.parentNode);
-    var className = el.className;
+    var $parent = $(el.parentNode);    
 
     $el.addClass("hiddenDetailed")
 
-    if (className.indexOf("subLinkDelimeter") == -1 && className.indexOf("subLinkMultiVerse") == -1) {
+    if (!$el.hasClass("verseLevel") && !$el.hasClass("subLinkDelimeter") && !$el.hasClass("subLinkMultiVerse")) {
 
-        var selector = "." + $.trim(
-                                className.replace("collapsedLevel", "").replace("detailed", "").replace("hiddenDetailed", "").replace(/  /g, ' ')
-                               ).replace(/ /g, '.');
-
-        if (selector != "." && !$el.hasClass("verseLevel") && $parent.children(selector).length == $parent.children(selector + ".hiddenDetailed").length)
+        if ($parent.children(el.nodeName).length == $parent.children(el.nodeName + ".hiddenDetailed").length)
             hideDetailedElement(el.parentNode);
     }
 }

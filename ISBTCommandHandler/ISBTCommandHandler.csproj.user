@@ -12,6 +12,6 @@
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>"isbtBibleVerse:rst/1%25201:1%3bБытие%25201:1"</StartArguments>
+    <StartArguments>"isbtNotesPage:rst/47%25208:14%3b2Коринфянам%25208:14%3bVerse"</StartArguments>
   </PropertyGroup>
 </Project>
