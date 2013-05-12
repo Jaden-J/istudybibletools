@@ -206,7 +206,7 @@ namespace BibleConfigurator
 
                     if (!chkUseFolderForBibleNotesPages.Checked)
                     {
-                        if (chkCreateBibleNotesPagesNotebookFromTemplate.Checked)
+                        if (!CommitChangesAfterLoad)
                             ShownMessagesManager.SetMessageWasShown(ShownMessagesManager.MessagesCodes.SuggestUsingFolderForNotesPages);
 
                         SaveMultiNotebookParameters(module, ContainerType.BibleNotesPages,

@@ -112,7 +112,9 @@ namespace BibleNoteLinker
 
         private void CheckForSuggestions()
         {
-            if (!SettingsManager.Instance.StoreNotesPagesInFolder && !ShownMessagesManager.GetMessageWasShown(ShownMessagesManager.MessagesCodes.SuggestUsingFolderForNotesPages))
+            if (!SettingsManager.Instance.StoreNotesPagesInFolder 
+                && !ShownMessagesManager.GetMessageWasShown(ShownMessagesManager.MessagesCodes.SuggestUsingFolderForNotesPages) 
+                && !SettingsManager.Instance.IsSingleNotebook)
             {
                 using (var form = new MessageForm(BibleCommon.Resources.Constants.SuggestUsingFolderForNotesPages, BibleCommon.Resources.Constants.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                 {
