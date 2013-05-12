@@ -111,33 +111,40 @@ namespace ISBTCommandHandler
 
         public void OpenNotesPage(VersePointer vp, string verseNotesPageFilePath)
         {
-            this.VerseNotesPageFilePath = verseNotesPageFilePath;
-            this.VersePointer = vp;
-
-            if (!string.IsNullOrEmpty(VerseNotesPageFilePath))
+            try
             {
-                if (!File.Exists(VerseNotesPageFilePath))
-                    FormLogger.LogMessage(BibleCommon.Resources.Constants.VerseIsNotMentioned);
-                else
+                this.VerseNotesPageFilePath = verseNotesPageFilePath;
+                this.VersePointer = vp;
+
+                if (!string.IsNullOrEmpty(VerseNotesPageFilePath))
                 {
-                    //if (!vp.IsChapter && !SettingsManager.Instance.UseDifferentPagesForEachVerse)
-                    //    verseNotesPageFilePath += "#" + vp.Verse.Value;
+                    if (!File.Exists(VerseNotesPageFilePath))
+                        FormLogger.LogMessage(BibleCommon.Resources.Constants.VerseIsNotMentioned);
+                    else
+                    {
+                        //if (!vp.IsChapter && !SettingsManager.Instance.UseDifferentPagesForEachVerse)
+                        //    verseNotesPageFilePath += "#" + vp.Verse.Value;
 
-                    wbNotesPage.Url = new Uri(VerseNotesPageFilePath);
+                        wbNotesPage.Url = new Uri(VerseNotesPageFilePath);
 
-                    if (!this.Visible)                    
-                        this.Show();                                            
+                        if (!this.Visible)
+                            this.Show();
 
-                    if (this.WindowState != FormWindowState.Normal)
-                        this.WindowState = FormWindowState.Normal;
+                        if (this.WindowState != FormWindowState.Normal)
+                            this.WindowState = FormWindowState.Normal;
 
-                    this.SetFocus();
-                    wbNotesPage.Focus();
+                        this.SetFocus();
+                        wbNotesPage.Focus();
 
-                    this.Text = string.Format("{0} ({1})", _titleAtStart, VersePointer.GetFriendlyFullVerseName());
+                        this.Text = string.Format("{0} ({1})", _titleAtStart, VersePointer.GetFriendlyFullVerseName());
 
-                    SetNavigationButtonsAvailability();
+                        SetNavigationButtonsAvailability();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
             }
         }        
 
