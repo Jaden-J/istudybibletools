@@ -40,9 +40,9 @@ namespace TestProject
         {
             Stopwatch sw = new Stopwatch();
 
-            sw.Start();          
+            sw.Start();           
 
-            //_oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe(); 
+            //_oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();             
 
             try
             {
