@@ -306,6 +306,7 @@ namespace BibleConfigurator
             //if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_BibleNotesPages) && notebooks.ContainsKey(SettingsManager.Instance.NotebookId_BibleNotesPages))
             //    notebooks.Remove(SettingsManager.Instance.NotebookId_BibleNotesPages);
 
+            ApplicationCache.Instance.RefreshHierarchyCache();
 
             TryToSearchNotebookForNewModule(module, ContainerType.Bible, SettingsManager.Instance.NotebookId_Bible,
                 chkCreateBibleNotebookFromTemplate, cbBibleNotebook, ref notebooks, null);
@@ -741,7 +742,7 @@ namespace BibleConfigurator
                 var module = ModulesManager.GetCurrentModuleInfo();
 
                 string errorText;
-                if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, out errorText))
+                if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, true, out errorText))
                 {
                     switch (notebookType)
                     {
@@ -967,7 +968,9 @@ namespace BibleConfigurator
                 lblWarning.Visible = true;
             //else  // пусть лучше будет так, чтобы если пользователь что-то поменял - его программа просила всегда сохранить изменения, пока он не сохранит
             //    lblWarning.Visible = false;
-            
+
+            ApplicationCache.Instance.RefreshHierarchyCache();
+
             _notebooks = OneNoteUtils.GetExistingNotebooks(ref _oneNoteApp);
             string singleNotebookId = (IsModerator || module.UseSingleNotebook() || SettingsManager.Instance.IsSingleNotebook) ? SearchForNotebook(module, _notebooks.Keys, ContainerType.Single) : string.Empty;
             string bibleNotebookId = SearchForNotebook(module, _notebooks.Keys, ContainerType.Bible);
@@ -1092,7 +1095,7 @@ namespace BibleConfigurator
             foreach (string notebookId in notebooksIds)
             {
                 string errorText;
-                if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, out errorText))
+                if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, false, out errorText))
                 {
                     return notebookId;
                 }
@@ -1241,42 +1244,42 @@ namespace BibleConfigurator
         }
 
         private void btnSingleNotebookParameters_Click(object sender, EventArgs e)
-        {   
+        {
             try
             {
                 string notebookName;
                 var notebookId = GetNotebookIdFromCombobox(cbSingleNotebook, out notebookName);
                 if (!string.IsNullOrEmpty(notebookId))
-                {                   
-                    
-                var module = ModulesManager.GetCurrentModuleInfo();
-                string errorText;
-                    if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, ContainerType.Single, out errorText))
                 {
-                    if (_notebookParametersForm == null)
-                        _notebookParametersForm = new NotebookParametersForm(notebookId);
 
-                    if (_notebookParametersForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    {   
-                        SettingsManager.Instance.SectionGroupId_Bible = _notebookParametersForm.GroupedSectionGroups[ContainerType.Bible];
-                        SettingsManager.Instance.SectionGroupId_BibleStudy = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleStudy];
-                        SettingsManager.Instance.SectionGroupId_BibleComments = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleComments];
-                        SettingsManager.Instance.SectionGroupId_BibleNotesPages = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleComments];
+                    var module = ModulesManager.GetCurrentModuleInfo();
+                    string errorText;
+                    if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, ContainerType.Single, true, out errorText))
+                    {
+                        if (_notebookParametersForm == null)
+                            _notebookParametersForm = new NotebookParametersForm(notebookId);
 
-                        _wasSearchedSectionGroupsInSingleNotebook = true;  // нашли необходимые группы секций. 
+                        if (_notebookParametersForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                        {
+                            SettingsManager.Instance.SectionGroupId_Bible = _notebookParametersForm.GroupedSectionGroups[ContainerType.Bible];
+                            SettingsManager.Instance.SectionGroupId_BibleStudy = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleStudy];
+                            SettingsManager.Instance.SectionGroupId_BibleComments = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleComments];
+                            SettingsManager.Instance.SectionGroupId_BibleNotesPages = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleComments];
+
+                            _wasSearchedSectionGroupsInSingleNotebook = true;  // нашли необходимые группы секций. 
+                        }
+                    }
+                    else
+                    {
+                        FormLogger.LogError(string.Format(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected + "\n" + errorText, notebookName,
+                            ContainerTypeHelper.GetContainerTypeName(ContainerType.Single)));
                     }
                 }
                 else
                 {
-                        FormLogger.LogError(string.Format(BibleCommon.Resources.Constants.ConfiguratorWrongNotebookSelected + "\n" + errorText, notebookName, 
-                            ContainerTypeHelper.GetContainerTypeName(ContainerType.Single)));
+                    FormLogger.LogMessage(BibleCommon.Resources.Constants.ConfiguratorNotebookNotDefined);
                 }
             }
-            else
-            {
-                FormLogger.LogMessage(BibleCommon.Resources.Constants.ConfiguratorNotebookNotDefined);
-            }
-        }
             catch (Exception ex)
             {
                 FormLogger.LogError(ex);
