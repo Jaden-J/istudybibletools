@@ -198,6 +198,11 @@ namespace BibleCommon.Common
         /// </summary>
         public bool IsPartOfBigVerse { get; set; }
 
+        /// <summary>
+        /// У нас есть стих в ibs (Лев 12:7). Ему по смыслу соответствуют два стиха из rst (Лев 12:7-8). Но поделить стих в ibs не поулчается, потому палочка стоит в конце стиха. Но это не значит, что воьсмой стих пустой!
+        /// </summary>
+        public bool HasValueEvenIfEmpty { get; set; }
+
         public bool IsMultiVerse
         {
             get
@@ -313,6 +318,7 @@ namespace BibleCommon.Common
             verse.SkipCheck = this.SkipCheck;
             verse.EmptyVerseContent = this.EmptyVerseContent;
             verse.IsPartOfBigVerse = this.IsPartOfBigVerse;
+            verse.HasValueEvenIfEmpty = this.HasValueEvenIfEmpty;
         }
 
         public SimpleVersePointer GetChapterPointer()

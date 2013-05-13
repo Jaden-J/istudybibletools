@@ -171,7 +171,7 @@ namespace BibleCommon.Services
                     }, true, true,
                     (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
                     {
-                        if (!parallelVerse.IsEmpty || parallelVerse.IsPartOfBigVerse)
+                        if (!parallelVerse.IsEmpty || parallelVerse.IsPartOfBigVerse || parallelVerse.HasValueEvenIfEmpty)
                         {
                             linkResult.AddRange(
                                 LinkPrimaryBibleAndSupplementalVerses(ref oneNoteTemp, baseVersePointer, parallelVerse, bibleIteratorArgs,

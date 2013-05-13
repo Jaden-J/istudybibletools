@@ -392,13 +392,14 @@ namespace BibleCommon.Services
             int? topLastVerse = null;
             bool isEmpty = false;
             bool isPartOfBigVerse;
+            bool hasValueEvenIfEmpty;
 
 
             bool isFullVerses, isDiscontinuous;
             List<SimpleVersePointer> notFoundVerses;
             List<SimpleVersePointer> emptyVerses;
             verseContent = parallelBookContent.GetVersesContent(parallelVersePointers, this.ParallelModuleInfo.ShortName, strongPrefix,
-                                        out topLastVerse, out isEmpty, out isFullVerses, out isDiscontinuous, out isPartOfBigVerse, out notFoundVerses, out emptyVerses);
+                                        out topLastVerse, out isEmpty, out isFullVerses, out isDiscontinuous, out isPartOfBigVerse, out hasValueEvenIfEmpty, out notFoundVerses, out emptyVerses);
 
             if (!isEmpty)
             {
@@ -434,7 +435,8 @@ namespace BibleCommon.Services
             {
                 VerseNumber = new VerseNumber(firstParallelVerse.Verse, topLastVerse),
                 IsEmpty = firstParallelVerse.IsEmpty || isEmpty,
-                IsPartOfBigVerse = isPartOfBigVerse
+                IsPartOfBigVerse = isPartOfBigVerse,
+                HasValueEvenIfEmpty = hasValueEvenIfEmpty
             };
         }
 
