@@ -47,7 +47,8 @@ namespace BibleCommon.Scheme
                 bool isEmpty;
                 bool isFullVerse;
                 bool isPartOfBigVerse;
-                this.BooksDictionary[vp.BookIndex].GetVerseContent(vp, moduleShortName, string.Empty, true, out verseNumber, out isEmpty, out isFullVerse, out isPartOfBigVerse);
+                bool hasValueEvenIfEmpty;
+                this.BooksDictionary[vp.BookIndex].GetVerseContent(vp, moduleShortName, string.Empty, true, out verseNumber, out isEmpty, out isFullVerse, out isPartOfBigVerse, out hasValueEvenIfEmpty);
                 return true;
             }
             catch (VerseNotFoundException)
@@ -89,12 +90,26 @@ namespace BibleCommon.Scheme
             }
         }        
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="versePointer"></param>
+        /// <param name="moduleShortName"></param>
+        /// <param name="strongPrefix"></param>
+        /// <param name="getVerseNumberForEmptyVerses"></param>
+        /// <param name="verseNumber"></param>
+        /// <param name="isEmpty"></param>
+        /// <param name="isFullVerse"></param>
+        /// <param name="isPartOfBigVerse"></param>
+        /// <param name="hasValueEvenIfEmpty">У нас есть стих в ibs (Лев 12:7). Ему по смыслу соответствуют два стиха из rst (Лев 12:7-8). Но поделить стих в ibs не поулчается, потому палочка стоит в конце стиха. Но это не значит, что воьсмой стих пустой!</param>
+        /// <returns></returns>
         public string GetVerseContent(SimpleVersePointer versePointer, string moduleShortName, string strongPrefix, bool getVerseNumberForEmptyVerses, 
-            out VerseNumber verseNumber, out bool isEmpty, out bool isFullVerse, out bool isPartOfBigVerse)
+            out VerseNumber verseNumber, out bool isEmpty, out bool isFullVerse, out bool isPartOfBigVerse, out bool hasValueEvenIfEmpty)
         {
             isFullVerse = true;
             isEmpty = false;
             isPartOfBigVerse = false;
+            hasValueEvenIfEmpty = false;
 
             verseNumber = versePointer.VerseNumber;
 
@@ -133,12 +148,20 @@ namespace BibleCommon.Scheme
                 if (versesParts.Length > versePointer.PartIndex.Value)
                     result = versesParts[versePointer.PartIndex.Value].Trim();
 
+                if (result == Consts.Constants.NotEmptyVerseContentSymbol)
+                    hasValueEvenIfEmpty = true;
+
                 result = ShellVerseText(result);
                 if (result != shelledVerseContent)
                     isFullVerse = false;
             }
-            else            
+            else
+            {
+                if (verseContent == Consts.Constants.NotEmptyVerseContentSymbol)   // пока эту строчку не тестировал. Не понятно, можно ли такое использовать и зачем.
+                    hasValueEvenIfEmpty = true;
+
                 result = shelledVerseContent;
+            }
 
             return result;
         }
@@ -156,7 +179,7 @@ namespace BibleCommon.Scheme
         /// <param name="notFoundVerses"></param>
         /// <returns></returns>
         public string GetVersesContent(List<SimpleVersePointer> verses, string moduleShortName, string strongPrefix, 
-            out int? topVerse, out bool isEmpty, out bool isFullVerses, out bool isDiscontinuous, out bool isPartOfBigVerse,
+            out int? topVerse, out bool isEmpty, out bool isFullVerses, out bool isDiscontinuous, out bool isPartOfBigVerse, out bool hasValueEvenIfEmpty,
             out List<SimpleVersePointer> notFoundVerses, out List<SimpleVersePointer> emptyVerses)
         {
             var contents = new List<string>();
@@ -170,12 +193,13 @@ namespace BibleCommon.Scheme
             isFullVerses = true;
             isDiscontinuous = false;
             isPartOfBigVerse = false;
+            hasValueEvenIfEmpty = false;
 
             foreach (var verse in verses)
             {
                 bool localIsEmpty, localIsFullVerse;
                 VerseNumber vn;
-                var verseContent = GetVerseContent(verse, moduleShortName, strongPrefix, false, out vn, out localIsEmpty, out localIsFullVerse, out isPartOfBigVerse);
+                var verseContent = GetVerseContent(verse, moduleShortName, strongPrefix, false, out vn, out localIsEmpty, out localIsFullVerse, out isPartOfBigVerse, out hasValueEvenIfEmpty);
                 contents.Add(verseContent);
 
                 if (!localIsEmpty)
@@ -217,7 +241,11 @@ namespace BibleCommon.Scheme
         private static string ShellVerseText(string verseText)
         {
             if (!string.IsNullOrEmpty(verseText))
-                verseText = verseText.Replace("|", string.Empty);
+            {
+                verseText = verseText
+                    .Replace("|", string.Empty)
+                    .Replace(Consts.Constants.NotEmptyVerseContentSymbol, string.Empty);
+            }
 
             return verseText;
         }
