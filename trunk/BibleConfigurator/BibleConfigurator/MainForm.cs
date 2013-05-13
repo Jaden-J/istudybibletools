@@ -1074,7 +1074,7 @@ namespace BibleConfigurator
         {
             var languages = LanguageManager.GetDisplayedNames();
 
-            var currentLanguage = LanguageManager.UserLanguage;
+            var currentLanguage = LanguageManager.GetCurrentCultureInfo();
 
             cbLanguage.Items.Clear();
             foreach (var pair in languages)

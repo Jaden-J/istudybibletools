@@ -23,7 +23,7 @@ namespace BibleCommon.Services
             _notesPagesProviderManager = new NotesPagesProviderManager();
         }
 
-        public void RelinkBiblePageNotes(ref Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName, VersePointer chapterPointer)
+        public void RelinkBiblePageNotes(ref Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName, VersePointer chapterPointer, string locale)
         {   
             ApplicationCache.PageContent biblePageDocument = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, biblePageId, ApplicationCache.PageType.Bible);
             bool wasModified = false;           
@@ -40,7 +40,9 @@ namespace BibleCommon.Services
             {
                 OneNoteUtils.NormalizeTextElement(textElement);
 
-                XElement bibleVerseElement = textElement.Parent.Parent.Parent.Parent.XPathSelectElement("one:Cell[1]/one:OEChildren/one:OE/one:T", biblePageDocument.Xnm);
+                var notesCellEl = textElement.Parent.Parent.Parent;
+                var bibleVerseElement = notesCellEl.Parent.XPathSelectElement("one:Cell[1]/one:OEChildren/one:OE/one:T", biblePageDocument.Xnm);
+
                 OneNoteUtils.NormalizeTextElement(bibleVerseElement);
                 var verseNumber = VerseNumber.GetFromVerseText(bibleVerseElement.Value);
 
@@ -50,6 +52,9 @@ namespace BibleCommon.Services
 
                     if (ApplicationCache.Instance.ProcessedVersesOnBiblePagesWithUpdatedLinksToNotesPages.Contains(vp.ToSimpleVersePointer()))  // если мы обрабатывали этот стих
                     {
+                        if (!string.IsNullOrEmpty(locale))
+                            notesCellEl.SetAttributeValue("lang", locale);
+
                         if (RelinkBiblePageNote(ref oneNoteApp, bibleSectionId, biblePageId, biblePageName, textElement, vp, verseNumber))
                             wasModified = true;
                     }
