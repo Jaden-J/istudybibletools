@@ -293,7 +293,7 @@ namespace BibleConfigurator
         private void RefreshCache()
         {
             if (_oneNoteApp.Windows.CurrentWindow != null)            
-                Process.Start(RefreshCacheHandler.GetCommandUrlStatic());   // если текущее окно закрыто, то и кэш скорее всего закрыт. Если же кэш открыт, то когда окно откроют, кэш обновится                            
+                Process.Start(RefreshCacheHandler.GetCommandUrlStatic());   // если текущее окно закрыто, то и кэш скорее всего закрыт. Когда окно откроют, кэш обновится                            
         }
 
         private void TryToSearchNotebooksForNewModule(ModuleInfo module)
@@ -551,7 +551,8 @@ namespace BibleConfigurator
 
             if (SettingsManager.Instance.UseProxyLinksForBibleVerses != chkUseProxyLinksForBibleVerses.Checked && !chkUseProxyLinksForBibleVerses.Checked)  // то есть мы перестали использовать прокси ссылки для стихов Библии
             {
-                ApplicationCache.Instance.CleanBibleVersesLinksCache(false);    
+                if (!ApplicationCache.Instance.BibleVersesLinksCacheContainsHyperLinks())  // если уже содержит ссылки, то не надо обновлять кэш
+                    ApplicationCache.Instance.CleanBibleVersesLinksCache(false);    
             }
 
             SettingsManager.Instance.UseProxyLinksForBibleVerses = chkUseProxyLinksForBibleVerses.Checked;
@@ -2067,6 +2068,6 @@ namespace BibleConfigurator
             tbRubbishNotesPageName.Enabled = storeNotesPageInFolder && !chkDefaultParameters.Checked && useRubbishPage;
             chkRubbishExcludedVersesLinking.Enabled = storeNotesPageInFolder && !chkDefaultParameters.Checked && useRubbishPage;
             chkRubbishExpandMultiVersesLinking.Enabled = storeNotesPageInFolder && !chkDefaultParameters.Checked && useRubbishPage;            
-        }
+        }        
     }
 }
