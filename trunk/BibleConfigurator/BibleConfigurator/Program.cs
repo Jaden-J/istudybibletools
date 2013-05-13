@@ -183,12 +183,20 @@ namespace BibleConfigurator
                 try
                 {
                     CreateOneNoteAppIfNotExists();
-                    OneNoteLocker.UnlockBible(ref _oneNoteApp);
-                    OneNoteLocker.UnlockSupplementalBible(ref _oneNoteApp);
+                    OneNoteLocker.UnlockBible(ref _oneNoteApp);                    
                 }
                 catch (NotSupportedException)
                 {
                     ShowMessage(BibleCommon.Resources.Constants.SkyDriveBibleIsNotSupportedForLock);
+                }
+
+                try
+                {   
+                    OneNoteLocker.UnlockSupplementalBible(ref _oneNoteApp);
+                }
+                catch (NotSupportedException)
+                {
+                    //todo: log it
                 }
             }
             else if (args.Contains(Consts.UnlockBibleSection))

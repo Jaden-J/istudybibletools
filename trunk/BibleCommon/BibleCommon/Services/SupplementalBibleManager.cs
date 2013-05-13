@@ -104,9 +104,16 @@ namespace BibleCommon.Services
         {
             try
             {
-                if (unlockBible)                
+                if (unlockBible)
                     OneNoteLocker.UnlockBible(ref oneNoteApp, true, () => logger.AbortedByUser);
+            }
+            catch (NotSupportedException)
+            {
+                //todo: log it
+            }
 
+            try
+            {
                 if (unlockSupplementalBible)
                     OneNoteLocker.UnlockSupplementalBible(ref oneNoteApp, true, () => logger.AbortedByUser);
             }

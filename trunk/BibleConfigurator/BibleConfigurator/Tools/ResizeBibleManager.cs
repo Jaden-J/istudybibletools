@@ -38,7 +38,7 @@ namespace BibleConfigurator.Tools
 
                 try
                 {
-                    OneNoteLocker.UnlockBible(ref _oneNoteApp);
+                    OneNoteLocker.UnlockBible(ref _oneNoteApp, true, () => _form.StopLongProcess);
                 }
                 catch (NotSupportedException)
                 {

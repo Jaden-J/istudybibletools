@@ -594,18 +594,7 @@ namespace BibleCommon.Services
 
         public VersePointerLink GetVersePointerLink(VersePointer vp)
         {
-            if (_bibleVersesLinks == null)
-            {
-                try
-                {
-                    _bibleVersesLinks = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
-                }
-                catch (Exception ex)
-                {
-                    BibleCommon.Services.Logger.LogError(ex);
-                    throw;
-                }                
-            }
+            CheckAndLoadBibleVersesLinksCacheIfNeeded();
 
             var vpString = vp.ToFirstVerseString();
             if (_bibleVersesLinks.ContainsKey(vpString))
@@ -618,6 +607,33 @@ namespace BibleCommon.Services
             }
 
             return null;
-        }      
+        }
+
+        /// <summary>
+        /// Сгенерировал ли уже кэш с параметром toGenerateHref = true
+        /// </summary>
+        /// <returns></returns>
+        public bool BibleVersesLinksCacheContainsHyperLinks()
+        {
+            CheckAndLoadBibleVersesLinksCacheIfNeeded();
+            var firstLink = new VersePointerLink(_bibleVersesLinks.Values.First());
+            return !string.IsNullOrEmpty(firstLink.Href);            
+        }
+
+        private void CheckAndLoadBibleVersesLinksCacheIfNeeded()
+        {
+            if (_bibleVersesLinks == null)
+            {
+                try
+                {
+                    _bibleVersesLinks = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
+                }
+                catch (Exception ex)
+                {
+                    BibleCommon.Services.Logger.LogError(ex);
+                    throw;
+                }
+            }
+        }
     }
 }
