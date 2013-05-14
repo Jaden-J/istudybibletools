@@ -26,7 +26,7 @@ namespace BibleNoteLinker
 
             try
             {
-                OneNoteLocker.UnlockBible(ref _oneNoteApp);
+                OneNoteLocker.UnlockBible(ref _oneNoteApp, true, () => _processAbortedByUser);
             }
             catch (NotSupportedException)
             {
@@ -232,6 +232,7 @@ namespace BibleNoteLinker
 
             int processedPagesCount = 0;
             var relinkNotesManager = new RelinkAllBibleNotesManager();
+            var locale = LanguageManager.GetCurrentCultureInfoBaseLocale();
             foreach (var processedBiblePageId in ApplicationCache.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values)
             {
                 LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
@@ -257,7 +258,7 @@ namespace BibleNoteLinker
                         HierarchySearchManager.UseHierarchyObjectSafe(ref _oneNoteApp, ref processedBiblePageIdLocal, ref vp, (verseHierarchyInfoSafe) =>
                         {
                             relinkNotesManager.RelinkBiblePageNotes(ref _oneNoteApp, verseHierarchyInfoSafe.SectionId, verseHierarchyInfoSafe.PageId,
-                                                        verseHierarchyInfoSafe.PageName, vp);
+                                                        verseHierarchyInfoSafe.PageName, vp, locale);
                             return true;
                         }, null, null);
                     }

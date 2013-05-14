@@ -37,7 +37,14 @@ namespace BibleConfigurator.Tools
             {
                 BibleCommon.Services.Logger.Init("DeleteNotesPagesManager");
 
-                OneNoteLocker.UnlockBible(ref _oneNoteApp, true, () => _form.StopLongProcess);
+                try
+                {
+                    OneNoteLocker.UnlockBible(ref _oneNoteApp, true, () => _form.StopLongProcess);
+                }
+                catch (NotSupportedException)
+                {
+                    //todo: log it
+                }
 
                 var pagesToDelete = SettingsManager.Instance.StoreNotesPagesInFolder ? GetNotesPageFiles() : GetAllNotesPagesIds();
                 int chaptersCount = ModulesManager.GetBibleChaptersCount(SettingsManager.Instance.ModuleShortName, true);
