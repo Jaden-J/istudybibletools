@@ -106,7 +106,14 @@ namespace BibleCommon.Services
             {
                 if (unlockBible)                
                     OneNoteLocker.UnlockBible(ref oneNoteApp, true, () => logger.AbortedByUser);
+            }
+            catch (NotSupportedException)
+            {
+                //todo: log it
+            }
 
+            try
+            {
                 if (unlockSupplementalBible)
                     OneNoteLocker.UnlockSupplementalBible(ref oneNoteApp, true, () => logger.AbortedByUser);
             }
@@ -164,7 +171,7 @@ namespace BibleCommon.Services
                     }, true, true,
                     (baseVersePointer, parallelVerse, bibleIteratorArgs) =>
                     {
-                        if (!parallelVerse.IsEmpty || parallelVerse.IsPartOfBigVerse)
+                        if (!parallelVerse.IsEmpty || parallelVerse.IsPartOfBigVerse || parallelVerse.HasValueEvenIfEmpty)
                         {
                             linkResult.AddRange(
                                 LinkPrimaryBibleAndSupplementalVerses(ref oneNoteTemp, baseVersePointer, parallelVerse, bibleIteratorArgs,

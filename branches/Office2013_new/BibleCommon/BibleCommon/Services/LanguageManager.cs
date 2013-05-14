@@ -10,21 +10,31 @@ namespace BibleCommon.Services
 {
     public static class LanguageManager
     {
-        public static CultureInfo UserLanguage
+        public static CultureInfo GetCurrentCultureInfo()
         {
-            get
-            {
-                int lcid = DefaultLCID;
+            int lcid = DefaultLCID;
 
-                if (SettingsManager.Instance.Language != 0)
-                    lcid = SettingsManager.Instance.Language;
-                else if (_localesLCID.Contains(Thread.CurrentThread.CurrentUICulture.LCID))
-                    lcid = Thread.CurrentThread.CurrentUICulture.LCID;                
+            if (SettingsManager.Instance.Language != 0)
+                lcid = SettingsManager.Instance.Language;
+            else if (_localesLCID.Contains(Thread.CurrentThread.CurrentUICulture.LCID))
+                lcid = Thread.CurrentThread.CurrentUICulture.LCID;
 
-                return new CultureInfo(lcid);
-            }
+            return new CultureInfo(lcid);
         }
 
+        public static string GetCurrentCultureInfoBaseLocale()
+        {
+            return GetBaseCultureInfo(GetCurrentCultureInfo()).Name;
+        }
+
+        private static CultureInfo GetBaseCultureInfo(CultureInfo cultureInfo)
+        {
+            if (cultureInfo.Parent != null && !string.IsNullOrEmpty(cultureInfo.Parent.Name))
+                return GetBaseCultureInfo(cultureInfo.Parent);
+            else
+                return cultureInfo;            
+        }
+        
 
         public static readonly int DefaultLCID = 1033;
 
@@ -70,7 +80,7 @@ namespace BibleCommon.Services
 
         public static void SetThreadUICulture()
         {
-            Thread.CurrentThread.CurrentUICulture = LanguageManager.UserLanguage;
+            Thread.CurrentThread.CurrentUICulture = LanguageManager.GetCurrentCultureInfo();
         }
     }
 }

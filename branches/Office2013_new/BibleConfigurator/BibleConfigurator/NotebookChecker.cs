@@ -16,13 +16,13 @@ namespace BibleConfigurator
 {
     public static class NotebookChecker
     {
-        public static bool CheckNotebook(ref Application oneNoteApp, ModuleInfo module, string notebookId, ContainerType notebookType, out string errorText)
+        public static bool CheckNotebook(ref Application oneNoteApp, ModuleInfo module, string notebookId, ContainerType notebookType, bool refreshCache, out string errorText)
         {
             errorText = string.Empty;
 
             if (!string.IsNullOrEmpty(notebookId))
             {
-                ApplicationCache.HierarchyElement notebookEl = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsSections, true);                
+                ApplicationCache.HierarchyElement notebookEl = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsSections, refreshCache);                
 
                 try
                 {

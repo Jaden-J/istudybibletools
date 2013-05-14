@@ -293,7 +293,7 @@ namespace BibleConfigurator
         private void RefreshCache()
         {
             if (_oneNoteApp.Windows.CurrentWindow != null)            
-                Process.Start(RefreshCacheHandler.GetCommandUrlStatic());   // если текущее окно закрыто, то и кэш скорее всего закрыт. Если же кэш открыт, то когда окно откроют, кэш обновится                            
+                Process.Start(RefreshCacheHandler.GetCommandUrlStatic());   // если текущее окно закрыто, то и кэш скорее всего закрыт. Когда окно откроют, кэш обновится                            
         }
 
         private void TryToSearchNotebooksForNewModule(ModuleInfo module)
@@ -306,6 +306,7 @@ namespace BibleConfigurator
             //if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_BibleNotesPages) && notebooks.ContainsKey(SettingsManager.Instance.NotebookId_BibleNotesPages))
             //    notebooks.Remove(SettingsManager.Instance.NotebookId_BibleNotesPages);
 
+            ApplicationCache.Instance.RefreshHierarchyCache();
 
             TryToSearchNotebookForNewModule(module, ContainerType.Bible, SettingsManager.Instance.NotebookId_Bible,
                 chkCreateBibleNotebookFromTemplate, cbBibleNotebook, ref notebooks, null);
@@ -551,6 +552,7 @@ namespace BibleConfigurator
 
             if (SettingsManager.Instance.UseProxyLinksForBibleVerses != chkUseProxyLinksForBibleVerses.Checked && !chkUseProxyLinksForBibleVerses.Checked)  // то есть мы перестали использовать прокси ссылки для стихов Библии
             {
+                if (!ApplicationCache.Instance.BibleVersesLinksCacheContainsHyperLinks())  // если уже содержит ссылки, то не надо обновлять кэш
                 ApplicationCache.Instance.CleanBibleVersesLinksCache(false);    
             }
 
@@ -740,7 +742,7 @@ namespace BibleConfigurator
                 var module = ModulesManager.GetCurrentModuleInfo();
 
                 string errorText;
-                if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, out errorText))
+                if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, true, out errorText))
                 {
                     switch (notebookType)
                     {
@@ -967,6 +969,8 @@ namespace BibleConfigurator
             //else  // пусть лучше будет так, чтобы если пользователь что-то поменял - его программа просила всегда сохранить изменения, пока он не сохранит
             //    lblWarning.Visible = false;
             
+            ApplicationCache.Instance.RefreshHierarchyCache();
+
             _notebooks = OneNoteUtils.GetExistingNotebooks(ref _oneNoteApp);
             string singleNotebookId = (IsModerator || module.UseSingleNotebook() || SettingsManager.Instance.IsSingleNotebook) ? SearchForNotebook(module, _notebooks.Keys, ContainerType.Single) : string.Empty;
             string bibleNotebookId = SearchForNotebook(module, _notebooks.Keys, ContainerType.Bible);
@@ -1074,7 +1078,7 @@ namespace BibleConfigurator
         {
             var languages = LanguageManager.GetDisplayedNames();
 
-            var currentLanguage = LanguageManager.UserLanguage;
+            var currentLanguage = LanguageManager.GetCurrentCultureInfo();
 
             cbLanguage.Items.Clear();
             foreach (var pair in languages)
@@ -1091,7 +1095,7 @@ namespace BibleConfigurator
             foreach (string notebookId in notebooksIds)
             {
                 string errorText;
-                if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, out errorText))
+                if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, false, out errorText))
                 {
                     return notebookId;
                 }
@@ -1250,7 +1254,7 @@ namespace BibleConfigurator
                     
                 var module = ModulesManager.GetCurrentModuleInfo();
                 string errorText;
-                    if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, ContainerType.Single, out errorText))
+                    if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, ContainerType.Single, true, out errorText))
                 {
                     if (_notebookParametersForm == null)
                         _notebookParametersForm = new NotebookParametersForm(notebookId);
