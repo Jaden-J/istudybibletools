@@ -24,9 +24,9 @@ namespace BibleCommon.Consts
         public static readonly string TempDirectory = "Temp";
         public static readonly string CacheDirectory = "Cache";
         public static readonly string NotesPagesDirectory = "NotesPages";
-        public static readonly string LogsDirectory = "Logs";        
+        public static readonly string LogsDirectory = "Logs";
         public static readonly string DefaultPartVersesAlphabet = "abcdefghijklmnopqrstuvwxyz";
-        public static readonly int DefaultStrongNumbersCount = 14700;        
+        public static readonly int DefaultStrongNumbersCount = 14700;
         public static readonly string UnicodeFontName = "Arial Unicode MS";
         public static readonly string AnalyzeMutix = "ISBT_Analyze";
         public static readonly string ParametersMutix = "ISBT_Parameters";
@@ -37,8 +37,8 @@ namespace BibleCommon.Consts
 
         public static readonly decimal ImportantVerseWeight = 2;
 
-        public static readonly Version ModulesWithXmlBibleMinVersion = new Version(1, 9);        
-        
+        public static readonly Version ModulesWithXmlBibleMinVersion = new Version(1, 9);
+
         public static readonly int DefaultPageWidth_Notes = 500;
         public static readonly int DefaultPageWidth_RubbishNotes = 500;
         public static readonly int DefaultPageWidth_Bible = 500;
@@ -49,13 +49,13 @@ namespace BibleCommon.Consts
         public static readonly bool DefaultUseDifferentPagesForEachVerse = true;
         public static readonly bool DefaultRubbishPage_Use = false;
         public static readonly bool DefaultRubbishPage_ExpandMultiVersesLinking = true;
-        public static readonly bool DefaultRubbishPage_ExcludedVersesLinking = true;        
+        public static readonly bool DefaultRubbishPage_ExcludedVersesLinking = true;
 
         public static readonly string ResourceName_DefaultPageNameDefaultBookOverview = "DefaultPageNameDefaultBookOverview";
         public static readonly string ResourceName_DefaultPageNameDefaultComments = "DefaultPageNameDefaultComments";
         public static readonly string ResourceName_DefaultPageName_Notes = "DefaultPageName_Notes";
         public static readonly string ResourceName_DefaultPageName_RubbishNotes = "DefaultPageName_RubbishNotes";
-        public static readonly string ResourceName_DefaultSupplementalBibleLinkName = "DefaultSupplementalBibleLinkName";        
+        public static readonly string ResourceName_DefaultSupplementalBibleLinkName = "DefaultSupplementalBibleLinkName";
 
         public static readonly string ParameterName_NotebookIdBible = "NotebookId_Bible";
         public static readonly string ParameterName_NotebookIdBibleComments = "NotebookId_BibleComments";
@@ -63,18 +63,18 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_NotebookIdBibleStudy = "NotebookId_BibleStudy";
         public static readonly string ParameterName_NotebookIdSupplementalBible = "NotebookId_SupplementalBible";
         public static readonly string ParameterName_NotebookIdDictionaries = "NotebookId_Dictionaries";
-        public static readonly string ParameterName_SectionGroupIdBible = "SectionGroupId_Bible";        
+        public static readonly string ParameterName_SectionGroupIdBible = "SectionGroupId_Bible";
         public static readonly string ParameterName_SectionGroupIdBibleStudy = "SectionGroupId_BibleStudy";
         public static readonly string ParameterName_SectionGroupIdBibleComments = "SectionGroupId_BibleComments";
         public static readonly string ParameterName_SectionGroupIdBibleNotesPages = "SectionGroupId_BibleNotesPages";
         public static readonly string ParameterName_PageNameDefaultComments = "PageName_DefaultComments";
-        public static readonly string ParameterName_SectionNameDefaultBookOverview = "SectionName_DefaultBookOverview";        
+        public static readonly string ParameterName_SectionNameDefaultBookOverview = "SectionName_DefaultBookOverview";
         public static readonly string ParameterName_PageNameNotes = "PageName_Notes";
         public static readonly string ParameterName_LastNotesLinkTime = "LastNotesLinkTime";
         public static readonly string ParameterName_NewVersionOnServer = "NewVersionOnServer";
         public static readonly string ParameterName_NewVersionOnServerLatestCheckTime = "NewVersionOnServerLatestCheckTime";
 
-        public static readonly string ParameterName_FolderPathBibleNotesPages = "FolderPath_BibleNotesPages";        
+        public static readonly string ParameterName_FolderPathBibleNotesPages = "FolderPath_BibleNotesPages";
 
         public static readonly string ParameterName_ModuleName = "ModuleName";
         public static readonly string ParameterName_SupplementalBibleModules = "SupplementalBibleModules";
@@ -82,7 +82,7 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_DictionariesModules = "DictionariesModules";
         public static readonly string ParameterName_SelectedNotebooksForAnalyze = "SelectedNotebooksForAnalyze";
         public static readonly string ParameterName_ShownMessages = "ShownMessages";
-        
+
 
         public static readonly string ParameterName_PageWidthNotes = "Width_NotesPage";
         public static readonly string ParameterName_PageWidthBible = "Width_BiblePage";
@@ -99,13 +99,13 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_UseProxyLinksForBibleVerses = "UseProxyLinksForBibleVerses";
         public static readonly string ParameterName_UseProxyLinksForLinks = "UseProxyLinksForLinks";
 
-        public static readonly string ParameterName_UseDefaultSettings = "UseDefaultSettings";        
+        public static readonly string ParameterName_UseDefaultSettings = "UseDefaultSettings";
 
         public static readonly string ParameterName_Language = "Language";
 
-        public static readonly string ParameterName_GenerateFullBibleVersesCache = "GenerateFullBibleVersesCache";        
-        
-        
+        public static readonly string ParameterName_GenerateFullBibleVersesCache = "GenerateFullBibleVersesCache";
+
+
         public static readonly TimeSpan NewVersionCheckPeriod = new TimeSpan(1, 0, 0, 0);
 
         public static readonly string QueryParameter_QuickAnalyze = "qa=1";
@@ -138,7 +138,7 @@ namespace BibleCommon.Consts
         public static readonly string NotesPageElementAttributeName_SyncId = "syncid";
         public static readonly string NotesPageStyleFileName = "core.css";
         public static readonly string NotesPageScriptFileName = "core.js";
-        public static readonly string NotesPageJQueryScriptFileName = "jquery.js";        
-    }   
+        public static readonly string NotesPageJQueryScriptFileName = "jquery.js";
+    }
 }
 
