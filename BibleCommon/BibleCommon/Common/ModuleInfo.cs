@@ -563,8 +563,11 @@ namespace BibleCommon.Common
 
             Abbreviations.ForEach(abbr => abbr.Value = abbr.Value.ToLowerInvariant());  // вдруг где-то в модуле случайно указали с большой буквы            
 
-            foreach(var abbr in Abbreviations.Where(abbr => abbr.Value != nameLower))
-                result.Add(abbr.Value, abbr);
+            foreach (var abbr in Abbreviations.Where(abbr => abbr.Value != nameLower))
+            {
+                if (!result.ContainsKey(abbr.Value))
+                    result.Add(abbr.Value, abbr);
+            }
 
             if (includeSectionName)
             {
