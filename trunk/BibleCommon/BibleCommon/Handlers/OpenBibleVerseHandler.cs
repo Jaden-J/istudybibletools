@@ -97,7 +97,7 @@ namespace BibleCommon.Handlers
                 return true;
             }
             else
-                Logger.LogError(BibleCommon.Resources.Constants.BibleVersePointerCanNotFindPlace);
+                FormLogger.LogError(BibleCommon.Resources.Constants.BibleVersePointerCanNotFindPlace);
 
             return false;
         }
