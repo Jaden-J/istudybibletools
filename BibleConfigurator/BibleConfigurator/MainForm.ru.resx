@@ -112,12 +112,12 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="btnApply.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -130,7 +130,7 @@
   <data name="btnClose.Text" xml:space="preserve">
     <value>Отмена</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="lblWarning.Location" type="System.Drawing.Point, System.Drawing">
     <value>474, 0</value>
   </data>
@@ -140,7 +140,7 @@
   <data name="lblWarning.Text" xml:space="preserve">
     <value>Необходимо сохранить изменения</value>
   </data>
-  <data name="tabPage1.Text" xml:space="preserve">
+  <data name="tpNotebooks.Text" xml:space="preserve">
     <value>Параметры OneNote</value>
   </data>
   <data name="chkUseFolderForBibleNotesPages.Size" type="System.Drawing.Size, System.Drawing">
@@ -233,7 +233,7 @@
   <data name="tabPage2.Text" xml:space="preserve">
     <value>Параметры программы</value>
   </data>
-  <data name="cbUseProxyLinksForBibleVerses.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="chkUseProxyLinksForBibleVerses.Size" type="System.Drawing.Size, System.Drawing">
     <value>277, 17</value>
   </data>
   <data name="chkUseProxyLinksForBibleVerses.Text" xml:space="preserve">
@@ -359,7 +359,7 @@
   <data name="btnRelinkComments.Text" xml:space="preserve">
     <value>Обновить ссылки на комментарии</value>
   </data>
-  <data name="tabPage4.Text" xml:space="preserve">
+  <data name="tpModules.Text" xml:space="preserve">
     <value>Модули</value>
   </data>
   <data name="btnDictionariesManagement.Location" type="System.Drawing.Point, System.Drawing">
