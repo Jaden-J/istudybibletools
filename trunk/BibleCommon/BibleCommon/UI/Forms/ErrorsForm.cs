@@ -158,17 +158,21 @@ namespace BibleCommon.UI.Forms
 
         private void lbErrors_MouseMove(object sender, MouseEventArgs e)
         {
-            int index = lbErrors.IndexFromPoint(e.X, e.Y);
+            lbErrors.Cursor = Cursors.Default;
+
+            int index = lbErrors.IndexFromPoint(e.X, e.Y);            
             if (index >= 0)
             {
                 var item = lbErrors.Items[index];
                 if (item is LogItem)
-                    lbErrors.Cursor = Cursors.Hand;
-                else
-                    lbErrors.Cursor = Cursors.Default;                
-            }
-            else
-                lbErrors.Cursor = Cursors.Default;            
-        }       
+                {
+                    var logItem = (LogItem)item;
+                    if (!string.IsNullOrEmpty(logItem.PageId) && !string.IsNullOrEmpty(logItem.ContentObjectId))
+                    {
+                        lbErrors.Cursor = Cursors.Hand;                        
+                    }
+                }
+            }            
+        }    
     }
 }
