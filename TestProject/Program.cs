@@ -450,8 +450,9 @@ namespace TestProject
              new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
                 }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
-               Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0));
-        
+               Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 1));
+
+            converter.Convert();
 
             using (var form = new ErrorsForm(converter.Errors.ConvertAll(er => er.Message)))
             {
@@ -467,7 +468,7 @@ namespace TestProject
             new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, string.Format("{0}\\{0}.htm", moduleName)), DictionaryPageDescription = moduleDescription }
                 }, BibleQuotaDictionaryConverter.StructureType.Dictionary, moduleName,
-              Path.Combine(TempFolderPath, moduleName), "<p><b>", "User Notes", null, "en", new Version(2, 0));
+              Path.Combine(TempFolderPath, moduleName), "<p><b>", "User Notes", null, "en", new Version(2, 1));
 
             converter.Convert();
 

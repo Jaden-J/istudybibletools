@@ -292,7 +292,9 @@ namespace BibleCommon.Services
                     _instance.ReLoadSettings();                     // здесь нельзя использовать Instance, потому что используется один и тот же _locker
 
                 _instance.ReloadCurrentModuleInfoCached();
-                _instance.ReloadCurrentBibleContentCached();                
+
+                if (_instance.CanUseBibleContent)
+                    _instance.ReloadCurrentBibleContentCached();                
             }
         }
 
