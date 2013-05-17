@@ -278,13 +278,15 @@ namespace BibleConfigurator
 
             try
             {
-                List<string> errors;
+                List<string> errors = null;
                 ModuleInfo selectedModuleInfo = null;
 
                 if (!useExistingNotebook)
                 {
                     selectedModuleInfo = ((ModuleInfo)CbModule.SelectedItem);
-                    errors = CommitChanges(selectedModuleInfo).ConvertAll(item => item.Message);
+                    var errorsList = CommitChanges(selectedModuleInfo);
+                    if (errorsList != null)
+                        errors = errorsList.ConvertAll(item => item.Message);
                 }
                 else
                 {
