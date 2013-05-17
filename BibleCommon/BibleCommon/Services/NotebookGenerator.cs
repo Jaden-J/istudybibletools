@@ -361,6 +361,9 @@ namespace BibleCommon.Services
             XmlNamespaceManager xnm;
             var nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
+            if (!Directory.Exists(notebookDirectory))
+                Directory.CreateDirectory(notebookDirectory);
+
             var newNotebookPath = Utils.GetNewDirectoryPath(notebookDirectory + "\\" + notebookName);
             notebookName = Path.GetFileName(newNotebookPath);
 

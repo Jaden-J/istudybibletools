@@ -23,11 +23,16 @@ namespace BibleCommon.Common
 
     public class NotesPageData
     {
+        private const string AttributeName_HasValueLinks = "hasValueLinks";
+
         public bool IsNew { get; set; }
         public string FilePath { get; set; }
         public string PageName { get; set; }
         NotesPageType NotesPageType { get; set; }
-        public VersePointer ChapterPoiner { get; set; }        
+        public VersePointer ChapterPoiner { get; set; }
+
+        //содержит ли хотя бы одну не подобную ссылку. То есть есть ли на эту страницу уже ссылка "Заметки" в записной книжке "Библия".
+        public bool HasValueLinks { get; set; }
 
         public Dictionary<VerseNumber, VerseNotesPageData> VersesNotesPageData { get; set; }
 
@@ -40,8 +45,11 @@ namespace BibleCommon.Common
 
             this.VersesNotesPageData = new Dictionary<VerseNumber, VerseNotesPageData>();
 
-            if (toDeserializeIfExists && File.Exists(this.FilePath))            
-                Deserialize();            
+            if (toDeserializeIfExists && File.Exists(this.FilePath))
+            {
+                Deserialize();
+                IsNew = !HasValueLinks;
+            }
             else
                 IsNew = true;
         }      
@@ -49,7 +57,13 @@ namespace BibleCommon.Common
         protected void Deserialize()
         {            
             var xdoc = XDocument.Load(this.FilePath);
-            foreach (var levelEl in xdoc.Root.Element("body").GetByClass("div", "verseLevel"))
+            var bodyEl = xdoc.Root.Element("body");
+
+            var hvlAttribute = bodyEl.Attribute(AttributeName_HasValueLinks);
+            if (hvlAttribute != null)
+                this.HasValueLinks = Convert.ToBoolean(hvlAttribute.Value);
+
+            foreach (var levelEl in bodyEl.GetByClass("div", "verseLevel"))
             {
                 VersePointer vp;
                 var verse = levelEl.Element("p").Element("a").Value;
@@ -61,7 +75,7 @@ namespace BibleCommon.Common
                 else
                     vp = ChapterPoiner;
 
-                var verseNotesPageData = new VerseNotesPageData(vp);
+                var verseNotesPageData = new VerseNotesPageData(vp, this);
                 VersesNotesPageData.Add(vp.VerseNumber, verseNotesPageData);
 
                 AddHierarchySubLevels(levelEl, verseNotesPageData);
@@ -76,10 +90,10 @@ namespace BibleCommon.Common
                 {
                     AddHierarchyPageSubLevel(levelEl, parentLevel); 
                 }
-                else
+                else if (levelEl.HasElements)  // а то уже нескольким людям поставил версию, в которой иногда могли создаваться пустые ноды
                 {
-                    AddHierarchyLevelSubLevel(levelEl, parentLevel);                    
-                }
+                    AddHierarchyLevelSubLevel(levelEl, parentLevel);
+                }               
             }
         }
 
@@ -155,7 +169,7 @@ namespace BibleCommon.Common
                                 new XElement("script", new XAttribute("type", "text/javascript"), new XAttribute("src", "../../../" + Constants.NotesPageScriptFileName), ";")
                             )));
 
-            var bodyEl = xdoc.Root.AddEl(new XElement("body"));
+            var bodyEl = xdoc.Root.AddEl(new XElement("body", new XAttribute(AttributeName_HasValueLinks, HasValueLinks)));
 
             AddPageTitle(bodyEl, chapterVersePointer);           
             
@@ -176,7 +190,7 @@ namespace BibleCommon.Common
         {
             if (!VersesNotesPageData.ContainsKey(vp.VerseNumber))
             {
-                var vnpd = new VerseNotesPageData(vp);
+                var vnpd = new VerseNotesPageData(vp, this);
                 VersesNotesPageData.Add(vp.VerseNumber, vnpd);
 
                 return vnpd;
@@ -269,6 +283,8 @@ namespace BibleCommon.Common
                         }
                     }
                 }
+                else
+                    levelEl.Remove();
             }                                    
         }       
 
@@ -452,6 +468,7 @@ namespace BibleCommon.Common
 
     public class VerseNotesPageData : NotesPageHierarchyLevelBase, IComparable<VerseNotesPageData>
     {
+        public NotesPageData Parent { get; set; }
         public VersePointer Verse { get; set; }        
 
         public Dictionary<string, NotesPagePageLevel> AllPagesLevels { get; set; }
@@ -461,10 +478,11 @@ namespace BibleCommon.Common
             return OpenBibleVerseHandler.GetCommandUrlStatic(Verse, SettingsManager.Instance.ModuleShortName);
         }
 
-        public VerseNotesPageData(VersePointer vp)
+        public VerseNotesPageData(VersePointer vp, NotesPageData parent)
             : base()
         {
             Verse = vp;
+            Parent = parent;
             AllPagesLevels = new Dictionary<string, NotesPagePageLevel>();
         }
 
@@ -524,12 +542,16 @@ namespace BibleCommon.Common
             _pageLinksWasChanged = true;
             notesPageLink.MultiVerseString = GetMultiVerseString(vp.ParentVersePointer ?? vp);
             _pageLinks.Add(notesPageLink);
+            notesPageLink.Parent = this;
+            if (!notesPageLink.IsDetailed && !Root.Parent.HasValueLinks)
+                Root.Parent.HasValueLinks = true;
         }
 
-        public void AddPageLink(NotesPageLink notesPageLink)
+        internal void AddPageLink(NotesPageLink notesPageLink)
         {
             _pageLinksWasChanged = true;            
             _pageLinks.Add(notesPageLink);
+            notesPageLink.Parent = this;
         }
 
         public List<NotesPageLink> PageLinks
@@ -737,8 +759,26 @@ namespace BibleCommon.Common
         public XmlCursorPosition? VersePosition { get; set; }
         public decimal VerseWeight { get; set; }
         public string MultiVerseString { get; set; }
-        public bool IsDetailed { get; set; }
         public VersePointer VersePointer { get; set; }
+        public NotesPagePageLevel Parent { get; set; }
+
+        private bool _isDetailed;
+        public bool IsDetailed 
+        {
+            get
+            {
+                return _isDetailed;
+            }
+            set
+            {
+                _isDetailed = value;
+
+                if (Parent != null && !_isDetailed && !Parent.Root.Parent.HasValueLinks)
+                {
+                    Parent.Root.Parent.HasValueLinks = true;
+                }
+            }
+        }
 
         public string GetHref(ref Application oneNoteApp)
         {

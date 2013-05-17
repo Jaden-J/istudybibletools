@@ -56,7 +56,7 @@ namespace BibleCommon.Handlers
             {
                 var parts = args[0].Split(new char[] { ';', '&' });
                 if (parts.Length < 2)
-                    throw new ArgumentException(string.Format("Ivalid versePointer args: {0}", args[0]));
+                    throw new ArgumentException(string.Format("Invalid versePointer args: {0}", args[0]));
 
                 oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
 
@@ -97,7 +97,7 @@ namespace BibleCommon.Handlers
                 return true;
             }
             else
-                Logger.LogError(BibleCommon.Resources.Constants.BibleVersePointerCanNotFindPlace);
+                FormLogger.LogError(BibleCommon.Resources.Constants.BibleVersePointerCanNotFindPlace);
 
             return false;
         }
