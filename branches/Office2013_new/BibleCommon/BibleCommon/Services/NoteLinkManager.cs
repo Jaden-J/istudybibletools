@@ -1081,6 +1081,10 @@ namespace BibleCommon.Services
             out BibleSearchResult hierarchySearchResult, ref List<SimpleVersePointer> processedVerses,
             Action<BibleSearchResult> onHierarchyElementFound)
         {
+            hierarchySearchResult = new BibleSearchResult() { ResultType = BibleHierarchySearchResultType.NotFound };           
+
+            try
+            {
             hierarchySearchResult = BibleHierarchySearchProvider.GetHierarchyObject(ref oneNoteApp, ref vp, linkDepth, notePageInfo.Id, notePageContentObjectId);
 
             if (hierarchySearchResult.FoundSuccessfully)
@@ -1095,15 +1099,15 @@ namespace BibleCommon.Services
                 {
                     if (onHierarchyElementFound != null)
                         onHierarchyElementFound(hierarchySearchResult);
-                    
-                    var isChapter = vp.IsChapter;                    
+
+                        var isChapter = vp.IsChapter;
 
                     if (linkDepth >= AnalyzeDepth.Full)
                         {
                         var canContinue = true;
 
                         if (!excludedVersesLinking                                          // иначе всё равно привязываем
-                            || SettingsManager.Instance.StoreNotesPagesInFolder)  
+                                || SettingsManager.Instance.StoreNotesPagesInFolder)
                             {
                             if (verseScopeInfo.IsExcluded || IsExcludedCurrentNotePage)
                             {
@@ -1111,7 +1115,7 @@ namespace BibleCommon.Services
                             }
 
                             if (canContinue
-                                && isChapter 
+                                    && isChapter
                                 && !forceAnalyzeChapter)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем. Но если у нас стоит excludedVersesLinking, то сразу обрабатываем
                                     {
                                 canContinue = false;
@@ -1139,7 +1143,7 @@ namespace BibleCommon.Services
                                             {
                                                 canContinue = false;  // то есть среди исключаемых глав есть текущая
                                             }
-                        }                        
+                            }
 
                         if (canContinue || SettingsManager.Instance.StoreNotesPagesInFolder)
                             {
@@ -1154,8 +1158,13 @@ namespace BibleCommon.Services
                             }
                         }
 
-                    return true;                 
+                        return true;
                 }
+            }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
             }
 
             return false;

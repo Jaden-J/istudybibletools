@@ -260,7 +260,7 @@ namespace ISBTCommandHandler
             {
                 var styleEl = wbNotesPage.Document.CreateElement("style");
                 styleEl.SetAttribute("type", "text/css");
-                styleEl.InnerHtml = " li.pageLevel { padding-bottom:5px; } .subLinks { padding-top:5px; } ";
+                styleEl.InnerHtml = " li.pageLevel { padding-bottom:5px; } .subLinks { padding-top:5px; } td.chapterNotesPage { padding-bottom:5px; } ";
                 wbNotesPage.Document.Body.AppendChild(styleEl);
             }
         }                        

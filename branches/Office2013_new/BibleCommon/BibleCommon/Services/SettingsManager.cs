@@ -271,6 +271,11 @@ namespace BibleCommon.Services
             _currentBibleContent = ModulesManager.GetCurrentBibleContent();
         }
 
+        internal void ReloadCurrentModuleInfoCached()
+        {
+            _currentModule = ModulesManager.GetCurrentModuleInfo();
+        }
+
 
         #endregion
 
@@ -284,9 +289,12 @@ namespace BibleCommon.Services
                 if (_instance == null)
                     _instance = new SettingsManager();
                 else
-                    _instance.ReLoadSettings();                     // здесь нельзяф использовать Instance, потому что используется один и тот же _locker
+                    _instance.ReLoadSettings();                     // здесь нельзя использовать Instance, потому что используется один и тот же _locker
 
-                _instance.ReloadCurrentBibleContentCached();                
+                _instance.ReloadCurrentModuleInfoCached();
+
+                if (_instance.CanUseBibleContent)
+                    _instance.ReloadCurrentBibleContentCached();                
             }
         }
 

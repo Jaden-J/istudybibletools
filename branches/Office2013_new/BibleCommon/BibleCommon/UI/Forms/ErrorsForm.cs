@@ -155,5 +155,24 @@ namespace BibleCommon.UI.Forms
         {
             OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
         }
+
+        private void lbErrors_MouseMove(object sender, MouseEventArgs e)
+        {
+            lbErrors.Cursor = Cursors.Default;
+
+            int index = lbErrors.IndexFromPoint(e.X, e.Y);            
+            if (index >= 0)
+            {
+                var item = lbErrors.Items[index];
+                if (item is LogItem)
+                {
+                    var logItem = (LogItem)item;
+                    if (!string.IsNullOrEmpty(logItem.PageId) && !string.IsNullOrEmpty(logItem.ContentObjectId))
+                    {
+                        lbErrors.Cursor = Cursors.Hand;                        
+                    }
+                }
+            }            
+        }    
     }
 }

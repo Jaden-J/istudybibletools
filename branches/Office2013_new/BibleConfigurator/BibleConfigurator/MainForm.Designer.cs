@@ -132,10 +132,12 @@
             // 
             // splitContainer1.Panel1
             // 
+            resources.ApplyResources(this.splitContainer1.Panel1, "splitContainer1.Panel1");
             this.splitContainer1.Panel1.Controls.Add(this.tbcMain);
             // 
             // splitContainer1.Panel2
             // 
+            resources.ApplyResources(this.splitContainer1.Panel2, "splitContainer1.Panel2");
             this.splitContainer1.Panel2.Controls.Add(this.btnApply);
             this.splitContainer1.Panel2.Controls.Add(this.btnClose);
             this.splitContainer1.Panel2.Controls.Add(this.lblWarning);
@@ -145,16 +147,17 @@
             // 
             // tbcMain
             // 
+            resources.ApplyResources(this.tbcMain, "tbcMain");
             this.tbcMain.Controls.Add(this.tpNotebooks);
             this.tbcMain.Controls.Add(this.tabPage2);
             this.tbcMain.Controls.Add(this.tabPage3);
             this.tbcMain.Controls.Add(this.tpModules);
-            resources.ApplyResources(this.tbcMain, "tbcMain");
             this.tbcMain.Name = "tbcMain";
             this.tbcMain.SelectedIndex = 0;
             // 
             // tpNotebooks
             // 
+            resources.ApplyResources(this.tpNotebooks, "tpNotebooks");
             this.tpNotebooks.BackColor = System.Drawing.SystemColors.Control;
             this.tpNotebooks.Controls.Add(this.chkUseFolderForBibleNotesPages);
             this.tpNotebooks.Controls.Add(this.btnBibleNotesPagesSetFolder);
@@ -182,7 +185,6 @@
             this.tpNotebooks.Controls.Add(this.cbSingleNotebook);
             this.tpNotebooks.Controls.Add(this.rbMultiNotebook);
             this.tpNotebooks.Controls.Add(this.rbSingleNotebook);
-            resources.ApplyResources(this.tpNotebooks, "tpNotebooks");
             this.tpNotebooks.Name = "tpNotebooks";
             this.tpNotebooks.Enter += new System.EventHandler(this.tabPage1_Enter);
             // 
@@ -230,9 +232,9 @@
             // 
             // cbBibleNotesPagesNotebook
             // 
+            resources.ApplyResources(this.cbBibleNotesPagesNotebook, "cbBibleNotesPagesNotebook");
             this.cbBibleNotesPagesNotebook.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbBibleNotesPagesNotebook.FormattingEnabled = true;
-            resources.ApplyResources(this.cbBibleNotesPagesNotebook, "cbBibleNotesPagesNotebook");
             this.cbBibleNotesPagesNotebook.Name = "cbBibleNotesPagesNotebook";
             // 
             // btnBibleStudyNotebookSetPath
@@ -284,9 +286,9 @@
             // 
             // cbBibleStudyNotebook
             // 
+            resources.ApplyResources(this.cbBibleStudyNotebook, "cbBibleStudyNotebook");
             this.cbBibleStudyNotebook.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbBibleStudyNotebook.FormattingEnabled = true;
-            resources.ApplyResources(this.cbBibleStudyNotebook, "cbBibleStudyNotebook");
             this.cbBibleStudyNotebook.Name = "cbBibleStudyNotebook";
             // 
             // label3
@@ -303,9 +305,9 @@
             // 
             // cbBibleCommentsNotebook
             // 
+            resources.ApplyResources(this.cbBibleCommentsNotebook, "cbBibleCommentsNotebook");
             this.cbBibleCommentsNotebook.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbBibleCommentsNotebook.FormattingEnabled = true;
-            resources.ApplyResources(this.cbBibleCommentsNotebook, "cbBibleCommentsNotebook");
             this.cbBibleCommentsNotebook.Name = "cbBibleCommentsNotebook";
             // 
             // label2
@@ -322,9 +324,9 @@
             // 
             // cbBibleNotebook
             // 
+            resources.ApplyResources(this.cbBibleNotebook, "cbBibleNotebook");
             this.cbBibleNotebook.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbBibleNotebook.FormattingEnabled = true;
-            resources.ApplyResources(this.cbBibleNotebook, "cbBibleNotebook");
             this.cbBibleNotebook.Name = "cbBibleNotebook";
             // 
             // lblSelectSingleNotebook
@@ -341,9 +343,9 @@
             // 
             // cbSingleNotebook
             // 
+            resources.ApplyResources(this.cbSingleNotebook, "cbSingleNotebook");
             this.cbSingleNotebook.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbSingleNotebook.FormattingEnabled = true;
-            resources.ApplyResources(this.cbSingleNotebook, "cbSingleNotebook");
             this.cbSingleNotebook.Name = "cbSingleNotebook";
             // 
             // rbMultiNotebook
@@ -363,6 +365,7 @@
             // 
             // tabPage2
             // 
+            resources.ApplyResources(this.tabPage2, "tabPage2");
             this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
             this.tabPage2.Controls.Add(this.chkUseProxyLinksForBibleVerses);
             this.tabPage2.Controls.Add(this.chkUseProxyLinksForLinks);
@@ -376,7 +379,6 @@
             this.tabPage2.Controls.Add(this.label6);
             this.tabPage2.Controls.Add(this.tbCommentsPageName);
             this.tabPage2.Controls.Add(this.label5);
-            resources.ApplyResources(this.tabPage2, "tabPage2");
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Enter += new System.EventHandler(this.tabPage1_Enter);
             // 
@@ -406,13 +408,14 @@
             // 
             // cbLanguage
             // 
+            resources.ApplyResources(this.cbLanguage, "cbLanguage");
             this.cbLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbLanguage.FormattingEnabled = true;
-            resources.ApplyResources(this.cbLanguage, "cbLanguage");
             this.cbLanguage.Name = "cbLanguage";
             // 
             // groupBox2
             // 
+            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Controls.Add(this.chkUseDifferentPages);
             this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.tbNotesPageName);
@@ -420,7 +423,6 @@
             this.groupBox2.Controls.Add(this.tbNotesPageWidth);
             this.groupBox2.Controls.Add(this.chkExpandMultiVersesLinking);
             this.groupBox2.Controls.Add(this.lblNotesPageWidth);
-            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
             // 
@@ -468,6 +470,7 @@
             // 
             // groupBox1
             // 
+            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Controls.Add(this.chkUseRubbishPage);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.chkRubbishExcludedVersesLinking);
@@ -475,7 +478,6 @@
             this.groupBox1.Controls.Add(this.chkRubbishExpandMultiVersesLinking);
             this.groupBox1.Controls.Add(this.tbRubbishNotesPageWidth);
             this.groupBox1.Controls.Add(this.lblRubbishNotesPageWidth);
-            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.TabStop = false;
             // 
@@ -547,6 +549,7 @@
             // 
             // tabPage3
             // 
+            resources.ApplyResources(this.tabPage3, "tabPage3");
             this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
             this.tabPage3.Controls.Add(this.btnModuleChecker);
             this.tabPage3.Controls.Add(this.btnConverter);
@@ -554,7 +557,6 @@
             this.tabPage3.Controls.Add(this.btnResizeBibleTables);
             this.tabPage3.Controls.Add(this.btnDeleteNotesPages);
             this.tabPage3.Controls.Add(this.btnRelinkComments);
-            resources.ApplyResources(this.tabPage3, "tabPage3");
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Enter += new System.EventHandler(this.tabPage1_Enter);
             // 
@@ -602,6 +604,7 @@
             // 
             // tpModules
             // 
+            resources.ApplyResources(this.tpModules, "tpModules");
             this.tpModules.BackColor = System.Drawing.SystemColors.Control;
             this.tpModules.Controls.Add(this.btnDictionariesManagement);
             this.tpModules.Controls.Add(this.btnSupplementalBibleManagement);
@@ -611,7 +614,6 @@
             this.tpModules.Controls.Add(this.lblMustSelectModule);
             this.tpModules.Controls.Add(this.lblMustUploadModule);
             this.tpModules.Controls.Add(this.btnUploadModule);
-            resources.ApplyResources(this.tpModules, "tpModules");
             this.tpModules.Name = "tpModules";
             this.tpModules.Enter += new System.EventHandler(this.tabPage4_Enter);
             // 
@@ -703,16 +705,28 @@
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
+            // folderBrowserDialog
+            // 
+            resources.ApplyResources(this.folderBrowserDialog, "folderBrowserDialog");
+            // 
+            // saveFileDialog
+            // 
+            resources.ApplyResources(this.saveFileDialog, "saveFileDialog");
+            // 
             // openFileDialog
             // 
             this.openFileDialog.DefaultExt = "isbt";
             resources.ApplyResources(this.openFileDialog, "openFileDialog");
             // 
+            // notesPagesFolderBrowserDialog
+            // 
+            resources.ApplyResources(this.notesPagesFolderBrowserDialog, "notesPagesFolderBrowserDialog");
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnOK;
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.splitContainer1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
