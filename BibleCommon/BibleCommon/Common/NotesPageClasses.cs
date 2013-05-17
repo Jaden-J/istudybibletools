@@ -90,10 +90,10 @@ namespace BibleCommon.Common
                 {
                     AddHierarchyPageSubLevel(levelEl, parentLevel); 
                 }
-                else
+                else if (levelEl.HasElements)  // а то уже нескольким людям поставил версию, в которой иногда могли создаваться пустые ноды
                 {
-                    AddHierarchyLevelSubLevel(levelEl, parentLevel);                    
-                }
+                    AddHierarchyLevelSubLevel(levelEl, parentLevel);
+                }               
             }
         }
 
@@ -283,6 +283,8 @@ namespace BibleCommon.Common
                         }
                     }
                 }
+                else
+                    levelEl.Remove();
             }                                    
         }       
 
