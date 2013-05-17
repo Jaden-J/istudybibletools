@@ -1080,82 +1080,89 @@ namespace BibleCommon.Services
             VerseRecognitionManager.VerseScopeInfo verseScopeInfo, bool force, bool forceAnalyzeChapter, bool processAsExtendedVerse,
             out BibleSearchResult hierarchySearchResult, ref List<SimpleVersePointer> processedVerses,
             Action<BibleSearchResult> onHierarchyElementFound)
-        {
+        {            
             hierarchySearchResult = BibleHierarchySearchProvider.GetHierarchyObject(ref oneNoteApp, ref vp, linkDepth, notePageInfo.Id, notePageContentObjectId);
 
-            if (hierarchySearchResult.FoundSuccessfully)
+            try
             {
-                if (hierarchySearchResult.HierarchyObjectInfo.VerseNumber.HasValue)
+                if (hierarchySearchResult.FoundSuccessfully)
                 {
-                    vp.VerseNumber = hierarchySearchResult.HierarchyObjectInfo.VerseNumber.Value;    // то есть мы уточняем номер для этого стиха (ведь может быть смежные стихи, как в ibs). Важно: здесь у нас точно !vp.IsMultiVerse, так как если бы он был IsMultiVerse, то мы его переделали в subVerse (и у него теперь есть ParentVersePointer)
-                }
-
-                if (hierarchySearchResult.HierarchyObjectInfo == null
-                    || hierarchySearchResult.HierarchyObjectInfo.PageId != notePageInfo.Id)
-                {
-                    if (onHierarchyElementFound != null)
-                        onHierarchyElementFound(hierarchySearchResult);
-                    
-                    var isChapter = vp.IsChapter;                    
-
-                    if (linkDepth >= AnalyzeDepth.Full)
+                    if (hierarchySearchResult.HierarchyObjectInfo.VerseNumber.HasValue)
                     {
-                        var canContinue = true;
-
-                        if (!excludedVersesLinking                                          // иначе всё равно привязываем
-                            || SettingsManager.Instance.StoreNotesPagesInFolder)  
-                        {
-                            if (verseScopeInfo.IsExcluded || IsExcludedCurrentNotePage)
-                            {
-                                canContinue = false;
-                            }
-
-                            if (canContinue
-                                && isChapter 
-                                && !forceAnalyzeChapter)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем. Но если у нас стоит excludedVersesLinking, то сразу обрабатываем
-                            {
-                                canContinue = false;
-                            }
-
-                            if (canContinue
-                                && VersePointerSearchResult.IsVerseWithoutChapter(resultType)
-                                && globalChapterSearchResult != null
-                                && globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString
-                                && !verseScopeInfo.IsInBrackets
-                                && globalChapterSearchResult.VersePointer.IsMultiVerse
-                                && globalChapterSearchResult.VersePointer.IsInVerseRange(vp))
-                            {
-                                canContinue = false;    // если указан уже диапазон, а далее идут пояснения, то не отмечаем их заметками
-                            }
-
-
-                            if (canContinue
-                                && pageChaptersSearchResult != null
-                                && !verseScopeInfo.IsInBrackets
-                                && pageChaptersSearchResult.Any(pcsr => (pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
-                                                                        || pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName)
-                                                                        && pcsr.VersePointer.Book.Name == vp.Book.Name
-                                                                        && IsNumberInRange(vp.Chapter.Value, pcsr.VersePointer.Chapter.Value, pcsr.VersePointer.TopChapter)))
-                            {
-                                canContinue = false;  // то есть среди исключаемых глав есть текущая
-                            }
-                        }                        
-
-                        if (canContinue || SettingsManager.Instance.StoreNotesPagesInFolder)
-                        {
-                            var verses = LinkVerseToNotesPage(ref oneNoteApp, vp, verseWeight, versePosition, isChapter,
-                                hierarchySearchResult.HierarchyObjectInfo,
-                                    notePageInfo,
-                                notePageContentObjectId, createLinkToNotesPage, notesPageType,
-                                verseScopeInfo.IsImportantVerse, force, processAsExtendedVerse, !canContinue ? DetailedLink.Yes : DetailedLink.No);
-
-                            if (processedVerses != null)
-                                processedVerses.AddRange(verses);
-                        }
+                        vp.VerseNumber = hierarchySearchResult.HierarchyObjectInfo.VerseNumber.Value;    // то есть мы уточняем номер для этого стиха (ведь может быть смежные стихи, как в ibs). Важно: здесь у нас точно !vp.IsMultiVerse, так как если бы он был IsMultiVerse, то мы его переделали в subVerse (и у него теперь есть ParentVersePointer)
                     }
 
-                    return true;                 
+                    if (hierarchySearchResult.HierarchyObjectInfo == null
+                        || hierarchySearchResult.HierarchyObjectInfo.PageId != notePageInfo.Id)
+                    {
+                        if (onHierarchyElementFound != null)
+                            onHierarchyElementFound(hierarchySearchResult);
+
+                        var isChapter = vp.IsChapter;
+
+                        if (linkDepth >= AnalyzeDepth.Full)
+                        {
+                            var canContinue = true;
+
+                            if (!excludedVersesLinking                                          // иначе всё равно привязываем
+                                || SettingsManager.Instance.StoreNotesPagesInFolder)
+                            {
+                                if (verseScopeInfo.IsExcluded || IsExcludedCurrentNotePage)
+                                {
+                                    canContinue = false;
+                                }
+
+                                if (canContinue
+                                    && isChapter
+                                    && !forceAnalyzeChapter)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем. Но если у нас стоит excludedVersesLinking, то сразу обрабатываем
+                                {
+                                    canContinue = false;
+                                }
+
+                                if (canContinue
+                                    && VersePointerSearchResult.IsVerseWithoutChapter(resultType)
+                                    && globalChapterSearchResult != null
+                                    && globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString
+                                    && !verseScopeInfo.IsInBrackets
+                                    && globalChapterSearchResult.VersePointer.IsMultiVerse
+                                    && globalChapterSearchResult.VersePointer.IsInVerseRange(vp))
+                                {
+                                    canContinue = false;    // если указан уже диапазон, а далее идут пояснения, то не отмечаем их заметками
+                                }
+
+
+                                if (canContinue
+                                    && pageChaptersSearchResult != null
+                                    && !verseScopeInfo.IsInBrackets
+                                    && pageChaptersSearchResult.Any(pcsr => (pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
+                                                                            || pcsr.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName)
+                                                                            && pcsr.VersePointer.Book.Name == vp.Book.Name
+                                                                            && IsNumberInRange(vp.Chapter.Value, pcsr.VersePointer.Chapter.Value, pcsr.VersePointer.TopChapter)))
+                                {
+                                    canContinue = false;  // то есть среди исключаемых глав есть текущая
+                                }
+                            }
+
+                            if (canContinue || SettingsManager.Instance.StoreNotesPagesInFolder)
+                            {
+                                var verses = LinkVerseToNotesPage(ref oneNoteApp, vp, verseWeight, versePosition, isChapter,
+                                    hierarchySearchResult.HierarchyObjectInfo,
+                                        notePageInfo,
+                                    notePageContentObjectId, createLinkToNotesPage, notesPageType,
+                                    verseScopeInfo.IsImportantVerse, force, processAsExtendedVerse, !canContinue ? DetailedLink.Yes : DetailedLink.No);
+
+                                if (processedVerses != null)
+                                    processedVerses.AddRange(verses);
+                            }
+                        }
+
+                        return true;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
             }
 
             return false;
