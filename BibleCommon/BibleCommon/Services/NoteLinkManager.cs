@@ -1080,11 +1080,13 @@ namespace BibleCommon.Services
             VerseRecognitionManager.VerseScopeInfo verseScopeInfo, bool force, bool forceAnalyzeChapter, bool processAsExtendedVerse,
             out BibleSearchResult hierarchySearchResult, ref List<SimpleVersePointer> processedVerses,
             Action<BibleSearchResult> onHierarchyElementFound)
-        {            
-            hierarchySearchResult = BibleHierarchySearchProvider.GetHierarchyObject(ref oneNoteApp, ref vp, linkDepth, notePageInfo.Id, notePageContentObjectId);
+        {
+            hierarchySearchResult = new BibleSearchResult() { ResultType = BibleHierarchySearchResultType.NotFound };           
 
             try
             {
+                hierarchySearchResult = BibleHierarchySearchProvider.GetHierarchyObject(ref oneNoteApp, ref vp, linkDepth, notePageInfo.Id, notePageContentObjectId);
+
                 if (hierarchySearchResult.FoundSuccessfully)
                 {
                     if (hierarchySearchResult.HierarchyObjectInfo.VerseNumber.HasValue)
