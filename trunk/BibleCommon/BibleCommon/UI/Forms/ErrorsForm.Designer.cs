@@ -41,7 +41,8 @@
             this.lbErrors.FormattingEnabled = true;
             resources.ApplyResources(this.lbErrors, "lbErrors");
             this.lbErrors.Name = "lbErrors";
-            this.lbErrors.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lbErrors_MouseClick);            
+            this.lbErrors.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lbErrors_MouseClick);
+            this.lbErrors.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lbErrors_MouseMove);
             // 
             // btnOk
             // 
