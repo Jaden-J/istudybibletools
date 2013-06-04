@@ -861,4 +861,10 @@
   <data name="SuggestUsingFolderForNotesPages" xml:space="preserve">
     <value>Рекомендуется хранить страницы "Сводные Заметок" в папке. Это повысит производительность и стабильность программы. Изменить настройки на рекомендуемые, закрыть записную книжку "Сводные Заметок" и запустить анализ всех страниц?</value>
   </data>
+  <data name="NoDetailedNotesForChapter" xml:space="preserve">
+    <value>Подробные заметки для данной главы отсутствуют</value>
+  </data>
+  <data name="NoDetailedNotesForVerse" xml:space="preserve">
+    <value>Подробные заметки для данного стиха отсутствуют</value>
+  </data>
 </root>

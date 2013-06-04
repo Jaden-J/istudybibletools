@@ -56,13 +56,16 @@ function processMinusImgOut(img) {
         img.attr("src", "../../../images/none.png");
 }
 
-function initDetailedNotes(showDetailedNotes) {
+function initDetailedNotes(showDetailedNotes, textIfNoDetailedNotes) {
     var chkDetailedNodes = $("#chkDetailedNotes");
     chkDetailedNodes.attr('checked', showDetailedNotes);
 
     var detailedEls = $(".detailed");
     if (detailedEls.length == 0) {
         chkDetailedNodes.attr("disabled", "disabled");
+
+        chkDetailedNodes.attr("title", textIfNoDetailedNotes);
+        $("label.detailedNotes").attr("title", textIfNoDetailedNotes);
     }
     else if (!showDetailedNotes) {
         hideDetailedElements(detailedEls);

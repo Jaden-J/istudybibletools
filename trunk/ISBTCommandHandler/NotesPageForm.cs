@@ -254,7 +254,12 @@ namespace ISBTCommandHandler
         private void wbNotesPage_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             SetScale();            
-            wbNotesPage.Document.InvokeScript("initDetailedNotes", new object[] { Properties.Settings.Default.NotesPageFormShowDetailedNotes });
+            wbNotesPage.Document.InvokeScript("initDetailedNotes", 
+                new object[] 
+                {
+                    Properties.Settings.Default.NotesPageFormShowDetailedNotes,
+                    VersePointer.IsChapter ? BibleCommon.Resources.Constants.NoDetailedNotesForChapter : BibleCommon.Resources.Constants.NoDetailedNotesForVerse
+                });
 
             if (_touchInputAvailable)
             {
