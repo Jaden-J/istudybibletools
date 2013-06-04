@@ -137,14 +137,14 @@ namespace BibleNoteLinker
             Logger.LogMessageParams(string.Format("{0} ({1})",
                 message, Helper.GetRightPagesString(allPagesCount)));
             pbMain.Maximum = allPagesCount;
-            pbMain.Value = 0;
-            pbMain.PerformStep();
+            pbMain.Value = 0;            
 
             int processedPagesCount = 0;
 
             for (var i = 0; i < ApplicationCache.Instance.NotesPageDataList.Count; i++)
             {
                 LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
+                PerformProcessStep();
                 
                 try
                 {
@@ -154,9 +154,7 @@ namespace BibleNoteLinker
                 catch (Exception ex)
                 {
                     Logger.LogError(string.Format(BibleCommon.Resources.Constants.ErrorWhilePageProcessing, ApplicationCache.Instance.NotesPageDataList[i].PageName), ex);
-                }
-
-                PerformProcessStep();
+                }                
             }
         }
 
@@ -175,7 +173,7 @@ namespace BibleNoteLinker
             System.Windows.Forms.Application.DoEvents();
             if (_processAbortedByUser)
                 throw new ProcessAbortedByUserException();
-            pbMain.PerformStep();
+            pbMain.PerformStep();            
         }
 
         private void CommitNotesPagesHierarchy(int stage)
@@ -196,9 +194,9 @@ namespace BibleNoteLinker
                     //LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
                 },
                 pageContent => 
-                {
-                    PerformProcessStep();
+                {                    
                     LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
+                    PerformProcessStep();
                 });
         }
 
@@ -227,8 +225,7 @@ namespace BibleNoteLinker
             Logger.LogMessageParams(string.Format("{0} ({1})",
                 message, Helper.GetRightPagesString(allPagesCount)));
             pbMain.Maximum = allPagesCount;
-            pbMain.Value = 0;
-            pbMain.PerformStep();
+            pbMain.Value = 0;            
 
             int processedPagesCount = 0;
             var relinkNotesManager = new RelinkAllBibleNotesManager();
@@ -236,6 +233,7 @@ namespace BibleNoteLinker
             foreach (var processedBiblePageId in ApplicationCache.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values)
             {
                 LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
+                PerformProcessStep();
 
                 try
                 {
@@ -266,9 +264,7 @@ namespace BibleNoteLinker
                 catch (Exception ex)
                 {
                     Logger.LogError(string.Format(BibleCommon.Resources.Constants.ErrorWhilePageProcessing, processedBiblePageId.PageName), ex);
-                }
-
-                PerformProcessStep();
+                }                
             }
         }
 
@@ -291,9 +287,9 @@ namespace BibleNoteLinker
                     //LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
                 },
                 pageContent =>
-                {
-                    PerformProcessStep();
+                {                    
                     LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
+                    PerformProcessStep();
                 });
         }            
 
