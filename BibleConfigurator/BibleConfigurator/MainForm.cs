@@ -214,7 +214,7 @@ namespace BibleConfigurator
                     }
                     else
                     {
-                        SettingsManager.Instance.FolderPath_BibleNotesPages = notesPagesFolderBrowserDialog.SelectedPath;
+                        SettingsManager.Instance.FolderPath_BibleNotesPages = tbBibleNotesPagesFolder.Text;
                         SettingsManager.Instance.NotebookId_BibleNotesPages = string.Empty;
                         NotesPageManagerFS.UpdateResources();                        
                     }
