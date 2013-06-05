@@ -444,17 +444,7 @@ namespace BibleNoteLinker
 
         private bool IsPageWasModifiedAfterLastAnalyze(NotebookIterator.PageInfo page)
         {
-            XAttribute lastModifiedDateAttribute = page.PageElement.Attribute("lastModifiedTime");
-            if (lastModifiedDateAttribute != null)
-            {
-                DateTime lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value);
-
-                string lastAnalyzeTime = OneNoteUtils.GetElementMetaData(page.PageElement, Constants.Key_LatestAnalyzeTime, page.Xnm);
-                if (!string.IsNullOrEmpty(lastAnalyzeTime) && lastModifiedDate <= DateTime.Parse(lastAnalyzeTime).ToLocalTime())
-                    return false;
-            }
-
-            return true;
+            return NoteLinkManager.WasPageModifiedAfterLastAnalyze(page.PageElement, page.Xnm);
         }
     }
 }
