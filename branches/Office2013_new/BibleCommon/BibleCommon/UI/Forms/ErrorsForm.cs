@@ -145,6 +145,7 @@ namespace BibleCommon.UI.Forms
                         {
                             _oneNoteApp.NavigateTo(item.PageId, item.ContentObjectId);                            
                         });
+                        this.TopMost = false;     // иначе не удобно смотреть ссылки в OneNote
                         OneNoteUtils.SetActiveCurrentWindow(ref _oneNoteApp);
                     }
                 }

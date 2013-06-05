@@ -117,43 +117,30 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="btnApply.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="btnApply.Text" xml:space="preserve">
-    <value>Применить</value>
-  </data>
-  <data name="btnClose.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="btnClose.Text" xml:space="preserve">
-    <value>Отмена</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="lblWarning.Location" type="System.Drawing.Point, System.Drawing">
-    <value>474, 0</value>
-  </data>
-  <data name="lblWarning.Size" type="System.Drawing.Size, System.Drawing">
-    <value>184, 13</value>
-  </data>
-  <data name="lblWarning.Text" xml:space="preserve">
-    <value>Необходимо сохранить изменения</value>
-  </data>
-  <data name="tpNotebooks.Text" xml:space="preserve">
-    <value>Параметры OneNote</value>
-  </data>
   <data name="chkUseFolderForBibleNotesPages.Size" type="System.Drawing.Size, System.Drawing">
-    <value>110, 17</value>
+    <value>198, 17</value>
   </data>
   <data name="chkUseFolderForBibleNotesPages.Text" xml:space="preserve">
-    <value>Хранить в папке</value>
+    <value>Хранить в папке (Рекомендуется)</value>
+  </data>
+  <data name="chkUseFolderForBibleNotesPages.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnBibleNotesPagesSetFolder.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="tbBibleNotesPagesFolder.Location" type="System.Drawing.Point, System.Drawing">
-    <value>183, 294</value>
+    <value>265, 294</value>
   </data>
   <data name="tbBibleNotesPagesFolder.Size" type="System.Drawing.Size, System.Drawing">
-    <value>329, 20</value>
+    <value>245, 20</value>
+  </data>
+  <data name="tbBibleNotesPagesFolder.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnBibleNotesPagesNotebookSetPath.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
     <value>371, 13</value>
@@ -161,14 +148,38 @@
   <data name="label8.Text" xml:space="preserve">
     <value>Выберите записную книжку или папку для страниц "Сводные заметок"</value>
   </data>
+  <data name="label8.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="chkCreateBibleNotesPagesNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
     <value>130, 17</value>
   </data>
   <data name="chkCreateBibleNotesPagesNotebookFromTemplate.Text" xml:space="preserve">
     <value>Создать из шаблона</value>
   </data>
+  <data name="chkCreateBibleNotesPagesNotebookFromTemplate.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbBibleNotesPagesNotebook.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnBibleStudyNotebookSetPath.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnBibleCommentsNotebookSetPath.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnBibleNotebookSetPath.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnSingleNotebookSetPath.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="btnSingleNotebookParameters.Text" xml:space="preserve">
     <value>Настроить</value>
+  </data>
+  <data name="btnSingleNotebookParameters.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
     <value>259, 13</value>
@@ -176,11 +187,20 @@
   <data name="label4.Text" xml:space="preserve">
     <value>Выберите записную книжку для изучения Библии</value>
   </data>
+  <data name="label4.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="chkCreateBibleStudyNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
     <value>130, 17</value>
   </data>
   <data name="chkCreateBibleStudyNotebookFromTemplate.Text" xml:space="preserve">
     <value>Создать из шаблона</value>
+  </data>
+  <data name="chkCreateBibleStudyNotebookFromTemplate.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbBibleStudyNotebook.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
     <value>297, 13</value>
@@ -188,11 +208,20 @@
   <data name="label3.Text" xml:space="preserve">
     <value>Выберите записную книжку для комментариев к Библии</value>
   </data>
+  <data name="label3.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="chkCreateBibleCommentsNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
     <value>130, 17</value>
   </data>
   <data name="chkCreateBibleCommentsNotebookFromTemplate.Text" xml:space="preserve">
     <value>Создать из шаблона</value>
+  </data>
+  <data name="chkCreateBibleCommentsNotebookFromTemplate.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbBibleCommentsNotebook.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
     <value>210, 13</value>
@@ -200,11 +229,20 @@
   <data name="label2.Text" xml:space="preserve">
     <value>Выберите записную книжку для Библии</value>
   </data>
+  <data name="label2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="chkCreateBibleNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
     <value>130, 17</value>
   </data>
   <data name="chkCreateBibleNotebookFromTemplate.Text" xml:space="preserve">
     <value>Создать из шаблона</value>
+  </data>
+  <data name="chkCreateBibleNotebookFromTemplate.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbBibleNotebook.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="lblSelectSingleNotebook.Size" type="System.Drawing.Size, System.Drawing">
     <value>149, 13</value>
@@ -212,11 +250,20 @@
   <data name="lblSelectSingleNotebook.Text" xml:space="preserve">
     <value>Выберите записную книжку</value>
   </data>
+  <data name="lblSelectSingleNotebook.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="chkCreateSingleNotebookFromTemplate.Size" type="System.Drawing.Size, System.Drawing">
     <value>130, 17</value>
   </data>
   <data name="chkCreateSingleNotebookFromTemplate.Text" xml:space="preserve">
     <value>Создать из шаблона</value>
+  </data>
+  <data name="chkCreateSingleNotebookFromTemplate.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbSingleNotebook.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="rbMultiNotebook.Size" type="System.Drawing.Size, System.Drawing">
     <value>176, 17</value>
@@ -224,14 +271,23 @@
   <data name="rbMultiNotebook.Text" xml:space="preserve">
     <value>Отдельные записные книжки</value>
   </data>
+  <data name="rbMultiNotebook.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="rbSingleNotebook.Size" type="System.Drawing.Size, System.Drawing">
     <value>143, 17</value>
   </data>
   <data name="rbSingleNotebook.Text" xml:space="preserve">
     <value>Одна записная книжка</value>
   </data>
-  <data name="tabPage2.Text" xml:space="preserve">
-    <value>Параметры программы</value>
+  <data name="rbSingleNotebook.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tpNotebooks.Text" xml:space="preserve">
+    <value>Параметры OneNote</value>
+  </data>
+  <data name="tpNotebooks.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="chkUseProxyLinksForBibleVerses.Size" type="System.Drawing.Size, System.Drawing">
     <value>277, 17</value>
@@ -239,11 +295,17 @@
   <data name="chkUseProxyLinksForBibleVerses.Text" xml:space="preserve">
     <value>Использовать прокси-ссылки для стихов Библии</value>
   </data>
+  <data name="chkUseProxyLinksForBibleVerses.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="chkUseProxyLinksForLinks.Size" type="System.Drawing.Size, System.Drawing">
     <value>306, 17</value>
   </data>
   <data name="chkUseProxyLinksForLinks.Text" xml:space="preserve">
     <value>Использовать прокси-ссылки для ссылок "onenote://"</value>
+  </data>
+  <data name="chkUseProxyLinksForLinks.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="chkUseProxyLinksForStrong.Size" type="System.Drawing.Size, System.Drawing">
     <value>291, 17</value>
@@ -251,14 +313,20 @@
   <data name="chkUseProxyLinksForStrong.Text" xml:space="preserve">
     <value>Использовать прокси-ссылки для номеров Стронга</value>
   </data>
+  <data name="chkUseProxyLinksForStrong.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
     <value>99, 13</value>
   </data>
   <data name="label9.Text" xml:space="preserve">
     <value>Язык интерфейса</value>
   </data>
-  <data name="groupBox2.Text" xml:space="preserve">
-    <value>Страница "Сводная заметок"</value>
+  <data name="label9.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbLanguage.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="chkUseDifferentPages.Size" type="System.Drawing.Size, System.Drawing">
     <value>227, 17</value>
@@ -266,11 +334,20 @@
   <data name="chkUseDifferentPages.Text" xml:space="preserve">
     <value>Отдельные страницы для кажого стиха</value>
   </data>
+  <data name="chkUseDifferentPages.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
     <value>211, 13</value>
   </data>
   <data name="label7.Text" xml:space="preserve">
     <value>Название страницы "Сводная заметок"</value>
+  </data>
+  <data name="label7.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tbNotesPageName.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="chkExcludedVersesLinking.Size" type="System.Drawing.Size, System.Drawing">
     <value>252, 17</value>
@@ -278,11 +355,20 @@
   <data name="chkExcludedVersesLinking.Text" xml:space="preserve">
     <value>Анализировать исключаемые главы и стихи</value>
   </data>
+  <data name="chkExcludedVersesLinking.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tbNotesPageWidth.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="chkExpandMultiVersesLinking.Size" type="System.Drawing.Size, System.Drawing">
     <value>238, 17</value>
   </data>
   <data name="chkExpandMultiVersesLinking.Text" xml:space="preserve">
     <value>Анализировать каждый стих в диапазоне</value>
+  </data>
+  <data name="chkExpandMultiVersesLinking.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="lblNotesPageWidth.Size" type="System.Drawing.Size, System.Drawing">
     <value>200, 13</value>
@@ -290,8 +376,14 @@
   <data name="lblNotesPageWidth.Text" xml:space="preserve">
     <value>Ширина страницы "Сводная заметок"</value>
   </data>
-  <data name="groupBox1.Text" xml:space="preserve">
-    <value>Страница "Подробная сводная заметок"</value>
+  <data name="lblNotesPageWidth.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>Страница "Сводная заметок"</value>
+  </data>
+  <data name="groupBox2.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="chkUseRubbishPage.Size" type="System.Drawing.Size, System.Drawing">
     <value>249, 17</value>
@@ -299,11 +391,17 @@
   <data name="chkUseRubbishPage.Text" xml:space="preserve">
     <value>Использовать подробную сводную заметок</value>
   </data>
+  <data name="chkUseRubbishPage.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="label10.Size" type="System.Drawing.Size, System.Drawing">
     <value>269, 13</value>
   </data>
   <data name="label10.Text" xml:space="preserve">
     <value>Название страницы "Подробная сводная заметок"</value>
+  </data>
+  <data name="label10.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="chkRubbishExcludedVersesLinking.Size" type="System.Drawing.Size, System.Drawing">
     <value>252, 17</value>
@@ -311,11 +409,23 @@
   <data name="chkRubbishExcludedVersesLinking.Text" xml:space="preserve">
     <value>Анализировать исключаемые главы и стихи</value>
   </data>
+  <data name="chkRubbishExcludedVersesLinking.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tbRubbishNotesPageName.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="chkRubbishExpandMultiVersesLinking.Size" type="System.Drawing.Size, System.Drawing">
     <value>238, 17</value>
   </data>
   <data name="chkRubbishExpandMultiVersesLinking.Text" xml:space="preserve">
     <value>Анализировать каждый стих в диапазоне</value>
+  </data>
+  <data name="chkRubbishExpandMultiVersesLinking.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tbRubbishNotesPageWidth.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="lblRubbishNotesPageWidth.Size" type="System.Drawing.Size, System.Drawing">
     <value>258, 13</value>
@@ -323,11 +433,26 @@
   <data name="lblRubbishNotesPageWidth.Text" xml:space="preserve">
     <value>Ширина страницы "Подробная сводная заметок"</value>
   </data>
+  <data name="lblRubbishNotesPageWidth.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>Страница "Подробная сводная заметок"</value>
+  </data>
+  <data name="groupBox1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="chkDefaultParameters.Size" type="System.Drawing.Size, System.Drawing">
     <value>287, 17</value>
   </data>
   <data name="chkDefaultParameters.Text" xml:space="preserve">
     <value>Использовать значения параметров по умолчанию</value>
+  </data>
+  <data name="chkDefaultParameters.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tbBookOverviewName.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
     <value>335, 13</value>
@@ -335,8 +460,14 @@
   <data name="label6.Text" xml:space="preserve">
     <value>Название раздела комментариев к книге Библии по умолчанию</value>
   </data>
+  <data name="label6.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="tbCommentsPageName.Size" type="System.Drawing.Size, System.Drawing">
     <value>248, 20</value>
+  </data>
+  <data name="tbCommentsPageName.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
     <value>310, 13</value>
@@ -344,29 +475,59 @@
   <data name="label5.Text" xml:space="preserve">
     <value>Название страницы комментариев к Библии по умолчанию</value>
   </data>
-  <data name="tabPage3.Text" xml:space="preserve">
-    <value>Дополнительные утилиты</value>
+  <data name="label5.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tabPage2.Text" xml:space="preserve">
+    <value>Параметры программы</value>
+  </data>
+  <data name="tabPage2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnModuleChecker.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnConverter.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="btnBackup.Text" xml:space="preserve">
     <value>Создать резервную копию данных</value>
   </data>
+  <data name="btnBackup.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="btnResizeBibleTables.Text" xml:space="preserve">
     <value>Изменить ширину страниц Библии</value>
+  </data>
+  <data name="btnResizeBibleTables.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="btnDeleteNotesPages.Text" xml:space="preserve">
     <value>Удалить страницы "Сводные заметок"</value>
   </data>
+  <data name="btnDeleteNotesPages.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="btnRelinkComments.Text" xml:space="preserve">
     <value>Обновить ссылки на комментарии</value>
   </data>
-  <data name="tpModules.Text" xml:space="preserve">
-    <value>Модули</value>
+  <data name="btnRelinkComments.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tabPage3.Text" xml:space="preserve">
+    <value>Дополнительные утилиты</value>
+  </data>
+  <data name="tabPage3.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="btnDictionariesManagement.Location" type="System.Drawing.Point, System.Drawing">
     <value>448, 131</value>
   </data>
   <data name="btnDictionariesManagement.Size" type="System.Drawing.Size, System.Drawing">
     <value>195, 23</value>
+  </data>
+  <data name="btnDictionariesManagement.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="btnSupplementalBibleManagement.Location" type="System.Drawing.Point, System.Drawing">
     <value>247, 131</value>
@@ -377,6 +538,9 @@
   <data name="btnSupplementalBibleManagement.Text" xml:space="preserve">
     <value>Управление справочной Библией</value>
   </data>
+  <data name="btnSupplementalBibleManagement.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="hlModules.Location" type="System.Drawing.Point, System.Drawing">
     <value>514, 7</value>
   </data>
@@ -385,6 +549,9 @@
   </data>
   <data name="hlModules.Text" xml:space="preserve">
     <value>http://IStudyBibleTools.ru</value>
+  </data>
+  <data name="hlModules.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="lblModulesLink.Location" type="System.Drawing.Point, System.Drawing">
     <value>314, 7</value>
@@ -395,11 +562,20 @@
   <data name="lblModulesLink.Text" xml:space="preserve">
     <value>Вы можете скачать модули на сайте</value>
   </data>
+  <data name="lblModulesLink.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnModules.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblMustSelectModule.Size" type="System.Drawing.Size, System.Drawing">
     <value>285, 13</value>
   </data>
   <data name="lblMustSelectModule.Text" xml:space="preserve">
     <value>Необходимо выбрать используемый основной модуль</value>
+  </data>
+  <data name="lblMustSelectModule.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="lblMustUploadModule.Location" type="System.Drawing.Point, System.Drawing">
     <value>197, 105</value>
@@ -410,6 +586,9 @@
   <data name="lblMustUploadModule.Text" xml:space="preserve">
     <value>Необходимо добавить хотя бы один основной модуль</value>
   </data>
+  <data name="lblMustUploadModule.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="btnUploadModule.Location" type="System.Drawing.Point, System.Drawing">
     <value>46, 131</value>
   </data>
@@ -418,6 +597,67 @@
   </data>
   <data name="btnUploadModule.Text" xml:space="preserve">
     <value>Добавить модуль</value>
+  </data>
+  <data name="btnUploadModule.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tpModules.Text" xml:space="preserve">
+    <value>Модули</value>
+  </data>
+  <data name="tpModules.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tbcMain.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="splitContainer1.Panel1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="btnApply.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btnApply.Text" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="btnApply.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnClose.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btnClose.Text" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="btnClose.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblWarning.Location" type="System.Drawing.Point, System.Drawing">
+    <value>474, 0</value>
+  </data>
+  <data name="lblWarning.Size" type="System.Drawing.Size, System.Drawing">
+    <value>184, 13</value>
+  </data>
+  <data name="lblWarning.Text" xml:space="preserve">
+    <value>Необходимо сохранить изменения</value>
+  </data>
+  <data name="lblWarning.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblProgressInfo.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pbMain.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnOK.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="splitContainer1.Panel2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="splitContainer1.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="openFileDialog.Filter" xml:space="preserve">
     <value>IStudyBibleTools Модуль|*.isbt</value>
@@ -962,5 +1202,8 @@
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Параметры OneNote IStudyBibleTools</value>
+  </data>
+  <data name="$this.ToolTip" xml:space="preserve">
+    <value />
   </data>
 </root>

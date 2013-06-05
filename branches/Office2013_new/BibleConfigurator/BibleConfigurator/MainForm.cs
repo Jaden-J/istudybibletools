@@ -214,7 +214,7 @@ namespace BibleConfigurator
                     }
                     else
                     {
-                        SettingsManager.Instance.FolderPath_BibleNotesPages = notesPagesFolderBrowserDialog.SelectedPath;
+                        SettingsManager.Instance.FolderPath_BibleNotesPages = tbBibleNotesPagesFolder.Text;
                         SettingsManager.Instance.NotebookId_BibleNotesPages = string.Empty;
                         NotesPageManagerFS.UpdateResources();                        
                     }
@@ -1046,6 +1046,7 @@ namespace BibleConfigurator
             }
 
             tbBibleNotesPagesFolder.Text = SettingsManager.Instance.FolderPath_BibleNotesPages;
+            ttNotesPageFolder.SetToolTip(tbBibleNotesPagesFolder, tbBibleNotesPagesFolder.Text);
 
             tbBookOverviewName.Text = SettingsManager.Instance.SectionName_DefaultBookOverview;
             tbNotesPageName.Text = SettingsManager.Instance.PageName_Notes;
@@ -2026,6 +2027,7 @@ namespace BibleConfigurator
                 if (notesPagesFolderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     tbBibleNotesPagesFolder.Text = notesPagesFolderBrowserDialog.SelectedPath;
+                    ttNotesPageFolder.SetToolTip(tbBibleNotesPagesFolder, tbBibleNotesPagesFolder.Text);
                 }
             }
         }
