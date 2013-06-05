@@ -859,9 +859,15 @@ Please take notice:
     <value>Notebook is not specified for type '{0}'.</value>
   </data>
   <data name="DetailedNotes" xml:space="preserve">
-    <value>Detailed Notes</value>
+    <value>Show Detailed Notes</value>
   </data>
   <data name="SuggestUsingFolderForNotesPages" xml:space="preserve">
     <value>It is recommended to keep the pages "Summary of Notes" in a folder. This will improve the performance and stability of the program. Change the settings to recommended, close the notebook "Summary of Notes" and run the analysis of all the pages?</value>
+  </data>
+  <data name="NoDetailedNotesForChapter" xml:space="preserve">
+    <value>There are no Detailed Notes for this chapter</value>
+  </data>
+  <data name="NoDetailedNotesForVerse" xml:space="preserve">
+    <value>There are no Detailed Notes for this verse</value>
   </data>
 </root>

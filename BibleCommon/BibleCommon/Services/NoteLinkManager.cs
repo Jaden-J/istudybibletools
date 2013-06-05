@@ -199,7 +199,7 @@ namespace BibleCommon.Services
 
                 notePageDocument.WasModified = _pageContentWasChanged;
 
-                if (_pageContentWasChanged)
+                if (_pageContentWasChanged || (force && WasPageModifiedAfterLastAnalyze(notePageDocument.Content.Root, notePageDocument.Xnm)))            //  -если стоит галочка "повторный анализ ссылок", то обновлять страницы заметок, если дата анализа меньше даты изменения, чтобы записывалось время последнего анализа. 
                 {
                 if (linkDepth >= AnalyzeDepth.Full)   // если SetVersesLinks, то мы позже обновим, так как нам надо ещё поставить курсор в нужное место
                 {
@@ -224,6 +224,21 @@ namespace BibleCommon.Services
             {
                 Logger.LogError(BibleCommon.Resources.Constants.NoteLinkManagerProcessingPageErrors, ex);
             }
+        }
+
+        public static bool WasPageModifiedAfterLastAnalyze(XElement pageEl, XmlNamespaceManager xnm)
+        {
+            XAttribute lastModifiedDateAttribute = pageEl.Attribute("lastModifiedTime");
+            if (lastModifiedDateAttribute != null)
+            {
+                DateTime lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value);
+
+                string lastAnalyzeTime = OneNoteUtils.GetElementMetaData(pageEl, Constants.Key_LatestAnalyzeTime, xnm);
+                if (!string.IsNullOrEmpty(lastAnalyzeTime) && lastModifiedDate <= DateTime.Parse(lastAnalyzeTime).ToLocalTime())
+                    return false;
+            }
+
+            return true;
         }
 
         private HierarchyElementInfo GetPageHierarchyInfo(ref Application oneNoteApp, string notebookId, ApplicationCache.PageContent notePageDocument, string notePageId, string notePageName, bool loadFullHierarchy)
