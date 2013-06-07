@@ -347,10 +347,10 @@
     <value>Обработка страницы</value>
   </data>
   <data name="ProcessSection" xml:space="preserve">
-    <value>Обработка секции</value>
+    <value>Обработка раздела</value>
   </data>
   <data name="ProcessSectionGroup" xml:space="preserve">
-    <value>Обработка группы секций</value>
+    <value>Обработка группы разделов</value>
   </data>
   <data name="ProcessVerse" xml:space="preserve">
     <value>Обработка стиха</value>
