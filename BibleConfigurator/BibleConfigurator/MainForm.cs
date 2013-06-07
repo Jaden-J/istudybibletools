@@ -1267,7 +1267,7 @@ namespace BibleConfigurator
                         SettingsManager.Instance.SectionGroupId_BibleComments = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleComments];
                         SettingsManager.Instance.SectionGroupId_BibleNotesPages = _notebookParametersForm.GroupedSectionGroups[ContainerType.BibleComments];
 
-                        _wasSearchedSectionGroupsInSingleNotebook = true;  // нашли необходимые группы секций. 
+                            _wasSearchedSectionGroupsInSingleNotebook = true;  // нашли необходимые группы разделов. 
                     }
                 }
                 else

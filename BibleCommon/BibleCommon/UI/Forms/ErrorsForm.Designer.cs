@@ -42,6 +42,7 @@
             resources.ApplyResources(this.lbErrors, "lbErrors");
             this.lbErrors.Name = "lbErrors";
             this.lbErrors.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lbErrors_MouseClick);
+            this.lbErrors.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbErrors_KeyDown);
             this.lbErrors.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lbErrors_MouseMove);
             // 
             // btnOk
@@ -79,10 +80,12 @@
             this.Controls.Add(this.btnSaveToFile);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.lbErrors);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "ErrorsForm";
             this.ShowInTaskbar = false;
-            this.TopMost = true;
+            this.TopMost = true;            
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ErrorsForm_FormClosed);
             this.Load += new System.EventHandler(this.Errors_Load);
             this.ResumeLayout(false);
