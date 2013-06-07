@@ -582,7 +582,7 @@ namespace BibleCommon.Services
 
 
         /// <summary>
-        /// Загружает настройки по умолчанию, если стоит галочка "Использовать настройки по умолчанию"
+        /// Загружает настройки по умолчанию, если файл с настройками ещё не создан
         /// </summary>
         public void LoadDefaultSettings()
         {
@@ -599,7 +599,8 @@ namespace BibleCommon.Services
             this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
             this.UseProxyLinksForStrong = Consts.Constants.Default_UseProxyLinksForStrong;
             this.UseProxyLinksForBibleVerses = Consts.Constants.Default_UseProxyLinksForBibleVerses;
-            this.UseProxyLinksForLinks = !Consts.SystemConstants.IsOneNote2010;                        
+            this.UseProxyLinksForLinks = !Consts.SystemConstants.IsOneNote2010;
+            this.FolderPath_BibleNotesPages = Utils.GetNotesPagesFolderPath();
 
             LoadDefaultLocalazibleSettings();
         }
