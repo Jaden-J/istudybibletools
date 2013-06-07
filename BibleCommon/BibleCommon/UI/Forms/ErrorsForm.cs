@@ -128,8 +128,9 @@ namespace BibleCommon.UI.Forms
         }      
 
         private void lbErrors_MouseClick(object sender, MouseEventArgs e)
-        {
-            TryToGoToErrorObject();
+        {            
+            if (lbErrors.IndexFromPoint(e.Location) == lbErrors.SelectedIndex)
+                TryToGoToErrorObject();
         }
 
         private void TryToGoToErrorObject()
@@ -174,6 +175,12 @@ namespace BibleCommon.UI.Forms
                     }
                 }
             }            
+        }       
+
+        private void lbErrors_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                TryToGoToErrorObject();            
         }    
     }
 }
