@@ -393,10 +393,13 @@ namespace BibleCommon.Services
         public void ReLoadSettings()
         {
             if (!File.Exists(_filePath))
-                LoadDefaultSettings();
+            {
+                LoadDefaultProgramSettings();
+                LoadDefaultGeneralSettings();                
+            }
             else
                 LoadSettingsFromFile();        
-        }
+        }       
 
         protected SettingsManager()
         {
@@ -451,14 +454,14 @@ namespace BibleCommon.Services
                 }
 
                 if (UseDefaultSettings.Value)
-                    LoadDefaultSettings();                
+                    LoadDefaultProgramSettings();                
                 else if (!programSettingsWasLoaded)
                     LoadProgramSettings(xdoc);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex.Message);
-                LoadDefaultSettings();
+                LoadDefaultProgramSettings();
             }
         }        
 
@@ -582,9 +585,17 @@ namespace BibleCommon.Services
 
 
         /// <summary>
-        /// Загружает настройки по умолчанию, если файл с настройками ещё не создан
+        /// Загружает настройки по умолчанию, если не создан файл с настройками
         /// </summary>
-        public void LoadDefaultSettings()
+        private void LoadDefaultGeneralSettings()
+        {
+            this.FolderPath_BibleNotesPages = Utils.GetNotesPagesFolderPath();
+        }
+
+        /// <summary>
+        /// Загружает настройки по умолчанию, если стоит галка "Использовать настройки по умлчанию"
+        /// </summary>
+        public void LoadDefaultProgramSettings()
         {
             this.UseDefaultSettings = true;      
             
@@ -599,8 +610,7 @@ namespace BibleCommon.Services
             this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
             this.UseProxyLinksForStrong = Consts.Constants.Default_UseProxyLinksForStrong;
             this.UseProxyLinksForBibleVerses = Consts.Constants.Default_UseProxyLinksForBibleVerses;
-            this.UseProxyLinksForLinks = !Consts.SystemConstants.IsOneNote2010;
-            this.FolderPath_BibleNotesPages = Utils.GetNotesPagesFolderPath();
+            this.UseProxyLinksForLinks = !Consts.SystemConstants.IsOneNote2010;            
 
             LoadDefaultLocalazibleSettings();
         }
