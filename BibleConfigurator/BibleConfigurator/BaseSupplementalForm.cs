@@ -107,7 +107,7 @@ namespace BibleConfigurator
                     FormLogger.LogError(string.Format(BibleCommon.Resources.Constants.BaseModuleIsNotSupported,
                                             SettingsManager.Instance.CurrentModuleCached.Version, BibleParallelTranslationManager.SupportedModuleMinVersion));
                     Close();
-                }
+                }                
 
                 LoadFormData();
 
@@ -133,9 +133,14 @@ namespace BibleConfigurator
 
         private void LoadFormData()
         {
-            WasLoaded = false;  
+            WasLoaded = false;
 
-            bool supplementalNotebookIsInUse = !string.IsNullOrEmpty(GetValidSupplementalNotebookId());            
+            var validSupplementalNotebookId = GetValidSupplementalNotebookId();
+
+            if (string.IsNullOrEmpty(validSupplementalNotebookId))
+                ClearSupplementalModules();
+
+            bool supplementalNotebookIsInUse = !string.IsNullOrEmpty(validSupplementalNotebookId);            
 
             if (chkUseSupplementalBible.Checked != supplementalNotebookIsInUse)
                 chkUseSupplementalBible.Checked = supplementalNotebookIsInUse;
