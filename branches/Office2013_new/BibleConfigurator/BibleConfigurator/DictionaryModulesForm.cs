@@ -171,36 +171,45 @@ namespace BibleConfigurator
 
             var sectionId = (string)sectionEl.Attribute("ID");
 
-            SettingsManager.Instance.DictionariesModules.Add(new StoredModuleInfo(embeddedModuleInfo.ModuleName, embeddedModuleInfo.ModuleVersion, sectionId));
-
-            if (moduleInfo.Type == ModuleType.Strong)
+            var storedModuleInfo = new StoredModuleInfo(embeddedModuleInfo.ModuleName, embeddedModuleInfo.ModuleVersion, sectionId);
+            SettingsManager.Instance.DictionariesModules.Add(storedModuleInfo);
+            try
             {
-                if (!SettingsManager.Instance.SupplementalBibleModules.Any(m => m.ModuleName == embeddedModuleInfo.ModuleName))
-                    result.Add(BibleCommon.Resources.Constants.NeedToAddSupplementalNotebookWithStrongsNumber);
-            }
 
-            if (!DictionaryTermsCacheManager.CacheIsActive(moduleInfo.ShortName)
-                && (moduleInfo.Type == ModuleType.Dictionary || SettingsManager.Instance.UseProxyLinksForStrong))  // если у нас стронг и не используются прокси для стронга - то и не нужен кэш
-            {
-                DictionaryManager.WaitWhileDictionaryIsCreating(ref _oneNoteApp, sectionId, moduleInfo.NotebooksStructure.DictionaryPagesCount, 0, () => Logger.AbortedByUser);
-
-                MainForm.PrepareForLongProcessing(moduleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
-                Logger.Preffix = string.Format("{0} {1}: ", BibleCommon.Resources.Constants.IndexDictionary, moduleInfo.ShortName);
-
-                List<string> notFoundTerms;
-                DictionaryTermsCacheManager.GenerateCache(ref _oneNoteApp, moduleInfo, Logger, out notFoundTerms);
-
-                if (notFoundTerms != null && notFoundTerms.Count > 0)
+                if (moduleInfo.Type == ModuleType.Strong)
                 {
-                    using (var form = new ErrorsForm())
+                    if (!SettingsManager.Instance.SupplementalBibleModules.Any(m => m.ModuleName == embeddedModuleInfo.ModuleName))
+                        result.Add(BibleCommon.Resources.Constants.NeedToAddSupplementalNotebookWithStrongsNumber);
+                }
+
+                if (!DictionaryTermsCacheManager.CacheIsActive(moduleInfo.ShortName)
+                    && (moduleInfo.Type == ModuleType.Dictionary || SettingsManager.Instance.UseProxyLinksForStrong))  // если у нас стронг и не используются прокси для стронга - то и не нужен кэш
+                {
+                    DictionaryManager.WaitWhileDictionaryIsCreating(ref _oneNoteApp, sectionId, moduleInfo.NotebooksStructure.DictionaryPagesCount, 0, () => Logger.AbortedByUser);
+
+                    MainForm.PrepareForLongProcessing(moduleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
+                    Logger.Preffix = string.Format("{0} {1}: ", BibleCommon.Resources.Constants.IndexDictionary, moduleInfo.ShortName);
+
+                    List<string> notFoundTerms;
+
+                    DictionaryTermsCacheManager.GenerateCache(ref _oneNoteApp, moduleInfo, Logger, out notFoundTerms);
+
+                    if (notFoundTerms != null && notFoundTerms.Count > 0)
                     {
-                        form.AllErrors.Add(new ErrorsList(notFoundTerms)
+                        using (var form = new ErrorsForm())
                         {
-                            ErrorsDecription = BibleCommon.Resources.Constants.DictionaryTermsNotFound
-                        });
-                        form.ShowDialog();
+                            form.AllErrors.Add(new ErrorsList(notFoundTerms)
+                            {
+                                ErrorsDecription = BibleCommon.Resources.Constants.DictionaryTermsNotFound
+                            });
+                            form.ShowDialog();
+                        }
                     }
                 }
+            }
+            catch (Exception)
+            {
+                SettingsManager.Instance.DictionariesModules.Remove(storedModuleInfo);
             }
 
             return result;
