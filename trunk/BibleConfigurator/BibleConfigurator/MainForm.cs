@@ -552,7 +552,7 @@ namespace BibleConfigurator
 
             if (SettingsManager.Instance.UseProxyLinksForBibleVerses != chkUseProxyLinksForBibleVerses.Checked && !chkUseProxyLinksForBibleVerses.Checked)  // то есть мы перестали использовать прокси ссылки для стихов Библии
             {
-                if (ApplicationCache.Instance.IsBibleVersesLinksCacheActive)
+                if (BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible)) // здесь нельзя использовать ApplicationCache.Instance.IsBibleVersesLinksCacheActive, так как тот кэширует
                 {
                     if (!ApplicationCache.Instance.BibleVersesLinksCacheContainsHyperLinks())  // если уже содержит ссылки, то не надо обновлять кэш
                         ApplicationCache.Instance.CleanBibleVersesLinksCache(false);
