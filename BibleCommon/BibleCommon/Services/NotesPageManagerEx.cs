@@ -15,6 +15,9 @@ using BibleCommon.Handlers;
 
 namespace BibleCommon.Services
 {
+    /// <summary>
+    /// Скорее всего более не поддерживается
+    /// </summary>
     public class NotesPageManagerEx : INotesPageManager
     {
         private enum MoveOperationType
