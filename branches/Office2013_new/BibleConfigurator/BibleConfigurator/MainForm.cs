@@ -206,8 +206,8 @@ namespace BibleConfigurator
 
                     if (!chkUseFolderForBibleNotesPages.Checked)
                     {
-                        if (!CommitChangesAfterLoad)
-                            ShownMessagesManager.SetMessageWasShown(ShownMessagesManager.MessagesCodes.SuggestUsingFolderForNotesPages);
+                        //if (!CommitChangesAfterLoad)
+                        //    ShownMessagesManager.SetMessageWasShown(ShownMessagesManager.MessagesCodes.SuggestUsingFolderForNotesPages);
 
                         SaveMultiNotebookParameters(module, ContainerType.BibleNotesPages,
                             chkCreateBibleNotesPagesNotebookFromTemplate, cbBibleNotesPagesNotebook, BibleNotesPagesNotebookFromTemplatePath);                        
@@ -552,8 +552,11 @@ namespace BibleConfigurator
 
             if (SettingsManager.Instance.UseProxyLinksForBibleVerses != chkUseProxyLinksForBibleVerses.Checked && !chkUseProxyLinksForBibleVerses.Checked)  // то есть мы перестали использовать прокси ссылки для стихов Библии
             {
+                if (BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible)) // здесь нельзя использовать ApplicationCache.Instance.IsBibleVersesLinksCacheActive, так как тот кэширует
+                {
                 if (!ApplicationCache.Instance.BibleVersesLinksCacheContainsHyperLinks())  // если уже содержит ссылки, то не надо обновлять кэш
-                ApplicationCache.Instance.CleanBibleVersesLinksCache(false);    
+                        ApplicationCache.Instance.CleanBibleVersesLinksCache(false);
+            }
             }
 
             SettingsManager.Instance.UseProxyLinksForBibleVerses = chkUseProxyLinksForBibleVerses.Checked;

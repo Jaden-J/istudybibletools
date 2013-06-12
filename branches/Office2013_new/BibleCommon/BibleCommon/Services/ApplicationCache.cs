@@ -616,6 +616,10 @@ namespace BibleCommon.Services
         public bool BibleVersesLinksCacheContainsHyperLinks()
         {
             CheckAndLoadBibleVersesLinksCacheIfNeeded();
+
+            if (_bibleVersesLinks == null)
+                return false;
+
             var firstLink = new VersePointerLink(_bibleVersesLinks.Values.First());
             return !string.IsNullOrEmpty(firstLink.Href);            
         }
@@ -628,6 +632,8 @@ namespace BibleCommon.Services
                 {
                     _bibleVersesLinks = BibleVersesLinksCacheManager.LoadBibleVersesLinks(SettingsManager.Instance.NotebookId_Bible);
                 }
+                catch (NotConfiguredException)
+                { }
                 catch (Exception ex)
                 {
                     BibleCommon.Services.Logger.LogError(ex);
