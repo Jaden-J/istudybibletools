@@ -628,7 +628,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Page deleting.
+        ///   Ищет локализованную строку, похожую на Pages deleting.
         /// </summary>
         public static string DeleteNotesPagesManagerRemovePage {
             get {

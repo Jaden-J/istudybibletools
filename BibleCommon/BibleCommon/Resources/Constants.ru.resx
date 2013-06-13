@@ -202,7 +202,7 @@
     <value>Удаление страниц 'Сводные заметок' успешно завершено.</value>
   </data>
   <data name="DeleteNotesPagesManagerRemovePage" xml:space="preserve">
-    <value>Удаление страницы</value>
+    <value>Удаление страниц</value>
   </data>
   <data name="DeleteNotesPagesManagerStartMessage" xml:space="preserve">
     <value>Старт удаления страниц 'Сводные заметок'.</value>
