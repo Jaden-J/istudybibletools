@@ -74,7 +74,7 @@ namespace BibleConfigurator.Tools
                 {
                     foreach (var file in pagesToDelete)
                     {
-                        _form.PerformProgressStep(string.Format("{0} '{1}'", BibleCommon.Resources.Constants.DeleteNotesPagesManagerRemovePage,  file.Value));
+                        _form.PerformProgressStep(string.Format("{0}: '{1}'", BibleCommon.Resources.Constants.DeleteNotesPagesManagerRemovePage,  file.Value));
                         File.Delete(file.Key);
                     }
 
