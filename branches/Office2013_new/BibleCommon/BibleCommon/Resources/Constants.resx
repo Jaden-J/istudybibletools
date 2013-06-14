@@ -190,7 +190,7 @@
     <value>'Summary of Notes' pages deleting completed successfully.</value>
   </data>
   <data name="DeleteNotesPagesManagerRemovePage" xml:space="preserve">
-    <value>Page deleting</value>
+    <value>Pages deleting</value>
   </data>
   <data name="DeleteNotesPagesManagerStartMessage" xml:space="preserve">
     <value>'Summary of Notes' pages deleting start.</value>
