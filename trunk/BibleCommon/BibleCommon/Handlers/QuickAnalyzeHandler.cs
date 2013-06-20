@@ -34,7 +34,7 @@ namespace BibleCommon.Handlers
                 Logger.Init("QuickAnalyze");
                 oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
                 var currentPage = OneNoteUtils.GetCurrentPageInfo(ref oneNoteApp);
-                var noteLinkManager = new NoteLinkManager();                
+                var noteLinkManager = new NoteLinkManager(null);                
                 noteLinkManager.LinkPageVerses(ref oneNoteApp, currentPage.NotebookId, currentPage.Id, NoteLinkManager.AnalyzeDepth.SetVersesLinks, false, null);
                 noteLinkManager.SetCursorOnNearestVerse(noteLinkManager.LastAnalyzedVerse);
                 
