@@ -14,8 +14,9 @@ namespace BibleNoteLinker
 {
     public partial class MainForm
     {
-        
         private const int ApproximatePageVersesCount = 100;
+
+        private AnalyzedVersesService _analyzedVersesService;        
         private int _pagesForAnalyzeCount;
 
         protected int StagesCount { get; set; }
@@ -44,6 +45,7 @@ namespace BibleNoteLinker
                 getCurrentPageException = ex;
             }
 
+            _analyzedVersesService = new AnalyzedVersesService();
             StagesCount = GetStagesCount();
 
             if (!rbAnalyzeCurrentPage.Checked)
@@ -99,6 +101,8 @@ namespace BibleNoteLinker
                 if (!SettingsManager.Instance.IsInIntegratedMode)
                     CommitPagesInOneNote(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, currentStep++, null);                
             }
+
+            _analyzedVersesService.Update();
 
             if (SettingsManager.Instance.StoreNotesPagesInFolder && chkForce.Checked && rbAnalyzeAllPages.Checked)
             {
@@ -374,7 +378,7 @@ namespace BibleNoteLinker
 
         private void ProcessPage(NotebookIterator.PageInfo page, bool? doNotAnalyze)
         {
-            var noteLinkManager = new NoteLinkManager() { AnalyzeAllPages = rbAnalyzeAllPages.Checked };
+            var noteLinkManager = new NoteLinkManager(_analyzedVersesService) { AnalyzeAllPages = rbAnalyzeAllPages.Checked };
             noteLinkManager.OnNextVerseProcess += new EventHandler<NoteLinkManager.ProcessVerseEventArgs>(noteLinkManager_OnNextVerseProcess);
             noteLinkManager.LinkPageVerses(ref _oneNoteApp, page.NotebookId, page.Id, NoteLinkManager.AnalyzeDepth.Full, chkForce.Checked, doNotAnalyze);
             

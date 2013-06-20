@@ -51,7 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\AnalyzedBibleVerses.cs" />
+    <Compile Include="Common\AnalyzedVersesInfo.cs" />
     <Compile Include="Common\ArgsClasses.cs" />
     <Compile Include="Common\BibleHierarchySearchResult.cs" />
     <Compile Include="Common\BibleTranslationDifferencesEx.cs" />
@@ -102,6 +102,7 @@
       <DependentUpon>zef2005.xsd</DependentUpon>
     </Compile>
     <Compile Include="Scheme\zef2005.ext.cs" />
+    <Compile Include="Services\AnalyzedVersesService.cs" />
     <Compile Include="Services\ApplicationCache.cs" />
     <Compile Include="Services\BibleContentSearchManager.cs" />
     <Compile Include="Services\BibleParallelTranslationConnectorManager.cs" />

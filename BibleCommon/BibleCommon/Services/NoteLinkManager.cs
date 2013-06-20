@@ -96,16 +96,17 @@ namespace BibleCommon.Services
 
         internal bool IsExcludedCurrentNotePage { get; set; }
         private Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>> _notePageProcessedVerses = new Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>>();
-        private Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>> _notePageProcessedVersesForOldProvider = new Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>>();  
-        
+        private Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>> _notePageProcessedVersesForOldProvider = new Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>>();
+
+        private AnalyzedVersesService _analyzedVersesService;
         private NotesPagesProviderManager _notesPagesProviderManager;
         private bool _pageContentWasChanged = false;
 
-
-        public NoteLinkManager()
+        public NoteLinkManager(AnalyzedVersesService analyzedVersesService)
         {            
             _notesPagesProviderManager = new NotesPagesProviderManager();
-        }
+            _analyzedVersesService = analyzedVersesService;
+        }        
 
         public event EventHandler<ProcessVerseEventArgs> OnNextVerseProcess;        
 
@@ -1114,6 +1115,8 @@ namespace BibleCommon.Services
                     {
                         if (onHierarchyElementFound != null)
                             onHierarchyElementFound(hierarchySearchResult);
+
+                        _analyzedVersesService.UpdateVerseInfo(vp.ToSimpleVersePointer(), verseWeight);
 
                         var isChapter = vp.IsChapter;
 
