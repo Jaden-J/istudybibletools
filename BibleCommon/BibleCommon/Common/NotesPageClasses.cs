@@ -153,9 +153,9 @@ namespace BibleCommon.Common
             parentLevel.AddLevel(ref oneNoteApp, level, null, false);
 
             AddHierarchySubLevels(levelEl, level);
-        }             
+        }
 
-        public void Serialize(ref Application oneNoteApp)
+        public void Serialize(ref Application oneNoteApp, AnalyzedVersesService analyzedVersesService)
         {            
             var chapterVersePointer = VersesNotesPageData.First().Value.Verse.GetChapterPointer();            
 
@@ -175,7 +175,7 @@ namespace BibleCommon.Common
             
             foreach(var verseNotesPageData in VersesNotesPageData.OrderBy(v => v.Key))
             {
-                SerializeLevel(ref oneNoteApp, verseNotesPageData.Value, bodyEl, 0, null);
+                SerializeLevel(ref oneNoteApp, verseNotesPageData.Value, bodyEl, 0, null, analyzedVersesService);
             }
 
             var folder = Path.GetDirectoryName(this.FilePath);
@@ -251,7 +251,7 @@ namespace BibleCommon.Common
                             ))));
         }
 
-        private void SerializeLevel(ref Application oneNoteApp, NotesPageHierarchyLevelBase hierarchyLevel, XElement parentEl, int levelIndex, int? index)
+        private void SerializeLevel(ref Application oneNoteApp, NotesPageHierarchyLevelBase hierarchyLevel, XElement parentEl, int levelIndex, int? index, AnalyzedVersesService analyzedVersesService)
         {
             var levelEl = parentEl.AddEl(
                                     new XElement(hierarchyLevel is VerseNotesPageData ? "div" : "li", 
@@ -259,7 +259,7 @@ namespace BibleCommon.Common
 
             if (hierarchyLevel is NotesPagePageLevel)
             {
-                GeneratePageLevel(ref oneNoteApp, (NotesPagePageLevel)hierarchyLevel, levelEl, levelIndex, index);
+                GeneratePageLevel(ref oneNoteApp, (NotesPagePageLevel)hierarchyLevel, levelEl, levelIndex, index, analyzedVersesService);
             }
             else
             {
@@ -279,7 +279,7 @@ namespace BibleCommon.Common
                         var childIndex = 0;
                         foreach (var childHierarchyLevel in hierarchyLevel.Levels.Values)
                         {
-                            SerializeLevel(ref oneNoteApp, childHierarchyLevel, levelEl, levelIndex + 1, childIndex++);
+                            SerializeLevel(ref oneNoteApp, childHierarchyLevel, levelEl, levelIndex + 1, childIndex++, analyzedVersesService);
                         }
                     }
                 }
@@ -327,7 +327,7 @@ namespace BibleCommon.Common
             return hierarchyLevel.Levels.Values.Any(hl => hl is NotesPagePageLevel || HierarchyLevelContainsPageLinks(hl));
         }
 
-        private void GeneratePageLevel(ref Application oneNoteApp, NotesPagePageLevel pageLevel, XElement levelEl, int levelIndex, int? index)
+        private void GeneratePageLevel(ref Application oneNoteApp, NotesPagePageLevel pageLevel, XElement levelEl, int levelIndex, int? index, AnalyzedVersesService analyzedVersesService)
         {
             levelEl.Add(new XAttribute(Constants.NotesPageElementAttributeName_SyncId, pageLevel.Id));            
 
@@ -338,9 +338,13 @@ namespace BibleCommon.Common
             var levelTitleLinkEl = levelTitleEl.AddEl(new XElement("a", pageLevel.Title));
 
             var levelTitleLinkElClass = "levelTitleLink";
-            var summarySubLinksWight = pageLevel.PageLinks.Sum(pl => pl.VerseWeight);
-            if (summarySubLinksWight >= Constants.ImportantVerseWeight)
+            var summarySubLinksOverallWight = pageLevel.PageLinks.Sum(pl => pl.VerseWeight);
+            if (summarySubLinksOverallWight >= Constants.ImportantVerseWeight)
                 levelTitleLinkElClass += " importantVerseLink";
+
+            var summarySubLinksNonDetailedWight = pageLevel.PageLinks.Where(pl => !pl.IsDetailed).Sum(pl => pl.VerseWeight);
+
+            analyzedVersesService.UpdateVerseInfo(pageLevel.Root.Verse, summarySubLinksNonDetailedWight, summarySubLinksOverallWight);
 
             var hiddenAllPageLevel = false;
 
@@ -379,8 +383,11 @@ namespace BibleCommon.Common
                     hiddenAllPageLevel = true;
             }
 
-            if (hiddenAllPageLevel)                            
-                levelEl.SetAttributeValue("class", levelEl.Attribute("class").Value + " detailed");            
+            if (hiddenAllPageLevel)
+            {
+                levelEl.SetAttributeValue("class", levelEl.Attribute("class").Value + " detailed");
+                levelTitleLinkElClass += " detailed";
+            }
 
             levelTitleLinkEl.Add(new XAttribute("class", levelTitleLinkElClass));
             levelTitleLinkEl.Add(new XAttribute("href", pageLevel.GetPageTitleLinkHref(ref oneNoteApp)));
@@ -397,7 +404,7 @@ namespace BibleCommon.Common
 
             subLinksEl.Add(new XElement("td", new XAttribute("class", "subLink" + detailedClassName),
                                 new XElement("a",
-                                    new XAttribute("class", "subLinkLink" + importantClassName),
+                                    new XAttribute("class", "subLinkLink" + importantClassName + detailedClassName),
                                     new XAttribute("href", pageLink.GetHref(ref oneNoteApp)),
                                     string.Format(Resources.Constants.VerseLinkTemplate, linkIndex + 1))));         
 
@@ -416,7 +423,7 @@ namespace BibleCommon.Common
                         new XAttribute("class", "subLinkDelimeter" + detailedClassName),
                         Resources.Constants.VerseLinksDelimiter));
             }
-        }        
+        }
 
         private void GenerateHierarchyLevel(NotesPageHierarchyLevelBase hierarchyLevel, XElement levelEl, int level, int? index)
         {

@@ -132,6 +132,10 @@ div.verseLevel > .levelChilds
     margin-bottom:3px;
     display:inline;
 }           
+a.detailed
+{
+    color:Gray;
+}
 .collapsedLevel
 {
     display:none;

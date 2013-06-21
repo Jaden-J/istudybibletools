@@ -97,15 +97,13 @@ namespace BibleCommon.Services
         internal bool IsExcludedCurrentNotePage { get; set; }
         private Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>> _notePageProcessedVerses = new Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>>();
         private Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>> _notePageProcessedVersesForOldProvider = new Dictionary<NotePageProcessedVerseId, HashSet<SimpleVersePointer>>();
-
-        private AnalyzedVersesService _analyzedVersesService;
+        
         private NotesPagesProviderManager _notesPagesProviderManager;
         private bool _pageContentWasChanged = false;
 
-        public NoteLinkManager(AnalyzedVersesService analyzedVersesService)
+        public NoteLinkManager()
         {            
-            _notesPagesProviderManager = new NotesPagesProviderManager();
-            _analyzedVersesService = analyzedVersesService;
+            _notesPagesProviderManager = new NotesPagesProviderManager();            
         }        
 
         public event EventHandler<ProcessVerseEventArgs> OnNextVerseProcess;        
@@ -632,7 +630,7 @@ namespace BibleCommon.Services
                 var tempVerseInfo = verseInfo;
                 if (verseInfo.SearchResult.ResultType == VersePointerSearchResult.SearchResultType.SingleVerseOnly)  // то есть нашли стих без главы, а до этого значит была скорее всего просто глава!
                 {
-                    FoundChapterInfo chapterInfo = foundChapters.FirstOrDefault(fch =>
+                    FoundChapterInfo chapterInfo = foundChapters.LastOrDefault(fch =>
                             fch.VersePointerSearchResult.ResultType != VersePointerSearchResult.SearchResultType.ExcludableChapter
                             && fch.VersePointerSearchResult.ResultType != VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName
                             && fch.VersePointerSearchResult.VersePointer.Book.Name == tempVerseInfo.SearchResult.VersePointer.Book.Name
@@ -1114,9 +1112,7 @@ namespace BibleCommon.Services
                         || hierarchySearchResult.HierarchyObjectInfo.PageId != notePageInfo.Id)
                     {
                         if (onHierarchyElementFound != null)
-                            onHierarchyElementFound(hierarchySearchResult);
-
-                        _analyzedVersesService.UpdateVerseInfo(vp.ToSimpleVersePointer(), verseWeight);
+                            onHierarchyElementFound(hierarchySearchResult);                        
 
                         var isChapter = vp.IsChapter;
 

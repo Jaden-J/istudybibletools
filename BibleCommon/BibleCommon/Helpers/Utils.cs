@@ -60,6 +60,15 @@ namespace BibleCommon.Helpers
             return s;
         }
 
+        public static string GetAnalyzedVersesFolderPath()
+        {
+            string s = Path.Combine(GetProgramDirectory(), Constants.AnalyzedVersesDirectory);
+            if (!Directory.Exists(s))
+                Directory.CreateDirectory(s);
+
+            return s;
+        }
+
         public static string GetProgramDirectory()
         {
             string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Consts.Constants.ToolsName);
