@@ -24,6 +24,12 @@ namespace BibleCommon.Services
                 VersesInfo = new AnalyzedVersesInfo(SettingsManager.Instance.ModuleShortName);
         }
 
+        public void AddAnalyzedNotebook(string notebook)
+        {
+            if (!VersesInfo.Notebooks.Contains(notebook))
+                VersesInfo.Notebooks.Add(notebook);
+        }
+
         public void UpdateVerseInfo(VersePointer verse, decimal weight, decimal detailedWeight)
         {
             var verseInfo = VersesInfo

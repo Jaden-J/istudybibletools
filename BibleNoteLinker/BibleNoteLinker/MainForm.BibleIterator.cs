@@ -14,8 +14,9 @@ namespace BibleNoteLinker
 {
     public partial class MainForm
     {
-        private const int ApproximatePageVersesCount = 100;        
+        private const int ApproximatePageVersesCount = 100;
 
+        private AnalyzedVersesService _analyzedVersesService;
         private int _pagesForAnalyzeCount;
 
         protected int StagesCount { get; set; }
@@ -43,7 +44,8 @@ namespace BibleNoteLinker
             {
                 getCurrentPageException = ex;
             }
-            
+
+            _analyzedVersesService = new AnalyzedVersesService(rbAnalyzeAllPages.Checked && chkForce.Checked);
 
             StagesCount = GetStagesCount();
 
@@ -58,7 +60,10 @@ namespace BibleNoteLinker
                 Logger.LogMessageParams(Helper.GetRightFoundPagesString(_pagesForAnalyzeCount));
 
                 foreach (NotebookIterator.NotebookInfo notebook in notebooks)
+                {
+                    _analyzedVersesService.AddAnalyzedNotebook(OneNoteUtils.GetHierarchyElementName(ref _oneNoteApp, notebook.Id));  // в notebook.Title может храниться nickname, поэтому заново загружаем именно имя записной книжки
                     ProcessNotebook(notebook);
+                }
             }
             else
             {
@@ -73,7 +78,10 @@ namespace BibleNoteLinker
                 LogHighLevelMessage(message, 1, StagesCount);
                 Logger.LogMessageParams(message);
                 Logger.MoveLevel(1);
+
+                _analyzedVersesService.AddAnalyzedNotebook(OneNoteUtils.GetHierarchyElementName(ref _oneNoteApp, currentPage.NotebookId));
                 ProcessPage(currentPage, null);
+
                 Logger.MoveLevel(-1);
             }
 
@@ -99,7 +107,9 @@ namespace BibleNoteLinker
 
                 if (!SettingsManager.Instance.IsInIntegratedMode)
                     CommitPagesInOneNote(BibleCommon.Resources.Constants.NoteLinkerBiblePagesUpdating, currentStep++, null);                
-            }            
+            }
+
+            _analyzedVersesService.Update();
 
             if (SettingsManager.Instance.StoreNotesPagesInFolder && chkForce.Checked && rbAnalyzeAllPages.Checked)
             {
@@ -142,7 +152,7 @@ namespace BibleNoteLinker
 
             int processedPagesCount = 0;
 
-            var analyzedVersesService = new AnalyzedVersesService(rbAnalyzeAllPages.Checked && chkForce.Checked);
+            
             for (var i = 0; i < ApplicationCache.Instance.NotesPageDataList.Count; i++)
             {
                 LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
@@ -150,15 +160,14 @@ namespace BibleNoteLinker
                 
                 try
                 {
-                    ApplicationCache.Instance.NotesPageDataList[i].Serialize(ref _oneNoteApp, analyzedVersesService);
+                    ApplicationCache.Instance.NotesPageDataList[i].Serialize(ref _oneNoteApp, _analyzedVersesService);
                     ApplicationCache.Instance.NotesPageDataList[i] = null;  // освобождаем память. Так как таких объектов много, а память ещё нужна для обновления страниц в OneNote.
                 }
                 catch (Exception ex)
                 {
                     Logger.LogError(string.Format(BibleCommon.Resources.Constants.ErrorWhilePageProcessing, ApplicationCache.Instance.NotesPageDataList[i].PageName), ex);
                 }                
-            }
-            analyzedVersesService.Update();
+            }            
         }
 
         private void SyncNotesPagesContainer()
