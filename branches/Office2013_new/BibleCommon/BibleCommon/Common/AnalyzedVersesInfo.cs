@@ -11,6 +11,8 @@ namespace BibleCommon.Common
     [XmlRoot]
     public class AnalyzedVersesInfo
     {
+        private const string StringDelimiter = "; ";
+
         private Dictionary<int, AnalyzedBookInfo> _booksDictionary;        
         private Dictionary<int, AnalyzedBookInfo> BooksDictionary
         {
@@ -26,6 +28,23 @@ namespace BibleCommon.Common
             }
         }
 
+        [XmlIgnore]
+        public HashSet<string> Notebooks { get; private set; }
+
+        [XmlAttribute("Notebooks")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public string AnalyzedNotebooks 
+        { 
+            get
+            {
+                return string.Join(StringDelimiter, Notebooks);
+            }
+            set
+            {
+                Notebooks = new HashSet<string>(value.Split(new string[] { StringDelimiter }, StringSplitOptions.RemoveEmptyEntries));
+            }
+        }        
+
         [XmlElement(typeof(AnalyzedBookInfo), ElementName = "Book")]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public List<AnalyzedBookInfo> Books { get; set; }
@@ -36,6 +55,7 @@ namespace BibleCommon.Common
         public AnalyzedVersesInfo()
         {
             Books = new List<AnalyzedBookInfo>();
+            Notebooks = new HashSet<string>();
         }
 
         public AnalyzedVersesInfo(string module)
