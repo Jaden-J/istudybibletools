@@ -157,7 +157,7 @@ namespace BibleConfigurator
                             }
                         };
 
-                    mutexId = BibleCommon.Consts.Constants.AnalyzeMutix;
+                    mutexId = BibleCommon.Consts.Constants.AnalysisMutix;
                     additionalMutexId = BibleCommon.Consts.Constants.ParametersMutix;
                 }
                 else
