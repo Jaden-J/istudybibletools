@@ -24,11 +24,12 @@ namespace BibleCommon.Consts
         public static readonly string TempDirectory = "Temp";
         public static readonly string CacheDirectory = "Cache";
         public static readonly string NotesPagesDirectory = "NotesPages";
+        public static readonly string AnalyzedVersesDirectory = "AnalyzedVerses";        
         public static readonly string LogsDirectory = "Logs";
         public static readonly string DefaultPartVersesAlphabet = "abcdefghijklmnopqrstuvwxyz";
         public static readonly int DefaultStrongNumbersCount = 14700;
         public static readonly string UnicodeFontName = "Arial Unicode MS";
-        public static readonly string AnalyzeMutix = "ISBT_Analyze";
+        public static readonly string AnalysisMutix = "ISBT_Analysis";
         public static readonly string ParametersMutix = "ISBT_Parameters";
         public static readonly string OneNoteProtocol = "onenote:";
         public static readonly string DoNotAnalyzeSymbol1 = "{}";
