@@ -62,7 +62,7 @@ namespace BibleCommon.Helpers
 
         public static string GetAnalyzedVersesFolderPath()
         {
-            string s = Path.Combine(GetProgramDirectory(), Constants.AnalyzedVersesDirectory);
+            string s = Path.Combine(GetNotesPagesFolderPath(), Constants.AnalyzedVersesDirectory);
             if (!Directory.Exists(s))
                 Directory.CreateDirectory(s);
 
