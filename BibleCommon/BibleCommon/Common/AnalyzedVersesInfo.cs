@@ -37,7 +37,7 @@ namespace BibleCommon.Common
         { 
             get
             {
-                return string.Join(StringDelimiter, Notebooks);
+                return string.Join(StringDelimiter, Notebooks.ToArray());
             }
             set
             {
