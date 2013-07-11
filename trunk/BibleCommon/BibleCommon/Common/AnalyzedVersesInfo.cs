@@ -28,24 +28,12 @@ namespace BibleCommon.Common
             }
         }
 
-        [XmlIgnore]
-        public HashSet<string> Notebooks { get; private set; }
+        [XmlArray("Notebooks")]
+        [XmlArrayItem(typeof(AnalyzedNotebookInfo), ElementName = "Notebook")]
+        public HashSet<AnalyzedNotebookInfo> Notebooks { get; set; }       
 
-        [XmlAttribute("Notebooks")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public string AnalyzedNotebooks 
-        { 
-            get
-            {
-                return string.Join(StringDelimiter, Notebooks.ToArray());
-            }
-            set
-            {
-                Notebooks = new HashSet<string>(value.Split(new string[] { StringDelimiter }, StringSplitOptions.RemoveEmptyEntries));
-            }
-        }        
-
-        [XmlElement(typeof(AnalyzedBookInfo), ElementName = "Book")]
+        [XmlArray("Books")]        
+        [XmlArrayItem(typeof(AnalyzedBookInfo), ElementName="Book")]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public List<AnalyzedBookInfo> Books { get; set; }
 
@@ -55,7 +43,7 @@ namespace BibleCommon.Common
         public AnalyzedVersesInfo()
         {
             Books = new List<AnalyzedBookInfo>();
-            Notebooks = new HashSet<string>();
+            Notebooks = new HashSet<AnalyzedNotebookInfo>();
         }
 
         public AnalyzedVersesInfo(string module)
@@ -81,6 +69,30 @@ namespace BibleCommon.Common
         {
             Books = Books.OrderBy(b => b.Index).ToList();
             Books.ForEach(b => b.Sort());
+        }
+    }
+
+    public class AnalyzedNotebookInfo
+    {
+        [XmlAttribute]
+        public string Name { get; set; }
+
+        [XmlAttribute]
+        public string Nickname { get; set; }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = (AnalyzedNotebookInfo)obj;
+
+            if (obj == null)
+                return false;
+
+            return Name.Equals(other.Name);
         }
     }
 

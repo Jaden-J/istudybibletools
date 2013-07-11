@@ -51,6 +51,8 @@ namespace BibleCommon.Consts
         public static readonly bool DefaultRubbishPage_Use = false;
         public static readonly bool DefaultRubbishPage_ExpandMultiVersesLinking = true;
         public static readonly bool DefaultRubbishPage_ExcludedVersesLinking = true;
+        public static readonly int DefaultFilter_MinLinkWeight = 0;
+        public static readonly bool DefaultFilter_ShowDetailedNotes = false;
 
         public static readonly string ResourceName_DefaultPageNameDefaultBookOverview = "DefaultPageNameDefaultBookOverview";
         public static readonly string ResourceName_DefaultPageNameDefaultComments = "DefaultPageNameDefaultComments";
@@ -83,6 +85,10 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_DictionariesModules = "DictionariesModules";
         public static readonly string ParameterName_SelectedNotebooksForAnalyze = "SelectedNotebooksForAnalyze";
         public static readonly string ParameterName_ShownMessages = "ShownMessages";
+
+        public static readonly string ParameterName_FilterHiddenNotebooks = "FilterHiddenNotebooks";
+        public static readonly string ParameterName_FilterMinLinkWeight = "FilterMinLinkWeight";
+        public static readonly string ParameterName_FilterShowDetailedNotes = "FilterShowDetailedNotes";
 
 
         public static readonly string ParameterName_PageWidthNotes = "Width_NotesPage";
@@ -137,9 +143,11 @@ namespace BibleCommon.Consts
         public static readonly int ChapterNotesPageLinkOutline_z = 1;
 
         public static readonly string NotesPageElementAttributeName_SyncId = "syncid";
-        public static readonly string NotesPageStyleFileName = "core.css";
-        public static readonly string NotesPageScriptFileName = "core.js";
+        public static readonly string NotesPageStyleFileName = "corev2.css";
+        public static readonly string NotesPageScriptFileName = "corev2.js";
         public static readonly string NotesPageJQueryScriptFileName = "jquery.js";
+        public static readonly string NotesPageTrackbarStyleFileName = "plugins/trackbar/trackbar.css";
+        public static readonly string NotesPageTrackbarScriptFileName = "plugins/trackbar/trackbar.js";
     }
 }
 

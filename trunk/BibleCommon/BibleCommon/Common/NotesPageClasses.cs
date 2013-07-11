@@ -164,9 +164,11 @@ namespace BibleCommon.Common
                             new XElement("head", 
                                 new XElement("meta", new XAttribute("http-equiv", "X-UA-Compatible"), new XAttribute("content", "IE=edge")),
                                 new XElement("title", string.Format("{0} [{1}]", PageName,  chapterVersePointer.ChapterName)),
-                                new XElement("link", new XAttribute("type", "text/css"), new XAttribute("rel", "stylesheet"), new XAttribute("href", "../../../" + Constants.NotesPageStyleFileName)),                                
+                                new XElement("link", new XAttribute("type", "text/css"), new XAttribute("rel", "stylesheet"), new XAttribute("href", "../../../" + Constants.NotesPageStyleFileName)),
+                                new XElement("link", new XAttribute("type", "text/css"), new XAttribute("rel", "stylesheet"), new XAttribute("href", "../../../" + Constants.NotesPageTrackbarStyleFileName)),                                
                                 new XElement("script", new XAttribute("type", "text/javascript"), new XAttribute("src", "../../../" + Constants.NotesPageJQueryScriptFileName), ";"),
-                                new XElement("script", new XAttribute("type", "text/javascript"), new XAttribute("src", "../../../" + Constants.NotesPageScriptFileName), ";")
+                                new XElement("script", new XAttribute("type", "text/javascript"), new XAttribute("src", "../../../" + Constants.NotesPageScriptFileName), ";"),
+                                new XElement("script", new XAttribute("type", "text/javascript"), new XAttribute("src", "../../../" + Constants.NotesPageTrackbarScriptFileName), ";")
                             )));
 
             var bodyEl = xdoc.Root.AddEl(new XElement("body", new XAttribute(AttributeName_HasValueLinks, HasValueLinks)));
@@ -239,16 +241,36 @@ namespace BibleCommon.Common
                                 new XElement("td", new XAttribute("class", "chapterNotesPage"),
                                      pageTitleAdditionalLinkEl)),
                             new XElement("tr",
-                                new XElement("td", new XAttribute("class", "detailedNotes"),
-                                    new XElement("input",
-                                        new XAttribute("type", "checkbox"),
-                                        new XAttribute("class", "detailedNotes"),
-                                        new XAttribute("id", "chkDetailedNotes")),
-                                    new XElement("label",
-                                        new XAttribute("for", "chkDetailedNotes"),
-                                        new XAttribute("class", "detailedNotes"),
-                                        Resources.Constants.DetailedNotes)
-                            ))));
+                                GenerateFilterBlock())));                                
+        }
+
+        private XElement GenerateFilterBlock()
+        {
+            return new XElement("td", new XAttribute("class", "filter"),
+                        new XElement("div", new XAttribute("class", "filterLink"),
+                            new XElement("a", new XAttribute("id", "filterLink"), new XAttribute("class", "filterLink"), new XAttribute("href", "#"), Resources.Constants.Filter)),
+                        new XElement("div", new XAttribute("id", "filter"), new XAttribute("class", "filterPopup"), new XAttribute("style", "display:none;"),
+                            new XElement("div", new XAttribute("class", "filterPopup_background"),
+                                new XElement("div", new XAttribute("class", "filterPopup_controls"),
+                                    new XElement("div", new XAttribute("class", "filterPopup_header"),
+                                        new XElement("div", new XAttribute("class", "filterPopup_section"),
+                                            new XElement("span", new XAttribute("class", "filterTitle"), Resources.Constants.FilterPopupNotebooks),
+                                            new XElement("div", new XAttribute("class", "filterPopup_label"),
+                                                new XElement("table", new XAttribute("id", "notebooksFilterTable"), new XAttribute("class", "notebooksFilter"), new XAttribute("cellpadding", "0"), new XAttribute("cellspacing", "0"), " "))),
+                                        new XElement("div", new XAttribute("class", "filterPopup_hr filterPopup_hrheight"), " "),
+                                        new XElement("div", new XAttribute("class", "filterPopup_section"),
+                                            new XElement("span", new XAttribute("class", "filterTitle"), Resources.Constants.FilterPopupTrackbar),
+                                            new XElement("div", new XAttribute("class", "filterPopup_textsection"),
+                                                new XElement("span", new XAttribute("id", "filterVerseWeightTitle"), " "),
+                                                new XElement("span", new XAttribute("id", "filterVerseWeightDescription"), Resources.Constants.FilterPopupAndMore),
+                                                new XElement("div", new XAttribute("id", "filterVerseWeight"), " "))),
+                                        new XElement("div", new XAttribute("class", "filterPopup_hr"), " "),
+                                        new XElement("div", new XAttribute("class", "filterPopup_textsection detailedNotes"),
+                                            new XElement("input", new XAttribute("type", "checkbox"), new XAttribute("id", "chkDetailedNotes"), new XAttribute("class", "detailedNotes")),
+                                            new XElement("label", new XAttribute("for", "chkDetailedNotes"), new XAttribute("class", "detailedNotes filterTitle"), Resources.Constants.DetailedNotes)),
+                                        new XElement("div", new XAttribute("class", "filterPopup_hr filterPopup_hrheight saveFilterSettings"), " "),
+                                        new XElement("div", new XAttribute("class", "filterPopup_textsection saveFilterSettingsLink saveFilterSettings"),
+                                            new XElement("a", new XAttribute("id", "saveFilterSettingsLink"), new XAttribute("class", "filterTitle"), new XAttribute("href", "#"), Resources.Constants.FilterPopupSave)))))));
         }
 
         private void SerializeLevel(ref Application oneNoteApp, NotesPageHierarchyLevelBase hierarchyLevel, XElement parentEl, int levelIndex, int? index, AnalyzedVersesService analyzedVersesService)

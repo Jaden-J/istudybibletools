@@ -870,4 +870,22 @@ Please take notice:
   <data name="NoDetailedNotesForVerse" xml:space="preserve">
     <value>There are no Detailed Notes for this verse</value>
   </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="FilterPopupAndMore" xml:space="preserve">
+    <value> and more...</value>
+  </data>
+  <data name="FilterPopupNotebooks" xml:space="preserve">
+    <value>Notebooks Filter:</value>
+  </data>
+  <data name="FilterPopupSave" xml:space="preserve">
+    <value>Save Filter Settings</value>
+  </data>
+  <data name="FilterPopupShowAllLinks" xml:space="preserve">
+    <value>Show all links</value>
+  </data>
+  <data name="FilterPopupTrackbar" xml:space="preserve">
+    <value>Show links with weight:</value>
+  </data>
 </root>

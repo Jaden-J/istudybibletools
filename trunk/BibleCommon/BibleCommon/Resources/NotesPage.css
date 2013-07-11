@@ -70,26 +70,31 @@ a.chapterNotesPage
 td.chapterNotesPage
 {	
 	white-space:nowrap;
-	padding-right:10px;
+	padding-right:22px;
 }
-td.detailedNotes
+td.filter
 {
     padding-right:10px;
+    text-align:left;
+}
+div.filterLink
+{
+    font-size:13.3px;	
+    text-align:right;
+    padding-right:12px;
 }
 input.detailedNotes, label.detailedNotes
 {	
 	white-space:nowrap;			
-	cursor:pointer;    	
+	cursor:pointer;  
 }
-input.detailedNotes 
+div.detailedNotes
 {
-    vertical-align:middle;
-    margin-bottom:2px;
+    padding-top:10px;
 }
 label.detailedNotes 
 {    
-    font-size:13.3px;    
-    font-weight:bold;
+    vertical-align:text-top;    
 }
 div.verseLevel
 {
@@ -144,6 +149,14 @@ a.detailed
 {
     display:none;
 }
+.hiddenByTrackbarFilter
+{
+    display:none;
+}
+.hiddenNotebook
+{
+    display:none;
+}
 .importantVerseLink
 {
     font-weight:bold;
@@ -195,4 +208,104 @@ li.level7
 li.level8
 {
     list-style-type:lower-alpha;
+}
+
+
+
+
+
+
+
+
+body
+{   
+    background-color: #FFFFFF;
+    font-family: Segoe UI, Arial;
+}
+
+.saveFilterSettingsLink
+{
+    padding-top:5px;
+}
+.filterTitle
+{
+    font-size: 8pt;               
+    font-weight:bold;
+}
+table.notebooksFilter
+{
+    padding-top:0.3em;
+}
+td.notebooksFilter
+{	
+	white-space:nowrap;			
+	cursor:pointer;    	
+}
+label.notebooksFilter
+{
+    vertical-align:top;
+}
+
+.filterPopup
+{
+    position: absolute;
+    right: 0.75em;
+    top: 2em;    
+    z-index:1;
+}
+.filterPopup_background
+{
+    background: url(images/popup_shadow.png) no-repeat right bottom;
+}
+.filterPopup_controls
+{
+    width: 11.4375em; /* 183px */
+    position: relative;
+    top: -0.5em;
+    left: -0.5em;    
+    padding-top: 0.5em;
+    padding-bottom: 0em;
+    padding-left: 0.9375em;
+    padding-right: 0em;    
+    background-color: #FCFCFC;
+    border: solid 1px #8996A5;
+}
+.filterPopup_header
+{
+    margin-bottom: 0.625em;
+    padding-right: 0.9375em;
+}
+.filterPopup_section
+ {
+    clear: both;
+    color: #3B3B3B;        
+    overflow: hidden;
+    padding-top: 0em;
+ }
+.filterPopup_label
+{
+    width: 50%; /* 80px; */    
+    font-size: 0.8em; /* 10pt; */
+    float: left;
+}
+.filterPopup_hr
+{
+    clear: both;    
+    border-bottom: dashed 1px #8996A5;
+    width: 10.3125em; /* 165px; */
+}
+.filterPopup_hrheight
+{
+    height: 0.625em;
+}
+.filterPopup_textsection
+{
+    clear: both;
+    color: #3B3B3B;    
+    font-size: 0.8em; /* 10pt; */
+    padding-top: 0.3;
+    padding-bottom: 0.3;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }

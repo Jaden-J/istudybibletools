@@ -867,4 +867,22 @@
   <data name="NoDetailedNotesForVerse" xml:space="preserve">
     <value>Подробные заметки для данного стиха отсутствуют</value>
   </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Фильтр</value>
+  </data>
+  <data name="FilterPopupAndMore" xml:space="preserve">
+    <value>и больше...</value>
+  </data>
+  <data name="FilterPopupNotebooks" xml:space="preserve">
+    <value>Фильтр по записным книжкам:</value>
+  </data>
+  <data name="FilterPopupSave" xml:space="preserve">
+    <value>Сохранить настройки фильтра</value>
+  </data>
+  <data name="FilterPopupShowAllLinks" xml:space="preserve">
+    <value>Отображать все ссылки</value>
+  </data>
+  <data name="FilterPopupTrackbar" xml:space="preserve">
+    <value>Отображать ссылки с весом:</value>
+  </data>
 </root>
