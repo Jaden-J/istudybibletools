@@ -24,10 +24,12 @@ namespace BibleCommon.Services
                 VersesInfo = new AnalyzedVersesInfo(SettingsManager.Instance.ModuleShortName);
         }
 
-        public void AddAnalyzedNotebook(string notebook)
+        public void AddAnalyzedNotebook(string notebookName, string notebookNickname)
         {
+            var notebook = new AnalyzedNotebookInfo() { Name = notebookName, Nickname = notebookNickname };
+
             if (!VersesInfo.Notebooks.Contains(notebook))
-                VersesInfo.Notebooks.Add(notebook);
+                VersesInfo.Notebooks.Add(notebook);            
         }
 
         public void UpdateVerseInfo(VersePointer verse, decimal weight, decimal detailedWeight)

@@ -61,7 +61,9 @@ namespace BibleNoteLinker
 
                 foreach (NotebookIterator.NotebookInfo notebook in notebooks)
                 {
-                    _analyzedVersesService.AddAnalyzedNotebook(OneNoteUtils.GetHierarchyElementName(ref _oneNoteApp, notebook.Id));  // в notebook.Title может храниться nickname, поэтому заново загружаем именно имя записной книжки
+                    _analyzedVersesService.AddAnalyzedNotebook(
+                        OneNoteUtils.GetHierarchyElementName(ref _oneNoteApp, notebook.Id), 
+                        notebook.Title); 
                     ProcessNotebook(notebook);
                 }
             }
@@ -79,7 +81,9 @@ namespace BibleNoteLinker
                 Logger.LogMessageParams(message);
                 Logger.MoveLevel(1);
 
-                _analyzedVersesService.AddAnalyzedNotebook(OneNoteUtils.GetHierarchyElementName(ref _oneNoteApp, currentPage.NotebookId));
+                _analyzedVersesService.AddAnalyzedNotebook(
+                    OneNoteUtils.GetHierarchyElementName(ref _oneNoteApp, currentPage.NotebookId),
+                    OneNoteUtils.GetNotebookElementNickname(ref _oneNoteApp, currentPage.NotebookId));
                 ProcessPage(currentPage, null);
 
                 Logger.MoveLevel(-1);
