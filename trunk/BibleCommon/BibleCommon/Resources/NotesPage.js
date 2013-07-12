@@ -99,21 +99,30 @@ function filterByTrackbarAndDetailedNotes() {
 
             var weight = global_IsDetailed ? linkInfo.detailedWeight : linkInfo.weight;
 
-            setElementIsImportant(linkInfo.link, weight >= const_importantVerseWeight);
+            setElementIsImportant(linkInfo.linkEl, weight >= const_importantVerseWeight);
 
-            hideLinkIfIsNotDetailed(linkInfo);
+            hideLinkIfIsNotDetailed(linkInfo.linkEl, linkInfo.isDetailed);
 
             var isAnyChildVisible = false;
             for (var childIndex = 0; childIndex < linkInfo.childLinks.length; childIndex++) {
                 var childLinkInfo = linkInfo.childLinks[childIndex];
-                hideLinkIfIsNotDetailed(childLinkInfo);
-                isAnyChildVisible = hideLinkIfLessThanTrackbarValue(childLinkInfo.link, childLinkInfo.weight < global_MinVersesWeight) || isAnyChildVisible;
+                hideLinkIfIsNotDetailed(childLinkInfo.linkEl, childLinkInfo.isDetailed);
+                isAnyChildVisible = hideLinkIfLessThanTrackbarValue(childLinkInfo.linkEl, childLinkInfo.weight < global_MinVersesWeight) || isAnyChildVisible;
+
+                if (!isNull(childLinkInfo.nextBracketsEl)) {
+                    hideLinkIfIsNotDetailed(childLinkInfo.nextBracketsEl, childLinkInfo.isDetailed);
+                    hideLinkIfLessThanTrackbarValue(childLinkInfo.nextBracketsEl, childLinkInfo.weight < global_MinVersesWeight);
+                }
+                if (!isNull(childLinkInfo.nextDelimiterEl)) {
+                    hideLinkIfIsNotDetailed(childLinkInfo.nextDelimiterEl, childLinkInfo.isDetailed);
+                    hideLinkIfLessThanTrackbarValue(childLinkInfo.nextDelimiterEl, childLinkInfo.weight < global_MinVersesWeight);
+                }
             }
 
             if (linkInfo.childLinks.length == 0)
-                hideLinkIfLessThanTrackbarValue(linkInfo.link, weight < global_MinVersesWeight);
+                hideLinkIfLessThanTrackbarValue(linkInfo.linkEl, weight < global_MinVersesWeight);
             else
-                hideLinkIfLessThanTrackbarValue(linkInfo.link, !isAnyChildVisible);
+                hideLinkIfLessThanTrackbarValue(linkInfo.linkEl, !isAnyChildVisible);
         }
     }
 
@@ -138,12 +147,13 @@ function hideLinkIfLessThanTrackbarValue(linkEl, toHide) {
     }
 }
 
-function hideLinkIfIsNotDetailed(linkInfo) {
-    if (linkInfo.isDetailed) {
-        if (!global_IsDetailed)
-            hideElement(linkInfo.link, "hiddenDetailed");
+function hideLinkIfIsNotDetailed(linkEl, isLinkDetailed) {
+    if (isLinkDetailed) {
+        if (!global_IsDetailed) {
+            hideElement(linkEl, "hiddenDetailed");
+        }
         else
-            showElement(linkInfo.link, "hiddenDetailed");
+            showElement(linkEl, "hiddenDetailed");
     }
 }
 
@@ -152,35 +162,55 @@ function BuildLinksWeight() {
     $(".levelTitleLink").each(function (index) {
         var titleLinkEl = $(this);
         var isDetailed = titleLinkEl.hasClass("detailed");
-        var weight = parseFloat(getParameter(this, "vw"));
+        var weight = parseFloat(isNullOrDefault(getParameter(this, "vw"), "-1").replace(',', '.'));
         var detailedWeight = weight;
         var childLinks = [];
 
-        if (isNaN(weight)) {
+        if (weight == "-1") {
             titleLinkEl.parents(".pageLevel").find(".subLinkLink").each(function (childIndex) {
-                var childLinkWeight = parseFloat(getParameter(this, "vw"));
+                var childLinkWeight = parseFloat(getParameter(this, "vw").replace(',', '.'));
                 var childLinkEl = $(this);
                 var childLinkIsDetailed = childLinkEl.hasClass("detailed");
 
                 if (childLinkIsDetailed)
-                    detailedWeight = isNull(detailedWeight, 0) + childLinkWeight;
+                    detailedWeight = isNullOrDefault(detailedWeight, 0) + childLinkWeight;
                 else
-                    weight = isNull(weight, 0) + childLinkWeight;
+                    weight = isNullOrDefault(weight, 0) + childLinkWeight;
 
-                childLinks.push({ link: childLinkEl, isDetailed: childLinkIsDetailed, weight: childLinkWeight });
+                var parentTdEl = childLinkEl.parent();
+                var nextBracketsEl = parentTdEl.nextAll(".subLinkMultiVerse").first();
+                var nextDelimiterEl = parentTdEl.nextAll(".subLinkDelimeter").first();
+
+                if (nextBracketsEl.length > 0 || nextDelimiterEl.length > 0) {
+                    var nextVerseEl = parentTdEl.nextAll(".subLink").first();
+                    if (nextVerseEl.length > 0) {
+                        var nextVerseIndex = nextVerseEl.index();
+                        if (nextVerseIndex < nextBracketsEl.index())
+                            nextBracketsEl = null;
+                        if (nextVerseIndex < nextDelimiterEl.index())
+                            nextDelimiterEl = null;
+                    }
+                }
+
+                childLinks.push({ linkEl: childLinkEl, nextBracketsEl: nextBracketsEl, nextDelimiterEl: nextDelimiterEl, isDetailed: childLinkIsDetailed, weight: childLinkWeight });
             });
         }
 
-        titleLinks.push({ link: titleLinkEl, isDetailed: isDetailed, weight: weight, detailedWeight: detailedWeight, childLinks: childLinks });
+        titleLinks.push({ linkEl: titleLinkEl, isDetailed: isDetailed, weight: weight, detailedWeight: detailedWeight, childLinks: childLinks });
     });
 
     return titleLinks;
 }
 
-function isNull(v, defaultValue) {
-    if (isNaN(v) || v == undefined || v == null)
+function isNullOrDefault(v, defaultValue) {
+    if (isNull(v))
         return defaultValue;
-    else return v;
+    else
+        return v;
+}
+
+function isNull(v) {
+    return (v == undefined || v == null);
 }
 
 function getParameter(str, name) {
@@ -207,7 +237,7 @@ function chkDetailedNodes_click() {
     var chkDetailedNodes = $("#chkDetailedNotes");
     global_IsDetailed = chkDetailedNodes.is(":checked");
 
-    filterByTrackbarAndDetailedNotes();    
+    filterByTrackbarAndDetailedNotes();
 
     //document.location = document.location;   // если будут проблемы с обновлением нумерации у списков, раскомментировать эту линию 
 
