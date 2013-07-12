@@ -96,18 +96,19 @@ function filterByTrackbarAndDetailedNotes() {
 
         for (var index = 0; index < linksWeight.length; index++) {
             var linkInfo = linksWeight[index];
-
-            var weight = global_IsDetailed ? linkInfo.detailedWeight : linkInfo.weight;
-
-            setElementIsImportant(linkInfo.linkEl, weight >= const_importantVerseWeight);
+            var childsWeight = 0;
 
             hideLinkIfIsNotDetailed(linkInfo.linkEl, linkInfo.isDetailed);
 
             var isAnyChildVisible = false;
             for (var childIndex = 0; childIndex < linkInfo.childLinks.length; childIndex++) {
                 var childLinkInfo = linkInfo.childLinks[childIndex];
-                hideLinkIfIsNotDetailed(childLinkInfo.linkEl, childLinkInfo.isDetailed);
-                isAnyChildVisible = hideLinkIfLessThanTrackbarValue(childLinkInfo.linkEl, childLinkInfo.weight < global_MinVersesWeight) || isAnyChildVisible;
+                var linkIsVisible = hideLinkIfIsNotDetailed(childLinkInfo.linkEl, childLinkInfo.isDetailed);
+                linkIsVisible = hideLinkIfLessThanTrackbarValue(childLinkInfo.linkEl, childLinkInfo.weight < global_MinVersesWeight) && linkIsVisible;
+                isAnyChildVisible = linkIsVisible || isAnyChildVisible;
+
+                if (linkIsVisible)
+                    childsWeight += childLinkInfo.weight;
 
                 if (!isNull(childLinkInfo.nextBracketsEl)) {
                     hideLinkIfIsNotDetailed(childLinkInfo.nextBracketsEl, childLinkInfo.isDetailed);
@@ -119,10 +120,16 @@ function filterByTrackbarAndDetailedNotes() {
                 }
             }
 
-            if (linkInfo.childLinks.length == 0)
+            var weight = global_IsDetailed ? linkInfo.detailedWeight : linkInfo.weight;
+
+            if (linkInfo.childLinks.length == 0) {
                 hideLinkIfLessThanTrackbarValue(linkInfo.linkEl, weight < global_MinVersesWeight);
-            else
+                setElementIsImportant(linkInfo.linkEl, weight >= const_importantVerseWeight);
+            }
+            else {
                 hideLinkIfLessThanTrackbarValue(linkInfo.linkEl, !isAnyChildVisible);
+                setElementIsImportant(linkInfo.linkEl, childsWeight >= const_importantVerseWeight);
+            }
         }
     }
 
@@ -151,10 +158,14 @@ function hideLinkIfIsNotDetailed(linkEl, isLinkDetailed) {
     if (isLinkDetailed) {
         if (!global_IsDetailed) {
             hideElement(linkEl, "hiddenDetailed");
+            return false;
         }
-        else
+        else {
             showElement(linkEl, "hiddenDetailed");
+            return true;
+        }
     }
+    return true;
 }
 
 function BuildLinksWeight() {
@@ -162,20 +173,20 @@ function BuildLinksWeight() {
     $(".levelTitleLink").each(function (index) {
         var titleLinkEl = $(this);
         var isDetailed = titleLinkEl.hasClass("detailed");
-        var weight = parseFloat(isNullOrDefault(getParameter(this, "vw"), "-1").replace(',', '.'));
+        var weight = parseFloat(isNullOrDefault(getParameter(this, "vw"), "0").replace(',', '.'));
         var detailedWeight = weight;
         var childLinks = [];
 
-        if (weight == "-1") {
+        if (weight == "0") {
             titleLinkEl.parents(".pageLevel").find(".subLinkLink").each(function (childIndex) {
                 var childLinkWeight = parseFloat(getParameter(this, "vw").replace(',', '.'));
                 var childLinkEl = $(this);
                 var childLinkIsDetailed = childLinkEl.hasClass("detailed");
 
-                if (childLinkIsDetailed)
-                    detailedWeight = isNullOrDefault(detailedWeight, 0) + childLinkWeight;
-                else
+                if (!childLinkIsDetailed)
                     weight = isNullOrDefault(weight, 0) + childLinkWeight;
+
+                detailedWeight = isNullOrDefault(detailedWeight, 0) + childLinkWeight;
 
                 var parentTdEl = childLinkEl.parent();
                 var nextBracketsEl = parentTdEl.nextAll(".subLinkMultiVerse").first();
