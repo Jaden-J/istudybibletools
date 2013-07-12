@@ -49,7 +49,9 @@ namespace BibleCommon.Handlers
             Application oneNoteApp = null;
             try
             {
-                CacheMode = args.Length > 1 ? (RefreshCacheMode)Enum.Parse(typeof(RefreshCacheMode), args[1]) : RefreshCacheMode.RefreshApplicationCache;
+                var parts = args[0].Split(new char[] { ':' });
+
+                CacheMode = parts.Length > 1 ? (RefreshCacheMode)Enum.Parse(typeof(RefreshCacheMode), parts[1]) : RefreshCacheMode.RefreshApplicationCache;
 
                 switch (CacheMode)
                 {
