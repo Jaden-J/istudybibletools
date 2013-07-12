@@ -99,14 +99,19 @@ namespace ISBTCommandHandler
             _titleAtStart = this.Text;                        
         }
 
+        public void RefreshFilteredNotebooksInfo()
+        {
+            FilteredNotebooksInfo = GetFilteredNotebooksInfo();            
+        }
+
         private List<FilterNotebookInfo> GetFilteredNotebooksInfo()
         {
-            return new AnalyzedVersesService(false).VersesInfo.Notebooks.ToList().ConvertAll(notebook =>
+            return new AnalyzedVersesService(false).VersesInfo.Notebooks.ConvertAll(notebook =>
                 new FilterNotebookInfo()
                 {
                     SyncId = notebook.Name,
                     Title = notebook.Nickname,
-                    Checked = SettingsManager.Instance.Filter_HiddenNotebooks.Contains(notebook.Name)
+                    Checked = !SettingsManager.Instance.Filter_HiddenNotebooks.Contains(notebook.Name)
                 });
         }
 
@@ -126,8 +131,6 @@ namespace ISBTCommandHandler
                 FormLogger.LogError(ex);
             }
         }
-
-        
 
         public void OpenNotesPage(VersePointer vp, string verseNotesPageFilePath)
         {
@@ -166,7 +169,16 @@ namespace ISBTCommandHandler
             {
                 FormLogger.LogError(ex);
             }
-        }        
+        }
+
+        public void SaveFilterSettings(string hiddenNotebooks, string minVerseWeight, string showDetailedNotes)
+        {   
+            SettingsManager.Instance.Filter_HiddenNotebooks = hiddenNotebooks.Split(new string[] { "_|_" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            SettingsManager.Instance.Filter_MinVerseWeight = Convert.ToDecimal(minVerseWeight);
+            SettingsManager.Instance.Filter_ShowDetailedNotes = Convert.ToBoolean(showDetailedNotes);
+            SettingsManager.Instance.Save();
+            RefreshFilteredNotebooksInfo();
+        }
 
         private void NotesPageForm_Load(object sender, EventArgs e)
         {
@@ -234,14 +246,19 @@ namespace ISBTCommandHandler
 
         private void wbNotesPage_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
-            var url = e.Url.ToString();            
+            var url = e.Url.ToString();
 
-            if (url.StartsWith(BibleCommon.Consts.Constants.OneNoteProtocol, StringComparison.OrdinalIgnoreCase)
-                || OpenBibleVerseHandler.IsProtocolCommand(url) || NavigateToHandler.IsProtocolCommand(url))
-            {
-                if (chkCloseOnClick.Checked)
-                    this.Hide();                
-            }                        
+            if (url.EndsWith(BibleCommon.Consts.Constants.NoLinkTransmitHref))
+                e.Cancel = true;
+            else
+            { 
+                if (url.StartsWith(BibleCommon.Consts.Constants.OneNoteProtocol, StringComparison.OrdinalIgnoreCase)
+                    || OpenBibleVerseHandler.IsProtocolCommand(url) || NavigateToHandler.IsProtocolCommand(url))
+                {
+                    if (chkCloseOnClick.Checked)
+                        this.Hide();
+                }
+            }                    
         }
 
         private void chkAlwaysOnTop_CheckedChanged(object sender, EventArgs e)
@@ -282,11 +299,12 @@ namespace ISBTCommandHandler
                     VersePointer.IsChapter ? BibleCommon.Resources.Constants.NoDetailedNotesForChapter : BibleCommon.Resources.Constants.NoDetailedNotesForVerse,
                     BibleCommon.Consts.Constants.ImportantVerseWeight
                 });
+
             wbNotesPage.Document.InvokeScript("initFilter", 
                 new object[] 
                 {                    
                     JsonSerializer.Serialize(FilteredNotebooksInfo), 
-                    SettingsManager.Instance.Filter_MinLinkWeight, SettingsManager.Instance.Filter_ShowDetailedNotes
+                    SettingsManager.Instance.Filter_MinVerseWeight, SettingsManager.Instance.Filter_ShowDetailedNotes
                 });
 
             if (_touchInputAvailable)

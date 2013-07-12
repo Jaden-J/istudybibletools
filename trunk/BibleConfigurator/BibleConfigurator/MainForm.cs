@@ -293,7 +293,7 @@ namespace BibleConfigurator
         private void RefreshCache()
         {
             if (_oneNoteApp.Windows.CurrentWindow != null)            
-                Process.Start(RefreshCacheHandler.GetCommandUrlStatic());   // если текущее окно закрыто, то и кэш скорее всего закрыт. Когда окно откроют, кэш обновится                            
+                Process.Start(RefreshCacheHandler.GetCommandUrlStatic(RefreshCacheHandler.RefreshCacheMode.RefreshApplicationCache));   // если текущее окно закрыто, то и кэш скорее всего закрыт. Когда окно откроют, кэш обновится                            
         }
 
         private void TryToSearchNotebooksForNewModule(ModuleInfo module)

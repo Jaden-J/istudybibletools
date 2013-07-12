@@ -7,7 +7,7 @@ var const_textIfNoDetailedNotes;
 var const_importantVerseWeight;
 
 var global_IsDetailed;
-var global_TrackbarValue;
+var global_MinVersesWeight;
 
 ///// initialization
 
@@ -21,9 +21,9 @@ function setConstants(showAllLinks, textIfNoDetailedNotes, importantVerseWeight)
     const_importantVerseWeight = importantVerseWeight;
 }
 
-function initFilter(notebooks, trackbarValue, showDetailedNotes) {
+function initFilter(notebooks, minVersesWeight, showDetailedNotes) {
     global_IsDetailed = showDetailedNotes;
-    global_TrackbarValue = trackbarValue;
+    global_MinVersesWeight = minVersesWeight;
 
     setFilterNotebooks(jQuery.parseJSON(notebooks));
     setFilterLinkHandlers();
@@ -32,7 +32,7 @@ function initFilter(notebooks, trackbarValue, showDetailedNotes) {
     setFilterCommonHandlers();
     setFilterChangedHandler();
 
-    $(".saveFilterSettings").hide();
+    hideFilterSettings();    
 }
 
 ///// filter methods
@@ -89,7 +89,7 @@ function setFilterChangedHandler() {
 var linksWeight;
 var firstTrackbarAndDetailedNotesFilterCall = true;
 function filterByTrackbarAndDetailedNotes() {
-    if (!(firstTrackbarAndDetailedNotesFilterCall && global_TrackbarValue == 1 && global_IsDetailed)) {           // иначе нам ничего не надо скрывать
+    if (!(firstTrackbarAndDetailedNotesFilterCall && global_MinVersesWeight == 0 && global_IsDetailed)) {           // иначе нам ничего не надо скрывать
 
         if (linksWeight == null)
             linksWeight = BuildLinksWeight();
@@ -107,11 +107,11 @@ function filterByTrackbarAndDetailedNotes() {
             for (var childIndex = 0; childIndex < linkInfo.childLinks.length; childIndex++) {
                 var childLinkInfo = linkInfo.childLinks[childIndex];
                 hideLinkIfIsNotDetailed(childLinkInfo);
-                isAnyChildVisible = hideLinkIfLessThanTrackbarValue(childLinkInfo.link, childLinkInfo.weight < global_TrackbarValue) || isAnyChildVisible;
+                isAnyChildVisible = hideLinkIfLessThanTrackbarValue(childLinkInfo.link, childLinkInfo.weight < global_MinVersesWeight) || isAnyChildVisible;
             }
 
             if (linkInfo.childLinks.length == 0)
-                hideLinkIfLessThanTrackbarValue(linkInfo.link, weight < global_TrackbarValue);
+                hideLinkIfLessThanTrackbarValue(linkInfo.link, weight < global_MinVersesWeight);
             else
                 hideLinkIfLessThanTrackbarValue(linkInfo.link, !isAnyChildVisible);
         }
@@ -184,13 +184,13 @@ function isNull(v, defaultValue) {
 }
 
 function getParameter(str, name) {
-    if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(str))
+    if (name = (new RegExp("[?&]" + encodeURIComponent(name) + "=([^&]*)")).exec(str))
         return decodeURIComponent(name[1]);
 }
 
 function notebookFilterClick() {
     var sender = $(this);
-    filterNotebook(sender.attr("syncId"), sender.is(':checked'));
+    filterNotebook(sender.attr("syncId"), sender.is(":checked"));
 
     filterWasChanged();
 }
@@ -207,9 +207,7 @@ function chkDetailedNodes_click() {
     var chkDetailedNodes = $("#chkDetailedNotes");
     global_IsDetailed = chkDetailedNodes.is(":checked");
 
-    filterByTrackbarAndDetailedNotes();
-
-    //window.external.chkDetailedNodes_Changed(global_IsDetailed);    
+    filterByTrackbarAndDetailedNotes();    
 
     //document.location = document.location;   // если будут проблемы с обновлением нумерации у списков, раскомментировать эту линию 
 
@@ -217,8 +215,28 @@ function chkDetailedNodes_click() {
 }
 
 function saveFilterSettings() {
-    alert("saved");
+    window.external.SaveFilterSettings(getHiddenNotebooks(), global_MinVersesWeight, global_IsDetailed.toString());
     hideFilter();
+    hideFilterSettings();
+}
+
+
+function hideFilterSettings() {
+    $(".saveFilterSettings").hide();
+}
+
+
+function getHiddenNotebooks() {
+    var result = "";
+
+    $("input.notebooksFilter").each(function (index) {
+        var notebookEl = $(this);
+        if (!notebookEl.is(":checked")) {
+            result += notebookEl.attr("syncid") + "_|_";
+        }
+    });
+
+    return result;
 }
 
 var hideFilterTimerId;
@@ -236,23 +254,33 @@ function filterWasChanged() {
 }
 
 function setFilterTrackbarTitle() {
-    $("#filterVerseWeightTitle").html(global_TrackbarValue == 0 ? const_showAllLinks : global_TrackbarValue);
-    if (global_TrackbarValue == 0)
+    $("#filterVerseWeightTitle").html(global_MinVersesWeight == 0 ? const_showAllLinks : global_MinVersesWeight);
+    if (global_MinVersesWeight == 0)
         $("#filterVerseWeightDescription").hide();
     else
         $("#filterVerseWeightDescription").show();
 }
 
-function getFilterTrackbarValue(trackbarValue) {
-    var values = [0, 0.1, 0.2, 0.25, 0.3, 0.5, 1, 2];
+function getMinVersesWeight(trackbarValue) {
+    var values = [0, 1 / 10, 1 / 5, 1 / 4, 3 / 10, 1 / 2, 1, 2];
     return values[trackbarValue];
+}
+
+function getFilterTrackbarValue(minVersesWeight) {
+    var values = [0, 1 / 10, 1 / 5, 1 / 4, 3 / 10, 1 / 2, 1, 2];
+
+    for (var i = 0; i < values.length; i++)
+        if (values[i] == minVersesWeight)
+            return i;
+
+    return 0;
 }
 
 function setFilterTrackbar() {
     if ($("#filterVerseWeight").length > 0) {
         trackbar.getObject('chars').init({
             onMove: function () {
-                global_TrackbarValue = getFilterTrackbarValue(this.leftValue);
+                global_MinVersesWeight = getMinVersesWeight(this.leftValue);
                 setFilterTrackbarTitle();
                 filterByTrackbarAndDetailedNotes();
                 filterWasChanged();
@@ -261,7 +289,7 @@ function setFilterTrackbar() {
             width: 100, // px
             leftLimit: 0, // unit of value        
             rightLimit: 7, // unit of value
-            leftValue: global_TrackbarValue, // unit of value
+            leftValue: getFilterTrackbarValue(global_MinVersesWeight), // unit of value
             clearLimits: true,
             clearValues: true
         },

@@ -86,6 +86,7 @@
     <Compile Include="Helpers\StringUtils.cs" />
     <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Helpers\XmlExtensions.cs" />
+    <Compile Include="Helpers\XmlSerializerCache.cs" />
     <Compile Include="Providers\BibleHierarchySearchProvider.cs" />
     <Compile Include="Providers\NotesPagesProviderManager.cs" />
     <Compile Include="Resources\Constants.ru.Designer.cs">

@@ -11,15 +11,15 @@ namespace BibleCommon.Services
     public class AnalyzedVersesService
     {
         public AnalyzedVersesInfo VersesInfo { get; set; }
-        public string VersesInfoFilePath { get; set; }
+        public string VersesInfoFilePathWithoutExtension { get; set; }
 
         public AnalyzedVersesService(bool forceUpdate)
         {
             var folder = Utils.GetAnalyzedVersesFolderPath();
-            VersesInfoFilePath = Path.Combine(folder, SettingsManager.Instance.ModuleShortName + ".xml");
+            VersesInfoFilePathWithoutExtension = Path.Combine(folder, SettingsManager.Instance.ModuleShortName);
 
-            if (File.Exists(VersesInfoFilePath) && !forceUpdate)
-                VersesInfo = Utils.LoadFromXmlFile<AnalyzedVersesInfo>(VersesInfoFilePath);
+            if (File.Exists(VersesInfoFilePathWithoutExtension + Consts.Constants.FileExtensionCache) && !forceUpdate)
+                VersesInfo = SharpSerializationHelper.Deserialize<AnalyzedVersesInfo>(VersesInfoFilePathWithoutExtension + Consts.Constants.FileExtensionCache);
             else
                 VersesInfo = new AnalyzedVersesInfo(SettingsManager.Instance.ModuleShortName);
         }
@@ -28,8 +28,10 @@ namespace BibleCommon.Services
         {
             var notebook = new AnalyzedNotebookInfo() { Name = notebookName, Nickname = notebookNickname };
 
-            if (!VersesInfo.Notebooks.Contains(notebook))
-                VersesInfo.Notebooks.Add(notebook);            
+            if (!VersesInfo.NotebooksDictionary.ContainsKey(notebookName))
+                VersesInfo.NotebooksDictionary.Add(notebookName, notebook);
+            else
+                VersesInfo.NotebooksDictionary[notebookName].Nickname = notebookNickname;
         }
 
         public void UpdateVerseInfo(VersePointer verse, decimal weight, decimal detailedWeight)
@@ -49,7 +51,8 @@ namespace BibleCommon.Services
         public void Update()
         {
             VersesInfo.Sort();
-            Utils.SaveToXmlFile(VersesInfo, VersesInfoFilePath);
+            Utils.SaveToXmlFile(VersesInfo, VersesInfoFilePathWithoutExtension + Consts.Constants.FileExtensionXml);
+            SharpSerializationHelper.Serialize(VersesInfo, VersesInfoFilePathWithoutExtension + Consts.Constants.FileExtensionCache);
         }
     }
 }

@@ -21,6 +21,8 @@ namespace BibleCommon.Consts
         public static readonly string DictionaryContentsFileName = "dictionary.xml";
         public static readonly string FileExtensionIsbt = ".isbt";
         public static readonly string FileExtensionOnepkg = ".onepkg";
+        public static readonly string FileExtensionXml = ".xml";
+        public static readonly string FileExtensionCache = ".cache";
         public static readonly string TempDirectory = "Temp";
         public static readonly string CacheDirectory = "Cache";
         public static readonly string NotesPagesDirectory = "NotesPages";
@@ -35,6 +37,7 @@ namespace BibleCommon.Consts
         public static readonly string DoNotAnalyzeSymbol1 = "{}";
         public static readonly string DoNotAnalyzeSymbol2 = "[]";
         public static readonly string NotEmptyVerseContentSymbol = "[]";
+        public static readonly string NoLinkTransmitHref = "#nt";
 
         public static readonly decimal ImportantVerseWeight = 2;
 
@@ -51,7 +54,7 @@ namespace BibleCommon.Consts
         public static readonly bool DefaultRubbishPage_Use = false;
         public static readonly bool DefaultRubbishPage_ExpandMultiVersesLinking = true;
         public static readonly bool DefaultRubbishPage_ExcludedVersesLinking = true;
-        public static readonly int DefaultFilter_MinLinkWeight = 0;
+        public static readonly decimal DefaultFilter_MinVerseWeight = 0;
         public static readonly bool DefaultFilter_ShowDetailedNotes = false;
 
         public static readonly string ResourceName_DefaultPageNameDefaultBookOverview = "DefaultPageNameDefaultBookOverview";
@@ -87,7 +90,7 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_ShownMessages = "ShownMessages";
 
         public static readonly string ParameterName_FilterHiddenNotebooks = "FilterHiddenNotebooks";
-        public static readonly string ParameterName_FilterMinLinkWeight = "FilterMinLinkWeight";
+        public static readonly string ParameterName_FilterMinVerseWeight = "FilterMinVerseWeight";
         public static readonly string ParameterName_FilterShowDetailedNotes = "FilterShowDetailedNotes";
 
 

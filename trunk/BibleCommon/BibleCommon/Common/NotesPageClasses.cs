@@ -24,6 +24,7 @@ namespace BibleCommon.Common
     public class NotesPageData
     {
         private const string AttributeName_HasValueLinks = "hasValueLinks";
+        
 
         public bool IsNew { get; set; }
         public string FilePath { get; set; }
@@ -270,7 +271,7 @@ namespace BibleCommon.Common
                                             new XElement("label", new XAttribute("for", "chkDetailedNotes"), new XAttribute("class", "detailedNotes filterTitle"), Resources.Constants.DetailedNotes)),
                                         new XElement("div", new XAttribute("class", "filterPopup_hr filterPopup_hrheight saveFilterSettings"), " "),
                                         new XElement("div", new XAttribute("class", "filterPopup_textsection saveFilterSettingsLink saveFilterSettings"),
-                                            new XElement("a", new XAttribute("id", "saveFilterSettingsLink"), new XAttribute("class", "filterTitle"), new XAttribute("href", "#"), Resources.Constants.FilterPopupSave)))))));
+                                            new XElement("a", new XAttribute("id", "saveFilterSettingsLink"), new XAttribute("class", "filterTitle"), new XAttribute("href", "javascript:return false;"), Resources.Constants.FilterPopupSave)))))));
         }
 
         private void SerializeLevel(ref Application oneNoteApp, NotesPageHierarchyLevelBase hierarchyLevel, XElement parentEl, int levelIndex, int? index, AnalyzedVersesService analyzedVersesService)
