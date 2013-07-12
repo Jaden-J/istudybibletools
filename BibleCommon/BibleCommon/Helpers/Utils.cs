@@ -95,7 +95,7 @@ namespace BibleCommon.Helpers
 
         public static void SaveToXmlFile(object data, string filePath)
         {
-            XmlSerializer serializer = new XmlSerializer(data.GetType());
+            var serializer = XmlSerializerCache.GetXmlSerializer(data.GetType());
             using (var fs = new FileStream(filePath, FileMode.Create))
             {
                 serializer.Serialize(fs, data);
@@ -105,16 +105,16 @@ namespace BibleCommon.Helpers
 
         public static T LoadFromXmlFile<T>(string filePath)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            var serializer = XmlSerializerCache.GetXmlSerializer(typeof(T));
             return (T)serializer.Deserialize(new MemoryStream(File.ReadAllBytes(filePath)));
         }
 
         public static T LoadFromXmlString<T>(string value)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
-            using (MemoryStream ms = new MemoryStream())
+            var serializer = XmlSerializerCache.GetXmlSerializer(typeof(T));
+            using (var ms = new MemoryStream())
             {
-                using (StreamWriter sw = new StreamWriter(ms))
+                using (var sw = new StreamWriter(ms))
                 {
                     sw.WriteLine(value);
                     sw.Flush();

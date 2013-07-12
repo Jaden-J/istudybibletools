@@ -30,12 +30,26 @@ namespace BibleCommon.Common
 
         [XmlArray("Notebooks")]
         [XmlArrayItem(typeof(AnalyzedNotebookInfo), ElementName = "Notebook")]
-        public HashSet<AnalyzedNotebookInfo> Notebooks { get; set; }       
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public List<AnalyzedNotebookInfo> Notebooks {
+            get
+            {
+                return NotebooksDictionary.Values.ToList();
+            }
+            set
+            {
+                NotebooksDictionary = new Dictionary<string, AnalyzedNotebookInfo>();
+                value.ForEach(n => NotebooksDictionary.Add(n.Name, n));
+            }
+        }
+
+        [XmlIgnore]
+        public Dictionary<string, AnalyzedNotebookInfo> NotebooksDictionary { get; set; }
 
         [XmlArray("Books")]        
         [XmlArrayItem(typeof(AnalyzedBookInfo), ElementName="Book")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public List<AnalyzedBookInfo> Books { get; set; }
+        public List<AnalyzedBookInfo> Books { get; set; }        
 
         [XmlAttribute]
         public string Module { get; set; }
@@ -43,7 +57,7 @@ namespace BibleCommon.Common
         public AnalyzedVersesInfo()
         {
             Books = new List<AnalyzedBookInfo>();
-            Notebooks = new HashSet<AnalyzedNotebookInfo>();
+            Notebooks = new List<AnalyzedNotebookInfo>();
         }
 
         public AnalyzedVersesInfo(string module)

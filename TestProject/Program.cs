@@ -337,7 +337,7 @@ namespace TestProject
         private static void TestModule()
         {
             string filePath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\temp\Modules\RST\manifest.xml";
-            var _serializer = new XmlSerializer(typeof(ModuleInfo));
+            var _serializer = XmlSerializerCache.GetXmlSerializer(typeof(ModuleInfo));
 
             using (var fs = new FileStream(filePath, FileMode.Open))
             {

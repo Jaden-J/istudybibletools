@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Threading;
 using BibleCommon.Helpers;
 using BibleCommon.UI.Forms;
+using BibleCommon.Handlers;
 
 namespace BibleNoteLinker
 {
@@ -69,7 +70,9 @@ namespace BibleNoteLinker
                 Logger.LogMessageParams("{0}: {1}", BibleCommon.Resources.Constants.StartTime, dt.ToLongTimeString());
                 StartAnalyze();
                 Logger.LogMessageParams("{0}: {1}", BibleCommon.Resources.Constants.TimeSpent, DateTime.Now.Subtract(dt));
-                this.SetFocus();                
+                this.SetFocus();
+
+                RefreshCache();
             }
             catch (ProcessAbortedByUserException)
             {
@@ -108,6 +111,12 @@ namespace BibleNoteLinker
             btnOk.Enabled = true;
             _wasAnalyzed = true;
             Logger.Done();
+        }
+
+        private void RefreshCache()
+        {            
+            if (_oneNoteApp.Windows.CurrentWindow != null)
+                Process.Start(RefreshCacheHandler.GetCommandUrlStatic(RefreshCacheHandler.RefreshCacheMode.RefreshAnalyzedVersesCache));   // если текущее окно закрыто, то и кэш скорее всего закрыт. Когда окно откроют, кэш обновится                            
         }
 
         private void CheckForSuggestions()

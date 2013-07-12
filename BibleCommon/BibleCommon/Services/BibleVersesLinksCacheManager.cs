@@ -18,7 +18,7 @@ namespace BibleCommon.Services
     {
         private static string GetCacheFilePath(string notebookId)
         {            
-            return Path.Combine(Utils.GetCacheFolderPath(), notebookId) + "_verses.cache";
+            return Path.Combine(Utils.GetCacheFolderPath(), notebookId) + "_verses" + Consts.Constants.FileExtensionCache;
         }
 
         public static bool CacheIsActive(string notebookId)

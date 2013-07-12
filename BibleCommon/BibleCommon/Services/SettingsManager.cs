@@ -213,7 +213,7 @@ namespace BibleCommon.Services
 
 
         public List<string> Filter_HiddenNotebooks { get; set; }
-        public int Filter_MinLinkWeight { get; set; }
+        public decimal Filter_MinVerseWeight { get; set; }
         public bool Filter_ShowDetailedNotes { get; set; }
 
         public bool? UseDefaultSettings { get; set; }
@@ -559,7 +559,8 @@ namespace BibleCommon.Services
                                                 s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(code => int.Parse(code)));
             this.Filter_HiddenNotebooks = GetParameterValue<List<string>>(xdoc, Consts.Constants.ParameterName_FilterHiddenNotebooks, new List<string>(),
                                                 s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList());
-            this.Filter_MinLinkWeight = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_FilterMinLinkWeight, Consts.Constants.DefaultFilter_MinLinkWeight);
+            this.Filter_MinVerseWeight = GetParameterValue<decimal>(xdoc, Consts.Constants.ParameterName_FilterMinVerseWeight, Consts.Constants.DefaultFilter_MinVerseWeight,
+                                                s => decimal.Parse(s, CultureInfo.InvariantCulture));
             this.Filter_ShowDetailedNotes = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_FilterShowDetailedNotes, Consts.Constants.DefaultFilter_ShowDetailedNotes);
         }
 
@@ -701,7 +702,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_GenerateFullBibleVersesCache, GenerateFullBibleVersesCache),
                                   new XElement(Consts.Constants.ParameterName_ShownMessages, string.Join(";", this.ShownMessages.ConvertAll(m => m.ToString()).ToArray())),
                                   new XElement(Consts.Constants.ParameterName_FilterHiddenNotebooks, string.Join(";", this.Filter_HiddenNotebooks.ToArray())),
-                                  new XElement(Consts.Constants.ParameterName_FilterMinLinkWeight, this.Filter_MinLinkWeight),
+                                  new XElement(Consts.Constants.ParameterName_FilterMinVerseWeight, this.Filter_MinVerseWeight),
                                   new XElement(Consts.Constants.ParameterName_FilterShowDetailedNotes, this.Filter_ShowDetailedNotes)
                                 );
 

@@ -23,7 +23,7 @@ namespace BibleCommon.Services
             if (dictionaryModuleInfo == null)
                 throw new Exception(string.Format("The dictionary '{0}' is not installed", moduleShortName));
 
-            return Path.Combine(Utils.GetCacheFolderPath(), dictionaryModuleInfo.ToString()) + "_terms.cache";
+            return Path.Combine(Utils.GetCacheFolderPath(), dictionaryModuleInfo.ToString()) + "_terms" + Consts.Constants.FileExtensionCache;
         }
 
         public static bool CacheIsActive(string moduleShortName)
