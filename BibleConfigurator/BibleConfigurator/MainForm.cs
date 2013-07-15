@@ -1493,12 +1493,17 @@ namespace BibleConfigurator
             try
             {
                 btnUploadModule.Enabled = false;
-                if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (openModuleFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    bool moduleWasAdded;
-                    bool needToReload = AddNewModule(openFileDialog.FileName, out moduleWasAdded);
-                    if (needToReload)
-                        ReLoadParameters(true);
+                    if (Path.GetExtension(openModuleFileDialog.FileName).ToLower() != Constants.FileExtensionIsbt)
+                        FormLogger.LogError(BibleCommon.Resources.Constants.ShouldSelectIsbtFile);
+                    else
+                    {
+                        bool moduleWasAdded;
+                        bool needToReload = AddNewModule(openModuleFileDialog.FileName, out moduleWasAdded);
+                        if (needToReload)
+                            ReLoadParameters(true);
+                    }
                 }
             }
             finally

@@ -888,4 +888,7 @@ Please take notice:
   <data name="FilterPopupTrackbar" xml:space="preserve">
     <value>Show links with weight:</value>
   </data>
+  <data name="ShouldSelectIsbtFile" xml:space="preserve">
+    <value>The file with extension ".isbt" must be selected.</value>
+  </data>
 </root>
