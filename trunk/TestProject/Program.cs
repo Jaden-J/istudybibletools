@@ -24,6 +24,7 @@ using TestProject.Properties;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Globalization;
+using BibleConfigurator;
 
 
 namespace TestProject
@@ -46,7 +47,9 @@ namespace TestProject
 
             try
             {
-                                
+
+
+                new Installer().TryToRegenerateNotesPages();
 
                 //Console.WriteLine(Regex.Replace("<br>no<", string.Format("(^|[^0-9a-zA-Z]){0}($|[^0-9a-zA-Z<])", "no"), @"$1aeasdasds$2", RegexOptions.IgnoreCase));
                 //return;
