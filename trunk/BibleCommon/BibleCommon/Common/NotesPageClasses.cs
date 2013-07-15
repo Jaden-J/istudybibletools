@@ -115,25 +115,26 @@ namespace BibleCommon.Common
 
                 foreach (var subLinkEl in subLinksEl.GetByClass("td", "subLink"))
                 {
-                    pageLevel.AddPageLink(GetNotesPageLink(subLinkEl.Element("a"), subLinkEl.Parent, "td"));                    
+                    pageLevel.AddPageLink(GetNotesPageLink(subLinkEl.Element("a"), subLinkEl, "td"));                    
                 }
             }
             else
             {
-                pageLevel.AddPageLink(GetNotesPageLink(aEl, aEl.Parent, "span"));                
+                pageLevel.AddPageLink(GetNotesPageLink(aEl, aEl, "span"));                
             }
 
             Application oneNoteApp = null;
             parentLevel.AddLevel(ref oneNoteApp, pageLevel, null, false);
         }
 
-        private NotesPageLink GetNotesPageLink(XElement aEl, XElement multiVerseParentEl, string multiVerseTagName)
+        private NotesPageLink GetNotesPageLink(XElement aEl, XElement linkEl, string multiVerseTagName)
         {
             var href = aEl.Attribute("href").Value;
-            var multiVerseEl = multiVerseParentEl.GetByClass(multiVerseTagName, "subLinkMultiVerse").FirstOrDefault();            
 
             var pageLink = new NotesPageLink(href);
-            if (multiVerseEl != null)
+            
+            var multiVerseEl = (XElement)linkEl.NextNode;
+            if (multiVerseEl != null && multiVerseEl.Name == multiVerseTagName && (string)multiVerseEl.Attribute("class") == "subLinkMultiVerse")
                 pageLink.MultiVerseString = multiVerseEl.Value;
 
             return pageLink;

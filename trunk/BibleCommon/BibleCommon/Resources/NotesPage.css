@@ -157,6 +157,10 @@ a.detailed
 {
     display:none;
 }
+.hiddenChildLink
+{
+    display:none;
+}
 .importantVerseLink
 {
     font-weight:bold;
