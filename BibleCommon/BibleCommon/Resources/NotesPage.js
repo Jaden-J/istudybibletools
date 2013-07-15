@@ -55,13 +55,13 @@ function setDetailedNotesFilter() {
     chkDetailedNodes.click(chkDetailedNodes_click);
     chkDetailedNodes.attr('checked', global_IsDetailed);
 
-    var detailedEls = $(".detailed");
-    if (detailedEls.length == 0) {
-        chkDetailedNodes.attr("disabled", "disabled");
+    //    var detailedEls = $(".detailed");
+    //    if (detailedEls.length == 0) {
+    //        chkDetailedNodes.attr("disabled", "disabled");
 
-        chkDetailedNodes.attr("title", const_textIfNoDetailedNotes);
-        $("label.detailedNotes").attr("title", const_textIfNoDetailedNotes);
-    }
+    //        chkDetailedNodes.attr("title", const_textIfNoDetailedNotes);
+    //        $("label.detailedNotes").attr("title", const_textIfNoDetailedNotes);
+    //    }
 }
 
 function setFilterLinkHandlers() {
@@ -98,17 +98,18 @@ function filterByTrackbarAndDetailedNotes() {
             var linkInfo = linksWeight[index];
             var childsWeight = 0;
 
-            hideLinkIfIsNotDetailed(linkInfo.linkEl, linkInfo.isDetailed);
+            linkInfo.visible = hideLinkIfIsNotDetailed(linkInfo.linkEl, linkInfo.isDetailed);
 
-            var isAnyChildVisible = false;
+            var visibleChildrenCount = 0;
             for (var childIndex = 0; childIndex < linkInfo.childLinks.length; childIndex++) {
                 var childLinkInfo = linkInfo.childLinks[childIndex];
-                var linkIsVisible = hideLinkIfIsNotDetailed(childLinkInfo.linkEl, childLinkInfo.isDetailed);
-                linkIsVisible = hideLinkIfLessThanTrackbarValue(childLinkInfo.linkEl, childLinkInfo.weight < global_MinVersesWeight) && linkIsVisible;
-                isAnyChildVisible = linkIsVisible || isAnyChildVisible;
+                childLinkInfo.visible = hideLinkIfIsNotDetailed(childLinkInfo.linkEl, childLinkInfo.isDetailed);
+                childLinkInfo.visible = hideLinkIfLessThanTrackbarValue(childLinkInfo.linkEl, childLinkInfo.weight < global_MinVersesWeight) && childLinkInfo.visible;
 
-                if (linkIsVisible)
+                if (childLinkInfo.visible) {
                     childsWeight += childLinkInfo.weight;
+                    visibleChildrenCount++;
+                }
 
                 if (!isNull(childLinkInfo.nextBracketsEl)) {
                     hideLinkIfIsNotDetailed(childLinkInfo.nextBracketsEl, childLinkInfo.isDetailed);
@@ -123,17 +124,72 @@ function filterByTrackbarAndDetailedNotes() {
             var weight = global_IsDetailed ? linkInfo.detailedWeight : linkInfo.weight;
 
             if (linkInfo.childLinks.length == 0) {
-                hideLinkIfLessThanTrackbarValue(linkInfo.linkEl, weight < global_MinVersesWeight);
+                linkInfo.visible = hideLinkIfLessThanTrackbarValue(linkInfo.linkEl, weight < global_MinVersesWeight) && linkInfo.visible;
                 setElementIsImportant(linkInfo.linkEl, weight >= const_importantVerseWeight);
             }
             else {
-                hideLinkIfLessThanTrackbarValue(linkInfo.linkEl, !isAnyChildVisible);
+                linkInfo.visible = hideLinkIfLessThanTrackbarValue(linkInfo.linkEl, visibleChildrenCount == 0) && linkInfo.visible;
                 setElementIsImportant(linkInfo.linkEl, childsWeight >= const_importantVerseWeight);
+            }
+
+            if (linkInfo.visible) {
+                if (visibleChildrenCount == 1) {
+                    copyChildLinkToPageTitleLink(linkInfo);
+                }
+                else {
+                    resetPageTitleLink(linkInfo);
+                }
             }
         }
     }
 
     firstTrackbarAndDetailedNotesFilterCall = false;
+}
+
+function copyChildLinkToPageTitleLink(linkInfo) {
+    var visibleChildLinkInfo;
+    for (var i = 0; i < linkInfo.childLinks.length; i++) {
+        if (linkInfo.childLinks[i].visible) {
+            visibleChildLinkInfo = linkInfo.childLinks[i];
+            break;
+        }
+    }
+    if (visibleChildLinkInfo != null) {
+        var multiVerseString;
+        var childHref = visibleChildLinkInfo.linkEl.attr("href");
+        if (!isNull(visibleChildLinkInfo.nextBracketsEl)) {
+            multiVerseString = visibleChildLinkInfo.nextBracketsEl.text();
+        }
+
+        if (isNull(linkInfo.linkEl.attr("data_oldHref"))) {
+
+            linkInfo.linkEl.attr("data_oldHref", linkInfo.linkEl.attr("href"));
+            linkInfo.linkEl.attr("href", childHref);
+            if (!isNull(multiVerseString)) {
+                linkInfo.linkEl.after("<span class='childSubLinkMultiVerse'> " + multiVerseString + "</span>");
+            }
+
+            visibleChildLinkInfo.linkEl.addClass("hiddenChildLink");
+
+            if (!isNull(visibleChildLinkInfo.nextBracketsEl)) {
+                visibleChildLinkInfo.nextBracketsEl.addClass("hiddenChildLink");
+            }
+
+            if (!isNull(visibleChildLinkInfo.nextDelimiterEl)) {
+                visibleChildLinkInfo.nextDelimiterEl.addClass("hiddenChildLink");
+            }
+        }
+    }
+}
+
+function resetPageTitleLink(linkInfo) {
+    if (!isNull(linkInfo.linkEl.attr("data_oldHref"))) {
+        linkInfo.linkEl.attr("href", linkInfo.linkEl.attr("data_oldHref"));
+        linkInfo.linkEl.attr("data_oldHref", null)
+    }
+    var parentEl = linkInfo.linkEl.parents("li")
+    parentEl.find(".childSubLinkMultiVerse").remove();
+    parentEl.find(".hiddenChildLink").removeClass("hiddenChildLink");
 }
 
 function setElementIsImportant(linkEl, isImportant) {
@@ -203,11 +259,11 @@ function BuildLinksWeight() {
                     }
                 }
 
-                childLinks.push({ linkEl: childLinkEl, nextBracketsEl: nextBracketsEl, nextDelimiterEl: nextDelimiterEl, isDetailed: childLinkIsDetailed, weight: childLinkWeight });
+                childLinks.push({ linkEl: childLinkEl, nextBracketsEl: nextBracketsEl, nextDelimiterEl: nextDelimiterEl, isDetailed: childLinkIsDetailed, weight: childLinkWeight, visible: true });
             });
         }
 
-        titleLinks.push({ linkEl: titleLinkEl, isDetailed: isDetailed, weight: weight, detailedWeight: detailedWeight, childLinks: childLinks });
+        titleLinks.push({ linkEl: titleLinkEl, isDetailed: isDetailed, weight: weight, detailedWeight: detailedWeight, childLinks: childLinks, visible: true });
     });
 
     return titleLinks;

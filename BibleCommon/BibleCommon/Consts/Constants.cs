@@ -146,8 +146,8 @@ namespace BibleCommon.Consts
         public static readonly int ChapterNotesPageLinkOutline_z = 1;
 
         public static readonly string NotesPageElementAttributeName_SyncId = "syncid";
-        public static readonly string NotesPageStyleFileName = "corev2.css";
-        public static readonly string NotesPageScriptFileName = "corev2.js";
+        public static readonly string NotesPageStyleFileName = "core.css";
+        public static readonly string NotesPageScriptFileName = "core.js";
         public static readonly string NotesPageJQueryScriptFileName = "jquery.js";
         public static readonly string NotesPageTrackbarStyleFileName = "plugins/trackbar/trackbar.css";
         public static readonly string NotesPageTrackbarScriptFileName = "plugins/trackbar/trackbar.js";
