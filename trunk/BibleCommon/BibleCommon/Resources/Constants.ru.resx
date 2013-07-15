@@ -885,4 +885,7 @@
   <data name="FilterPopupTrackbar" xml:space="preserve">
     <value>Отображать ссылки с весом:</value>
   </data>
+  <data name="ShouldSelectIsbtFile" xml:space="preserve">
+    <value>Необходимо выбрать файл с расширением ".isbt".</value>
+  </data>
 </root>

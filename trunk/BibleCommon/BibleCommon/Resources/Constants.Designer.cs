@@ -2010,6 +2010,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The file with extension &quot;.isbt&quot; must be selected..
+        /// </summary>
+        public static string ShouldSelectIsbtFile {
+            get {
+                return ResourceManager.GetString("ShouldSelectIsbtFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show errors.
         /// </summary>
         public static string ShowErrors {
