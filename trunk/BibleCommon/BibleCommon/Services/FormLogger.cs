@@ -48,7 +48,7 @@ namespace BibleCommon.Services
             if (args != null && args.Length > 0)
                 message = string.Format(message, args);
 
-            BibleCommon.Services.Logger.LogMessageParams(message);
+            BibleCommon.Services.Logger.LogMessage(message);
 
             using (var form = new BibleCommon.UI.Forms.MessageForm(message, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information))
             {
