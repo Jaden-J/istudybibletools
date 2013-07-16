@@ -3,7 +3,6 @@
 ///// constants and global variables
 
 var const_showAllLinks;
-var const_textIfNoDetailedNotes;
 var const_importantVerseWeight;
 
 var global_IsDetailed;
@@ -15,9 +14,8 @@ $(function () {
     bindEvents();
 });
 
-function setConstants(showAllLinks, textIfNoDetailedNotes, importantVerseWeight) {
-    const_showAllLinks = showAllLinks;
-    const_textIfNoDetailedNotes = textIfNoDetailedNotes;
+function setConstants(showAllLinks, importantVerseWeight) {
+    const_showAllLinks = showAllLinks;    
     const_importantVerseWeight = importantVerseWeight;
 }
 
@@ -53,15 +51,7 @@ function setFilterNotebooks(notebooks) {
 function setDetailedNotesFilter() {
     var chkDetailedNodes = $("#chkDetailedNotes");
     chkDetailedNodes.click(chkDetailedNodes_click);
-    chkDetailedNodes.attr('checked', global_IsDetailed);
-
-    //    var detailedEls = $(".detailed");
-    //    if (detailedEls.length == 0) {
-    //        chkDetailedNodes.attr("disabled", "disabled");
-
-    //        chkDetailedNodes.attr("title", const_textIfNoDetailedNotes);
-    //        $("label.detailedNotes").attr("title", const_textIfNoDetailedNotes);
-    //    }
+    chkDetailedNodes.attr('checked', global_IsDetailed);    
 }
 
 function setFilterLinkHandlers() {
@@ -171,6 +161,11 @@ function copyChildLinkToPageTitleLink(linkInfo) {
 
             visibleChildLinkInfo.linkEl.addClass("hiddenChildLink");
 
+            if (visibleChildLinkInfo.linkEl.hasClass("detailed")) {
+                linkInfo.linkEl.addClass("detailed");
+                linkInfo.linkEl.addClass("toRemoveDetailed");
+            }
+
             if (!isNull(visibleChildLinkInfo.nextBracketsEl)) {
                 visibleChildLinkInfo.nextBracketsEl.addClass("hiddenChildLink");
             }
@@ -186,10 +181,16 @@ function resetPageTitleLink(linkInfo) {
     if (!isNull(linkInfo.linkEl.attr("data_oldHref"))) {
         linkInfo.linkEl.attr("href", linkInfo.linkEl.attr("data_oldHref"));
         linkInfo.linkEl.attr("data_oldHref", null)
+
+        if (linkInfo.linkEl.hasClass("toRemoveDetailed")) {
+            linkInfo.linkEl.removeClass("detailed");
+            linkInfo.linkEl.removeClass("toRemoveDetailed");
+        }
+
+        var parentEl = linkInfo.linkEl.parent().parent();
+        parentEl.find(".childSubLinkMultiVerse").remove();
+        parentEl.find(".hiddenChildLink").removeClass("hiddenChildLink");
     }
-    var parentEl = linkInfo.linkEl.parents("li")
-    parentEl.find(".childSubLinkMultiVerse").remove();
-    parentEl.find(".hiddenChildLink").removeClass("hiddenChildLink");
 }
 
 function setElementIsImportant(linkEl, isImportant) {
@@ -257,6 +258,10 @@ function BuildLinksWeight() {
                         if (nextVerseIndex < nextDelimiterEl.index())
                             nextDelimiterEl = null;
                     }
+                }
+                else {
+                    nextBracketsEl = null;
+                    nextDelimiterEl = null;
                 }
 
                 childLinks.push({ linkEl: childLinkEl, nextBracketsEl: nextBracketsEl, nextDelimiterEl: nextDelimiterEl, isDetailed: childLinkIsDetailed, weight: childLinkWeight, visible: true });
@@ -351,7 +356,7 @@ function filterWasChanged() {
 }
 
 function setFilterTrackbarTitle() {
-    $("#filterVerseWeightTitle").html(global_MinVersesWeight == 0 ? const_showAllLinks : global_MinVersesWeight);
+    $("#filterVerseWeightTitle").text(global_MinVersesWeight == 0 ? const_showAllLinks : global_MinVersesWeight);
     if (global_MinVersesWeight == 0)
         $("#filterVerseWeightDescription").hide();
     else
@@ -373,14 +378,18 @@ function getFilterTrackbarValue(minVersesWeight) {
     return 0;
 }
 
+var updateFilterTrackbarTriggerId;
 function setFilterTrackbar() {
     if ($("#filterVerseWeight").length > 0) {
         trackbar.getObject('chars').init({
             onMove: function () {
-                global_MinVersesWeight = getMinVersesWeight(this.leftValue);
-                setFilterTrackbarTitle();
-                filterByTrackbarAndDetailedNotes();
-                filterWasChanged();
+                var newMinVerseWeight = getMinVersesWeight(this.leftValue);
+                if (newMinVerseWeight != global_MinVersesWeight) {
+                    window.clearInterval(updateFilterTrackbarTriggerId);
+                    updateFilterTrackbarTriggerId = window.setTimeout(function () {
+                        onTrackbarFilterChanged(newMinVerseWeight);
+                    }, 10);
+                }
             },
             dual: false,
             width: 100, // px
@@ -392,6 +401,15 @@ function setFilterTrackbar() {
         },
         'filterVerseWeight');
     }
+
+    onTrackbarFilterChanged(global_MinVersesWeight);
+}
+
+function onTrackbarFilterChanged(newMinVerseWeight) {
+    global_MinVersesWeight = newMinVerseWeight;
+    setFilterTrackbarTitle();
+    filterByTrackbarAndDetailedNotes();
+    filterWasChanged();
 }
 
 function hideElement(el, className) {

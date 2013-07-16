@@ -67,7 +67,8 @@ namespace BibleConfigurator
                             AddDefaultAnalyzedNotebooksInfo(ref oneNoteApp, service);
                             RegenerateNotesPages(ref oneNoteApp, service);
 
-                            service.Update();                            
+                            service.Update();
+                            NotesPageManagerFS.UpdateResources();
                         }
                     }
                     finally
