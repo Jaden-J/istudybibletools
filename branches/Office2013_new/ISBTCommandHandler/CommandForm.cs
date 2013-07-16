@@ -72,7 +72,15 @@ namespace ISBTCommandHandler
                     if (handler is OpenNotesPageHandler)
                     {
                         OpenNotesPage(((OpenNotesPageHandler)handler).Verse, ((OpenNotesPageHandler)handler).GetVerseFilePath());
-                    }                    
+                    }
+                    else if (handler is RefreshCacheHandler)
+                    {
+                        if (((RefreshCacheHandler)handler).CacheMode == RefreshCacheHandler.RefreshCacheMode.RefreshAnalyzedVersesCache)
+                        {
+                            if (_notesPageForm != null)                            
+                                _notesPageForm.RefreshFilteredNotebooksInfo();                            
+                        }
+                    }
                         
                     break;
                 }

@@ -293,7 +293,7 @@ namespace BibleConfigurator
         private void RefreshCache()
         {
             if (_oneNoteApp.Windows.CurrentWindow != null)            
-                Process.Start(RefreshCacheHandler.GetCommandUrlStatic());   // если текущее окно закрыто, то и кэш скорее всего закрыт. Когда окно откроют, кэш обновится                            
+                Process.Start(RefreshCacheHandler.GetCommandUrlStatic(RefreshCacheHandler.RefreshCacheMode.RefreshApplicationCache));   // если текущее окно закрыто, то и кэш скорее всего закрыт. Когда окно откроют, кэш обновится                            
         }
 
         private void TryToSearchNotebooksForNewModule(ModuleInfo module)
@@ -1493,13 +1493,18 @@ namespace BibleConfigurator
             try
             {
                 btnUploadModule.Enabled = false;
-                if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (openModuleFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
+                    if (Path.GetExtension(openModuleFileDialog.FileName).ToLower() != Constants.FileExtensionIsbt)
+                        FormLogger.LogError(BibleCommon.Resources.Constants.ShouldSelectIsbtFile);
+                    else
+                    {
                     bool moduleWasAdded;
-                    bool needToReload = AddNewModule(openFileDialog.FileName, out moduleWasAdded);
+                        bool needToReload = AddNewModule(openModuleFileDialog.FileName, out moduleWasAdded);
                     if (needToReload)
                         ReLoadParameters(true);
                 }
+            }
             }
             finally
             {

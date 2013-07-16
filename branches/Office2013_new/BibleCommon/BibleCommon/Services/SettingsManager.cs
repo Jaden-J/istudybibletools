@@ -211,6 +211,11 @@ namespace BibleCommon.Services
         public bool RubbishPage_ExpandMultiVersesLinking { get; set; }
         public bool RubbishPage_ExcludedVersesLinking { get; set; }
 
+
+        public List<string> Filter_HiddenNotebooks { get; set; }
+        public decimal Filter_MinVerseWeight { get; set; }
+        public bool Filter_ShowDetailedNotes { get; set; }
+
         public bool? UseDefaultSettings { get; set; }
 
         private Version _currentVersion = null;
@@ -415,6 +420,7 @@ namespace BibleCommon.Services
             SupplementalBibleModules = new List<StoredModuleInfo>();
             DictionariesModules = new List<StoredModuleInfo>();
             ShownMessages = new List<int>();
+            Filter_HiddenNotebooks = new List<string>();            
         }
 
         private void LoadSettingsFromFile()
@@ -551,6 +557,11 @@ namespace BibleCommon.Services
             this.FolderPath_BibleNotesPages = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_FolderPathBibleNotesPages, Utils.GetNotesPagesFolderPath());
             this.ShownMessages = GetParameterValue<List<int>>(xdoc, Consts.Constants.ParameterName_ShownMessages, new List<int>(), 
                                                 s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(code => int.Parse(code)));
+            this.Filter_HiddenNotebooks = GetParameterValue<List<string>>(xdoc, Consts.Constants.ParameterName_FilterHiddenNotebooks, new List<string>(),
+                                                s => s.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToList());
+            this.Filter_MinVerseWeight = GetParameterValue<decimal>(xdoc, Consts.Constants.ParameterName_FilterMinVerseWeight, Consts.Constants.DefaultFilter_MinVerseWeight,
+                                                s => decimal.Parse(s, CultureInfo.InvariantCulture));
+            this.Filter_ShowDetailedNotes = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_FilterShowDetailedNotes, Consts.Constants.DefaultFilter_ShowDetailedNotes);
         }
 
         private T GetParameterValue<T>(XDocument xdoc, string parameterName, object defaultValue = null, Func<string, T> convertFunc = null)
@@ -689,8 +700,11 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_UseProxyLinksForLinks, UseProxyLinksForLinks),
                                   new XElement(Consts.Constants.ParameterName_UseProxyLinksForBibleVerses, UseProxyLinksForBibleVerses),
                                   new XElement(Consts.Constants.ParameterName_GenerateFullBibleVersesCache, GenerateFullBibleVersesCache),
-                                  new XElement(Consts.Constants.ParameterName_ShownMessages, string.Join(";", this.ShownMessages.ConvertAll(m => m.ToString()).ToArray()))
-                                  );
+                                  new XElement(Consts.Constants.ParameterName_ShownMessages, string.Join(";", this.ShownMessages.ConvertAll(m => m.ToString()).ToArray())),
+                                  new XElement(Consts.Constants.ParameterName_FilterHiddenNotebooks, string.Join(";", this.Filter_HiddenNotebooks.ToArray())),
+                                  new XElement(Consts.Constants.ParameterName_FilterMinVerseWeight, this.Filter_MinVerseWeight),
+                                  new XElement(Consts.Constants.ParameterName_FilterShowDetailedNotes, this.Filter_ShowDetailedNotes)
+                                );
 
                     if (SelectedNotebooksForAnalyze != null && SelectedNotebooksForAnalyzeIsNotAsDefault())
                     {

@@ -24,6 +24,7 @@ using TestProject.Properties;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Globalization;
+using BibleConfigurator;
 
 
 namespace TestProject
@@ -46,7 +47,9 @@ namespace TestProject
 
             try
             {
-                                
+
+
+                new Installer().TryToRegenerateNotesPages();
 
                 //Console.WriteLine(Regex.Replace("<br>no<", string.Format("(^|[^0-9a-zA-Z]){0}($|[^0-9a-zA-Z<])", "no"), @"$1aeasdasds$2", RegexOptions.IgnoreCase));
                 //return;
@@ -337,7 +340,7 @@ namespace TestProject
         private static void TestModule()
         {
             string filePath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\temp\Modules\RST\manifest.xml";
-            var _serializer = new XmlSerializer(typeof(ModuleInfo));
+            var _serializer = XmlSerializerCache.GetXmlSerializer(typeof(ModuleInfo));
 
             using (var fs = new FileStream(filePath, FileMode.Open))
             {

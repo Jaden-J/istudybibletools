@@ -82,17 +82,5 @@ namespace ISBTCommandHandler.Properties {
                 this["NotesPageFormScale"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool NotesPageFormShowDetailedNotes {
-            get {
-                return ((bool)(this["NotesPageFormShowDetailedNotes"]));
-            }
-            set {
-                this["NotesPageFormShowDetailedNotes"] = value;
-            }
-        }
     }
 }
