@@ -132,7 +132,7 @@ namespace BibleCommon.Services
             }
         }
 
-        public static void LogMessage(string message, bool leveled, bool newLine,
+        public static void LogMessageEx(string message, bool leveled, bool newLine,
             bool writeDateTime = true, bool silient = false, Severity severity = Severity.Info, string pageId = null, string contentObjectId = null)
         {
             LogMessageToFileAndConsole(false, string.Empty, null, writeDateTime, silient, severity, pageId, contentObjectId);
@@ -251,13 +251,13 @@ namespace BibleCommon.Services
 
         public static void LogWarning(string message, params object[] args)
         {
-            LogMessage("Warning: " + FormatString(message, args), true, true, true, false, Severity.Warning);
+            LogMessageEx("Warning: " + FormatString(message, args), true, true, true, false, Severity.Warning);
             WarningWasLogged = true;
         }
 
         public static void LogWarning(string pageId, string contentObjectId, string message, params object[] args)
         {
-            LogMessage("Warning: " + FormatString(message, args), true, true, true, false, Severity.Warning, pageId, contentObjectId);
+            LogMessageEx("Warning: " + FormatString(message, args), true, true, true, false, Severity.Warning, pageId, contentObjectId);
             WarningWasLogged = true;
         }
 
@@ -266,14 +266,14 @@ namespace BibleCommon.Services
         /// </summary>
         /// <param name="message"></param>
         /// <param name="args"></param>
-        public static void LogMessageSilientParams(string message, params object[] args)
+        public static void LogMessageSilient(string message, params object[] args)
         {
-            LogMessage(FormatString(message, args), true, true, true, true);
+            LogMessageEx(FormatString(message, args), true, true, true, true);
         }
 
-        public static void LogMessageParams(string message, params object[] args)
+        public static void LogMessage(string message, params object[] args)
         {
-            LogMessage(FormatString(message, args), true, true);
+            LogMessageEx(FormatString(message, args), true, true);
         }
 
         public static void LogError(string message, Exception ex)

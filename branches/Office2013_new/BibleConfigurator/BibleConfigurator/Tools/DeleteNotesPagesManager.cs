@@ -86,7 +86,7 @@ namespace BibleConfigurator.Tools
                     {
                         string message = string.Format("{0} '{1}'", BibleCommon.Resources.Constants.DeleteNotesPagesManagerRemovePage, page.Value);
                         _form.PerformProgressStep(message);
-                        BibleCommon.Services.Logger.LogMessageParams(message);
+                        BibleCommon.Services.Logger.LogMessage(message);
 
                         DeleteNotesPage(page.Key);
 
@@ -99,7 +99,7 @@ namespace BibleConfigurator.Tools
             }
             catch (ProcessAbortedByUserException)
             {
-                BibleCommon.Services.Logger.LogMessageParams("Process aborted by user");
+                BibleCommon.Services.Logger.LogMessage("Process aborted by user");
             }
             finally
             {

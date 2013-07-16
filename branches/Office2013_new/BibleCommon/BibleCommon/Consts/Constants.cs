@@ -93,6 +93,8 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_FilterMinVerseWeight = "FilterMinVerseWeight";
         public static readonly string ParameterName_FilterShowDetailedNotes = "FilterShowDetailedNotes";
 
+        public static readonly string ParameterName_VersionFromSettings = "ProgramVersion";        
+
 
         public static readonly string ParameterName_PageWidthNotes = "Width_NotesPage";
         public static readonly string ParameterName_PageWidthBible = "Width_BiblePage";

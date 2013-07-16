@@ -26,23 +26,27 @@ namespace BibleConfigurator
     [RunInstaller(true)]
     public class Installer : System.Configuration.Install.Installer
     {
-
         private Version _programVersion;
         public Installer()
             : base()
-        {   
-            // Attach the 'Committed' event.
-            this.Committed += new InstallEventHandler(MyInstaller_Committed);
+        {
+            try
+            {   
+                _programVersion = SettingsManager.Instance.VersionFromSettings;                
 
-            _programVersion = Utils.GetProgramVersion();
+                // Attach the 'Committed' event.
+                this.Committed += new InstallEventHandler(MyInstaller_Committed);                
+            }
+            catch (Exception ex)
+            {
+                Log(ex.ToString());
+            }
         }
 
         // Event handler for 'Committed' event.
         private void MyInstaller_Committed(object sender, InstallEventArgs e)
         {
-            TryToGenerateDefaultModule();
-
-            TryToMergeAllModulesWithMainBible();            
+            TryToGenerateDefaultModule();            
 
             TryToRegenerateNotesPages();
         }
@@ -50,32 +54,35 @@ namespace BibleConfigurator
         public void TryToRegenerateNotesPages()
         {
             try
-            {
-                if (_programVersion.Major == 3 && _programVersion.Minor == 0)
+            {   
+                if (_programVersion == null)  // так как до версии 3.1 этого свойства ещё не было
                 {
                     var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();                    
                     try
-                    {   
-                        var service = new AnalyzedVersesService(true);
+                    {
+                        if (!string.IsNullOrEmpty(SettingsManager.Instance.FolderPath_BibleNotesPages))
+                        {
+                            var service = new AnalyzedVersesService(true);
 
-                        AddDefaultAnalyzedNotebooksInfo(ref oneNoteApp, service);
-                        RegenerateNotesPages(ref oneNoteApp, service);
+                            AddDefaultAnalyzedNotebooksInfo(ref oneNoteApp, service);
+                            RegenerateNotesPages(ref oneNoteApp, service);
 
-                        service.Update();
+                            service.Update();                            
+                        }
                     }
                     finally
                     {
                         OneNoteUtils.ReleaseOneNoteApp(ref oneNoteApp);                                                
                     }
+
+                    SettingsManager.Instance.Save();  // чтобы записать VersionFromSettings
+
+                    TryToMergeAllModulesWithMainBible();  // так как раньше оно не правильно вызывалось и вызывалось ли вообще...
                 }
             }
             catch (Exception ex)
             {
-                try
-                {
-                    Logger.LogError(ex);
-                }
-                catch { }
+                Log(ex.ToString());
             }
         }
 
@@ -85,20 +92,27 @@ namespace BibleConfigurator
             {
                 foreach (var filePath in Directory.GetFiles(SettingsManager.Instance.FolderPath_BibleNotesPages, "*.htm", SearchOption.AllDirectories))
                 {
-                    var fileContent = File.ReadAllText(filePath);
-                    var startTitleIndex = fileContent.IndexOf("<title>") + "<title>".Length;
-                    if (startTitleIndex > 10)
+                    try
                     {
-                        var endTitleIndex = fileContent.IndexOf("</title>");
-                        var title = fileContent.Substring(startTitleIndex, endTitleIndex - startTitleIndex);
-                        var parts = title.Split(new char[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);                        
-                        var pageName = parts[0];
-                        var chapterPointer = new VersePointer(parts[1]);
-                        var pageData = new NotesPageData(filePath, pageName, Path.GetFileNameWithoutExtension(filePath) == "0" ? NotesPageType.Chapter : NotesPageType.Verse, chapterPointer, true);
-                        pageData.Serialize(ref oneNoteApp, service);
-                    }
+                        var fileContent = File.ReadAllText(filePath);
+                        var startTitleIndex = fileContent.IndexOf("<title>") + "<title>".Length;
+                        if (startTitleIndex > 10)
+                        {
+                            var endTitleIndex = fileContent.IndexOf("</title>");
+                            var title = fileContent.Substring(startTitleIndex, endTitleIndex - startTitleIndex);
+                            var parts = title.Split(new char[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
+                            var pageName = parts[0];
+                            var chapterPointer = new VersePointer(parts[1]);
+                            var pageData = new NotesPageData(filePath, pageName, Path.GetFileNameWithoutExtension(filePath) == "0" ? NotesPageType.Chapter : NotesPageType.Verse, chapterPointer, true);
+                            pageData.Serialize(ref oneNoteApp, service);
+                        }
 
-                    System.Windows.Forms.Application.DoEvents();
+                        System.Windows.Forms.Application.DoEvents();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log(ex.ToString());
+                    }
                 }
             }
         }
@@ -107,10 +121,17 @@ namespace BibleConfigurator
         {
             foreach (var notebookInfo in SettingsManager.Instance.SelectedNotebooksForAnalyze)
             {
-                var notebookName = OneNoteUtils.GetHierarchyElementName(ref oneNoteApp, notebookInfo.NotebookId);
-                var notebookNickname = OneNoteUtils.GetNotebookElementNickname(ref oneNoteApp, notebookInfo.NotebookId);
+                try
+                {
+                    var notebookName = OneNoteUtils.GetHierarchyElementName(ref oneNoteApp, notebookInfo.NotebookId);
+                    var notebookNickname = OneNoteUtils.GetNotebookElementNickname(ref oneNoteApp, notebookInfo.NotebookId);
 
-                service.AddAnalyzedNotebook(notebookName, notebookNickname);
+                    service.AddAnalyzedNotebook(notebookName, notebookNickname);
+                }
+                catch (Exception ex)
+                {
+                    Log(ex.ToString());
+                }               
             }
         }
 
@@ -118,18 +139,11 @@ namespace BibleConfigurator
         {
             try
             {
-                if (_programVersion < new Version(3, 0))
-                {
-                    BibleParallelTranslationManager.MergeAllModulesWithMainBible();
-                }
+                BibleParallelTranslationManager.MergeAllModulesWithMainBible();
             }
             catch (Exception ex)
             {
-                try
-                {
-                    Logger.LogError(ex);
-                }
-                catch { }
+                Log(ex.ToString());
             }
         }        
 
@@ -150,30 +164,18 @@ namespace BibleConfigurator
             }
             catch (Exception ex)
             {
-                try
-                {
-                    Logger.LogError(ex);
-                }
-                catch { }
+                Log(ex.ToString());
             }
-        }   
-
-        // Override the 'Install' method.
-        public override void Install(IDictionary savedState)
-        {
-            base.Install(savedState);
         }
 
-        // Override the 'Commit' method.
-        public override void Commit(IDictionary savedState)
-        {
-            base.Commit(savedState);
-        }
-
-        // Override the 'Rollback' method.
-        public override void Rollback(IDictionary savedState)
-        {
-            base.Rollback(savedState);
+        private static void Log(string message)
+        {   
+            try
+            {
+                var logFilePath = Path.Combine(Path.GetPathRoot(System.Environment.SystemDirectory), "isbt.log");
+                File.AppendAllText(logFilePath, message + System.Environment.NewLine);
+            }
+            catch { }
         }
 
         private static string GenerateDefaultModule(string oneNoteTemplatesFolder)
