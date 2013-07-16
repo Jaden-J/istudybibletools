@@ -28,26 +28,28 @@ namespace BibleCommon.Common
             }
         }
 
-        [XmlIgnore]
-        public HashSet<string> Notebooks { get; private set; }
-
-        [XmlAttribute("Notebooks")]
+        [XmlArray("Notebooks")]
+        [XmlArrayItem(typeof(AnalyzedNotebookInfo), ElementName = "Notebook")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public string AnalyzedNotebooks 
-        { 
+        public List<AnalyzedNotebookInfo> Notebooks {
             get
             {
-                return string.Join(StringDelimiter, Notebooks);
+                return NotebooksDictionary.Values.ToList();
             }
             set
             {
-                Notebooks = new HashSet<string>(value.Split(new string[] { StringDelimiter }, StringSplitOptions.RemoveEmptyEntries));
+                NotebooksDictionary = new Dictionary<string, AnalyzedNotebookInfo>();
+                value.ForEach(n => NotebooksDictionary.Add(n.Name, n));
             }
-        }        
+        }
 
-        [XmlElement(typeof(AnalyzedBookInfo), ElementName = "Book")]
+        [XmlIgnore]
+        public Dictionary<string, AnalyzedNotebookInfo> NotebooksDictionary { get; set; }
+
+        [XmlArray("Books")]        
+        [XmlArrayItem(typeof(AnalyzedBookInfo), ElementName="Book")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public List<AnalyzedBookInfo> Books { get; set; }
+        public List<AnalyzedBookInfo> Books { get; set; }        
 
         [XmlAttribute]
         public string Module { get; set; }
@@ -55,7 +57,7 @@ namespace BibleCommon.Common
         public AnalyzedVersesInfo()
         {
             Books = new List<AnalyzedBookInfo>();
-            Notebooks = new HashSet<string>();
+            Notebooks = new List<AnalyzedNotebookInfo>();
         }
 
         public AnalyzedVersesInfo(string module)
@@ -81,6 +83,30 @@ namespace BibleCommon.Common
         {
             Books = Books.OrderBy(b => b.Index).ToList();
             Books.ForEach(b => b.Sort());
+        }
+    }
+
+    public class AnalyzedNotebookInfo
+    {
+        [XmlAttribute]
+        public string Name { get; set; }
+
+        [XmlAttribute]
+        public string Nickname { get; set; }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = (AnalyzedNotebookInfo)obj;
+
+            if (obj == null)
+                return false;
+
+            return Name.Equals(other.Name);
         }
     }
 

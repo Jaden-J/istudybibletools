@@ -176,31 +176,44 @@ namespace BibleCommon.Services
 
         private static void UpdateNotesPageCssFile()
         {
-            UpdateNotesPageFile("BibleCommon.Resources.NotesPage.css", Consts.Constants.NotesPageStyleFileName);            
+            UpdateNotesPageFile("BibleCommon.Resources.NotesPage.css", Consts.Constants.NotesPageStyleFileName);
+            UpdateNotesPageFile("BibleCommon.Resources.plugins.trackbar.trackbar.css", Consts.Constants.NotesPageTrackbarStyleFileName);
         }
 
         private static void UpdateNotesPageJsFile()
         {
             UpdateNotesPageFile("BibleCommon.Resources.NotesPage.js", Consts.Constants.NotesPageScriptFileName);
             UpdateNotesPageFile("BibleCommon.Resources.JQuery.js", Consts.Constants.NotesPageJQueryScriptFileName);
+            UpdateNotesPageFile("BibleCommon.Resources.plugins.trackbar.trackbar.js", Consts.Constants.NotesPageTrackbarScriptFileName);
         }
 
         private static void UpdateNotesPageImages()
         {
-            var folder = Path.Combine(SettingsManager.Instance.FolderPath_BibleNotesPages, "images");
-            if (!Directory.Exists(folder))
-                Directory.CreateDirectory(folder);
-
             UpdateNotesPageFile("BibleCommon.Resources.images.none.png", "images/none.png");
             UpdateNotesPageFile("BibleCommon.Resources.images.minus.png", "images/minus.png");
-            UpdateNotesPageFile("BibleCommon.Resources.images.plus.png", "images/plus.png");            
+            UpdateNotesPageFile("BibleCommon.Resources.images.plus.png", "images/plus.png");
+            UpdateNotesPageFile("BibleCommon.Resources.images.popup_shadow.png", "images/popup_shadow.png");            
+            
+            UpdateNotesPageFile("BibleCommon.Resources.plugins.trackbar.imgtrackbar.b_bg_all.gif", "plugins/trackbar/imgtrackbar/b_bg_all.gif");
+            UpdateNotesPageFile("BibleCommon.Resources.plugins.trackbar.imgtrackbar.b_bg_off.gif", "plugins/trackbar/imgtrackbar/b_bg_off.gif");
+            UpdateNotesPageFile("BibleCommon.Resources.plugins.trackbar.imgtrackbar.b_bg_on.gif", "plugins/trackbar/imgtrackbar/b_bg_on.gif");
+            UpdateNotesPageFile("BibleCommon.Resources.plugins.trackbar.imgtrackbar.b_l.gif", "plugins/trackbar/imgtrackbar/b_l.gif");
+            UpdateNotesPageFile("BibleCommon.Resources.plugins.trackbar.imgtrackbar.b_r.gif", "plugins/trackbar/imgtrackbar/b_r.gif");            
         }
 
         private static void UpdateNotesPageFile(string fileResourceName, string fileName)
         {
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(fileResourceName))
             {
-                File.WriteAllBytes(Path.Combine(SettingsManager.Instance.FolderPath_BibleNotesPages, fileName), Utils.ReadStream(stream));
+                if (stream == null)
+                    throw new Exception("Embedded Resource not found: " + fileResourceName);
+
+                var filePath = Path.Combine(SettingsManager.Instance.FolderPath_BibleNotesPages, fileName);
+                var folder = Path.GetDirectoryName(filePath);
+                if (!Directory.Exists(folder))
+                    Directory.CreateDirectory(folder);
+
+                File.WriteAllBytes(filePath, Utils.ReadStream(stream));
             }
         }
 

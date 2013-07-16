@@ -367,7 +367,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Notebook is not specified for type &apos;{0}&apos;..
+        ///   Looks up a localized string similar to Notebook is not specified for type &apos;{0}&apos;..
         /// </summary>
         public static string ConfiguratorNotebookNotDefinedForType {
             get {
@@ -376,7 +376,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Notebook template is not found at.
+        ///   Looks up a localized string similar to Notebook template is not found at.
         /// </summary>
         public static string ConfiguratorNotebookTemplateNotFound {
             get {
@@ -385,7 +385,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Delete all pages &quot;Summary of Notes&quot; and references to them?.
+        ///   Looks up a localized string similar to Delete all pages &quot;Summary of Notes&quot; and references to them?.
         /// </summary>
         public static string ConfiguratorQuestionDeleteAllNotesPages {
             get {
@@ -421,7 +421,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Specify the folder for &quot;Notes Pages&quot; files.
+        ///   Looks up a localized string similar to Specify the folder for &quot;Notes Pages&quot; files.
         /// </summary>
         public static string ConfiguratorSetFolderForNotesPages {
             get {
@@ -628,7 +628,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Pages deleting.
+        ///   Looks up a localized string similar to Pages deleting.
         /// </summary>
         public static string DeleteNotesPagesManagerRemovePage {
             get {
@@ -700,7 +700,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Show Detailed Notes.
+        ///   Looks up a localized string similar to Show Detailed Notes.
         /// </summary>
         public static string DetailedNotes {
             get {
@@ -709,7 +709,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Dictionaries Management.
+        ///   Looks up a localized string similar to Dictionaries Management.
         /// </summary>
         public static string DictionariesManagement {
             get {
@@ -968,6 +968,60 @@ namespace BibleCommon.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Successfully completed..
         /// </summary>
+        public static string Filter {
+            get {
+                return ResourceManager.GetString("Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  and more....
+        /// </summary>
+        public static string FilterPopupAndMore {
+            get {
+                return ResourceManager.GetString("FilterPopupAndMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notebooks Filter:.
+        /// </summary>
+        public static string FilterPopupNotebooks {
+            get {
+                return ResourceManager.GetString("FilterPopupNotebooks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Filter Settings.
+        /// </summary>
+        public static string FilterPopupSave {
+            get {
+                return ResourceManager.GetString("FilterPopupSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all links.
+        /// </summary>
+        public static string FilterPopupShowAllLinks {
+            get {
+                return ResourceManager.GetString("FilterPopupShowAllLinks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show links with weight:.
+        /// </summary>
+        public static string FilterPopupTrackbar {
+            get {
+                return ResourceManager.GetString("FilterPopupTrackbar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully completed..
+        /// </summary>
         public static string FinishSuccessfully {
             get {
                 return ResourceManager.GetString("FinishSuccessfully", resourceCulture);
@@ -1029,7 +1083,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на It is recommended to index the Bible for performance optimization. This operation takes about {0} minutes. Start indexing the Bible now?.
+        ///   Looks up a localized string similar to It is recommended to index the Bible for performance optimization. This operation takes about {0} minutes. Start indexing the Bible now?.
         /// </summary>
         public static string IndexBibleQuestion {
             get {
@@ -1038,7 +1092,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на The Bible is not indexed. It is recommended to index the Bible for performance optimization. This operation takes about {0} minutes. Start indexing the Bible now? This message will be displayed each time you start OneNote, while the Bible is not indexed..
+        ///   Looks up a localized string similar to The Bible is not indexed. It is recommended to index the Bible for performance optimization. This operation takes about {0} minutes. Start indexing the Bible now? This message will be displayed each time you start OneNote, while the Bible is not indexed..
         /// </summary>
         public static string IndexBibleQuestionAtStartUp {
             get {
@@ -1263,7 +1317,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на There are no Detailed Notes for this chapter.
+        ///   Looks up a localized string similar to There are no Detailed Notes for this chapter.
         /// </summary>
         public static string NoDetailedNotesForChapter {
             get {
@@ -1272,7 +1326,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на There are no Detailed Notes for this verse.
+        ///   Looks up a localized string similar to There are no Detailed Notes for this verse.
         /// </summary>
         public static string NoDetailedNotesForVerse {
             get {
@@ -1281,7 +1335,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на The Notebook type is &apos;Dictionaries&apos;.
+        ///   Looks up a localized string similar to The Notebook type is &apos;Dictionaries&apos;.
         /// </summary>
         public static string NotebookIsDictionaries {
             get {
@@ -1958,6 +2012,15 @@ namespace BibleCommon.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Show errors.
         /// </summary>
+        public static string ShouldSelectIsbtFile {
+            get {
+                return ResourceManager.GetString("ShouldSelectIsbtFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show errors.
+        /// </summary>
         public static string ShowErrors {
             get {
                 return ResourceManager.GetString("ShowErrors", resourceCulture);
@@ -2010,7 +2073,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Are you sure you want to cancel the Notes Analysis?.
+        ///   Looks up a localized string similar to Are you sure you want to cancel the Notes Analysis?.
         /// </summary>
         public static string StopNotesAnalysis {
             get {
@@ -2019,7 +2082,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Saved successfully.
+        ///   Looks up a localized string similar to Saved successfully.
         /// </summary>
         public static string SuccessfullySaved {
             get {
@@ -2028,7 +2091,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на It is recommended to keep the pages &quot;Summary of Notes&quot; in a folder. This will improve the performance and stability of the program. Change the settings to recommended, close the notebook &quot;Summary of Notes&quot; and run the analysis of all the pages?.
+        ///   Looks up a localized string similar to It is recommended to keep the pages &quot;Summary of Notes&quot; in a folder. This will improve the performance and stability of the program. Change the settings to recommended, close the notebook &quot;Summary of Notes&quot; and run the analysis of all the pages?.
         /// </summary>
         public static string SuggestUsingFolderForNotesPages {
             get {
@@ -2037,7 +2100,7 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на This form is designed for the Supplemental Bible management. 
+        ///   Looks up a localized string similar to This form is designed for the Supplemental Bible management. 
         ///
         ///Please take notice:
         ///  - You can add modules version 2.0 or higher to the Supplemental Bible

@@ -5,6 +5,7 @@ using System.Text;
 using BibleCommon.Common;
 using System.Xml.Serialization;
 using System.IO;
+using BibleCommon.Helpers;
 
 namespace BibleConfigurator.ModuleConverter
 {
@@ -117,7 +118,7 @@ namespace BibleConfigurator.ModuleConverter
                     }
                 });
 
-            XmlSerializer ser = new XmlSerializer(typeof(ModuleInfo));
+            var ser = XmlSerializerCache.GetXmlSerializer(typeof(ModuleInfo));
             using (var fs = new FileStream(manifestFilePath, FileMode.Create))
             {
                 ser.Serialize(fs, module);

@@ -14,26 +14,6 @@ namespace BibleCommon.Services
 {
     public static class ModulesManager
     {
-        private static Dictionary<Type, XmlSerializer> _serializersDictionary;                
-
-        private static XmlSerializer GetXmlSerializer(Type t)
-        {
-            if (!_serializersDictionary.ContainsKey(t))
-            {
-                _serializersDictionary.Add(t, new XmlSerializer(t));
-            }
-
-            return _serializersDictionary[t];
-        }
-
-        static ModulesManager()
-        {
-            _serializersDictionary = new Dictionary<Type, XmlSerializer>();
-            //_serializers.Add(typeof(ModuleInfo), new XmlSerializer(typeof(ModuleInfo)));
-            //_serializers.Add(typeof(XMLBIBLE), new XmlSerializer(typeof(XMLBIBLE)));
-            //_serializers.Add(typeof(ModuleDictionaryInfo), new XmlSerializer(typeof(ModuleDictionaryInfo)));
-        }
-
         public static ModuleInfo GetCurrentModuleInfo()
         {
             if (!string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName))
@@ -149,7 +129,7 @@ namespace BibleCommon.Services
             {
                 using (var ms = new MemoryStream(File.ReadAllBytes(xmlFilePath)))
                 {
-                    return ((T)GetXmlSerializer(typeof(T)).Deserialize(ms));
+                    return ((T)XmlSerializerCache.GetXmlSerializer(typeof(T)).Deserialize(ms));
                 }
             }
             catch (Exception ex)
