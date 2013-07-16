@@ -11,6 +11,7 @@ using BibleCommon.Common;
 using System.Threading;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using BibleCommon.Services;
 
 
 namespace BibleCommon.Helpers
@@ -62,7 +63,7 @@ namespace BibleCommon.Helpers
 
         public static string GetAnalyzedVersesFolderPath()
         {
-            string s = Path.Combine(GetNotesPagesFolderPath(), Constants.AnalyzedVersesDirectory);
+            string s = Path.Combine(SettingsManager.Instance.FolderPath_BibleNotesPages, Constants.AnalyzedVersesDirectory);
             if (!Directory.Exists(s))
                 Directory.CreateDirectory(s);
 
