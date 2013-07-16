@@ -295,8 +295,7 @@ namespace ISBTCommandHandler
             wbNotesPage.Document.InvokeScript("setConstants",
                 new object[]
                 {
-                    BibleCommon.Resources.Constants.FilterPopupShowAllLinks,
-                    VersePointer.IsChapter ? BibleCommon.Resources.Constants.NoDetailedNotesForChapter : BibleCommon.Resources.Constants.NoDetailedNotesForVerse,
+                    BibleCommon.Resources.Constants.FilterPopupShowAllLinks,                    
                     BibleCommon.Consts.Constants.ImportantVerseWeight
                 });
 
