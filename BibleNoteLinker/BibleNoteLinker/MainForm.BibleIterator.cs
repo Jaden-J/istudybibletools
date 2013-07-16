@@ -57,7 +57,7 @@ namespace BibleNoteLinker
                 pbMain.Maximum = _pagesForAnalyzeCount > 1 ? _pagesForAnalyzeCount : ApproximatePageVersesCount;
 
                 pbMain.PerformStep();
-                Logger.LogMessageParams(Helper.GetRightFoundPagesString(_pagesForAnalyzeCount));
+                Logger.LogMessage(Helper.GetRightFoundPagesString(_pagesForAnalyzeCount));
 
                 foreach (NotebookIterator.NotebookInfo notebook in notebooks)
                 {
@@ -78,7 +78,7 @@ namespace BibleNoteLinker
                 pbMain.Maximum = ApproximatePageVersesCount;
 
                 LogHighLevelMessage(message, 1, StagesCount);
-                Logger.LogMessageParams(message);
+                Logger.LogMessage(message);
                 Logger.MoveLevel(1);
 
                 _analyzedVersesService.AddAnalyzedNotebook(
@@ -149,7 +149,7 @@ namespace BibleNoteLinker
             string message = BibleCommon.Resources.Constants.NoteLinkerNotesPagesUpdating;
             LogHighLevelMessage(message, stage, StagesCount);
             int allPagesCount = ApplicationCache.Instance.NotesPageDataList.Count;
-            Logger.LogMessageParams(string.Format("{0} ({1})",
+            Logger.LogMessage(string.Format("{0} ({1})",
                 message, Helper.GetRightPagesString(allPagesCount)));
             pbMain.Maximum = allPagesCount;
             pbMain.Value = 0;            
@@ -198,14 +198,14 @@ namespace BibleNoteLinker
             LogHighLevelMessage(message, stage, StagesCount);
             int allPagesCount = 0;
             int processedPagesCount = 0;
-            Logger.LogMessage(message, true, false);
+            Logger.LogMessageEx(message, true, false);
             ApplicationCache.Instance.CommitAllModifiedHierarchy(ref _oneNoteApp,
                 pagesCount =>
                 {
                     allPagesCount = pagesCount;
                     pbMain.Maximum = pagesCount;
                     pbMain.Value = 0;                    
-                    Logger.LogMessage(string.Format(" ({0})", Helper.GetRightPagesString(pagesCount)), false, true, false);
+                    Logger.LogMessageEx(string.Format(" ({0})", Helper.GetRightPagesString(pagesCount)), false, true, false);
                     //pbMain.PerformStep();
                     //LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
                 },
@@ -238,7 +238,7 @@ namespace BibleNoteLinker
             string message = BibleCommon.Resources.Constants.NoteLinkerLinksToNotesPagesUpdating;
             LogHighLevelMessage(message, stage, StagesCount);
             int allPagesCount = ApplicationCache.Instance.BiblePagesWithUpdatedLinksToNotesPages.Values.Count;
-            Logger.LogMessageParams(string.Format("{0} ({1})",
+            Logger.LogMessage(string.Format("{0} ({1})",
                 message, Helper.GetRightPagesString(allPagesCount)));
             pbMain.Maximum = allPagesCount;
             pbMain.Value = 0;            
@@ -287,7 +287,7 @@ namespace BibleNoteLinker
         private void CommitPagesInOneNote(string startMessage, int stage, ApplicationCache.PageType? pagesType)
         {   
             LogHighLevelMessage(startMessage, stage, StagesCount);
-            Logger.LogMessage(startMessage, true, false);
+            Logger.LogMessageEx(startMessage, true, false);
             int allPagesCount = 0;
             int processedPagesCount = 0;
             //Logger.LogMessage(startMessage, true, false);
@@ -298,7 +298,7 @@ namespace BibleNoteLinker
                     allPagesCount = pagesCount;
                     pbMain.Maximum = pagesCount;
                     pbMain.Value = 0;                    
-                    Logger.LogMessage(string.Format(" ({0})", Helper.GetRightPagesString(pagesCount)), false, true, false);
+                    Logger.LogMessageEx(string.Format(" ({0})", Helper.GetRightPagesString(pagesCount)), false, true, false);
                     //pbMain.PerformStep();
                     //LogHighLevelAdditionalMessage(string.Format(": {0}/{1}", ++processedPagesCount, allPagesCount));
                 },
@@ -313,7 +313,7 @@ namespace BibleNoteLinker
         {
             if (notebook.PagesCount > 0)
             {
-                Logger.LogMessageParams("{0}: '{1}'", BibleCommon.Resources.Constants.NoteLinkerProcessNotebook, notebook.Title);
+                Logger.LogMessage("{0}: '{1}'", BibleCommon.Resources.Constants.NoteLinkerProcessNotebook, notebook.Title);
                 Logger.MoveLevel(1);
                 
                 ProcessSectionGroup(notebook.RootSectionGroup, true, null);
@@ -346,7 +346,7 @@ namespace BibleNoteLinker
         {
             if (!isRoot)
             {
-                Logger.LogMessageParams("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSectionGroup, sectionGroup.Title);
+                Logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSectionGroup, sectionGroup.Title);
                 Logger.MoveLevel(1);                
             }
 
@@ -368,7 +368,7 @@ namespace BibleNoteLinker
 
         private void ProcessSection(NotebookIterator.SectionInfo section, bool? doNotAnalyze)
         {
-            Logger.LogMessageParams("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSection, section.Title);
+            Logger.LogMessage("{0} '{1}'", BibleCommon.Resources.Constants.ProcessSection, section.Title);
             Logger.MoveLevel(1);
 
             doNotAnalyze = doNotAnalyze.GetValueOrDefault(false) || StringUtils.IndexOfAny(section.Title, Constants.DoNotAnalyzeSymbol1, Constants.DoNotAnalyzeSymbol2) > -1; 
@@ -377,7 +377,7 @@ namespace BibleNoteLinker
             {
                 string message = string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage, page.Title);
                 LogHighLevelMessage(message, 1, StagesCount);
-                Logger.LogMessageParams(message);
+                Logger.LogMessage(message);
                 Logger.MoveLevel(1);                
 
                 ProcessPage(page, doNotAnalyze);

@@ -47,7 +47,7 @@ namespace BibleConfigurator.Tools
                 BibleCommon.Services.Logger.Init("BackupManager");
 
                 _startTime = DateTime.Now;
-                BibleCommon.Services.Logger.LogMessageParams("{0}: {1}",BibleCommon.Resources.Constants.StartTime,  _startTime.ToLongTimeString());                
+                BibleCommon.Services.Logger.LogMessage("{0}: {1}",BibleCommon.Resources.Constants.StartTime,  _startTime.ToLongTimeString());                
 
                 var notebookIds = GetDistinctNotebooksIds();
                 _notebooksCount = notebookIds.Count();
@@ -55,7 +55,7 @@ namespace BibleConfigurator.Tools
                 string initMessage = BibleCommon.Resources.Constants.BackupStartInfo;
                 _form.PrepareForLongProcessing(_notebooksCount + 2, 1, initMessage);
                 _form.PerformProgressStep(initMessage);
-                BibleCommon.Services.Logger.LogMessageParams(initMessage);
+                BibleCommon.Services.Logger.LogMessage(initMessage);
                 System.Windows.Forms.Application.DoEvents();
 
                 _tempFolderPath = Path.Combine(Utils.GetTempFolderPath(), "BackUp");
@@ -86,7 +86,7 @@ namespace BibleConfigurator.Tools
             }
             catch (ProcessAbortedByUserException)
             {
-                BibleCommon.Services.Logger.LogMessageParams("Process aborted by user");
+                BibleCommon.Services.Logger.LogMessage("Process aborted by user");
                 CloseResources(false);
             }            
         }
@@ -105,14 +105,14 @@ namespace BibleConfigurator.Tools
                 BibleCommon.Services.Logger.LogError(ex.Message);
             }
 
-            BibleCommon.Services.Logger.LogMessageParams(" {0}", DateTime.Now.Subtract(_startTime));
+            BibleCommon.Services.Logger.LogMessage(" {0}", DateTime.Now.Subtract(_startTime));
             BibleCommon.Services.Logger.Done();
 
             if (successefully)
             {
                 string finalMessage = BibleCommon.Resources.Constants.BackupManagerFinishMessage;
                 _form.LongProcessingDone(finalMessage);
-                BibleCommon.Services.Logger.LogMessageParams(finalMessage);
+                BibleCommon.Services.Logger.LogMessage(finalMessage);
             }
 
             OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
@@ -146,7 +146,7 @@ namespace BibleConfigurator.Tools
                                 string message = string.Format(BibleCommon.Resources.Constants.BackupManagerNotebookCompleted,
                                     Path.GetFileNameWithoutExtension(e.Name));
                                 _form.PerformProgressStep(message);
-                                BibleCommon.Services.Logger.LogMessageParams(message);
+                                BibleCommon.Services.Logger.LogMessage(message);
 
                                 if (++_processedNotebooksCount >= _notebooksCount)
                                 {
@@ -160,7 +160,7 @@ namespace BibleConfigurator.Tools
             }
             catch (ProcessAbortedByUserException)
             {
-                BibleCommon.Services.Logger.LogMessageParams("Process aborted by user");
+                BibleCommon.Services.Logger.LogMessage("Process aborted by user");
 
                 CloseResources(false);
             }
@@ -191,7 +191,7 @@ namespace BibleConfigurator.Tools
         {
             string message = BibleCommon.Resources.Constants.BackupManagerToZipArchive;
             _form.PerformProgressStep(message);
-            BibleCommon.Services.Logger.LogMessageParams(message);
+            BibleCommon.Services.Logger.LogMessage(message);
 
             try
             {

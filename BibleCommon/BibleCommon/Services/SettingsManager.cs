@@ -216,6 +216,12 @@ namespace BibleCommon.Services
         public decimal Filter_MinVerseWeight { get; set; }
         public bool Filter_ShowDetailedNotes { get; set; }
 
+
+        /// <summary>
+        /// Необходимо при обновлении, чтобы понять, какая предыдущая версия решения была установлена
+        /// </summary>
+        public Version VersionFromSettings { get; set; }
+
         public bool? UseDefaultSettings { get; set; }
 
         private Version _currentVersion = null;
@@ -562,6 +568,8 @@ namespace BibleCommon.Services
             this.Filter_MinVerseWeight = GetParameterValue<decimal>(xdoc, Consts.Constants.ParameterName_FilterMinVerseWeight, Consts.Constants.DefaultFilter_MinVerseWeight,
                                                 s => decimal.Parse(s, CultureInfo.InvariantCulture));
             this.Filter_ShowDetailedNotes = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_FilterShowDetailedNotes, Consts.Constants.DefaultFilter_ShowDetailedNotes);
+            this.VersionFromSettings = GetParameterValue<Version>(xdoc, Consts.Constants.ParameterName_VersionFromSettings, null,
+                                                s => new Version(s));
         }
 
         private T GetParameterValue<T>(XDocument xdoc, string parameterName, object defaultValue = null, Func<string, T> convertFunc = null)
@@ -703,7 +711,8 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_ShownMessages, string.Join(";", this.ShownMessages.ConvertAll(m => m.ToString()).ToArray())),
                                   new XElement(Consts.Constants.ParameterName_FilterHiddenNotebooks, string.Join(";", this.Filter_HiddenNotebooks.ToArray())),
                                   new XElement(Consts.Constants.ParameterName_FilterMinVerseWeight, this.Filter_MinVerseWeight),
-                                  new XElement(Consts.Constants.ParameterName_FilterShowDetailedNotes, this.Filter_ShowDetailedNotes)
+                                  new XElement(Consts.Constants.ParameterName_FilterShowDetailedNotes, this.Filter_ShowDetailedNotes),
+                                  new XElement(Consts.Constants.ParameterName_VersionFromSettings, CurrentVersion)
                                 );
 
                     if (SelectedNotebooksForAnalyze != null && SelectedNotebooksForAnalyzeIsNotAsDefault())
