@@ -67,16 +67,16 @@ namespace BibleNoteLinker
                 PrepareForAnalyze();
 
                 DateTime dt = DateTime.Now;
-                Logger.LogMessageParams("{0}: {1}", BibleCommon.Resources.Constants.StartTime, dt.ToLongTimeString());
+                Logger.LogMessage("{0}: {1}", BibleCommon.Resources.Constants.StartTime, dt.ToLongTimeString());
                 StartAnalyze();
-                Logger.LogMessageParams("{0}: {1}", BibleCommon.Resources.Constants.TimeSpent, DateTime.Now.Subtract(dt));
+                Logger.LogMessage("{0}: {1}", BibleCommon.Resources.Constants.TimeSpent, DateTime.Now.Subtract(dt));
                 this.SetFocus();
 
                 RefreshCache();
             }
             catch (ProcessAbortedByUserException)
             {
-                Logger.LogMessageParams(BibleCommon.Resources.Constants.ProcessAbortedByUser);
+                Logger.LogMessage(BibleCommon.Resources.Constants.ProcessAbortedByUser);
             }
             catch (Exception ex)
             {
@@ -105,7 +105,7 @@ namespace BibleNoteLinker
             }
 
             LogHighLevelMessage(message, null, null);
-            Logger.LogMessageParams(message);
+            Logger.LogMessage(message);
 
             btnOk.Text = BibleCommon.Resources.Constants.Close;
             btnOk.Enabled = true;

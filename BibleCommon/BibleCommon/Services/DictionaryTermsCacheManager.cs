@@ -84,7 +84,7 @@ namespace BibleCommon.Services
                 else
                     notFoundTermsCount = moduleInfo.NotebooksStructure.DictionaryTermsCount.GetValueOrDefault() - cacheData.Count;
 
-                Logger.LogMessageParams("{0} terms were not found in dictionary '{1}'", notFoundTermsCount, moduleInfo.ShortName);
+                Logger.LogMessage("{0} terms were not found in dictionary '{1}'", notFoundTermsCount, moduleInfo.ShortName);
             }
 
             return cacheData;

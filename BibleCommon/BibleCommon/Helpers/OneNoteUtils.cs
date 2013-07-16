@@ -390,7 +390,7 @@ namespace BibleCommon.Helpers
                     || ex.Message.Contains("0x80010108")                                        // RPC_E_DISCONNECTED
                     )  
                 {
-                    Logger.LogMessageSilientParams("UseOneNoteAPI. Attempt {0}: {1}", attemptsCount, ex.Message);
+                    Logger.LogMessageSilient("UseOneNoteAPI. Attempt {0}: {1}", attemptsCount, ex.Message);
                     if (attemptsCount <= 15)
                     {
                         attemptsCount++;

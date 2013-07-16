@@ -72,7 +72,7 @@ namespace BibleConfigurator
 
                 string stagesString = stagesCount == 1 ? string.Empty : string.Format("{0} {1}/{1}: ", BibleCommon.Resources.Constants.Stage, stagesCount);
                 Logger.Preffix = string.Format("{0}{1}: ", stagesString, BibleCommon.Resources.Constants.AddParallelBibleTranslation); 
-                BibleCommon.Services.Logger.LogMessageParams(Logger.Preffix);
+                BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
                 result = SupplementalBibleManager.AddParallelBible(ref _oneNoteApp, selectedModuleInfo, strongTermLinksCache, Logger);
 
                 MainForm.LongProcessingDone(BibleCommon.Resources.Constants.AddParallelBibleTranslationFinishMessage);
@@ -87,7 +87,7 @@ namespace BibleConfigurator
                 int chaptersCount = ModulesManager.GetBibleChaptersCount(selectedModuleInfo.ShortName, false);
                 MainForm.PrepareForLongProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.CreateSupplementalBibleStart);
                 Logger.Preffix = string.Format("{0} 1/{1}: {2}: ", BibleCommon.Resources.Constants.Stage, stagesCount, BibleCommon.Resources.Constants.CreateSupplementalBible);
-                BibleCommon.Services.Logger.LogMessageParams(Logger.Preffix);
+                BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
 
                 if (selectedModuleInfo.Type == ModuleType.Strong)
                     DictionaryManager.AddDictionary(ref _oneNoteApp, selectedModuleInfo, FolderBrowserDialog.SelectedPath, false, () => Logger.AbortedByUser);                
@@ -98,7 +98,7 @@ namespace BibleConfigurator
 
                 MainForm.PrepareForLongProcessing(chaptersCount, 1, BibleCommon.Resources.Constants.LinkSupplementalBibleStart);
                 Logger.Preffix = string.Format("{0} {1}/{1}: {2}: ", BibleCommon.Resources.Constants.Stage, stagesCount, BibleCommon.Resources.Constants.LinkSupplementalBible);
-                BibleCommon.Services.Logger.LogMessageParams(Logger.Preffix);
+                BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
                 result = SupplementalBibleManager.LinkSupplementalBibleWithPrimaryBible(ref _oneNoteApp, strongTermLinksCache, Logger);
 
                 MainForm.LongProcessingDone(BibleCommon.Resources.Constants.CreateSupplementalBibleFinish);
@@ -231,7 +231,7 @@ namespace BibleConfigurator
 
             MainForm.PrepareForLongProcessing(strongTermsCount, 1, BibleCommon.Resources.Constants.IndexStrongDictionaryStart);
             Logger.Preffix = string.Format("{0} {1}/{2}: {3}: ", BibleCommon.Resources.Constants.Stage, stage, stagesCount, BibleCommon.Resources.Constants.IndexStrongDictionary);
-            BibleCommon.Services.Logger.LogMessageParams(Logger.Preffix);
+            BibleCommon.Services.Logger.LogMessage(Logger.Preffix);
 
             if (checkPagesCount)
                 DictionaryManager.WaitWhileDictionaryIsCreating(ref _oneNoteApp, dictionaryModuleInfo.SectionId, pagesCount, 0, () => Logger.AbortedByUser);  // повторный раз проверяем, что все страницы загрузились

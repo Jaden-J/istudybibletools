@@ -68,7 +68,7 @@ namespace BibleConfigurator.Tools
             }
             catch (ProcessAbortedByUserException)
             {
-                BibleCommon.Services.Logger.LogMessageParams("Process aborted by user");
+                BibleCommon.Services.Logger.LogMessage("Process aborted by user");
             }
             finally
             {                

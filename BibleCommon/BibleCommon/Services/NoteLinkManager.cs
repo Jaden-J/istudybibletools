@@ -136,7 +136,7 @@ namespace BibleCommon.Services
 
                 if (IsSummaryNotesPage(ref oneNoteApp, notePageDocument, notePageName))
                 {
-                    Logger.LogMessageParams(BibleCommon.Resources.Constants.NoteLinkManagerProcessNotesPage);
+                    Logger.LogMessage(BibleCommon.Resources.Constants.NoteLinkManagerProcessNotesPage);
                     isSummaryNotesPage = true;
                     if (linkDepth > AnalyzeDepth.SetVersesLinks)
                         linkDepth = AnalyzeDepth.SetVersesLinks;  // на странице заметок только обновляем ссылки
@@ -204,7 +204,7 @@ namespace BibleCommon.Services
                 {
                         notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
 
-                        Logger.LogMessageParams(Resources.Constants.UpdatingPageInOneNote);
+                        Logger.LogMessage(Resources.Constants.UpdatingPageInOneNote);
                         System.Windows.Forms.Application.DoEvents();
                         ApplicationCache.Instance.CommitModifiedPage(ref oneNoteApp, notePageDocument, false);
                     }
@@ -360,13 +360,13 @@ namespace BibleCommon.Services
             HierarchyElementInfo notePageId, 
             AnalyzeDepth linkDepth, bool force)
         {
-            Logger.LogMessage(BibleCommon.Resources.Constants.NoteLinkManagerChapterProcessing, true, false);
+            Logger.LogMessageEx(BibleCommon.Resources.Constants.NoteLinkManagerChapterProcessing, true, false);
 
             if (linkDepth >= AnalyzeDepth.Full)
             {
                 foreach (var chapterInfo in foundChapters)
                 {
-                    Logger.LogMessage(".", false, false, false);
+                    Logger.LogMessageEx(".", false, false, false);
 
                     if (!IsExcludedCurrentNotePage)
                     {
@@ -399,7 +399,7 @@ namespace BibleCommon.Services
                 }
             }
 
-            Logger.LogMessage(string.Empty, false, true, false);
+            Logger.LogMessageEx(string.Empty, false, true, false);
         }
 
         private List<VersePointerSearchResult> ProcessPageTitle(ref Application oneNoteApp, XDocument notePageDocument,
@@ -894,7 +894,7 @@ namespace BibleCommon.Services
                         out localHierarchySearchResult, ref processedVerses, hsr =>
                         {
                             if (first)                            
-                                Logger.LogMessageParams("{0}: {1}", 
+                                Logger.LogMessage("{0}: {1}", 
                                     searchResult.VersePointer.IsChapter ? BibleCommon.Resources.Constants.ProcessChapter : BibleCommon.Resources.Constants.ProcessVerse, 
                                     searchResult.VersePointer.OriginalVerseName);                                                            
                         }))
