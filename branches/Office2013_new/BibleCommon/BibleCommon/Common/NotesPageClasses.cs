@@ -256,9 +256,10 @@ namespace BibleCommon.Common
                                 new XElement("div", new XAttribute("class", "filterPopup_controls"),
                                     new XElement("div", new XAttribute("class", "filterPopup_header"),
                                         new XElement("div", new XAttribute("class", "filterPopup_section"),
-                                            new XElement("span", new XAttribute("class", "filterTitle"), Resources.Constants.FilterPopupNotebooks),
+                                            new XElement("div", new XAttribute("class", "filterTitle"), Resources.Constants.FilterPopupNotebooks),
                                             new XElement("div", new XAttribute("class", "filterPopup_label"),
-                                                new XElement("table", new XAttribute("id", "notebooksFilterTable"), new XAttribute("class", "notebooksFilter"), new XAttribute("cellpadding", "0"), new XAttribute("cellspacing", "0"), " "))),
+                                                new XElement("table", new XAttribute("id", "notebooksFilterTable"), new XAttribute("class", "notebooksFilter"), 
+                                                    new XAttribute("cellpadding", "0"), new XAttribute("cellspacing", "0"), " "))),
                                         new XElement("div", new XAttribute("class", "filterPopup_hr filterPopup_hrheight"), " "),
                                         new XElement("div", new XAttribute("class", "filterPopup_section"),
                                             new XElement("span", new XAttribute("class", "filterTitle"), Resources.Constants.FilterPopupTrackbar),
@@ -269,10 +270,13 @@ namespace BibleCommon.Common
                                         new XElement("div", new XAttribute("class", "filterPopup_hr"), " "),
                                         new XElement("div", new XAttribute("class", "filterPopup_textsection detailedNotes"),
                                             new XElement("input", new XAttribute("type", "checkbox"), new XAttribute("id", "chkDetailedNotes"), new XAttribute("class", "detailedNotes")),
-                                            new XElement("label", new XAttribute("for", "chkDetailedNotes"), new XAttribute("class", "detailedNotes filterTitle"), Resources.Constants.DetailedNotes)),
+                                            new XElement("label", new XAttribute("for", "chkDetailedNotes"), new XAttribute("class", "detailedNotes filterTitle"), 
+                                                new XAttribute("title", Resources.Constants.DetailedNotes), Resources.Constants.DetailedNotes)),
                                         new XElement("div", new XAttribute("class", "filterPopup_hr filterPopup_hrheight saveFilterSettings"), " "),
                                         new XElement("div", new XAttribute("class", "filterPopup_textsection saveFilterSettingsLink saveFilterSettings"),
-                                            new XElement("a", new XAttribute("id", "saveFilterSettingsLink"), new XAttribute("class", "filterTitle"), new XAttribute("href", Constants.NoLinkTransmitHref ), Resources.Constants.FilterPopupSave)))))));
+                                            new XElement("a", new XAttribute("id", "saveFilterSettingsLink"), 
+                                                new XAttribute("class", "filterTitle"), new XAttribute("href", Constants.NoLinkTransmitHref), 
+                                                new XAttribute("title", Resources.Constants.FilterPopupSave), Resources.Constants.FilterPopupSave)))))));
         }
 
         private void SerializeLevel(ref Application oneNoteApp, NotesPageHierarchyLevelBase hierarchyLevel, XElement parentEl, int levelIndex, int? index, AnalyzedVersesService analyzedVersesService)
