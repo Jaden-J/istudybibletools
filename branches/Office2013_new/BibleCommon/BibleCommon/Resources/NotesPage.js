@@ -51,7 +51,7 @@ function setFilterNotebooks(notebooks) {
 function setDetailedNotesFilter() {
     var chkDetailedNodes = $("#chkDetailedNotes");
     chkDetailedNodes.click(chkDetailedNodes_click);
-    chkDetailedNodes.attr('checked', global_IsDetailed);    
+    chkDetailedNodes.attr('checked', global_IsDetailed);
 }
 
 function setFilterLinkHandlers() {
@@ -419,8 +419,9 @@ function hideElement(el, className) {
         el.addClass(className)
 
         if (!el.hasClass("verseLevel") && !el.hasClass("subLinkDelimeter") && !el.hasClass("subLinkMultiVerse")) {
-            if (parentEl.children(nodeName).length == parentEl.children(nodeName + "." + className).length)
-                hideElement(parentEl, className);
+            var nodesEl = parentEl.children(nodeName);
+            if (nodesEl.length == nodesEl.filter(":not(:visible)").length)
+                hideElement(parentEl, "hiddenLevel");
         }
     }
 }
@@ -430,16 +431,14 @@ function showElement(el, className) {
         var nodeName = el[0].nodeName;
         var parentEl = $(el[0].parentNode);
 
-        if (!el.hasClass("verseLevel") && !el.hasClass("subLinkDelimeter") && !el.hasClass("subLinkMultiVerse")) {
-            if (parentEl.children(nodeName).length >= parentEl.children(nodeName + "." + className).length)
-                showElement(parentEl, className);
-        }
-
         el.removeClass(className)
+
+        if (!el.hasClass("verseLevel") && !el.hasClass("subLinkDelimeter") && !el.hasClass("subLinkMultiVerse")) {
+            if (el.filter("[class*='hidden']").length == 0)
+                showElement(parentEl, "hiddenLevel");
+        }
     }
 }
-
-
 
 
 ///// helper methods
