@@ -49,6 +49,15 @@ namespace BibleConfigurator
             TryToGenerateDefaultModule();            
 
             TryToRegenerateNotesPages();
+            
+            try
+            {
+                SettingsManager.Instance.Save();  // чтобы записать VersionFromSettings
+            }
+            catch (Exception ex)
+            {
+                Log(ex.ToString());
+            }
         }
 
         public void TryToRegenerateNotesPages()
@@ -74,9 +83,7 @@ namespace BibleConfigurator
                     finally
                     {
                         OneNoteUtils.ReleaseOneNoteApp(ref oneNoteApp);                                                
-                    }
-
-                    SettingsManager.Instance.Save();  // чтобы записать VersionFromSettings
+                    }                    
 
                     TryToMergeAllModulesWithMainBible();  // так как раньше оно не правильно вызывалось и вызывалось ли вообще...
                 }
@@ -169,12 +176,15 @@ namespace BibleConfigurator
             }
         }
 
-        private static void Log(string message)
+        private void Log(string message)
         {   
             try
             {
                 var logFilePath = Path.Combine(Path.GetPathRoot(System.Environment.SystemDirectory), "isbt.log");
                 File.AppendAllText(logFilePath, message + System.Environment.NewLine);
+
+                if (Context != null)
+                    Context.LogMessage(message);
             }
             catch { }
         }
