@@ -149,6 +149,10 @@ a.detailed
 {
     display:none;
 }
+.hiddenLevel
+{
+    display:none;
+}
 .hiddenByTrackbarFilter
 {
     display:none;

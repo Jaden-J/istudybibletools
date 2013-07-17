@@ -134,7 +134,7 @@ namespace BibleCommon.Common
             var pageLink = new NotesPageLink(href);
             
             var multiVerseEl = (XElement)linkEl.NextNode;
-            if (multiVerseEl != null && multiVerseEl.Name == multiVerseTagName && (string)multiVerseEl.Attribute("class") == "subLinkMultiVerse")
+            if (multiVerseEl != null && multiVerseEl.Name == multiVerseTagName && multiVerseEl.HasClass("subLinkMultiVerse"))
                 pageLink.MultiVerseString = multiVerseEl.Value;
 
             return pageLink;
