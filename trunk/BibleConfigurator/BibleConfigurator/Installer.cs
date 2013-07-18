@@ -15,6 +15,7 @@ using BibleCommon.Services;
 using System.Threading;
 using BibleCommon.Common;
 using Microsoft.Office.Interop.OneNote;
+using BibleCommon.UI.Forms;
 
 namespace BibleConfigurator
 {
@@ -52,7 +53,8 @@ namespace BibleConfigurator
             
             try
             {
-                SettingsManager.Instance.Save();  // чтобы записать VersionFromSettings
+                if (SettingsManager.Instance.SettingsWereLoadedFromFile)
+                    SettingsManager.Instance.Save();  // чтобы записать VersionFromSettings
             }
             catch (Exception ex)
             {
@@ -98,30 +100,45 @@ namespace BibleConfigurator
         {
             if (Directory.Exists(SettingsManager.Instance.FolderPath_BibleNotesPages))
             {
-                foreach (var filePath in Directory.GetFiles(SettingsManager.Instance.FolderPath_BibleNotesPages, "*.htm", SearchOption.AllDirectories))
-                {
-                    try
-                    {
-                        var fileContent = File.ReadAllText(filePath);
-                        var startTitleIndex = fileContent.IndexOf("<title>") + "<title>".Length;
-                        if (startTitleIndex > 10)
+                var files = Directory.GetFiles(SettingsManager.Instance.FolderPath_BibleNotesPages, "*.htm", SearchOption.AllDirectories).Reverse();
+                var oneNoteAppLocal = oneNoteApp;
+                using (var form = new ProgressForm("Upgrading Notes Pages", (f) =>
                         {
-                            var endTitleIndex = fileContent.IndexOf("</title>");
-                            var title = fileContent.Substring(startTitleIndex, endTitleIndex - startTitleIndex);
-                            var parts = title.Split(new char[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
-                            var pageName = parts[0];
-                            var chapterPointer = new VersePointer(parts[1]);
-                            var pageData = new NotesPageData(filePath, pageName, Path.GetFileNameWithoutExtension(filePath) == "0" ? NotesPageType.Chapter : NotesPageType.Verse, chapterPointer, true);
-                            pageData.Serialize(ref oneNoteApp, service);
-                        }
+                            foreach (var filePath in files)
+                            {
+                                try
+                                {
+                                    var fileContent = File.ReadAllText(filePath);
+                                    var startTitleIndex = fileContent.IndexOf("<title>") + "<title>".Length;
+                                    if (startTitleIndex > 10)
+                                    {
+                                        var endTitleIndex = fileContent.IndexOf("</title>");
+                                        var title = fileContent.Substring(startTitleIndex, endTitleIndex - startTitleIndex);
+                                        var parts = title.Split(new char[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
+                                        var pageName = parts[0];
+                                        var chapterPointer = new VersePointer(parts[1]);
+                                        var pageData = new NotesPageData(filePath, pageName, Path.GetFileNameWithoutExtension(filePath) == "0" ? NotesPageType.Chapter : NotesPageType.Verse, chapterPointer, true);
+                                        pageData.Serialize(ref oneNoteAppLocal, service);
+                                    }
 
-                        System.Windows.Forms.Application.DoEvents();
-                    }
-                    catch (Exception ex)
-                    {
-                        Log(ex.ToString());
-                    }
+                                    f.PerformStep("Upgrading file: ...\\" +  Path.Combine(
+                                                                            Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(filePath))),
+                                                                            Path.Combine(
+                                                                                Path.GetFileName(Path.GetDirectoryName(filePath)), 
+                                                                                Path.GetFileName(filePath))));
+                                }
+                                catch (Exception ex)
+                                {
+                                    Log(ex.ToString());
+                                }
+                            }
+                        })
+                    )
+                {
+                    form.ShowDialog(files.Count());
                 }
+                oneNoteApp = oneNoteAppLocal;
+                oneNoteAppLocal = null;
             }
         }
 

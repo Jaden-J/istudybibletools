@@ -144,7 +144,7 @@
     <value>pbBaseElements</value>
   </data>
   <data name="&gt;&gt;chkForce.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="rbAnalyzeCurrentPage.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -153,13 +153,13 @@
     <value>3, 3</value>
   </data>
   <data name="rbAnalyzeCurrentPage.Size" type="System.Drawing.Size, System.Drawing">
-    <value>125, 17</value>
+    <value>98, 17</value>
   </data>
   <data name="rbAnalyzeCurrentPage.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
   <data name="rbAnalyzeCurrentPage.Text" xml:space="preserve">
-    <value>Analyze current page</value>
+    <value>Analyze current</value>
   </data>
   <data name="&gt;&gt;rbAnalyzeCurrentPage.Name" xml:space="preserve">
     <value>rbAnalyzeCurrentPage</value>
@@ -171,7 +171,7 @@
     <value>pbBaseElements</value>
   </data>
   <data name="&gt;&gt;rbAnalyzeCurrentPage.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="rbAnalyzeAllPages.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -198,7 +198,7 @@
     <value>pbBaseElements</value>
   </data>
   <data name="&gt;&gt;rbAnalyzeAllPages.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="btnOk.Location" type="System.Drawing.Point, System.Drawing">
     <value>425, 130</value>
@@ -249,7 +249,7 @@
     <value>pbBaseElements</value>
   </data>
   <data name="&gt;&gt;rbAnalyzeChangedPages.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="lblInfo.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -393,6 +393,18 @@ Click to go to the download page.</value>
   <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="tsmiSeelctNotebooks.Size" type="System.Drawing.Size, System.Drawing">
+    <value>164, 22</value>
+  </data>
+  <data name="tsmiSeelctNotebooks.Text" xml:space="preserve">
+    <value>Select notebooks</value>
+  </data>
+  <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>50, 20</value>
+  </data>
+  <data name="toolStripMenuItem1.Text" xml:space="preserve">
+    <value>Menu</value>
+  </data>
   <data name="menuStrip1.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
@@ -417,17 +429,38 @@ Click to go to the download page.</value>
   <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
     <value>8</value>
   </data>
-  <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>45, 20</value>
+  <data name="cbCurrent.Items" xml:space="preserve">
+    <value>page</value>
   </data>
-  <data name="toolStripMenuItem1.Text" xml:space="preserve">
-    <value>Menu</value>
+  <data name="cbCurrent.Items1" xml:space="preserve">
+    <value>section</value>
   </data>
-  <data name="tsmiSeelctNotebooks.Size" type="System.Drawing.Size, System.Drawing">
-    <value>156, 22</value>
+  <data name="cbCurrent.Items2" xml:space="preserve">
+    <value>section group</value>
   </data>
-  <data name="tsmiSeelctNotebooks.Text" xml:space="preserve">
-    <value>Select notebooks</value>
+  <data name="cbCurrent.Items3" xml:space="preserve">
+    <value>notebook</value>
+  </data>
+  <data name="cbCurrent.Location" type="System.Drawing.Point, System.Drawing">
+    <value>107, 2</value>
+  </data>
+  <data name="cbCurrent.Size" type="System.Drawing.Size, System.Drawing">
+    <value>87, 21</value>
+  </data>
+  <data name="cbCurrent.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;cbCurrent.Name" xml:space="preserve">
+    <value>cbCurrent</value>
+  </data>
+  <data name="&gt;&gt;cbCurrent.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbCurrent.Parent" xml:space="preserve">
+    <value>pbBaseElements</value>
+  </data>
+  <data name="&gt;&gt;cbCurrent.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="pbBaseElements.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 27</value>

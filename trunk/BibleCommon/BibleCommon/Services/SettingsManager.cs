@@ -113,7 +113,9 @@ namespace BibleCommon.Services
 
                 return _instance;
             }
-        }        
+        }
+
+        public bool SettingsWereLoadedFromFile { get; set; }
         
         public string NotebookId_Bible { get; set; }
         public string NotebookId_BibleComments { get; set; }
@@ -406,10 +408,13 @@ namespace BibleCommon.Services
             if (!File.Exists(_filePath))
             {
                 LoadDefaultProgramSettings();
-                LoadDefaultGeneralSettings();                
+                LoadDefaultGeneralSettings();
             }
             else
-                LoadSettingsFromFile();        
+            {
+                LoadSettingsFromFile();
+                SettingsWereLoadedFromFile = true;
+            }
         }       
 
         protected SettingsManager()

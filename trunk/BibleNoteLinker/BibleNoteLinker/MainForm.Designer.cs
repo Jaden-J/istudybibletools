@@ -45,6 +45,7 @@
             this.pbBaseElements = new System.Windows.Forms.Panel();
             this.llblShowErrors = new System.Windows.Forms.LinkLabel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.cbCurrent = new System.Windows.Forms.ComboBox();
             this.menuStrip1.SuspendLayout();
             this.pbBaseElements.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -139,6 +140,7 @@
             // 
             // pbBaseElements
             // 
+            this.pbBaseElements.Controls.Add(this.cbCurrent);
             this.pbBaseElements.Controls.Add(this.rbAnalyzeCurrentPage);
             this.pbBaseElements.Controls.Add(this.chkForce);
             this.pbBaseElements.Controls.Add(this.rbAnalyzeAllPages);
@@ -158,6 +160,18 @@
             this.flowLayoutPanel1.Controls.Add(this.llblShowErrors);
             resources.ApplyResources(this.flowLayoutPanel1, "flowLayoutPanel1");
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            // 
+            // cbCurrent
+            // 
+            this.cbCurrent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbCurrent.FormattingEnabled = true;
+            this.cbCurrent.Items.AddRange(new object[] {
+            resources.GetString("cbCurrent.Items"),
+            resources.GetString("cbCurrent.Items1"),
+            resources.GetString("cbCurrent.Items2"),
+            resources.GetString("cbCurrent.Items3")});
+            resources.ApplyResources(this.cbCurrent, "cbCurrent");
+            this.cbCurrent.Name = "cbCurrent";
             // 
             // MainForm
             // 
@@ -214,6 +228,7 @@
         private System.Windows.Forms.Panel pbBaseElements;
         private System.Windows.Forms.LinkLabel llblShowErrors;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.ComboBox cbCurrent;
     }
 }
 

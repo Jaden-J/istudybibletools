@@ -36,15 +36,20 @@ function initFilter(notebooks, minVersesWeight, showDetailedNotes) {
 ///// filter methods
 
 function setFilterNotebooks(notebooks) {
-    var table = $("#notebooksFilterTable");
-    for (var i = 0; i < notebooks.length; i++) {
-        var id = "filterNotebook_" + i;
-        var syncId = notebooks[i].SyncId;
-        var title = notebooks[i].Title;
-        var checked = notebooks[i].Checked ? "checked" : "";
-        table.append("<tr><td class='notebooksFilter'><input type='checkbox' class='notebooksFilter' id='" + id + "' syncId='" + syncId + "' " + checked + " /><label for='" + id + "' class='notebooksFilter'>" + title + "</label></td></tr>");
+    if (notebooks.length > 1) {
+        var table = $("#notebooksFilterTable");
+        for (var i = 0; i < notebooks.length; i++) {
+            var id = "filterNotebook_" + i;
+            var syncId = notebooks[i].SyncId;
+            var title = notebooks[i].Title;
+            var checked = notebooks[i].Checked ? "checked" : "";
+            table.append("<tr><td class='notebooksFilter'><input type='checkbox' class='notebooksFilter' id='" + id + "' syncId='" + syncId + "' " + checked + " /><label for='" + id + "' class='notebooksFilter'>" + title + "</label></td></tr>");
 
-        filterNotebook(syncId, checked);
+            filterNotebook(syncId, checked);
+        }
+    }
+    else {
+        $("div.notebooksFilter").hide();
     }
 }
 
