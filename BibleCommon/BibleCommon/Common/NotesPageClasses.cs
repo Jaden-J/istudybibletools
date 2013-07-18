@@ -255,12 +255,12 @@ namespace BibleCommon.Common
                             new XElement("div", new XAttribute("class", "filterPopup_background"),
                                 new XElement("div", new XAttribute("class", "filterPopup_controls"),
                                     new XElement("div", new XAttribute("class", "filterPopup_header"),
-                                        new XElement("div", new XAttribute("class", "filterPopup_section"),
+                                        new XElement("div", new XAttribute("class", "filterPopup_section notebooksFilter"),
                                             new XElement("div", new XAttribute("class", "filterTitle"), Resources.Constants.FilterPopupNotebooks),
                                             new XElement("div", new XAttribute("class", "filterPopup_label"),
                                                 new XElement("table", new XAttribute("id", "notebooksFilterTable"), new XAttribute("class", "notebooksFilter"), 
                                                     new XAttribute("cellpadding", "0"), new XAttribute("cellspacing", "0"), " "))),
-                                        new XElement("div", new XAttribute("class", "filterPopup_hr filterPopup_hrheight"), " "),
+                                        new XElement("div", new XAttribute("class", "filterPopup_hr filterPopup_hrheight notebooksFilter"), " "),
                                         new XElement("div", new XAttribute("class", "filterPopup_section"),
                                             new XElement("span", new XAttribute("class", "filterTitle"), Resources.Constants.FilterPopupTrackbar),
                                             new XElement("div", new XAttribute("class", "filterPopup_textsection"),
@@ -701,77 +701,85 @@ namespace BibleCommon.Common
 
         protected int GetPrevLevelIndex(ref Application oneNoteApp, NotesPageHierarchyLevel level, HierarchyElementInfo notePageHierarchyElInfo, out bool levelWasFound)
         {
-            levelWasFound = false;
-            XElement parentHierarchy, noteLinkInHierarchy = null;
-
-            var notebookHierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notePageHierarchyElInfo.NotebookId, HierarchyScope.hsPages);  //from cache            
-            if (level.HierarchyType != HierarchyElementType.Notebook)
-            {
-                noteLinkInHierarchy = notebookHierarchy.Content.Root.XPathSelectElement(
-                    string.Format("//one:{0}[@ID=\"{1}\"]", HierarchyElementInfo.GetElementName(level.HierarchyType), notePageHierarchyElInfo.Id),
-                    notebookHierarchy.Xnm);
-
-                parentHierarchy = noteLinkInHierarchy.Parent;
-            }
-            else
-                parentHierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks).Content.Root;
-
-            if (noteLinkInHierarchy == null)
-                noteLinkInHierarchy = parentHierarchy.XPathSelectElement(string.Format("*[@ID=\"{0}\"]", notePageHierarchyElInfo.Id), notebookHierarchy.Xnm);
-
-            var prevNodesInHierarchy = noteLinkInHierarchy.NodesBeforeSelf();
-
             var index = -1;
-            if (prevNodesInHierarchy.Count() != 0)
+            levelWasFound = false;
+
+            try
             {                
-                foreach (var otherLevel in level.Parent.Levels.Values)
-                {                    
-                    if (!string.IsNullOrEmpty(notePageHierarchyElInfo.ManualId))
-                    {
-                        if (otherLevel.Title == notePageHierarchyElInfo.UniqueTitle)
-                        {
-                            levelWasFound = true;
-                            break;
-                        }
-                        else
-                        {
-                            if (notePageHierarchyElInfo.UniqueTitle.CompareTo(otherLevel.Title) < 0)
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        if (otherLevel.Id == notePageHierarchyElInfo.UniqueName)
-                        {
-                            levelWasFound = true;
-                            break;
-                        }
-                        else
-                        {
-                            XElement existingLinkInHierarchy;
+                XElement parentHierarchy, noteLinkInHierarchy = null;
 
-                            if (notePageHierarchyElInfo.Type == HierarchyElementType.Page)
+                var notebookHierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notePageHierarchyElInfo.NotebookId, HierarchyScope.hsPages);  //from cache            
+                if (level.HierarchyType != HierarchyElementType.Notebook)
+                {
+                    noteLinkInHierarchy = notebookHierarchy.Content.Root.XPathSelectElement(
+                        string.Format("//one:{0}[@ID=\"{1}\"]", HierarchyElementInfo.GetElementName(level.HierarchyType), notePageHierarchyElInfo.Id),
+                        notebookHierarchy.Xnm);
+
+                    parentHierarchy = noteLinkInHierarchy.Parent;
+                }
+                else
+                    parentHierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks).Content.Root;
+
+                if (noteLinkInHierarchy == null)
+                    noteLinkInHierarchy = parentHierarchy.XPathSelectElement(string.Format("*[@ID=\"{0}\"]", notePageHierarchyElInfo.Id), notebookHierarchy.Xnm);
+
+                var prevNodesInHierarchy = noteLinkInHierarchy.NodesBeforeSelf();
+
+                if (prevNodesInHierarchy.Count() != 0)
+                {
+                    foreach (var otherLevel in level.Parent.Levels.Values)
+                    {
+                        if (!string.IsNullOrEmpty(notePageHierarchyElInfo.ManualId))
+                        {
+                            if (otherLevel.Title == notePageHierarchyElInfo.UniqueTitle)
                             {
-                                existingLinkInHierarchy = parentHierarchy.XPathSelectElement(
-                                            string.Format("one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", Constants.Key_SyncId, otherLevel.Id),
-                                            notebookHierarchy.Xnm);
-
-                                if (existingLinkInHierarchy == null)  // ещё не обновили метаданные в кэше                                
-                                    existingLinkInHierarchy = parentHierarchy.XPathSelectElement(string.Format("one:Page[@ID='{0}']", otherLevel.Id), notebookHierarchy.Xnm);                                
+                                levelWasFound = true;
+                                break;
                             }
                             else
                             {
-                                existingLinkInHierarchy = parentHierarchy.XPathSelectElement(
-                                            string.Format("*[@name=\"{0}\"]", otherLevel.Id),
-                                            notebookHierarchy.Xnm);
+                                if (notePageHierarchyElInfo.UniqueTitle.CompareTo(otherLevel.Title) < 0)
+                                    break;
                             }
-
-                            if (!prevNodesInHierarchy.Contains(existingLinkInHierarchy))
-                                break;
                         }
+                        else
+                        {
+                            if (otherLevel.Id == notePageHierarchyElInfo.UniqueName)
+                            {
+                                levelWasFound = true;
+                                break;
+                            }
+                            else
+                            {
+                                XElement existingLinkInHierarchy;
+
+                                if (notePageHierarchyElInfo.Type == HierarchyElementType.Page)
+                                {
+                                    existingLinkInHierarchy = parentHierarchy.XPathSelectElement(
+                                                string.Format("one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", Constants.Key_SyncId, otherLevel.Id),
+                                                notebookHierarchy.Xnm);
+
+                                    if (existingLinkInHierarchy == null)  // ещё не обновили метаданные в кэше                                
+                                        existingLinkInHierarchy = parentHierarchy.XPathSelectElement(string.Format("one:Page[@ID='{0}']", otherLevel.Id), notebookHierarchy.Xnm);
+                                }
+                                else
+                                {
+                                    existingLinkInHierarchy = parentHierarchy.XPathSelectElement(
+                                                string.Format("*[@name=\"{0}\"]", otherLevel.Id),
+                                                notebookHierarchy.Xnm);
+                                }
+
+                                if (!prevNodesInHierarchy.Contains(existingLinkInHierarchy))
+                                    break;
+                            }
+                        }
+                        index++;
                     }
-                    index++;
                 }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
             }
 
             return index;
