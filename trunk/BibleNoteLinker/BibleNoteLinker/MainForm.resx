@@ -393,18 +393,6 @@ Click to go to the download page.</value>
   <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <data name="tsmiSeelctNotebooks.Size" type="System.Drawing.Size, System.Drawing">
-    <value>164, 22</value>
-  </data>
-  <data name="tsmiSeelctNotebooks.Text" xml:space="preserve">
-    <value>Select notebooks</value>
-  </data>
-  <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>50, 20</value>
-  </data>
-  <data name="toolStripMenuItem1.Text" xml:space="preserve">
-    <value>Menu</value>
-  </data>
   <data name="menuStrip1.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
@@ -429,6 +417,18 @@ Click to go to the download page.</value>
   <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
     <value>8</value>
   </data>
+  <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>50, 20</value>
+  </data>
+  <data name="toolStripMenuItem1.Text" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="tsmiSeelctNotebooks.Size" type="System.Drawing.Size, System.Drawing">
+    <value>164, 22</value>
+  </data>
+  <data name="tsmiSeelctNotebooks.Text" xml:space="preserve">
+    <value>Select notebooks</value>
+  </data>
   <data name="cbCurrent.Items" xml:space="preserve">
     <value>page</value>
   </data>
@@ -442,7 +442,7 @@ Click to go to the download page.</value>
     <value>notebook</value>
   </data>
   <data name="cbCurrent.Location" type="System.Drawing.Point, System.Drawing">
-    <value>107, 2</value>
+    <value>97, 1</value>
   </data>
   <data name="cbCurrent.Size" type="System.Drawing.Size, System.Drawing">
     <value>87, 21</value>

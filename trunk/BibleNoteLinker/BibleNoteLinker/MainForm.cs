@@ -196,6 +196,8 @@ namespace BibleNoteLinker
                 else if (BibleNoteLinker.Properties.Settings.Default.Changed)
                     rbAnalyzeChangedPages.Checked = true;
 
+                cbCurrent.SelectedIndex = 0;
+
                 if (BibleNoteLinker.Properties.Settings.Default.Force)
                     chkForce.Checked = true;
 
@@ -314,6 +316,6 @@ namespace BibleNoteLinker
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
-        }
+        }      
     }
 }

@@ -43,9 +43,9 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSeelctNotebooks = new System.Windows.Forms.ToolStripMenuItem();
             this.pbBaseElements = new System.Windows.Forms.Panel();
+            this.cbCurrent = new System.Windows.Forms.ComboBox();
             this.llblShowErrors = new System.Windows.Forms.LinkLabel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.cbCurrent = new System.Windows.Forms.ComboBox();
             this.menuStrip1.SuspendLayout();
             this.pbBaseElements.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -148,6 +148,18 @@
             resources.ApplyResources(this.pbBaseElements, "pbBaseElements");
             this.pbBaseElements.Name = "pbBaseElements";
             // 
+            // cbCurrent
+            // 
+            this.cbCurrent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbCurrent.FormattingEnabled = true;
+            this.cbCurrent.Items.AddRange(new object[] {
+            resources.GetString("cbCurrent.Items"),
+            resources.GetString("cbCurrent.Items1"),
+            resources.GetString("cbCurrent.Items2"),
+            resources.GetString("cbCurrent.Items3")});
+            resources.ApplyResources(this.cbCurrent, "cbCurrent");
+            this.cbCurrent.Name = "cbCurrent";
+            // 
             // llblShowErrors
             // 
             resources.ApplyResources(this.llblShowErrors, "llblShowErrors");
@@ -160,18 +172,6 @@
             this.flowLayoutPanel1.Controls.Add(this.llblShowErrors);
             resources.ApplyResources(this.flowLayoutPanel1, "flowLayoutPanel1");
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            // 
-            // cbCurrent
-            // 
-            this.cbCurrent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbCurrent.FormattingEnabled = true;
-            this.cbCurrent.Items.AddRange(new object[] {
-            resources.GetString("cbCurrent.Items"),
-            resources.GetString("cbCurrent.Items1"),
-            resources.GetString("cbCurrent.Items2"),
-            resources.GetString("cbCurrent.Items3")});
-            resources.ApplyResources(this.cbCurrent, "cbCurrent");
-            this.cbCurrent.Name = "cbCurrent";
             // 
             // MainForm
             // 
