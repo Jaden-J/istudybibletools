@@ -54,7 +54,7 @@ namespace BibleCommon.Services
             var result = new Dictionary<string, string>();
 
             var iterator = new NotebookIterator();            
-            BibleCommon.Services.NotebookIterator.NotebookInfo notebook = iterator.GetNotebookPages(ref oneNoteApp, notebookId, sectionGroupId, null);
+            BibleCommon.Services.NotebookIterator.NotebookInfo notebook = iterator.GetSectionGroupOrNotebookPages(ref oneNoteApp, notebookId, sectionGroupId, null);
             IterateContainer(ref oneNoteApp, notebookId, toGenerateHref, notebook.RootSectionGroup, ref result, xnm, logger);           
 
             SharpSerializationHelper.Serialize(result, filePath);

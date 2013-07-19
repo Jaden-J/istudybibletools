@@ -64,6 +64,7 @@
             this.rbAnalyzeCurrentPage.Name = "rbAnalyzeCurrentPage";
             this.rbAnalyzeCurrentPage.TabStop = true;
             this.rbAnalyzeCurrentPage.UseVisualStyleBackColor = true;
+            this.rbAnalyzeCurrentPage.CheckedChanged += new System.EventHandler(this.rbAnalyzeCurrentPage_CheckedChanged);
             // 
             // rbAnalyzeAllPages
             // 
@@ -71,6 +72,7 @@
             this.rbAnalyzeAllPages.Name = "rbAnalyzeAllPages";
             this.rbAnalyzeAllPages.TabStop = true;
             this.rbAnalyzeAllPages.UseVisualStyleBackColor = true;
+            this.rbAnalyzeAllPages.CheckedChanged += new System.EventHandler(this.rbAnalyzeAllPages_CheckedChanged);
             // 
             // btnOk
             // 
@@ -85,6 +87,7 @@
             this.rbAnalyzeChangedPages.Name = "rbAnalyzeChangedPages";
             this.rbAnalyzeChangedPages.TabStop = true;
             this.rbAnalyzeChangedPages.UseVisualStyleBackColor = true;
+            this.rbAnalyzeChangedPages.CheckedChanged += new System.EventHandler(this.rbAnalyzeChangedPages_CheckedChanged);
             // 
             // lblInfo
             // 
@@ -120,36 +123,37 @@
             // 
             // menuStrip1
             // 
+            resources.ApplyResources(this.menuStrip1, "menuStrip1");
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem1});
-            resources.ApplyResources(this.menuStrip1, "menuStrip1");
             this.menuStrip1.Name = "menuStrip1";
             // 
             // toolStripMenuItem1
             // 
+            resources.ApplyResources(this.toolStripMenuItem1, "toolStripMenuItem1");
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiSeelctNotebooks});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            resources.ApplyResources(this.toolStripMenuItem1, "toolStripMenuItem1");
             // 
             // tsmiSeelctNotebooks
             // 
-            this.tsmiSeelctNotebooks.Name = "tsmiSeelctNotebooks";
             resources.ApplyResources(this.tsmiSeelctNotebooks, "tsmiSeelctNotebooks");
+            this.tsmiSeelctNotebooks.Name = "tsmiSeelctNotebooks";
             this.tsmiSeelctNotebooks.Click += new System.EventHandler(this.tsmiSeelctNotebooks_Click);
             // 
             // pbBaseElements
             // 
+            resources.ApplyResources(this.pbBaseElements, "pbBaseElements");
             this.pbBaseElements.Controls.Add(this.cbCurrent);
             this.pbBaseElements.Controls.Add(this.rbAnalyzeCurrentPage);
             this.pbBaseElements.Controls.Add(this.chkForce);
             this.pbBaseElements.Controls.Add(this.rbAnalyzeAllPages);
             this.pbBaseElements.Controls.Add(this.rbAnalyzeChangedPages);
-            resources.ApplyResources(this.pbBaseElements, "pbBaseElements");
             this.pbBaseElements.Name = "pbBaseElements";
             // 
             // cbCurrent
             // 
+            resources.ApplyResources(this.cbCurrent, "cbCurrent");
             this.cbCurrent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbCurrent.FormattingEnabled = true;
             this.cbCurrent.Items.AddRange(new object[] {
@@ -157,7 +161,6 @@
             resources.GetString("cbCurrent.Items1"),
             resources.GetString("cbCurrent.Items2"),
             resources.GetString("cbCurrent.Items3")});
-            resources.ApplyResources(this.cbCurrent, "cbCurrent");
             this.cbCurrent.Name = "cbCurrent";
             // 
             // llblShowErrors
@@ -169,15 +172,15 @@
             // 
             // flowLayoutPanel1
             // 
-            this.flowLayoutPanel1.Controls.Add(this.llblShowErrors);
             resources.ApplyResources(this.flowLayoutPanel1, "flowLayoutPanel1");
+            this.flowLayoutPanel1.Controls.Add(this.llblShowErrors);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             // 
             // MainForm
             // 
             this.AcceptButton = this.btnOk;
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.pbBaseElements);
             this.Controls.Add(this.llblDetails);

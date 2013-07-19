@@ -61,17 +61,18 @@ namespace BibleCommon.Services
             
         }
 
-        public NotebookInfo GetNotebookPages(ref Application oneNoteApp, string notebookId, string sectionGroupId, Func<PageInfo, bool> filter)
+        public NotebookInfo GetSectionGroupOrNotebookPages(ref Application oneNoteApp, string notebookId, string sectionGroupId, Func<PageInfo, bool> filter)
         {
-            ApplicationCache.HierarchyElement notebookElement = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsPages);
+            var notebookElement = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsPages);
 
-            XElement sectionGroup = string.IsNullOrEmpty(sectionGroupId)
+            var sectionGroup = string.IsNullOrEmpty(sectionGroupId)
                                         ? notebookElement.Content.Root
                                         : notebookElement.Content.Root.XPathSelectElement(
                                                 string.Format("one:SectionGroup[@ID=\"{0}\"]", sectionGroupId), notebookElement.Xnm);
 
             if (sectionGroup == null)
-                throw new Exception(string.Format("{0} '{0}'", BibleCommon.Resources.Constants.NotebookIteratorCanNotFindSectionGroup));
+                throw new Exception(string.Format("{0}: notebookId = '{1}', sectionGroupId = '{2}'",
+                    BibleCommon.Resources.Constants.NotebookIteratorCanNotFindSectionGroup, notebookId, sectionGroupId));
             
             int pagesCount = 0;
             var rootSectionGroup = ProcessSectionGroup(sectionGroup, notebookId, notebookElement.Xnm, filter, ref pagesCount);            
@@ -85,8 +86,18 @@ namespace BibleCommon.Services
             ProcessHierarchyElement(result, notebookElement.Content.Root);
 
             return result;
-        }       
+        }
 
+        public SectionInfo GetSectionPages(ref Application oneNoteApp, string notebookId, string sectionGroupId, string sectionId, Func<PageInfo, bool> filter)
+        {
+            var sectionElement = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, sectionId, HierarchyScope.hsPages);
+
+            if (sectionElement == null)
+                throw new Exception(string.Format("{0}: '{1}'", BibleCommon.Resources.Constants.SectionNotFound, sectionId));
+
+            int pagesCount = 0;
+            return ProcessSection(sectionElement.Content.Root, sectionGroupId, notebookId, sectionElement.Xnm, filter, ref pagesCount);            
+        }
 
         private SectionGroupInfo ProcessSectionGroup(XElement sectionGroupElement, string notebookId, XmlNamespaceManager xnm, Func<PageInfo, bool> filter, ref int pagesCount)
         {

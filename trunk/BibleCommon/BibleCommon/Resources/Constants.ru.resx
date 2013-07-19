@@ -888,4 +888,13 @@
   <data name="ShouldSelectIsbtFile" xml:space="preserve">
     <value>Необходимо выбрать файл с расширением ".isbt".</value>
   </data>
+  <data name="ProcessCurrentNotebook" xml:space="preserve">
+    <value>Обработка текущей записной книжки</value>
+  </data>
+  <data name="ProcessCurrentSection" xml:space="preserve">
+    <value>Обработка текущего раздела</value>
+  </data>
+  <data name="ProcessCurrentSectionGroup" xml:space="preserve">
+    <value>Обработка текущей группы разделов</value>
+  </data>
 </root>
