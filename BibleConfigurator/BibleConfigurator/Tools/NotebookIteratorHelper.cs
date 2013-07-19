@@ -17,7 +17,7 @@ namespace BibleConfigurator.Tools
                 throw new ArgumentNullException("pageAction");
 
             var iterator = new NotebookIterator();
-            var notebook = iterator.GetNotebookPages(ref oneNoteApp, notebookId, sectionGroupId, null);
+            var notebook = iterator.GetSectionGroupOrNotebookPages(ref oneNoteApp, notebookId, sectionGroupId, null);
 
             BibleCommon.Services.Logger.LogMessage("{0}: '{1}'", BibleCommon.Resources.Constants.ProcessNotebook, notebook.Title);
 

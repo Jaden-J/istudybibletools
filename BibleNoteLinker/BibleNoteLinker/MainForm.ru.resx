@@ -125,10 +125,10 @@
     <value>Повторный анализ всех ссылок</value>
   </data>
   <data name="rbAnalyzeCurrentPage.Size" type="System.Drawing.Size, System.Drawing">
-    <value>199, 17</value>
+    <value>106, 17</value>
   </data>
   <data name="rbAnalyzeCurrentPage.Text" xml:space="preserve">
-    <value>Анализировать текущую страницу</value>
+    <value>Анализировать </value>
   </data>
   <data name="rbAnalyzeAllPages.Size" type="System.Drawing.Size, System.Drawing">
     <value>176, 17</value>
@@ -175,6 +175,27 @@
   </data>
   <data name="tsmiSeelctNotebooks.Text" xml:space="preserve">
     <value>Выбрать записные книжки</value>
+  </data>
+  <data name="cbCurrent.Items" xml:space="preserve">
+    <value>текущую страницу</value>
+  </data>
+  <data name="cbCurrent.Items1" xml:space="preserve">
+    <value>текущий раздел</value>
+  </data>
+  <data name="cbCurrent.Items2" xml:space="preserve">
+    <value>текущую группу разделов</value>
+  </data>
+  <data name="cbCurrent.Items3" xml:space="preserve">
+    <value>текущую записную книжку</value>
+  </data>
+  <data name="cbCurrent.Location" type="System.Drawing.Point, System.Drawing">
+    <value>102, 1</value>
+  </data>
+  <data name="cbCurrent.Size" type="System.Drawing.Size, System.Drawing">
+    <value>161, 21</value>
+  </data>
+  <data name="llblShowErrors.Location" type="System.Drawing.Point, System.Drawing">
+    <value>134, 0</value>
   </data>
   <data name="llblShowErrors.Size" type="System.Drawing.Size, System.Drawing">
     <value>97, 13</value>
