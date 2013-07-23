@@ -425,7 +425,7 @@ function hideElement(el, className) {
 
         if (!el.hasClass("verseLevel") && !el.hasClass("subLinkDelimeter") && !el.hasClass("subLinkMultiVerse")) {
             var nodesEl = parentEl.children(nodeName);
-            if (nodesEl.length == nodesEl.filter(":not(:visible)").length)
+            if (nodesEl.length == nodesEl.filter("[class*='hidden']").length)
                 hideElement(parentEl, "hiddenLevel");
         }
     }
