@@ -109,7 +109,7 @@ namespace BibleNoteLinker
 
             _pagesForAnalyzeCount = 1;
             string message = BibleCommon.Resources.Constants.ProcessCurrentPage;
-            pbMain.Maximum = ApproximatePageVersesCount;
+            pbMain.Maximum = _pagesForAnalyzeCount > 1 ? _pagesForAnalyzeCount : ApproximatePageVersesCount;
 
             _analyzedVersesService.AddAnalyzedNotebook(
                 OneNoteUtils.GetHierarchyElementName(ref _oneNoteApp, currentPage.NotebookId),
