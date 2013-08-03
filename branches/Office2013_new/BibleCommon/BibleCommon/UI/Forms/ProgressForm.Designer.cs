@@ -45,9 +45,8 @@
             this.lblMessage.AutoSize = true;
             this.lblMessage.Location = new System.Drawing.Point(12, 38);
             this.lblMessage.Name = "lblMessage";
-            this.lblMessage.Size = new System.Drawing.Size(60, 13);
+            this.lblMessage.Size = new System.Drawing.Size(0, 13);
             this.lblMessage.TabIndex = 1;
-            this.lblMessage.Text = "lblMessage";
             // 
             // ProgressForm
             // 
@@ -62,7 +61,7 @@
             this.Name = "ProgressForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "ProgressForm";
+            this.Text = "ProgressForm";            
             this.Shown += new System.EventHandler(this.ProgressForm_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
