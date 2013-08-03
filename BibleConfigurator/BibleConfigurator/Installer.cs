@@ -97,7 +97,7 @@ namespace BibleConfigurator
         {
             if (Directory.Exists(SettingsManager.Instance.FolderPath_BibleNotesPages))
             {
-                var files = Directory.GetFiles(SettingsManager.Instance.FolderPath_BibleNotesPages, "*.htm", SearchOption.AllDirectories).Reverse();
+                var files = Directory.GetFiles(SettingsManager.Instance.FolderPath_BibleNotesPages, "*.htm", SearchOption.AllDirectories);
                 var oneNoteAppLocal = oneNoteApp;
                 using (var form = new ProgressForm("Upgrading 'Summary of Notes' pages", true, (f) =>
                         {                                                        
