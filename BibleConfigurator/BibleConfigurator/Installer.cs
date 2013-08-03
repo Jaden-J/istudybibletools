@@ -71,7 +71,7 @@ namespace BibleConfigurator
                     var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();                    
                     try
                     {
-                        if (!string.IsNullOrEmpty(SettingsManager.Instance.FolderPath_BibleNotesPages))
+                        if (!string.IsNullOrEmpty(SettingsManager.Instance.FolderPath_BibleNotesPages) && !string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName))
                         {
                             var service = new AnalyzedVersesService(true);
 

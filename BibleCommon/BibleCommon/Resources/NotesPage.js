@@ -327,11 +327,9 @@ function saveFilterSettings() {
     hideFilterSettings();
 }
 
-
 function hideFilterSettings() {
-    $(".saveFilterSettings").hide();
+    $(".saveFilterSettings").fadeOut(100)
 }
-
 
 function getHiddenNotebooks() {
     var result = "";
