@@ -68,7 +68,7 @@ namespace BibleCommon.Services
             var sectionGroup = string.IsNullOrEmpty(sectionGroupId)
                                         ? notebookElement.Content.Root
                                         : notebookElement.Content.Root.XPathSelectElement(
-                                                string.Format("one:SectionGroup[@ID=\"{0}\"]", sectionGroupId), notebookElement.Xnm);
+                                                string.Format("//one:SectionGroup[@ID=\"{0}\"]", sectionGroupId), notebookElement.Xnm);
 
             if (sectionGroup == null)
                 throw new Exception(string.Format("{0}: notebookId = '{1}', sectionGroupId = '{2}'",

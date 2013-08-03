@@ -105,33 +105,58 @@ namespace BibleNoteLinker
 
         private void ProcessCurrentHierarchyObject(NotebookIterator.PageInfo currentPage)
         {
-            вот здесь надо учитывать cbCurrent
-
-            _pagesForAnalyzeCount = 1;
-            string message = BibleCommon.Resources.Constants.ProcessCurrentPage;
-            pbMain.Maximum = _pagesForAnalyzeCount > 1 ? _pagesForAnalyzeCount : ApproximatePageVersesCount;
-
             _analyzedVersesService.AddAnalyzedNotebook(
                 OneNoteUtils.GetHierarchyElementName(ref _oneNoteApp, currentPage.NotebookId),
                 OneNoteUtils.GetNotebookElementNickname(ref _oneNoteApp, currentPage.NotebookId));
 
+            var iterator = new NotebookIterator();
 
-            LogHighLevelMessage(message, 1, StagesCount);
-            Logger.LogMessage(message);
-            Logger.MoveLevel(1);            
-            ProcessPage(currentPage, null);
-            Logger.MoveLevel(-1);
+            var variant = (CurrentVariants)cbCurrent.SelectedIndex;            
+            switch (variant)
+            {
+                case CurrentVariants.Page:
+                    _pagesForAnalyzeCount = 1;                    
+                    UpdatePbMain();                    
+                    ProcessPage(currentPage, null, BibleCommon.Resources.Constants.ProcessCurrentPage);
+                    break;
+
+                case CurrentVariants.Section:
+                    var sectionInfo = iterator.GetSectionPages(ref _oneNoteApp, currentPage.NotebookId, currentPage.SectionGroupId, currentPage.SectionId, null);
+                    _pagesForAnalyzeCount = sectionInfo.Pages.Count;
+                    UpdatePbMain();
+                    ProcessSection(sectionInfo, null);
+                    break;
+
+                case CurrentVariants.SectionGroup:
+                case CurrentVariants.Notebook:
+                    var sectionGroupId = variant == CurrentVariants.SectionGroup ? currentPage.SectionGroupId: null;
+                    var containerInfo = iterator.GetSectionGroupOrNotebookPages(ref _oneNoteApp, currentPage.NotebookId, sectionGroupId, null);
+                    _pagesForAnalyzeCount = containerInfo.PagesCount;
+                    UpdatePbMain();
+
+                    if (string.IsNullOrEmpty(sectionGroupId))
+                        ProcessNotebook(containerInfo);
+                    else
+                        ProcessSectionGroup(containerInfo.RootSectionGroup, false, null);
+
+                    break;
+            }            
+        }
+
+        private void UpdatePbMain()
+        {
+            pbMain.Maximum = _pagesForAnalyzeCount > 1 ? _pagesForAnalyzeCount : ApproximatePageVersesCount;
+            
+            pbMain.PerformStep();
+            
+            Logger.LogMessage(Helper.GetRightFoundPagesString(_pagesForAnalyzeCount));
         }
 
         private void ProcessAllOrModifiedPages()
         {
             List<NotebookIterator.NotebookInfo> notebooks = GetNotebooksInfo();
             _pagesForAnalyzeCount = notebooks.Sum(notebook => notebook.PagesCount);
-
-            pbMain.Maximum = _pagesForAnalyzeCount > 1 ? _pagesForAnalyzeCount : ApproximatePageVersesCount;
-
-            pbMain.PerformStep();
-            Logger.LogMessage(Helper.GetRightFoundPagesString(_pagesForAnalyzeCount));
+            UpdatePbMain();
 
             foreach (NotebookIterator.NotebookInfo notebook in notebooks)
             {
@@ -386,30 +411,30 @@ namespace BibleNoteLinker
 
             foreach (BibleCommon.Services.NotebookIterator.PageInfo page in section.Pages)
             {
-                string message = string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage, page.Title);
-
-                LogHighLevelMessage(message, 1, StagesCount);
-                Logger.LogMessage(message);
-                Logger.MoveLevel(1);                
-                ProcessPage(page, doNotAnalyze);
-                Logger.MoveLevel(-1);
+                var message = string.Format("{0} '{1}'", BibleCommon.Resources.Constants.ProcessPage, page.Title);                                
+                ProcessPage(page, doNotAnalyze, message);                
             }
 
             Logger.MoveLevel(-1);
         }
 
-        private void ProcessPage(NotebookIterator.PageInfo page, bool? doNotAnalyze)
+        private void ProcessPage(NotebookIterator.PageInfo page, bool? doNotAnalyze, string message)
         {
+            LogHighLevelMessage(message, 1, StagesCount);
+            Logger.LogMessage(message);
+            Logger.MoveLevel(1);
+
             var noteLinkManager = new NoteLinkManager() { AnalyzeAllPages = rbAnalyzeAllPages.Checked };
             noteLinkManager.OnNextVerseProcess += new EventHandler<NoteLinkManager.ProcessVerseEventArgs>(noteLinkManager_OnNextVerseProcess);
-            noteLinkManager.LinkPageVerses(ref _oneNoteApp, page.NotebookId, page.Id, NoteLinkManager.AnalyzeDepth.Full, chkForce.Checked, doNotAnalyze);
-            
+            noteLinkManager.LinkPageVerses(ref _oneNoteApp, page.NotebookId, page.Id, NoteLinkManager.AnalyzeDepth.Full, chkForce.Checked, doNotAnalyze);            
 
             pbMain.PerformStep();
             System.Windows.Forms.Application.DoEvents();            
 
             if (_processAbortedByUser)
                 throw new ProcessAbortedByUserException();
+
+            Logger.MoveLevel(-1);
         }
 
         void noteLinkManager_OnNextVerseProcess(object sender, NoteLinkManager.ProcessVerseEventArgs e)
