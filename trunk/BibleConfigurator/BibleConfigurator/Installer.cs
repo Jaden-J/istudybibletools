@@ -31,12 +31,20 @@ namespace BibleConfigurator
         public Installer()
             : base()
         {
-            try
-            {   
-                _programVersion = SettingsManager.Instance.VersionFromSettings;                
+            DoWithExceptionHandling(() =>
+            {
+                DoWithExceptionHandling(() => _programVersion = SettingsManager.Instance.VersionFromSettings);
 
-                // Attach the 'Committed' event.
-                this.Committed += new InstallEventHandler(MyInstaller_Committed);                
+                this.Committed += new InstallEventHandler(MyInstaller_Committed);
+            });
+        }
+
+        private void DoWithExceptionHandling(Action action)
+        {
+            try
+            {
+                if (action != null)
+                    action();
             }
             catch (Exception ex)
             {
@@ -47,52 +55,41 @@ namespace BibleConfigurator
         // Event handler for 'Committed' event.
         private void MyInstaller_Committed(object sender, InstallEventArgs e)
         {
-            TryToGenerateDefaultModule();            
+            DoWithExceptionHandling(TryToGenerateDefaultModule);
 
-            TryToRegenerateNotesPages();
-            
-            try
+            DoWithExceptionHandling(TryToRegenerateNotesPages);
+
+            DoWithExceptionHandling(() =>
             {
                 if (SettingsManager.Instance.SettingsWereLoadedFromFile)
                     SettingsManager.Instance.Save();  // чтобы записать VersionFromSettings
-            }
-            catch (Exception ex)
-            {
-                Log(ex.ToString());
-            }
+            });
         }
 
         public void TryToRegenerateNotesPages()
         {
-            try
-            {   
-                if (_programVersion == null)  // так как до версии 3.1 этого свойства ещё не было
-                {
-                    var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();                    
-                    try
-                    {
-                        if (!string.IsNullOrEmpty(SettingsManager.Instance.FolderPath_BibleNotesPages) && !string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName))
-                        {
-                            var service = new AnalyzedVersesService(true);
-
-                            AddDefaultAnalyzedNotebooksInfo(ref oneNoteApp, service);
-                            RegenerateNotesPages(ref oneNoteApp, service);
-
-                            service.Update();
-                            NotesPageManagerFS.UpdateResources();
-                        }
-                    }
-                    finally
-                    {
-                        OneNoteUtils.ReleaseOneNoteApp(ref oneNoteApp);                                                
-                    }                    
-
-                    TryToMergeAllModulesWithMainBible();  // так как раньше оно не правильно вызывалось и вызывалось ли вообще...
-                }
-            }
-            catch (Exception ex)
+            if (_programVersion == null)  // так как до версии 3.1 этого свойства ещё не было
             {
-                Log(ex.ToString());
+                var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
+                try
+                {
+                    if (!string.IsNullOrEmpty(SettingsManager.Instance.FolderPath_BibleNotesPages) && !string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName))
+                    {
+                        var service = new AnalyzedVersesService(true);
+
+                        AddDefaultAnalyzedNotebooksInfo(ref oneNoteApp, service);
+                        RegenerateNotesPages(ref oneNoteApp, service);
+
+                        service.Update();
+                        NotesPageManagerFS.UpdateResources();
+                    }
+                }
+                finally
+                {
+                    OneNoteUtils.ReleaseOneNoteApp(ref oneNoteApp);
+                }
+
+                TryToMergeAllModulesWithMainBible();  // так как раньше оно не правильно вызывалось и вызывалось ли вообще...
             }
         }
 
@@ -102,11 +99,11 @@ namespace BibleConfigurator
             {
                 var files = Directory.GetFiles(SettingsManager.Instance.FolderPath_BibleNotesPages, "*.htm", SearchOption.AllDirectories).Reverse();
                 var oneNoteAppLocal = oneNoteApp;
-                using (var form = new ProgressForm("Upgrading Notes Pages", (f) =>
-                        {
+                using (var form = new ProgressForm("Upgrading Notes Pages", true, (f) =>
+                        {                                                        
                             foreach (var filePath in files)
                             {
-                                try
+                                DoWithExceptionHandling(()=>
                                 {
                                     var fileContent = File.ReadAllText(filePath);
                                     var startTitleIndex = fileContent.IndexOf("<title>") + "<title>".Length;
@@ -126,11 +123,7 @@ namespace BibleConfigurator
                                                                             Path.Combine(
                                                                                 Path.GetFileName(Path.GetDirectoryName(filePath)), 
                                                                                 Path.GetFileName(filePath))));
-                                }
-                                catch (Exception ex)
-                                {
-                                    Log(ex.ToString());
-                                }
+                                });                                
                             }
                         })
                     )
@@ -162,34 +155,20 @@ namespace BibleConfigurator
 
         private void TryToMergeAllModulesWithMainBible()
         {
-            try
-            {
-                BibleParallelTranslationManager.MergeAllModulesWithMainBible();
-            }
-            catch (Exception ex)
-            {
-                Log(ex.ToString());
-            }
-        }        
+            DoWithExceptionHandling(BibleParallelTranslationManager.MergeAllModulesWithMainBible);            
+        }
 
         private void TryToGenerateDefaultModule()
         {
-            try
+            string oneNoteTemplatesFolder = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(Utils.GetCurrentDirectory())), "OneNoteTemplates");
+            if ((!Directory.Exists(ModulesManager.GetModulesPackagesDirectory()) || Directory.GetFiles(ModulesManager.GetModulesPackagesDirectory()).Length == 0)
+                && Directory.Exists(oneNoteTemplatesFolder))
             {
-                string oneNoteTemplatesFolder = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(Utils.GetCurrentDirectory())), "OneNoteTemplates");
-                if ((!Directory.Exists(ModulesManager.GetModulesPackagesDirectory()) || Directory.GetFiles(ModulesManager.GetModulesPackagesDirectory()).Length == 0)
-                    && Directory.Exists(oneNoteTemplatesFolder))
+                if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible))
                 {
-                    if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible))
-                    {
-                        SettingsManager.Instance.ModuleShortName = GenerateDefaultModule(oneNoteTemplatesFolder);
-                        SettingsManager.Instance.Save();
-                    }
+                    SettingsManager.Instance.ModuleShortName = GenerateDefaultModule(oneNoteTemplatesFolder);
+                    SettingsManager.Instance.Save();
                 }
-            }
-            catch (Exception ex)
-            {
-                Log(ex.ToString());
             }
         }
 

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using BibleCommon.Helpers;
 
 namespace BibleCommon.UI.Forms
 {
@@ -25,15 +26,18 @@ namespace BibleCommon.UI.Forms
             }
         }
 
+        public bool AlwaysTopMost { get; set; }
+
         public ProgressForm()
         {
             InitializeComponent();
         }
 
-        public ProgressForm(string title, Action<ProgressForm> progressAction)
+        public ProgressForm(string title, bool topMost, Action<ProgressForm> progressAction)
             : this()
         {
             _progressAction = progressAction;
+            AlwaysTopMost = topMost;
             Text = title;
         }
 
@@ -52,9 +56,12 @@ namespace BibleCommon.UI.Forms
                 _firstTimeShown = false;
 
                 TopMost = true;
-                Focus();
+                this.SetFocus();
+
                 Application.DoEvents();
-                TopMost = false;
+
+                if (!AlwaysTopMost)
+                    TopMost = false;
 
                 if (_progressAction != null)
                     _progressAction(this);
