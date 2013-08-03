@@ -19,6 +19,21 @@ namespace BibleNoteLinker
 {
     public partial class MainForm : Form
     {
+        public enum AnalysisVariants
+        {
+            Current,
+            Modified,
+            All
+        }
+
+        public enum CurrentVariants
+        {
+            Page = 0,
+            Section = 1,
+            SectionGroup = 2,
+            Notebook = 3
+        }
+
         private Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
 
         public MainForm()
@@ -59,6 +74,7 @@ namespace BibleNoteLinker
             BibleNoteLinker.Properties.Settings.Default.AllPages = rbAnalyzeAllPages.Checked;
             BibleNoteLinker.Properties.Settings.Default.Changed = rbAnalyzeChangedPages.Checked;
             BibleNoteLinker.Properties.Settings.Default.Force = chkForce.Checked;
+            BibleNoteLinker.Properties.Settings.Default.CurrentAnalyzedObject = cbCurrent.SelectedIndex;
             BibleNoteLinker.Properties.Settings.Default.Save();
 
             try
@@ -196,6 +212,8 @@ namespace BibleNoteLinker
                 else if (BibleNoteLinker.Properties.Settings.Default.Changed)
                     rbAnalyzeChangedPages.Checked = true;
 
+                cbCurrent.SelectedIndex = BibleNoteLinker.Properties.Settings.Default.CurrentAnalyzedObject;
+
                 if (BibleNoteLinker.Properties.Settings.Default.Force)
                     chkForce.Checked = true;
 
@@ -314,6 +332,26 @@ namespace BibleNoteLinker
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             OneNoteUtils.ReleaseOneNoteApp(ref _oneNoteApp);
+        }
+
+        private void rbAnalyzeChangedPages_CheckedChanged(object sender, EventArgs e)
+        {
+            SetCbCurrentAbility();
+        }
+
+        private void rbAnalyzeAllPages_CheckedChanged(object sender, EventArgs e)
+        {
+            SetCbCurrentAbility();
+        }
+
+        private void rbAnalyzeCurrentPage_CheckedChanged(object sender, EventArgs e)
+        {
+            SetCbCurrentAbility();
+        }
+
+        private void SetCbCurrentAbility()
+        {
+            cbCurrent.Enabled = rbAnalyzeCurrentPage.Checked;
         }
     }
 }

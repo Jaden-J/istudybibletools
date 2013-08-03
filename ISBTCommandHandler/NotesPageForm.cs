@@ -15,6 +15,7 @@ using System.IO;
 using BibleCommon.Helpers;
 using System.Diagnostics;
 using System.Web.Script.Serialization;
+using System.Threading;
 
 namespace ISBTCommandHandler
 {
@@ -171,13 +172,26 @@ namespace ISBTCommandHandler
             }
         }
 
+        internal class SaveFilterSettingsParameters
+        {
+            internal List<string> HiddenNotebooks { get; set; }
+            internal decimal MinVerseWeight { get; set; }
+            internal bool ShowDetailedNotes { get; set; }
+        }
+
         public void SaveFilterSettings(string hiddenNotebooks, string minVerseWeight, string showDetailedNotes)
         {   
             SettingsManager.Instance.Filter_HiddenNotebooks = hiddenNotebooks.Split(new string[] { "_|_" }, StringSplitOptions.RemoveEmptyEntries).ToList();
             SettingsManager.Instance.Filter_MinVerseWeight = Convert.ToDecimal(minVerseWeight);
             SettingsManager.Instance.Filter_ShowDetailedNotes = Convert.ToBoolean(showDetailedNotes);
-            SettingsManager.Instance.Save();
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(SaveFilterSettings));            
+        }
+
+        private void SaveFilterSettings(Object stateInfo)
+        {
             RefreshFilteredNotebooksInfo();
+            SettingsManager.Instance.Save();            
         }
 
         private void NotesPageForm_Load(object sender, EventArgs e)
