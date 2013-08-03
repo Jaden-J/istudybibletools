@@ -74,6 +74,6 @@ namespace BibleCommon.UI.Forms
         {
             pbMain.Maximum = maximumProgressValue;
             base.ShowDialog();            
-        }
+        }      
     }
 }
