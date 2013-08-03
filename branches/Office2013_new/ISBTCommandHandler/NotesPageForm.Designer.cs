@@ -38,7 +38,7 @@ namespace ISBTCommandHandler
             this.btnScaleUp = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.chkAlwaysOnTop = new System.Windows.Forms.CheckBox();
-            this.chkCloseOnClick = new System.Windows.Forms.CheckBox();            
+            this.chkCloseOnClick = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.scMain)).BeginInit();
             this.scMain.Panel1.SuspendLayout();
             this.scMain.Panel2.SuspendLayout();
@@ -53,12 +53,10 @@ namespace ISBTCommandHandler
             // 
             // scMain.Panel1
             // 
-            resources.ApplyResources(this.scMain.Panel1, "scMain.Panel1");
             this.scMain.Panel1.Controls.Add(this.wbNotesPage);
             // 
             // scMain.Panel2
             // 
-            resources.ApplyResources(this.scMain.Panel2, "scMain.Panel2");
             this.scMain.Panel2.Controls.Add(this.btnNext);
             this.scMain.Panel2.Controls.Add(this.btnPrev);
             this.scMain.Panel2.Controls.Add(this.btnScaleDown);
@@ -124,8 +122,8 @@ namespace ISBTCommandHandler
             // 
             // NotesPageForm
             // 
-            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            resources.ApplyResources(this, "$this");
             this.Controls.Add(this.scMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "NotesPageForm";
@@ -135,7 +133,7 @@ namespace ISBTCommandHandler
             this.Shown += new System.EventHandler(this.NotesPageForm_Shown);
             this.scMain.Panel1.ResumeLayout(false);
             this.scMain.Panel2.ResumeLayout(false);
-            this.scMain.Panel2.PerformLayout();            
+            this.scMain.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scMain)).EndInit();
             this.scMain.ResumeLayout(false);
             this.ResumeLayout(false);
