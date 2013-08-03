@@ -243,6 +243,7 @@ namespace BibleConfigurator
                     {
                         form.ForceIndexDictionaryModuleName = moduleShortName;
                         form.CommitChangesAfterLoad = true;
+                        form.NotAskToIndexBible = true;   // а то выглядит непонятно, когда нас попросили перестроить кэш словаря и тут же сразу просят проиндексировать Библию
                         form.ShowDialog();
                     }
                 }                

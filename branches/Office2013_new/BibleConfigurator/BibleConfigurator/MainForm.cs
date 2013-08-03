@@ -95,6 +95,7 @@ namespace BibleConfigurator
         public bool ShowModulesTabAtStartUp { get; set; }
         public bool NeedToSaveChangesAfterLoadingModuleAtStartUp { get; set; }
         public bool ToIndexBible { get; set; }
+        public bool NotAskToIndexBible { get; set; }
         public bool CommitChangesAfterLoad { get; set; }
         public string ForceIndexDictionaryModuleName { get; set; }
 
@@ -214,7 +215,11 @@ namespace BibleConfigurator
                     }
                     else
                     {
-                        SettingsManager.Instance.FolderPath_BibleNotesPages = tbBibleNotesPagesFolder.Text;
+                        if (string.IsNullOrEmpty(tbBibleNotesPagesFolder.Text))
+                            SettingsManager.Instance.FolderPath_BibleNotesPages = Utils.GetNotesPagesFolderPath();  // почему-то иногда в текстбоксе оказывается пустое значение.
+                        else
+                            SettingsManager.Instance.FolderPath_BibleNotesPages = tbBibleNotesPagesFolder.Text;
+
                         SettingsManager.Instance.NotebookId_BibleNotesPages = string.Empty;
                         NotesPageManagerFS.UpdateResources();                        
                     }
@@ -232,7 +237,7 @@ namespace BibleConfigurator
 
                 if (!string.IsNullOrEmpty(SettingsManager.Instance.NotebookId_Bible))
                 {
-                    if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible) && !ToIndexBible)
+                    if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible) && !ToIndexBible && !NotAskToIndexBible)
                     {
                         var minutes = GetMinutesForBibleVersesCacheGenerating();
                         if (MessageBox.Show(string.Format(BibleCommon.Resources.Constants.IndexBibleQuestion, minutes), BibleCommon.Resources.Constants.Warning,
@@ -397,12 +402,12 @@ namespace BibleConfigurator
             foreach (var dictionaryInfo in SettingsManager.Instance.DictionariesModules.ToArray())
             {
                 if (!DictionaryTermsCacheManager.CacheIsActive(dictionaryInfo.ModuleName) || dictionaryInfo.ModuleName == ForceIndexDictionaryModuleName)
-                {   
+                {
                     try
                     {
                         var moduleInfo = ModulesManager.GetModuleInfo(dictionaryInfo.ModuleName);
                         PrepareForLongProcessing(moduleInfo.NotebooksStructure.DictionaryTermsCount.Value, 1, BibleCommon.Resources.Constants.AddDictionaryStart);
-                        LongProcessLogger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexDictionary);                        
+                        LongProcessLogger.Preffix = string.Format("{0}: ", BibleCommon.Resources.Constants.IndexDictionary);
                         List<string> notFoundTerms;
                         DictionaryTermsCacheManager.GenerateCache(ref _oneNoteApp, moduleInfo, LongProcessLogger, out notFoundTerms);
                         LongProcessingDone(BibleCommon.Resources.Constants.AddDictionaryFinishMessage);
@@ -419,6 +424,11 @@ namespace BibleConfigurator
                                 form.ShowDialog();
                             }
                         }
+                    }
+                    catch (ProcessAbortedByUserException)
+                    {
+                        BibleCommon.Services.Logger.LogMessage("Process aborted by user");
+                        LongProcessingDone(BibleCommon.Resources.Constants.ProcessAbortedByUser);
                     }
                     catch (COMException ex)
                     {

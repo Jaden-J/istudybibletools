@@ -225,6 +225,8 @@ namespace BibleCommon.Services
             //            "Не удаётся найти соответствующее место Писания для страницы. bibleSectionName = '{0}', biblePageName = '{1}'",
             //            bibleSectionName, biblePageName));
 
+            descriptionPageName = descriptionPageName.Replace("\"", "'");
+
             string pageDisplayName = string.Format("{0}.{1}", descriptionPageName, 
                                                                (vp != null && vp.IsValid) ? string.Format(" [{0}]", vp.ChapterName) : string.Empty);
 
