@@ -52,12 +52,10 @@ namespace ISBTCommandHandler
             // 
             // scMain.Panel1
             // 
-            resources.ApplyResources(this.scMain.Panel1, "scMain.Panel1");
             this.scMain.Panel1.Controls.Add(this.wbNotesPage);
             // 
             // scMain.Panel2
             // 
-            resources.ApplyResources(this.scMain.Panel2, "scMain.Panel2");
             this.scMain.Panel2.Controls.Add(this.btnNext);
             this.scMain.Panel2.Controls.Add(this.btnPrev);
             this.scMain.Panel2.Controls.Add(this.btnScaleDown);
@@ -123,8 +121,8 @@ namespace ISBTCommandHandler
             // 
             // NotesPageForm
             // 
-            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            resources.ApplyResources(this, "$this");
             this.Controls.Add(this.scMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "NotesPageForm";
