@@ -442,13 +442,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_F99040C8BB0E4C7DF1BA86AD3996701A"
+        "OwnerKey" = "8:_40B893D39E007010FE4FC4A0B2FEE1D2"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_40B893D39E007010FE4FC4A0B2FEE1D2"
+        "OwnerKey" = "8:_F99040C8BB0E4C7DF1BA86AD3996701A"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -814,7 +814,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=3.1.16.1016, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=3.1.17.1019, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_8571B0778C1FEEE46A98FF1409607CAC"
@@ -1139,15 +1139,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OneNote IStudyBibleTools"
-        "ProductCode" = "8:{2185450E-09EF-4F74-9860-4786013976A6}"
-        "PackageCode" = "8:{254F88E4-781A-4C02-A5FC-5E5D843EA69E}"
+        "ProductCode" = "8:{C521E774-7F39-44A1-9F42-A236158A0130}"
+        "PackageCode" = "8:{DA44A690-3D8A-48FA-B372-3B4EF285209A}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:3.1.15"
+        "ProductVersion" = "8:3.1.17"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://IStudyBibleTools.com"
