@@ -41,11 +41,11 @@ namespace BibleCommon.Services
                                 .GetOrCreateChapterInfo(verse.Chapter.GetValueOrDefault())
                                 .GetOrCreateVerseInfo(verse.Verse.GetValueOrDefault());
 
-            if (verseInfo.MaxWeigth < weight)
-                verseInfo.MaxWeigth = weight;
+            if (verseInfo.MaxWeight < weight)
+                verseInfo.MaxWeight = weight;
 
-            if (verseInfo.MaxDetailedWeigth < detailedWeight)
-                verseInfo.MaxDetailedWeigth = detailedWeight;
+            if (verseInfo.MaxDetailedWeight < detailedWeight)
+                verseInfo.MaxDetailedWeight = detailedWeight;
         }
 
         public void Update()
