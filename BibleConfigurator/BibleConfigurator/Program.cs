@@ -352,7 +352,7 @@ namespace BibleConfigurator
             if (Directory.Exists(SettingsManager.Instance.FolderPath_BibleNotesPages))
             {
                 var files = Directory.GetFiles(SettingsManager.Instance.FolderPath_BibleNotesPages, "*.htm", SearchOption.AllDirectories);                
-                using (var form = new ProgressForm(BibleCommon.Resources.Constants.UpgradingNotesPages, true, (f) =>
+                using (var form = new ProgressForm(BibleCommon.Resources.Constants.UpgradingNotesPages, false, (f) =>
                 {
                     foreach (var filePath in files)
                     {
