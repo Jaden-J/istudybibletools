@@ -219,10 +219,10 @@ namespace BibleCommon.Common
         public int Index { get; set; }
 
         [XmlAttribute]
-        public decimal MaxWeigth { get; set; }
+        public decimal MaxWeight { get; set; }
 
         [XmlAttribute]
-        public decimal MaxDetailedWeigth { get; set; }
+        public decimal MaxDetailedWeight { get; set; }
 
         //[XmlIgnore]
         //public int? PartIndex { get; set; }
