@@ -140,6 +140,8 @@ namespace BibleConfigurator
                                 Logger.LogError("Locking is not supported for this notebook");
                             }
 
+                            Utils.DoWithExceptionHandling("Error while CheckForVersionUpdateCommands.", CheckForVersionUpdateCommands);                            
+
                             if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible))
                             {
                                 var minutes = MainForm.GetMinutesForBibleVersesCacheGenerating();
@@ -154,7 +156,7 @@ namespace BibleConfigurator
                                         Application.Run(mainForm);
                                     }
                                 }
-                            }
+                            }                            
                         };
 
                     mutexId = BibleCommon.Consts.Constants.AnalysisMutix;
@@ -194,9 +196,9 @@ namespace BibleConfigurator
                 {   
                     OneNoteLocker.UnlockSupplementalBible(ref _oneNoteApp);
                 }
-                catch (NotSupportedException)
+                catch (NotSupportedException ex)
                 {
-                    //todo: log it
+                    Logger.LogError(ex);
                 }
             }
             else if (args.Contains(Consts.UnlockBibleSection))
@@ -253,24 +255,20 @@ namespace BibleConfigurator
             return result;
         }
 
+        private static void CheckForVersionUpdateCommands()
+        {
+            if (SettingsManager.Instance.VersionFromSettings == null || SettingsManager.Instance.VersionFromSettings < new Version(3, 1))
+            {
+                Utils.DoWithExceptionHandling(TryToRegenerateNotesPages);
+                Utils.DoWithExceptionHandling(BibleParallelTranslationManager.MergeAllModulesWithMainBible);  // так как раньше оно не правильно вызывалось и вызывалось ли вообще...
+            }
+
+            if (SettingsManager.Instance.SettingsWereLoadedFromFile)
+                if (SettingsManager.Instance.VersionFromSettings != SettingsManager.Instance.CurrentVersion)
+                    SettingsManager.Instance.Save();  // чтобы записать VersionFromSettings
+        }
+
         private static bool _firstLoad = true;
-        //public static void RunFromAnotherAppNotDialog(params string[] args)
-        //{
-        //    if (_firstLoad)
-        //    {
-        //        Application.EnableVisualStyles();
-        //        Application.SetCompatibleTextRenderingDefault(false);
-        //        _firstLoad = false;
-        //    }
-
-        //    Form form = PrepareForRunning(args);            
-
-        //    if (form != null)
-        //    {
-        //        Application.Run(form);
-        //    }
-        //}
-
         public static void RunFromAnotherApp(params string[] args)
         {
             try
@@ -333,5 +331,73 @@ namespace BibleConfigurator
         {
             FormLogger.LogMessage(message);
         }
+
+        private static void TryToRegenerateNotesPages()
+        {
+            if (!string.IsNullOrEmpty(SettingsManager.Instance.FolderPath_BibleNotesPages) && !string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName))
+            {
+                var service = new AnalyzedVersesService(true);
+
+                AddDefaultAnalyzedNotebooksInfo(service);
+                RegenerateNotesPages(service);
+
+                service.Update();
+                NotesPageManagerFS.UpdateResources();
+            }            
+        }
+
+
+        private static void RegenerateNotesPages(AnalyzedVersesService service)
+        {
+            if (Directory.Exists(SettingsManager.Instance.FolderPath_BibleNotesPages))
+            {
+                var files = Directory.GetFiles(SettingsManager.Instance.FolderPath_BibleNotesPages, "*.htm", SearchOption.AllDirectories);                
+                using (var form = new ProgressForm(BibleCommon.Resources.Constants.UpgradingNotesPages, true, (f) =>
+                {
+                    foreach (var filePath in files)
+                    {
+                        Utils.DoWithExceptionHandling(() =>
+                        {
+                            var fileContent = File.ReadAllText(filePath);
+                            var startTitleIndex = fileContent.IndexOf("<title>") + "<title>".Length;
+                            if (startTitleIndex > 10)
+                            {
+                                var endTitleIndex = fileContent.IndexOf("</title>");
+                                var title = fileContent.Substring(startTitleIndex, endTitleIndex - startTitleIndex);
+                                var parts = title.Split(new char[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
+                                var pageName = parts[0];
+                                var chapterPointer = new VersePointer(parts[1]);
+                                var pageData = new NotesPageData(filePath, pageName, Path.GetFileNameWithoutExtension(filePath) == "0" ? NotesPageType.Chapter : NotesPageType.Verse, chapterPointer, true);
+                                pageData.Serialize(ref _oneNoteApp, service);
+                            }
+
+                            f.PerformStep(BibleCommon.Resources.Constants.UpgradingFile + ": ...\\" + Path.Combine(
+                                                                    Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(filePath))),
+                                                                    Path.Combine(
+                                                                        Path.GetFileName(Path.GetDirectoryName(filePath)),
+                                                                        Path.GetFileName(filePath))));
+                        });
+                    }
+                })
+                    )
+                {
+                    form.ShowDialog(files.Count());
+                }                
+            }
+        }
+
+        private static void AddDefaultAnalyzedNotebooksInfo(AnalyzedVersesService service)
+        {
+            foreach (var notebookInfo in SettingsManager.Instance.SelectedNotebooksForAnalyze)
+            {
+                Utils.DoWithExceptionHandling(() =>
+                {
+                    var notebookName = OneNoteUtils.GetHierarchyElementName(ref _oneNoteApp, notebookInfo.NotebookId);
+                    var notebookNickname = OneNoteUtils.GetNotebookElementNickname(ref _oneNoteApp, notebookInfo.NotebookId);
+
+                    service.AddAnalyzedNotebook(notebookName, notebookNickname);
+                });                
+            }
+        }     
     }
 }

@@ -900,4 +900,10 @@ Please take notice:
   <data name="ProcessCurrentSectionGroup" xml:space="preserve">
     <value>Current section group processing</value>
   </data>
+  <data name="UpgradingFile" xml:space="preserve">
+    <value>Upgrading file</value>
+  </data>
+  <data name="UpgradingNotesPages" xml:space="preserve">
+    <value>Upgrading 'Summary of Notes' pages</value>
+  </data>
 </root>

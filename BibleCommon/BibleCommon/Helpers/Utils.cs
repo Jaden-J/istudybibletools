@@ -219,5 +219,23 @@ namespace BibleCommon.Helpers
                 return ms.ToArray();
             }
         }
+
+        public static void DoWithExceptionHandling(Action action)
+        {
+            DoWithExceptionHandling(string.Empty, action);
+        }
+
+        public static void DoWithExceptionHandling(string errorDescription, Action action)
+        {
+            try
+            {
+                if (action != null)
+                    action();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(errorDescription, ex);
+            }
+        }
     }
 }
