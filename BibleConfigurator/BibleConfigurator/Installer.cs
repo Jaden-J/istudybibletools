@@ -26,15 +26,12 @@ namespace BibleConfigurator
 
     [RunInstaller(true)]
     public class Installer : System.Configuration.Install.Installer
-    {
-        private Version _programVersion;
+    {   
         public Installer()
             : base()
         {
             DoWithExceptionHandling(() =>
             {
-                DoWithExceptionHandling(() => _programVersion = SettingsManager.Instance.VersionFromSettings);
-
                 this.Committed += new InstallEventHandler(MyInstaller_Committed);
             });
         }
@@ -56,107 +53,7 @@ namespace BibleConfigurator
         private void MyInstaller_Committed(object sender, InstallEventArgs e)
         {
             DoWithExceptionHandling(TryToGenerateDefaultModule);
-
-            DoWithExceptionHandling(TryToRegenerateNotesPages);
-
-            DoWithExceptionHandling(() =>
-            {
-                if (SettingsManager.Instance.SettingsWereLoadedFromFile)
-                    SettingsManager.Instance.Save();  // чтобы записать VersionFromSettings
-            });
-        }
-
-        public void TryToRegenerateNotesPages()
-        {
-            if (_programVersion == null)  // так как до версии 3.1 этого свойства ещё не было
-            {
-                var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
-                try
-                {
-                    if (!string.IsNullOrEmpty(SettingsManager.Instance.FolderPath_BibleNotesPages) && !string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName))
-                    {
-                        var service = new AnalyzedVersesService(true);
-
-                        AddDefaultAnalyzedNotebooksInfo(ref oneNoteApp, service);
-                        RegenerateNotesPages(ref oneNoteApp, service);
-
-                        service.Update();
-                        NotesPageManagerFS.UpdateResources();
-                    }
-                }
-                finally
-                {
-                    OneNoteUtils.ReleaseOneNoteApp(ref oneNoteApp);
-                }
-
-                TryToMergeAllModulesWithMainBible();  // так как раньше оно не правильно вызывалось и вызывалось ли вообще...
-            }
-        }
-
-        private void RegenerateNotesPages(ref Application oneNoteApp, AnalyzedVersesService service)
-        {
-            if (Directory.Exists(SettingsManager.Instance.FolderPath_BibleNotesPages))
-            {
-                var files = Directory.GetFiles(SettingsManager.Instance.FolderPath_BibleNotesPages, "*.htm", SearchOption.AllDirectories);
-                var oneNoteAppLocal = oneNoteApp;
-                using (var form = new ProgressForm("Upgrading 'Summary of Notes' pages", true, (f) =>
-                        {                                                        
-                            foreach (var filePath in files)
-                            {
-                                DoWithExceptionHandling(()=>
-                                {
-                                    var fileContent = File.ReadAllText(filePath);
-                                    var startTitleIndex = fileContent.IndexOf("<title>") + "<title>".Length;
-                                    if (startTitleIndex > 10)
-                                    {
-                                        var endTitleIndex = fileContent.IndexOf("</title>");
-                                        var title = fileContent.Substring(startTitleIndex, endTitleIndex - startTitleIndex);
-                                        var parts = title.Split(new char[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
-                                        var pageName = parts[0];
-                                        var chapterPointer = new VersePointer(parts[1]);
-                                        var pageData = new NotesPageData(filePath, pageName, Path.GetFileNameWithoutExtension(filePath) == "0" ? NotesPageType.Chapter : NotesPageType.Verse, chapterPointer, true);
-                                        pageData.Serialize(ref oneNoteAppLocal, service);
-                                    }
-
-                                    f.PerformStep("Upgrading file: ...\\" +  Path.Combine(
-                                                                            Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(filePath))),
-                                                                            Path.Combine(
-                                                                                Path.GetFileName(Path.GetDirectoryName(filePath)), 
-                                                                                Path.GetFileName(filePath))));
-                                });                                
-                            }
-                        })
-                    )
-                {
-                    form.ShowDialog(files.Count());
-                }
-                oneNoteApp = oneNoteAppLocal;
-                oneNoteAppLocal = null;
-            }
-        }
-
-        private void AddDefaultAnalyzedNotebooksInfo(ref Application oneNoteApp, AnalyzedVersesService service)
-        {
-            foreach (var notebookInfo in SettingsManager.Instance.SelectedNotebooksForAnalyze)
-            {
-                try
-                {
-                    var notebookName = OneNoteUtils.GetHierarchyElementName(ref oneNoteApp, notebookInfo.NotebookId);
-                    var notebookNickname = OneNoteUtils.GetNotebookElementNickname(ref oneNoteApp, notebookInfo.NotebookId);
-
-                    service.AddAnalyzedNotebook(notebookName, notebookNickname);
-                }
-                catch (Exception ex)
-                {
-                    Log(ex.ToString());
-                }               
-            }
-        }
-
-        private void TryToMergeAllModulesWithMainBible()
-        {
-            DoWithExceptionHandling(BibleParallelTranslationManager.MergeAllModulesWithMainBible);            
-        }
+        }      
 
         private void TryToGenerateDefaultModule()
         {
