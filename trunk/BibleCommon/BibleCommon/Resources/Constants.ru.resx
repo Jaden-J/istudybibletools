@@ -897,4 +897,10 @@
   <data name="ProcessCurrentSectionGroup" xml:space="preserve">
     <value>Обработка текущей группы разделов</value>
   </data>
+  <data name="UpgradingFile" xml:space="preserve">
+    <value>Обновление файла</value>
+  </data>
+  <data name="UpgradingNotesPages" xml:space="preserve">
+    <value>Обновление страниц "Сводные заметок"</value>
+  </data>
 </root>
