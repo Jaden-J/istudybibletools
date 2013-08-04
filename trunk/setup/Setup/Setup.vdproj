@@ -70,12 +70,6 @@
         "Entry"
         {
         "MsmKey" = "8:_6419EA84BE02E070DDED4151DEFEB023"
-        "OwnerKey" = "8:_FFEA549306074C1F816582BF2A48D211"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_6419EA84BE02E070DDED4151DEFEB023"
         "OwnerKey" = "8:_CA4EBCE7EEAD491A924378B1B80C766E"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -88,19 +82,7 @@
         "Entry"
         {
         "MsmKey" = "8:_6419EA84BE02E070DDED4151DEFEB023"
-        "OwnerKey" = "8:_B1B1BDDFFD3C48DFAB6EC57FCE5B25D0"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_6419EA84BE02E070DDED4151DEFEB023"
         "OwnerKey" = "8:_A3A83E09BBAD46FEABA7F53A91CF974E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_6419EA84BE02E070DDED4151DEFEB023"
-        "OwnerKey" = "8:_9B0F10C6DE324711B2DB7288CC89C606"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -119,6 +101,24 @@
         {
         "MsmKey" = "8:_6419EA84BE02E070DDED4151DEFEB023"
         "OwnerKey" = "8:_F4BC93C080B154D1DBE9A74F1E1DE4C5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6419EA84BE02E070DDED4151DEFEB023"
+        "OwnerKey" = "8:_FFEA549306074C1F816582BF2A48D211"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6419EA84BE02E070DDED4151DEFEB023"
+        "OwnerKey" = "8:_B1B1BDDFFD3C48DFAB6EC57FCE5B25D0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6419EA84BE02E070DDED4151DEFEB023"
+        "OwnerKey" = "8:_9B0F10C6DE324711B2DB7288CC89C606"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -189,14 +189,44 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_D6A379308676301C248E7D3E2C97441A"
-        "OwnerKey" = "8:_154C3F58C5664894873383FE9BFF835D"
+        "MsmKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
+        "OwnerKey" = "8:_F4BC93C080B154D1DBE9A74F1E1DE4C5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
+        "OwnerKey" = "8:_CA4EBCE7EEAD491A924378B1B80C766E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
+        "OwnerKey" = "8:_B7D8E041B8A1421FBCE161FA2DBF061E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
+        "OwnerKey" = "8:_A3A83E09BBAD46FEABA7F53A91CF974E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
+        "OwnerKey" = "8:_8C32219337F548448299AAD0506868D5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
+        "OwnerKey" = "8:_830B3D6A545B464F87CF9AA03B88DBEC"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_D6A379308676301C248E7D3E2C97441A"
-        "OwnerKey" = "8:_FFEA549306074C1F816582BF2A48D211"
+        "OwnerKey" = "8:_154C3F58C5664894873383FE9BFF835D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -214,19 +244,7 @@
         "Entry"
         {
         "MsmKey" = "8:_D6A379308676301C248E7D3E2C97441A"
-        "OwnerKey" = "8:_B1B1BDDFFD3C48DFAB6EC57FCE5B25D0"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D6A379308676301C248E7D3E2C97441A"
         "OwnerKey" = "8:_A3A83E09BBAD46FEABA7F53A91CF974E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D6A379308676301C248E7D3E2C97441A"
-        "OwnerKey" = "8:_9B0F10C6DE324711B2DB7288CC89C606"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -245,6 +263,24 @@
         {
         "MsmKey" = "8:_D6A379308676301C248E7D3E2C97441A"
         "OwnerKey" = "8:_F4BC93C080B154D1DBE9A74F1E1DE4C5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D6A379308676301C248E7D3E2C97441A"
+        "OwnerKey" = "8:_FFEA549306074C1F816582BF2A48D211"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D6A379308676301C248E7D3E2C97441A"
+        "OwnerKey" = "8:_B1B1BDDFFD3C48DFAB6EC57FCE5B25D0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D6A379308676301C248E7D3E2C97441A"
+        "OwnerKey" = "8:_9B0F10C6DE324711B2DB7288CC89C606"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -297,42 +333,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_FDBF0A60AC5BE76B8DAF459E8CAAA0E3"
-        "OwnerKey" = "8:_CA4EBCE7EEAD491A924378B1B80C766E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_FDBF0A60AC5BE76B8DAF459E8CAAA0E3"
-        "OwnerKey" = "8:_F4BC93C080B154D1DBE9A74F1E1DE4C5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_FDBF0A60AC5BE76B8DAF459E8CAAA0E3"
-        "OwnerKey" = "8:_830B3D6A545B464F87CF9AA03B88DBEC"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_FDBF0A60AC5BE76B8DAF459E8CAAA0E3"
-        "OwnerKey" = "8:_8C32219337F548448299AAD0506868D5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_FDBF0A60AC5BE76B8DAF459E8CAAA0E3"
-        "OwnerKey" = "8:_A3A83E09BBAD46FEABA7F53A91CF974E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_FDBF0A60AC5BE76B8DAF459E8CAAA0E3"
-        "OwnerKey" = "8:_B7D8E041B8A1421FBCE161FA2DBF061E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_FFEA549306074C1F816582BF2A48D211"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -346,7 +346,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_FDBF0A60AC5BE76B8DAF459E8CAAA0E3"
+        "OwnerKey" = "8:_F4BC93C080B154D1DBE9A74F1E1DE4C5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -425,12 +431,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_830B3D6A545B464F87CF9AA03B88DBEC"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_F4BC93C080B154D1DBE9A74F1E1DE4C5"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -825,6 +825,37 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D3B8D8959A99C0CF0D1B8F032542DB82"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.Office.Interop.OneNote, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_D3B8D8959A99C0CF0D1B8F032542DB82"
+                    {
+                    "Name" = "8:Microsoft.Office.Interop.OneNote.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Microsoft.Office.Interop.OneNote.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_D7BA4F22777B48ECA39AA4EB92EA8BE0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D6A379308676301C248E7D3E2C97441A"
             {
             "AssemblyRegister" = "3:1"
@@ -891,7 +922,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=3.1.19.1024, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=3.1.21.1030, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_F4BC93C080B154D1DBE9A74F1E1DE4C5"
@@ -936,37 +967,6 @@
             "Register" = "3:5"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_FDBF0A60AC5BE76B8DAF459E8CAAA0E3"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:TRUE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.Office.Interop.OneNote, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_FDBF0A60AC5BE76B8DAF459E8CAAA0E3"
-                    {
-                    "Name" = "8:Microsoft.Office.Interop.OneNote.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Microsoft.Office.Interop.OneNote.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_D7BA4F22777B48ECA39AA4EB92EA8BE0"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
         }
@@ -1125,15 +1125,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OneNote IStudyBibleTools"
-        "ProductCode" = "8:{C86538DB-B6CE-47B2-8934-FD99D9642C1E}"
-        "PackageCode" = "8:{138B5311-14A4-43E2-B029-6FDCB097F7A0}"
+        "ProductCode" = "8:{4A4426A0-9EDA-4D8F-88AC-8D98856FBA83}"
+        "PackageCode" = "8:{119C854F-E20F-4D60-B3D4-3636E34BBE7E}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:3.1.19"
+        "ProductVersion" = "8:3.1.21"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://IStudyBibleTools.com"
