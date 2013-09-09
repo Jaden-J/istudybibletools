@@ -2,7 +2,7 @@
 <customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" loadImage="GetImage">
 	<ribbon>
 		<tabs>
-			<tab id="tabCustom" label="I STUDY BIBLE TOOLS">
+			<tab id="tabCustom" label="BIBLENOTE">
 				<group id="Tools" label="Tools">
 					<button id="VersePointerButton" label="Open a Verse" size="large" screentip="Click to quickly go to any verse of the Bible" onAction="ButtonClick" image="VersePointerButton.png"/>
           <button id="VerseLinkerButton" label="Write a Comment" size="large" screentip="Click to add a comment on any passage from the Bible or specific words in these passages" onAction="ButtonClick" image="VerseLinkerButton.png"/>
