@@ -46,7 +46,39 @@ namespace TestProject
             //_oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();             
 
             try
-            { 
+            {
+                var xmlbible = ModulesManager.GetModuleBibleInfo("rst");
+                var module = ModulesManager.GetModuleInfo("rst");
+
+                var skippedBook = 39;
+
+                var maxBook = xmlbible.Books.Skip(skippedBook).OrderByDescending(b => b.Chapters.Count).ToList();
+
+
+                var maxChapterVerses = -1;
+                CHAPTER maxChapter = null;
+                BIBLEBOOK maxChapterBook = null;
+                foreach (var b in xmlbible.Books.Skip(skippedBook))
+                {
+                    var chapterMax = b.Chapters.OrderByDescending(c => c.Verses.Count).First();
+                    if (chapterMax.Verses.Count > maxChapterVerses && chapterMax.Verses.Count < 80)
+                    {
+                        maxChapter = chapterMax;
+                        maxChapterVerses = chapterMax.Verses.Count;
+                        maxChapterBook = b;
+                    }
+                    else if (chapterMax.Verses.Count == maxChapterVerses)
+                    {
+                        Console.WriteLine("!!!");
+                    }
+                }
+
+                Console.WriteLine("{0} - {1} ({2})", module.BibleStructure.BibleBooks.First(b => b.Index == maxChapterBook.Index).Name, maxChapter.Index, maxChapter.Verses.Count);
+                Console.WriteLine("{0} ({1})", module.BibleStructure.BibleBooks.First(b => b.Index == maxBook[0].Index).Name, maxBook[0].Chapters.Count);
+                Console.WriteLine("{0} ({1})", module.BibleStructure.BibleBooks.First(b => b.Index == maxBook[1].Index).Name, maxBook[1].Chapters.Count);
+                Console.WriteLine("{0} ({1})", module.BibleStructure.BibleBooks.First(b => b.Index == maxBook[2].Index).Name, maxBook[2].Chapters.Count);
+                return;
+
                 //Console.WriteLine(Regex.Replace("<br>no<", string.Format("(^|[^0-9a-zA-Z]){0}($|[^0-9a-zA-Z<])", "no"), @"$1aeasdasds$2", RegexOptions.IgnoreCase));
                 //return;
 
