@@ -1786,7 +1786,7 @@
     <value>5</value>
   </data>
   <data name="hlModules.Text" xml:space="preserve">
-    <value>http://IStudyBibleTools.com</value>
+    <value>http://BibleNote.pro</value>
   </data>
   <data name="&gt;&gt;hlModules.Name" xml:space="preserve">
     <value>hlModules</value>
@@ -2188,7 +2188,7 @@
     <value>17, 17</value>
   </metadata>
   <data name="openModuleFileDialog.Filter" xml:space="preserve">
-    <value>IStudyBibleTools Module|*.isbt</value>
+    <value>BibleNote Module|*.isbt</value>
   </data>
   <metadata name="notesPagesFolderBrowserDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>430, 17</value>
@@ -2744,7 +2744,7 @@
     <value>CenterScreen</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>OneNote IStudyBibleTools parameters</value>
+    <value>BibleNote parameters</value>
   </data>
   <data name="&gt;&gt;folderBrowserDialog.Name" xml:space="preserve">
     <value>folderBrowserDialog</value>

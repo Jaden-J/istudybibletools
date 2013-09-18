@@ -525,7 +525,7 @@
     <value>pbMain</value>
   </data>
   <data name="lblInfo.Text" xml:space="preserve">
-    <value>A new version of program is available on the site http://IStudyBibleTools.com.
+    <value>A new version of program is available on the site http://BibleNote.pro.
 Click to go to the download page.</value>
   </data>
   <data name="flowLayoutPanel1.FlowDirection" type="System.Windows.Forms.FlowDirection, System.Windows.Forms">
