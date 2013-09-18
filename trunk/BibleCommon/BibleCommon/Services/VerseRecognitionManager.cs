@@ -328,12 +328,18 @@ namespace BibleCommon.Services
 
             if (!string.IsNullOrEmpty(chapterString))
             {
-                for (int maxMissCount = 2; maxMissCount >= 0; maxMissCount--)
+                for (int counter = 2; counter >= -1; counter--)
                 {
-                    string bookName = StringUtils.GetPrevString(textElement.Value,
-                        numberStartIndex, new SearchMissInfo(maxMissCount, SearchMissInfo.MissMode.CancelOnMissFound), out startIndex, out prevHtmlBreakIndex,
-                        maxMissCount > 0 ? StringSearchIgnorance.IgnoreAllSpacesAndDots : StringSearchIgnorance.IgnoreFirstSpacesAndDots,
-                        StringSearchMode.SearchText);
+                    string bookName = StringUtils.GetPrevString(
+                                            textElement.Value,
+                                            numberStartIndex, 
+                                            new SearchMissInfo(counter > 0 
+                                                                    ? counter 
+                                                                    : 0, 
+                                                               SearchMissInfo.MissMode.CancelOnMissFound), 
+                                            out startIndex, out prevHtmlBreakIndex,
+                                            GetStringSearchIgnorance(counter),
+                                            StringSearchMode.SearchText);
 
                     if (!string.IsNullOrEmpty(bookName))
                     {
@@ -374,7 +380,7 @@ namespace BibleCommon.Services
             }
 
             return result;
-        }
+        }        
 
         private static VersePointerSearchResult TryToGetSingleVerse(XElement textElement, int numberStartIndex, int number,
             int nextTextBreakIndex, int nextHtmlBreakIndex, int prevTextBreakIndex, int prevHtmlBreakIndex, string prevChar, string nextChar,
@@ -486,12 +492,18 @@ namespace BibleCommon.Services
 
             if (!string.IsNullOrEmpty(verseString))
             {
-                for (int maxMissCount = 2; maxMissCount >= 0; maxMissCount--)
+                for (int counter = 2; counter >= -1; counter--)
                 {
-                    string bookName = StringUtils.GetPrevString(textElement.Value,
-                        numberStartIndex, new SearchMissInfo(maxMissCount, SearchMissInfo.MissMode.CancelOnMissFound), out startIndex, out prevHtmlBreakIndex,
-                        maxMissCount > 0 ? StringSearchIgnorance.IgnoreAllSpacesAndDots : StringSearchIgnorance.IgnoreFirstSpacesAndDots,
-                        StringSearchMode.SearchText);
+                    string bookName = StringUtils.GetPrevString(
+                                            textElement.Value,
+                                            numberStartIndex,
+                                            new SearchMissInfo(counter > 0
+                                                                    ? counter
+                                                                    : 0,
+                                                               SearchMissInfo.MissMode.CancelOnMissFound),
+                                            out startIndex, out prevHtmlBreakIndex,
+                                            GetStringSearchIgnorance(counter),
+                                            StringSearchMode.SearchText);
 
                     if (!string.IsNullOrEmpty(bookName))
                     {
@@ -528,6 +540,15 @@ namespace BibleCommon.Services
             }
 
             return result;
+        }
+
+        private static StringSearchIgnorance GetStringSearchIgnorance(int counter)
+        {
+            return counter > 0
+                        ? StringSearchIgnorance.IgnoreAllSpacesAndDots              // > 0
+                        : (counter == 0
+                            ? StringSearchIgnorance.IgnoreTwiceSpacesAndDots        //   0
+                            : StringSearchIgnorance.IgnoreFirstSpacesAndDots);      //  -1
         }
 
         private static bool IsFullVerse(string prevChar, string nextChar)
