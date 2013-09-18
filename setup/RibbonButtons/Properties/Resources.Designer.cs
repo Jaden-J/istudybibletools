@@ -114,7 +114,7 @@ namespace RibbonButtons.Properties {
         ///&lt;customUI xmlns=&quot;http://schemas.microsoft.com/office/2006/01/customui&quot; loadImage=&quot;GetImage&quot;&gt;
         ///	&lt;ribbon&gt;
         ///		&lt;tabs&gt;
-        ///			&lt;tab id=&quot;tabCustom&quot; label=&quot;IStudyBibleTools&quot;&gt;
+        ///			&lt;tab id=&quot;tabCustom&quot; label=&quot;BibleNote&quot;&gt;
         ///				&lt;group id=&quot;Tools&quot; label=&quot;Tools&quot;&gt;
         ///					&lt;button id=&quot;VersePointerButton&quot; label=&quot;Open a Verse&quot; size=&quot;large&quot; screentip=&quot;Click to quickly go to any verse of the Bible&quot; onAction=&quot;ButtonClick&quot; image=&quot;VersePointerButton.png&quot;/&gt;
         ///          &lt;button id=&quot;VerseLinkerButton&quot; label=&quot;Write a Comment&quot; size=&quot;large&quot; scre [остаток строки не уместился]&quot;;.

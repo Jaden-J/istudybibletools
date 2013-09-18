@@ -164,9 +164,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AboutProgramForm.resx">
       <DependentUpon>AboutProgramForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="AboutProgramForm.ru.resx">
       <DependentUpon>AboutProgramForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="BaseSupplementalForm.resx">
       <DependentUpon>BaseSupplementalForm.cs</DependentUpon>

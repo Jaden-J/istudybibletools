@@ -416,7 +416,7 @@ Delete these elements and try again.</value>
     <value>Sasha &amp; Natasha</value>
   </data>
   <data name="WebSiteUrl" xml:space="preserve">
-    <value>http://IStudyBibleTools.com</value>
+    <value>http://BibleNote.pro</value>
   </data>
   <data name="SectionGroupNotFound" xml:space="preserve">
     <value>Section group '{0}' not found.</value>
@@ -437,7 +437,7 @@ Delete these elements and try again.</value>
     <value>Current Module is undefined.</value>
   </data>
   <data name="DownloadPageUrl" xml:space="preserve">
-    <value>http://IStudyBibleTools.com/download.htm?fromProgram=true</value>
+    <value>http://BibleNote.pro/download.htm?fromProgram=true</value>
   </data>
   <data name="Error_InvalidModule" xml:space="preserve">
     <value>Invalid module:</value>
@@ -446,7 +446,7 @@ Delete these elements and try again.</value>
     <value>File '{0}' not found.</value>
   </data>
   <data name="NewVersionOnServerFileUrl" xml:space="preserve">
-    <value>http://IStudyBibleTools.com/ServerVariables.xml</value>
+    <value>http://BibleNote.pro/ServerVariables.xml</value>
   </data>
   <data name="MoreThanSingleInstanceRun" xml:space="preserve">
     <value>Another instance of this program is running.</value>
