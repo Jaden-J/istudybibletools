@@ -26,15 +26,18 @@ namespace BibleCommon.Services
 
         public void AddAnalyzedNotebook(string notebookName, string notebookNickname)
         {
-            var notebook = new AnalyzedNotebookInfo() { Name = notebookName, Nickname = notebookNickname };
-
             if (!VersesInfo.NotebooksDictionary.ContainsKey(notebookName))
+            {
+                var maxId = VersesInfo.NotebooksDictionary.Any() ? VersesInfo.NotebooksDictionary.Values.Max(n => n.Id) : 0;
+                var notebook = new AnalyzedNotebookInfo() { Name = notebookName, Nickname = notebookNickname, Id = maxId + 1 };
+
                 VersesInfo.NotebooksDictionary.Add(notebookName, notebook);
+            }
             else
                 VersesInfo.NotebooksDictionary[notebookName].Nickname = notebookNickname;
         }
 
-        public void UpdateVerseInfo(VersePointer verse, decimal weight, decimal detailedWeight)
+        public void UpdateVerseInfo(VersePointer verse, decimal weight, decimal detailedWeight, string notebookName)
         {
             var verseInfo = VersesInfo
                                 .GetOrCreateBookInfo(verse.Book.Index, verse.Book.Name)
@@ -46,6 +49,10 @@ namespace BibleCommon.Services
 
             if (verseInfo.MaxDetailedWeight < detailedWeight)
                 verseInfo.MaxDetailedWeight = detailedWeight;
+
+            var notebookId = VersesInfo.NotebooksDictionary[notebookName].Id;
+            if (!verseInfo.Notebooks.Contains(notebookId))
+                verseInfo.Notebooks.Add(notebookId);
         }
 
         public void Update()

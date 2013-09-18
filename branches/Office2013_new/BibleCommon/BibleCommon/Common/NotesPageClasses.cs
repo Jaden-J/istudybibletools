@@ -372,7 +372,7 @@ namespace BibleCommon.Common
 
             var summarySubLinksNonDetailedWight = pageLevel.PageLinks.Where(pl => !pl.IsDetailed).Sum(pl => pl.VerseWeight);
 
-            analyzedVersesService.UpdateVerseInfo(pageLevel.Root.Verse, summarySubLinksNonDetailedWight, summarySubLinksOverallWight);
+            analyzedVersesService.UpdateVerseInfo(pageLevel.Root.Verse, summarySubLinksNonDetailedWight, summarySubLinksOverallWight, GetNotebookName(pageLevel));
 
             var hiddenAllPageLevel = false;
 
@@ -419,6 +419,18 @@ namespace BibleCommon.Common
 
             levelTitleLinkEl.Add(new XAttribute("class", levelTitleLinkElClass));
             levelTitleLinkEl.Add(new XAttribute("href", pageLevel.GetPageTitleLinkHref(ref oneNoteApp)));
+        }
+
+        private string GetNotebookName(NotesPageHierarchyLevelBase level)
+        {
+            if (level == null || level is VerseNotesPageData)
+                return null;
+
+            var hierarchyLevel = (NotesPageHierarchyLevel)level;
+            if (hierarchyLevel.HierarchyType == HierarchyElementType.Notebook)
+                return hierarchyLevel.Id;
+            else
+                return GetNotebookName(hierarchyLevel.Parent);
         }
 
         private void GeneratePageLinkLevel(ref Application oneNoteApp, NotesPageLink pageLink, XElement subLinksEl, int linkIndex, bool isLast)
@@ -547,8 +559,8 @@ namespace BibleCommon.Common
     public class NotesPagePageLevel : NotesPageHierarchyLevel
     {
         public string PageId { get; set; }
-        public string PageTitleObjectId { get; set; }      
-
+        public string PageTitleObjectId { get; set; }
+        
         private bool _pageLinksWasChanged = false;
         private List<NotesPageLink> _pageLinks;
 
