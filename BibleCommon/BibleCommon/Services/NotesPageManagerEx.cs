@@ -632,7 +632,7 @@ namespace BibleCommon.Services
             else
                 parentHierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsNotebooks).Content.Root;
 
-            //parentHierarchy точно != null, потому что мы передаём текущий notePageInfo, который анализируем. Может быть только если удалили страницу после начала анализа этой страницы.
+            //parentHierarchy точно != null, потому что мы передаём текущий notePageInfo, который анализируем. Может быть только, если удалили страницу после начала анализа этой страницы.
             
             var noteLinkInHierarchy = parentHierarchy.XPathSelectElement(string.Format("*[@ID=\"{0}\"]", elInfo.Id), xnm);
 

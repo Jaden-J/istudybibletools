@@ -21,6 +21,7 @@ namespace BibleCommon.Helpers
         None,               // не игнорировать пробелы и точки
         IgnoreFirstSpaces,
         IgnoreFirstSpacesAndDots,
+        IgnoreTwiceSpacesAndDots,
         IgnoreAllSpacesAndDots        
 
     }
@@ -422,10 +423,10 @@ namespace BibleCommon.Helpers
             if (missInfo == null)
                 missInfo = new SearchMissInfo(null);
 
-            string result = string.Empty;
-            int? missCount = null;
-
-            bool foundValidChars = false;   // уже начали чот нить находить
+            var result = string.Empty;
+            int? missCount = null;                        
+            int? invalidSymbolsCount = null;   //  количество промахов. null - если ещё не начали находить значащие символы
+            var prevSymbolWasInvalid = false;
             bool? isDigits = null;  // true - ищем цифры, false - ищем текст
 
             if (searchMode == StringSearchMode.SearchText)
@@ -455,7 +456,9 @@ namespace BibleCommon.Helpers
 
                 if (IsDigit(c))  // значит цифры
                 {
-                    foundValidChars = true;
+                    if (!invalidSymbolsCount.HasValue)
+                        invalidSymbolsCount = 0;
+                    prevSymbolWasInvalid = false;
 
                     if (!isDigits.HasValue)
                     {
@@ -483,7 +486,9 @@ namespace BibleCommon.Helpers
                 }
                 else if (IsCharAlphabetical(c, alphabet))
                 {
-                    foundValidChars = true;
+                    if (!invalidSymbolsCount.HasValue)
+                        invalidSymbolsCount = 0;
+                    prevSymbolWasInvalid = false;
 
                     if (!isDigits.HasValue)
                     {
@@ -518,7 +523,10 @@ namespace BibleCommon.Helpers
                     }
                     else
                     {
-                        bool isMiss = true;
+                        var isMiss = true;
+                        if (invalidSymbolsCount.HasValue && !prevSymbolWasInvalid)
+                            invalidSymbolsCount++;
+                        prevSymbolWasInvalid = true;
 
                         if (c == ' ' || c == '.')
                         {
@@ -528,11 +536,15 @@ namespace BibleCommon.Helpers
                                     isMiss = false;
                                     break;
                                 case StringSearchIgnorance.IgnoreFirstSpacesAndDots:
-                                    if (!foundValidChars)  // значит пробел или точка до текста
+                                    if (!invalidSymbolsCount.HasValue)  // значит пробел или точка до текста
+                                        isMiss = false;
+                                    break;
+                                case StringSearchIgnorance.IgnoreTwiceSpacesAndDots:  // не сложно сделать, чтобы и больше раз пропускать
+                                    if (invalidSymbolsCount.GetValueOrDefault(0) < 2)
                                         isMiss = false;
                                     break;
                                 case StringSearchIgnorance.IgnoreFirstSpaces:
-                                    if (c == ' ' && !foundValidChars)
+                                    if (c == ' ' && !invalidSymbolsCount.HasValue)
                                         isMiss = false;
                                     break;
                             }
@@ -587,10 +599,10 @@ namespace BibleCommon.Helpers
             if (missInfo == null)
                 missInfo = new SearchMissInfo(null);
 
-            string result = string.Empty;
+            var result = string.Empty;
             int? missCount = null;
-
-            bool foundValidChars = false;   // уже начали чот нить находить
+            int? invalidSymbolsCount = null;   //  количество промахов. null - если ещё не начали находить значащие символы
+            var prevSymbolWasInvalid = false;
             bool? isDigits = null;  // true - ищем цифры, false - ищем текст
 
             if (searchMode == StringSearchMode.SearchText)
@@ -614,7 +626,9 @@ namespace BibleCommon.Helpers
 
                 if (IsDigit(c))  // значит цифры
                 {
-                    foundValidChars = true;
+                    if (!invalidSymbolsCount.HasValue)
+                        invalidSymbolsCount = 0;
+                    prevSymbolWasInvalid = false;
 
                     if (!isDigits.HasValue)
                     {
@@ -642,7 +656,9 @@ namespace BibleCommon.Helpers
                 }
                 else if (IsCharAlphabetical(c, alphabet))
                 {
-                    foundValidChars = true;
+                    if (!invalidSymbolsCount.HasValue)
+                        invalidSymbolsCount = 0;
+                    prevSymbolWasInvalid = false;
 
                     if (!isDigits.HasValue)
                     {
@@ -677,7 +693,10 @@ namespace BibleCommon.Helpers
                     }
                     else
                     {
-                        bool isMiss = true;
+                        var isMiss = true;
+                        if (invalidSymbolsCount.HasValue && !prevSymbolWasInvalid)
+                            invalidSymbolsCount++;
+                        prevSymbolWasInvalid = true;
 
                         if (c == ' ' || c == '.')
                         {
@@ -687,11 +706,15 @@ namespace BibleCommon.Helpers
                                     isMiss = false;
                                     break;
                                 case StringSearchIgnorance.IgnoreFirstSpacesAndDots:
-                                    if (!foundValidChars)  // значит пробел или точка до текста
+                                    if (!invalidSymbolsCount.HasValue)  // значит пробел или точка до текста
+                                        isMiss = false;
+                                    break;
+                                case StringSearchIgnorance.IgnoreTwiceSpacesAndDots:  // не сложно сделать, чтобы и больше раз пропускать
+                                    if (invalidSymbolsCount.GetValueOrDefault(0) < 2)
                                         isMiss = false;
                                     break;
                                 case StringSearchIgnorance.IgnoreFirstSpaces:
-                                    if (c == ' ' && !foundValidChars)
+                                    if (c == ' ' && !invalidSymbolsCount.HasValue)
                                         isMiss = false;
                                     break;
                             }

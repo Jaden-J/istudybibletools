@@ -242,7 +242,9 @@ namespace BibleCommon.Common
 
             var result = GetBibleBookByExactMatch(s, endsWithDot, out moduleName);
 
-            if (result == null && s.Length > 0 && (StringUtils.IsDigit(s[0]) || s[0] == 'i'))  // может быть I Cor 4:6
+            if (result == null && s.Length > 0 
+                //&& (StringUtils.IsDigit(s[0]) || s[0] == 'i')  // может быть I Cor 4:6     - а если "Иис. Нав" ??
+                )
             {
                 s = s.Replace(" ", string.Empty); // чтоб находил "1 John", когда в списке сокращений только "1John"
                 result = GetBibleBookByExactMatch(s, endsWithDot, out moduleName);
