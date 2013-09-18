@@ -13,6 +13,7 @@ namespace BibleCommon.Consts
         public static readonly string OneNoteXmlNs = "http://schemas.microsoft.com/office/onenote/2010/onenote";
         public static readonly XMLSchema CurrentOneNoteSchema = XMLSchema.xs2010;
         public static readonly string ToolsName = "IStudyBibleTools";
+        public static readonly string NewToolsName = "BibleNote";
         public static readonly string ConfigFileName = "settings.config";
         public static readonly string ModulesDirectoryName = "Modules";
         public static readonly string ModulesPackagesDirectoryName = "ModulesPackages";

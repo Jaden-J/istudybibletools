@@ -1482,7 +1482,7 @@ namespace BibleConfigurator
         private void btnBackup_Click(object sender, EventArgs e)
         {
             saveFileDialog.DefaultExt = ".zip";
-            saveFileDialog.FileName = string.Format("{0}_backup_{1}", Constants.ToolsName, DateTime.Now.ToString("yyyy.MM.dd"));
+            saveFileDialog.FileName = string.Format("{0}_backup_{1}", Constants.NewToolsName, DateTime.Now.ToString("yyyy.MM.dd"));
 
             if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
