@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 using System.ComponentModel;
+using Polenter.Serialization;
 
 namespace BibleCommon.Common
 {
@@ -93,6 +94,9 @@ namespace BibleCommon.Common
 
         [XmlAttribute]
         public string Nickname { get; set; }
+
+        [XmlAttribute]
+        public int Id { get; set; }
 
         public override int GetHashCode()
         {
@@ -215,6 +219,11 @@ namespace BibleCommon.Common
     [Serializable]
     public class AnalyzedVerseInfo
     {
+        public AnalyzedVerseInfo()
+        {
+            Notebooks = new HashSet<int>();
+        }
+
         [XmlAttribute]
         public int Index { get; set; }
 
@@ -223,6 +232,27 @@ namespace BibleCommon.Common
 
         [XmlAttribute]
         public decimal MaxDetailedWeight { get; set; }
+
+        [XmlAttribute("Notebooks")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public string XmlNotebooks
+        {
+            get
+            {
+                return string.Join(",", Notebooks.OrderBy(n => n));
+            }
+            set
+            {
+                Notebooks = new HashSet<int>(value
+                            .Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+                            .ToList()
+                            .ConvertAll(s => int.Parse(s)));
+            }
+        }
+
+        [XmlIgnore]
+        [ExcludeFromSerialization]
+        public HashSet<int> Notebooks { get; set; }
 
         //[XmlIgnore]
         //public int? PartIndex { get; set; }
