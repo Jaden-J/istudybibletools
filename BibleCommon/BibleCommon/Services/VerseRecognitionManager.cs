@@ -132,10 +132,10 @@ namespace BibleCommon.Services
             int prevTextBreakIndex;
             int prevHtmlBreakIndex;
             
-            string prevChar = GetPrevStringDesirableNotSpace(textElement.Value, numberStartIndex, new string[] { ",", ";" }, 
-                null, isLink, out prevTextBreakIndex, out prevHtmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar);
-            string nextChar = StringUtils.GetNextString(textElement.Value, numberEndIndex, 
-                null, out nextTextBreakIndex, out nextHtmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar);
+            string prevChar = GetPrevStringDesirableNotSpace(textElement.Value, numberStartIndex, new string[] { ",", ";" },
+                null, isLink, out prevTextBreakIndex, out prevHtmlBreakIndex, null, StringSearchMode.SearchFirstValueChar);
+            string nextChar = StringUtils.GetNextString(textElement.Value, numberEndIndex,
+                null, out nextTextBreakIndex, out nextHtmlBreakIndex, null, StringSearchMode.SearchFirstValueChar);
 
             if (IsFullVerse(prevChar, nextChar))
             {
@@ -175,14 +175,14 @@ namespace BibleCommon.Services
         }
 
         private static string GetPrevStringDesirableNotSpace(string s, int index, string[] searchStrings, SearchMissInfo missInfo, bool isLink, out int textBreakIndex, out int htmlBreakIndex,
-            StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
-        {            
-            string result = StringUtils.GetPrevString(s, index, missInfo, out textBreakIndex, out htmlBreakIndex, ignoreSpaces, searchMode);
+            SearchIgnoringInfo ignoringInfo = null, StringSearchMode searchMode = StringSearchMode.NotSpecified)
+        {
+            string result = StringUtils.GetPrevString(s, index, missInfo, out textBreakIndex, out htmlBreakIndex, ignoringInfo, searchMode);
             if (result == " ")
             {   
                 int tempTextBreakIndex;
                 int tempHtmlBreakIndex;
-                string tempResult = StringUtils.GetPrevString(s, htmlBreakIndex, missInfo, out tempTextBreakIndex, out tempHtmlBreakIndex, ignoreSpaces, searchMode);
+                string tempResult = StringUtils.GetPrevString(s, htmlBreakIndex, missInfo, out tempTextBreakIndex, out tempHtmlBreakIndex, ignoringInfo, searchMode);
                 if (!string.IsNullOrEmpty(tempResult) && searchStrings.Contains(tempResult))
                 {
                     result = tempResult;                    
@@ -198,16 +198,16 @@ namespace BibleCommon.Services
 
         private static string GetNextStringDesirableNotSpace(string s, int index, string[] searchStrings, SearchMissInfo missInfo, bool isLink, 
                         out int textBreakIndex, out int htmlBreakIndex, out bool spaceWasFound,
-                        StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
+                        SearchIgnoringInfo ignoringInfo = null, StringSearchMode searchMode = StringSearchMode.NotSpecified)
         {
             spaceWasFound = false;
-            string result = StringUtils.GetNextString(s, index, missInfo, out textBreakIndex, out htmlBreakIndex, ignoreSpaces, searchMode);
+            string result = StringUtils.GetNextString(s, index, missInfo, out textBreakIndex, out htmlBreakIndex, ignoringInfo, searchMode);
             if (result == " ")
             {
                 spaceWasFound = true;
                 int tempTextBreakIndex;
                 int tempHtmlBreakIndex;
-                string tempResult = StringUtils.GetNextString(s, htmlBreakIndex, missInfo, out tempTextBreakIndex, out tempHtmlBreakIndex, ignoreSpaces, searchMode);
+                string tempResult = StringUtils.GetNextString(s, htmlBreakIndex, missInfo, out tempTextBreakIndex, out tempHtmlBreakIndex, ignoringInfo, searchMode);
                 if (!string.IsNullOrEmpty(tempResult) && searchStrings.Contains(tempResult))
                 {
                     result = tempResult;
@@ -230,7 +230,7 @@ namespace BibleCommon.Services
             tryToSearchSingleVerse = false;
 
             int temp, temp2, endIndex = 0;
-            string prevPrevChar = StringUtils.GetPrevString(textElement.Value, prevHtmlBreakIndex, null, out temp, out temp2, StringSearchIgnorance.None, StringSearchMode.SearchFirstChar);           
+            string prevPrevChar = StringUtils.GetPrevString(textElement.Value, prevHtmlBreakIndex, null, out temp, out temp2, null, StringSearchMode.SearchFirstChar);           
 
             if (!string.IsNullOrEmpty(localChapterName))
             {
@@ -328,7 +328,7 @@ namespace BibleCommon.Services
 
             if (!string.IsNullOrEmpty(chapterString))
             {
-                for (int counter = 2; counter >= -1; counter--)
+                for (int counter = 2; counter >= -2; counter--)
                 {
                     string bookName = StringUtils.GetPrevString(
                                             textElement.Value,
@@ -338,7 +338,7 @@ namespace BibleCommon.Services
                                                                     : 0, 
                                                                SearchMissInfo.MissMode.CancelOnMissFound), 
                                             out startIndex, out prevHtmlBreakIndex,
-                                            GetStringSearchIgnorance(counter),
+                                            GetStringSearchIgnoringInfo(counter),
                                             StringSearchMode.SearchText);
 
                     if (!string.IsNullOrEmpty(bookName))
@@ -390,7 +390,7 @@ namespace BibleCommon.Services
             VersePointerSearchResult result = new VersePointerSearchResult();
 
             int temp, temp2, endIndex;
-            string prevPrevChar = StringUtils.GetPrevString(textElement.Value, prevHtmlBreakIndex, null, out temp, out temp2, StringSearchIgnorance.None, StringSearchMode.SearchFirstChar);
+            string prevPrevChar = StringUtils.GetPrevString(textElement.Value, prevHtmlBreakIndex, null, out temp, out temp2, null, StringSearchMode.SearchFirstChar);
             string globalChapterName = globalChapterResult != null ? globalChapterResult.ChapterName : string.Empty;
             string chapterName = !string.IsNullOrEmpty(globalChapterName) ? globalChapterName : localChapterName;
 
@@ -492,7 +492,7 @@ namespace BibleCommon.Services
 
             if (!string.IsNullOrEmpty(verseString))
             {
-                for (int counter = 2; counter >= -1; counter--)
+                for (int counter = 2; counter >= -2; counter--)
                 {
                     string bookName = StringUtils.GetPrevString(
                                             textElement.Value,
@@ -502,7 +502,7 @@ namespace BibleCommon.Services
                                                                     : 0,
                                                                SearchMissInfo.MissMode.CancelOnMissFound),
                                             out startIndex, out prevHtmlBreakIndex,
-                                            GetStringSearchIgnorance(counter),
+                                            GetStringSearchIgnoringInfo(counter),
                                             StringSearchMode.SearchText);
 
                     if (!string.IsNullOrEmpty(bookName))
@@ -542,13 +542,11 @@ namespace BibleCommon.Services
             return result;
         }
 
-        private static StringSearchIgnorance GetStringSearchIgnorance(int counter)
+        private static SearchIgnoringInfo GetStringSearchIgnoringInfo(int counter)
         {
             return counter > 0
-                        ? StringSearchIgnorance.IgnoreAllSpacesAndDots              // > 0
-                        : (counter == 0
-                            ? StringSearchIgnorance.IgnoreTwiceSpacesAndDots        //   0
-                            : StringSearchIgnorance.IgnoreFirstSpacesAndDots);      //  -1
+                        ? new SearchIgnoringInfo(int.MaxValue, SearchIgnoringInfo.IgnoringMode.IgnoreSpacesAndDots)              
+                        : new SearchIgnoringInfo(3 + counter, SearchIgnoringInfo.IgnoringMode.IgnoreSpacesAndDots);                       
         }
 
         private static bool IsFullVerse(string prevChar, string nextChar)
@@ -641,11 +639,12 @@ namespace BibleCommon.Services
             string anotherKindOfDash = char.ConvertFromUtf32(8209);
 
             string firstNextChar = GetNextStringDesirableNotSpace(textElementValue, nextHtmlBreakIndex - 1, new string[] { "-", anotherKindOfDash },
-                null, isLink, out tempEndIndex, out tempNextHtmlBreakIndex, out spaceWasFound, StringSearchIgnorance.None, StringSearchMode.SearchFirstValueChar);
+                null, isLink, out tempEndIndex, out tempNextHtmlBreakIndex, out spaceWasFound, null, StringSearchMode.SearchFirstValueChar);
 
             if (firstNextChar == "-" || firstNextChar == anotherKindOfDash)   
             {
-                string nextString = StringUtils.GetNextString(textElementValue, tempNextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex, StringSearchIgnorance.IgnoreFirstSpaces);
+                string nextString = StringUtils.GetNextString(textElementValue, tempNextHtmlBreakIndex, null, out tempEndIndex, out tempNextHtmlBreakIndex,
+                                                                 new SearchIgnoringInfo(1, SearchIgnoringInfo.IgnoringMode.IgnoreSpaces));
 
                 if (int.TryParse(nextString, out tempTopVerse))
                 {

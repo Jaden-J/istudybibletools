@@ -16,22 +16,14 @@ namespace BibleCommon.Helpers
         SearchFirstChar         // получить первый любой символ (не равный '<' и '>')
     }
 
-    public enum StringSearchIgnorance
-    {
-        None,               // не игнорировать пробелы и точки
-        IgnoreFirstSpaces,
-        IgnoreFirstSpacesAndDots,
-        IgnoreTwiceSpacesAndDots,
-        IgnoreAllSpacesAndDots        
-
-    }
+    
 
     public class SearchMissInfo
     {
         public enum MissMode
         {
-            CancelOnMissFound,      // как только нашли неподходящий символ - добавляем его к результативной строке и выходим
-            CancelOnNextMiss        // выходим, когда количество промахов превысило лемит
+            CancelOnNextMiss,        // выходим, когда количество промахов превысило лемит
+            CancelOnMissFound      // как только нашли неподходящий символ - добавляем его к результативной строке и выходим
         }
 
         public int? MaxMissCount { get; set; }
@@ -39,10 +31,29 @@ namespace BibleCommon.Helpers
 
         public SearchMissInfo(int? maxMissCount, MissMode mode = MissMode.CancelOnNextMiss)
         {
-            this.MaxMissCount = maxMissCount;
-            this.Mode = mode;
+            MaxMissCount = maxMissCount;
+            Mode = mode;
         }
-    }    
+    }
+
+    public class SearchIgnoringInfo
+    {
+        public enum IgnoringMode
+        {
+            None,               // не игнорировать пробелы и точки
+            IgnoreSpaces,
+            IgnoreSpacesAndDots
+         }
+
+        public int? MaxIgnoreCount { get; set; }         // по сути - сколько слов возвращать
+        public IgnoringMode Mode { get; set; }
+
+        public SearchIgnoringInfo(int? maxIgnoreCount, IgnoringMode mode = IgnoringMode.None)
+        {
+            MaxIgnoreCount = maxIgnoreCount;
+            Mode = mode;
+        }    
+    }
 
     public static class StringUtils
     {
@@ -392,9 +403,9 @@ namespace BibleCommon.Helpers
 
 
         public static string GetPrevString(string s, int index, SearchMissInfo missInfo, out int textBreakIndex, out int htmlBreakIndex,
-           StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
+           SearchIgnoringInfo ignoringInfo = null, StringSearchMode searchMode = StringSearchMode.NotSpecified)
         {
-            return GetPrevString(s, index, missInfo, null, out textBreakIndex, out htmlBreakIndex, ignoreSpaces, searchMode);
+            return GetPrevString(s, index, missInfo, null, out textBreakIndex, out htmlBreakIndex, ignoringInfo, searchMode);
         }
 
         /// <summary>
@@ -408,21 +419,23 @@ namespace BibleCommon.Helpers
         /// <param name="searchMode">что ищем</param>
         /// <returns></returns>
         public static string GetPrevString(string s, int index, SearchMissInfo missInfo, string alphabet, out int textBreakIndex, out int htmlBreakIndex,
-            StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
+            SearchIgnoringInfo ignoringInfo = null, StringSearchMode searchMode = StringSearchMode.NotSpecified)
         {
-            if (searchMode == StringSearchMode.SearchFirstValueChar || searchMode == StringSearchMode.SearchFirstChar)
-            {
-                if (ignoreSpaces != StringSearchIgnorance.None)
-                    throw new ArgumentException("Conflict parameters values: searchMode and ignoreSpaces");
-
-                if (missInfo != null)
-                    if (missInfo.MaxMissCount.HasValue)
-                        throw new ArgumentException("Conflict parameters values: searchMode and maxMissCount");
-            }
+            if (ignoringInfo == null)
+                ignoringInfo = new SearchIgnoringInfo(null);
 
             if (missInfo == null)
                 missInfo = new SearchMissInfo(null);
 
+            if (searchMode == StringSearchMode.SearchFirstValueChar || searchMode == StringSearchMode.SearchFirstChar)
+            {
+                if (ignoringInfo.Mode != SearchIgnoringInfo.IgnoringMode.None)
+                    throw new ArgumentException("Conflict parameters values: searchMode and ignoreSpaces");
+                
+                if (missInfo.MaxMissCount.HasValue)
+                    throw new ArgumentException("Conflict parameters values: searchMode and maxMissCount");
+            }
+        
             var result = string.Empty;
             int? missCount = null;                        
             int? invalidSymbolsCount = null;   //  количество промахов. null - если ещё не начали находить значащие символы
@@ -530,23 +543,18 @@ namespace BibleCommon.Helpers
 
                         if (c == ' ' || c == '.')
                         {
-                            switch (ignoreSpaces)
+                            if (invalidSymbolsCount.GetValueOrDefault(0) < ignoringInfo.MaxIgnoreCount.GetValueOrDefault(0))
                             {
-                                case StringSearchIgnorance.IgnoreAllSpacesAndDots:
-                                    isMiss = false;
-                                    break;
-                                case StringSearchIgnorance.IgnoreFirstSpacesAndDots:
-                                    if (!invalidSymbolsCount.HasValue)  // значит пробел или точка до текста
+                                switch (ignoringInfo.Mode)
+                                {
+                                    case SearchIgnoringInfo.IgnoringMode.IgnoreSpaces:
+                                        if (c == ' ')
+                                            isMiss = false;
+                                        break;
+                                    case SearchIgnoringInfo.IgnoringMode.IgnoreSpacesAndDots:
                                         isMiss = false;
-                                    break;
-                                case StringSearchIgnorance.IgnoreTwiceSpacesAndDots:  // не сложно сделать, чтобы и больше раз пропускать
-                                    if (invalidSymbolsCount.GetValueOrDefault(0) < 2)
-                                        isMiss = false;
-                                    break;
-                                case StringSearchIgnorance.IgnoreFirstSpaces:
-                                    if (c == ' ' && !invalidSymbolsCount.HasValue)
-                                        isMiss = false;
-                                    break;
+                                        break;
+                                }
                             }
                         }
 
@@ -577,27 +585,29 @@ namespace BibleCommon.Helpers
         }
 
         public static string GetNextString(string s, int index, SearchMissInfo missInfo, out int textBreakIndex, out int htmlBreakIndex,
-            StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
+            SearchIgnoringInfo ignoringInfo = null, StringSearchMode searchMode = StringSearchMode.NotSpecified)
         {
-            return GetNextString(s, index, missInfo, null, out textBreakIndex, out htmlBreakIndex, ignoreSpaces, searchMode);
+            return GetNextString(s, index, missInfo, null, out textBreakIndex, out htmlBreakIndex, ignoringInfo, searchMode);
         }
 
 
         public static string GetNextString(string s, int index, SearchMissInfo missInfo, string alphabet, out int textBreakIndex, out int htmlBreakIndex,
-            StringSearchIgnorance ignoreSpaces = StringSearchIgnorance.None, StringSearchMode searchMode = StringSearchMode.NotSpecified)
+            SearchIgnoringInfo ignoringInfo = null, StringSearchMode searchMode = StringSearchMode.NotSpecified)
         {
-            if (searchMode == StringSearchMode.SearchFirstValueChar || searchMode == StringSearchMode.SearchFirstChar)
-            {
-                if (ignoreSpaces != StringSearchIgnorance.None)
-                    throw new ArgumentException("Conflict parameters values: searchMode and ignoreSpaces");
-
-                if (missInfo != null)
-                    if (missInfo.MaxMissCount.HasValue)
-                        throw new ArgumentException("Conflict parameters values: searchMode and maxMissCount");
-            }
+            if (ignoringInfo == null)
+                ignoringInfo = new SearchIgnoringInfo(null);
 
             if (missInfo == null)
                 missInfo = new SearchMissInfo(null);
+
+            if (searchMode == StringSearchMode.SearchFirstValueChar || searchMode == StringSearchMode.SearchFirstChar)
+            {
+                if (ignoringInfo.Mode != SearchIgnoringInfo.IgnoringMode.None)
+                    throw new ArgumentException("Conflict parameters values: searchMode and ignoreSpaces");
+
+                if (missInfo.MaxMissCount.HasValue)
+                    throw new ArgumentException("Conflict parameters values: searchMode and maxMissCount");
+            }
 
             var result = string.Empty;
             int? missCount = null;
@@ -700,23 +710,18 @@ namespace BibleCommon.Helpers
 
                         if (c == ' ' || c == '.')
                         {
-                            switch (ignoreSpaces)
+                            if (invalidSymbolsCount.GetValueOrDefault(0) < ignoringInfo.MaxIgnoreCount.GetValueOrDefault(0))
                             {
-                                case StringSearchIgnorance.IgnoreAllSpacesAndDots:
-                                    isMiss = false;
-                                    break;
-                                case StringSearchIgnorance.IgnoreFirstSpacesAndDots:
-                                    if (!invalidSymbolsCount.HasValue)  // значит пробел или точка до текста
+                                switch (ignoringInfo.Mode)
+                                {
+                                    case SearchIgnoringInfo.IgnoringMode.IgnoreSpaces:
+                                        if (c == ' ')
+                                            isMiss = false;
+                                        break;
+                                    case SearchIgnoringInfo.IgnoringMode.IgnoreSpacesAndDots:
                                         isMiss = false;
-                                    break;
-                                case StringSearchIgnorance.IgnoreTwiceSpacesAndDots:  // не сложно сделать, чтобы и больше раз пропускать
-                                    if (invalidSymbolsCount.GetValueOrDefault(0) < 2)
-                                        isMiss = false;
-                                    break;
-                                case StringSearchIgnorance.IgnoreFirstSpaces:
-                                    if (c == ' ' && !invalidSymbolsCount.HasValue)
-                                        isMiss = false;
-                                    break;
+                                        break;
+                                }
                             }
                         }
 

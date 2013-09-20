@@ -157,7 +157,7 @@ namespace BibleConfigurator.Tools
                             int textBreakIndex;
                             int htmlBreakIndex;
                             string textBefore = StringUtils.GetPrevString(el.Value, boldTagIndex + 1, new SearchMissInfo(boldTagIndex, SearchMissInfo.MissMode.CancelOnNextMiss),
-                                    out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.NotSpecified).Replace("&nbsp;", "");
+                                    out textBreakIndex, out htmlBreakIndex, null, StringSearchMode.NotSpecified).Replace("&nbsp;", "");
 
                             if (textBefore.Trim().Length <= 5)  // чтоб убедиться, что мы взяли текст в начале строки
                             {
@@ -202,7 +202,7 @@ namespace BibleConfigurator.Tools
                             int textBreakIndex;
                             int htmlBreakIndex;
                             string textBefore = StringUtils.GetPrevString(el.Value, verseStartIndex + 1, new SearchMissInfo(verseStartIndex, SearchMissInfo.MissMode.CancelOnNextMiss),
-                                    out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.NotSpecified).Replace("&nbsp;", "");
+                                    out textBreakIndex, out htmlBreakIndex, null, StringSearchMode.NotSpecified).Replace("&nbsp;", "");
 
                             if (textBefore.Length == 0)  // чтоб убедиться, что мы взяли текст в начале строки
                             {

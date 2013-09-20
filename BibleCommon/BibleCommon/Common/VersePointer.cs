@@ -80,14 +80,14 @@ namespace BibleCommon.Common
             verseTextWithoutNumber = null;
             int textBreakIndex, htmlBreakIndex;
             var verseIndex = StringUtils.GetNextString(verseText, -1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound),
-                                                        out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
+                                                        out textBreakIndex, out htmlBreakIndex, null, StringSearchMode.SearchNumber);
             if (!string.IsNullOrEmpty(verseIndex))
             {
                 int? topVerse = null;
                 if (StringUtils.GetChar(verseText, htmlBreakIndex) == '-')
                 {
                     var topVerseString = StringUtils.GetNextString(verseText, htmlBreakIndex, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound),
-                                                        out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
+                                                        out textBreakIndex, out htmlBreakIndex, null, StringSearchMode.SearchNumber);
                     if (!string.IsNullOrEmpty(topVerseString))
                         topVerse = int.Parse(topVerseString);
                 }                
