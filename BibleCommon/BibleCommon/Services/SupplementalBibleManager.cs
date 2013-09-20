@@ -451,11 +451,11 @@ namespace BibleCommon.Services
             while (cursorPosition > -1)
             {                
                 strongNumber = StringUtils.GetNextString(verseText, cursorPosition - 1, new SearchMissInfo(null, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
-                                                                    out temp, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
+                                                                    out temp, out htmlBreakIndex, null, StringSearchMode.SearchNumber);
                 if (!string.IsNullOrEmpty(strongNumber))
                 {
                     string prefix = StringUtils.GetPrevString(verseText, cursorPosition, new SearchMissInfo(null, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
-                                                                    out temp, out temp, StringSearchIgnorance.None, StringSearchMode.SearchFirstChar);
+                                                                    out temp, out temp, null, StringSearchMode.SearchFirstChar);
                     if (!string.IsNullOrEmpty(prefix) && prefix.Length == 1 && StringUtils.IsCharAlphabetical(prefix[0], alphabet))
                     {
                         string strongTerm = string.Format("{0}{1:0000}", prefix, int.Parse(strongNumber));
