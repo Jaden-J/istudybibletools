@@ -320,7 +320,7 @@ namespace BibleConfigurator.ModuleConverter
             {
                 int textBreakIndex, htmlBreakIndex = -1;
                 string strongNumber = StringUtils.GetNextString(verseText, cursorPosition - 1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
-                                                                    out textBreakIndex, out htmlBreakIndex, StringSearchIgnorance.None, StringSearchMode.SearchNumber);
+                                                                    out textBreakIndex, out htmlBreakIndex, null, StringSearchMode.SearchNumber);
                 if (!string.IsNullOrEmpty(strongNumber))
                 {
                     var text = verseText.Substring(0, cursorPosition);
