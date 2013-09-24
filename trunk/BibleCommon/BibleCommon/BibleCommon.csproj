@@ -82,6 +82,7 @@
     <Compile Include="Helpers\CollectionHelper.cs" />
     <Compile Include="Helpers\FormExtensions.cs" />
     <Compile Include="Helpers\OrderedDictionary.cs" />
+    <Compile Include="Helpers\StringSearcher.cs" />
     <Compile Include="Helpers\SharpSerializationHelper.cs" />
     <Compile Include="Helpers\StringUtils.cs" />
     <Compile Include="Helpers\Utils.cs" />

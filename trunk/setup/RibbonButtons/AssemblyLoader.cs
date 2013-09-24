@@ -5,6 +5,7 @@ using System.Text;
 using System.Reflection;
 using System.IO;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace RibbonButtons
 {
@@ -55,9 +56,16 @@ namespace RibbonButtons
 
         private static void LoadAssemblyInternal(string assemblyPath)
         {
-            Assembly assembly = assemblyPath.EndsWith(".exe") ? Assembly.LoadFile(assemblyPath) : Assembly.LoadFrom(assemblyPath);
+            try
+            {
+                var assembly = assemblyPath.EndsWith(".exe") ? Assembly.LoadFile(assemblyPath) : Assembly.LoadFrom(assemblyPath);
 
-            Assemblies.Add(assemblyPath, assembly);
+                Assemblies.Add(assemblyPath, assembly);
+            }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show(ex.Message + ": " + assemblyPath);
+            }
         }
 
         //private static void LoadSatelliteAssemblies(string assemblyPath)

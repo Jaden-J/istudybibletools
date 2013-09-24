@@ -78,24 +78,28 @@ namespace BibleCommon.Common
         {
             verseText = verseText.Trim();
             verseTextWithoutNumber = null;
-            int textBreakIndex, htmlBreakIndex;
-            var verseIndex = StringUtils.GetNextString(verseText, -1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound),
-                                                        out textBreakIndex, out htmlBreakIndex, null, StringSearchMode.SearchNumber);
-            if (!string.IsNullOrEmpty(verseIndex))
+
+            var verseIndexResult = StringSearcher.SearchInString(verseText, -1, StringSearcher.SearchDirection.Forward, StringSearcher.StringSearchMode.SearchNumber,
+                new StringSearcher.SearchMissInfo(0, StringSearcher.SearchMissInfo.MissMode.CancelOnMissFound));
+            var htmlBreakIndex = verseIndexResult.HtmlBreakIndex;
+                                                        
+            if (!string.IsNullOrEmpty(verseIndexResult.FoundString))
             {
                 int? topVerse = null;
                 if (StringUtils.GetChar(verseText, htmlBreakIndex) == '-')
                 {
-                    var topVerseString = StringUtils.GetNextString(verseText, htmlBreakIndex, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound),
-                                                        out textBreakIndex, out htmlBreakIndex, null, StringSearchMode.SearchNumber);
-                    if (!string.IsNullOrEmpty(topVerseString))
-                        topVerse = int.Parse(topVerseString);
+                    var topVerseStringResult = StringSearcher.SearchInString(verseText, htmlBreakIndex, StringSearcher.SearchDirection.Forward,
+                        StringSearcher.StringSearchMode.SearchNumber, new StringSearcher.SearchMissInfo(0, StringSearcher.SearchMissInfo.MissMode.CancelOnMissFound));
+                    htmlBreakIndex = topVerseStringResult.HtmlBreakIndex;
+
+                    if (!string.IsNullOrEmpty(topVerseStringResult.FoundString))
+                        topVerse = int.Parse(topVerseStringResult.FoundString);
                 }                
 
                 if (verseText.Length > htmlBreakIndex + 1)
                     verseTextWithoutNumber = verseText.Substring(htmlBreakIndex + 1);
 
-                return new VerseNumber(int.Parse(verseIndex), topVerse);
+                return new VerseNumber(int.Parse(verseIndexResult.FoundString), topVerse);
             }
 
             return null;

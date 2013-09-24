@@ -153,11 +153,11 @@ namespace BibleConfigurator.Tools
                         boldTagIndex = el.Value.IndexOf(">", boldTagIndex + 1);
 
                         if (boldTagIndex != -1)
-                        {
-                            int textBreakIndex;
-                            int htmlBreakIndex;
-                            string textBefore = StringUtils.GetPrevString(el.Value, boldTagIndex + 1, new SearchMissInfo(boldTagIndex, SearchMissInfo.MissMode.CancelOnNextMiss),
-                                    out textBreakIndex, out htmlBreakIndex, null, StringSearchMode.NotSpecified).Replace("&nbsp;", "");
+                        {   
+                            var textBefore = StringSearcher.SearchInString(el.Value, boldTagIndex + 1, StringSearcher.SearchDirection.Back, 
+                                                    StringSearcher.StringSearchMode.NotSpecified,  
+                                                    new StringSearcher.SearchMissInfo(boldTagIndex, StringSearcher.SearchMissInfo.MissMode.CancelOnNextMiss))
+                                                .FoundString.Replace("&nbsp;", "");
 
                             if (textBefore.Trim().Length <= 5)  // чтоб убедиться, что мы взяли текст в начале строки
                             {
@@ -199,10 +199,9 @@ namespace BibleConfigurator.Tools
                         int verseStartIndex = el.Value.IndexOf(verseStartSearchString);
                         if (verseStartIndex != -1)
                         {
-                            int textBreakIndex;
-                            int htmlBreakIndex;
-                            string textBefore = StringUtils.GetPrevString(el.Value, verseStartIndex + 1, new SearchMissInfo(verseStartIndex, SearchMissInfo.MissMode.CancelOnNextMiss),
-                                    out textBreakIndex, out htmlBreakIndex, null, StringSearchMode.NotSpecified).Replace("&nbsp;", "");
+                            string textBefore = StringSearcher.SearchInString(el.Value, verseStartIndex + 1, StringSearcher.SearchDirection.Back,
+                                                    StringSearcher.StringSearchMode.NotSpecified, new StringSearcher.SearchMissInfo(verseStartIndex, StringSearcher.SearchMissInfo.MissMode.CancelOnNextMiss))
+                                                    .FoundString.Replace("&nbsp;", "");
 
                             if (textBefore.Length == 0)  // чтоб убедиться, что мы взяли текст в начале строки
                             {
