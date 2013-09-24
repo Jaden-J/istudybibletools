@@ -318,10 +318,11 @@ namespace BibleConfigurator.ModuleConverter
             int cursorPosition = StringUtils.GetNextIndexOfDigit(verseText, null);
             if (cursorPosition > -1)
             {
-                int textBreakIndex, htmlBreakIndex = -1;
-                string strongNumber = StringUtils.GetNextString(verseText, cursorPosition - 1, new SearchMissInfo(0, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
-                                                                    out textBreakIndex, out htmlBreakIndex, null, StringSearchMode.SearchNumber);
-                if (!string.IsNullOrEmpty(strongNumber))
+                var strongNumberResult = StringSearcher.SearchInString(verseText, cursorPosition - 1, StringSearcher.SearchDirection.Forward, 
+                                             alphabet, StringSearcher.StringSearchMode.SearchNumber,
+                                             new StringSearcher.SearchMissInfo(0, StringSearcher.SearchMissInfo.MissMode.CancelOnMissFound));
+
+                if (!string.IsNullOrEmpty(strongNumberResult.FoundString))
                 {
                     var text = verseText.Substring(0, cursorPosition);
                     if (!string.IsNullOrEmpty(text))
@@ -330,9 +331,9 @@ namespace BibleConfigurator.ModuleConverter
                     if (AdditionalReadParameters.Contains(ReadParameters.RemoveStrongs))
                         cursorPosition -= 1;  // чтобы удалить пробел перед номером стронга                    
                     else
-                        result.Add(new GRAM() { str = strongNumber });
+                        result.Add(new GRAM() { str = strongNumberResult.FoundString });
 
-                    result.AddRange(GetStrongVerseItems(verseText.Substring(htmlBreakIndex), alphabet));
+                    result.AddRange(GetStrongVerseItems(verseText.Substring(strongNumberResult.HtmlBreakIndex), alphabet));
                 }
             }
             else

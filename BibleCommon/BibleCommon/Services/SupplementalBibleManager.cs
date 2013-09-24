@@ -450,12 +450,20 @@ namespace BibleCommon.Services
             
             while (cursorPosition > -1)
             {                
-                strongNumber = StringUtils.GetNextString(verseText, cursorPosition - 1, new SearchMissInfo(null, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
-                                                                    out temp, out htmlBreakIndex, null, StringSearchMode.SearchNumber);
+                
+                var strongNumberResult = StringSearcher.SearchInString(verseText, cursorPosition - 1, StringSearcher.SearchDirection.Forward, 
+                                    alphabet, StringSearcher.StringSearchMode.SearchNumber, 
+                                    new StringSearcher.SearchMissInfo(null, StringSearcher.SearchMissInfo.MissMode.CancelOnMissFound)); 
+                strongNumber = strongNumberResult.FoundString;
+                htmlBreakIndex = strongNumberResult.HtmlBreakIndex;
+
                 if (!string.IsNullOrEmpty(strongNumber))
                 {
-                    string prefix = StringUtils.GetPrevString(verseText, cursorPosition, new SearchMissInfo(null, SearchMissInfo.MissMode.CancelOnMissFound), alphabet,
-                                                                    out temp, out temp, null, StringSearchMode.SearchFirstChar);
+                    var prefixResult = StringSearcher.SearchInString(verseText, cursorPosition, StringSearcher.SearchDirection.Back, 
+                                            alphabet, StringSearcher.StringSearchMode.SearchFirstChar,
+                                            new StringSearcher.SearchMissInfo(null, StringSearcher.SearchMissInfo.MissMode.CancelOnMissFound));
+                    var prefix = prefixResult.FoundString;
+ 
                     if (!string.IsNullOrEmpty(prefix) && prefix.Length == 1 && StringUtils.IsCharAlphabetical(prefix[0], alphabet))
                     {
                         string strongTerm = string.Format("{0}{1:0000}", prefix, int.Parse(strongNumber));
