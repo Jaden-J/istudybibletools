@@ -45,6 +45,15 @@ namespace BibleCommon.Services
             public bool IsImportantVerse { get; set; }
         }
 
+
+        private static HashSet<string> _endCharsOfChapterLink;
+        static VerseRecognitionManager()
+        {
+            _endCharsOfChapterLink = new HashSet<string>() { ")", "]", "}", ",", ".", "?", "!", ";", "&", ":", "*" };   // двоеточие добавлено потому, что могут быть ссылки типа "Ин 1: вот". Всё равно, если это была нормальная ссылка, он до сюда не дойдёт
+            foreach (var dash in VerseNumber.Dashes)
+                _endCharsOfChapterLink.Add(dash.ToString());
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -132,7 +141,7 @@ namespace BibleCommon.Services
             VersePointerSearchResult result = new VersePointerSearchResult();            
             bool spaceWasFound;
             
-            var prevCharResult = GetPrevOrNextStringDesirableNotSpace(textElement.Value, numberStartIndex, new string[] { ",", ";" },
+            var prevCharResult = GetPrevOrNextStringDesirableNotSpace(textElement.Value, numberStartIndex, new char[] { ',', ';' },
                 isLink, StringSearcher.SearchDirection.Back, StringSearcher.StringSearchMode.SearchFirstValueChar, null, null, out spaceWasFound);
             var nextCharResult = StringSearcher.SearchInString(textElement.Value, numberEndIndex, StringSearcher.SearchDirection.Forward, StringSearcher.StringSearchMode.SearchFirstValueChar);
 
@@ -182,7 +191,7 @@ namespace BibleCommon.Services
             return result;
         }
 
-        private static StringSearcher.StringSearchResult GetPrevOrNextStringDesirableNotSpace(string s, int index, string[] searchStrings, bool isLink,
+        private static StringSearcher.StringSearchResult GetPrevOrNextStringDesirableNotSpace(string s, int index, char[] searchChars, bool isLink,
             StringSearcher.SearchDirection direction, StringSearcher.StringSearchMode searchMode, StringSearcher.SearchMissInfo missInfo, StringSearcher.SearchIgnoringInfo ignoringInfo,  
             out bool spaceWasFound)
         {
@@ -192,7 +201,7 @@ namespace BibleCommon.Services
             {
                 spaceWasFound = true;
                 var tempResult = StringSearcher.SearchInString(s, result.HtmlBreakIndex, direction, searchMode, missInfo, ignoringInfo);
-                if (!string.IsNullOrEmpty(tempResult.FoundString) && searchStrings.Contains(tempResult.FoundString))
+                if (!string.IsNullOrEmpty(tempResult.FoundString) && searchChars.Contains(tempResult.FoundString.FirstOrDefault()))
                 {
                     result.FoundString = tempResult.FoundString;
                     result.HtmlBreakIndex = tempResult.HtmlBreakIndex;
@@ -350,7 +359,7 @@ namespace BibleCommon.Services
                                 if (vp.IsValid)
                                 {
                                     result.ChapterName = GetVerseName(bookName, number);
-                                    bool chapterOnlyAtStartString = prevHtmlBreakIndex == -1 && nextChar != "-";    //  не считаем это ссылкой, как ChapterOnlyAtStartString
+                                    bool chapterOnlyAtStartString = prevHtmlBreakIndex == -1 && !VerseNumber.Dashes.Contains(nextChar.FirstOrDefault());    //  не считаем это ссылкой, как ChapterOnlyAtStartString
                                     if (verseScopeInfo.IsInBrackets && isTitle)
                                         result.ResultType = VersePointerSearchResult.SearchResultType.ExcludableChapter;
                                     else
@@ -568,9 +577,8 @@ namespace BibleCommon.Services
         }
 
         private static bool IsChapter(string prevChar, string nextChar)
-        {
-            string[] endChars = { ")", "]", "}", ",", ".", "?", "!", ";", "-", "&", ":", "*" };   // двоеточие добавлено потому, что могут быть ссылки типа "Ин 1: вот". Всё равно, если это была нормальная ссылка, он до сюда не дойдёт
-            return string.IsNullOrEmpty(nextChar.Trim()) || endChars.Contains(nextChar);                
+        {      
+            return string.IsNullOrEmpty(nextChar.Trim()) || _endCharsOfChapterLink.Contains(nextChar);                
         }
 
         private static bool IsVersePointerFollowedByThePrevResult(XElement textElement, int prevHtmlBreakIndex, VersePointerSearchResult prevResult)
@@ -643,12 +651,10 @@ namespace BibleCommon.Services
             int localTopVerse;
             bool spaceWasFound;
 
-            string anotherKindOfDash = char.ConvertFromUtf32(8209);
-
-            var firstNextCharResult = GetPrevOrNextStringDesirableNotSpace(textElementValue, nextHtmlBreakIndex - 1, new string[] { "-", anotherKindOfDash },
+            var firstNextCharResult = GetPrevOrNextStringDesirableNotSpace(textElementValue, nextHtmlBreakIndex - 1, VerseNumber.Dashes,
                 isLink, StringSearcher.SearchDirection.Forward, StringSearcher.StringSearchMode.SearchFirstValueChar, null, null, out spaceWasFound);             
 
-            if (firstNextCharResult.FoundString == "-" || firstNextCharResult.FoundString == anotherKindOfDash)   
+            if (VerseNumber.Dashes.Contains(firstNextCharResult.FoundString.FirstOrDefault()))   
             {
                 var nextStringResult = StringSearcher.SearchInString(textElementValue, firstNextCharResult.HtmlBreakIndex, StringSearcher.SearchDirection.Forward, StringSearcher.StringSearchMode.NotSpecified, null,
                                                                  new StringSearcher.SearchIgnoringInfo(1, StringSearcher.SearchIgnoringInfo.IgnoringMode.IgnoreSpaces));              
