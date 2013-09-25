@@ -1095,7 +1095,7 @@ namespace BibleCommon.Services
             out BibleSearchResult hierarchySearchResult, ref List<SimpleVersePointer> processedVerses,
             Action<BibleSearchResult> onHierarchyElementFound)
         {
-            hierarchySearchResult = new BibleSearchResult() { ResultType = BibleHierarchySearchResultType.NotFound };           
+            hierarchySearchResult = new BibleSearchResult() { ResultType = BibleHierarchySearchResultType.NotFound };
 
             try
             {
@@ -1112,7 +1112,7 @@ namespace BibleCommon.Services
                         || hierarchySearchResult.HierarchyObjectInfo.PageId != notePageInfo.Id)
                     {
                         if (onHierarchyElementFound != null)
-                            onHierarchyElementFound(hierarchySearchResult);                        
+                            onHierarchyElementFound(hierarchySearchResult);
 
                         var isChapter = vp.IsChapter;
 
@@ -1123,7 +1123,7 @@ namespace BibleCommon.Services
                             if (!excludedVersesLinking                                          // иначе всё равно привязываем
                                 || SettingsManager.Instance.StoreNotesPagesInFolder)
                             {
-                                if (verseScopeInfo.IsExcluded || IsExcludedCurrentNotePage)
+                                if (verseScopeInfo.IsExcluded ^ IsExcludedCurrentNotePage)
                                 {
                                     canContinue = false;
                                 }
