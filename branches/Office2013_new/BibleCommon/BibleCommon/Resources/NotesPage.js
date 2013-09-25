@@ -15,7 +15,7 @@ $(function () {
 });
 
 function setConstants(showAllLinks, importantVerseWeight) {
-    const_showAllLinks = showAllLinks;    
+    const_showAllLinks = showAllLinks;
     const_importantVerseWeight = importantVerseWeight;
 }
 
@@ -30,7 +30,7 @@ function initFilter(notebooks, minVersesWeight, showDetailedNotes) {
     setFilterCommonHandlers();
     setFilterChangedHandler();
 
-    hideFilterSettings();    
+    hideFilterSettings();
 }
 
 ///// filter methods
@@ -127,13 +127,11 @@ function filterByTrackbarAndDetailedNotes() {
                 setElementIsImportant(linkInfo.linkEl, childsWeight >= const_importantVerseWeight);
             }
 
-            if (linkInfo.visible) {
-                if (visibleChildrenCount == 1) {
-                    copyChildLinkToPageTitleLink(linkInfo);
-                }
-                else {
-                    resetPageTitleLink(linkInfo);
-                }
+            if (linkInfo.visible && visibleChildrenCount == 1) {
+                copyChildLinkToPageTitleLink(linkInfo);
+            }
+            else {
+                resetPageTitleLinkIfNeeded(linkInfo);
             }
         }
     }
@@ -182,7 +180,7 @@ function copyChildLinkToPageTitleLink(linkInfo) {
     }
 }
 
-function resetPageTitleLink(linkInfo) {
+function resetPageTitleLinkIfNeeded(linkInfo) {
     if (!isNull(linkInfo.linkEl.attr("data_oldHref"))) {
         linkInfo.linkEl.attr("href", linkInfo.linkEl.attr("data_oldHref"));
         linkInfo.linkEl.attr("data_oldHref", null)
@@ -303,11 +301,14 @@ function notebookFilterClick() {
 }
 
 function filterNotebook(syncId, checked) {
-    var notebookEl = $(".notebookLevel[syncid='" + syncId + "']");
-    if (checked)
-        showElement(notebookEl, "hiddenNotebook");
-    else
-        hideElement(notebookEl, "hiddenNotebook");
+    var notebooksEl = $(".notebookLevel[syncid='" + syncId + "']");
+
+    notebooksEl.each(function (index) {
+        if (checked)
+            showElement($(this), "hiddenNotebook");
+        else
+            hideElement($(this), "hiddenNotebook");
+    });
 }
 
 function chkDetailedNodes_click() {
@@ -315,8 +316,6 @@ function chkDetailedNodes_click() {
     global_IsDetailed = chkDetailedNodes.is(":checked");
 
     filterByTrackbarAndDetailedNotes();
-
-    //document.location = document.location;   // если будут проблемы с обновлением нумерации у списков, раскомментировать эту линию 
 
     filterWasChanged();
 }
@@ -415,6 +414,7 @@ function onTrackbarFilterChanged(newMinVerseWeight) {
     filterWasChanged();
 }
 
+// важно, чтобы el.length == 1, иначе родитель скроется только у первого элемента
 function hideElement(el, className) {
     if (el.length > 0 && !el.hasClass(className)) {
         var nodeName = el[0].nodeName;
@@ -429,6 +429,7 @@ function hideElement(el, className) {
     }
 }
 
+// важно, чтобы el.length == 1, иначе родитель отобразится только у первого элемента
 function showElement(el, className) {
     if (el.length > 0 && el.hasClass(className)) {
         var nodeName = el[0].nodeName;

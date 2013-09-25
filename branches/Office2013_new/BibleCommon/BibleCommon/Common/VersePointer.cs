@@ -14,6 +14,8 @@ namespace BibleCommon.Common
     [Serializable]
     public struct VerseNumber: IComparable<VerseNumber>
     {
+        public readonly static char[] Dashes = new char[] { '-', '—', '‑' };
+
         public int Verse;
         public int? TopVerse;
         public bool IsMultiVerse { get { return TopVerse.HasValue; } }
@@ -59,7 +61,7 @@ namespace BibleCommon.Common
         public static VerseNumber Parse(string s)
         {
             s = s.Trim();
-            var parts = s.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+            var parts = s.Split(Dashes, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length == 1)
                 return new VerseNumber(int.Parse(s));
             else if (parts.Length == 2)
@@ -86,7 +88,7 @@ namespace BibleCommon.Common
             if (!string.IsNullOrEmpty(verseIndexResult.FoundString))
             {
                 int? topVerse = null;
-                if (StringUtils.GetChar(verseText, htmlBreakIndex) == '-')
+                if (Dashes.Contains(StringUtils.GetChar(verseText, htmlBreakIndex)))
                 {
                     var topVerseStringResult = StringSearcher.SearchInString(verseText, htmlBreakIndex, StringSearcher.SearchDirection.Forward,
                         StringSearcher.StringSearchMode.SearchNumber, new StringSearcher.SearchMissInfo(0, StringSearcher.SearchMissInfo.MissMode.CancelOnMissFound));
@@ -764,7 +766,7 @@ namespace BibleCommon.Common
 
         private string TrimLocation(string s)
         {            
-            int indexOfDash = s.LastIndexOf("-");
+            int indexOfDash = s.LastIndexOfAny(VerseNumber.Dashes);
 
             if (indexOfDash != -1 && indexOfDash > 3) // чтоб отсечь такие варианты, как "2-Тим 2:3"
             {
