@@ -52,9 +52,7 @@ namespace RibbonButtons
                 //onApp = (IApplication)Application;
 
                 AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-                RunProgram(Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath), BibleConfiguratorProgramClassName, "-runOnOneNoteStarts", false);
-
-                RunProgram("isbtRefreshCache:RefreshApplicationCache", null, null, false);  // инициализируем кэш
+                RunProgram(Path.Combine(Utils.GetCurrentDirectory(), BibleConfiguratorPath), BibleConfiguratorProgramClassName, "-runOnOneNoteStarts", false);                            
             }
             catch (Exception ex)
             {

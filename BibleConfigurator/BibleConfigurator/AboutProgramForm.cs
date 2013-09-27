@@ -63,7 +63,7 @@ namespace BibleConfigurator
 
         private void lblNewVersion_Click(object sender, EventArgs e)
         {
-            Process.Start(BibleCommon.Resources.Constants.DownloadPageUrl);
+            Process.Start(Utils.GetUpdateProgramWebSitePageUrl());
         }
 
         private bool _wasShown = false;

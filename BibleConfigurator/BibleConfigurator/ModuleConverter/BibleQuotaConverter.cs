@@ -88,7 +88,7 @@ namespace BibleConfigurator.ModuleConverter
 
             var result = new BibleQuotaModuleInfo();
 
-            foreach (string line in File.ReadAllLines(iniFilePath, Utils.GetFileEncoding(iniFilePath)))
+            foreach (string line in File.ReadAllLines(iniFilePath, SystemUtils.GetFileEncoding(iniFilePath)))
             {
                 var pair = line.Split(new char[] { '=' }, 2, StringSplitOptions.RemoveEmptyEntries);
                 if (pair.Length == 2)
@@ -160,9 +160,9 @@ namespace BibleConfigurator.ModuleConverter
 
                 var bookSectionId = AddBookSection(currentSectionGroupId, bibleBookInfo.SectionName, bibleBookInfo.Name);
 
-                string bookFile = Path.Combine(ModuleFolder, bibleBookInfo.FileName);                
+                string bookFile = Path.Combine(ModuleFolder, bibleBookInfo.FileName);
 
-                foreach (string line in File.ReadAllLines(bookFile, Utils.GetFileEncoding(bookFile)))
+                foreach (string line in File.ReadAllLines(bookFile, SystemUtils.GetFileEncoding(bookFile)))
                 {
                     string lineText = ShellText(line, moduleInfo); 
 
