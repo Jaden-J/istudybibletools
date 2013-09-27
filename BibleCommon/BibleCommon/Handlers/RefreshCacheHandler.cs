@@ -56,7 +56,7 @@ namespace BibleCommon.Handlers
                 switch (CacheMode)
                 {
                     case RefreshCacheMode.RefreshApplicationCache:
-                        oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();  // для разгона
+                        //oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();  // для разгона
                         SettingsManager.Initialize();
                         ApplicationCache.Initialize();
                         break;

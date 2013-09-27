@@ -125,7 +125,7 @@ namespace BibleConfigurator.ModuleConverter
                 }
                                 
                 string prevTerm = null;
-                foreach (string line in File.ReadAllLines(file.FilePath, Utils.GetFileEncoding(file.FilePath)))
+                foreach (string line in File.ReadAllLines(file.FilePath, SystemUtils.GetFileEncoding(file.FilePath)))
                 {
                     if (line.StartsWith(TermStartString))
                     {

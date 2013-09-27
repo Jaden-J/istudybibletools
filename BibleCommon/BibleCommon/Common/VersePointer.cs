@@ -695,6 +695,11 @@ namespace BibleCommon.Common
             }
         }
 
+        /// <summary>
+        /// Это не посто глава, а все стихи этой главы, и мы их трансформировали в главу 
+        /// </summary>
+        public bool GroupedVerses { get; set; } 
+
         public bool IsChapter
         {
             get
@@ -869,18 +874,70 @@ namespace BibleCommon.Common
         /// <returns></returns>
         public List<VersePointer> GetAllIncludedVersesExceptFirst(ref Application oneNoteApp, GetAllIncludedVersesExceptFirstArgs args)
         {
-            List<VersePointer> result = new List<VersePointer>();
+            var result = new List<VersePointer>();
             if ((IsValid || args.Force) && IsMultiVerse)
-            {
+            {                
                 if (TopChapter != null && TopVerse != null && !args.SearchOnlyForFirstChapter)
                 {
+                    result = GetAllIncludedVersesExceptFirstFromMultiChaptersAndVerses(ref oneNoteApp, args);                   
+                }
+                else if (TopChapter != null && IsChapter)
+                {
+                    result = GetAllIncludedVersesExceptFirstFromMultiChapters(ref oneNoteApp, args);
+                }
+                else if (!TopChapter.HasValue)  // в будущем, когда у нас будут выделяться все стихи из диапазона на странице Библии, надо будет переделать этот метод, чтобы если TopChapter.HasValue - то он доставал все стихи текущей главы (потому что до сюда он может дойти (если указана TopChapter) только если указан args.SearchOnlyForFirstChapter)
+                {
+                    result = GetAllIncludedVersesExceptFirstFromMultiVersesOfFirstChapterOnly(ref oneNoteApp, args);
+                }
+            }
+
+            return result;
+        }
+
+        private List<VersePointer> GetAllIncludedVersesExceptFirstFromMultiVersesOfFirstChapterOnly(ref Application oneNoteApp, GetAllIncludedVersesExceptFirstArgs args)
+        {
+            if (args.TryToGroupVersesInChapters)
+                throw new NotSupportedException("TryToGroupVersesInChapters is not supported when SearchOnlyForFirstChapter is defined");
+
+            var result = new List<VersePointer>();
+
+            for (int verseIndex = Verse.GetValueOrDefault(0) + 1; verseIndex <= TopVerse; verseIndex++)
+            {
+                VersePointer vp = new VersePointer(this.OriginalBookName, this.Chapter.Value, verseIndex);
+                vp.ParentVersePointer = this;
+                result.Add(vp);
+            }
+
+            return result;
+        }
+
+        private List<VersePointer> GetAllIncludedVersesExceptFirstFromMultiChapters(ref Application oneNoteApp, GetAllIncludedVersesExceptFirstArgs args)
+        {
+            var result = new List<VersePointer>();
+
+            for (int chapterIndex = Chapter.Value + 1; chapterIndex <= TopChapter; chapterIndex++)
+            {
+                VersePointer vp = VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex);
+                vp.ParentVersePointer = this;
+                result.Add(vp);
+            }
+
+            return result;
+        }
+
+        private List<VersePointer> GetAllIncludedVersesExceptFirstFromMultiChaptersAndVerses(ref Application oneNoteApp, GetAllIncludedVersesExceptFirstArgs args)
+        {
+            var result = new List<VersePointer>();
+
                     for (int chapterIndex = Chapter.Value; chapterIndex <= TopChapter; chapterIndex++)
                     {
+                var wasLoadedChapterVersesCount = false;
                         int topVerse, startVerseIndex;
                         if (chapterIndex == TopChapter)
                             topVerse = TopVerse.Value;
                         else
                         {
+                    wasLoadedChapterVersesCount = true;
                             topVerse = HierarchySearchManager.GetChapterVersesCount(
                                             ref oneNoteApp, args.BibleNotebookId,
                                             VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex), null, null)
@@ -892,28 +949,39 @@ namespace BibleCommon.Common
                         else
                             startVerseIndex = 1;
 
-                        for (int verseIndex = startVerseIndex; verseIndex <= topVerse; verseIndex++)
+                var loadChapterOnly = false;
+
+                if (args.TryToGroupVersesInChapters)
                         {
-                            VersePointer vp = new VersePointer(this.OriginalBookName, chapterIndex, verseIndex);
-                            vp.ParentVersePointer = this;
-                            result.Add(vp);
+                    if (startVerseIndex == 1 || (chapterIndex == Chapter && startVerseIndex == 2))
+                    {
+                        if (!wasLoadedChapterVersesCount)
+                        {
+                            var chapterVersesCount = HierarchySearchManager.GetChapterVersesCount(
+                                                        ref oneNoteApp, args.BibleNotebookId,
+                                                        VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex), null, null)
+                                                        .GetValueOrDefault(0);
+
+                            if (topVerse == chapterVersesCount)
+                                loadChapterOnly = true;
                         }
+                        else
+                            loadChapterOnly = true;
                     }
                 }
-                else if (TopChapter != null && IsChapter)
+
+                if (loadChapterOnly)
                 {
-                    for (int chapterIndex = Chapter.Value + 1; chapterIndex <= TopChapter; chapterIndex++)
-                    {
                         VersePointer vp = VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex);
                         vp.ParentVersePointer = this;
+                    vp.GroupedVerses = true;
                         result.Add(vp);
                     }
-                }
-                else if (!TopChapter.HasValue)  // в будущем, когда у нас будут выделяться все указанные ссылки, надо будет переделать этот метод, чтобы если TopChapter.HasValue - то он доставал все стихи текущей главы (потому что до сюда он может дойти (если указана TopChapter) только если указан args.SearchOnlyForFirstChapter)
-                {                    
-                    for (int verseIndex = Verse.GetValueOrDefault(0) + 1; verseIndex <= TopVerse; verseIndex++)
+                else
                     {
-                        VersePointer vp = new VersePointer(this.OriginalBookName, this.Chapter.Value, verseIndex);
+                    for (int verseIndex = startVerseIndex; verseIndex <= topVerse; verseIndex++)
+                    {
+                        VersePointer vp = new VersePointer(this.OriginalBookName, chapterIndex, verseIndex);
                         vp.ParentVersePointer = this;
                         result.Add(vp);
                     }
