@@ -47,6 +47,8 @@ namespace TestProject
 
             try
             {
+
+                Console.WriteLine(Utils.GetUpdateProgramWebSitePageUrl());
                 //Console.WriteLine(Regex.Replace("<br>no<", string.Format("(^|[^0-9a-zA-Z]){0}($|[^0-9a-zA-Z<])", "no"), @"$1aeasdasds$2", RegexOptions.IgnoreCase));
                 //return;
 

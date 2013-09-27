@@ -24,6 +24,8 @@ namespace BibleConfigurator
 {
     static class Program
     {
+        private const int SleepMilisecondsOnOneNoteStarts = 3000;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -45,7 +47,7 @@ namespace BibleConfigurator
                 string mutexId;
                 string moreThanSingleInstanceRunMessage;
                 string additionalMutexId;
-                Form form = PrepareForRunning(out silent, out moreThanSingleInstanceRunMessage, out action, out mutexId, out additionalMutexId, args);
+                var form = PrepareForRunning(out silent, out moreThanSingleInstanceRunMessage, out action, out mutexId, out additionalMutexId, args);
 
                 FormExtensions.RunSingleInstance(mutexId, moreThanSingleInstanceRunMessage, () =>
                 {
@@ -95,9 +97,9 @@ namespace BibleConfigurator
 
         private static Form PrepareForRunning(out bool silent, out string moreThanSingleInstanceRunMessage, out Action action, 
             out string mutexId, out string additionalMutexId, params string[] args)
-        {
-            action = null;
+        {            
             moreThanSingleInstanceRunMessage = BibleCommon.Resources.Constants.MoreThanSingleInstanceRun;
+            action = null;
             silent = false;
             Form result = null;
             mutexId = null;
@@ -114,143 +116,175 @@ namespace BibleConfigurator
             else if (args.Contains(Consts.ShowManual))
                 OpenManual();
             else if (rebuildDictionaryCacheHandler.IsProtocolCommand(args))
-            {
-                rebuildDictionaryCacheHandler.ExecuteCommand(args);
-
-                result = new MainForm(args);                
-                ((MainForm)result).ForceIndexDictionaryModuleName = rebuildDictionaryCacheHandler.ModuleShortName;
-                ((MainForm)result).CommitChangesAfterLoad = true;
-                ((MainForm)result).NotAskToIndexBible = true;   // а то выглядит непонятно, когда нас попросили перестроить кэш словаря и тут же сразу просят проиндексировать Библию
-            }
+                result = RebuildDictionaryCache(args, rebuildDictionaryCacheHandler);
             else if (args.Contains(Consts.RunOnOneNoteStarts))
-            {
-                silent = true;
-                CreateOneNoteAppIfNotExists();
-                if (SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
-                {
-                    action = () =>
-                        {
-                            try
-                            {
-                                OneNoteLocker.LockBible(ref _oneNoteApp);
-                                OneNoteLocker.LockSupplementalBible(ref _oneNoteApp);
-                            }
-                            catch (NotSupportedException)
-                            {
-                                Logger.LogError("Locking is not supported for this notebook");
-                            }
-
-                            Utils.DoWithExceptionHandling("Error while CheckForVersionUpdateCommands.", CheckForVersionUpdateCommands);                            
-
-                            if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible))
-                            {
-                                var minutes = MainForm.GetMinutesForBibleVersesCacheGenerating();
-                                using (var form = new MessageForm(string.Format(BibleCommon.Resources.Constants.IndexBibleQuestionAtStartUp, minutes), BibleCommon.Resources.Constants.Warning,
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-                                {
-                                    if (form.ShowDialog() == DialogResult.Yes)
-                                    {
-                                        var mainForm = new MainForm(args);
-                                        ((MainForm)mainForm).ToIndexBible = true;
-                                        ((MainForm)mainForm).CommitChangesAfterLoad = true;                                        
-                                        Application.Run(mainForm);
-                                    }
-                                }
-                            }                            
-                        };
-
-                    mutexId = BibleCommon.Consts.Constants.AnalysisMutix;
-                    additionalMutexId = BibleCommon.Consts.Constants.ParametersMutix;
-                }
-                else
-                {
-                    result = new MainForm(args);
-                }
-            }
+                result = OnOneNoteStarts(args, out action, out mutexId, out additionalMutexId, out silent);                   
             else if (args.Contains(Consts.LockAllBible))
-            {
-                try
-                {
-                    CreateOneNoteAppIfNotExists();
-                    OneNoteLocker.LockBible(ref _oneNoteApp);
-                    OneNoteLocker.LockSupplementalBible(ref _oneNoteApp);
-                }
-                catch (NotSupportedException)
-                {
-                    ShowMessage(BibleCommon.Resources.Constants.SkyDriveBibleIsNotSupportedForLock);
-                }
-            }
+                LockAllBible();               
             else if (args.Contains(Consts.UnlockAllBible))
-            {
-                try
-                {
-                    CreateOneNoteAppIfNotExists();
-                    OneNoteLocker.UnlockBible(ref _oneNoteApp);                    
-                }
-                catch (NotSupportedException)
-                {
-                    ShowMessage(BibleCommon.Resources.Constants.SkyDriveBibleIsNotSupportedForLock);
-                }
-
-                try
-                {   
-                    OneNoteLocker.UnlockSupplementalBible(ref _oneNoteApp);
-                }
-                catch (NotSupportedException ex)
-                {
-                    Logger.LogError(ex);
-                }
-            }
+                UnlockAllBible();               
             else if (args.Contains(Consts.UnlockBibleSection))
-            {
-                try
-                {
-                    CreateOneNoteAppIfNotExists();
-                    OneNoteLocker.UnlockCurrentSection(ref _oneNoteApp);
-                }
-                catch (NotSupportedException)
-                {
-                    ShowMessage(BibleCommon.Resources.Constants.SkyDriveBibleIsNotSupportedForLock);
-                }
-            }
+                UnlockBibleSection();               
             else if (args.Length == 1)
-            {
+                result = TryToLoadModule(args, ref moreThanSingleInstanceRunMessage);               
+            else
                 result = new MainForm(args);
 
-                if (!string.IsNullOrEmpty(args[0]))
+            if (result != null)
+                mutexId = BibleCommon.Consts.Constants.ParametersMutix;
+
+            return result;
+        }
+
+        private static Form RebuildDictionaryCache(string[] args, RebuildDictionaryFileCacheHandler rebuildDictionaryCacheHandler)
+        {
+            rebuildDictionaryCacheHandler.ExecuteCommand(args);
+
+            var result = new MainForm(args);
+            ((MainForm)result).ForceIndexDictionaryModuleName = rebuildDictionaryCacheHandler.ModuleShortName;
+            ((MainForm)result).CommitChangesAfterLoad = true;
+            ((MainForm)result).NotAskToIndexBible = true;   // а то выглядит непонятно, когда нас попросили перестроить кэш словаря и тут же сразу просят проиндексировать Библию
+
+            return result;
+        }
+
+        private static Form TryToLoadModule(string[] args, ref string moreThanSingleInstanceRunMessage)
+        {
+            var result = new MainForm(args);
+
+            if (!string.IsNullOrEmpty(args[0]))
+            {
+                string moduleFilePath = args[0];
+                if (File.Exists(moduleFilePath))
                 {
-                    string moduleFilePath = args[0];
-                    if (File.Exists(moduleFilePath))
+                    bool moduleWasAdded;
+                    using (var loadForm = new LoadForm())
                     {
-                        bool moduleWasAdded;
-                        using (var loadForm = new LoadForm())
+                        loadForm.Show();
+                        Application.DoEvents();
+
+                        bool needToReload = ((MainForm)result).AddNewModule(moduleFilePath, out moduleWasAdded);
+                        if (moduleWasAdded)
                         {
-                            loadForm.Show();
-                            Application.DoEvents();
-
-                            bool needToReload = ((MainForm)result).AddNewModule(moduleFilePath, out moduleWasAdded);
-                            if (moduleWasAdded)
-                            {
-                                ((MainForm)result).ShowModulesTabAtStartUp = true;
-                                ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
-                                moreThanSingleInstanceRunMessage = BibleCommon.Resources.Constants.ReopenParametersToSeeChanges;
-                                //silent = true;
-                            }
-                            else
-                                result = null;
-
-                            loadForm.Close();
+                            ((MainForm)result).ShowModulesTabAtStartUp = true;
+                            ((MainForm)result).NeedToSaveChangesAfterLoadingModuleAtStartUp = needToReload;
+                            moreThanSingleInstanceRunMessage = BibleCommon.Resources.Constants.ReopenParametersToSeeChanges;
+                            //silent = true;
                         }
+                        else
+                            result = null;
+
+                        loadForm.Close();
                     }
                 }
+            }
+
+            return result;
+        }
+
+        private static void UnlockBibleSection()
+        {
+            try
+            {
+                CreateOneNoteAppIfNotExists();
+                OneNoteLocker.UnlockCurrentSection(ref _oneNoteApp);
+            }
+            catch (NotSupportedException)
+            {
+                ShowMessage(BibleCommon.Resources.Constants.SkyDriveBibleIsNotSupportedForLock);
+            }
+        }
+
+        private static void LockAllBible()
+        {
+            try
+            {
+                CreateOneNoteAppIfNotExists();
+                OneNoteLocker.LockBible(ref _oneNoteApp);
+                OneNoteLocker.LockSupplementalBible(ref _oneNoteApp);
+            }
+            catch (NotSupportedException)
+            {
+                ShowMessage(BibleCommon.Resources.Constants.SkyDriveBibleIsNotSupportedForLock);
+            }
+        }
+
+        private static void UnlockAllBible()
+        {
+            try
+            {
+                CreateOneNoteAppIfNotExists();
+                OneNoteLocker.UnlockBible(ref _oneNoteApp);
+            }
+            catch (NotSupportedException)
+            {
+                ShowMessage(BibleCommon.Resources.Constants.SkyDriveBibleIsNotSupportedForLock);
+            }
+
+            try
+            {
+                OneNoteLocker.UnlockSupplementalBible(ref _oneNoteApp);
+            }
+            catch (NotSupportedException ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+
+        private static Form OnOneNoteStarts(string[] args, out Action action, out string mutexId, out string additionalMutexId, out bool silent)
+        {
+            action = null;
+            Form result = null;
+            mutexId = null;
+            additionalMutexId = null;
+            silent = true;
+
+            Thread.Sleep(SleepMilisecondsOnOneNoteStarts);      // немного времени ждём, пока OneNote загрузится
+            
+            CreateOneNoteAppIfNotExists();
+            if (SettingsManager.Instance.IsConfigured(ref _oneNoteApp))
+            {
+                action = () =>
+                {
+                    try
+                    {
+                        OneNoteLocker.LockBible(ref _oneNoteApp);
+                        OneNoteLocker.LockSupplementalBible(ref _oneNoteApp);
+                    }
+                    catch (NotSupportedException)
+                    {
+                        Logger.LogError("Locking is not supported for this notebook");
+                    }
+
+                    Utils.DoWithExceptionHandling("Error while CheckForVersionUpdateCommands.", CheckForVersionUpdateCommands);
+
+                    if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible))
+                    {
+                        var minutes = MainForm.GetMinutesForBibleVersesCacheGenerating();
+                        using (var form = new MessageForm(string.Format(BibleCommon.Resources.Constants.IndexBibleQuestionAtStartUp, minutes), BibleCommon.Resources.Constants.Warning,
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                        {
+                            if (form.ShowDialog() == DialogResult.Yes)
+                            {
+                                var mainForm = new MainForm(args);
+                                ((MainForm)mainForm).ToIndexBible = true;
+                                ((MainForm)mainForm).CommitChangesAfterLoad = true;
+                                Application.Run(mainForm);
+                            }
+                        }
+                    }
+                };
+
+                mutexId = BibleCommon.Consts.Constants.AnalysisMutix;
+                additionalMutexId = BibleCommon.Consts.Constants.ParametersMutix;
+
+                if (_oneNoteApp.Windows.CurrentWindow != null)        
+                    Process.Start(RefreshCacheHandler.GetCommandUrlStatic(RefreshCacheHandler.RefreshCacheMode.RefreshApplicationCache));  // инициализируем кэш
             }
             else
             {
                 result = new MainForm(args);
             }
-
-            if (result != null)
-                mutexId = BibleCommon.Consts.Constants.ParametersMutix;
 
             return result;
         }
