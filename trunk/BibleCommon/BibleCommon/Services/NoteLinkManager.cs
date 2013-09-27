@@ -858,7 +858,7 @@ namespace BibleCommon.Services
             if (searchResult.VersePointer.IsMultiVerse)
             {
                 allSubVerses = searchResult.VersePointer.GetAllVerses(ref oneNoteApp,
-                                                    new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible });
+                                                    new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible, TryToGroupVersesInChapters = true });
 
                 verseWeight = (decimal)1 / (decimal)allSubVerses.Count;
 
@@ -883,10 +883,12 @@ namespace BibleCommon.Services
             {
                 if (processedVerses.Contains(vp.ToSimpleVersePointer()))
                     continue;                
+
+                var createLinkToNotesPage = !(SettingsManager.Instance.UseDifferentPagesForEachVerse || SettingsManager.Instance.StoreNotesPagesInFolder)
+                                                 || (vp.IsChapter && (!needToQueueIfChapter || vp.GroupedVerses));
                 
                 if (TryLinkVerseToNotesPage(ref oneNoteApp, vp, verseWeight, searchResult.ResultType, versePosition,
-                        notePageInfo, notePageContentObjectId, linkDepth,
-                        !(SettingsManager.Instance.UseDifferentPagesForEachVerse || SettingsManager.Instance.StoreNotesPagesInFolder) || (vp.IsChapter && !needToQueueIfChapter), 
+                        notePageInfo, notePageContentObjectId, linkDepth, createLinkToNotesPage, 
                         SettingsManager.Instance.ExcludedVersesLinking,
                         NotesPageType.Chapter, 
                         globalChapterSearchResult, pageChaptersSearchResult,
@@ -1001,7 +1003,7 @@ namespace BibleCommon.Services
                 {
                     if (allSubVerses == null)
                         allSubVerses = searchResult.VersePointer.GetAllVerses(ref oneNoteApp,
-                                                            new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible });
+                                                            new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible, TryToGroupVersesInChapters = true });
                     rubbishVerses.AddRange(allSubVerses);
                 }
                 else
@@ -1114,8 +1116,6 @@ namespace BibleCommon.Services
                         if (onHierarchyElementFound != null)
                             onHierarchyElementFound(hierarchySearchResult);
 
-                        var isChapter = vp.IsChapter;
-
                         if (linkDepth >= AnalyzeDepth.Full)
                         {
                             var canContinue = true;
@@ -1129,7 +1129,8 @@ namespace BibleCommon.Services
                                 }
 
                                 if (canContinue
-                                    && isChapter
+                                    && vp.IsChapter 
+                                    && !vp.GroupedVerses
                                     && !forceAnalyzeChapter)   // главы сразу не обрабатываем - вдруг есть стихи этих глав в текущей заметке. Вот если нет - тогда потом и обработаем. Но если у нас стоит excludedVersesLinking, то сразу обрабатываем
                                 {
                                     canContinue = false;
@@ -1161,7 +1162,7 @@ namespace BibleCommon.Services
 
                             if (canContinue || SettingsManager.Instance.StoreNotesPagesInFolder)
                             {
-                                var verses = LinkVerseToNotesPage(ref oneNoteApp, vp, verseWeight, versePosition, isChapter,
+                                var verses = LinkVerseToNotesPage(ref oneNoteApp, vp, verseWeight, versePosition, vp.IsChapter,
                                     hierarchySearchResult.HierarchyObjectInfo,
                                         notePageInfo,
                                     notePageContentObjectId, createLinkToNotesPage, notesPageType,

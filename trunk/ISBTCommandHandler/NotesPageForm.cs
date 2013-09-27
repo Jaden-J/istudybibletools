@@ -201,7 +201,7 @@ namespace ISBTCommandHandler
             SetSize();                      
             wbNotesPage.Focus();
 
-            _touchInputAvailable = Utils.TouchInputAvailable();
+            _touchInputAvailable = SystemUtils.TouchInputAvailable();
         }
 
         private void SetScale()

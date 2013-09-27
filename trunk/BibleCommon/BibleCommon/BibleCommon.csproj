@@ -85,6 +85,7 @@
     <Compile Include="Helpers\StringSearcher.cs" />
     <Compile Include="Helpers\SharpSerializationHelper.cs" />
     <Compile Include="Helpers\StringUtils.cs" />
+    <Compile Include="Helpers\SystemUtils.cs" />
     <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Helpers\XmlExtensions.cs" />
     <Compile Include="Helpers\XmlSerializerCache.cs" />

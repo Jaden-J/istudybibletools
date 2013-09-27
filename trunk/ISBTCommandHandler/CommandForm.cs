@@ -54,50 +54,64 @@ namespace ISBTCommandHandler
 
         internal void ProcessCommandLine(params string[] args)
         {
-            if (args.Length > 1)
-                args = args.ToList().Skip(1).ToArray();            
-
-            foreach (var handler in _handlers)
+            try
             {
-                if (handler.IsProtocolCommand(args))
+                if (args.Length > 1)
+                    args = args.ToList().Skip(1).ToArray();
+
+                foreach (var handler in _handlers)
                 {
-                    if (handler is ExitApplicationHandler)
+                    if (handler.IsProtocolCommand(args))
                     {
-                        if (_notesPageForm != null)
-                            _notesPageForm.ExitApplication = true;
-                    }
-
-                    handler.ExecuteCommand(args);
-
-                    if (handler is OpenNotesPageHandler)
-                    {
-                        OpenNotesPage(((OpenNotesPageHandler)handler).Verse, ((OpenNotesPageHandler)handler).GetVerseFilePath());
-                    }
-                    else if (handler is RefreshCacheHandler)
-                    {
-                        if (((RefreshCacheHandler)handler).CacheMode == RefreshCacheHandler.RefreshCacheMode.RefreshAnalyzedVersesCache)
+                        if (handler is ExitApplicationHandler)
                         {
-                            if (_notesPageForm != null)                            
-                                _notesPageForm.RefreshFilteredNotebooksInfo();                            
+                            if (_notesPageForm != null)
+                                _notesPageForm.ExitApplication = true;
                         }
+
+                        handler.ExecuteCommand(args);
+
+                        if (handler is OpenNotesPageHandler)
+                        {
+                            OpenNotesPage(((OpenNotesPageHandler)handler).Verse, ((OpenNotesPageHandler)handler).GetVerseFilePath());
+                        }
+                        else if (handler is RefreshCacheHandler)
+                        {
+                            if (((RefreshCacheHandler)handler).CacheMode == RefreshCacheHandler.RefreshCacheMode.RefreshAnalyzedVersesCache)
+                            {
+                                if (_notesPageForm != null)
+                                    _notesPageForm.RefreshFilteredNotebooksInfo();
+                            }
+                        }
+
+                        break;
                     }
-                        
-                    break;
                 }
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
             }
         }
 
         private NotesPageForm _notesPageForm = null;
         private void OpenNotesPage(VersePointer vp, string filePath)
         {
-            if (_notesPageForm == null)
+            try
             {
-                _notesPageForm = new NotesPageForm();                
-                _notesPageForm.ShowInTaskbar = true;                
-            }
+                if (_notesPageForm == null)
+                {
+                    _notesPageForm = new NotesPageForm();
+                    _notesPageForm.ShowInTaskbar = true;
+                }
 
-            this.SetFocus();
-            _notesPageForm.OpenNotesPage(vp, filePath);            
+                this.SetFocus();
+                _notesPageForm.OpenNotesPage(vp, filePath);
+            }
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }            
         }               
     }
 }

@@ -252,7 +252,7 @@ namespace BibleNoteLinker
 
         private void lblInfo_Click(object sender, EventArgs e)
         {
-            Process.Start(BibleCommon.Resources.Constants.DownloadPageUrl);
+            Process.Start(Utils.GetUpdateProgramWebSitePageUrl());
         }
 
         private bool _detailsWereShown = false;
