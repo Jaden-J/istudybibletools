@@ -896,16 +896,39 @@ namespace BibleCommon.Common
 
         private List<VersePointer> GetAllIncludedVersesExceptFirstFromMultiVersesOfFirstChapterOnly(ref Application oneNoteApp, GetAllIncludedVersesExceptFirstArgs args)
         {
-            if (args.TryToGroupVersesInChapters)
-                throw new NotSupportedException("TryToGroupVersesInChapters is not supported when SearchOnlyForFirstChapter is defined");
-
             var result = new List<VersePointer>();
 
+            var loadChapterOnly = false;
+
+            if (args.TryToGroupVersesInChapters)
+            {
+                if (Verse.GetValueOrDefault(0) == 1)
+                {
+                    var chapterVersesCount = HierarchySearchManager.GetChapterVersesCount(
+                                                ref oneNoteApp, args.BibleNotebookId,
+                                                VersePointer.GetChapterVersePointer(this.OriginalBookName, this.Chapter.Value), null, null)
+                                                .GetValueOrDefault(0);
+
+                    if (TopVerse == chapterVersesCount)
+                        loadChapterOnly = true;
+                }
+            }
+
+            if (loadChapterOnly)
+            {
+                var vp = this.GetChapterPointer();
+                vp.ParentVersePointer = this;
+                vp.GroupedVerses = true;
+                result.Add(vp);
+            }
+            else
+            {
             for (int verseIndex = Verse.GetValueOrDefault(0) + 1; verseIndex <= TopVerse; verseIndex++)
             {
                 VersePointer vp = new VersePointer(this.OriginalBookName, this.Chapter.Value, verseIndex);
                 vp.ParentVersePointer = this;
                 result.Add(vp);
+            }
             }
 
             return result;
@@ -953,7 +976,7 @@ namespace BibleCommon.Common
 
                 if (args.TryToGroupVersesInChapters)
                         {
-                    if (startVerseIndex == 1 || (chapterIndex == Chapter && startVerseIndex == 2))
+                    if (startVerseIndex == 1 || (chapterIndex == Chapter && Verse.Value == 1))
                     {
                         if (!wasLoadedChapterVersesCount)
                         {
