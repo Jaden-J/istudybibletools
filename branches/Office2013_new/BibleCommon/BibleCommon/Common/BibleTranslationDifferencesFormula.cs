@@ -112,7 +112,7 @@ namespace BibleCommon.Common
                 if (IsMultiVerse)
                 {
                     Microsoft.Office.Interop.OneNote.Application temp = null;
-                    _allVerses.AddRange(BaseVersePointer.GetAllIncludedVersesExceptFirst(ref temp, new GetAllIncludedVersesExceptFirstArgs() { Force = true })
+                    _allVerses.AddRange(BaseVersePointer.GetAllIncludedVersesExceptFirst(ref temp, new GetAllIncludedVersesArgs() { Force = true }).Verses
                         .ConvertAll<SimpleVersePointer>(v => new SimpleVersePointer(BookIndex, v.Chapter.GetValueOrDefault(), new VerseNumber(v.Verse.GetValueOrDefault())) { IsEmpty = IsEmpty }));
                 }
 
