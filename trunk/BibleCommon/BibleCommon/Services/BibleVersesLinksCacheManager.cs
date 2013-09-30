@@ -113,7 +113,7 @@ namespace BibleCommon.Services
             {
                 var commonKey = versePointer;
 
-                foreach (var key in commonKey.GetAllVerses(ref oneNoteApp, new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = notebookId, Force = true }))
+                foreach (var key in commonKey.GetAllVerses(ref oneNoteApp, new GetAllIncludedVersesArgs() { BibleNotebookId = notebookId, Force = true }).Verses)
                 {
                     var keyString = key.ToFirstVerseString();
                     if (!result.ContainsKey(keyString))

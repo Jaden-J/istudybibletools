@@ -849,7 +849,7 @@ namespace BibleCommon.Services
             if (searchResult.VersePointer.IsChapter)
                 needToQueueIfChapter = !NeedToForceAnalyzeChapter(searchResult); // нужно ли анализировать главу сразу же, а не в самом конце                         
 
-            List<VersePointer> allSubVerses = null;
+            GetAllIncludedVersesResult allSubVerses = null;
 
             #region linking main notes page            
 
@@ -858,12 +858,12 @@ namespace BibleCommon.Services
             if (searchResult.VersePointer.IsMultiVerse)
             {
                 allSubVerses = searchResult.VersePointer.GetAllVerses(ref oneNoteApp,
-                                                    new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible, TryToGroupVersesInChapters = true });
+                                                    new GetAllIncludedVersesArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible, TryToGroupVersesInChapters = true });
 
-                verseWeight = (decimal)1 / (decimal)allSubVerses.Count;
+                verseWeight = (decimal)1 / (decimal)allSubVerses.VersesCount;
 
                 if (SettingsManager.Instance.ExpandMultiVersesLinking)
-                    verses.AddRange(allSubVerses);
+                    verses.AddRange(allSubVerses.Verses);
             }            
 
             if (verses.Count == 0)
@@ -914,7 +914,7 @@ namespace BibleCommon.Services
                             string textToChange;
                             if (!string.IsNullOrEmpty(searchResult.VerseString))
                                 textToChange = searchResult.VerseString;
-                            else if (vp.IsChapter)
+                            else if ((vp.ParentVersePointer ?? vp).IsChapter)
                                 textToChange = searchResult.ChapterName;
                             else
                                 textToChange = searchResult.VersePointer.OriginalVerseName;
@@ -955,7 +955,7 @@ namespace BibleCommon.Services
                             var htmlTextBefore = textElementValue.Substring(0, startVerseNameIndex);
                             var htmlTextAfter = textElementValue.Substring(endVerseNameIndex);                            
                             var needToAddSpace = false;
-                            if (searchResult.VerseStringStartsWithSpace.GetValueOrDefault(false) && !vp.WasChangedVerseAsOneChapteredBook)
+                            if (searchResult.VerseStringStartsWithSpace.GetValueOrDefault(false) && !(vp.ParentVersePointer ?? vp).WasChangedVerseAsOneChapteredBook)
                             {
                                 var textBefore = StringUtils.GetText(htmlTextBefore);
                                 if (!textBefore.EndsWith(" "))
@@ -1003,8 +1003,8 @@ namespace BibleCommon.Services
                 {
                     if (allSubVerses == null)
                         allSubVerses = searchResult.VersePointer.GetAllVerses(ref oneNoteApp,
-                                                            new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible, TryToGroupVersesInChapters = true });
-                    rubbishVerses.AddRange(allSubVerses);
+                                                            new GetAllIncludedVersesArgs() { BibleNotebookId = SettingsManager.Instance.NotebookId_Bible, TryToGroupVersesInChapters = true });
+                    rubbishVerses.AddRange(allSubVerses.Verses);
                 }
                 else
                     rubbishVerses.Add(searchResult.VersePointer);

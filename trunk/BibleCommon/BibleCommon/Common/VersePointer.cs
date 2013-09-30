@@ -855,16 +855,21 @@ namespace BibleCommon.Common
         }
 
 
-        public List<VersePointer> GetAllVerses(ref Application oneNoteApp, GetAllIncludedVersesExceptFirstArgs args)
+        public GetAllIncludedVersesResult GetAllVerses(ref Application oneNoteApp, GetAllIncludedVersesArgs args)
         {
-            var result = new List<VersePointer>();
+            var result = new GetAllIncludedVersesResult();
 
             var firstVerse = this.IsChapter ? new VersePointer(this.OriginalBookName, this.Chapter.Value) : new VersePointer(this.OriginalBookName, this.Chapter.Value, this.Verse.Value);
             firstVerse.ParentVersePointer = this;
-            result.Add(firstVerse);
 
-            result.AddRange(this.GetAllIncludedVersesExceptFirst(ref oneNoteApp, args));
+            var allVersesExceptFirst = GetAllIncludedVersesExceptFirst(ref oneNoteApp, args);
+            result.VersesCount = allVersesExceptFirst.VersesCount + 1;
+            
+            if (!allVersesExceptFirst.NotNeedFirstVerse.GetValueOrDefault(false))
+                result.Verses.Add(firstVerse);
 
+            result.Verses.AddRange(allVersesExceptFirst.Verses);
+            
             return result;
         }
 
@@ -872,9 +877,9 @@ namespace BibleCommon.Common
         /// возвращает список всех вложенных стихов (за исключением первого) если Multiverse. 
         /// </summary>
         /// <returns></returns>
-        public List<VersePointer> GetAllIncludedVersesExceptFirst(ref Application oneNoteApp, GetAllIncludedVersesExceptFirstArgs args)
+        public GetAllIncludedVersesResult GetAllIncludedVersesExceptFirst(ref Application oneNoteApp, GetAllIncludedVersesArgs args)
         {
-            var result = new List<VersePointer>();
+            var result = new GetAllIncludedVersesResult();
             if ((IsValid || args.Force) && IsMultiVerse)
             {                
                 if (TopChapter != null && TopVerse != null && !args.SearchOnlyForFirstChapter)
@@ -894,9 +899,9 @@ namespace BibleCommon.Common
             return result;
         }
 
-        private List<VersePointer> GetAllIncludedVersesExceptFirstFromMultiVersesOfFirstChapterOnly(ref Application oneNoteApp, GetAllIncludedVersesExceptFirstArgs args)
+        private GetAllIncludedVersesResult GetAllIncludedVersesExceptFirstFromMultiVersesOfFirstChapterOnly(ref Application oneNoteApp, GetAllIncludedVersesArgs args)
         {
-            var result = new List<VersePointer>();
+            var result = new GetAllIncludedVersesResult();
 
             var loadChapterOnly = false;
 
@@ -909,7 +914,7 @@ namespace BibleCommon.Common
                                                 VersePointer.GetChapterVersePointer(this.OriginalBookName, this.Chapter.Value), null, null)
                                                 .GetValueOrDefault(0);
 
-                    if (TopVerse == chapterVersesCount)
+                    if (TopVerse >= chapterVersesCount)
                         loadChapterOnly = true;
                 }
             }
@@ -919,63 +924,68 @@ namespace BibleCommon.Common
                 var vp = this.GetChapterPointer();
                 vp.ParentVersePointer = this;
                 vp.GroupedVerses = true;
-                result.Add(vp);
+                result.Verses.Add(vp);
+                result.NotNeedFirstVerse = true;
             }
             else
             {
-            for (int verseIndex = Verse.GetValueOrDefault(0) + 1; verseIndex <= TopVerse; verseIndex++)
-            {
-                VersePointer vp = new VersePointer(this.OriginalBookName, this.Chapter.Value, verseIndex);
-                vp.ParentVersePointer = this;
-                result.Add(vp);
+                for (int verseIndex = Verse.GetValueOrDefault(0) + 1; verseIndex <= TopVerse; verseIndex++)
+                {
+                    VersePointer vp = new VersePointer(this.OriginalBookName, this.Chapter.Value, verseIndex);
+                    vp.ParentVersePointer = this;
+                    result.Verses.Add(vp);
+                }
             }
-            }
+
+            result.VersesCount = TopVerse.Value - Verse.GetValueOrDefault(0);
 
             return result;
         }
 
-        private List<VersePointer> GetAllIncludedVersesExceptFirstFromMultiChapters(ref Application oneNoteApp, GetAllIncludedVersesExceptFirstArgs args)
+        private GetAllIncludedVersesResult GetAllIncludedVersesExceptFirstFromMultiChapters(ref Application oneNoteApp, GetAllIncludedVersesArgs args)
         {
-            var result = new List<VersePointer>();
+            var result = new GetAllIncludedVersesResult();
 
             for (int chapterIndex = Chapter.Value + 1; chapterIndex <= TopChapter; chapterIndex++)
             {
                 VersePointer vp = VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex);
                 vp.ParentVersePointer = this;
-                result.Add(vp);
+                result.Verses.Add(vp);
             }
+
+            result.VersesCount = result.Verses.Count;
 
             return result;
         }
 
-        private List<VersePointer> GetAllIncludedVersesExceptFirstFromMultiChaptersAndVerses(ref Application oneNoteApp, GetAllIncludedVersesExceptFirstArgs args)
+        private GetAllIncludedVersesResult GetAllIncludedVersesExceptFirstFromMultiChaptersAndVerses(ref Application oneNoteApp, GetAllIncludedVersesArgs args)
         {
-            var result = new List<VersePointer>();
-
-                    for (int chapterIndex = Chapter.Value; chapterIndex <= TopChapter; chapterIndex++)
-                    {
+            var result = new GetAllIncludedVersesResult();
+            var versesCount = 0;
+            for (int chapterIndex = Chapter.Value; chapterIndex <= TopChapter; chapterIndex++)
+            {
                 var wasLoadedChapterVersesCount = false;
-                        int topVerse, startVerseIndex;
-                        if (chapterIndex == TopChapter)
-                            topVerse = TopVerse.Value;
-                        else
-                        {
+                int topVerse, startVerseIndex;
+                if (chapterIndex == TopChapter)
+                    topVerse = TopVerse.Value;
+                else
+                {
                     wasLoadedChapterVersesCount = true;
-                            topVerse = HierarchySearchManager.GetChapterVersesCount(
-                                            ref oneNoteApp, args.BibleNotebookId,
-                                            VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex), null, null)
-                                            .GetValueOrDefault(0);
-                        }
+                    topVerse = HierarchySearchManager.GetChapterVersesCount(
+                                    ref oneNoteApp, args.BibleNotebookId,
+                                    VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex), null, null)
+                                    .GetValueOrDefault(0);
+                }
 
-                        if (chapterIndex == Chapter)
-                            startVerseIndex = Verse.Value + 1;
-                        else
-                            startVerseIndex = 1;
+                if (chapterIndex == Chapter)
+                    startVerseIndex = Verse.Value + 1;
+                else
+                    startVerseIndex = 1;
 
                 var loadChapterOnly = false;
 
                 if (args.TryToGroupVersesInChapters)
-                        {
+                {
                     if (startVerseIndex == 1 || (chapterIndex == Chapter && Verse.Value == 1))
                     {
                         if (!wasLoadedChapterVersesCount)
@@ -985,7 +995,7 @@ namespace BibleCommon.Common
                                                         VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex), null, null)
                                                         .GetValueOrDefault(0);
 
-                            if (topVerse == chapterVersesCount)
+                            if (topVerse >= chapterVersesCount)
                                 loadChapterOnly = true;
                         }
                         else
@@ -995,21 +1005,28 @@ namespace BibleCommon.Common
 
                 if (loadChapterOnly)
                 {
-                        VersePointer vp = VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex);
-                        vp.ParentVersePointer = this;
+                    VersePointer vp = VersePointer.GetChapterVersePointer(this.OriginalBookName, chapterIndex);
+                    vp.ParentVersePointer = this;
                     vp.GroupedVerses = true;
-                        result.Add(vp);
-                    }
+                    result.Verses.Add(vp);
+                    versesCount += topVerse - startVerseIndex + 1;
+
+                    if (chapterIndex == Chapter.Value)
+                        result.NotNeedFirstVerse = true;
+                }
                 else
-                    {
+                {
                     for (int verseIndex = startVerseIndex; verseIndex <= topVerse; verseIndex++)
                     {
                         VersePointer vp = new VersePointer(this.OriginalBookName, chapterIndex, verseIndex);
                         vp.ParentVersePointer = this;
-                        result.Add(vp);
+                        result.Verses.Add(vp);
+                        versesCount++;
                     }
                 }
             }
+
+            result.VersesCount = versesCount;
 
             return result;
         }
