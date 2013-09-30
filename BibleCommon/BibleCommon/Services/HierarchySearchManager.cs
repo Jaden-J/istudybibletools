@@ -59,11 +59,11 @@ namespace BibleCommon.Services
                     {
                         Application temp = null;
                         verses = vp.GetAllIncludedVersesExceptFirst(ref temp,
-                                                        new GetAllIncludedVersesExceptFirstArgs() { SearchOnlyForFirstChapter = true });
+                                                        new GetAllIncludedVersesArgs() { SearchOnlyForFirstChapter = true }).Verses;
                     }
                     else
                         verses = vp.GetAllIncludedVersesExceptFirst(ref oneNoteApp,
-                                                        new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = bibleNotebookId });
+                                                        new GetAllIncludedVersesArgs() { BibleNotebookId = bibleNotebookId }).Verses;
 
                     foreach (var subVp in verses)
                     {
@@ -232,11 +232,11 @@ namespace BibleCommon.Services
             {
                 Application temp = null;
                 verses = vp.GetAllIncludedVersesExceptFirst(ref temp,
-                                                new GetAllIncludedVersesExceptFirstArgs() { SearchOnlyForFirstChapter = true });
+                                                new GetAllIncludedVersesArgs() { SearchOnlyForFirstChapter = true }).Verses;
             }
             else
                 verses = vp.GetAllIncludedVersesExceptFirst(ref oneNoteApp,
-                                                new GetAllIncludedVersesExceptFirstArgs() { BibleNotebookId = bibleNotebookId });
+                                                new GetAllIncludedVersesArgs() { BibleNotebookId = bibleNotebookId }).Verses;
 
             foreach (var additionalVerse in verses)
             {
