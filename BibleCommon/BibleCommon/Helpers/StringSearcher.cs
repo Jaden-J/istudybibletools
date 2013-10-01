@@ -20,7 +20,7 @@ namespace BibleCommon.Helpers
             NotSpecified,
             SearchNumber,
             SearchText,
-            SearchFirstValueChar,   // получить первый значащий символ-разделитель (не цифра, и не симфол алфавита, не равный '<' и '>')
+            SearchFirstDelimiterChar,   // получить первый значащий символ-разделитель (не цифра, и не симфол алфавита, не равный '<' и '>')
             SearchFirstChar         // получить первый любой символ (не равный '<' и '>')
         }
 
@@ -73,6 +73,12 @@ namespace BibleCommon.Helpers
             {
                 FoundString = string.Empty;
             }
+
+            public void FixSearchResultPosition(int index, int indexBeforeHtml)
+            {
+                TextBreakIndex = indexBeforeHtml != -1 ? indexBeforeHtml : index;
+                HtmlBreakIndex = index;
+            }
         }
 
         #endregion
@@ -93,6 +99,8 @@ namespace BibleCommon.Helpers
         private int _indexBeforeHtml = -1;
         private int _index;
 
+        private StringSearchResult _prevCorrectStringSearchResult;          // корректный результат до начало игнора символов ' ' и '.'
+        
         public StringSearcher()
         {            
         }
@@ -170,8 +178,16 @@ namespace BibleCommon.Helpers
                 }
             }
 
-            _searchResult.TextBreakIndex = _indexBeforeHtml != -1 ? _indexBeforeHtml : _index;
-            _searchResult.HtmlBreakIndex = _index;
+            if (SearchMode != StringSearchMode.SearchFirstChar && SearchMode != StringSearchMode.SearchFirstDelimiterChar                  // не потому, что нам нужен только первый символ
+                && _prevCorrectStringSearchResult != null)  
+            {
+                _searchResult = _prevCorrectStringSearchResult;
+            }
+            else
+            {
+                _searchResult.FixSearchResultPosition(_index, _indexBeforeHtml);
+            }
+
             return _searchResult;
         }
 
@@ -224,8 +240,8 @@ namespace BibleCommon.Helpers
             }
 
             if (!toBreak)
-                _indexBeforeHtml = -1;  // то есть сделали удачный круг, символ был нужным, значит нам нет смысла возвращаться вначало
-
+                _indexBeforeHtml = -1;  // то есть сделали удачный круг, символ был нужным, значит нам нет смысла возвращаться в начало (до начала html тэга)
+            
             return toBreak;
         }      
 
@@ -234,6 +250,7 @@ namespace BibleCommon.Helpers
             if (!_invalidSymbolsCount.HasValue)
                 _invalidSymbolsCount = 0;
             _prevSymbolWasInvalid = false;
+            _prevCorrectStringSearchResult = null;
 
             if (!_isDigits.HasValue)
             {
@@ -259,7 +276,7 @@ namespace BibleCommon.Helpers
 
         private bool ProcessInvalidChar(char c)
         {
-            if (SearchMode == StringSearchMode.SearchFirstValueChar)
+            if (SearchMode == StringSearchMode.SearchFirstDelimiterChar)
             {
                 _searchResult.FoundString = c.ToString();
                 return true;
@@ -267,8 +284,12 @@ namespace BibleCommon.Helpers
             else
             {
                 var isMiss = true;
+                var firstInvalidSymbol = false;
                 if (_invalidSymbolsCount.HasValue && !_prevSymbolWasInvalid)
+                {
                     _invalidSymbolsCount++;
+                    firstInvalidSymbol = true;
+                }
                 _prevSymbolWasInvalid = true;
 
                 if (c == ' ' || c == '.')
@@ -286,12 +307,24 @@ namespace BibleCommon.Helpers
                                 break;
                         }
                     }
+
+                    if (!isMiss && firstInvalidSymbol)     // то есть символ игнорим (в первый раз), но уже начали находить нормальные символы до этого
+                    {
+                        _prevCorrectStringSearchResult = new StringSearchResult()
+                            {
+                                FoundString = _searchResult.FoundString,                              
+                                MissFound = _searchResult.MissFound
+                            };
+                        _prevCorrectStringSearchResult.FixSearchResultPosition(_index, _indexBeforeHtml);
+                    }
                 }
 
                 if (isMiss)
                 {
                     if (OnMissFound())
                         return true;
+                    else
+                        _prevCorrectStringSearchResult = null;      // то есть мы нашли missSymbol, но для нас это нормально. Значит мы не должны возвращаться назад.
                 }
 
                 AddToResult(c);
@@ -307,7 +340,7 @@ namespace BibleCommon.Helpers
         {
             _searchResult.MissFound = true;
             _missCount = _missCount.GetValueOrDefault(0) + 1;
-            if (_missCount > MissInfo.MaxMissCount.GetValueOrDefault(0))
+            if (_missCount.Value > MissInfo.MaxMissCount.GetValueOrDefault(0))
                 return true;
 
             return false;
@@ -340,7 +373,7 @@ namespace BibleCommon.Helpers
 
         private void CheckArguments()
         {
-            if (SearchMode == StringSearchMode.SearchFirstValueChar || SearchMode == StringSearchMode.SearchFirstChar)
+            if (SearchMode == StringSearchMode.SearchFirstDelimiterChar || SearchMode == StringSearchMode.SearchFirstChar)
             {
                 if (IgnoringInfo.Mode != SearchIgnoringInfo.IgnoringMode.None)
                     throw new ArgumentException("Conflict parameters values: searchMode and ignoreSpaces");

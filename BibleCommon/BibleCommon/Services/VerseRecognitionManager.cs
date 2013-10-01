@@ -142,8 +142,8 @@ namespace BibleCommon.Services
             bool spaceWasFound;
             
             var prevCharResult = GetPrevOrNextStringDesirableNotSpace(textElement.Value, numberStartIndex, new char[] { ',', ';' },
-                isLink, StringSearcher.SearchDirection.Back, StringSearcher.StringSearchMode.SearchFirstValueChar, null, null, out spaceWasFound);
-            var nextCharResult = StringSearcher.SearchInString(textElement.Value, numberEndIndex, StringSearcher.SearchDirection.Forward, StringSearcher.StringSearchMode.SearchFirstValueChar);
+                isLink, StringSearcher.SearchDirection.Back, StringSearcher.StringSearchMode.SearchFirstDelimiterChar, null, null, out spaceWasFound);
+            var nextCharResult = StringSearcher.SearchInString(textElement.Value, numberEndIndex, StringSearcher.SearchDirection.Forward, StringSearcher.StringSearchMode.SearchFirstDelimiterChar);
 
             // ужасно некрасивый код! шесть раз передаём одинаково аргументы! Почему вообще это статический класс??????????
             var prevChar = prevCharResult.FoundString;
@@ -652,7 +652,7 @@ namespace BibleCommon.Services
             bool spaceWasFound;
 
             var firstNextCharResult = GetPrevOrNextStringDesirableNotSpace(textElementValue, nextHtmlBreakIndex - 1, VerseNumber.Dashes,
-                isLink, StringSearcher.SearchDirection.Forward, StringSearcher.StringSearchMode.SearchFirstValueChar, null, null, out spaceWasFound);             
+                isLink, StringSearcher.SearchDirection.Forward, StringSearcher.StringSearchMode.SearchFirstDelimiterChar, null, null, out spaceWasFound);             
 
             if (VerseNumber.Dashes.Contains(firstNextCharResult.FoundString.FirstOrDefault()))   
             {

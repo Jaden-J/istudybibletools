@@ -47,6 +47,11 @@ namespace TestProject
 
             try
             {
+              
+
+                var verseIndexResult = StringSearcher.SearchInString("Рим 8:28, Иак 1:17", -1, StringSearcher.SearchDirection.Back, StringSearcher.StringSearchMode.SearchText,
+               new StringSearcher.SearchMissInfo(0, StringSearcher.SearchMissInfo.MissMode.CancelOnMissFound), 
+               new StringSearcher.SearchIgnoringInfo(3, StringSearcher.SearchIgnoringInfo.IgnoringMode.IgnoreSpacesAndDots));
 
                 Console.WriteLine(Utils.GetUpdateProgramWebSitePageUrl());
                 //Console.WriteLine(Regex.Replace("<br>no<", string.Format("(^|[^0-9a-zA-Z]){0}($|[^0-9a-zA-Z<])", "no"), @"$1aeasdasds$2", RegexOptions.IgnoreCase));
