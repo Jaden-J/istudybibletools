@@ -345,7 +345,7 @@ namespace BibleCommon.Services
 
                     if (!string.IsNullOrEmpty(bookName))
                     {
-                        bookName = bookName.Trim();
+                        bookName = bookName.Trim(' ');
                         if (!string.IsNullOrEmpty(bookName))
                         {
                             bookName = TrimBookName(bookName, verseScopeInfo, textElement, ref startIndex);
@@ -353,6 +353,7 @@ namespace BibleCommon.Services
                             char prevPrevChar = StringUtils.GetChar(textElement.Value, prevHtmlBreakIndex);
                             if (!(StringUtils.IsCharAlphabetical(prevPrevChar) || StringUtils.IsDigit(prevPrevChar)))
                             {
+                                bookName = bookName.Trim(' ');
                                 string verseName = GetVerseName(bookName, chapterString);
 
                                 VersePointer vp = new VersePointer(verseName);
@@ -518,7 +519,7 @@ namespace BibleCommon.Services
 
                     if (!string.IsNullOrEmpty(bookName))
                     {
-                        bookName = bookName.Trim();
+                        bookName = bookName.Trim(' ');
                         if (!string.IsNullOrEmpty(bookName))
                         {
                             bookName = TrimBookName(bookName, verseScopeInfo, textElement, ref startIndex);
@@ -526,7 +527,7 @@ namespace BibleCommon.Services
                             char prevPrevChar = StringUtils.GetChar(textElement.Value, prevHtmlBreakIndex);
                             if (!(StringUtils.IsCharAlphabetical(prevPrevChar) || StringUtils.IsDigit(prevPrevChar)))
                             {
-                                bookName = bookName.Trim();
+                                bookName = bookName.Trim(' ');
                                 string verseName = GetVerseName(bookName, number, verseString);
 
                                 VersePointer vp = new VersePointer(verseName);
