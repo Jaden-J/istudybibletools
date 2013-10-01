@@ -919,7 +919,7 @@ namespace BibleCommon.Services
                             else
                                 textToChange = searchResult.VersePointer.OriginalVerseName;
 
-                             hierarchySearchResult = localHierarchySearchResult;
+                            hierarchySearchResult = localHierarchySearchResult;
 
                             var prevLinkText = linkInfo.IsLink ? textElementValue.Substring(startVerseNameIndex, endVerseNameIndex - startVerseNameIndex) : null;
 

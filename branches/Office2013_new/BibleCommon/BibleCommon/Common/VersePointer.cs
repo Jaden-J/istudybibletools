@@ -828,7 +828,7 @@ namespace BibleCommon.Common
 
         private static string TrimBookName(string bookName, out bool endsWithDot)
         {
-            string result = bookName.Trim();
+            string result = bookName.Trim(' ');
             endsWithDot = result.EndsWith(".");
 
             return result.Trim('.').Replace("  ", " ");              
