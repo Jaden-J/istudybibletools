@@ -270,7 +270,8 @@ namespace BibleCommon.Helpers
                 if (!string.IsNullOrEmpty(textElement.Value))
                 {
                     textElement.Value = Regex.Replace(textElement.Value, "([^>])(\\n|&nbsp;)([^<])", "$1 $3")
-                                                .Replace("<br>\n", "<br>\n\n");
+                                               // .Replace("<br>\n", "<br>\n\n")
+                                               ;
                         //textElement.Value.Replace("\n", "").Replace("&nbsp;", "").Replace("<br>", "<br>\n");
                 }
             }
