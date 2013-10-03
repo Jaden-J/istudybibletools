@@ -74,7 +74,7 @@ namespace BibleConfigurator
             try
             {
                 var logFilePath = Path.Combine(Path.GetPathRoot(System.Environment.SystemDirectory), "isbt.log");
-                File.AppendAllText(logFilePath, message + System.Environment.NewLine);
+                File.AppendAllText(logFilePath, string.Format("{0}: {1}{2}", DateTime.Now, message, System.Environment.NewLine));
 
                 if (Context != null)
                     Context.LogMessage(message);

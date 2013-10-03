@@ -160,7 +160,7 @@ namespace BibleVerseLinkerEx
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(OneNoteUtils.ParseError(ex.Message));
+                    Logger.LogError(OneNoteUtils.ParseErrorAndMakeItMoreUserFriendly(ex.Message));
                 }
 
                 if (!string.IsNullOrEmpty(verseLinkPageId))

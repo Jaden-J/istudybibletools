@@ -45,7 +45,7 @@ namespace BibleConfigurator
                 }
                 catch (InvalidNotebookException ex)
                 {
-                    errorText = OneNoteUtils.ParseError(ex.Message);
+                    errorText = OneNoteUtils.ParseErrorAndMakeItMoreUserFriendly(ex.Message);
                 }
             }
 

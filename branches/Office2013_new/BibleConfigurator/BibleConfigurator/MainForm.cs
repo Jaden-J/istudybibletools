@@ -806,7 +806,7 @@ namespace BibleConfigurator
             catch (Exception ex)
             {
                 if (!silientMode)
-                    throw new SaveParametersException(OneNoteUtils.ParseError(ex.Message), false);
+                    throw new SaveParametersException(OneNoteUtils.ParseErrorAndMakeItMoreUserFriendly(ex.Message), false);
                 else
                     BibleCommon.Services.Logger.LogError(ex);
             }

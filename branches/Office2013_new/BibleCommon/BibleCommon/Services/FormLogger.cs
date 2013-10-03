@@ -20,7 +20,7 @@ namespace BibleCommon.Services
         {
             BibleCommon.Services.Logger.LogError(ex);
 
-            using (var form = new BibleCommon.UI.Forms.MessageForm(OneNoteUtils.ParseError(ex.Message), BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning))
+            using (var form = new BibleCommon.UI.Forms.MessageForm(OneNoteUtils.ParseErrorAndMakeItMoreUserFriendly(ex.Message), BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning))
             {
                 form.ShowDialog();
             }            

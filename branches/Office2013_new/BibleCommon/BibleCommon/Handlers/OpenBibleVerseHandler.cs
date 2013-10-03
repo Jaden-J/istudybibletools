@@ -73,6 +73,13 @@ namespace BibleCommon.Handlers
             {
                 FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured + Environment.NewLine + imEx.Message);
             }
+            catch (HierarchyNotFoundException hnfEx)
+            {
+                if (oneNoteApp != null && !SettingsManager.Instance.IsConfigured(ref oneNoteApp))
+                    FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
+                else
+                    FormLogger.LogError(hnfEx);
+            }
             catch (Exception ex)
             {
                 FormLogger.LogError(ex);
