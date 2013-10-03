@@ -278,7 +278,7 @@ namespace BibleCommon.Services
 
         public static void LogError(string message, Exception ex)
         {
-            LogMessageToFileAndConsole(true, string.Format("{0}{1} {2}", _errorText, message, OneNoteUtils.ParseError(ex.Message)), string.Format("{0} {1}", message, ex.ToString()), true, false, Severity.Error, null, null);
+            LogMessageToFileAndConsole(true, string.Format("{0}{1} {2}", _errorText, message, OneNoteUtils.ParseErrorAndMakeItMoreUserFriendly(ex.Message)), string.Format("{0} {1}", message, ex.ToString()), true, false, Severity.Error, null, null);
             ErrorWasLogged = true;   
         }
 

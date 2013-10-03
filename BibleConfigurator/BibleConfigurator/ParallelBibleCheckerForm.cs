@@ -163,7 +163,7 @@ namespace BibleConfigurator
             {
                 FormLogger.LogError(ex);
                 this.Close();
-                _mainForm.LongProcessingDone(OneNoteUtils.ParseError(ex.Message));
+                _mainForm.LongProcessingDone(OneNoteUtils.ParseErrorAndMakeItMoreUserFriendly(ex.Message));
             }
         }
 
