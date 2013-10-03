@@ -110,7 +110,8 @@ namespace BibleVersePointer
                             }
                             catch (Exception ex)
                             {
-                                Logger.LogError(OneNoteUtils.ParseError(ex.Message));
+                                Logger.LogError(OneNoteUtils.ParseErrorAndMakeItMoreUserFriendly(ex.Message));
+                                tbVerse.SelectAll();
                             }
                         }
 

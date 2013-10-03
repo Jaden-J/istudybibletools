@@ -830,6 +830,25 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to update the page. Perhaps there are elements painted with a brush on the page, which are currently not supported. 
+        ///Delete these elements and try again..
+        /// </summary>
+        public static string Error_hrInsertingInk {
+            get {
+                return ResourceManager.GetString("Error_hrInsertingInk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The page is readonly..
+        /// </summary>
+        public static string Error_hrPageReadOnly {
+            get {
+                return ResourceManager.GetString("Error_hrPageReadOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid module:.
         /// </summary>
         public static string Error_InvalidModule {
@@ -898,16 +917,6 @@ namespace BibleCommon.Resources {
         public static string Error_SystemIsNotConfigured {
             get {
                 return ResourceManager.GetString("Error_SystemIsNotConfigured", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unable to update the page. Perhaps on the page there are painted with a brush elements, which are currently not supported. 
-        ///Delete these elements and try again..
-        /// </summary>
-        public static string Error_UpdateError_InksOnPages {
-            get {
-                return ResourceManager.GetString("Error_UpdateError_InksOnPages", resourceCulture);
             }
         }
         

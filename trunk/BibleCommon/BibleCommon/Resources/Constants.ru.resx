@@ -240,7 +240,7 @@
   <data name="Error_SystemIsNotConfigured" xml:space="preserve">
     <value>Программа не сконфигурирована. Откройте 'Параметры программы' и укажите все необходимые настройки.</value>
   </data>
-  <data name="Error_UpdateError_InksOnPages" xml:space="preserve">
+  <data name="Error_hrInsertingInk" xml:space="preserve">
     <value>Не удалось обновить страницу. Возможно на странице присутствуют нарисованные кистью элементы, которые на текущий момент не поддерживаются программой. 
 Удалите такие элементы и повторите операцию.</value>
   </data>
@@ -902,5 +902,8 @@
   </data>
   <data name="UpgradingNotesPages" xml:space="preserve">
     <value>Обновление страниц "Сводные заметок"</value>
+  </data>
+  <data name="Error_hrPageReadOnly" xml:space="preserve">
+    <value>Страница доступна только для чтения.</value>
   </data>
 </root>

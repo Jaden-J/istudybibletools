@@ -67,7 +67,7 @@ namespace BibleVerseLinkerEx
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogError(OneNoteUtils.ParseError(ex.Message));
+                        Logger.LogError(OneNoteUtils.ParseErrorAndMakeItMoreUserFriendly(ex.Message));
                     }
                 }
 
@@ -92,7 +92,9 @@ namespace BibleVerseLinkerEx
         {
             try
             {
-                tbPageName.Text = Properties.Settings.Default.LastPageName;
+                tbPageName.Text = !string.IsNullOrEmpty(Properties.Settings.Default.LastPageName) 
+                    ? Properties.Settings.Default.LastPageName
+                    : SettingsManager.Instance.PageName_DefaultComments;
             }
             catch (Exception ex)
             {

@@ -213,8 +213,8 @@
   <data name="Error_SystemIsNotConfigured" xml:space="preserve">
     <value>The program is not configured. Open the 'Program parameters' and specify the necessary settings.</value>
   </data>
-  <data name="Error_UpdateError_InksOnPages" xml:space="preserve">
-    <value>Unable to update the page. Perhaps on the page there are painted with a brush elements, which are currently not supported. 
+  <data name="Error_hrInsertingInk" xml:space="preserve">
+    <value>Unable to update the page. Perhaps there are elements painted with a brush on the page, which are currently not supported. 
 Delete these elements and try again.</value>
   </data>
   <data name="Error_UpdatePage" xml:space="preserve">
@@ -905,5 +905,8 @@ Please take notice:
   </data>
   <data name="UpgradingNotesPages" xml:space="preserve">
     <value>Upgrading 'Summary of Notes' pages</value>
+  </data>
+  <data name="Error_hrPageReadOnly" xml:space="preserve">
+    <value>The page is readonly.</value>
   </data>
 </root>
