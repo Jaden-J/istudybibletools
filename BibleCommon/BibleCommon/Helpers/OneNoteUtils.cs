@@ -288,7 +288,7 @@ namespace BibleCommon.Helpers
         private static void UpdatePageContentSafeInternal(ref Application oneNoteApp, XDocument pageContent, XmlNamespaceManager xnm, int? attemptsCount)
         {
             var inkNodes = pageContent.Root.XPathSelectElements("one:InkDrawing", xnm)
-                            .Union(pageContent.Root.XPathSelectElements("//one:OE[.//one:InkDrawing]", xnm))    
+                            .Union(pageContent.Root.XPathSelectElements("//one:OE[.//one:InkDrawing]", xnm))
                             .Union(pageContent.Root.XPathSelectElements("one:Outline[.//one:InkWord]", xnm)).ToArray();
 
             foreach (var inkNode in inkNodes)
@@ -298,7 +298,7 @@ namespace BibleCommon.Helpers
                 else
                 {
                     var inkWords = inkNode.XPathSelectElements(".//one:InkWord", xnm).Where(ink => ink.XPathSelectElement(".//one:CallbackID", xnm) == null).ToArray();
-                    inkWords.Remove();                 
+                    inkWords.Remove();
                 }
             }
 
@@ -308,33 +308,19 @@ namespace BibleCommon.Helpers
 
             try
             {
-                try
+                UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
                 {
-                    UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
-                    {
-                        oneNoteAppSafe.UpdatePageContent(pageContent.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
-                    });
-                }
-                catch (COMException ex)
-                {
-                    if (attemptsCount.GetValueOrDefault(int.MaxValue) < 30)  // 15 секунд - но каждое обновление требует времени. поэтому на самом деле дольше
-                    {
-                        if (OneNoteUtils.IsError(ex, Error.hrPageReadOnly) || OneNoteUtils.IsError(ex, Error.hrSectionReadOnly))
-                        {
-                            Thread.Sleep(500);
-                            UpdatePageContentSafeInternal(ref oneNoteApp, pageContent, xnm, attemptsCount + 1);
-                        }
-                        else
-                            throw;
-                    }
-                    else
-                        throw;
-                }
+                    oneNoteAppSafe.UpdatePageContent(pageContent.ToString(), DateTime.MinValue, Constants.CurrentOneNoteSchema);
+                });
             }
             catch (COMException ex)
             {
-                if (OneNoteUtils.IsError(ex, Error.hrInsertingInk))
-                    throw new Exception(Resources.Constants.Error_UpdateError_InksOnPages);               
+                if (attemptsCount.GetValueOrDefault(int.MaxValue) < 30                                       // 15 секунд - но каждое обновление требует времени. поэтому на самом деле дольше
+                    && (OneNoteUtils.IsError(ex, Error.hrPageReadOnly) || OneNoteUtils.IsError(ex, Error.hrSectionReadOnly)))
+                {
+                    Thread.Sleep(500);
+                    UpdatePageContentSafeInternal(ref oneNoteApp, pageContent, xnm, attemptsCount + 1);
+                }
                 else
                     throw;
             }
@@ -545,7 +531,7 @@ namespace BibleCommon.Helpers
             return string.Format("0x{0}", Convert.ToString((int)error, 16));
         }
 
-        public static string ParseError(string exceptionMessage)
+        public static string ParseErrorAndMakeItMoreUserFriendly(string exceptionMessage)
         {
             var originalHexValue = Regex.Match(exceptionMessage, @"0x800[A-F\d]+").Value;
             if (!string.IsNullOrEmpty(originalHexValue))
@@ -553,10 +539,27 @@ namespace BibleCommon.Helpers
                 var hexValue = originalHexValue.Replace("0x", "FFFFFFFF");
                 long decValue;
                 if (long.TryParse(hexValue, System.Globalization.NumberStyles.HexNumber, CultureInfo.CurrentCulture.NumberFormat, out decValue))
-                    exceptionMessage = exceptionMessage.Replace(originalHexValue, ((Error)decValue).ToString());
+                {
+                    var errorCode = (Error)decValue;
+                    var userFriendlyErrorMessage = GetUserFriendlyErrorMessage(errorCode);
+                    exceptionMessage = exceptionMessage.Replace(originalHexValue, userFriendlyErrorMessage);
+                }
             }
 
             return exceptionMessage;
+        }
+
+        private static string GetUserFriendlyErrorMessage(Error errorCode)
+        {
+            switch (errorCode)
+            {
+                case Error.hrPageReadOnly:
+                    return Resources.Constants.Error_hrPageReadOnly;
+                case Error.hrInsertingInk:
+                    return Resources.Constants.Error_hrInsertingInk;
+                default:
+                    return errorCode.ToString();
+            }
         }
 
         public static void SetActiveCurrentWindow(ref Application oneNoteApp)

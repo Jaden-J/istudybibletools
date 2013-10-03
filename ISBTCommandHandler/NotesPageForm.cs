@@ -217,45 +217,72 @@ namespace ISBTCommandHandler
 
         private void SetSize()
         {
-            var size = Properties.Settings.Default.NotesPageFormSize;
-            if (!string.IsNullOrEmpty(size))
+            var settingsAreValid = false;
+            try
             {
-                var sizeParts = size.Split(new char[] { ';' });
-                var w = int.Parse(sizeParts[0]);
-                var h = int.Parse(sizeParts[1]);
-                this.Size = new Size(w, h);
+                var size = Properties.Settings.Default.NotesPageFormSize;
+                if (!string.IsNullOrEmpty(size))
+                {
+                    var sizeParts = size.Split(new char[] { ';' });
+                    var w = int.Parse(sizeParts[0]);
+                    var h = int.Parse(sizeParts[1]);
+                    if (w > 0 && h > 0)
+                    {
+                        this.Size = new Size(w, h);
+                        settingsAreValid = true;
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var screenInfo = Screen.FromControl(this).Bounds;
-                this.Size = new Size(
-                                 Convert.ToInt32(screenInfo.Size.Width * FormWidthProportion), 
-                                 Convert.ToInt32(screenInfo.Size.Height * FormHeightProportion));
-            } 
+                FormLogger.LogError(ex);
+            }
+            
+            if (!settingsAreValid)
+                SetDefaultSize();
         }
 
         private void SetLocation()
         {
-            var position = Properties.Settings.Default.NotesPageFormPosition;
-            if (!string.IsNullOrEmpty(position))
-            {
-                var positionParts = position.Split(new char[] { ';' });
-                var x = int.Parse(positionParts[0]);
-                var y = int.Parse(positionParts[1]);
+            var settingsAreValid = false;
 
-                if (x >= 0 && y >= 0)                
-                    this.Location = new Point(x, y);
-                else
-                    SetDefaultPosition();
+            try
+            {
+                var position = Properties.Settings.Default.NotesPageFormPosition;
+                if (!string.IsNullOrEmpty(position))
+                {
+                    var positionParts = position.Split(new char[] { ';' });
+                    var x = int.Parse(positionParts[0]);
+                    var y = int.Parse(positionParts[1]);
+
+                    if (x >= 0 && y >= 0)
+                    {
+                        this.Location = new Point(x, y);
+                        settingsAreValid = true;
+                    }
+                }
             }
-            else            
-                SetDefaultPosition();            
+            catch (Exception ex)
+            {
+                FormLogger.LogError(ex);
+            }
+
+            if (!settingsAreValid)
+                SetDefaultPosition();
         }
 
         private void SetDefaultPosition()
         {
             var screenInfo = Screen.FromControl(this).Bounds;
             this.Location = new Point(Convert.ToInt32(screenInfo.Size.Width * (1 - FormWidthProportion)), 0);
+        }
+
+        private void SetDefaultSize()
+        {
+            var screenInfo = Screen.FromControl(this).Bounds;
+            this.Size = new Size(
+                             Convert.ToInt32(screenInfo.Size.Width * FormWidthProportion),
+                             Convert.ToInt32(screenInfo.Size.Height * FormHeightProportion));
         }
 
         private void wbNotesPage_Navigating(object sender, WebBrowserNavigatingEventArgs e)

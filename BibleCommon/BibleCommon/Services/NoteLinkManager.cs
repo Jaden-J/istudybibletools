@@ -200,8 +200,8 @@ namespace BibleCommon.Services
 
                 if (_pageContentWasChanged || (force && WasPageModifiedAfterLastAnalyze(notePageDocument.Content.Root, notePageDocument.Xnm)))            //  -если стоит галочка "повторный анализ ссылок", то обновлять страницы заметок, если дата анализа меньше даты изменения, чтобы записывалось время последнего анализа. 
                 {
-                if (linkDepth >= AnalyzeDepth.Full)   // если SetVersesLinks, то мы позже обновим, так как нам надо ещё поставить курсор в нужное место
-                {
+                    if (linkDepth >= AnalyzeDepth.Full)   // если SetVersesLinks, то мы позже обновим, так как нам надо ещё поставить курсор в нужное место
+                    {
                         notePageDocument.AddLatestAnalyzeTimeMetaAttribute = true;
 
                         Logger.LogMessage(Resources.Constants.UpdatingPageInOneNote);
@@ -209,12 +209,12 @@ namespace BibleCommon.Services
                         ApplicationCache.Instance.CommitModifiedPage(ref oneNoteApp, notePageDocument, false);
                     }
                 }
-                    else
+                else
                 {
                     LastAnalyzedVerse = null;
 
-                        ApplicationCache.Instance.RemovePageContentFromCache(pageId, PageInfo.piBasic);
-            }
+                    ApplicationCache.Instance.RemovePageContentFromCache(pageId, PageInfo.piBasic);
+                }
             }
             catch (ProcessAbortedByUserException)
             {

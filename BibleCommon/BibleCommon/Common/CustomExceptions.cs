@@ -8,8 +8,8 @@ namespace BibleCommon.Common
 {
     public class ProgramException : Exception
     {
-        public ProgramException(string message, params string[] args)
-            : base(string.Format(message, args))
+        public ProgramException(string message)
+            : base(message)
         {
         }
     }
@@ -22,25 +22,33 @@ namespace BibleCommon.Common
         }
 
         public NotConfiguredException(string message)
-            : base(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured, message)
+            : base(string.Format(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured, message))
         {
         }
     }
 
-    public class NotFoundPageException : ProgramException
+    public class PageNotFoundException : ProgramException
     {
-        public NotFoundPageException(string message)
+        public PageNotFoundException(string message)
             : base(message)
         {
         }
     }
 
-    public class NotFoundVerseLinkPageException : NotFoundPageException
+    public class NotFoundVerseLinkPageException : PageNotFoundException
     {
         public NotFoundVerseLinkPageException(string message)
             : base(message)
         {
         }        
+    }
+
+    public class HierarchyNotFoundException : ProgramException
+    {
+        public HierarchyNotFoundException(string message)
+            : base(message)
+        {
+        }
     }
 
     public class InvalidModuleException : ProgramException

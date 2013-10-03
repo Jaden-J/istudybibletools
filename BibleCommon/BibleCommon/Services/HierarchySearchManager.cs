@@ -448,7 +448,7 @@ namespace BibleCommon.Services
             {
                 action(verseHierarchyObjectInfo);
             }
-            catch (NotFoundPageException)
+            catch (PageNotFoundException)
             {
                 // возможно дело в устаревшем кэше       
 
