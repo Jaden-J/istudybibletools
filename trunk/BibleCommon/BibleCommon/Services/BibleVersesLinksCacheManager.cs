@@ -40,8 +40,11 @@ namespace BibleCommon.Services
 
         public static void RemoveCacheFile(string notebookId)
         {
-            var filePath = GetCacheFilePath(notebookId);            
-            File.Delete(filePath);            
+            if (!string.IsNullOrEmpty(notebookId))
+            {
+                var filePath = GetCacheFilePath(notebookId);
+                File.Delete(filePath);
+            }
         }
 
         public static void GenerateBibleVersesLinks(ref Application oneNoteApp, string notebookId, string sectionGroupId, bool toGenerateHref, ICustomLogger logger)
