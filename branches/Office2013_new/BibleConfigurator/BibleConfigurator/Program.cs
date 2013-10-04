@@ -291,10 +291,26 @@ namespace BibleConfigurator
 
         private static void CheckForVersionUpdateCommands()
         {
+            bool notesWasRegenerated = false;
             if (SettingsManager.Instance.VersionFromSettings == null || SettingsManager.Instance.VersionFromSettings < new Version(3, 1))
             {
-                Utils.DoWithExceptionHandling(TryToRegenerateNotesPages);
+                Utils.DoWithExceptionHandling(() => TryToRegenerateNotesPages(true));
                 Utils.DoWithExceptionHandling(BibleParallelTranslationManager.MergeAllModulesWithMainBible);  // так как раньше оно не правильно вызывалось и вызывалось ли вообще...
+                
+                notesWasRegenerated = true;
+            }
+
+
+            if (SettingsManager.Instance.VersionFromSettings < new Version(3, 2))
+            {
+                if (!notesWasRegenerated)
+                    Utils.DoWithExceptionHandling(() => TryToRegenerateNotesPages(false));
+
+                Utils.DoWithExceptionHandling(() => 
+                {
+                    if (ApplicationCache.Instance.IsBibleVersesLinksCacheActive)
+                        ApplicationCache.Instance.CleanBibleVersesLinksCache(false);
+                });
             }
 
             if (SettingsManager.Instance.SettingsWereLoadedFromFile)
@@ -366,14 +382,14 @@ namespace BibleConfigurator
             FormLogger.LogMessage(message);
         }
 
-        private static void TryToRegenerateNotesPages()
+        private static void TryToRegenerateNotesPages(bool writeNotesPages)
         {
             if (!string.IsNullOrEmpty(SettingsManager.Instance.FolderPath_BibleNotesPages) && !string.IsNullOrEmpty(SettingsManager.Instance.ModuleShortName))
             {
                 var service = new AnalyzedVersesService(true);
 
                 AddDefaultAnalyzedNotebooksInfo(service);
-                RegenerateNotesPages(service);
+                RegenerateNotesPages(service, writeNotesPages);
 
                 service.Update();
                 NotesPageManagerFS.UpdateResources();
@@ -381,7 +397,7 @@ namespace BibleConfigurator
         }
 
 
-        private static void RegenerateNotesPages(AnalyzedVersesService service)
+        private static void RegenerateNotesPages(AnalyzedVersesService service, bool writeNotesPages)
         {
             if (Directory.Exists(SettingsManager.Instance.FolderPath_BibleNotesPages))
             {
@@ -402,7 +418,7 @@ namespace BibleConfigurator
                                 var pageName = parts[0];
                                 var chapterPointer = new VersePointer(parts[1]);
                                 var pageData = new NotesPageData(filePath, pageName, Path.GetFileNameWithoutExtension(filePath) == "0" ? NotesPageType.Chapter : NotesPageType.Verse, chapterPointer, true);
-                                pageData.Serialize(ref _oneNoteApp, service);
+                                pageData.Serialize(ref _oneNoteApp, service, writeNotesPages);
                             }
 
                             f.PerformStep(BibleCommon.Resources.Constants.UpgradingFile + ": ...\\" + Path.Combine(

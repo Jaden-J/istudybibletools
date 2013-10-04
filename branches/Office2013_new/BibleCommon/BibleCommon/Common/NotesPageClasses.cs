@@ -155,9 +155,9 @@ namespace BibleCommon.Common
             parentLevel.AddLevel(ref oneNoteApp, level, null, false);
 
             AddHierarchySubLevels(levelEl, level);
-        }
+        }        
 
-        public void Serialize(ref Application oneNoteApp, AnalyzedVersesService analyzedVersesService)
+        public void Serialize(ref Application oneNoteApp, AnalyzedVersesService analyzedVersesService, bool writeNotesPage = true)
         {            
             var chapterVersePointer = VersesNotesPageData.First().Value.Verse.GetChapterPointer();            
 
@@ -187,7 +187,9 @@ namespace BibleCommon.Common
                 Directory.CreateDirectory(folder);
 
             xdoc.AddFirst(new XDocumentType("html", null, null, null));
-            xdoc.Save(this.FilePath);
+
+            if (writeNotesPage)
+                xdoc.Save(this.FilePath);
         }
 
         public VerseNotesPageData GetVerseNotesPageData(VersePointer vp)
