@@ -73,14 +73,13 @@ namespace BibleVersePointer
                 {
                     if (!_systemIsConfigured)
                     {
-                        SettingsManager.Instance.ReLoadSettings();  // так как программа кэшируется в пуле OneNote, то проверим - может уже сконфигурили всё.
-
+                        // так как программа кэшируется в пуле OneNote, то проверим - может уже сконфигурили всё.
+                        SettingsManager.Initialize();
+                        ApplicationCache.Initialize(); 
                         Initialize();
 
                         if (!_systemIsConfigured)
-                        {
                             Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
-                        }
                     }
                     else
                     {
