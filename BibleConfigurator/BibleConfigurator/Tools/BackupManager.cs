@@ -182,7 +182,7 @@ namespace BibleConfigurator.Tools
                 SettingsManager.Instance.NotebookId_Bible,
                 SettingsManager.Instance.NotebookId_BibleStudy,
                 SettingsManager.Instance.NotebookId_BibleComments,
-                SettingsManager.Instance.NotebookId_SupplementalBible,
+                //SettingsManager.Instance.NotebookId_SupplementalBible,
                 SettingsManager.Instance.NotebookId_Dictionaries                
             }.Where(n => n != null).Distinct();
         }
