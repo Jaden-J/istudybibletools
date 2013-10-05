@@ -14,6 +14,7 @@ using BibleCommon.Consts;
 using BibleCommon.Handlers;
 using System.IO;
 using BibleCommon.Providers;
+using System.Globalization;
 
 namespace BibleCommon.Services
 {    
@@ -227,14 +228,21 @@ namespace BibleCommon.Services
 
         public static bool WasPageModifiedAfterLastAnalyze(XElement pageEl, XmlNamespaceManager xnm)
         {
+            try
+            {
             XAttribute lastModifiedDateAttribute = pageEl.Attribute("lastModifiedTime");
             if (lastModifiedDateAttribute != null)
             {
-                DateTime lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value);
+                    var lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value, CultureInfo.InvariantCulture);
 
                 string lastAnalyzeTime = OneNoteUtils.GetElementMetaData(pageEl, Constants.Key_LatestAnalyzeTime, xnm);
-                if (!string.IsNullOrEmpty(lastAnalyzeTime) && lastModifiedDate <= DateTime.Parse(lastAnalyzeTime).ToLocalTime())
+                    if (!string.IsNullOrEmpty(lastAnalyzeTime) && lastModifiedDate <= DateTime.Parse(lastAnalyzeTime, CultureInfo.InvariantCulture).ToLocalTime())  //здесь проверить и проверить бы каждый Parse() и ToString()
                     return false;
+            }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
             }
 
             return true;

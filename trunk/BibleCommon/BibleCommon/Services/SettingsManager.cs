@@ -485,7 +485,7 @@ namespace BibleCommon.Services
         private void LoadAdditionalSettings(XDocument xdoc)
         {
             this.NewVersionOnServer = GetParameterValue<Version>(xdoc, Consts.Constants.ParameterName_NewVersionOnServer, null, value => new Version(value));
-            this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, null, value => DateTime.Parse(value));            
+            this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, null, value => DateTime.Parse(value, CultureInfo.InvariantCulture));            
             this.Language = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_Language, Thread.CurrentThread.CurrentUICulture.LCID);
             this.ModuleShortName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ModuleName, string.Empty);
 
@@ -692,7 +692,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_PageNameNotes, this.PageName_Notes),                                  
                                   new XElement(Consts.Constants.ParameterName_NewVersionOnServer, this.NewVersionOnServer),
                                   new XElement(Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, this.NewVersionOnServerLatestCheckTime.HasValue
-                                                ? this.NewVersionOnServerLatestCheckTime.Value.ToString() : string.Empty),
+                                                ? this.NewVersionOnServerLatestCheckTime.Value.ToString(CultureInfo.InvariantCulture) : string.Empty),
                                   new XElement(Consts.Constants.ParameterName_PageWidthNotes, this.PageWidth_Notes),
                                   new XElement(Consts.Constants.ParameterName_ExpandMultiVersesLinking, this.ExpandMultiVersesLinking),
                                   new XElement(Consts.Constants.ParameterName_ExcludedVersesLinking, this.ExcludedVersesLinking),
