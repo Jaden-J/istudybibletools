@@ -22,7 +22,7 @@ namespace BibleCommon.Services
                 VersesInfo = SharpSerializationHelper.Deserialize<AnalyzedVersesInfo>(VersesInfoFilePathWithoutExtension + Consts.Constants.FileExtensionCache);
             else
                 VersesInfo = new AnalyzedVersesInfo(SettingsManager.Instance.ModuleShortName);
-        }
+        }       
 
         public void AddAnalyzedNotebook(string notebookName, string notebookNickname)
         {
@@ -37,7 +37,7 @@ namespace BibleCommon.Services
                 VersesInfo.NotebooksDictionary[notebookName].Nickname = notebookNickname;
         }
 
-        public void UpdateVerseInfo(VersePointer verse, decimal weight, decimal detailedWeight, string notebookName)
+        public void UpdateVerseInfo(VersePointer verse, decimal weight, decimal detailedWeight, bool isDetailed, string notebookName)
         {
             var verseInfo = VersesInfo
                                 .GetOrCreateBookInfo(verse.Book.Index, verse.Book.Name)
@@ -50,6 +50,8 @@ namespace BibleCommon.Services
             if (verseInfo.MaxDetailedWeight < detailedWeight)
                 verseInfo.MaxDetailedWeight = detailedWeight;
 
+            verseInfo.IsDetailedOnly = verseInfo.IsDetailedOnly && isDetailed;
+
             var notebookId = VersesInfo.NotebooksDictionary[notebookName].Id;
             if (!verseInfo.Notebooks.Contains(notebookId))
                 verseInfo.Notebooks.Add(notebookId);
@@ -60,6 +62,12 @@ namespace BibleCommon.Services
             VersesInfo.Sort();
             Utils.SaveToXmlFile(VersesInfo, VersesInfoFilePathWithoutExtension + Consts.Constants.FileExtensionXml);
             SharpSerializationHelper.Serialize(VersesInfo, VersesInfoFilePathWithoutExtension + Consts.Constants.FileExtensionCache);
+        }
+
+        public void RemoveContentFiles()
+        {
+            File.Delete(VersesInfoFilePathWithoutExtension + Consts.Constants.FileExtensionXml);
+            File.Delete(VersesInfoFilePathWithoutExtension + Consts.Constants.FileExtensionCache);
         }
     }
 }

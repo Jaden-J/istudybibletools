@@ -31,15 +31,16 @@ namespace BibleVerseLinkerEx
             btnOk.Enabled = false;
             Application.DoEvents();
 
-            Microsoft.Office.Interop.OneNote.Application oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
+            var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
+
+            FormLogger.Initialize();
+            BibleCommon.Services.Logger.Init("BibleVerseLinkerEx");
 
             try
             {
-                Logger.Initialize();
-
                 if (!SettingsManager.Instance.IsConfigured(ref oneNoteApp))
                 {
-                    Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
+                    FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
                 }
                 else
                 {
@@ -57,7 +58,7 @@ namespace BibleVerseLinkerEx
 
                             vlManager.Do();
 
-                            if (!Logger.WasLogged)
+                            if (!FormLogger.WasErrorLogged)
                             {
                                 OneNoteUtils.SetActiveCurrentWindow(ref oneNoteApp);
                                 this.Visible = false;
@@ -67,13 +68,13 @@ namespace BibleVerseLinkerEx
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogError(OneNoteUtils.ParseErrorAndMakeItMoreUserFriendly(ex.Message));
+                        FormLogger.LogError(OneNoteUtils.ParseErrorAndMakeItMoreUserFriendly(ex.Message));
                     }
                 }
 
                 btnOk.Enabled = true;
 
-                if (!Logger.WasLogged)
+                if (!FormLogger.WasErrorLogged)
                 {
                     this.Visible = false;
                     Properties.Settings.Default.LastPageName = tbPageName.Text;
@@ -84,6 +85,7 @@ namespace BibleVerseLinkerEx
             finally
             {
                 OneNoteUtils.ReleaseOneNoteApp(ref oneNoteApp);
+                BibleCommon.Services.Logger.Done();
             }
         }
        
