@@ -65,7 +65,7 @@ namespace BibleCommon.Handlers
                 var vp = new VersePointer(verseString);
 
                 if (vp.IsValid)
-                    GoToVerse(ref oneNoteApp, vp);
+                    GoToVerse(ref oneNoteApp, vp, true);
                 else
                     throw new Exception(BibleCommon.Resources.Constants.BibleVersePointerCanNotParseString);
             }
@@ -90,7 +90,7 @@ namespace BibleCommon.Handlers
             }
         }
 
-        private bool GoToVerse(ref Application oneNoteApp, VersePointer vp)
+        private bool GoToVerse(ref Application oneNoteApp, VersePointer vp, bool canReGo)
         {
             var result = HierarchySearchManager.GetHierarchyObject(ref oneNoteApp, SettingsManager.Instance.NotebookId_Bible, ref vp, HierarchySearchManager.FindVerseLevel.OnlyFirstVerse, null, null);
 
@@ -100,7 +100,7 @@ namespace BibleCommon.Handlers
                 string hierarchyObjectId = !string.IsNullOrEmpty(result.HierarchyObjectInfo.PageId)
                     ? result.HierarchyObjectInfo.PageId : result.HierarchyObjectInfo.SectionId;
 
-                NavigateTo(ref oneNoteApp, vp, hierarchyObjectId, result.HierarchyObjectInfo.GetAllObjectsIds().ToArray());
+                NavigateTo(ref oneNoteApp, vp, hierarchyObjectId, canReGo, result.HierarchyObjectInfo.GetAllObjectsIds().ToArray());
                 return true;
             }
             else
@@ -109,7 +109,7 @@ namespace BibleCommon.Handlers
             return false;
         }
 
-        private void NavigateTo(ref Application oneNoteApp, VersePointer vp, string pageId, params VerseObjectInfo[] objectsIds)
+        private void NavigateTo(ref Application oneNoteApp, VersePointer vp, string pageId, bool canReGo, params VerseObjectInfo[] objectsIds)
         {
             var toCleanCacheAndRetry = false;
             if (!NavigateToHandler.TryToRedirectByIds(ref oneNoteApp, pageId, objectsIds.Length > 0 ? objectsIds[0].ObjectId : null))
@@ -138,14 +138,20 @@ namespace BibleCommon.Handlers
                     toCleanCacheAndRetry = true;                    
             }
 
-            if (toCleanCacheAndRetry)
+            if (toCleanCacheAndRetry && canReGo)
             {
                 if (ApplicationCache.Instance.IsBibleVersesLinksCacheActive)
                 {
                     ApplicationCache.Instance.CleanBibleVersesLinksCache(true);
-                    Logger.LogWarning(BibleCommon.Resources.Constants.BibleVersesLinksCacheWasCleaned);                    
+                    Logger.LogWarning(BibleCommon.Resources.Constants.BibleVersesLinksCacheWasCleaned);
 
-                    GoToVerse(ref oneNoteApp, vp);
+                    GoToVerse(ref oneNoteApp, vp, false);
+                    return;
+                }
+                else
+                {
+                    ApplicationCache.Initialize();
+                    GoToVerse(ref oneNoteApp, vp, false);
                     return;
                 }
             }

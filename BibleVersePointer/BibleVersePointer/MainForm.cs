@@ -64,64 +64,62 @@ namespace BibleVersePointer
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            Logger.Initialize();
+            FormLogger.Initialize();
             BibleCommon.Services.Logger.Init("BibleVersePointer");
 
             try
             {
-                lock (_locker)
+                if (!_systemIsConfigured)
                 {
+                    // так как программа кэшируется в пуле OneNote, то проверим - может уже сконфигурили всё.
+                    SettingsManager.Initialize();
+                    ApplicationCache.Initialize();
+                    
+                    Initialize();
+
                     if (!_systemIsConfigured)
+                        FormLogger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(tbVerse.Text))
                     {
-                        // так как программа кэшируется в пуле OneNote, то проверим - может уже сконфигурили всё.
-                        SettingsManager.Initialize();
-                        ApplicationCache.Initialize(); 
-                        Initialize();
+                        btnOk.Enabled = false;
+                        System.Windows.Forms.Application.DoEvents();
 
-                        if (!_systemIsConfigured)
-                            Logger.LogError(BibleCommon.Resources.Constants.Error_SystemIsNotConfigured);
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(tbVerse.Text))
+                        try
                         {
-                            btnOk.Enabled = false;
-                            System.Windows.Forms.Application.DoEvents();
+                            VersePointer vp = new VersePointer(tbVerse.Text);
 
-                            try
+                            if (!vp.IsValid)
+                                vp = new VersePointer(tbVerse.Text + " 1:0");  // может только название книги
+
+                            if (vp.IsValid)
                             {
-                                VersePointer vp = new VersePointer(tbVerse.Text);
+                                var url = OpenBibleVerseHandler.GetCommandUrlStatic(vp, null);
+                                Process.Start(url);
 
-                                if (!vp.IsValid)
-                                    vp = new VersePointer(tbVerse.Text + " 1:0");  // может только название книги
-
-                                if (vp.IsValid)
-                                {
-                                    var url = OpenBibleVerseHandler.GetCommandUrlStatic(vp, null);
-                                    Process.Start(url);
-
-                                    this.Visible = false;
-                                    Properties.Settings.Default.LastVerse = tbVerse.Text;
-                                    Properties.Settings.Default.Save();
-                                }
-                                else
-                                    throw new Exception(BibleCommon.Resources.Constants.BibleVersePointerCanNotParseString);
+                                //this.Visible = false;
+                                Properties.Settings.Default.LastVerse = tbVerse.Text;
+                                Properties.Settings.Default.Save();
                             }
-                            catch (Exception ex)
-                            {
-                                Logger.LogError(OneNoteUtils.ParseErrorAndMakeItMoreUserFriendly(ex.Message));
-                                tbVerse.SelectAll();
-                            }
+                            else
+                                throw new Exception(BibleCommon.Resources.Constants.BibleVersePointerCanNotParseString);
                         }
-
-                        btnOk.Enabled = true;
+                        catch (Exception ex)
+                        {
+                            FormLogger.LogError(OneNoteUtils.ParseErrorAndMakeItMoreUserFriendly(ex.Message));
+                            tbVerse.SelectAll();
+                        }
                     }
+
+                    btnOk.Enabled = true;
                 }
 
-                if (!Logger.WasLogged)
+                if (!FormLogger.WasErrorLogged)
                 {
                     OneNoteUtils.SetActiveCurrentWindow(ref _oneNoteApp);
-                    this.Close();
+                  //  this.Close();
                 }
             }
             finally

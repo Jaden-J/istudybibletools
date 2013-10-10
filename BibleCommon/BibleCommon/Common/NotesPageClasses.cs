@@ -372,9 +372,12 @@ namespace BibleCommon.Common
             if (summarySubLinksOverallWight >= Constants.ImportantVerseWeight)
                 levelTitleLinkElClass += " importantVerseLink";
 
-            var summarySubLinksNonDetailedWight = pageLevel.PageLinks.Where(pl => !pl.IsDetailed).Sum(pl => pl.VerseWeight);
+            var notDetailedPageLinks = pageLevel.PageLinks.Where(pl => !pl.IsDetailed).ToList();
+            var summarySubLinksNonDetailedWight = notDetailedPageLinks.Sum(pl => pl.VerseWeight);
 
-            analyzedVersesService.UpdateVerseInfo(pageLevel.Root.Verse, summarySubLinksNonDetailedWight, summarySubLinksOverallWight, GetNotebookName(pageLevel));
+            analyzedVersesService.UpdateVerseInfo(pageLevel.Root.Verse, 
+                summarySubLinksNonDetailedWight, summarySubLinksOverallWight, 
+                notDetailedPageLinks.Count == 0, GetNotebookName(pageLevel));
 
             var hiddenAllPageLevel = false;
 
@@ -409,7 +412,7 @@ namespace BibleCommon.Common
                     linkIndex++;
                 }
 
-                if (pageLevel.PageLinks.All(pl => pl.IsDetailed))
+                if (notDetailedPageLinks.Count == 0)
                     hiddenAllPageLevel = true;
             }
 
