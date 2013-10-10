@@ -86,7 +86,7 @@ namespace BibleVerseLinkerEx
             }
             catch (Exception ex)
             {
-                BibleCommon.Services.Logger.LogError(ex);
+                FormLogger.LogError(ex);
             }
 
             return null;
@@ -160,7 +160,7 @@ namespace BibleVerseLinkerEx
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(OneNoteUtils.ParseErrorAndMakeItMoreUserFriendly(ex.Message));
+                    FormLogger.LogError(OneNoteUtils.ParseErrorAndMakeItMoreUserFriendly(ex.Message));
                 }
 
                 if (!string.IsNullOrEmpty(verseLinkPageId))
@@ -189,7 +189,7 @@ namespace BibleVerseLinkerEx
                 }
             }
             else
-                Logger.LogError(BibleCommon.Resources.Constants.VerseLinkerOneNoteNotStarted);
+                FormLogger.LogError(BibleCommon.Resources.Constants.VerseLinkerOneNoteNotStarted);
         }
 
         private string ShellText(string text)
