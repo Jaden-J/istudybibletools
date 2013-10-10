@@ -222,6 +222,7 @@ namespace BibleCommon.Common
         public AnalyzedVerseInfo()
         {
             Notebooks = new HashSet<int>();
+            IsDetailedOnly = true;
         }
 
         [XmlAttribute]
@@ -232,6 +233,9 @@ namespace BibleCommon.Common
 
         [XmlAttribute]
         public decimal MaxDetailedWeight { get; set; }
+
+        [XmlAttribute]
+        public bool IsDetailedOnly { get; set; }
 
         [XmlAttribute("Notebooks")]
         [EditorBrowsable(EditorBrowsableState.Never)]

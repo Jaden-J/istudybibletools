@@ -303,14 +303,17 @@ namespace BibleConfigurator
 
             if (SettingsManager.Instance.VersionFromSettings < new Version(3, 2))
             {
-                if (!notesWasRegenerated)
-                    Utils.DoWithExceptionHandling(() => TryToRegenerateNotesPages(false));
-
-                Utils.DoWithExceptionHandling(() => 
+                Utils.DoWithExceptionHandling(() =>
                 {
                     if (ApplicationCache.Instance.IsBibleVersesLinksCacheActive)
                         ApplicationCache.Instance.CleanBibleVersesLinksCache(false);
                 });
+            }
+
+            if (SettingsManager.Instance.VersionFromSettings < new Version(3, 2, 6))
+            {
+                if (!notesWasRegenerated)
+                    Utils.DoWithExceptionHandling(() => TryToRegenerateNotesPages(false));
             }
 
             if (SettingsManager.Instance.SettingsWereLoadedFromFile)

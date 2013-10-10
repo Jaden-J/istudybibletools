@@ -95,6 +95,9 @@ namespace BibleConfigurator.Tools
                     }
                 }
 
+                var service = new AnalyzedVersesService(true);
+                service.RemoveContentFiles();
+
                 _form.LongProcessingDone(BibleCommon.Resources.Constants.DeleteNotesPagesManagerFinishMessage);
             }
             catch (ProcessAbortedByUserException)
