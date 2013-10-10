@@ -387,8 +387,13 @@ function setFilterTrackbar() {
             onMove: function () {
                 var newMinVerseWeight = getMinVersesWeight(this.leftValue);
                 if (newMinVerseWeight != global_MinVersesWeight) {
+                    
                     window.clearInterval(updateFilterTrackbarTriggerId);
-                    updateFilterTrackbarTriggerId = window.setTimeout(function () {
+
+                    global_MinVersesWeight = newMinVerseWeight;
+                    setFilterTrackbarTitle();
+
+                    updateFilterTrackbarTriggerId = window.setTimeout(function () {                        
                         onTrackbarFilterChanged(newMinVerseWeight);
                     }, 10);
                 }
@@ -408,8 +413,6 @@ function setFilterTrackbar() {
 }
 
 function onTrackbarFilterChanged(newMinVerseWeight) {
-    global_MinVersesWeight = newMinVerseWeight;
-    setFilterTrackbarTitle();
     filterByTrackbarAndDetailedNotes();
     filterWasChanged();
 }
