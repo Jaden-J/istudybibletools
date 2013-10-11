@@ -127,7 +127,6 @@ namespace ISBTCommandHandler
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "NotesPageForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.NotesPageForm_FormClosing);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NotesPageForm_FormClosed);
             this.Load += new System.EventHandler(this.NotesPageForm_Load);
             this.Shown += new System.EventHandler(this.NotesPageForm_Shown);
             this.scMain.Panel1.ResumeLayout(false);
