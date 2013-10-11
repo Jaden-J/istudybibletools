@@ -305,17 +305,7 @@ namespace ISBTCommandHandler
         private void chkAlwaysOnTop_CheckedChanged(object sender, EventArgs e)
         {
             this.TopMost = chkAlwaysOnTop.Checked;
-        }
-
-        private void NotesPageForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            Properties.Settings.Default.NotesPageFormAlwaysOnTop = chkAlwaysOnTop.Checked;
-            Properties.Settings.Default.NotesPageFormCloseOnClick = chkCloseOnClick.Checked;
-            Properties.Settings.Default.NotesPageFormPosition = string.Format("{0};{1}", this.Left, this.Top);
-            Properties.Settings.Default.NotesPageFormSize= string.Format("{0};{1}", this.Width, this.Height);            
-
-            Properties.Settings.Default.Save();
-        }
+        }        
 
         private void btnClose_Click(object sender, EventArgs e)
         {
@@ -327,6 +317,18 @@ namespace ISBTCommandHandler
 
             if (e.CloseReason != CloseReason.WindowsShutDown && !ExitApplication)
                 e.Cancel = true;
+
+            SaveCurrentParameters();
+        }
+
+        private void SaveCurrentParameters()
+        {
+            Properties.Settings.Default.NotesPageFormAlwaysOnTop = chkAlwaysOnTop.Checked;
+            Properties.Settings.Default.NotesPageFormCloseOnClick = chkCloseOnClick.Checked;
+            Properties.Settings.Default.NotesPageFormPosition = string.Format("{0};{1}", this.Left, this.Top);
+            Properties.Settings.Default.NotesPageFormSize = string.Format("{0};{1}", this.Width, this.Height);
+
+            Properties.Settings.Default.Save();
         }      
 
         private void wbNotesPage_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)

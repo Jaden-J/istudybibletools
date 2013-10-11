@@ -49,7 +49,8 @@ namespace BibleCommon.Services
         private static HashSet<string> _endCharsOfChapterLink;
         static VerseRecognitionManager()
         {
-            _endCharsOfChapterLink = new HashSet<string>() { ")", "]", "}", ",", ".", "?", "!", ";", "&", ":", "*" };   // двоеточие добавлено потому, что могут быть ссылки типа "Ин 1: вот". Всё равно, если это была нормальная ссылка, он до сюда не дойдёт
+            _endCharsOfChapterLink = new HashSet<string>() { "(", ")", "[", "]", "{", "}", ",", ".", "?", "!", ";", "&", ":", "*" };   // двоеточие добавлено потому, что могут быть ссылки типа "Ин 1: вот". Всё равно, если это была нормальная ссылка, он до сюда не дойдёт
+                                                                                                                                       // открывающие скобки добавлены, так как может быть что-то похожее на "Отк 5(синодальный перевод)"
             foreach (var dash in VerseNumber.Dashes)
                 _endCharsOfChapterLink.Add(dash.ToString());
         }
