@@ -34,12 +34,13 @@
             this.btnSaveToFile = new System.Windows.Forms.Button();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.btnOpenLog = new System.Windows.Forms.Button();
+            this.lblDescription = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lbErrors
             // 
-            this.lbErrors.FormattingEnabled = true;
             resources.ApplyResources(this.lbErrors, "lbErrors");
+            this.lbErrors.FormattingEnabled = true;
             this.lbErrors.Name = "lbErrors";
             this.lbErrors.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lbErrors_MouseClick);
             this.lbErrors.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbErrors_KeyDown);
@@ -47,8 +48,8 @@
             // 
             // btnOk
             // 
-            this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             resources.ApplyResources(this.btnOk, "btnOk");
+            this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOk.Name = "btnOk";
             this.btnOk.UseVisualStyleBackColor = true;
             // 
@@ -72,10 +73,16 @@
             this.btnOpenLog.UseVisualStyleBackColor = true;
             this.btnOpenLog.Click += new System.EventHandler(this.btnOpenLog_Click);
             // 
+            // lblDescription
+            // 
+            resources.ApplyResources(this.lblDescription, "lblDescription");
+            this.lblDescription.Name = "lblDescription";
+            // 
             // ErrorsForm
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.Controls.Add(this.lblDescription);
             this.Controls.Add(this.btnOpenLog);
             this.Controls.Add(this.btnSaveToFile);
             this.Controls.Add(this.btnOk);
@@ -85,10 +92,11 @@
             this.MinimizeBox = false;
             this.Name = "ErrorsForm";
             this.ShowInTaskbar = false;
-            this.TopMost = true;            
+            this.TopMost = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ErrorsForm_FormClosed);
             this.Load += new System.EventHandler(this.Errors_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -99,5 +107,6 @@
         private System.Windows.Forms.Button btnSaveToFile;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.Button btnOpenLog;
+        private System.Windows.Forms.Label lblDescription;
     }
 }
