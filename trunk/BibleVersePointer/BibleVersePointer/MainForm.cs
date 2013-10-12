@@ -119,7 +119,7 @@ namespace BibleVersePointer
                 if (!FormLogger.WasErrorLogged)
                 {
                     OneNoteUtils.SetActiveCurrentWindow(ref _oneNoteApp);
-                  //  this.Close();
+                    this.Close();
                 }
             }
             finally
