@@ -243,7 +243,7 @@ namespace BibleCommon.Common
         {
             get
             {
-                return string.Join(",", Notebooks.OrderBy(n => n));
+                return string.Join(",", Notebooks.OrderBy(n => n).Select(n => n.ToString()).ToArray());
             }
             set
             {
