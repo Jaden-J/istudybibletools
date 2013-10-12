@@ -436,13 +436,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_F99040C8BB0E4C7DF1BA86AD3996701A"
+        "OwnerKey" = "8:_40B893D39E007010FE4FC4A0B2FEE1D2"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_40B893D39E007010FE4FC4A0B2FEE1D2"
+        "OwnerKey" = "8:_F99040C8BB0E4C7DF1BA86AD3996701A"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -705,7 +705,7 @@
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2DFCD76B1C964A5C80A8963AAA930E62"
             {
             "SourcePath" = "8:..\\Instruction (1049).docx"
-            "TargetName" = "8:Instruction v3.1.16 (1049).docx"
+            "TargetName" = "8:Instruction v3.2.8 (1049).docx"
             "Tag" = "8:"
             "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
             "Condition" = "8:"
@@ -808,7 +808,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=3.2.7.1083, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=3.2.8.1086, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_8571B0778C1FEEE46A98FF1409607CAC"
@@ -838,7 +838,7 @@
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_94E1AB757EAF4C5A8D864AB3DE806EF5"
             {
             "SourcePath" = "8:..\\Instruction (1033).docx"
-            "TargetName" = "8:Instruction v3.1.16 (1033).docx"
+            "TargetName" = "8:Instruction v3.2.8 (1033).docx"
             "Tag" = "8:"
             "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
             "Condition" = "8:"
@@ -1113,15 +1113,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BibleNote"
-        "ProductCode" = "8:{25E95D00-DE85-49FF-ACE9-BC65DEB25A31}"
-        "PackageCode" = "8:{68A68EA6-0E17-41F7-8A08-1AEA06B2F08E}"
+        "ProductCode" = "8:{CA88CCC1-CD46-4F5F-9B6C-7619F069F684}"
+        "PackageCode" = "8:{8914C84F-3154-449D-830E-5F73EFE70D37}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:3.2.7"
+        "ProductVersion" = "8:3.2.8"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://BibleNote.pro"
