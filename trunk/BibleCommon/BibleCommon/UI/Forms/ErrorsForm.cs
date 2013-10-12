@@ -20,6 +20,7 @@ namespace BibleCommon.UI.Forms
         private Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
 
         public string LogFilePath { get; set; }
+        public string Description { get; set; }
 
         public ErrorsForm()
         {
@@ -52,6 +53,9 @@ namespace BibleCommon.UI.Forms
             {
                 if (AllErrors.All(errors => errors.Count == 0))
                     Close();
+
+                if (!string.IsNullOrEmpty(Description))
+                    lblDescription.Text = Description;
 
                 FormExtensions.SetFocus(this);
 

@@ -435,6 +435,7 @@ namespace BibleConfigurator
                         if (OneNoteUtils.IsError(ex, Error.hrObjectDoesNotExist))
                         {
                             SettingsManager.Instance.DictionariesModules.Remove(dictionaryInfo);
+                            SettingsManager.Instance.Save();
                             LongProcessingDone(string.Empty);
                         }
                         else
