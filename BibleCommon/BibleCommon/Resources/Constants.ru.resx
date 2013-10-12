@@ -906,4 +906,7 @@
   <data name="Error_hrPageReadOnly" xml:space="preserve">
     <value>Страница доступна только для чтения.</value>
   </data>
+  <data name="ClickToGoToParagraph" xml:space="preserve">
+    <value>Кликните по элементу, чтобы перейти к соответствующему параграфу</value>
+  </data>
 </root>

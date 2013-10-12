@@ -322,8 +322,13 @@ namespace BibleNoteLinker
 
             messages = messages.Distinct().ToList();
 
+            var description = string.Empty;
+            if (Logger.Warnings.Any(l => !string.IsNullOrEmpty(l.ContentObjectId)))
+                description = BibleCommon.Resources.Constants.ClickToGoToParagraph;
+
             using (var errorsForm = new BibleCommon.UI.Forms.ErrorsForm(messages))
             {
+                errorsForm.Description = description;
                 errorsForm.LogFilePath = Logger.LogFilePath;
                 errorsForm.ShowDialog();
             }
