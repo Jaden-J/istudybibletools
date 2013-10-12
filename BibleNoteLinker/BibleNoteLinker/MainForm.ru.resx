@@ -112,12 +112,12 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="chkForce.Size" type="System.Drawing.Size, System.Drawing">
     <value>189, 17</value>
   </data>
@@ -142,9 +142,6 @@
   <data name="rbAnalyzeChangedPages.Text" xml:space="preserve">
     <value>Анализировать только измененные страницы</value>
   </data>
-  <data name="lblInfo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>368, 26</value>
-  </data>
   <data name="lblInfo.Text" xml:space="preserve">
     <value>Доступна новая версия программы на сайте http://BibleNote.ru. 
 Кликните, чтобы перейти на страницу загрузки.</value>
@@ -161,20 +158,20 @@
   <data name="llblDetails.Text" xml:space="preserve">
     <value>Показать детали</value>
   </data>
-  <data name="menuStrip1.Text" xml:space="preserve">
-    <value>Файл</value>
+  <data name="tsmiSeelctNotebooks.Size" type="System.Drawing.Size, System.Drawing">
+    <value>222, 22</value>
+  </data>
+  <data name="tsmiSeelctNotebooks.Text" xml:space="preserve">
+    <value>Выбрать записные книжки</value>
   </data>
   <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>48, 20</value>
+    <value>53, 20</value>
   </data>
   <data name="toolStripMenuItem1.Text" xml:space="preserve">
     <value>Меню</value>
   </data>
-  <data name="tsmiSeelctNotebooks.Size" type="System.Drawing.Size, System.Drawing">
-    <value>210, 22</value>
-  </data>
-  <data name="tsmiSeelctNotebooks.Text" xml:space="preserve">
-    <value>Выбрать записные книжки</value>
+  <data name="menuStrip1.Text" xml:space="preserve">
+    <value>Файл</value>
   </data>
   <data name="cbCurrent.Items" xml:space="preserve">
     <value>текущую страницу</value>
@@ -189,7 +186,7 @@
     <value>текущую записную книжку</value>
   </data>
   <data name="cbCurrent.Location" type="System.Drawing.Point, System.Drawing">
-    <value>102, 1</value>
+    <value>111, 1</value>
   </data>
   <data name="cbCurrent.Size" type="System.Drawing.Size, System.Drawing">
     <value>161, 21</value>

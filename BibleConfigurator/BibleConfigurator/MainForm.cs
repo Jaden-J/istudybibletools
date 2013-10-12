@@ -359,17 +359,17 @@ namespace BibleConfigurator
             try
             {
                 var modulesToDelete = new List<StoredModuleInfo>();
-            foreach (var dictionaryInfo in SettingsManager.Instance.DictionariesModules)
-            {
+                foreach (var dictionaryInfo in SettingsManager.Instance.DictionariesModules)
+                {
                     try
                     {
-                if (!DictionaryTermsCacheManager.CacheIsActive(dictionaryInfo.ModuleName))
-                {
-                    var moduleInfo = ModulesManager.GetModuleInfo(dictionaryInfo.ModuleName);
+                        if (!DictionaryTermsCacheManager.CacheIsActive(dictionaryInfo.ModuleName))
+                        {
+                            var moduleInfo = ModulesManager.GetModuleInfo(dictionaryInfo.ModuleName);
                             if (moduleInfo != null && moduleInfo.Type != ModuleType.Strong)
-                    return true;
-            }
-            }
+                                return true;
+                        }
+                    }
                     catch (ModuleNotFoundException)
                     {
                         modulesToDelete.Add(dictionaryInfo);
@@ -435,6 +435,7 @@ namespace BibleConfigurator
                         if (OneNoteUtils.IsError(ex, Error.hrObjectDoesNotExist))
                         {
                             SettingsManager.Instance.DictionariesModules.Remove(dictionaryInfo);
+                            SettingsManager.Instance.Save();
                             LongProcessingDone(string.Empty);
                         }
                         else
