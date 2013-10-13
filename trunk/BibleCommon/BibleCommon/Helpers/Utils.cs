@@ -168,7 +168,7 @@ namespace BibleCommon.Helpers
                 if (silent)
                     Logger.LogError(errorDescription, ex);
                 else
-                    FormLogger.LogError(errorDescription, ex);
+                    FormLogger.LogError(ex, errorDescription);
             }
         }
 
