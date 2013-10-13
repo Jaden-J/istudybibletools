@@ -909,4 +909,7 @@
   <data name="ClickToGoToParagraph" xml:space="preserve">
     <value>Кликните по элементу, чтобы перейти к соответствующему параграфу</value>
   </data>
+  <data name="ErrorCheckForVersionUpdateCommands" xml:space="preserve">
+    <value>Ошибка при применении обновлений.</value>
+  </data>
 </root>
