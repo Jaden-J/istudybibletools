@@ -151,12 +151,12 @@ namespace BibleCommon.Helpers
             }
         }
 
-        public static void DoWithExceptionHandling(Action action)
+        public static void DoWithExceptionHandling(bool silent, Action action)
         {
-            DoWithExceptionHandling(string.Empty, action);
+            DoWithExceptionHandling(string.Empty, silent, action);
         }
 
-        public static void DoWithExceptionHandling(string errorDescription, Action action)
+        public static void DoWithExceptionHandling(string errorDescription, bool silent, Action action)
         {
             try
             {
@@ -165,7 +165,10 @@ namespace BibleCommon.Helpers
             }
             catch (Exception ex)
             {
-                Logger.LogError(errorDescription, ex);
+                if (silent)
+                    Logger.LogError(errorDescription, ex);
+                else
+                    FormLogger.LogError(errorDescription, ex);
             }
         }
 
@@ -186,6 +189,25 @@ namespace BibleCommon.Helpers
             }
 
             return result;
+        }
+
+        public static DateTime ParseDateTime(string s)
+        {   
+            try
+            {
+                return DateTime.Parse(s, CultureInfo.InvariantCulture);                
+            }
+            catch (FormatException)
+            {
+                try
+                {
+                    return DateTime.Parse(s);
+                }
+                catch (FormatException)
+                {
+                    return DateTime.Parse(s, LanguageManager.GetCurrentCultureInfo());
+                }
+            }
         }
     }
 }

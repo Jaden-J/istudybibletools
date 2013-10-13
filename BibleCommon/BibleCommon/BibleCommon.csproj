@@ -132,6 +132,7 @@
     <Compile Include="Services\SettingsManager.cs" />
     <Compile Include="Services\ShownMessagesManager.cs" />
     <Compile Include="Services\SupplementalBibleManager.cs" />
+    <Compile Include="Services\UpdateManager.cs" />
     <Compile Include="Services\VerseLinkManager.cs" />
     <Compile Include="Common\VersePointer.cs" />
     <Compile Include="..\..\VersionInfo.cs">

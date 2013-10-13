@@ -939,6 +939,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error while applying updates..
+        /// </summary>
+        public static string ErrorCheckForVersionUpdateCommands {
+            get {
+                return ResourceManager.GetString("ErrorCheckForVersionUpdateCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error occurred.
         /// </summary>
         public static string ErrorOccurred {
