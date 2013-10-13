@@ -233,10 +233,10 @@ namespace BibleCommon.Services
             XAttribute lastModifiedDateAttribute = pageEl.Attribute("lastModifiedTime");
             if (lastModifiedDateAttribute != null)
             {
-                    var lastModifiedDate = DateTime.Parse(lastModifiedDateAttribute.Value, CultureInfo.InvariantCulture);
+                    var lastModifiedDate = Utils.ParseDateTime(lastModifiedDateAttribute.Value);
 
                 string lastAnalyzeTime = OneNoteUtils.GetElementMetaData(pageEl, Constants.Key_LatestAnalyzeTime, xnm);
-                    if (!string.IsNullOrEmpty(lastAnalyzeTime) && lastModifiedDate <= DateTime.Parse(lastAnalyzeTime, CultureInfo.InvariantCulture).ToLocalTime())  //здесь проверить и проверить бы каждый Parse() и ToString()
+                    if (!string.IsNullOrEmpty(lastAnalyzeTime) && lastModifiedDate <= Utils.ParseDateTime(lastAnalyzeTime).ToLocalTime())  
                     return false;
             }
             }

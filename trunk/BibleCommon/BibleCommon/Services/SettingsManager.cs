@@ -485,7 +485,7 @@ namespace BibleCommon.Services
         private void LoadAdditionalSettings(XDocument xdoc)
         {
             this.NewVersionOnServer = GetParameterValue<Version>(xdoc, Consts.Constants.ParameterName_NewVersionOnServer, null, value => new Version(value));
-            this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, null, value => DateTime.Parse(value, CultureInfo.InvariantCulture));            
+            this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, null, value => Utils.ParseDateTime(value));            
             this.Language = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_Language, Thread.CurrentThread.CurrentUICulture.LCID);
             this.ModuleShortName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ModuleName, string.Empty);
 
@@ -670,6 +670,11 @@ namespace BibleCommon.Services
 
         public void Save()
         {
+            using (var updateManager = new UpdateManager())
+            {
+                Utils.DoWithExceptionHandling(BibleCommon.Resources.Constants.ErrorCheckForVersionUpdateCommands, false, () => updateManager.CheckForVersionUpdateCommands(false));
+            }
+
             using (FileStream fs = new FileStream(_filePath, FileMode.Create))
             {
                 using (StreamWriter sw = new StreamWriter(fs))

@@ -912,4 +912,7 @@ Please take notice:
   <data name="ClickToGoToParagraph" xml:space="preserve">
     <value>Click on an item to go to the relevant paragraph</value>
   </data>
+  <data name="ErrorCheckForVersionUpdateCommands" xml:space="preserve">
+    <value>Error while applying updates.</value>
+  </data>
 </root>
