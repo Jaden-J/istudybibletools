@@ -16,9 +16,9 @@ namespace BibleCommon.Services
             WasErrorLogged = false;
         }
 
-        public static void LogError(Exception ex)
+        public static void LogError(Exception ex, string description = "")
         {
-            BibleCommon.Services.Logger.LogError(ex);
+            BibleCommon.Services.Logger.LogError(description, ex);
 
             using (var form = new BibleCommon.UI.Forms.MessageForm(OneNoteUtils.ParseErrorAndMakeItMoreUserFriendly(ex.Message), BibleCommon.Resources.Constants.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning))
             {
