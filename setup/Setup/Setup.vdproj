@@ -436,13 +436,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_F99040C8BB0E4C7DF1BA86AD3996701A"
+        "OwnerKey" = "8:_40B893D39E007010FE4FC4A0B2FEE1D2"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_40B893D39E007010FE4FC4A0B2FEE1D2"
+        "OwnerKey" = "8:_F99040C8BB0E4C7DF1BA86AD3996701A"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -777,7 +777,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=3.2.10.1097, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=3.2.11.1100, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_8827269393590ABCB0B521BC1CD0AB46"
@@ -1113,15 +1113,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BibleNote"
-        "ProductCode" = "8:{DEFDA45E-023D-4E8F-A176-898BBD2DC121}"
-        "PackageCode" = "8:{34F8057E-B11D-40EC-8C14-137AA973FA90}"
+        "ProductCode" = "8:{3BD1C6F8-9320-4C92-8804-E0E47E17E495}"
+        "PackageCode" = "8:{1B08862E-5A09-4CA5-A9C0-D13B531822DE}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:3.2.10"
+        "ProductVersion" = "8:3.2.11"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://BibleNote.pro"
