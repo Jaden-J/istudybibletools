@@ -684,6 +684,7 @@ namespace BibleCommon.Services
             using (var updateManager = new UpdateManager())
             {
                 Utils.DoWithExceptionHandling(BibleCommon.Resources.Constants.ErrorCheckForVersionUpdateCommands, false, updateManager.TryToApplyUpdateCommands);
+                VersionFromSettings = CurrentVersion;
             }
 
             using (FileStream fs = new FileStream(_filePath, FileMode.Create))
