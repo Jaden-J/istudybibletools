@@ -634,7 +634,7 @@ namespace BibleCommon.Services
             this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
             this.UseProxyLinksForStrong = Consts.Constants.Default_UseProxyLinksForStrong;
             this.UseProxyLinksForBibleVerses = Consts.Constants.Default_UseProxyLinksForBibleVerses;
-            this.UseProxyLinksForLinks = !Consts.SystemConstants.IsOneNote2010;            
+            this.UseProxyLinksForLinks = Consts.Constants.Default_UseProxyLinksForLinks;            
 
             LoadDefaultLocalazibleSettings();
         }
@@ -668,11 +668,22 @@ namespace BibleCommon.Services
                 && this.SupplementalBibleLinkName == GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName);
         }
 
+        public void TryToUpdateVersion()
+        {
+            if (SettingsWereLoadedFromFile)                                                         // то есть если новая установка - то не надо обновлять
+            {
+                if (VersionFromSettings == null || VersionFromSettings != CurrentVersion)           // то есть версия обновилась
+                {
+                    Save();                                                                         // чтобы применить обновления и записать VersionFromSettings
+                }
+            }
+        }
+
         public void Save()
         {
             using (var updateManager = new UpdateManager())
             {
-                Utils.DoWithExceptionHandling(BibleCommon.Resources.Constants.ErrorCheckForVersionUpdateCommands, false, () => updateManager.CheckForVersionUpdateCommands(false));
+                Utils.DoWithExceptionHandling(BibleCommon.Resources.Constants.ErrorCheckForVersionUpdateCommands, false, updateManager.TryToApplyUpdateCommands);
             }
 
             using (FileStream fs = new FileStream(_filePath, FileMode.Create))
