@@ -256,10 +256,7 @@ namespace BibleConfigurator
                         Logger.LogError("Locking is not supported for this notebook");
                     }
 
-                    using (var updateManager = new UpdateManager())
-                    {
-                        Utils.DoWithExceptionHandling(BibleCommon.Resources.Constants.ErrorCheckForVersionUpdateCommands, false, () => updateManager.CheckForVersionUpdateCommands(true));
-                    }
+                    SettingsManager.Instance.TryToUpdateVersion();      // если надо - применяем обновления и обновляем версию 
 
                     if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible))
                     {
