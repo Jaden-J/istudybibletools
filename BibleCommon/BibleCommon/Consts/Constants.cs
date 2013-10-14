@@ -49,6 +49,7 @@ namespace BibleCommon.Consts
         public static readonly int DefaultPageWidth_Bible = 500;
         public static readonly bool Default_UseProxyLinksForStrong = true;
         public static readonly bool Default_UseProxyLinksForBibleVerses = true;
+        public static readonly bool Default_UseProxyLinksForLinks = true;
         public static readonly bool DefaultExpandMultiVersesLinking = true;
         public static readonly bool DefaultExcludedVersesLinking = false;
         public static readonly bool DefaultUseDifferentPagesForEachVerse = true;

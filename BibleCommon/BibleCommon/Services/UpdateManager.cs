@@ -23,39 +23,35 @@ namespace BibleCommon.Services
                 return _oneNoteApp;                
             }
         }
-        
-        public void CheckForVersionUpdateCommands(bool tryToSaveSettings)
+
+        public void TryToApplyUpdateCommands()
         {
-            bool notesWasRegenerated = false;
-            if (SettingsManager.Instance.VersionFromSettings == null || SettingsManager.Instance.VersionFromSettings < new Version(3, 1))
+            if (SettingsManager.Instance.SettingsWereLoadedFromFile)        // то есть если новая установка - то не надо применять обновления
             {
-                Utils.DoWithExceptionHandling(false, () => TryToRegenerateNotesPages(true));
-                Utils.DoWithExceptionHandling(false, BibleParallelTranslationManager.MergeAllModulesWithMainBible);  // так как раньше оно не правильно вызывалось и вызывалось ли вообще...
-
-                notesWasRegenerated = true;
-            }
-
-
-            if (SettingsManager.Instance.VersionFromSettings == null || SettingsManager.Instance.VersionFromSettings < new Version(3, 2))
-            {
-                Utils.DoWithExceptionHandling(false, () =>
+                bool notesWasRegenerated = false;
+                if (SettingsManager.Instance.VersionFromSettings == null || SettingsManager.Instance.VersionFromSettings < new Version(3, 1))
                 {
-                    if (ApplicationCache.Instance.IsBibleVersesLinksCacheActive)
-                        ApplicationCache.Instance.CleanBibleVersesLinksCache(false);
-                });
-            }
+                    Utils.DoWithExceptionHandling(false, () => TryToRegenerateNotesPages(true));
+                    Utils.DoWithExceptionHandling(false, BibleParallelTranslationManager.MergeAllModulesWithMainBible);  // так как раньше оно не правильно вызывалось и вызывалось ли вообще...
 
-            if (SettingsManager.Instance.VersionFromSettings == null || SettingsManager.Instance.VersionFromSettings < new Version(3, 2, 6))
-            {
-                if (!notesWasRegenerated)
-                    Utils.DoWithExceptionHandling(false, () => TryToRegenerateNotesPages(false));
-            }
+                    notesWasRegenerated = true;
+                }
 
-            if (tryToSaveSettings)
-            {
-                if (SettingsManager.Instance.SettingsWereLoadedFromFile)
-                    if (SettingsManager.Instance.VersionFromSettings != SettingsManager.Instance.CurrentVersion)
-                        SettingsManager.Instance.Save();  // чтобы записать VersionFromSettings
+
+                if (SettingsManager.Instance.VersionFromSettings == null || SettingsManager.Instance.VersionFromSettings < new Version(3, 2))
+                {
+                    Utils.DoWithExceptionHandling(false, () =>
+                    {
+                        if (ApplicationCache.Instance.IsBibleVersesLinksCacheActive)
+                            ApplicationCache.Instance.CleanBibleVersesLinksCache(false);
+                    });
+                }
+
+                if (SettingsManager.Instance.VersionFromSettings == null || SettingsManager.Instance.VersionFromSettings < new Version(3, 2, 6))
+                {
+                    if (!notesWasRegenerated)
+                        Utils.DoWithExceptionHandling(false, () => TryToRegenerateNotesPages(false));
+                }
             }
         }
 
