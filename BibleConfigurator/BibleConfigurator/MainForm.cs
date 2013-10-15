@@ -1106,14 +1106,30 @@ namespace BibleConfigurator
         }
 
         private string SearchForNotebook(ModuleInfo module, IEnumerable<string> notebooksIds, ContainerType notebookType)
-        {   
-            foreach (string notebookId in notebooksIds)
+        {
+            string errorText;
+            if (notebookType == ContainerType.BibleStudy)
             {
-                string errorText;
-                if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, false, out errorText))
+                try
                 {
-                    return notebookId;
+                    var nickname = SettingsManager.Instance.CurrentModuleCached.NotebooksStructure.Notebooks.FirstOrDefault(n => n.Type == ContainerType.BibleStudy).Nickname;
+                    foreach (var notebookId in notebooksIds)
+                    {
+                        var name = OneNoteUtils.GetNotebookElementNickname(ref _oneNoteApp, notebookId);
+                        if (name == nickname && NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, false, out errorText))
+                            return notebookId;
+                    }
                 }
+                catch (Exception ex)                // наверное зря, но просто добавляю этот код перед самым релизом, потому опасаюсь.
+                {
+                    FormLogger.LogError(ex);
+                }
+            }
+
+            foreach (var notebookId in notebooksIds)
+            {                
+                if (NotebookChecker.CheckNotebook(ref _oneNoteApp, module, notebookId, notebookType, false, out errorText))                
+                    return notebookId;                
             }
 
             return null;
