@@ -93,13 +93,16 @@ namespace BibleCommon.Helpers
 
         public static string GetNotebookElementNickname(ref Application oneNoteApp, string elementId)
         {
-            ApplicationCache.HierarchyElement doc = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, elementId, HierarchyScope.hsSelf);
-            return (string)doc.Content.Root.Attribute("nickname");
+            var doc = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, elementId, HierarchyScope.hsSelf);
+            var result = (string)doc.Content.Root.Attribute("nickname");
+            if (string.IsNullOrEmpty(result))
+                result = (string)doc.Content.Root.Attribute("name");
+            return result;
         }
 
         public static string GetHierarchyElementName(ref Application oneNoteApp, string elementId)
         {   
-            ApplicationCache.HierarchyElement doc = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, elementId, HierarchyScope.hsSelf);
+            var doc = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, elementId, HierarchyScope.hsSelf);
             return (string)doc.Content.Root.Attribute("name");
         }
 
@@ -113,7 +116,7 @@ namespace BibleCommon.Helpers
 
         public static XDocument GetXDocument(string xml, out XmlNamespaceManager xnm, bool setLineInfo = false)
         {
-            XDocument xd = !setLineInfo ? XDocument.Parse(xml) : XDocument.Parse(xml, LoadOptions.SetLineInfo);
+            var xd = !setLineInfo ? XDocument.Parse(xml) : XDocument.Parse(xml, LoadOptions.SetLineInfo);
             xnm = GetOneNoteXNM();
             return xd;
         }
