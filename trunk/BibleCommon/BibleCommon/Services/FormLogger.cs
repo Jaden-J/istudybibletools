@@ -16,7 +16,7 @@ namespace BibleCommon.Services
             WasErrorLogged = false;
         }
 
-        public static void LogError(Exception ex, string description = "")
+        public static void LogError(Exception ex, string description = null)
         {
             BibleCommon.Services.Logger.LogError(description, ex);
 
