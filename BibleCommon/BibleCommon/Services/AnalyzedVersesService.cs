@@ -52,9 +52,12 @@ namespace BibleCommon.Services
 
             verseInfo.IsDetailedOnly = verseInfo.IsDetailedOnly && isDetailed;
 
-            var notebookId = VersesInfo.NotebooksDictionary[notebookName].Id;
-            if (!verseInfo.Notebooks.Contains(notebookId))
-                verseInfo.Notebooks.Add(notebookId);
+            if (VersesInfo.NotebooksDictionary.ContainsKey(notebookName))
+            {
+                var notebookId = VersesInfo.NotebooksDictionary[notebookName].Id;
+                if (!verseInfo.Notebooks.Contains(notebookId))
+                    verseInfo.Notebooks.Add(notebookId);
+            }
         }
 
         public void Update()
