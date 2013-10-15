@@ -409,6 +409,7 @@ function setFilterTrackbar() {
         'filterVerseWeight');
     }
 
+    setFilterTrackbarTitle();
     onTrackbarFilterChanged(global_MinVersesWeight);
 }
 
