@@ -72,8 +72,15 @@ namespace BibleVersePointer
                 if (!_systemIsConfigured)
                 {
                     // так как программа кэшируется в пуле OneNote, то проверим - может уже сконфигурили всё.
-                    SettingsManager.Initialize();
-                    ApplicationCache.Initialize();
+                    try
+                    {
+                        SettingsManager.Initialize();
+                        ApplicationCache.Initialize();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex);
+                    }
                     
                     Initialize();
 
