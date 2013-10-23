@@ -96,8 +96,8 @@ trackbar.hotSearch.prototype = {
 			y = window.event.clientY + document.documentElement.scrollTop + document.body.scrollTop; 
 		} 
 		if (!document.attachEvent && document.addEventListener) { // Gecko 
-			x = event.clientX + window.scrollX; 
-			y = event.clientY + window.scrollY; 
+		    x = event.clientX + (window.scrollX != undefined ? window.scrollX : 0);
+		    y = event.clientY + (window.scrollY != undefined ? window.scrollY : 0);
 		} 
 		return {x:x, y:y}; 
 	},

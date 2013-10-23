@@ -31,7 +31,6 @@ namespace ISBTCommandHandler
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NotesPageForm));
             this.scMain = new System.Windows.Forms.SplitContainer();
-            this.wbNotesPage = new ISBTCommandHandler.Controls.WebBrowserEx();
             this.btnNext = new System.Windows.Forms.Button();
             this.btnPrev = new System.Windows.Forms.Button();
             this.btnScaleDown = new System.Windows.Forms.Button();
@@ -39,6 +38,7 @@ namespace ISBTCommandHandler
             this.btnClose = new System.Windows.Forms.Button();
             this.chkAlwaysOnTop = new System.Windows.Forms.CheckBox();
             this.chkCloseOnClick = new System.Windows.Forms.CheckBox();
+            this.wbNotesPage = new ISBTCommandHandler.Controls.WebBrowserEx();
             ((System.ComponentModel.ISupportInitialize)(this.scMain)).BeginInit();
             this.scMain.Panel1.SuspendLayout();
             this.scMain.Panel2.SuspendLayout();
@@ -64,13 +64,6 @@ namespace ISBTCommandHandler
             this.scMain.Panel2.Controls.Add(this.btnClose);
             this.scMain.Panel2.Controls.Add(this.chkAlwaysOnTop);
             this.scMain.Panel2.Controls.Add(this.chkCloseOnClick);
-            // 
-            // wbNotesPage
-            // 
-            resources.ApplyResources(this.wbNotesPage, "wbNotesPage");
-            this.wbNotesPage.Name = "wbNotesPage";
-            this.wbNotesPage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.wbNotesPage_DocumentCompleted);
-            this.wbNotesPage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.wbNotesPage_Navigating);
             // 
             // btnNext
             // 
@@ -119,6 +112,13 @@ namespace ISBTCommandHandler
             resources.ApplyResources(this.chkCloseOnClick, "chkCloseOnClick");
             this.chkCloseOnClick.Name = "chkCloseOnClick";
             this.chkCloseOnClick.UseVisualStyleBackColor = true;
+            // 
+            // wbNotesPage
+            // 
+            resources.ApplyResources(this.wbNotesPage, "wbNotesPage");
+            this.wbNotesPage.Name = "wbNotesPage";
+            this.wbNotesPage.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.wbNotesPage_DocumentCompleted);
+            this.wbNotesPage.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.wbNotesPage_Navigating);
             // 
             // NotesPageForm
             // 
