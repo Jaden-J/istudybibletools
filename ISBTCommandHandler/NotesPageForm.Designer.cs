@@ -39,7 +39,6 @@ namespace ISBTCommandHandler
             this.chkAlwaysOnTop = new System.Windows.Forms.CheckBox();
             this.chkCloseOnClick = new System.Windows.Forms.CheckBox();
             this.wbNotesPage = new ISBTCommandHandler.Controls.WebBrowserEx();
-            ((System.ComponentModel.ISupportInitialize)(this.scMain)).BeginInit();
             this.scMain.Panel1.SuspendLayout();
             this.scMain.Panel2.SuspendLayout();
             this.scMain.SuspendLayout();
