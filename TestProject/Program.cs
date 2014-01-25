@@ -52,6 +52,9 @@ namespace TestProject
                 var s = dt.ToString(new CultureInfo("ru-RU"));
                 dt = Utils.ParseDateTime(s);
 
+
+                PublishEachBook();
+
                 //Console.WriteLine(Regex.Replace("<br>no<", string.Format("(^|[^0-9a-zA-Z]){0}($|[^0-9a-zA-Z<])", "no"), @"$1aeasdasds$2", RegexOptions.IgnoreCase));
                 //return;
 
@@ -124,6 +127,23 @@ namespace TestProject
 
             Console.WriteLine("Finish. Elapsed time: {0}", sw.Elapsed);
             Console.ReadKey();
+        }
+
+        private static void PublishEachBook()
+        {
+            var rstNotebook = OneNoteUtils.GetHierarchyElementByName(ref _oneNoteApp, "Notebook", "rst", null);
+
+            var xml = ApplicationCache.Instance.GetHierarchy(ref _oneNoteApp, (string)rstNotebook.Attribute("ID"), HierarchyScope.hsSections);
+
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
+            {
+                foreach (var sEl in xml.Content.XPathSelectElements(string.Format("//one:Section[{0}]", OneNoteUtils.NotInRecycleXPathCondition), xml.Xnm))
+                {
+                    var sId = (string)sEl.Attribute("ID");
+                    var sName = (string)sEl.Attribute("name");
+                    _oneNoteApp.Publish(sId, Path.Combine(@"c:\temp\rst", sName) + ".pdf", PublishFormat.pfPDF);
+                }
+            });
         }
 
         private static void LoadAllPagesToCache()
