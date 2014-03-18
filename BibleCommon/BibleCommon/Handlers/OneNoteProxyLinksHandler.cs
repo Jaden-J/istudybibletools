@@ -35,16 +35,19 @@ namespace BibleCommon.Handlers
             }
 
             var bnOeId = string.Empty;
-            var el = pageInfo.Content.XPathSelectElement(string.Format("//one:OE[@objectID=\"{0}\"]", objectId), pageInfo.Xnm);
-            if (el != null)
-            {   
-                bnOeId = OneNoteUtils.GetElementMetaData(el, Consts.Constants.Key_OEId, pageInfo.Xnm);
-                if (string.IsNullOrEmpty(bnOeId))
+            if (!string.IsNullOrEmpty(objectId))
+            {
+                var el = pageInfo.Content.XPathSelectElement(string.Format("//one:OE[@objectID=\"{0}\"]", objectId), pageInfo.Xnm);
+                if (el != null)
                 {
-                    bnOeId = Guid.NewGuid().ToString();
-                    OneNoteUtils.UpdateElementMetaData(el, Consts.Constants.Key_OEId, bnOeId, pageInfo.Xnm);
-                    changed = true;
-                }                
+                    bnOeId = OneNoteUtils.GetElementMetaData(el, Consts.Constants.Key_OEId, pageInfo.Xnm);
+                    if (string.IsNullOrEmpty(bnOeId))
+                    {
+                        bnOeId = Guid.NewGuid().ToString();
+                        OneNoteUtils.UpdateElementMetaData(el, Consts.Constants.Key_OEId, bnOeId, pageInfo.Xnm);
+                        changed = true;
+                    }
+                }
             }
 
             if (changed && autoCommit)
@@ -87,22 +90,39 @@ namespace BibleCommon.Handlers
 
                 var pEl = hierarchyInfo.Content
                     .XPathSelectElement(string.Format("//one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", Consts.Constants.Key_PageId, bnPId), hierarchyInfo.Xnm);
-                var pId = (string)pEl.Attribute("ID");
 
-                var pageInfo = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, pId, ApplicationCache.PageType.NotePage);
-                var oeId = string.Empty;
-                if (!string.IsNullOrEmpty(bnOeId))
+                if (pEl == null)
                 {
-                    var oeEl = pageInfo.Content
-                        .XPathSelectElement(string.Format("//one:OE[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", Consts.Constants.Key_OEId, bnOeId), pageInfo.Xnm);
-                    oeId = (string)oeEl.Attribute("objectID");
+                    hierarchyInfo = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsPages, true);
+
+                    pEl = hierarchyInfo.Content
+                        .XPathSelectElement(string.Format("//one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", Consts.Constants.Key_PageId, bnPId), hierarchyInfo.Xnm);
                 }
 
-                oneNoteApp.NavigateTo(pId, oeId);
+                if (pEl != null)
+                {
+                    var pId = (string)pEl.Attribute("ID");
 
-                OneNoteUtils.SetActiveCurrentWindow(ref oneNoteApp);
+                    var pageInfo = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, pId, ApplicationCache.PageType.NotePage);
+                    var oeId = string.Empty;
+                    if (!string.IsNullOrEmpty(bnOeId))
+                    {
+                        var oeEl = pageInfo.Content
+                            .XPathSelectElement(string.Format("//one:OE[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", Consts.Constants.Key_OEId, bnOeId), pageInfo.Xnm);
+                        oeId = (string)oeEl.Attribute("objectID");
+                    }
 
-                return true;
+                    oneNoteApp.NavigateTo(pId, oeId);
+
+                    OneNoteUtils.SetActiveCurrentWindow(ref oneNoteApp);
+
+                    return true;
+                }
+                else
+                {
+                    throw new 
+                    return false;
+                }
             }
             finally
             {
