@@ -43,7 +43,7 @@ namespace TestProject
 
             sw.Start();
 
-            //_oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();             
+            _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();             
 
             try
             {
@@ -53,7 +53,53 @@ namespace TestProject
                 dt = Utils.ParseDateTime(s);
 
 
-                PublishEachBook();
+                //var pageInfo = ApplicationCache.Instance.GetPageContent(ref _oneNoteApp, OneNoteUtils.GetCurrentPageInfo(ref _oneNoteApp).Id, ApplicationCache.PageType.NotePage);
+
+                //OneNoteUtils.UpdateElementMetaData(pageInfo.Content.Root, "bnPID", Guid.NewGuid().ToString(), pageInfo.Xnm);
+
+                //var els = pageInfo.Content.XPathSelectElements("//one:OEChildren/one:OE", pageInfo.Xnm);
+
+                //foreach (XElement el in els)
+                //{
+                //    var id = (string)el.Attribute("objectID");
+
+                //    OneNoteUtils.UpdateElementMetaData(el, "bnOEID", Guid.NewGuid().ToString(), pageInfo.Xnm);
+                //}
+
+                //ApplicationCache.Instance.CommitModifiedPage(ref _oneNoteApp, pageInfo, true);
+
+
+                var bnPid = "ffa7882f-3cf6-4390-8d53-99b0e7b7b943";
+                var bnOeid1 = "bac54ea5-82a4-42ad-8e88-a5c343c6e5a8";
+                var bnOeid2 = "82031de3-fa99-4ab0-af30-a5c810769f7f";
+
+
+                var hierarchyInfo = ApplicationCache.Instance.GetHierarchy(ref _oneNoteApp, null, HierarchyScope.hsPages);
+
+                var pEl = hierarchyInfo.Content.XPathSelectElement(string.Format("//one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", "bnPID", bnPid), hierarchyInfo.Xnm);
+                var pId = (string)pEl.Attribute("ID");
+
+                var pageInfo = ApplicationCache.Instance.GetPageContent(ref _oneNoteApp, pId, ApplicationCache.PageType.NotePage);
+
+                var oeEl = pageInfo.Content.XPathSelectElement(string.Format("//one:OE[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", "bnOEID", bnOeid1), pageInfo.Xnm);
+
+                var oeId = (string)oeEl.Attribute("objectID");
+
+                _oneNoteApp.NavigateTo(pId, oeId);
+
+                Console.ReadKey();
+
+
+                oeEl = pageInfo.Content.XPathSelectElement(string.Format("//one:OE[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", "bnOEID", bnOeid2), pageInfo.Xnm);
+
+                oeId = (string)oeEl.Attribute("objectID");
+                _oneNoteApp.NavigateTo(pId, oeId);
+
+             
+
+                //OneNoteUtils.UpdateElementMetaData()
+
+                //PublishEachBook();
 
                 //Console.WriteLine(Regex.Replace("<br>no<", string.Format("(^|[^0-9a-zA-Z]){0}($|[^0-9a-zA-Z<])", "no"), @"$1aeasdasds$2", RegexOptions.IgnoreCase));
                 //return;

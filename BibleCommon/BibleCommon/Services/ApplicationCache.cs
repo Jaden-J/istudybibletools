@@ -280,7 +280,7 @@ namespace BibleCommon.Services
                     });
 
                     if (useProxyLinkIfAvailable && SettingsManager.Instance.UseProxyLinksForLinks) 
-                        link = GetProxyLink(link, pageId, objectId);                    
+                        link = GetProxyLink(ref oneNoteApp, pageId, objectId,);
 
                     //if (!_linksCache.ContainsKey(key))   // пока в этом нет смысла
                     _linksCache.Add(key, link);
@@ -295,9 +295,10 @@ namespace BibleCommon.Services
             return link.IndexOf("&" + Constants.QueryParameterKey_CustomPageId + "=") > -1;
         }
 
-        public static string GetProxyLink(string link, string pageId, string objectId)
+        public static string GetProxyLink(ref Application oneNoteApp, string pageId, string objectId, bool autoCommit = false)
         {
-            return NavigateToHandler.GetCommandUrlStatic(link, pageId, objectId);            
+            return OneNoteProxyLinksHandler.GetCommandUrlStatic(ref oneNoteApp, pageId, objectId, autoCommit);            
+            //return NavigateToHandler.GetCommandUrlStatic(link, pageId, objectId);            
         }
 
         public Dictionary<VersePointer, BibleHierarchyObjectInfo> BiblePagesWithUpdatedLinksToNotesPages
