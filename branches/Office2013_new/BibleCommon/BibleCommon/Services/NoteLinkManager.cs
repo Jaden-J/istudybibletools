@@ -531,23 +531,23 @@ namespace BibleCommon.Services
         {
             FireProcessVerseEvent(false, null);
 
-            bool result = false;            
+            bool result = false;
 
             if (textElement != null && !string.IsNullOrEmpty(textElement.Value))
             {
-                OneNoteUtils.NormalizeTextElement(textElement);                
+                OneNoteUtils.NormalizeTextElement(textElement);
                 var foundVerses = new List<FoundVerseInfo>();
                 var correctVerses = new Dictionary<int, FoundVerseInfo>();
 
                 var globalChapterSearchResultTemp = globalChapterSearchResult;
                 var prevResultTemp = prevResult;
-                
+
                 IterateTextElementLinks(textElement, globalChapterSearchResult, prevResult, isTitle, isSummaryNotesPage, verseInfo =>
                 {
                     foundVerses.Add(verseInfo);
                     return verseInfo.SearchResult.VersePointerHtmlEndIndex;
                 });
-                
+
                 for (int i = 0; i < foundVerses.Count; i++)
                 {
                     if (i < foundVerses.Count - 1)
@@ -573,7 +573,7 @@ namespace BibleCommon.Services
                             result = processVerseResult.WasModified;
 
                         globalChapterSearchResultTemp = verseInfo.GlobalChapterSearchResult;
-                        prevResultTemp = verseInfo.SearchResult;                        
+                        prevResultTemp = verseInfo.SearchResult;
                     }
                     else
                         cursorPosition = verseInfo.SearchResult.VersePointerHtmlEndIndex;
@@ -593,7 +593,7 @@ namespace BibleCommon.Services
                 {
                     //формируем ссылку на этот абзац, чтобы она сохранилась в кэше, чтобы быстрее позже формировались и сохранялись сводные заметок, чтобы можно было точнее оценивать время до конца анализа на основании хода первого этапа
                     ApplicationCache.Instance.GenerateHref(ref oneNoteApp, notePageInfo.Id, (string)textElement.Parent.Attribute("objectID"));
-            }
+                }
             }
 
             return result;
