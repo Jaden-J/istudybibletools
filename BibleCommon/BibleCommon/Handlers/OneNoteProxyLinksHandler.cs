@@ -21,7 +21,7 @@ namespace BibleCommon.Handlers
             get { return _protocolName; }
         }
 
-        public static string GetCommandUrlStatic(ref Application oneNoteApp, string pageId, string objectId, bool autoCommit = false)
+        public static string GetCommandUrlStatic(ref Application oneNoteApp, string pageId, string objectId, bool autoCommit)
         {
             var changed = false;
             var pageInfo = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, pageId, ApplicationCache.PageType.NotePage);
@@ -118,11 +118,8 @@ namespace BibleCommon.Handlers
 
                     return true;
                 }
-                else
-                {
-                    throw new 
-                    return false;
-                }
+                else                
+                    throw new Exception(BibleCommon.Resources.Constants.PageNotFound);                                    
             }
             finally
             {
