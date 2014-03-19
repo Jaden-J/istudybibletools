@@ -144,7 +144,7 @@ namespace BibleCommon.Services
                                          !isChapter ?
                                             OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseNumber),
                                                 linkHrefToVerse,
-                                                verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.VerseContentObjectId,
+                                                verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.VerseContentObjectId, new LinkProxyInfo(true, false),
                                                 Consts.Constants.QueryParameter_BibleVerse)
                                             :
                                             string.Empty
@@ -217,7 +217,7 @@ namespace BibleCommon.Services
 
             string link = OneNoteUtils.GenerateLink(ref oneNoteApp, 
                             GetVerseLinkTitle(notePageInfo.UniqueTitle, verseWeight >= Constants.ImportantVerseWeight), 
-                            notePageInfo.Id, notePageContentObjectId, linkArgs.ToArray());
+                            notePageInfo.Id, notePageContentObjectId, new LinkProxyInfo(true, true), linkArgs.ToArray());
 
             var suchNoteLink = SearchExistingNoteLink(ref oneNoteApp, rootElement, notePageInfo, link, notesPageName, vp, notesPageDocument.Xnm);
 
@@ -283,7 +283,7 @@ namespace BibleCommon.Services
                 var pageLink = OneNoteUtils.GenerateLink(
                                                   ref oneNoteApp, 
                                                   GetVerseLinkTitle(notePageInfo.UniqueTitle, summaryVersesWeight >= Constants.ImportantVerseWeight),
-                                                  notePageInfo.Id, notePageInfo.UniqueNoteTitleId,
+                                                  notePageInfo.Id, notePageInfo.UniqueNoteTitleId, new LinkProxyInfo(true, true),
                                                   pageLinkArgs.ToArray());
                 suchNoteLink.Value = pageLink;
 
@@ -332,7 +332,7 @@ namespace BibleCommon.Services
                                             GetVerseLinkTitle(
                                                 string.Format(Resources.Constants.VerseLinkTemplate, firstVersePosition > versePosition ? 1 : 2), 
                                                 verseWeight >= Constants.ImportantVerseWeight),
-                                            notePageInfo.Id, notePageContentObjectId,
+                                            notePageInfo.Id, notePageContentObjectId, new LinkProxyInfo(true, true),
                                             string.Format("{0}={1}", Constants.QueryParameterKey_VersePosition, versePosition),
                                             string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, verseWeight))
                                         + GetMultiVerseString(vp.ParentVersePointer ?? vp);
@@ -402,7 +402,7 @@ namespace BibleCommon.Services
             }
 
             links.Insert(insertLinkIndex, OneNoteUtils.GetOrGenerateLinkHref(
-                                                        ref oneNoteApp, null, notePageInfo.Id, notePageContentObjectId, true,
+                                                        ref oneNoteApp, null, notePageInfo.Id, notePageContentObjectId, new LinkProxyInfo(true, true),
                                                         string.Format("{0}={1}", Constants.QueryParameterKey_VersePosition, versePosition),
                                                         string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, verseWeight)));
             multiVerseStrings.Insert(insertLinkIndex, GetMultiVerseString(vp.ParentVersePointer ?? vp));
