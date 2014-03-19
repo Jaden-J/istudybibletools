@@ -202,9 +202,9 @@ namespace BibleCommon.Services
                     ProcessChapters(ref oneNoteApp, foundChapters, notePageHierarchyInfo, linkDepth, force);
                 }
 
-                notePageDocument.WasModified = _pageContentWasChanged;
+                notePageDocument.WasModified = notePageDocument.WasModified || _pageContentWasChanged;
 
-                if (_pageContentWasChanged || (force && WasPageModifiedAfterLastAnalyze(notePageDocument.Content.Root, notePageDocument.Xnm)))            //  -если стоит галочка "повторный анализ ссылок", то обновлять страницы заметок, если дата анализа меньше даты изменения, чтобы записывалось время последнего анализа. 
+                if (notePageDocument.WasModified || (force && WasPageModifiedAfterLastAnalyze(notePageDocument.Content.Root, notePageDocument.Xnm)))            //  -если стоит галочка "повторный анализ ссылок", то обновлять страницы заметок, если дата анализа меньше даты изменения, чтобы записывалось время последнего анализа. 
                 {
                     if (linkDepth >= AnalyzeDepth.Full)   // если SetVersesLinks, то мы позже обновим, так как нам надо ещё поставить курсор в нужное место
                     {
