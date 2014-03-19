@@ -27,5 +27,14 @@ namespace BibleCommon.Common
             Verses = new List<VersePointer>();
         }
     }
-   
+
+    public struct LinkProxyInfo
+    {
+        public bool UseProxyLinkIfAvailable { get; set; }
+
+        /// <summary>
+        /// Использовать старый механизм NavigateToHandler (true), либо новый OneNoteProxyLinksHandler (false)
+        /// </summary>
+        public bool UseSimpleProxy { get; set; }
+    }
 }

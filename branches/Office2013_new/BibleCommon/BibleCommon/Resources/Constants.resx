@@ -915,4 +915,7 @@ Please take notice:
   <data name="ErrorCheckForVersionUpdateCommands" xml:space="preserve">
     <value>Error while applying updates.</value>
   </data>
+  <data name="PageNotFound" xml:space="preserve">
+    <value>Page not found</value>
+  </data>
 </root>
