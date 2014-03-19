@@ -173,7 +173,7 @@ namespace BibleVerseLinkerEx
 
                     if (selectedTextFound)
                     {
-                        string href = OneNoteUtils.GenerateLink(ref _oneNoteApp, selectedHtml, verseLinkPageId, objectId);
+                        string href = OneNoteUtils.GenerateLink(ref _oneNoteApp, selectedHtml, verseLinkPageId, objectId, new LinkProxyInfo(true, true) { AutoCommitLinkPage = true }); // todo: исправить, чтобы не было дважды обновления страницы!
 
                         string selectedValue = selectedElement.Value;
                         selectedElement.Value = string.Empty;
@@ -223,7 +223,7 @@ namespace BibleVerseLinkerEx
                                                 useBibleVerseHandler
                                                     ? OpenBibleVerseHandler.GetCommandUrlStatic(versePointer, SettingsManager.Instance.ModuleShortName) 
                                                     : null,
-                                                currentPageId, currentObjectId, true,
+                                                currentPageId, currentObjectId, new LinkProxyInfo(true, false),
                                                 useBibleVerseHandler
                                                     ? null
                                                     : Constants.QueryParameter_BibleVerse);

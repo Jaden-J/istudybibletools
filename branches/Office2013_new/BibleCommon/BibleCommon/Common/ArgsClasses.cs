@@ -28,13 +28,21 @@ namespace BibleCommon.Common
         }
     }
 
-    public struct LinkProxyInfo
+    public class LinkProxyInfo
     {
         public bool UseProxyLinkIfAvailable { get; set; }
 
         /// <summary>
-        /// Использовать старый механизм NavigateToHandler (true), либо новый OneNoteProxyLinksHandler (false)
+        /// Использовать старый механизм NavigateToHandler (false), либо новый OneNoteProxyLinksHandler (true)
         /// </summary>
-        public bool UseSimpleProxy { get; set; }
+        public bool UseAdvancedProxy { get; set; }
+
+        public bool AutoCommitLinkPage { get; set; }
+
+        public LinkProxyInfo(bool useProxyLinkIfAvailable, bool useAdvancedProxy)
+        {
+            UseProxyLinkIfAvailable = useProxyLinkIfAvailable;
+            UseAdvancedProxy = useAdvancedProxy;
+        }
     }
 }

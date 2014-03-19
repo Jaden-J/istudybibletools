@@ -125,12 +125,12 @@ namespace BibleConfigurator.Tools
             {
                 string commentObjectId = GetComentObjectId(commentPageId, commentText, null, 0);
 
-                    string newCommentLink = OneNoteUtils.GenerateLink(ref _oneNoteApp, commentText, commentPageId, commentObjectId);
+                string newCommentLink = OneNoteUtils.GenerateLink(ref _oneNoteApp, commentText, commentPageId, commentObjectId, new LinkProxyInfo(true, true) { AutoCommitLinkPage = true });
 
-                    textElement.Value = textElement.Value.Replace(commentLink, newCommentLink);
+                textElement.Value = textElement.Value.Replace(commentLink, newCommentLink);
 
-                    return true;
-                }
+                return true;
+            }
 
             return false;
         }

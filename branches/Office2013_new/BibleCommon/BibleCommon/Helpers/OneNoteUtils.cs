@@ -218,14 +218,14 @@ namespace BibleCommon.Helpers
 
 
         public static string GetOrGenerateLinkHref(ref Application oneNoteApp, string objectHref, string pageId, 
-                                                    string objectId, bool useProxyLinkIfAvailable, params string[] additionalLinkQueryParameters)
+                                                    string objectId, LinkProxyInfo linkProxyInfo, params string[] additionalLinkQueryParameters)
         {
             string link;
 
             if (!string.IsNullOrEmpty(objectHref))
                 link = objectHref;
             else
-                link = ApplicationCache.Instance.GenerateHref(ref oneNoteApp, pageId, objectId, useProxyLinkIfAvailable);
+                link = ApplicationCache.Instance.GenerateHref(ref oneNoteApp, pageId, objectId, linkProxyInfo);
 
             foreach (var param in additionalLinkQueryParameters)
             {
@@ -242,29 +242,17 @@ namespace BibleCommon.Helpers
         }
 
         public static string GetOrGenerateLink(ref Application oneNoteApp, string title, string objectHref, string pageId, 
-                                                    string objectId, bool useProxyLinkIfAvailable, params string[] additionalLinkQueryParameters)
+                                                    string objectId, LinkProxyInfo linkProxyInfo, params string[] additionalLinkQueryParameters)
         {
-            var link = GetOrGenerateLinkHref(ref oneNoteApp, objectHref, pageId, objectId, useProxyLinkIfAvailable, additionalLinkQueryParameters);
+            var link = GetOrGenerateLinkHref(ref oneNoteApp, objectHref, pageId, objectId, linkProxyInfo, additionalLinkQueryParameters);
 
             return GetLink(title, link);
-        }
+        }   
 
-        public static string GetOrGenerateLink(ref Application oneNoteApp, string title, string objectHref, string pageId,
-                                                    string objectId,  params string[] additionalLinkQueryParameters)
+        public static string GenerateLink(ref Application oneNoteApp, string title, string pageId, string objectId, LinkProxyInfo linkProxyInfo, params string[] additionalLinkQueryParameters)
         {
-            return GetOrGenerateLink(ref oneNoteApp, title, objectHref, pageId, objectId, true, additionalLinkQueryParameters);
-        }
-
-        public static string GenerateLink(ref Application oneNoteApp, string title, string pageId, string objectId, params string[] additionalLinkQueryParameters)
-        {
-            return GetOrGenerateLink(ref oneNoteApp, title, null, pageId, objectId, true, additionalLinkQueryParameters);
-        }
-
-        public static string GenerateLink(ref Application oneNoteApp, string title, string pageId, 
-                                                string objectId, bool useProxyLinkIfAvailable, params string[] additionalLinkQueryParameters)
-        {
-            return GetOrGenerateLink(ref oneNoteApp, title, null, pageId, objectId, useProxyLinkIfAvailable, additionalLinkQueryParameters);
-        }
+            return GetOrGenerateLink(ref oneNoteApp, title, null, pageId, objectId, linkProxyInfo, additionalLinkQueryParameters);
+        }        
 
         public static XElement NormalizeTextElement(XElement textElement)  // must be one:T element
         {

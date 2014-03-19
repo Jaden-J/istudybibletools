@@ -31,6 +31,7 @@ namespace BibleCommon.Handlers
             {
                 bnPId = Guid.NewGuid().ToString();
                 OneNoteUtils.UpdateElementMetaData(pageInfo.Content.Root, Consts.Constants.Key_PageId, bnPId, pageInfo.Xnm);
+                pageInfo.WasModified = true;
                 changed = true;
             }
 
@@ -45,6 +46,7 @@ namespace BibleCommon.Handlers
                     {
                         bnOeId = Guid.NewGuid().ToString();
                         OneNoteUtils.UpdateElementMetaData(el, Consts.Constants.Key_OEId, bnOeId, pageInfo.Xnm);
+                        pageInfo.WasModified = true;
                         changed = true;
                     }
                 }
@@ -78,7 +80,9 @@ namespace BibleCommon.Handlers
             if (args.Length == 0)
                 throw new ArgumentNullException("args");
 
-            var parts = args[0].Split(';');
+            var parts = args[0]
+                            .Split(new char[] { ':' })[1]
+                            .Split(new char[] { ';', '&' });  // todo: странно, что первый параметр сразу начинается с &
             var bnPId = parts[0];
             var bnOeId = parts[1];
 
@@ -108,8 +112,17 @@ namespace BibleCommon.Handlers
                     if (!string.IsNullOrEmpty(bnOeId))
                     {
                         var oeEl = pageInfo.Content
-                            .XPathSelectElement(string.Format("//one:OE[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", Consts.Constants.Key_OEId, bnOeId), pageInfo.Xnm);
-                        oeId = (string)oeEl.Attribute("objectID");
+                                    .XPathSelectElement(string.Format("//one:OE[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", Consts.Constants.Key_OEId, bnOeId), pageInfo.Xnm);
+
+                        if (oeEl == null)
+                        {
+                            pageInfo = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, pId, ApplicationCache.PageType.NotePage, true, PageInfo.piBasic, false);
+                            oeEl = pageInfo.Content
+                                    .XPathSelectElement(string.Format("//one:OE[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", Consts.Constants.Key_OEId, bnOeId), pageInfo.Xnm);
+                        }
+
+                        if (oeEl != null)
+                            oeId = (string)oeEl.Attribute("objectID");
                     }
 
                     oneNoteApp.NavigateTo(pId, oeId);
