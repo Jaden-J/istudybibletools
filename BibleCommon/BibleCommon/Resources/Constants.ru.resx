@@ -912,4 +912,7 @@
   <data name="ErrorCheckForVersionUpdateCommands" xml:space="preserve">
     <value>Ошибка при применении обновлений.</value>
   </data>
+  <data name="PageNotFound" xml:space="preserve">
+    <value>Страница не найдена</value>
+  </data>
 </root>

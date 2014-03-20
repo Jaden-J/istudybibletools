@@ -64,7 +64,7 @@ namespace BibleCommon.Common
         public string GetProxyHref()
         {
             if (SettingsManager.Instance.UseProxyLinksForLinks && !ApplicationCache.IsProxyLink(Href) && !string.IsNullOrEmpty(Href))
-                return ApplicationCache.GetProxyLink(Href, PageId, ObjectId);
+                return ApplicationCache.GetSimpleProxyLink(Href, PageId, ObjectId);
 
             return Href;
         }        

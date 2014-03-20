@@ -255,7 +255,7 @@ namespace BibleCommon.Services
                         var linkHrefToBiblePage = SettingsManager.Instance.UseProxyLinksForBibleVerses
                                                     ? OpenBibleVerseHandler.GetCommandUrlStatic(vp, SettingsManager.Instance.ModuleShortName)
                                                     : null;
-                        var linkToBiblePage = OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, vp.ChapterName, linkHrefToBiblePage, biblePageId, biblePageTitleId,
+                        var linkToBiblePage = OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, vp.ChapterName, linkHrefToBiblePage, biblePageId, biblePageTitleId, new LinkProxyInfo(true, false),
                                                     Consts.Constants.QueryParameter_BibleVerse, Consts.Constants.QueryParameter_QuickAnalyze);
                         pageName += string.Format(" <span style='font-size:10pt;'>[{0}]</span>", linkToBiblePage);
                     }

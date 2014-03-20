@@ -101,7 +101,8 @@ namespace BibleCommon.Services
             if (!string.IsNullOrEmpty(notesRowObjectId))
             {
                 string newNotesPageLink = string.Format("<font size='2pt'>{0}</font>",
-                                    OneNoteUtils.GenerateLink(ref oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, notesRowObjectId, !SettingsManager.Instance.UseDifferentPagesForEachVerse));  
+                                    OneNoteUtils.GenerateLink(ref oneNoteApp, SettingsManager.Instance.PageName_Notes, notesPageId, notesRowObjectId,
+                                    new LinkProxyInfo(!SettingsManager.Instance.UseDifferentPagesForEachVerse, false)));  
 
                 if (!LinksAreEqual(textElement.Value, SettingsManager.Instance.PageName_Notes, null, newNotesPageLink))
                 {

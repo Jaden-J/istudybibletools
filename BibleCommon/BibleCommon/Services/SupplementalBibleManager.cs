@@ -506,7 +506,7 @@ namespace BibleCommon.Services
                                             SettingsManager.Instance.UseProxyLinksForBibleVerses 
                                                 ? OpenBibleVerseHandler.GetCommandUrlStatic(parallelVersePointer, SettingsManager.Instance.ModuleShortName) 
                                                 : primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseInfo.ProxyHref,
-                                            primaryBibleObjectsSearchResult.HierarchyObjectInfo.PageId, primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseContentObjectId, 
+                                            primaryBibleObjectsSearchResult.HierarchyObjectInfo.PageId, primaryBibleObjectsSearchResult.HierarchyObjectInfo.VerseContentObjectId, new LinkProxyInfo(true, false),
                                             SettingsManager.Instance.UseProxyLinksForBibleVerses 
                                                 ? null
                                                 : Consts.Constants.QueryParameter_BibleVerse);
@@ -533,7 +533,7 @@ namespace BibleCommon.Services
                 var parallelChapterPageDoc = PrepareMainBibleTable(ref oneNoteApp, baseBibleObjectsSearchResult.HierarchyObjectInfo.PageId);
 
                 string linkToBaseVerse = string.Format("<font size='2pt'>{0}</font>",
-                                            OneNoteUtils.GenerateLink(ref oneNoteApp, SettingsManager.Instance.SupplementalBibleLinkName, baseChapterPageId, baseVerseElementId));
+                                            OneNoteUtils.GenerateLink(ref oneNoteApp, SettingsManager.Instance.SupplementalBibleLinkName, baseChapterPageId, baseVerseElementId, new LinkProxyInfo(true, false)));
 
                 foreach (var parallelVerseElementId in baseBibleObjectsSearchResult.HierarchyObjectInfo.GetAllObjectsIds())
                 {                    

@@ -43,7 +43,7 @@ namespace TestProject
 
             sw.Start();
 
-            //_oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();             
+            _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();             
 
             try
             {
@@ -51,6 +51,12 @@ namespace TestProject
                 var module = ModulesManager.GetModuleInfo("rst");
 
                 var skippedBook = 39;
+
+                CheckAdvancedProxyLinks();
+
+                //OneNoteUtils.UpdateElementMetaData()
+
+                //PublishEachBook();
 
                 var maxBook = xmlbible.Books.Skip(skippedBook).OrderByDescending(b => b.Chapters.Count).ToList();
 
@@ -151,6 +157,68 @@ namespace TestProject
 
             Console.WriteLine("Finish. Elapsed time: {0}", sw.Elapsed);
             Console.ReadKey();
+        }
+
+        private static void CheckAdvancedProxyLinks()
+        {
+            var pageInfo = ApplicationCache.Instance.GetPageContent(ref _oneNoteApp, OneNoteUtils.GetCurrentPageInfo(ref _oneNoteApp).Id, ApplicationCache.PageType.NotePage);
+
+            //OneNoteUtils.UpdateElementMetaData(pageInfo.Content.Root, "bnPID", Guid.NewGuid().ToString(), pageInfo.Xnm);
+
+            var els = pageInfo.Content.XPathSelectElements("//one:Title/one:OE", pageInfo.Xnm);
+
+            foreach (XElement el in els)
+            {
+                var id = (string)el.Attribute("objectID");
+
+                OneNoteUtils.UpdateElementMetaData(el, "bnOEID", Guid.NewGuid().ToString(), pageInfo.Xnm);
+            }
+
+            ApplicationCache.Instance.CommitModifiedPage(ref _oneNoteApp, pageInfo, true);
+
+
+            var bnPid = "ffa7882f-3cf6-4390-8d53-99b0e7b7b943";
+            var bnOeid1 = "bac54ea5-82a4-42ad-8e88-a5c343c6e5a8";
+            var bnOeid2 = "82031de3-fa99-4ab0-af30-a5c810769f7f";
+
+
+            var hierarchyInfo = ApplicationCache.Instance.GetHierarchy(ref _oneNoteApp, null, HierarchyScope.hsPages);
+
+            var pEl = hierarchyInfo.Content.XPathSelectElement(string.Format("//one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", "bnPID", bnPid), hierarchyInfo.Xnm);
+            var pId = (string)pEl.Attribute("ID");
+
+            pageInfo = ApplicationCache.Instance.GetPageContent(ref _oneNoteApp, pId, ApplicationCache.PageType.NotePage);
+
+            var oeEl = pageInfo.Content.XPathSelectElement(string.Format("//one:OE[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", "bnOEID", bnOeid1), pageInfo.Xnm);
+
+            var oeId = (string)oeEl.Attribute("objectID");
+
+            _oneNoteApp.NavigateTo(pId, oeId);
+
+            Console.ReadKey();
+
+
+            oeEl = pageInfo.Content.XPathSelectElement(string.Format("//one:OE[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", "bnOEID", bnOeid2), pageInfo.Xnm);
+
+            oeId = (string)oeEl.Attribute("objectID");
+            _oneNoteApp.NavigateTo(pId, oeId);
+        }
+
+        private static void PublishEachBook()
+        {
+            var rstNotebook = OneNoteUtils.GetHierarchyElementByName(ref _oneNoteApp, "Notebook", "rst", null);
+
+            var xml = ApplicationCache.Instance.GetHierarchy(ref _oneNoteApp, (string)rstNotebook.Attribute("ID"), HierarchyScope.hsSections);
+
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
+            {
+                foreach (var sEl in xml.Content.XPathSelectElements(string.Format("//one:Section[{0}]", OneNoteUtils.NotInRecycleXPathCondition), xml.Xnm))
+                {
+                    var sId = (string)sEl.Attribute("ID");
+                    var sName = (string)sEl.Attribute("name");
+                    _oneNoteApp.Publish(sId, Path.Combine(@"c:\temp\rst", sName) + ".pdf", PublishFormat.pfPDF);
+                }
+            });
         }
 
         private static void LoadAllPagesToCache()
