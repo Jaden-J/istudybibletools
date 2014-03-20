@@ -99,7 +99,7 @@ namespace BibleCommon.Services
             public string PageId { get; set;}
             public string ParentPageId { get; set;}
             public int PageLevel { get; set; }
-        }
+        }        
 
         public class LinkId
         {   
@@ -257,7 +257,7 @@ namespace BibleCommon.Services
             });
         }     
       
-        public string GenerateHref(ref Application oneNoteApp, string pageId, string objectId, bool useProxyLinkIfAvailable = true)
+        public string GenerateHref(ref Application oneNoteApp, string pageId, string objectId, LinkProxyInfo linkProxyInfo)
         {
             if (string.IsNullOrEmpty(pageId))
                 throw new ArgumentNullException("pageId");
@@ -270,21 +270,35 @@ namespace BibleCommon.Services
 
             if (!_linksCache.ContainsKey(key))
             {
-                //lock (_locker)
-                {
-                    string link = null;
+                var link = string.Empty;
 
+                if (linkProxyInfo == null)
+                    throw new Exception("linkProxyInfo is null");
+
+                if (linkProxyInfo.UseProxyLinkIfAvailable && SettingsManager.Instance.UseProxyLinksForLinks)
+                {
+                    if (linkProxyInfo.UseAdvancedProxy)
+                    {
+                        link = GetProxyLink(ref oneNoteApp, pageId, objectId, linkProxyInfo.AutoCommitLinkPage);                         
+                    }
+                    else
+                    {
+                        OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                        {
+                            oneNoteAppSafe.GetHyperlinkToObject(pageId, objectId, out link);
+                        });
+                        link = GetSimpleProxyLink(link, pageId, objectId);
+                    }
+                }
+                else
+                {
                     OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
                     {
                         oneNoteAppSafe.GetHyperlinkToObject(pageId, objectId, out link);
                     });
-
-                    if (useProxyLinkIfAvailable && SettingsManager.Instance.UseProxyLinksForLinks) 
-                        link = GetProxyLink(link, pageId, objectId);                    
-
-                    //if (!_linksCache.ContainsKey(key))   // пока в этом нет смысла
-                    _linksCache.Add(key, link);
                 }
+
+                _linksCache.Add(key, link);
             }
 
             return _linksCache[key];
@@ -295,8 +309,12 @@ namespace BibleCommon.Services
             return link.IndexOf("&" + Constants.QueryParameterKey_CustomPageId + "=") > -1;
         }
 
-        public static string GetProxyLink(string link, string pageId, string objectId)
+        public static string GetProxyLink(ref Application oneNoteApp, string pageId, string objectId, bool autoCommit)
         {
+            return OneNoteProxyLinksHandler.GetCommandUrlStatic(ref oneNoteApp, pageId, objectId, autoCommit);                        
+        }
+        public static string GetSimpleProxyLink(string link, string pageId, string objectId)
+        {            
             return NavigateToHandler.GetCommandUrlStatic(link, pageId, objectId);            
         }
 
@@ -435,7 +453,7 @@ namespace BibleCommon.Services
             return GetPageContent(ref oneNoteApp, pageId, pageType, false, pageInfo, setLineInfo);
         }
 
-        private PageContent GetPageContent(ref Application oneNoteApp, string pageId, PageType pageType, bool refreshCache, PageInfo pageInfo, bool setLineInfo)
+        public PageContent GetPageContent(ref Application oneNoteApp, string pageId, PageType pageType, bool refreshCache, PageInfo pageInfo, bool setLineInfo)
         {
             PageContent result;
 

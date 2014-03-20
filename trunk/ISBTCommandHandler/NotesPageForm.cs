@@ -80,6 +80,7 @@ namespace ISBTCommandHandler
         protected VersePointer VersePointer { get; set; }
         protected OpenBibleVerseHandler OpenBibleVerseHandler { get; set; }
         protected NavigateToHandler NavigateToHandler { get; set; }
+        protected OneNoteProxyLinksHandler OneNoteProxyLinksHandler { get; set; }
         protected JavaScriptSerializer JsonSerializer { get; set; }
         protected List<FilterNotebookInfo> FilteredNotebooksInfo { get; set; }
 
@@ -94,6 +95,7 @@ namespace ISBTCommandHandler
             JsonSerializer = new JavaScriptSerializer();
             OpenBibleVerseHandler = new OpenBibleVerseHandler();
             NavigateToHandler = new NavigateToHandler();
+            OneNoteProxyLinksHandler = new OneNoteProxyLinksHandler();
             wbNotesPage.ObjectForScripting = this;
             FilteredNotebooksInfo = GetFilteredNotebooksInfo();            
 
@@ -294,7 +296,9 @@ namespace ISBTCommandHandler
             else
             { 
                 if (url.StartsWith(BibleCommon.Consts.Constants.OneNoteProtocol, StringComparison.OrdinalIgnoreCase)
-                    || OpenBibleVerseHandler.IsProtocolCommand(url) || NavigateToHandler.IsProtocolCommand(url))
+                    || OpenBibleVerseHandler.IsProtocolCommand(url) 
+                    || OneNoteProxyLinksHandler.IsProtocolCommand(url)
+                    || NavigateToHandler.IsProtocolCommand(url))
                 {
                     if (chkCloseOnClick.Checked)
                         this.Hide();

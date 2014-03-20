@@ -19,6 +19,7 @@ namespace ISBTCommandHandler
     {
         private IProtocolHandler[] _handlers = new IProtocolHandler[] 
                                                     { 
+                                                        new OneNoteProxyLinksHandler(),
                                                         new QuickAnalyzeHandler(), 
                                                         new OpenBibleVerseHandler(),
                                                         new OpenNotesPageHandler(),
