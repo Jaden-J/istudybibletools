@@ -95,6 +95,7 @@ namespace BibleCommon.Common
 
 
         public string NotebookId { get; set; }
+        public string NotebookName { get; set; }
 
         public string GetElementName()
         {

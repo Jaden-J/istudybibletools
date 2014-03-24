@@ -173,8 +173,10 @@ namespace BibleVerseLinkerEx
 
                     if (selectedTextFound)
                     {
-                        string href = OneNoteUtils.GenerateLink(ref _oneNoteApp, selectedHtml, 
-                                            new LinkId(verseLinkPageId, objectId), 
+                        var notebookName = OneNoteUtils.GetHierarchyElementName(ref _oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments);
+
+                        string href = OneNoteUtils.GenerateLink(ref _oneNoteApp, selectedHtml,
+                                            new LinkId(notebookName, verseLinkPageId, objectId), 
                                             new LinkProxyInfo(true, true) { AutoCommitLinkPage = true }); // todo: исправить, чтобы не было дважды обновления страницы!
 
                         string selectedValue = selectedElement.Value;
