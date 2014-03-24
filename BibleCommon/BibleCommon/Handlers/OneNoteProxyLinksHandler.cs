@@ -23,7 +23,7 @@ namespace BibleCommon.Handlers
         }
 
         private Dictionary<string, string> _notebookIds;
-        private static object _locker = new object();
+        private static readonly object _locker = new object();
 
         /// <summary>
         /// 
@@ -37,38 +37,75 @@ namespace BibleCommon.Handlers
         public static string GetCommandUrlStatic(ref Application oneNoteApp, LinkId pageObjectInfo, bool autoCommit)
         {
             var changed = false;
-            var pageInfo = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, pageObjectInfo.PageId, ApplicationCache.PageType.NotePage);
-            var bnPId = OneNoteUtils.GetElementMetaData(pageInfo.Content.Root, Consts.Constants.Key_PageId, pageInfo.Xnm);            
 
-            if (string.IsNullOrEmpty(bnPId))
-            {
-                bnPId = Guid.NewGuid().ToString();
-                OneNoteUtils.UpdateElementMetaData(pageInfo.Content.Root, Consts.Constants.Key_PageId, bnPId, pageInfo.Xnm);
-                pageInfo.WasModified = true;
-                changed = true;
-            }
+            var bnPId = pageObjectInfo.IdType == IdType.Custom ? pageObjectInfo.PageId : string.Empty;
+            var bnOeId = pageObjectInfo.IdType == IdType.Custom ? pageObjectInfo.ObjectId : string.Empty;
 
-            var bnOeId = string.Empty;
-            if (!string.IsNullOrEmpty(pageObjectInfo.ObjectId))
+            if (pageObjectInfo.IdType == IdType.OneNote)
             {
-                var el = pageInfo.Content.XPathSelectElement(string.Format("//one:OE[@objectID=\"{0}\"]", pageObjectInfo.ObjectId), pageInfo.Xnm);
-                if (el != null)
+                var pageInfo = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, pageObjectInfo.PageId, ApplicationCache.PageType.NotePage);
+                var updatePageResult = GetOrUpdateBnPId(pageInfo.Content.Root, pageInfo.Xnm);
+
+                if (updatePageResult.Changed)
                 {
-                    bnOeId = OneNoteUtils.GetElementMetaData(el, Consts.Constants.Key_OEId, pageInfo.Xnm);
-                    if (string.IsNullOrEmpty(bnOeId))
+                    pageInfo.WasModified = true;
+                    changed = true;
+                }
+
+                if (!string.IsNullOrEmpty(pageObjectInfo.ObjectId))
+                {
+                    var el = pageInfo.Content.XPathSelectElement(string.Format("//one:OE[@objectID=\"{0}\"]", pageObjectInfo.ObjectId), pageInfo.Xnm);
+                    var updateElResult = GetOrUpdateBnOeId(el, pageInfo.Xnm);
+                    bnOeId = updateElResult.Id;
+                    if (updateElResult.Changed)
                     {
-                        bnOeId = Guid.NewGuid().ToString();
-                        OneNoteUtils.UpdateElementMetaData(el, Consts.Constants.Key_OEId, bnOeId, pageInfo.Xnm);
                         pageInfo.WasModified = true;
                         changed = true;
                     }
                 }
-            }
 
-            if (changed && autoCommit)
-                ApplicationCache.Instance.CommitModifiedPage(ref oneNoteApp, pageInfo, true);
+                if (changed && autoCommit)
+                    ApplicationCache.Instance.CommitModifiedPage(ref oneNoteApp, pageInfo, true);
+            }            
 
             return string.Format("{0}{1};{2};{3}", _protocolName, pageObjectInfo.NotebookName, bnPId, bnOeId);
+        }
+
+        public class UpdateResult
+        {
+            public string Id { get; set;}
+            public bool Changed { get; set; }
+        }
+
+        public static UpdateResult GetOrUpdateBnPId(XElement pageEl, XmlNamespaceManager xnm)
+        {
+            var result = new UpdateResult();
+            result.Id = OneNoteUtils.GetElementMetaData(pageEl, Consts.Constants.Key_PageId, xnm);
+
+            if (string.IsNullOrEmpty(result.Id))
+            {
+                result.Id = Guid.NewGuid().ToString();
+                OneNoteUtils.UpdateElementMetaData(pageEl, Consts.Constants.Key_PageId, result.Id, xnm);
+                result.Changed = true;
+            }
+
+            return result;
+        }
+
+        public static UpdateResult GetOrUpdateBnOeId(XElement el, XmlNamespaceManager xnm)
+        {
+            var result = new UpdateResult();
+            if (el != null)
+            {
+                result.Id = OneNoteUtils.GetElementMetaData(el, Consts.Constants.Key_OEId, xnm);
+                if (string.IsNullOrEmpty(result.Id))
+                {
+                    result.Id = Guid.NewGuid().ToString();
+                    OneNoteUtils.UpdateElementMetaData(el, Consts.Constants.Key_OEId, result.Id, xnm);                    
+                    result.Changed = true;
+                }
+            }
+            return result;
         }
 
         public void ExecuteCommand(params string[] args)
