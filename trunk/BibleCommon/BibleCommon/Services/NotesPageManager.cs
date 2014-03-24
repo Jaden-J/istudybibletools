@@ -74,7 +74,7 @@ namespace BibleCommon.Services
             XElement suchNoteLink = null;
             XElement notesCellElement = rowElement.XPathSelectElement("one:Cell[2]/one:OEChildren", xnm);
 
-            string link = OneNoteUtils.GenerateLink(ref oneNoteApp, noteTitle, notePageId.Id, notePageContentObjectId, new LinkProxyInfo(true, true));
+            string link = OneNoteUtils.GenerateLink(ref oneNoteApp, noteTitle, new LinkId(notePageId.Id, notePageContentObjectId), new LinkProxyInfo(true, true));
             string pageId;
             int pageIdStringIndex = link.IndexOf("page-id={");
             if (pageIdStringIndex == -1)
@@ -147,7 +147,8 @@ namespace BibleCommon.Services
             }
             else if (!processAsExtendedVerse)
             {
-                string pageLink = OneNoteUtils.GenerateLink(ref oneNoteApp, noteTitle, notePageId.Id, notePageId.PageTitleId, new LinkProxyInfo(true, true));
+                string pageLink = OneNoteUtils.GenerateLink(ref oneNoteApp, noteTitle, 
+                    new LinkId(notePageId.Id, notePageId.PageTitleId), new LinkProxyInfo(true, true));
 
                 var verseLinksOE = suchNoteLink.Parent.NextNode;
                 if (verseLinksOE != null && verseLinksOE.XPathSelectElement("one:List", xnm) == null)  // значит следующая строка без номера, то есть значит идут ссылки
@@ -158,7 +159,8 @@ namespace BibleCommon.Services
                     int currentVerseIndex = existingVerseLinksElement.Value.Split(new string[] { "</a>" }, StringSplitOptions.None).Length;
 
                     existingVerseLinksElement.Value += Resources.Constants.VerseLinksDelimiter + OneNoteUtils.GenerateLink(ref oneNoteApp,
-                                string.Format(Resources.Constants.VerseLinkTemplate, currentVerseIndex), notePageId.Id, notePageContentObjectId, new LinkProxyInfo(true, true))
+                                string.Format(Resources.Constants.VerseLinkTemplate, currentVerseIndex), 
+                                new LinkId(notePageId.Id, notePageContentObjectId), new LinkProxyInfo(true, true))
                                 + GetMultiVerseString(vp.ParentVersePointer ?? vp);
 
                 }
@@ -172,7 +174,8 @@ namespace BibleCommon.Services
                                                             string.Join(Resources.Constants.VerseLinksDelimiter, new string[] { 
                                                                 firstVerseLink + GetExistingMultiVerseString(suchNoteLink), 
                                                                 OneNoteUtils.GenerateLink(ref oneNoteApp, 
-                                                                    string.Format(Resources.Constants.VerseLinkTemplate, 2), notePageId.Id, notePageContentObjectId, new LinkProxyInfo(true, true))
+                                                                    string.Format(Resources.Constants.VerseLinkTemplate, 2), 
+                                                                    new LinkId(notePageId.Id, notePageContentObjectId), new LinkProxyInfo(true, true))
                                                                     + GetMultiVerseString(vp.ParentVersePointer ?? vp) })
                                                             )));
 
@@ -286,7 +289,8 @@ namespace BibleCommon.Services
                                                         !isChapter ?
                                                             OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, string.Format(":{0}", verseHierarchyObjectInfo.VerseNumber),
                                                                 verseHierarchyObjectInfo.VerseInfo.ProxyHref,
-                                                                verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.VerseContentObjectId, new LinkProxyInfo(true, false),
+                                                                new LinkId(verseHierarchyObjectInfo.PageId, verseHierarchyObjectInfo.VerseContentObjectId),
+                                                                new LinkProxyInfo(true, false),
                                                                 Consts.Constants.QueryParameter_BibleVerse)
                                                             :
                                                             string.Empty

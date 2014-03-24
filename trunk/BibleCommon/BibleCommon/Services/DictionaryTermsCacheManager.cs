@@ -135,7 +135,7 @@ namespace BibleCommon.Services
                     var termTextElementId = (string)termTextEl.Parent.Attribute("objectID");
 
                     var href = (isStrong && !SettingsManager.Instance.UseProxyLinksForStrong) 
-                                    ? ApplicationCache.Instance.GenerateHref(ref oneNoteApp, pageId, termTextElementId, new LinkProxyInfo(true, false)) 
+                                    ? ApplicationCache.Instance.GenerateHref(ref oneNoteApp, new LinkId(pageId, termTextElementId), new LinkProxyInfo(true, false)) 
                                     : null;                    
 
                     if (!result.ContainsKey(termName))
