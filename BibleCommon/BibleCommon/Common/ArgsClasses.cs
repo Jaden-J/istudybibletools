@@ -41,6 +41,12 @@ namespace BibleCommon.Common
             this.ObjectId = objectId;
         }
 
+        public LinkId(string notebookName, string pageId, string objectId): 
+            this(pageId, objectId)
+        {
+            this.NotebookName = notebookName;
+        }
+
         public override int GetHashCode()
         {
             int result = this.PageId.GetHashCode();
