@@ -14,6 +14,7 @@ using BibleCommon.Services;
 using System.Runtime.InteropServices;
 using BibleCommon.Common;
 using BibleCommon.Handlers;
+using System.Diagnostics;
 
 namespace BibleVerseLinkerEx
 {
@@ -90,34 +91,7 @@ namespace BibleVerseLinkerEx
             }
 
             return null;
-        }
-
-        private XElement GetLastPageObject(string pageId, int? position)
-        {
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
-            {
-                _oneNoteApp.SyncHierarchy(pageId);
-            });
-
-            string pageContentXml = null;
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
-            {
-                _oneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
-            });
-
-            XmlNamespaceManager xnm;
-            XDocument document = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
-
-            XElement result = null;
-            
-            if (position.HasValue)
-                result = document.Root.XPathSelectElement(string.Format("one:Outline[{0}]", position), xnm);
-
-            if (result == null)
-                result = document.Root.XPathSelectElement("one:Title", xnm); 
-
-            return result;
-        }
+        }     
 
         public void Do()
         {
@@ -125,7 +99,7 @@ namespace BibleVerseLinkerEx
             {
                 string currentPageId = _oneNoteApp.Windows.CurrentWindow.CurrentPageId;
                 string currentSectionId = _oneNoteApp.Windows.CurrentWindow.CurrentSectionId;
-                string currentNotebookId = _oneNoteApp.Windows.CurrentWindow.CurrentNotebookId;
+                string currentNotebookId = _oneNoteApp.Windows.CurrentWindow.CurrentNotebookId;                
 
                 XDocument currentPageDocument;
                 XmlNamespaceManager xnm;
@@ -169,27 +143,25 @@ namespace BibleVerseLinkerEx
                     if (selectedTextFound)
                         newObjectContent = GetNewObjectContent(currentPageId, currentObjectId, versePointer, selectedText, verseNumber);
 
-                    string objectId = UpdateDescriptionPage(verseLinkPageId, newObjectContent, verseNumber);
+                    string bnPId, bnOeId;
+                    UpdateDescriptionPage(verseLinkPageId, newObjectContent, verseNumber, out bnPId, out bnOeId);
+
+                    var notebookName = OneNoteUtils.GetHierarchyElementName(ref _oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments);
+                    var href = ApplicationCache.Instance.GenerateHref(ref _oneNoteApp, 
+                                        new LinkId(notebookName, bnPId, bnOeId) { IdType = IdType.Custom },
+                                        new LinkProxyInfo(true, true));                                        
 
                     if (selectedTextFound)
                     {
-                        var notebookName = OneNoteUtils.GetHierarchyElementName(ref _oneNoteApp, SettingsManager.Instance.NotebookId_BibleComments);
-
-                        string href = OneNoteUtils.GenerateLink(ref _oneNoteApp, selectedHtml,
-                                            new LinkId(notebookName, verseLinkPageId, objectId), 
-                                            new LinkProxyInfo(true, true) { AutoCommitLinkPage = true }); // todo: исправить, чтобы не было дважды обновления страницы!
-
-                        string selectedValue = selectedElement.Value;
+                        var link = OneNoteUtils.GetLink(selectedHtml, href);
+                        var selectedValue = selectedElement.Value;
                         selectedElement.Value = string.Empty;
-                        selectedElement.Add(new XCData(selectedValue.Replace(selectedHtml, href)));
-                    
-                        OneNoteUtils.UpdatePageContentSafe(ref _oneNoteApp, currentPageDocument, xnm);
+                        selectedElement.Add(new XCData(selectedValue.Replace(selectedHtml, link)));
+
+                        OneNoteUtils.UpdatePageContentSafe(ref _oneNoteApp, currentPageDocument, xnm);                        
                     }
 
-                    OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
-                    {
-                        _oneNoteApp.NavigateTo(verseLinkPageId, objectId);
-                    });
+                    Process.Start(href);
                 }
             }
             else
@@ -246,12 +218,12 @@ namespace BibleVerseLinkerEx
         }
 
         /// <summary>
-        /// Возвращает добавленный objectId
+        /// Возвращает добавленный bnOEID
         /// </summary>
         /// <param name="pageId"></param>
         /// <param name="pointerValueString"></param>
         /// <returns></returns>
-        public string UpdateDescriptionPage(string pageId, string pointerValueString, VerseNumber? verseNumber)
+        public void UpdateDescriptionPage(string pageId, string pointerValueString, VerseNumber? verseNumber, out string bnPId, out string bnOeId)
         {
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
             var pageContent = ApplicationCache.Instance.GetPageContent(ref _oneNoteApp, pageId, ApplicationCache.PageType.CommentPage);
@@ -310,18 +282,42 @@ namespace BibleVerseLinkerEx
             else
                 pageContent.Content.Root.Add(newCommentElement);
 
-            pageContent.WasModified = true;
+            pageContent.WasModified = true;            
+            bnPId = OneNoteProxyLinksHandler.GetOrUpdateBnPId(pageContent.Content.Root, pageContent.Xnm).Id;
+            bnOeId = OneNoteProxyLinksHandler.GetOrUpdateBnOeId(
+                                newCommentElement.XPathSelectElement("one:OEChildren/one:OE", pageContent.Xnm),
+                                pageContent.Xnm).Id;                
 
-            ApplicationCache.Instance.CommitAllModifiedPages(ref _oneNoteApp, false, pc => pc.PageType == ApplicationCache.PageType.CommentPage, null, null);
+            ApplicationCache.Instance.CommitAllModifiedPages(ref _oneNoteApp, true, pc => pc.PageType == ApplicationCache.PageType.CommentPage, null, null);            
 
-            XElement addedObject = GetLastPageObject(pageId, GetOutlinePosition(pageContent.Content, newCommentElement, pageContent.Xnm));
+            //var addedObject = GetLastPageObject(pageId, GetOutlinePosition(pageContent.Content, newCommentElement, pageContent.Xnm));
 
-            if (addedObject != null)
+            //if (addedObject != null)
+            //{
+            //    bnOeId = OneNoteProxyLinksHandler.GetOrUpdateBnOeId(addedObject, pageContent.Xnm).Id;                
+            //}
+            //else
+            //    bnOeId = string.Empty;
+        }
+
+        private XElement GetLastPageObject(string pageId, int? position)
+        {
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
             {
-                return (string)addedObject.Attribute("objectID");
-            }
+                _oneNoteApp.SyncHierarchy(pageId);
+            });
 
-            return string.Empty;
+            XElement result = null;
+
+            var pageInfo = ApplicationCache.Instance.GetPageContent(ref _oneNoteApp, pageId, ApplicationCache.PageType.CommentPage, true, PageInfo.piBasic, false);            
+
+            if (position.HasValue)
+                result = pageInfo.Content.Root.XPathSelectElement(string.Format("one:Outline[{0}]", position), pageInfo.Xnm);
+
+            if (result == null)
+                result = pageInfo.Content.Root.XPathSelectElement("one:Title", pageInfo.Xnm);
+
+            return result;
         }
 
         private static int GetOutlinePosition(XDocument document, XElement outline, XmlNamespaceManager xnm)

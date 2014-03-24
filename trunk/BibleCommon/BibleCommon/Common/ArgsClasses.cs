@@ -28,17 +28,26 @@ namespace BibleCommon.Common
         }
     }
 
+    public enum IdType
+    {
+        OneNote,
+        Custom
+    }
+
     public class LinkId
     {
         public string NotebookName { get; set; }
 
         public string PageId { get; set; }
         public string ObjectId { get; set; }
+        
+        public IdType IdType { get; set; } 
 
         public LinkId(string pageId, string objectId)
         {
             this.PageId = pageId;
             this.ObjectId = objectId;
+            this.IdType = Common.IdType.OneNote;
         }
 
         public LinkId(string notebookName, string pageId, string objectId): 
