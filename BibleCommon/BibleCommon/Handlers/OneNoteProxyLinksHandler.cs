@@ -9,6 +9,7 @@ using System.Text;
 using System.Xml.Linq;
 using System.Xml;
 using System.Xml.XPath;
+using BibleCommon.Common;
 
 namespace BibleCommon.Handlers
 {
@@ -21,10 +22,19 @@ namespace BibleCommon.Handlers
             get { return _protocolName; }
         }
 
-        public static string GetCommandUrlStatic(ref Application oneNoteApp, string pageId, string objectId, bool autoCommit)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oneNoteApp"></param>
+        /// <param name="notebookName">can be null or empty</param>
+        /// <param name="pageId"></param>
+        /// <param name="objectId"></param>
+        /// <param name="autoCommit"></param>
+        /// <returns></returns>
+        public static string GetCommandUrlStatic(ref Application oneNoteApp, LinkId pageObjectInfo, bool autoCommit)
         {
             var changed = false;
-            var pageInfo = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, pageId, ApplicationCache.PageType.NotePage);
+            var pageInfo = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, pageObjectInfo.PageId, ApplicationCache.PageType.NotePage);
             var bnPId = OneNoteUtils.GetElementMetaData(pageInfo.Content.Root, Consts.Constants.Key_PageId, pageInfo.Xnm);            
 
             if (string.IsNullOrEmpty(bnPId))
@@ -36,9 +46,9 @@ namespace BibleCommon.Handlers
             }
 
             var bnOeId = string.Empty;
-            if (!string.IsNullOrEmpty(objectId))
+            if (!string.IsNullOrEmpty(pageObjectInfo.ObjectId))
             {
-                var el = pageInfo.Content.XPathSelectElement(string.Format("//one:OE[@objectID=\"{0}\"]", objectId), pageInfo.Xnm);
+                var el = pageInfo.Content.XPathSelectElement(string.Format("//one:OE[@objectID=\"{0}\"]", pageObjectInfo.ObjectId), pageInfo.Xnm);
                 if (el != null)
                 {
                     bnOeId = OneNoteUtils.GetElementMetaData(el, Consts.Constants.Key_OEId, pageInfo.Xnm);

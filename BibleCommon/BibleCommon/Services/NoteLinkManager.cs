@@ -154,7 +154,8 @@ namespace BibleCommon.Services
                     notePageHierarchyInfo = GetPageHierarchyInfo(ref oneNoteApp, notebookId, notePageDocument, pageId, notePageName, true);
                     
                     //формируем ссылку на заголовок, чтобы она сохранилась в кэше. Так как здесь у нас всё для этого уже есть в кэше. А потом при некоторых обстоятельствах для этой ссылки приходится заново загружать страницу и сохранять её
-                    ApplicationCache.Instance.GenerateHref(ref oneNoteApp, notePageHierarchyInfo.Id, notePageHierarchyInfo.PageTitleId, new LinkProxyInfo(true, true));
+                    ApplicationCache.Instance.GenerateHref(ref oneNoteApp, 
+                        new LinkId(notePageHierarchyInfo.Id, notePageHierarchyInfo.PageTitleId), new LinkProxyInfo(true, true));
                 }
                 else
                     notePageHierarchyInfo = GetPageHierarchyInfo(ref oneNoteApp, notebookId, notePageDocument, pageId, notePageName, false);
@@ -598,7 +599,7 @@ namespace BibleCommon.Services
                     )
                 {
                     //формируем ссылку на этот абзац, чтобы она сохранилась в кэше, чтобы быстрее позже формировались и сохранялись сводные заметок, чтобы можно было точнее оценивать время до конца анализа на основании хода первого этапа
-                    ApplicationCache.Instance.GenerateHref(ref oneNoteApp, notePageInfo.Id, (string)textElement.Parent.Attribute("objectID"), new LinkProxyInfo(true, true));
+                    ApplicationCache.Instance.GenerateHref(ref oneNoteApp, new LinkId(notePageInfo.Id, (string)textElement.Parent.Attribute("objectID")), new LinkProxyInfo(true, true));
                 }
             }
 
@@ -961,8 +962,8 @@ namespace BibleCommon.Services
                                                 : localHierarchySearchResult.HierarchyObjectInfo.VerseInfo.ProxyHref;
 
                             string link = OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, textToChange, linkHref,
-                                            localHierarchySearchResult.HierarchyObjectInfo.PageId, 
-                                            localHierarchySearchResult.HierarchyObjectInfo.VerseContentObjectId, new LinkProxyInfo(true, false), additionalParams.ToArray());
+                                            new LinkId(localHierarchySearchResult.HierarchyObjectInfo.PageId, localHierarchySearchResult.HierarchyObjectInfo.VerseContentObjectId),
+                                            new LinkProxyInfo(true, false), additionalParams.ToArray());
 
                             link = string.Format("<span style='font-weight:normal;{1}'>{0}</span>", link, prevStyle);
 
