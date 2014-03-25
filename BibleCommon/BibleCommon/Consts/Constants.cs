@@ -143,7 +143,7 @@ namespace BibleCommon.Consts
         public static readonly string Key_NotesPageLink = "NotesPageLink";
         public static readonly string Key_SyncId = "SyncID";
         public static readonly string Key_Table = "isbtTable";
-        public static readonly string Key_PageId = "bnPID";
+        public static readonly string Key_PId = "bnPID";
         public static readonly string Key_OEId = "bnOEID";        
 
 
