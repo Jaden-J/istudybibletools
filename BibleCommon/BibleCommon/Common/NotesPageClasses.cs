@@ -573,7 +573,8 @@ namespace BibleCommon.Common
         public string GetPageTitleLinkHref(ref Application oneNoteApp)
         {
             if (string.IsNullOrEmpty(_pageTitleLinkHref) && !string.IsNullOrEmpty(PageId))            
-                _pageTitleLinkHref = OneNoteUtils.GetOrGenerateLinkHref(ref oneNoteApp, null, PageId, PageTitleObjectId, new LinkProxyInfo(true, true));
+                _pageTitleLinkHref = OneNoteUtils.GetOrGenerateLinkHref(ref oneNoteApp, null, 
+                                            new LinkId(PageId, PageTitleObjectId), new LinkProxyInfo(true, true));
 
             return _pageTitleLinkHref;
         }
@@ -844,7 +845,7 @@ namespace BibleCommon.Common
         {
             if (string.IsNullOrEmpty(_href))
             {
-                _href = OneNoteUtils.GetOrGenerateLinkHref(ref oneNoteApp, null, PageId, ContentObjectId, new LinkProxyInfo(true, true),
+                _href = OneNoteUtils.GetOrGenerateLinkHref(ref oneNoteApp, null, new LinkId(PageId, ContentObjectId), new LinkProxyInfo(true, true),
                                 string.Format("{0}={1}", Constants.QueryParameterKey_VersePosition, VersePosition),
                                 string.Format("{0}={1}", Constants.QueryParameterKey_VerseWeight, VerseWeight),
                                 string.Format("{0}={1}", Constants.QueryParameterKey_IsDetailedLink, IsDetailed));
