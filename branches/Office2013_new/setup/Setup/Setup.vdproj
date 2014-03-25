@@ -249,6 +249,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_90B1D85ED10546F1A7EA6BCF5648A032"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_94E1AB757EAF4C5A8D864AB3DE806EF5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -436,13 +442,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_F99040C8BB0E4C7DF1BA86AD3996701A"
+        "OwnerKey" = "8:_40B893D39E007010FE4FC4A0B2FEE1D2"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_40B893D39E007010FE4FC4A0B2FEE1D2"
+        "OwnerKey" = "8:_F99040C8BB0E4C7DF1BA86AD3996701A"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -582,9 +588,14 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=3.3.0.1200, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=3.3.3.1200, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_019F801C92D7E54C2864E8DC32665D34"
+                    {
+                    "Name" = "8:BibleCommon.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:BibleCommon.dll"
             "TargetName" = "8:"
@@ -642,6 +653,11 @@
             "AssemblyAsmDisplayName" = "8:ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_0A877591D049659FF04EF2F50CB084D2"
+                    {
+                    "Name" = "8:ICSharpCode.SharpZipLib.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:ICSharpCode.SharpZipLib.dll"
             "TargetName" = "8:"
@@ -781,6 +797,11 @@
             "AssemblyAsmDisplayName" = "8:Polenter.SharpSerializer, Version=2.18.0.0, Culture=neutral, PublicKeyToken=8f4f20011571ee5f, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_4EE5C68E052BA8602AA68775A4370CBA"
+                    {
+                    "Name" = "8:Polenter.SharpSerializer.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Polenter.SharpSerializer.dll"
             "TargetName" = "8:"
@@ -837,6 +858,26 @@
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_422E85D825AA4411B3BA9D122955C18E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_90B1D85ED10546F1A7EA6BCF5648A032"
+            {
+            "SourcePath" = "8:..\\favicon.ico"
+            "TargetName" = "8:favicon.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1098,25 +1139,25 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BibleNote"
-        "ProductCode" = "8:{7D25A023-FC33-4A7A-A03A-79884B01E18E}"
-        "PackageCode" = "8:{F1BD39A4-1099-493A-A979-B071D521601D}"
+        "ProductCode" = "8:{DA41DF3D-1191-4E9F-B68F-3E94B7458785}"
+        "PackageCode" = "8:{92FA9792-5E30-46C5-A350-4485904E1717}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:3.3.2"
+        "ProductVersion" = "8:3.3.3"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://BibleNote.pro"
         "Title" = "8:BibleNote"
-        "Subject" = "8:"
+        "Subject" = "8:A personal Bible study software based on Microsoft OneNote"
         "ARPCONTACT" = "8:Sasha & Natasha"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:http://BibleNote.pro"
-        "ARPPRODUCTICON" = "8:"
+        "ARPPRODUCTICON" = "8:_90B1D85ED10546F1A7EA6BCF5648A032"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
