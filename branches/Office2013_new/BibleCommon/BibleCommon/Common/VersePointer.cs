@@ -14,7 +14,7 @@ namespace BibleCommon.Common
     [Serializable]
     public struct VerseNumber: IComparable<VerseNumber>
     {
-        public readonly static char[] Dashes = new char[] { '-', '—', '‑' };
+        public readonly static char[] Dashes = new char[] { '-', '—', '‑', '–' };
 
         public int Verse;
         public int? TopVerse;
@@ -241,11 +241,11 @@ namespace BibleCommon.Common
             }
         }
 
-        public SimpleVersePointer(string s)
-        {
-            var parts = s.Split(new char[] { ' ', ':' });
+        //public SimpleVersePointer(string s)
+        //{
+        //    var parts = s.Split(new char[] { ' ', ':' });
 
-        }
+        //}
 
         public SimpleVersePointer()
         {
@@ -784,7 +784,7 @@ namespace BibleCommon.Common
                 }
                 else
                 {
-                    int indexOfDelimiter = topStructure.IndexOf(":");
+                    int indexOfDelimiter = topStructure.IndexOf(VerseRecognitionManager.DefaultChapterVerseDelimiter);  // даже если используем запятую в качестве разделителя, сюда приходит уже DefaultChapterVerseDelimiter
                     if (indexOfDelimiter != -1)  // значит скорее всего имеем дело с Ин 1:5-2:4
                     {
                         int tempTopChapter;

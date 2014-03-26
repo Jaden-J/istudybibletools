@@ -859,7 +859,7 @@ namespace BibleCommon.Services
             {             
                 if (searchResult.VersePointerHtmlStartIndex != searchResult.VersePointerStartIndex)
                 {
-                    if (StringUtils.GetChar(textElementValue, searchResult.VersePointerHtmlStartIndex) == VerseRecognitionManager.ChapterVerseDelimiter
+                    if (VerseRecognitionManager.GetChapterVerseDelimiters().Contains(StringUtils.GetChar(textElementValue, searchResult.VersePointerHtmlStartIndex))
                         && StringUtils.GetChar(textElementValue, searchResult.VersePointerHtmlStartIndex + 1) == '<')  // случай типа "<span lang=ru>:</span><span lang=en-US>12</span>"
                     {
                         startVerseNameIndex = searchResult.VersePointerHtmlStartIndex;

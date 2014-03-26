@@ -198,6 +198,11 @@ namespace BibleCommon.Services
         public bool UseAdvancedProxyForOneNoteLinks { get; set; }
 
         /// <summary>
+        /// Использовать запятую в качестве разделителя главы и стиха
+        /// </summary>
+        public bool UseCommaDelimeter { get; set; }
+
+        /// <summary>
         /// Необходимо ли линковать каждый стих, входящий в MultiVerse
         /// </summary>        
         public bool ExpandMultiVersesLinking { get; set; }
@@ -544,6 +549,7 @@ namespace BibleCommon.Services
             this.UseProxyLinksForLinks = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseProxyLinksForLinks, !Consts.SystemConstants.IsOneNote2010);
             this.UseProxyLinksForBibleVerses = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseProxyLinksForBibleVerses, Consts.Constants.Default_UseProxyLinksForBibleVerses);
             this.UseAdvancedProxyForOneNoteLinks = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseAdvancedProxyForOneNoteLinks, Consts.Constants.Default_UseAdvancedProxyForOneNoteLinks);
+            this.UseCommaDelimeter = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseCommaDelimeter, Consts.Constants.Default_UseCommaDelimeter);
 
             this.SupplementalBibleLinkName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SupplementalBibleLinkName,
                                                   GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName));            
@@ -641,6 +647,7 @@ namespace BibleCommon.Services
             this.UseProxyLinksForStrong = Consts.Constants.Default_UseProxyLinksForStrong;
             this.UseProxyLinksForBibleVerses = Consts.Constants.Default_UseProxyLinksForBibleVerses;
             this.UseProxyLinksForLinks = Consts.Constants.Default_UseProxyLinksForLinks;
+            this.UseCommaDelimeter = Consts.Constants.Default_UseCommaDelimeter;
             this.UseAdvancedProxyForOneNoteLinks = Consts.Constants.Default_UseAdvancedProxyForOneNoteLinks;
 
             LoadDefaultLocalazibleSettings();
@@ -673,6 +680,7 @@ namespace BibleCommon.Services
                 && this.UseProxyLinksForLinks == !Consts.SystemConstants.IsOneNote2010
                 && this.UseProxyLinksForBibleVerses == Consts.Constants.Default_UseProxyLinksForBibleVerses
                 && this.UseAdvancedProxyForOneNoteLinks == Consts.Constants.Default_UseAdvancedProxyForOneNoteLinks
+                && this.UseCommaDelimeter == Consts.Constants.Default_UseCommaDelimeter
                 && this.SupplementalBibleLinkName == GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName);
         }
 
@@ -738,6 +746,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_UseProxyLinksForLinks, UseProxyLinksForLinks),
                                   new XElement(Consts.Constants.ParameterName_UseProxyLinksForBibleVerses, UseProxyLinksForBibleVerses),
                                   new XElement(Consts.Constants.ParameterName_UseAdvancedProxyForOneNoteLinks, UseAdvancedProxyForOneNoteLinks),
+                                  new XElement(Consts.Constants.ParameterName_UseCommaDelimeter, UseCommaDelimeter),
                                   new XElement(Consts.Constants.ParameterName_GenerateFullBibleVersesCache, GenerateFullBibleVersesCache),
                                   new XElement(Consts.Constants.ParameterName_ShownMessages, string.Join(";", this.ShownMessages.ConvertAll(m => m.ToString()).ToArray())),
                                   new XElement(Consts.Constants.ParameterName_FilterHiddenNotebooks, string.Join(";", this.Filter_HiddenNotebooks.ToArray())),
