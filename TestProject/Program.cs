@@ -31,8 +31,8 @@ namespace TestProject
 {
     class Program
     {
-        private const string ForGeneratingFolderPath = @"C:\Users\lux_demko\Desktop\temp\Dropbox\IStudyBibleTools\ForGenerating";
-        private const string TempFolderPath = @"C:\Users\lux_demko\Desktop\temp\temp";
+        private const string ForGeneratingFolderPath = @"C:\Users\Alexander\SkyDrive\BibleNote\ForGenerating";
+        private const string TempFolderPath = @"C:\temp\BibleNote";
 
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;      
 
@@ -82,7 +82,7 @@ namespace TestProject
 
                 //AddColorLink();
 
-                //GenerateRuDictionary();
+                GenerateRuDictionary();
 
                 //GenerateEnDictionary();
 
@@ -549,7 +549,7 @@ namespace TestProject
             //    Path.Combine(TempFolderPath, "goetze"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0));
 
 
-            var converter = new BibleQuotaDictionaryConverter("Словари", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
+            var converter = new BibleQuotaDictionaryConverter("TestDictionaries", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
              new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
                 }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
