@@ -10,8 +10,49 @@ namespace BibleCommon.Services
 {
     public static class VerseRecognitionManager
     {
-        internal const char ChapterVerseDelimiter = ':';
+        private static char[] _chapterVerseDelimiter;
+        private static char[] _startVerseChars;
+        private static readonly object _locker = new object();
+
         internal const int MaxVerse = 200;
+        public const char DefaultChapterVerseDelimiter = ':';
+
+        public static char[] GetChapterVerseDelimiters()
+        {            
+            if (_chapterVerseDelimiter == null)
+            {
+                lock (_locker)
+                {
+                    if (_chapterVerseDelimiter == null)
+                    {
+                        var chars = new List<char>() { ':' };
+                        if (SettingsManager.Instance.UseCommaDelimeter)
+                            chars.Add(',');
+
+                        _chapterVerseDelimiter = chars.ToArray();
+                    }
+                }
+            }
+
+            return _chapterVerseDelimiter;
+        }
+
+
+        public static char[] GetStartVerseChars()
+        {
+            if (_startVerseChars == null)
+            {
+                lock (_locker)
+                {
+                    if (_startVerseChars == null)
+                    {
+                        _startVerseChars = new List<char>(GetChapterVerseDelimiters()) { '>', ';', ' ', '.' }.ToArray();
+                    }
+                }
+            }
+
+            return _startVerseChars;
+        }
 
         public class LinkInfo
         { 
@@ -118,8 +159,7 @@ namespace BibleCommon.Services
         // похоже на Библейскую ссылку
         private static bool IsLikeVerse(char prevChar, char nextChar)
         {
-            char[] startChars = { ChapterVerseDelimiter, '>', ',', ';', ' ', '.' };
-            return (startChars.Contains(prevChar) || StringUtils.IsCharAlphabetical(prevChar))
+            return (GetStartVerseChars().Contains(prevChar) || StringUtils.IsCharAlphabetical(prevChar))
                 && !StringUtils.IsCharAlphabetical(nextChar);
         }                 
         
@@ -246,11 +286,11 @@ namespace BibleCommon.Services
 
                 if (canContinue)
                 {   
-                    VersePointerSearchResult.SearchResultType resultType = VersePointerSearchResult.SearchResultType.Nothing;
-                    string verseName = string.Empty;
-                    string verseString = string.Empty;
+                    var resultType = VersePointerSearchResult.SearchResultType.Nothing;
+                    var verseName = string.Empty;
+                    var verseString = string.Empty;
 
-                    if (nextChar == ChapterVerseDelimiter.ToString())
+                    if (GetChapterVerseDelimiters().Contains(StringUtils.GetChar(nextChar, 0)))
                     {
                         verseString = ExtractFullVerseString(textElement, isLink, ref nextHtmlBreakIndex, out endIndex);
 
@@ -296,7 +336,7 @@ namespace BibleCommon.Services
                             result.VerseString = ((resultType == VersePointerSearchResult.SearchResultType.ChapterWithoutBookName 
                                                         || resultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName)
                                                     ? verseString
-                                                    : string.Format("{0}{1}{2}", number, ChapterVerseDelimiter, verseString));
+                                                    : string.Format("{0}{1}{2}", number, DefaultChapterVerseDelimiter, verseString));
                             result.VerseStringStartsWithSpace = true;
                             result.TextElement = textElement;
                         }
@@ -402,6 +442,8 @@ namespace BibleCommon.Services
             {
                 bool canContinue = true;
 
+                var prevCharIsDefaultChapterVerseDelimiter = prevChar == DefaultChapterVerseDelimiter.ToString();
+
                 VersePointerSearchResult.SearchResultType resultType = VersePointerSearchResult.SearchResultType.SingleVerseOnly;
 
                 if (prevChar == ",")    // надо проверить, чтоб предыдущий символ тоже был цифрой   
@@ -432,7 +474,7 @@ namespace BibleCommon.Services
                         }
                     }
                 }
-                else if (prevChar == ChapterVerseDelimiter.ToString())    // надо проверить, чтоб предыдущий символ не был цифрой и не буквой
+                else if (prevCharIsDefaultChapterVerseDelimiter)    // надо проверить, чтоб предыдущий символ не был цифрой или буквой
                 {
                     if (int.TryParse(prevPrevChar, out temp))
                         canContinue = false;
@@ -459,7 +501,7 @@ namespace BibleCommon.Services
 
                         if (!string.IsNullOrEmpty(verseString))
                         {
-                            string verseName = string.Format("{0}{1}{2}", chapterName, ChapterVerseDelimiter, verseString);
+                            string verseName = string.Format("{0}{1}{2}", chapterName, DefaultChapterVerseDelimiter, verseString);
 
                             VersePointer vp = new VersePointer(verseName);
                             if (vp.IsValid)
@@ -467,10 +509,10 @@ namespace BibleCommon.Services
                                 result.VersePointer = vp;
                                 result.ResultType = resultType;
                                 result.VersePointerEndIndex = endIndex;
-                                result.VersePointerStartIndex = prevChar == ChapterVerseDelimiter.ToString() ? prevTextBreakIndex : prevTextBreakIndex + 1;
+                                result.VersePointerStartIndex = prevCharIsDefaultChapterVerseDelimiter ? prevTextBreakIndex : prevTextBreakIndex + 1;
                                 result.VersePointerHtmlEndIndex = nextHtmlBreakIndex;
                                 result.VersePointerHtmlStartIndex = prevHtmlBreakIndex;
-                                result.VerseString = (prevChar == ChapterVerseDelimiter.ToString() ? prevChar : string.Empty) + verseString;
+                                result.VerseString = (prevCharIsDefaultChapterVerseDelimiter ? prevChar : string.Empty) + verseString;
                                 result.ChapterName = chapterName;
                                 result.TextElement = textElement;
                             }
@@ -564,12 +606,12 @@ namespace BibleCommon.Services
 
         private static bool IsFullVerse(string prevChar, string nextChar)
         {
-            return nextChar == ChapterVerseDelimiter.ToString();
+            return GetChapterVerseDelimiters().Contains(StringUtils.GetChar(nextChar, 0));
         }
 
         private static bool IsSingleVerse(string prevChar, string nextChar)
-        {
-            return (prevChar == ChapterVerseDelimiter.ToString() || prevChar == ",") && (nextChar != ChapterVerseDelimiter.ToString());
+        {            
+            return (prevChar == DefaultChapterVerseDelimiter.ToString() || prevChar == ",") && (nextChar != DefaultChapterVerseDelimiter.ToString());
         }
 
         private static bool IsChapterOrVerseWithoutBookName(string prevChar, string nextChar)
@@ -607,7 +649,7 @@ namespace BibleCommon.Services
 
         private static string GetVerseName(string bookName, int chapter, object verseString)
         {
-            return string.Format("{0}{1}{2}", GetVerseName(bookName, chapter), ChapterVerseDelimiter, verseString);
+            return string.Format("{0}{1}{2}", GetVerseName(bookName, chapter), DefaultChapterVerseDelimiter, verseString);
         }
 
         /// <summary>
@@ -667,21 +709,21 @@ namespace BibleCommon.Services
                     {
                         var afterChar = StringUtils.GetChar(textElementValue, nextStringResult.HtmlBreakIndex);
                         if (localTopVerse > verseNumber
-                            || afterChar == ChapterVerseDelimiter) // если строка типа Ин 1:2-3:4
+                            || GetChapterVerseDelimiters().Contains(afterChar)) // если строка типа Ин 1:2-3:4
                         {
-                            if (!(afterChar != ChapterVerseDelimiter && spaceWasFound))
+                            if (!(!GetChapterVerseDelimiters().Contains(afterChar) && spaceWasFound))
                             {
                                 verseString = string.Format("{0}-{1}", verseString, nextStringResult.FoundString.Trim());
                                 endIndex = nextStringResult.TextBreakIndex;
                                 nextHtmlBreakIndex = nextStringResult.HtmlBreakIndex;
 
-                                if (afterChar == ChapterVerseDelimiter)
+                                if (GetChapterVerseDelimiters().Contains(afterChar))
                                 {
                                     nextStringResult = StringSearcher.SearchInString(textElementValue, nextHtmlBreakIndex, StringSearcher.SearchDirection.Forward);
 
                                     if (int.TryParse(nextStringResult.FoundString, out localTopVerse))
                                     {
-                                        verseString += ChapterVerseDelimiter + nextStringResult.FoundString;
+                                        verseString += DefaultChapterVerseDelimiter + nextStringResult.FoundString;
                                         endIndex = nextStringResult.TextBreakIndex;
                                         nextHtmlBreakIndex = nextStringResult.HtmlBreakIndex;
                                     }
