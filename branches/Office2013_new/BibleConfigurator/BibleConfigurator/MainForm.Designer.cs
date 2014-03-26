@@ -113,6 +113,8 @@
             this.openModuleFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.notesPagesFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.ttNotesPageFolder = new System.Windows.Forms.ToolTip(this.components);
+            this.chkUseAdvancedProxyForOneNoteLinks = new System.Windows.Forms.CheckBox();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -365,6 +367,7 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage2.Controls.Add(this.chkUseAdvancedProxyForOneNoteLinks);
             this.tabPage2.Controls.Add(this.chkUseProxyLinksForBibleVerses);
             this.tabPage2.Controls.Add(this.chkUseProxyLinksForLinks);
             this.tabPage2.Controls.Add(this.chkUseProxyLinksForStrong);
@@ -709,6 +712,12 @@
             this.openModuleFileDialog.DefaultExt = "isbt";
             resources.ApplyResources(this.openModuleFileDialog, "openModuleFileDialog");
             // 
+            // chkUseAdvancedProxyForOneNoteLinks
+            // 
+            resources.ApplyResources(this.chkUseAdvancedProxyForOneNoteLinks, "chkUseAdvancedProxyForOneNoteLinks");
+            this.chkUseAdvancedProxyForOneNoteLinks.Name = "chkUseAdvancedProxyForOneNoteLinks";
+            this.chkUseAdvancedProxyForOneNoteLinks.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnOK;
@@ -828,6 +837,7 @@
         private System.Windows.Forms.FolderBrowserDialog notesPagesFolderBrowserDialog;
         private System.Windows.Forms.CheckBox chkUseProxyLinksForBibleVerses;
         private System.Windows.Forms.ToolTip ttNotesPageFolder;
+        private System.Windows.Forms.CheckBox chkUseAdvancedProxyForOneNoteLinks;
 
     }
 }

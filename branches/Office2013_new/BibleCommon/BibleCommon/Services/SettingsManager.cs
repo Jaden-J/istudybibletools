@@ -131,7 +131,7 @@ namespace BibleCommon.Services
         public string SectionName_DefaultBookOverview { get; set; }
         public string PageName_Notes { get; set; }
         public string FolderPath_BibleNotesPages { get; set; }
-        public bool IsInIntegratedMode { get; set; }
+        public bool IsInIntegratedMode { get; set; }        
 
         /// <summary>
         /// Множество пользователей не используют такие программы, как дропбокс, и потому у них не будет проблем с изменением регистра названий файлов, и потому им не нужен полный кэш Библейских стихов. Но когда один раз случается, что кэш устарел, значит надо в следующий раз генерировать полный кэш Библейских стихов.
@@ -193,8 +193,13 @@ namespace BibleCommon.Services
         public bool UseProxyLinksForBibleVerses { get; set; }
 
         /// <summary>
-        /// Необходимо ли линковать каждый стих, входящий в MultiVerse
+        /// Использовать ли OneNoteProxyLinksHandler
         /// </summary>
+        public bool UseAdvancedProxyForOneNoteLinks { get; set; }
+
+        /// <summary>
+        /// Необходимо ли линковать каждый стих, входящий в MultiVerse
+        /// </summary>        
         public bool ExpandMultiVersesLinking { get; set; }
 
         /// <summary>
@@ -538,9 +543,10 @@ namespace BibleCommon.Services
             this.UseProxyLinksForStrong = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseProxyLinksForStrong, Consts.Constants.Default_UseProxyLinksForStrong);
             this.UseProxyLinksForLinks = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseProxyLinksForLinks, !Consts.SystemConstants.IsOneNote2010);
             this.UseProxyLinksForBibleVerses = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseProxyLinksForBibleVerses, Consts.Constants.Default_UseProxyLinksForBibleVerses);
+            this.UseAdvancedProxyForOneNoteLinks = GetParameterValue<bool>(xdoc, Consts.Constants.ParameterName_UseAdvancedProxyForOneNoteLinks, Consts.Constants.Default_UseAdvancedProxyForOneNoteLinks);
 
             this.SupplementalBibleLinkName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_SupplementalBibleLinkName,
-                                                  GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName));
+                                                  GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName));            
         }
 
         private void LoadGeneralSettings(XDocument xdoc)
@@ -634,7 +640,8 @@ namespace BibleCommon.Services
             this.RubbishPage_ExcludedVersesLinking = Consts.Constants.DefaultRubbishPage_ExcludedVersesLinking;
             this.UseProxyLinksForStrong = Consts.Constants.Default_UseProxyLinksForStrong;
             this.UseProxyLinksForBibleVerses = Consts.Constants.Default_UseProxyLinksForBibleVerses;
-            this.UseProxyLinksForLinks = Consts.Constants.Default_UseProxyLinksForLinks;            
+            this.UseProxyLinksForLinks = Consts.Constants.Default_UseProxyLinksForLinks;
+            this.UseAdvancedProxyForOneNoteLinks = Consts.Constants.Default_UseAdvancedProxyForOneNoteLinks;
 
             LoadDefaultLocalazibleSettings();
         }
@@ -665,6 +672,7 @@ namespace BibleCommon.Services
                 && this.UseProxyLinksForStrong == Consts.Constants.Default_UseProxyLinksForStrong
                 && this.UseProxyLinksForLinks == !Consts.SystemConstants.IsOneNote2010
                 && this.UseProxyLinksForBibleVerses == Consts.Constants.Default_UseProxyLinksForBibleVerses
+                && this.UseAdvancedProxyForOneNoteLinks == Consts.Constants.Default_UseAdvancedProxyForOneNoteLinks
                 && this.SupplementalBibleLinkName == GetResourceString(Consts.Constants.ResourceName_DefaultSupplementalBibleLinkName);
         }
 
@@ -729,6 +737,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_UseProxyLinksForStrong, UseProxyLinksForStrong),
                                   new XElement(Consts.Constants.ParameterName_UseProxyLinksForLinks, UseProxyLinksForLinks),
                                   new XElement(Consts.Constants.ParameterName_UseProxyLinksForBibleVerses, UseProxyLinksForBibleVerses),
+                                  new XElement(Consts.Constants.ParameterName_UseAdvancedProxyForOneNoteLinks, UseAdvancedProxyForOneNoteLinks),
                                   new XElement(Consts.Constants.ParameterName_GenerateFullBibleVersesCache, GenerateFullBibleVersesCache),
                                   new XElement(Consts.Constants.ParameterName_ShownMessages, string.Join(";", this.ShownMessages.ConvertAll(m => m.ToString()).ToArray())),
                                   new XElement(Consts.Constants.ParameterName_FilterHiddenNotebooks, string.Join(";", this.Filter_HiddenNotebooks.ToArray())),
