@@ -272,11 +272,15 @@ namespace BibleCommon.Services
             {
                 result.NotebookName = OneNoteUtils.GetHierarchyElementName(ref oneNoteApp, notebookId);
 
-                result.SyncPageId = OneNoteUtils.GetElementMetaData(notePageDocument.Content.Root, Constants.Key_SyncId, notePageDocument.Xnm);
-                if (result.SyncPageId == null)
+
+                result.SyncPageId = OneNoteUtils.GetElementMetaData(notePageDocument.Content.Root, Constants.Key_SyncId, notePageDocument.Xnm);                
+                if (string.IsNullOrEmpty(result.SyncPageId))
+                    result.SyncPageId = OneNoteUtils.GetElementMetaData(notePageDocument.Content.Root, Constants.Key_PId, notePageDocument.Xnm);                    
+
+                if (string.IsNullOrEmpty(result.SyncPageId))
                 {
-                    result.SyncPageId = notePageId;   // todo: зачем такой большой храниь идентификатор? Он больше двух гидов. Сейчас ввёл bnPID - обычный гид. На него надо в будущем полностью передалть и SyncID
-                    OneNoteUtils.UpdateElementMetaData(notePageDocument.Content.Root, Constants.Key_SyncId, result.SyncPageId, notePageDocument.Xnm);                    
+                    result.SyncPageId = OneNoteProxyLinksHandler.GeneratePId();   
+                    OneNoteUtils.UpdateElementMetaData(notePageDocument.Content.Root, Constants.Key_PId, result.SyncPageId, notePageDocument.Xnm);                    
                 }                
 
                 var fullNotebookHierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsPages, false);
@@ -855,7 +859,7 @@ namespace BibleCommon.Services
             {             
                 if (searchResult.VersePointerHtmlStartIndex != searchResult.VersePointerStartIndex)
                 {
-                    if (StringUtils.GetChar(textElementValue, searchResult.VersePointerHtmlStartIndex) == VerseRecognitionManager.ChapterVerseDelimiter
+                    if (VerseRecognitionManager.GetChapterVerseDelimiters().Contains(StringUtils.GetChar(textElementValue, searchResult.VersePointerHtmlStartIndex))
                         && StringUtils.GetChar(textElementValue, searchResult.VersePointerHtmlStartIndex + 1) == '<')  // случай типа "<span lang=ru>:</span><span lang=en-US>12</span>"
                     {
                         startVerseNameIndex = searchResult.VersePointerHtmlStartIndex;

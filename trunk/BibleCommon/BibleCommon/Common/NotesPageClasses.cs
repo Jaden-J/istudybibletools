@@ -774,7 +774,7 @@ namespace BibleCommon.Common
                                 if (notePageHierarchyElInfo.Type == HierarchyElementType.Page)
                                 {
                                     existingLinkInHierarchy = parentHierarchy.XPathSelectElement(
-                                                string.Format("one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", Constants.Key_SyncId, otherLevel.Id),
+                                                string.Format("one:Page[./one:Meta[@content=\"{1}\"]]", Constants.Key_SyncId, otherLevel.Id),
                                                 notebookHierarchy.Xnm);
 
                                     if (existingLinkInHierarchy == null)  // ещё не обновили метаданные в кэше                                

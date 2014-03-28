@@ -45,7 +45,7 @@ namespace BibleCommon.Handlers
             {
                 var pageInfo = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, pageObjectInfo.PageId, ApplicationCache.PageType.NotePage);
                 var updatePageResult = GetOrUpdateBnPId(pageInfo.Content.Root, pageInfo.Xnm);
-
+                bnPId = updatePageResult.Id;
                 if (updatePageResult.Changed)
                 {
                     pageInfo.WasModified = true;
@@ -80,16 +80,21 @@ namespace BibleCommon.Handlers
         public static UpdateResult GetOrUpdateBnPId(XElement pageEl, XmlNamespaceManager xnm)
         {
             var result = new UpdateResult();
-            result.Id = OneNoteUtils.GetElementMetaData(pageEl, Consts.Constants.Key_PageId, xnm);
+            result.Id = OneNoteUtils.GetElementMetaData(pageEl, Consts.Constants.Key_PId, xnm);
 
             if (string.IsNullOrEmpty(result.Id))
             {
-                result.Id = Guid.NewGuid().ToString();
-                OneNoteUtils.UpdateElementMetaData(pageEl, Consts.Constants.Key_PageId, result.Id, xnm);
+                result.Id = GeneratePId();
+                OneNoteUtils.UpdateElementMetaData(pageEl, Consts.Constants.Key_PId, result.Id, xnm);
                 result.Changed = true;
             }
 
             return result;
+        }
+
+        public static string GeneratePId()
+        {
+            return Guid.NewGuid().ToString();
         }
 
         public static UpdateResult GetOrUpdateBnOeId(XElement el, XmlNamespaceManager xnm)
@@ -184,14 +189,14 @@ namespace BibleCommon.Handlers
             var hierarchyInfo = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsPages);
 
             var pEl = hierarchyInfo.Content
-                .XPathSelectElement(string.Format("//one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", Consts.Constants.Key_PageId, bnPId), hierarchyInfo.Xnm);
+                .XPathSelectElement(string.Format("//one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", Consts.Constants.Key_PId, bnPId), hierarchyInfo.Xnm);
 
             if (pEl == null)
             {
                 hierarchyInfo = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsPages, true);
 
                 pEl = hierarchyInfo.Content
-                    .XPathSelectElement(string.Format("//one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", Consts.Constants.Key_PageId, bnPId), hierarchyInfo.Xnm);
+                    .XPathSelectElement(string.Format("//one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]", Consts.Constants.Key_PId, bnPId), hierarchyInfo.Xnm);
             }
 
             if (pEl != null)

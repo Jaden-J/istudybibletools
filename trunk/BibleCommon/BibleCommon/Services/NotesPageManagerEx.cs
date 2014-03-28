@@ -669,7 +669,7 @@ namespace BibleCommon.Services
                             if (elInfo.Type == HierarchyElementType.Page)
                             {
                                 existingLinkInHierarchy = parentHierarchy.XPathSelectElement(
-                                            string.Format("one:Page[./one:Meta[@name=\"{0}\" and @content=\"{1}\"]]",
+                                            string.Format("one:Page[./one:Meta[@content=\"{1}\"]]",
                                                 Constants.Key_SyncId, existingLinkId),
                                             xnm);
                             }

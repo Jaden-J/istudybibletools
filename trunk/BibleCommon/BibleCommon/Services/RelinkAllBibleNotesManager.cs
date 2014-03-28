@@ -38,8 +38,6 @@ namespace BibleCommon.Services
             foreach (XElement textElement in biblePageDocument.Content.Root
                 .XPathSelectElements("//one:Outline/one:OEChildren/one:OE/one:Table/one:Row/one:Cell[2]/one:OEChildren/one:OE/one:T", biblePageDocument.Xnm))
             {
-                OneNoteUtils.NormalizeTextElement(textElement);
-
                 var notesCellEl = textElement.Parent.Parent.Parent;
                 var bibleVerseElement = notesCellEl.Parent.XPathSelectElement("one:Cell[1]/one:OEChildren/one:OE/one:T", biblePageDocument.Xnm);
 
@@ -68,6 +66,8 @@ namespace BibleCommon.Services
         private bool RelinkBiblePageNote(ref Application oneNoteApp, string bibleSectionId, string biblePageId, string biblePageName, XElement textElement, VersePointer vp, VerseNumber? verseNumber)
         {
             bool wasModified = false;
+            OneNoteUtils.NormalizeTextElement(textElement);
+
             if (SettingsManager.Instance.StoreNotesPagesInFolder)
             {
                 var link = OpenNotesPageHandler.GetCommandUrlStatic(vp, SettingsManager.Instance.ModuleShortName, 
@@ -76,7 +76,7 @@ namespace BibleCommon.Services
                                                                                     : NotesPageType.Chapter);                
                 string newNotesPageLink = string.Format("<font size='2pt'>{0}</font>",
                                 OneNoteUtils.GetLink(SettingsManager.Instance.PageName_Notes, link));
-
+                
                 if (!LinksAreEqual(textElement.Value, SettingsManager.Instance.PageName_Notes, link, newNotesPageLink))
                 {
                     textElement.Value = newNotesPageLink;

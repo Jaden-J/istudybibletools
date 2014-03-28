@@ -247,7 +247,7 @@ namespace BibleCommon.Services
 
                 if (linkProxyInfo.UseProxyLinkIfAvailable && SettingsManager.Instance.UseProxyLinksForLinks)
                 {
-                    if (linkProxyInfo.UseAdvancedProxy)
+                    if (linkProxyInfo.UseAdvancedProxy && SettingsManager.Instance.UseAdvancedProxyForOneNoteLinks)
                     {
                         link = GetProxyLink(ref oneNoteApp, pageObjectInfo, linkProxyInfo.AutoCommitLinkPage);                         
                     }
