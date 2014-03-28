@@ -560,6 +560,8 @@ namespace BibleConfigurator
             SettingsManager.Instance.RubbishPage_ExcludedVersesLinking = chkRubbishExcludedVersesLinking.Checked;
             SettingsManager.Instance.UseProxyLinksForStrong = chkUseProxyLinksForStrong.Checked;
             SettingsManager.Instance.UseProxyLinksForLinks = chkUseProxyLinksForLinks.Checked;
+            SettingsManager.Instance.UseAdvancedProxyForOneNoteLinks = chkUseAdvancedProxyForOneNoteLinks.Checked;
+            SettingsManager.Instance.UseCommaDelimeter = chkUseCommaDelimeter.Checked;
 
             if (SettingsManager.Instance.UseProxyLinksForBibleVerses != chkUseProxyLinksForBibleVerses.Checked && !chkUseProxyLinksForBibleVerses.Checked)  // то есть мы перестали использовать прокси ссылки для стихов Библии
             {
@@ -657,8 +659,10 @@ namespace BibleConfigurator
                 || SettingsManager.Instance.PageWidth_Notes.ToString() != tbNotesPageWidth.Text
                 || SettingsManager.Instance.PageWidth_RubbishNotes.ToString() != tbRubbishNotesPageWidth.Text
                 || SettingsManager.Instance.UseProxyLinksForStrong != chkUseProxyLinksForStrong.Checked
+                || SettingsManager.Instance.UseAdvancedProxyForOneNoteLinks != chkUseAdvancedProxyForOneNoteLinks.Checked
                 || SettingsManager.Instance.UseProxyLinksForLinks != chkUseProxyLinksForLinks.Checked
-                || SettingsManager.Instance.UseProxyLinksForBibleVerses != chkUseProxyLinksForBibleVerses.Checked;
+                || SettingsManager.Instance.UseProxyLinksForBibleVerses != chkUseProxyLinksForBibleVerses.Checked
+                || SettingsManager.Instance.UseCommaDelimeter != chkUseCommaDelimeter.Checked;
 
         }
 
@@ -1078,7 +1082,9 @@ namespace BibleConfigurator
 
             chkUseProxyLinksForStrong.Checked = SettingsManager.Instance.UseProxyLinksForStrong;
             chkUseProxyLinksForLinks.Checked = SettingsManager.Instance.UseProxyLinksForLinks;
+            chkUseAdvancedProxyForOneNoteLinks.Checked = SettingsManager.Instance.UseAdvancedProxyForOneNoteLinks;
             chkUseProxyLinksForBibleVerses.Checked = SettingsManager.Instance.UseProxyLinksForBibleVerses;
+            chkUseCommaDelimeter.Checked = SettingsManager.Instance.UseCommaDelimeter;
 
             chkUseRubbishPage_CheckedChanged(this, null);
             chkUseFolderForBibleNotesPages_CheckedChanged(this, null);
@@ -1388,7 +1394,9 @@ namespace BibleConfigurator
             chkRubbishExcludedVersesLinking.Enabled = !chkDefaultParameters.Checked;
             chkUseProxyLinksForStrong.Enabled = !chkDefaultParameters.Checked;
             chkUseProxyLinksForBibleVerses.Enabled = !chkDefaultParameters.Checked;
+            chkUseAdvancedProxyForOneNoteLinks.Enabled = !chkDefaultParameters.Checked;
             chkUseProxyLinksForLinks.Enabled = !chkDefaultParameters.Checked;
+            chkUseCommaDelimeter.Enabled = !chkDefaultParameters.Checked;
 
             chkUseRubbishPage_CheckedChanged(this, null);
             chkUseFolderForBibleNotesPages_CheckedChanged(this, null);

@@ -398,19 +398,24 @@ namespace BibleCommon.Helpers
             }
             else
             {
-                XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
+                var nms = XNamespace.Get(Constants.OneNoteXmlNs);
 
-                var pageSettings = el.XPathSelectElement("one:MediaPlaylist", xnm) ?? el.XPathSelectElement("one:PageSettings", xnm);
-                
                 var meta = new XElement(nms + "Meta",
                                             new XAttribute("name", key),
                                             new XAttribute("content", value));
+                
+                var beforeMetaEl = el.XPathSelectElement("one:MediaPlaylist", xnm) ?? el.XPathSelectElement("one:PageSettings", xnm);
 
-
-                if (pageSettings != null)
-                    pageSettings.AddBeforeSelf(meta);
+                if (beforeMetaEl != null)
+                    beforeMetaEl.AddBeforeSelf(meta);
                 else
-                    el.AddFirst(meta);
+                {
+                    var afterMetaEl = el.XPathSelectElement("one:Tag", xnm);
+                    if (afterMetaEl != null)
+                        afterMetaEl.AddAfterSelf(meta);
+                    else
+                        el.AddFirst(meta);
+                }
             }
         }
 
