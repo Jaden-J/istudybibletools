@@ -549,11 +549,11 @@ namespace TestProject
             //    Path.Combine(TempFolderPath, "goetze"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0));
 
 
-            var converter = new BibleQuotaDictionaryConverter("TestDictionaries", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
+            var converter = new BibleQuotaDictionaryConverter("TestDict", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
              new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
                 }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
-               Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 1));
+               Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 2));
 
             converter.Convert();
 
