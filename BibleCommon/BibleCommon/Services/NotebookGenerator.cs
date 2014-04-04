@@ -29,14 +29,18 @@ namespace BibleCommon.Services
     {
         public const int MinimalCellWidth = 37;
 
-        public static string AddSection(ref Application oneNoteApp, string sectionGroupId, string sectionName)
+        public static string AddSection(ref Application oneNoteApp, string sectionGroupId, string sectionName, bool addFirst = false)
         {
             XNamespace nms = XNamespace.Get(Constants.OneNoteXmlNs);
             XElement section = new XElement(nms + "Section", new XAttribute("name", sectionName));
 
             XmlNamespaceManager xnm;
             var sectionGroup = OneNoteUtils.GetHierarchyElement(ref oneNoteApp, sectionGroupId, HierarchyScope.hsSections, out xnm);
-            sectionGroup.Root.Add(section);
+
+            if (addFirst)
+                sectionGroup.Root.AddFirst(section);
+            else
+                sectionGroup.Root.Add(section);
 
             OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
             {
@@ -48,6 +52,14 @@ namespace BibleCommon.Services
             string sectionId = (string)section.Attribute("ID");
 
             return sectionId;
+        }
+
+        public static void DeleteHierarchy(ref Application oneNoteApp, string hierarchyId)
+        {
+            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+            {
+                oneNoteAppSafe.DeleteHierarchy(hierarchyId, default(DateTime), true);
+            });           
         }
 
 
