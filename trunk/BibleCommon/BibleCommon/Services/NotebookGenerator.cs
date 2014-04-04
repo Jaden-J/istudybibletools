@@ -262,18 +262,28 @@ namespace BibleCommon.Services
             return cell;
         }
 
-        public static XElement GetCell(XElement child, string locale, XNamespace nms)
+        public static XElement GetCell(string locale, XNamespace nms, params XElement[] children)
         {
             var cell = new XElement(nms + "Cell",
                             new XElement(nms + "OEChildren",
-                                new XElement(nms + "OE",
-                                    child
-                                    )));
+                                children));
 
             if (!string.IsNullOrEmpty(locale))
                 cell.Add(new XAttribute("lang", locale));
 
             return cell;
+        }
+
+        public static XElement[] TransformTextToParagraphs(string textToTransform, XNamespace nms)
+        {
+            var oeEls = new List<XElement>();
+
+            foreach (var s in textToTransform.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                oeEls.Add(new XElement(nms + "OE", new XElement(nms + "T", new XCData(s))));                
+            }
+
+            return oeEls.ToArray();
         }
 
         public static void AddChildToCell(XElement cell, string content, XNamespace nms)
@@ -285,8 +295,9 @@ namespace BibleCommon.Services
 
         public static XElement GetCell(string cellText, string locale, XNamespace nms)
         {
-            var cell = GetCell(new XElement(nms + "T",
-                                    new XCData(cellText)), locale, nms);
+            var cell = GetCell(locale, nms, new XElement(nms + "OE",                                    
+                                  new XElement(nms + "T",
+                                    new XCData(cellText))));
 
             return cell;
         }
