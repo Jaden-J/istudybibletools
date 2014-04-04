@@ -102,9 +102,12 @@ namespace BibleCommon.Services
         private NotesPagesProviderManager _notesPagesProviderManager;
         private bool _pageContentWasChanged = false;
 
+        public List<VersePointer> FoundVerses { get; set; }
+
         public NoteLinkManager()
         {            
-            _notesPagesProviderManager = new NotesPagesProviderManager();            
+            _notesPagesProviderManager = new NotesPagesProviderManager();
+            FoundVerses = new List<VersePointer>();
         }        
 
         public event EventHandler<ProcessVerseEventArgs> OnNextVerseProcess;        
@@ -506,9 +509,9 @@ namespace BibleCommon.Services
         }
 
         private void FireProcessVerseEvent(bool foundVerse, VersePointer vp)
-        {
+        {   
             if (OnNextVerseProcess != null)
-            {
+            {   
                 var args = new ProcessVerseEventArgs(foundVerse, vp);
                 OnNextVerseProcess(this, args);
                 if (args.CancelProcess)
@@ -889,7 +892,7 @@ namespace BibleCommon.Services
             }            
 
             if (verses.Count == 0)
-                verses.Add(searchResult.VersePointer);
+                verses.Add(searchResult.VersePointer);            
 
             if (verseScopeInfo.IsImportantVerse)
                 verseWeight = Constants.ImportantVerseWeight;
@@ -923,6 +926,7 @@ namespace BibleCommon.Services
                                     searchResult.VersePointer.OriginalVerseName);                                                            
                         }))
                 {
+                    FoundVerses.Add(vp);
                     if (first)
                     {                        
                         if (linkDepth >= AnalyzeDepth.SetVersesLinks)
