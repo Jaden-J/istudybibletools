@@ -10,10 +10,11 @@ using System.Xml.Linq;
 using BibleCommon.Consts;
 using BibleCommon.Common;
 using Microsoft.Office.Interop.OneNote;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests
 {
-    public static class TestsHelper
+    public static class TestHelper
     {
         public const string TestNotebookName = "Test";
         public const string TestSectionName = "Test";
@@ -84,6 +85,13 @@ namespace Tests
             DeleteTestPage(ref oneNoteApp, pageId);
 
             return new AnalyzeResult() { OutputHTML = tEl.Value, FoundVerses = linkManager.FoundVerses };
+        }
+
+        public static void CheckVerses(AnalyzeResult result, params string[] verses)
+        {
+            Assert.IsTrue(result.FoundVerses.Count == verses.Length);
+            foreach(var verse in verses)
+                Assert.IsTrue(result.FoundVerses.Contains(new VersePointer(verse)));
         }
     }
 }
