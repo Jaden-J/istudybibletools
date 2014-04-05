@@ -316,10 +316,8 @@ namespace BibleConfigurator.ModuleConverter
 
         private void RemovePage(XDocument pageDocument)
         {
-            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
-            {
-                _oneNoteApp.DeleteHierarchy((string)pageDocument.Root.Attribute("ID"), default(DateTime), true);
-            });
+            NotebookGenerator.DeleteHierarchy(ref _oneNoteApp, (string)pageDocument.Root.Attribute("ID"));
+
             PagesCount--;
         }
 

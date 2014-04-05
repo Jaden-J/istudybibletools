@@ -19,7 +19,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RibbonButtons", "setup\Ribb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISBTCommandHandler", "ISBTCommandHandler\ISBTCommandHandler.csproj", "{00C5F241-D93E-453B-A42A-9110514E835A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{AF988BBD-8335-40F6-9C68-916A4AA7556F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E7B48CD6-4831-437D-B7BD-4AB19506C909}"
+	ProjectSection(SolutionItems) = preProject
+		BibleNote.vsmdi = BibleNote.vsmdi
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = BibleNote.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -109,6 +121,16 @@ Global
 		{00C5F241-D93E-453B-A42A-9110514E835A}.Release|Mixed Platforms.Build.0 = Release|x86
 		{00C5F241-D93E-453B-A42A-9110514E835A}.Release|x86.ActiveCfg = Release|x86
 		{00C5F241-D93E-453B-A42A-9110514E835A}.Release|x86.Build.0 = Release|x86
+		{AF988BBD-8335-40F6-9C68-916A4AA7556F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF988BBD-8335-40F6-9C68-916A4AA7556F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF988BBD-8335-40F6-9C68-916A4AA7556F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AF988BBD-8335-40F6-9C68-916A4AA7556F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AF988BBD-8335-40F6-9C68-916A4AA7556F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AF988BBD-8335-40F6-9C68-916A4AA7556F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF988BBD-8335-40F6-9C68-916A4AA7556F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF988BBD-8335-40F6-9C68-916A4AA7556F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{AF988BBD-8335-40F6-9C68-916A4AA7556F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{AF988BBD-8335-40F6-9C68-916A4AA7556F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
