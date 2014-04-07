@@ -34,7 +34,9 @@ namespace TestProject
         private const string ForGeneratingFolderPath = @"C:\Users\Alexander\SkyDrive\BibleNote\ForGenerating";
         private const string TempFolderPath = @"C:\temp\BibleNote";
 
-        private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;      
+        private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
+
+        private static readonly object _locker = new object();
 
         [STAThread]
         unsafe static void Main(string[] args)
@@ -46,7 +48,7 @@ namespace TestProject
             _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();             
 
             try
-            {   
+            {                            
 
                 //CheckAdvancedProxyLinks();
 
@@ -82,7 +84,7 @@ namespace TestProject
 
                 //AddColorLink();
 
-                GenerateRuDictionary();
+                //GenerateRuDictionary();
 
                 //GenerateEnDictionary();
 
