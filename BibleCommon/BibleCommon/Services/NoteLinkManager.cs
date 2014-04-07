@@ -89,7 +89,7 @@ namespace BibleCommon.Services
         {
             Yes,
             No,
-            ChangeDetailedOnNotDetailed   // найти детальную ссылку и сделать её не детальной
+            ChangeDetailedOnNotDetailed   // найти детальную ссылку и сделать её недетальной
         }
 
         public bool AnalyzeAllPages { get; set; }
@@ -394,7 +394,7 @@ namespace BibleCommon.Services
                     if (!IsExcludedCurrentNotePage)
                     {
                         if (!SettingsManager.Instance.ExcludedVersesLinking                     // иначе мы её обработали сразу же, когда встретили
-                            || SettingsManager.Instance.StoreNotesPagesInFolder)   
+                            || SettingsManager.Instance.StoreNotesPagesInFolder)
                         {
                             LinkVerseToNotesPage(ref oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, chapterInfo.ChapterWeight,
                             chapterInfo.ChapterPosition, true,
@@ -403,7 +403,7 @@ namespace BibleCommon.Services
                                 NotesPageType.Chapter, chapterInfo.IsImportantChapter,
                             (chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapter
                                     || chapterInfo.VersePointerSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ExcludableChapterWithoutBookName) ? true : force, false, DetailedLink.ChangeDetailedOnNotDetailed);
-                    }
+                        }
                     }
 
                     if (SettingsManager.Instance.RubbishPage_Use && !SettingsManager.Instance.StoreNotesPagesInFolder)
