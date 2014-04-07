@@ -87,5 +87,28 @@ namespace BibleCommon.Common
         {
             this.ResultType = VersePointerSearchResult.SearchResultType.Nothing;
         }
+
+        public string GetLinkText()
+        {
+            var link = TextElement.Value.Substring(VersePointerStartIndex, VersePointerEndIndex - VersePointerStartIndex);
+            var indexOfLink = link.IndexOf("</a>");
+            if (indexOfLink != -1)
+            {
+                link = link.Substring(0, indexOfLink);                
+            }
+
+            return link;
+        }
+
+        public string GetLinkHtml()
+        {
+            var startIndex = VersePointerHtmlStartIndex == -1 ? 0 : VersePointerHtmlStartIndex;
+            return TextElement.Value.Substring(startIndex, VersePointerHtmlEndIndex - startIndex);                                    
+        }
+
+        public string GetLinkStyle()
+        {
+            return StringUtils.GetAttributeValue(GetLinkHtml(), "style");
+        }
     }
 }

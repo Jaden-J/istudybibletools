@@ -103,7 +103,7 @@ namespace BibleCommon.Services
 
         #endregion
 
-        private static object _locker = new object();
+        private static readonly object _locker = new object();
 
         private static volatile ApplicationCache _instance = null;
         public static ApplicationCache Instance
@@ -240,35 +240,41 @@ namespace BibleCommon.Services
 
             if (!_linksCache.ContainsKey(pageObjectInfo))
             {
-                var link = string.Empty;
-
-                if (linkProxyInfo == null)
-                    throw new Exception("linkProxyInfo is null");
-
-                if (linkProxyInfo.UseProxyLinkIfAvailable && SettingsManager.Instance.UseProxyLinksForLinks)
+                lock (_locker)
                 {
-                    if (linkProxyInfo.UseAdvancedProxy && SettingsManager.Instance.UseAdvancedProxyForOneNoteLinks)
+                    if (!_linksCache.ContainsKey(pageObjectInfo))
                     {
-                        link = GetProxyLink(ref oneNoteApp, pageObjectInfo, linkProxyInfo.AutoCommitLinkPage);                         
-                    }
-                    else
-                    {
-                        OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                        var link = string.Empty;
+
+                        if (linkProxyInfo == null)
+                            throw new Exception("linkProxyInfo is null");
+
+                        if (linkProxyInfo.UseProxyLinkIfAvailable && SettingsManager.Instance.UseProxyLinksForLinks)
                         {
-                            oneNoteAppSafe.GetHyperlinkToObject(pageObjectInfo.PageId, pageObjectInfo.ObjectId, out link);
-                        });
-                        link = GetSimpleProxyLink(link, pageObjectInfo.PageId, pageObjectInfo.ObjectId);
+                            if (linkProxyInfo.UseAdvancedProxy && SettingsManager.Instance.UseAdvancedProxyForOneNoteLinks)
+                            {
+                                link = GetProxyLink(ref oneNoteApp, pageObjectInfo, linkProxyInfo.AutoCommitLinkPage);
+                            }
+                            else
+                            {
+                                OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                                {
+                                    oneNoteAppSafe.GetHyperlinkToObject(pageObjectInfo.PageId, pageObjectInfo.ObjectId, out link);
+                                });
+                                link = GetSimpleProxyLink(link, pageObjectInfo.PageId, pageObjectInfo.ObjectId);
+                            }
+                        }
+                        else
+                        {
+                            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
+                            {
+                                oneNoteAppSafe.GetHyperlinkToObject(pageObjectInfo.PageId, pageObjectInfo.ObjectId, out link);
+                            });
+                        }
+
+                        _linksCache.Add(pageObjectInfo, link);
                     }
                 }
-                else
-                {
-                    OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, (oneNoteAppSafe) =>
-                    {
-                        oneNoteAppSafe.GetHyperlinkToObject(pageObjectInfo.PageId, pageObjectInfo.ObjectId, out link);
-                    });
-                }
-
-                _linksCache.Add(pageObjectInfo, link);
             }
 
             return _linksCache[pageObjectInfo];
@@ -359,12 +365,15 @@ namespace BibleCommon.Services
 
             if (!_commentPagesIdsCache.ContainsKey(key))
             {
-                //lock (_locker)         // пока в этом нет смысла
+                lock (_locker)
                 {
-                    string commentPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(ref oneNoteApp, bibleSectionId, biblePageId, biblePageName,
-                        commentPageName, isSummaryNotesPage, out pageWasCreated, verseLinkParentPageId, pageLevel, createNewPageIfNeeded);
-                    //if (!_commentPagesIdsCache.ContainsKey(key))     // пока в этом нет смысла
+                    if (!_commentPagesIdsCache.ContainsKey(key))
+                    {
+                        string commentPageId = VerseLinkManager.FindVerseLinkPageAndCreateIfNeeded(ref oneNoteApp, bibleSectionId, biblePageId, biblePageName,
+                            commentPageName, isSummaryNotesPage, out pageWasCreated, verseLinkParentPageId, pageLevel, createNewPageIfNeeded);
+                        //if (!_commentPagesIdsCache.ContainsKey(key))     // пока в этом нет смысла
                         _commentPagesIdsCache.Add(key, commentPageId);
+                    }
                 }
             }
 
@@ -388,7 +397,7 @@ namespace BibleCommon.Services
 
             if (!_hierarchyContentCache.ContainsKey(contentId) || refreshCache)
             {
-                //lock (_locker)
+                lock (_locker)
                 {
                     string xml = null;
                     try
@@ -430,7 +439,7 @@ namespace BibleCommon.Services
             var key = GetPageContentCacheKey(pageId, pageInfo);
             if (!_pageContentCache.ContainsKey(key) || refreshCache)
             {
-                //lock (_locker)
+                lock (_locker)
                 {
                     string xml = null;
                     try
