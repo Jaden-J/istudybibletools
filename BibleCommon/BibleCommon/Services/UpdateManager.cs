@@ -53,7 +53,7 @@ namespace BibleCommon.Services
                         Utils.DoWithExceptionHandling(false, () => TryToRegenerateNotesPages(false));
                 }
 
-                if (SettingsManager.Instance.VersionFromSettings == null || SettingsManager.Instance.VersionFromSettings < new Version(3, 2, 16))
+                if (SettingsManager.Instance.VersionFromSettings == null || SettingsManager.Instance.VersionFromSettings < new Version(3, 3, 8))
                 {
                     Utils.DoWithExceptionHandling(false, NotesPageManagerFS.UpdateResources);
                 }
