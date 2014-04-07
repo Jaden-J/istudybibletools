@@ -741,8 +741,8 @@ namespace BibleCommon.Services
         /// <returns></returns>
         private bool IsVersedChapter(FoundVerseInfo verseInfo)
         {
-            if (verseInfo.LinkInfo.LinkType == VerseRecognitionManager.LinkInfo.LinkTypeEnum.LinkAfterQuickAnalyze
-                && VersePointerSearchResult.IsChapterAndVerse(verseInfo.SearchResult.ResultType))
+            if (verseInfo.LinkInfo.LinkType == VerseRecognitionManager.LinkInfo.LinkTypeEnum.LinkAfterQuickAnalyze                  // вариант (verseInfo.LinkInfo.LinkType == VerseRecognitionManager.LinkInfo.LinkTypeEnum.LinkAfterFullAnalyze && force) уже рассматривается выше
+                && VersePointerSearchResult.IsChapterAndVerse(verseInfo.SearchResult.ResultType))           
             {
                 var link = verseInfo.SearchResult.GetLinkText();                
                 if (!string.IsNullOrEmpty(link))
