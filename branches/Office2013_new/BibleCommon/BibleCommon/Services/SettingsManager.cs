@@ -168,6 +168,7 @@ namespace BibleCommon.Services
 
         public Version NewVersionOnServer { get; set; }
         public DateTime? NewVersionOnServerLatestCheckTime { get; set; }
+        public string NewVersionInfo { get; set; }
         public int PageWidth_Notes { get; set; }
         public int Language { get; set; }
         public int PageWidth_Bible { get; set; }
@@ -495,7 +496,8 @@ namespace BibleCommon.Services
         private void LoadAdditionalSettings(XDocument xdoc)
         {
             this.NewVersionOnServer = GetParameterValue<Version>(xdoc, Consts.Constants.ParameterName_NewVersionOnServer, null, value => new Version(value));
-            this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, null, value => Utils.ParseDateTime(value));            
+            this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, null, value => Utils.ParseDateTime(value));
+            this.NewVersionInfo = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_NewVersionInfo);
             this.Language = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_Language, Thread.CurrentThread.CurrentUICulture.LCID);
             this.ModuleShortName = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ModuleName, string.Empty);
 
@@ -690,6 +692,7 @@ namespace BibleCommon.Services
             {
                 if (VersionFromSettings == null || VersionFromSettings != CurrentVersion)           // то есть версия обновилась
                 {
+                    ShownMessagesManager.ClearMessageWasShown(ShownMessagesManager.MessagesCodes.NewVersionInfo);
                     Save();                                                                         // чтобы применить обновления и записать VersionFromSettings
                 }
             }
@@ -726,6 +729,7 @@ namespace BibleCommon.Services
                                   new XElement(Consts.Constants.ParameterName_NewVersionOnServer, this.NewVersionOnServer),
                                   new XElement(Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, this.NewVersionOnServerLatestCheckTime.HasValue
                                                 ? this.NewVersionOnServerLatestCheckTime.Value.ToString(CultureInfo.InvariantCulture) : string.Empty),
+                                  new XElement(Consts.Constants.ParameterName_NewVersionInfo, this.NewVersionInfo),
                                   new XElement(Consts.Constants.ParameterName_PageWidthNotes, this.PageWidth_Notes),
                                   new XElement(Consts.Constants.ParameterName_ExpandMultiVersesLinking, this.ExpandMultiVersesLinking),
                                   new XElement(Consts.Constants.ParameterName_ExcludedVersesLinking, this.ExcludedVersesLinking),

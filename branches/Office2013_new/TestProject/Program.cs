@@ -48,7 +48,7 @@ namespace TestProject
             _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();             
 
             try
-            {                            
+            {
 
                 //CheckAdvancedProxyLinks();
 
