@@ -148,6 +148,12 @@
     <Compile Include="UI\Forms\ErrorsForm.Designer.cs">
       <DependentUpon>ErrorsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Forms\HtmlMessageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\HtmlMessageForm.Designer.cs">
+      <DependentUpon>HtmlMessageForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Forms\MessageForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -178,6 +184,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Forms\ErrorsForm.ru.resx">
       <DependentUpon>ErrorsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\HtmlMessageForm.resx">
+      <DependentUpon>HtmlMessageForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\HtmlMessageForm.ru.resx">
+      <DependentUpon>HtmlMessageForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Forms\MessageForm.resx">
       <DependentUpon>MessageForm.cs</DependentUpon>

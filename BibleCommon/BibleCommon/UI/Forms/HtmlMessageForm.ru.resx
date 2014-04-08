@@ -118,28 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        AAABAAEAEBAAAAAAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAQAQAAAAAAAAAAAAAAAAAAAAA
-        AAD///8B////Ac1l/wn2bP839nD/Z9Bh2JeeSaTDfzuF8Xc3fP91Nnr/////Af///wH///8B////Af//
-        /wH///8BuljDr5ZGmtt/O4T/fjqD/306gv97OYD/eTh+/3g4ff93N3z/dTZ6/3s5gP97OYD/fDqD+dhj
-        4ZH///8B////AYE8hv+BPIb/fzuE/346g/9+OoP/ezmA/3k4fv94OH3/dzd8/3U2ev////////////z6
-        /P97OYD/fzmG8+Rp64uBPIb/gTyG/387hP9+OoP/fjqD/3g4ff93N3z/dzd8/3c3fP91Nnr/////////
-        ////////ezmA//n2+f9/OYbzgTyG/387hP9+OoP/fjqD/3g4ff93N3z/dzd8/3c3fP93N3z/dTZ6/3s5
-        gP97OYD//////3s5gP//////ezmA/4E8hv9/O4T/fjqD/346g///////dzd8/3c3fP93N3z/dzd8/3U2
-        ev////////////////97OYD/+fb5/385hvN/O4T/fzuE/346g/9+OoP//////3c3fP93N3z/dzd8/3c3
-        fP91Nnr/ezmA/3s5gP//////ezmA/387hPfbZ+iNfzuE/387hP9+OoP/fjqD//////93N3z/dzd8/3c3
-        fP93N3z/dTZ6/////////////////3s5gP/6+Pv/fzuE9387hP9/O4T/fjqD/346g///////dzd8/3c3
-        fP93N3z/dzd8/3U2ev97OYD/ezmA//////97OYD/+vj7/387hPeBPIb/fzuE//////////////////38
-        /f/8+vz/dzd8/3c3fP91Nnr/////////////////ezmA/3s5gP+bRqHLgTyG/387hP9+OoP/fjqD////
-        //93N3z/dzd8/3c3fP93N3z/dTZ6/3s5gP97OYD////////////59vn/fzmG84E8hv9/O4T/fzuE/346
-        g///////dzd8/3c3fP93N3z/dzd8/3U2ev///////////////////////////3s5gP+BPIb/fzuE/387
-        hP9+OoP/dzd8/3c3fP93N3z/dzd8/3c3fP91Nnr/ezmA/3s5gP////////////n2+f9/OYbzgTyG/4E8
-        hv9/O4T/fjqD/306gv97OYD/eTh+/3g4ff93N3z/dTZ6/////////////Pr8/3s5gP9/OYbz5Gnri7pY
-        w6+WRprbfzuE/346g/99OoL/ezmA/3k4fv94OH3/dzd8/3U2ev97OYD/ezmA/3w6g/nYY+GR////Af//
-        /wH///8B////Ac1l/wn2dv8z9nD/Z9Zj3pOeR6fBgTqE7Xc3fP91Nnr/////Af///wH///8B////Af//
-        /wH///8BAAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA
-        //8AAP//AAD//w==
-</value>
+  <data name="chkDontShow.Size" type="System.Drawing.Size, System.Drawing">
+    <value>224, 17</value>
+  </data>
+  <data name="chkDontShow.Text" xml:space="preserve">
+    <value>Больше не показывать это сообщение</value>
+  </data>
+  <data name="btnClose.Text" xml:space="preserve">
+    <value>Закрыть</value>
   </data>
 </root>

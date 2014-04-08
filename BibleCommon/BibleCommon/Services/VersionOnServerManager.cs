@@ -11,36 +11,38 @@ using System.IO;
 
 namespace BibleCommon.Services
 {
-    public static class VersionOnServerManager
+    public class VersionOnServerManager
     {
-        public static bool NeedToUpdate()
+        public Version NewVersion { get; set; }
+        public string ReleaseInfo { get; set; }
+
+        public bool NeedToUpdate()
         {
             bool result = false;
 
             if (SettingsManager.Instance.NewVersionOnServer != null
                    && SettingsManager.Instance.NewVersionOnServer > SettingsManager.Instance.CurrentVersion)
+            {
+                NewVersion = SettingsManager.Instance.NewVersionOnServer;
+                ReleaseInfo = SettingsManager.Instance.NewVersionInfo;
                 result = true;
+            }
             else
             {
-                Version newVersion = null;
+                if (!SettingsManager.Instance.NewVersionOnServerLatestCheckTime.HasValue
+                    || SettingsManager.Instance.NewVersionOnServerLatestCheckTime.Value.Add(Constants.NewVersionCheckPeriod) < DateTime.Now)
+                    TryToGetVersionOnServer();
 
-                if (SettingsManager.Instance.NewVersionOnServerLatestCheckTime.HasValue)
-                {
-                    if (SettingsManager.Instance.NewVersionOnServerLatestCheckTime.Value.Add(Constants.NewVersionCheckPeriod) < DateTime.Now)
-                        newVersion = TryToGetVersionOnServer();
-                }
-                else
-                    newVersion = TryToGetVersionOnServer();
-
-                if (newVersion != null)
+                if (NewVersion != null)
                 {
                     SettingsManager.Instance.NewVersionOnServerLatestCheckTime = DateTime.Now;
 
-                    if (newVersion != SettingsManager.Instance.NewVersionOnServer)
+                    if (NewVersion != SettingsManager.Instance.NewVersionOnServer)
                     {
-                        SettingsManager.Instance.NewVersionOnServer = newVersion;
+                        SettingsManager.Instance.NewVersionOnServer = NewVersion;
+                        SettingsManager.Instance.NewVersionInfo = ReleaseInfo;
 
-                        if (newVersion > SettingsManager.Instance.CurrentVersion)
+                        if (NewVersion > SettingsManager.Instance.CurrentVersion)
                             result = true;
                     }
 
@@ -51,27 +53,26 @@ namespace BibleCommon.Services
             return result;
         }
 
-        private static Version TryToGetVersionOnServer()
+        private void TryToGetVersionOnServer()
         {
-            Version result = null;
-
             try
             {
                 LanguageManager.SetThreadUICulture();
-                XDocument xDoc = Load(BibleCommon.Resources.Constants.NewVersionOnServerFileUrl);
+                var xDoc = Load(BibleCommon.Resources.Constants.NewVersionOnServerFileUrl);
 
-                XElement latestVersion = xDoc.Root.XPathSelectElement("LatestVersion_IStudyBibleTools_RU");
+                var latestVersion = xDoc.Root.XPathSelectElement("LatestVersion");
                 if (latestVersion != null)
-                {
-                    result = new Version(latestVersion.Value);
-                }                
+                    NewVersion = new Version(latestVersion.Value);                
+
+                var versionInfo = xDoc.Root.XPathSelectElement("LatestVersionInfo");
+                if (versionInfo != null)
+                    ReleaseInfo = versionInfo.Value;
+              
             }
             catch (Exception)
             {
                 //todo: log it in system log (not in common log)
             }
-
-            return result;
         }
 
 

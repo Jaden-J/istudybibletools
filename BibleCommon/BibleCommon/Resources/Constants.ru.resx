@@ -915,4 +915,7 @@
   <data name="PageNotFound" xml:space="preserve">
     <value>Страница не найдена</value>
   </data>
+  <data name="NewVersionAvailable" xml:space="preserve">
+    <value>Доступна новая версия</value>
+  </data>
 </root>
