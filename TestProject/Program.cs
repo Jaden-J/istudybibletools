@@ -59,7 +59,7 @@ namespace TestProject
                 //GetBiggestBooks();                            
 
                 //Console.WriteLine(Regex.Replace("<br>no<", string.Format("(^|[^0-9a-zA-Z]){0}($|[^0-9a-zA-Z<])", "no"), @"$1aeasdasds$2", RegexOptions.IgnoreCase));
-                //Console.WriteLine(Regex.Replace("1, 2, ф", @", (\d)", @",$1"));
+                //Console.WriteLine(Regex.Replace("1, 2, ф", @", (\d)", @",$1"));                                
                 //return;
 
                 //Console.WriteLine(StringUtils.GetQueryParameterValue("http://adjhdjkhsadsd.rudasd&sdsd=adsadasd&dsfsdf=sgfdsdfdsf&key=value", "key"));
@@ -146,7 +146,7 @@ namespace TestProject
             CHAPTER maxChapter = null;
             BIBLEBOOK maxChapterBook = null;
             foreach (var b in xmlbible.Books.Skip(skippedBook))
-            {
+            {   
                 var chapterMax = b.Chapters.OrderByDescending(c => c.Verses.Count).First();
                 if (chapterMax.Verses.Count > maxChapterVerses && chapterMax.Verses.Count < 80)
                 {
@@ -551,9 +551,16 @@ namespace TestProject
                 }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Геце",
                 Path.Combine(TempFolderPath, "goetze"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0), (s) => 
                     {
-                        var result = Regex.Replace(s, @", (\d)", @",$1");
-                        result = Regex.Replace(result, @"(\d). (\d)", @"$1,$2");
-                        result = Regex.Replace(result, @"Иов. (\d)", @"Иов $1");
+                        var result = Regex.Replace(s, @", +(\d)", @",$1");
+                        result = Regex.Replace(result, @"(\d)\. +(\d)", @"$1,$2");
+                        result = Regex.Replace(result, @"Иов\. +(\d)", @"Иов $1");
+                        result = Regex.Replace(result, @"Амос\. +(\d)", @"Амос $1");
+                        result = Regex.Replace(result, @"Наум\. +(\d)", @"Наум $1");
+                        result = Regex.Replace(result, @"Авдий +ст\. +(\d)", @"Авдий 1:$1");
+                        result = Regex.Replace(result, @"Иуд\. +ст\. +(\d)", @"Иуд. 1:$1");
+                        result = Regex.Replace(result, @"2 +Иоан\. +ст\. +(\d)", @"2 Иоан. 1:$1");
+                        result = Regex.Replace(result, @"3 +Иоан\. +ст\. +(\d)", @"3 Иоан. 1:$1");
+                        result = Regex.Replace(result, @"Филим\. +ст\. +(\d)", @"Филим. 1:$1");
                         return result;
                     });
 
