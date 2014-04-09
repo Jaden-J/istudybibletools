@@ -89,7 +89,7 @@ namespace BibleCommon.Services
         {
             Yes,
             No,
-            ChangeDetailedOnNotDetailed   // найти детальную ссылку и сделать её не детальной
+            ChangeDetailedOnNotDetailed   // найти детальную ссылку и сделать её недетальной
         }
 
         public bool AnalyzeAllPages { get; set; }
@@ -394,7 +394,7 @@ namespace BibleCommon.Services
                     if (!IsExcludedCurrentNotePage)
                     {
                         if (!SettingsManager.Instance.ExcludedVersesLinking                     // иначе мы её обработали сразу же, когда встретили
-                            || SettingsManager.Instance.StoreNotesPagesInFolder)   
+                            || SettingsManager.Instance.StoreNotesPagesInFolder)
                         {
                             LinkVerseToNotesPage(ref oneNoteApp, chapterInfo.VersePointerSearchResult.VersePointer, chapterInfo.ChapterWeight,
                                 chapterInfo.ChapterPosition, true,
@@ -631,7 +631,8 @@ namespace BibleCommon.Services
             if (!verseInfo.LinkInfo.IsLink
                 || (verseInfo.LinkInfo.LinkType == VerseRecognitionManager.LinkInfo.LinkTypeEnum.LinkAfterQuickAnalyze && (linkDepth >= AnalyzeDepth.Full || force))
                 || (verseInfo.LinkInfo.LinkType == VerseRecognitionManager.LinkInfo.LinkTypeEnum.LinkAfterFullAnalyze && force)
-                || IsExtendedVerse(ref verseInfo))
+                || IsExtendedVerse(ref verseInfo)
+                || IsVersedChapter(verseInfo))
             {
                 FireProcessVerseEvent(true, verseInfo.SearchResult.VersePointer);
 
@@ -718,16 +719,37 @@ namespace BibleCommon.Services
             if ((verseInfo.LinkInfo.LinkType == VerseRecognitionManager.LinkInfo.LinkTypeEnum.LinkAfterFullAnalyze
                  || verseInfo.LinkInfo.LinkType == VerseRecognitionManager.LinkInfo.LinkTypeEnum.LinkAfterQuickAnalyze) && verseInfo.SearchResult.VersePointer.IsMultiVerse)
             {   
-                var link = verseInfo.SearchResult.TextElement.Value.Substring(verseInfo.SearchResult.VersePointerStartIndex, verseInfo.SearchResult.VersePointerEndIndex - verseInfo.SearchResult.VersePointerStartIndex);
-                var indexOfLink = link.IndexOf("</a>");
-                if (indexOfLink != -1)
-                {
-                    link = link.Substring(0, indexOfLink);
+                var link = verseInfo.SearchResult.GetLinkText();                
+                if (!string.IsNullOrEmpty(link))
+                {   
                     if (!link.Contains('-'))   // то есть вроде как бы IsMultiVerse, но при этом нет тире внутри самой ссылки
                     {
                         if (verseInfo.LinkInfo.LinkType == VerseRecognitionManager.LinkInfo.LinkTypeEnum.LinkAfterFullAnalyze)
                             verseInfo.LinkInfo.ExtendedVerse = true;  // помечаем, чтобы потом не анализировать первый стих, который уже анализировали
                         return true; 
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Вначале было "Ин 1", проанализировали быстрым анализом, добавили ":7"
+        /// </summary>
+        /// <param name="verseInfo"></param>
+        /// <returns></returns>
+        private bool IsVersedChapter(FoundVerseInfo verseInfo)
+        {
+            if (verseInfo.LinkInfo.LinkType == VerseRecognitionManager.LinkInfo.LinkTypeEnum.LinkAfterQuickAnalyze                  // вариант (verseInfo.LinkInfo.LinkType == VerseRecognitionManager.LinkInfo.LinkTypeEnum.LinkAfterFullAnalyze && force) уже рассматривается выше
+                && VersePointerSearchResult.IsChapterAndVerse(verseInfo.SearchResult.ResultType))           
+            {
+                var link = verseInfo.SearchResult.GetLinkText();                
+                if (!string.IsNullOrEmpty(link))
+                {
+                    if (link.IndexOfAny(VerseRecognitionManager.GetChapterVerseDelimiters()) == -1)   // то есть вроде как ссылка, но при этом нет разделителя внутри самой ссылки
+                    {
+                        return true;
                     }
                 }
             }
@@ -862,8 +884,8 @@ namespace BibleCommon.Services
             {             
                 if (searchResult.VersePointerHtmlStartIndex != searchResult.VersePointerStartIndex)
                 {
-                    if (VerseRecognitionManager.GetChapterVerseDelimiters().Contains(StringUtils.GetChar(textElementValue, searchResult.VersePointerHtmlStartIndex))
-                        && StringUtils.GetChar(textElementValue, searchResult.VersePointerHtmlStartIndex + 1) == '<')  // случай типа "<span lang=ru>:</span><span lang=en-US>12</span>"
+                    if (VerseRecognitionManager.DefaultChapterVerseDelimiter == StringUtils.GetChar(textElementValue, searchResult.VersePointerHtmlStartIndex)
+                        && StringUtils.GetChar(textElementValue, searchResult.VersePointerHtmlStartIndex + 1) == '<')  // случай типа "Ин 1:5 и в <span lang=ru>:</span><span lang=en-US>12</span>"
                     {
                         startVerseNameIndex = searchResult.VersePointerHtmlStartIndex;
                         endVerseNameIndex = searchResult.VersePointerHtmlEndIndex;
@@ -946,7 +968,7 @@ namespace BibleCommon.Services
                                 textToChange = searchResult.VersePointer.OriginalVerseName;
 
                              hierarchySearchResult = localHierarchySearchResult;
-
+                            
                             var prevLinkText = linkInfo.IsLink ? textElementValue.Substring(startVerseNameIndex, endVerseNameIndex - startVerseNameIndex) : null;
 
                             var additionalParams = new List<string>();                            
@@ -966,17 +988,19 @@ namespace BibleCommon.Services
                             string prevStyle = string.Empty;
                             if (linkInfo.IsLink)
                                 prevStyle = StringUtils.GetAttributeValue(prevLinkText, "style");
+                            else
+                                prevStyle = searchResult.GetLinkStyle();
 
 
                             var linkHref = SettingsManager.Instance.UseProxyLinksForBibleVerses
                                                 ? OpenBibleVerseHandler.GetCommandUrlStatic(vp.ParentVersePointer ?? vp, SettingsManager.Instance.ModuleShortName)
                                                 : localHierarchySearchResult.HierarchyObjectInfo.VerseInfo.ProxyHref;
 
-                            string link = OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, textToChange, linkHref,
+                            string link = OneNoteUtils.GetOrGenerateLink(ref oneNoteApp, textToChange, linkHref, prevStyle,
                                             new LinkId(localHierarchySearchResult.HierarchyObjectInfo.PageId, localHierarchySearchResult.HierarchyObjectInfo.VerseContentObjectId),
                                             new LinkProxyInfo(true, false), additionalParams.ToArray());
 
-                            link = string.Format("<span style='font-weight:normal;{1}'>{0}</span>", link, prevStyle);
+                            //link = string.Format("<span style='font-weight:normal;{1}'>{0}</span>", link, prevStyle);
 
                             var htmlTextBefore = textElementValue.Substring(0, startVerseNameIndex);
                             var htmlTextAfter = textElementValue.Substring(endVerseNameIndex);                            

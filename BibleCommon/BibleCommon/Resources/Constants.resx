@@ -918,4 +918,7 @@ Please take notice:
   <data name="PageNotFound" xml:space="preserve">
     <value>Page not found</value>
   </data>
+  <data name="NewVersionAvailable" xml:space="preserve">
+    <value>The new version is available</value>
+  </data>
 </root>

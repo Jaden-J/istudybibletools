@@ -196,14 +196,7 @@ namespace BibleConfigurator
                         _moduleWasChanged = false;
                     }
 
-                    SaveMultiNotebookParameters(module, ContainerType.Bible,
-                        chkCreateBibleNotebookFromTemplate, cbBibleNotebook, BibleNotebookFromTemplatePath);
-
-                    SaveMultiNotebookParameters(module, ContainerType.BibleStudy,
-                        chkCreateBibleStudyNotebookFromTemplate, cbBibleStudyNotebook, BibleStudyNotebookFromTemplatePath);
-
-                    SaveMultiNotebookParameters(module, ContainerType.BibleComments,
-                        chkCreateBibleCommentsNotebookFromTemplate, cbBibleCommentsNotebook, BibleCommentsNotebookFromTemplatePath);
+                    TryToSaveOrApplyExistingNotebooks(module);                   
 
                     if (!chkUseFolderForBibleNotesPages.Checked)
                     {
@@ -289,6 +282,30 @@ namespace BibleConfigurator
                 this.TopMost = false;
             }
         }
+
+        private void TryToSaveOrApplyExistingNotebooks(ModuleInfo module)
+        {
+            var navigateToBibleAfterCreating = chkCreateBibleNotebookFromTemplate.Checked
+                                                   || chkCreateBibleStudyNotebookFromTemplate.Checked
+                                                   || chkCreateBibleCommentsNotebookFromTemplate.Checked;
+
+            SaveMultiNotebookParameters(module, ContainerType.Bible,
+                chkCreateBibleNotebookFromTemplate, cbBibleNotebook, BibleNotebookFromTemplatePath);
+
+            SaveMultiNotebookParameters(module, ContainerType.BibleStudy,
+                chkCreateBibleStudyNotebookFromTemplate, cbBibleStudyNotebook, BibleStudyNotebookFromTemplatePath);
+
+            SaveMultiNotebookParameters(module, ContainerType.BibleComments,
+                chkCreateBibleCommentsNotebookFromTemplate, cbBibleCommentsNotebook, BibleCommentsNotebookFromTemplatePath);
+
+            if (navigateToBibleAfterCreating)
+            {
+                OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
+                {
+                    _oneNoteApp.NavigateTo(SettingsManager.Instance.NotebookId_Bible);
+                });
+            }
+        }      
 
         internal static int GetMinutesForBibleVersesCacheGenerating()
         {

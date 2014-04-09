@@ -228,7 +228,7 @@ namespace ISBTCommandHandler
                     var sizeParts = size.Split(new char[] { ';' });
                     var w = int.Parse(sizeParts[0]);
                     var h = int.Parse(sizeParts[1]);
-                    if (w > 0 && h > 0)
+                    if (w > 100 && h > 100)
                     {
                         this.Size = new Size(w, h);
                         settingsAreValid = true;

@@ -66,6 +66,8 @@ namespace BibleConfigurator.ModuleConverter
         private List<SectionInfo> DictionarySections { get; set; }
         private FindVersesWithStrongNumberHandler ProtocolHandler { get; set; }
 
+        public Func<string, string> AdditionalStringProcessing { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -74,8 +76,9 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="type"></param>
         /// <param name="manifestFilesFolder"></param>
         public BibleQuotaDictionaryConverter(string notebookName, string dictionaryModuleName, string dictionaryName, string dictionaryDescription, 
-            List<DictionaryFile> dictionaryFiles, StructureType type, string dictionarySectionGroupName, string manifestFilesFolder, string termStartString, string userNotesString, string findAllVersesString,
-            string locale, Version version)
+            List<DictionaryFile> dictionaryFiles, StructureType type, string dictionarySectionGroupName, 
+            string manifestFilesFolder, string termStartString, string userNotesString, string findAllVersesString,
+            string locale, Version version, Func<string, string> additionalStringProcessing = null)
         {
             this.Type = type;
             this.DictionaryModuleName = dictionaryModuleName;
@@ -94,6 +97,7 @@ namespace BibleConfigurator.ModuleConverter
             this.UserNotesString = userNotesString;
             this.FindAllVersesString = findAllVersesString;
             this.Version = version;
+            this.AdditionalStringProcessing = additionalStringProcessing;
             this.Terms = new List<string>();
 
             if (!Directory.Exists(ManifestFilesFolder))
@@ -392,6 +396,9 @@ namespace BibleConfigurator.ModuleConverter
 
             //shell anchor
             result = ShellTag(result, "a");
+
+            if (AdditionalStringProcessing != null)
+                result = AdditionalStringProcessing(result);
 
             return result;
         }

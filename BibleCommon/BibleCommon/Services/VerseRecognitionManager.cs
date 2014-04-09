@@ -46,7 +46,7 @@ namespace BibleCommon.Services
                 {
                     if (_startVerseChars == null)
                     {
-                        _startVerseChars = new List<char>(GetChapterVerseDelimiters()) { '>', ';', ' ', '.' }.ToArray();
+                        _startVerseChars = new List<char>(GetChapterVerseDelimiters()) { ',', '>', ';', ' ', '.' }.Distinct().ToArray();
                     }
                 }
             }
@@ -709,15 +709,15 @@ namespace BibleCommon.Services
                     {
                         var afterChar = StringUtils.GetChar(textElementValue, nextStringResult.HtmlBreakIndex);
                         if (localTopVerse > verseNumber
-                            || GetChapterVerseDelimiters().Contains(afterChar)) // если строка типа Ин 1:2-3:4
+                           || afterChar == DefaultChapterVerseDelimiter) // если строка типа Ин 1:2-3:4
                         {
-                            if (!(!GetChapterVerseDelimiters().Contains(afterChar) && spaceWasFound))
+                            if (!(afterChar != DefaultChapterVerseDelimiter && spaceWasFound))
                             {
                                 verseString = string.Format("{0}-{1}", verseString, nextStringResult.FoundString.Trim());
                                 endIndex = nextStringResult.TextBreakIndex;
                                 nextHtmlBreakIndex = nextStringResult.HtmlBreakIndex;
 
-                                if (GetChapterVerseDelimiters().Contains(afterChar))
+                                if (afterChar == DefaultChapterVerseDelimiter)
                                 {
                                     nextStringResult = StringSearcher.SearchInString(textElementValue, nextHtmlBreakIndex, StringSearcher.SearchDirection.Forward);
 
