@@ -1015,7 +1015,7 @@
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
   <data name="chkUseDifferentPages.Location" type="System.Drawing.Point, System.Drawing">
-    <value>9, 157</value>
+    <value>9, 154</value>
   </data>
   <data name="chkUseDifferentPages.Size" type="System.Drawing.Size, System.Drawing">
     <value>174, 17</value>
@@ -1045,7 +1045,7 @@
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
   <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 23</value>
+    <value>6, 20</value>
   </data>
   <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
     <value>158, 13</value>
@@ -1072,7 +1072,7 @@
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
   <data name="tbNotesPageName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>9, 39</value>
+    <value>9, 36</value>
   </data>
   <data name="tbNotesPageName.Size" type="System.Drawing.Size, System.Drawing">
     <value>248, 20</value>
@@ -1099,7 +1099,7 @@
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
   <data name="chkExcludedVersesLinking.Location" type="System.Drawing.Point, System.Drawing">
-    <value>9, 134</value>
+    <value>9, 131</value>
   </data>
   <data name="chkExcludedVersesLinking.Size" type="System.Drawing.Size, System.Drawing">
     <value>208, 17</value>
@@ -1126,7 +1126,7 @@
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
   <data name="tbNotesPageWidth.Location" type="System.Drawing.Point, System.Drawing">
-    <value>9, 84</value>
+    <value>9, 81</value>
   </data>
   <data name="tbNotesPageWidth.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 20</value>
@@ -1153,7 +1153,7 @@
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
   <data name="chkExpandMultiVersesLinking.Location" type="System.Drawing.Point, System.Drawing">
-    <value>9, 110</value>
+    <value>9, 107</value>
   </data>
   <data name="chkExpandMultiVersesLinking.Size" type="System.Drawing.Size, System.Drawing">
     <value>160, 17</value>
@@ -1183,7 +1183,7 @@
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
   <data name="lblNotesPageWidth.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 68</value>
+    <value>6, 65</value>
   </data>
   <data name="lblNotesPageWidth.Size" type="System.Drawing.Size, System.Drawing">
     <value>157, 13</value>
@@ -1210,10 +1210,10 @@
     <value>Microsoft Sans Serif, 8.25pt, style=Bold</value>
   </data>
   <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>16, 164</value>
+    <value>16, 171</value>
   </data>
   <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>296, 182</value>
+    <value>296, 175</value>
   </data>
   <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
     <value>19</value>
@@ -1240,7 +1240,7 @@
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
   <data name="chkUseRubbishPage.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 19</value>
+    <value>6, 23</value>
   </data>
   <data name="chkUseRubbishPage.Size" type="System.Drawing.Size, System.Drawing">
     <value>212, 17</value>
@@ -1270,7 +1270,7 @@
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
   <data name="label10.Location" type="System.Drawing.Point, System.Drawing">
-    <value>14, 39</value>
+    <value>14, 43</value>
   </data>
   <data name="label10.Size" type="System.Drawing.Size, System.Drawing">
     <value>200, 13</value>
@@ -1300,7 +1300,7 @@
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
   <data name="chkRubbishExcludedVersesLinking.Location" type="System.Drawing.Point, System.Drawing">
-    <value>17, 150</value>
+    <value>17, 154</value>
   </data>
   <data name="chkRubbishExcludedVersesLinking.Size" type="System.Drawing.Size, System.Drawing">
     <value>208, 17</value>
@@ -1327,7 +1327,7 @@
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
   <data name="tbRubbishNotesPageName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>17, 55</value>
+    <value>17, 59</value>
   </data>
   <data name="tbRubbishNotesPageName.Size" type="System.Drawing.Size, System.Drawing">
     <value>248, 20</value>
@@ -1354,7 +1354,7 @@
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
   <data name="chkRubbishExpandMultiVersesLinking.Location" type="System.Drawing.Point, System.Drawing">
-    <value>17, 126</value>
+    <value>17, 130</value>
   </data>
   <data name="chkRubbishExpandMultiVersesLinking.Size" type="System.Drawing.Size, System.Drawing">
     <value>160, 17</value>
@@ -1381,7 +1381,7 @@
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
   <data name="tbRubbishNotesPageWidth.Location" type="System.Drawing.Point, System.Drawing">
-    <value>17, 100</value>
+    <value>17, 104</value>
   </data>
   <data name="tbRubbishNotesPageWidth.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 20</value>
@@ -1408,7 +1408,7 @@
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
   <data name="lblRubbishNotesPageWidth.Location" type="System.Drawing.Point, System.Drawing">
-    <value>14, 84</value>
+    <value>14, 88</value>
   </data>
   <data name="lblRubbishNotesPageWidth.Size" type="System.Drawing.Size, System.Drawing">
     <value>199, 13</value>
