@@ -1152,7 +1152,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BibleNote"
         "ProductCode" = "8:{E4C6EDD3-4B7F-48E2-B1E1-3635D88E5C76}"
-        "PackageCode" = "8:{BDE4556D-0E45-4D31-ACE0-574E38FDF4F8}"
+        "PackageCode" = "8:{8210FA2D-E30E-4AEE-980F-C02CAE0AEA86}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
