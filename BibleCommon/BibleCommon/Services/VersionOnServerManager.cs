@@ -14,7 +14,19 @@ namespace BibleCommon.Services
     public class VersionOnServerManager
     {
         public Version NewVersion { get; set; }
+
+        /// <summary>
+        /// Версия релиза. Если текущая версия меньше этой версии, тогда показываем окно с информацией о релизе.
+        /// </summary>
+        public Version ReleaseMinVersion { get; set; }
         public string ReleaseInfo { get; set; }
+
+        public bool NeedToShowReleaseInfo()
+        {
+            return NeedToUpdate()
+                    && !string.IsNullOrEmpty(ReleaseInfo)
+                    && ReleaseMinVersion > SettingsManager.Instance.CurrentVersion;
+        }
 
         public bool NeedToUpdate()
         {
@@ -24,7 +36,8 @@ namespace BibleCommon.Services
                    && SettingsManager.Instance.NewVersionOnServer > SettingsManager.Instance.CurrentVersion)
             {
                 NewVersion = SettingsManager.Instance.NewVersionOnServer;
-                ReleaseInfo = SettingsManager.Instance.NewVersionInfo;
+                ReleaseInfo = SettingsManager.Instance.ReleaseInfo;
+                ReleaseMinVersion = SettingsManager.Instance.ReleaseMinVersion;
                 result = true;
             }
             else
@@ -40,7 +53,8 @@ namespace BibleCommon.Services
                     if (NewVersion != SettingsManager.Instance.NewVersionOnServer)
                     {
                         SettingsManager.Instance.NewVersionOnServer = NewVersion;
-                        SettingsManager.Instance.NewVersionInfo = ReleaseInfo;
+                        SettingsManager.Instance.ReleaseInfo = ReleaseInfo;
+                        SettingsManager.Instance.ReleaseMinVersion = ReleaseMinVersion;
 
                         if (NewVersion > SettingsManager.Instance.CurrentVersion)
                             result = true;
@@ -60,13 +74,17 @@ namespace BibleCommon.Services
                 LanguageManager.SetThreadUICulture();
                 var xDoc = Load(BibleCommon.Resources.Constants.NewVersionOnServerFileUrl);
 
-                var latestVersion = xDoc.Root.XPathSelectElement("LatestVersion");
-                if (latestVersion != null)
-                    NewVersion = new Version(latestVersion.Value);                
+                var latestVersionEl = xDoc.Root.XPathSelectElement("LatestVersion");
+                if (latestVersionEl != null)
+                    NewVersion = new Version(latestVersionEl.Value);
 
-                var versionInfo = xDoc.Root.XPathSelectElement("LatestVersionInfo");
-                if (versionInfo != null)
-                    ReleaseInfo = versionInfo.Value;
+                var releaseMinVersionEl = xDoc.Root.XPathSelectElement("ReleaseMinVersion");
+                if (releaseMinVersionEl != null)
+                    ReleaseMinVersion = new Version(releaseMinVersionEl.Value);
+
+                var versionInfoEl = xDoc.Root.XPathSelectElement("ReleaseInfo");
+                if (versionInfoEl != null)
+                    ReleaseInfo = versionInfoEl.Value;
               
             }
             catch (Exception)

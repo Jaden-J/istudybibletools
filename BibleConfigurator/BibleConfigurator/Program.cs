@@ -259,8 +259,8 @@ namespace BibleConfigurator
                     SettingsManager.Instance.TryToUpdateVersion();      // если надо - применяем обновления и обновляем версию 
 
                     var vsm = new VersionOnServerManager();
-                    if (vsm.NeedToUpdate() && !string.IsNullOrEmpty(vsm.ReleaseInfo) 
-                        && !ShownMessagesManager.GetMessageWasShown(ShownMessagesManager.MessagesCodes.NewVersionInfo))
+                    if (vsm.NeedToShowReleaseInfo()
+                        && !ShownMessagesManager.GetMessageWasShown(ShownMessagesManager.MessagesCodes.NewVersionInfo))  
                     {
                         var htmlForm = new HtmlMessageForm(ShownMessagesManager.MessagesCodes.NewVersionInfo, vsm.ReleaseInfo, BibleCommon.Resources.Constants.NewVersionAvailable);
                         htmlForm.ShowDialog();

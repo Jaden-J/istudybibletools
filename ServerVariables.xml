@@ -2,5 +2,6 @@
 <ServerVariables>
   <LatestVersion_IStudyBibleTools_RU>3.2.16.1118</LatestVersion_IStudyBibleTools_RU>
   <LatestVersion>3.2.16.1118</LatestVersion>
-  <LatestVersionInfo>&lt;u&gt;Hi!&lt;/u&gt; &lt;a target=&#39;_new&#39; href=&#39;http://google.com&#39;&gt;google!&lt;/a&gt;</LatestVersionInfo>
+  <ReleaseMinVersion>3.2.16.1118</ReleaseMinVersion>
+  <ReleaseInfo>&lt;u&gt;Hi!&lt;/u&gt; &lt;a target=&#39;_new&#39; href=&#39;http://google.com&#39;&gt;google!&lt;/a&gt;</ReleaseInfo>
 </ServerVariables>
