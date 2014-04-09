@@ -57,42 +57,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_53F590E2C57BEA0157C32CC29ED6F936"
-        "OwnerKey" = "8:_830B3D6A545B464F87CF9AA03B88DBEC"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_53F590E2C57BEA0157C32CC29ED6F936"
-        "OwnerKey" = "8:_CA4EBCE7EEAD491A924378B1B80C766E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_53F590E2C57BEA0157C32CC29ED6F936"
-        "OwnerKey" = "8:_B7D8E041B8A1421FBCE161FA2DBF061E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_53F590E2C57BEA0157C32CC29ED6F936"
-        "OwnerKey" = "8:_A3A83E09BBAD46FEABA7F53A91CF974E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_53F590E2C57BEA0157C32CC29ED6F936"
-        "OwnerKey" = "8:_8C32219337F548448299AAD0506868D5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_59B7494EA6776C2BAC08C9A8275AEF09"
-        "OwnerKey" = "8:_3FC71294DAB247EDA89368E781DCDC4E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_5CCC60B29BE94330BE7C27E63D77D852"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -166,7 +130,7 @@
         "Entry"
         {
         "MsmKey" = "8:_884C008EF2828C9435E01B1619B09A4F"
-        "OwnerKey" = "8:_53F590E2C57BEA0157C32CC29ED6F936"
+        "OwnerKey" = "8:_9830DCA6B98EE048A69FFAE549C2E5C4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -191,6 +155,36 @@
         {
         "MsmKey" = "8:_94E1AB757EAF4C5A8D864AB3DE806EF5"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9830DCA6B98EE048A69FFAE549C2E5C4"
+        "OwnerKey" = "8:_830B3D6A545B464F87CF9AA03B88DBEC"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9830DCA6B98EE048A69FFAE549C2E5C4"
+        "OwnerKey" = "8:_CA4EBCE7EEAD491A924378B1B80C766E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9830DCA6B98EE048A69FFAE549C2E5C4"
+        "OwnerKey" = "8:_B7D8E041B8A1421FBCE161FA2DBF061E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9830DCA6B98EE048A69FFAE549C2E5C4"
+        "OwnerKey" = "8:_A3A83E09BBAD46FEABA7F53A91CF974E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9830DCA6B98EE048A69FFAE549C2E5C4"
+        "OwnerKey" = "8:_8C32219337F548448299AAD0506868D5"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -268,7 +262,7 @@
         "Entry"
         {
         "MsmKey" = "8:_B2D5910F8DE3134923EFDD73A4F14E28"
-        "OwnerKey" = "8:_53F590E2C57BEA0157C32CC29ED6F936"
+        "OwnerKey" = "8:_9830DCA6B98EE048A69FFAE549C2E5C4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -298,7 +292,7 @@
         "Entry"
         {
         "MsmKey" = "8:_D3B8D8959A99C0CF0D1B8F032542DB82"
-        "OwnerKey" = "8:_53F590E2C57BEA0157C32CC29ED6F936"
+        "OwnerKey" = "8:_9830DCA6B98EE048A69FFAE549C2E5C4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -436,7 +430,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_53F590E2C57BEA0157C32CC29ED6F936"
+        "OwnerKey" = "8:_9830DCA6B98EE048A69FFAE549C2E5C4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -746,57 +740,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_53F590E2C57BEA0157C32CC29ED6F936"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=3.3.3.1200, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_53F590E2C57BEA0157C32CC29ED6F936"
-                    {
-                    "Name" = "8:BibleCommon.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:BibleCommon.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_D7BA4F22777B48ECA39AA4EB92EA8BE0"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_59B7494EA6776C2BAC08C9A8275AEF09"
-            {
-            "SourcePath" = "8:RibbonButtons.tlb"
-            "TargetName" = "8:RibbonButtons.tlb"
-            "Tag" = "8:"
-            "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:2"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5CCC60B29BE94330BE7C27E63D77D852"
             {
             "SourcePath" = "8:..\\BQTGrk.ttf"
@@ -886,6 +829,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9830DCA6B98EE048A69FFAE549C2E5C4"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=3.3.9.1168, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_9830DCA6B98EE048A69FFAE549C2E5C4"
+                    {
+                    "Name" = "8:BibleCommon.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:BibleCommon.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_D7BA4F22777B48ECA39AA4EB92EA8BE0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B2D5910F8DE3134923EFDD73A4F14E28"
@@ -1177,15 +1151,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BibleNote"
-        "ProductCode" = "8:{9BD0AAA8-CC97-45DB-B035-D920D01C5FD2}"
-        "PackageCode" = "8:{039E20B8-9224-4E74-8F23-A1C5D06FDCD8}"
+        "ProductCode" = "8:{E4C6EDD3-4B7F-48E2-B1E1-3635D88E5C76}"
+        "PackageCode" = "8:{BDE4556D-0E45-4D31-ACE0-574E38FDF4F8}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:3.3.5"
+        "ProductVersion" = "8:3.3.9"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://BibleNote.pro"
@@ -3027,7 +3001,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_154C3F58C5664894873383FE9BFF835D"
             {
-            "SourcePath" = "8:..\\..\\BibleCommon\\BibleCommon\\obj\\Debug\\BibleCommon.dll"
+            "SourcePath" = "8:..\\..\\BibleCommon\\BibleCommon\\obj\\Release\\BibleCommon.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_D7BA4F22777B48ECA39AA4EB92EA8BE0"
@@ -3167,7 +3141,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_3FC71294DAB247EDA89368E781DCDC4E"
             {
-            "SourcePath" = "8:..\\RibbonButtons\\obj\\Debug\\RibbonButtons.dll"
+            "SourcePath" = "8:..\\RibbonButtons\\obj\\Release\\RibbonButtons.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_2E65B00FCBEA4B929A4925CDD75CFEBB"
@@ -3195,7 +3169,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6EB90D269F004B0D8591B6DB745A2157"
             {
-            "SourcePath" = "8:..\\..\\BibleCommon\\BibleCommon\\obj\\Debug\\BibleCommon.dll"
+            "SourcePath" = "8:..\\..\\BibleCommon\\BibleCommon\\obj\\Release\\BibleCommon.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_1710149299ED42D1A0AA2A0498DC2188"
@@ -3251,7 +3225,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_830B3D6A545B464F87CF9AA03B88DBEC"
             {
-            "SourcePath" = "8:..\\..\\BibleVerseLinkerEx\\BibleVerseLinkerEx\\obj\\x86\\Debug\\BibleVerseLinkerEx.exe"
+            "SourcePath" = "8:..\\..\\BibleVerseLinkerEx\\BibleVerseLinkerEx\\obj\\x86\\Release\\BibleVerseLinkerEx.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_D7BA4F22777B48ECA39AA4EB92EA8BE0"
@@ -3307,7 +3281,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_8C32219337F548448299AAD0506868D5"
             {
-            "SourcePath" = "8:..\\..\\BibleNoteLinker\\BibleNoteLinker\\obj\\x86\\Debug\\BibleNoteLinker.exe"
+            "SourcePath" = "8:..\\..\\BibleNoteLinker\\BibleNoteLinker\\obj\\x86\\Release\\BibleNoteLinker.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_1254057D874949AFADACFC134328AAB7"
@@ -3363,7 +3337,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9B0F10C6DE324711B2DB7288CC89C606"
             {
-            "SourcePath" = "8:..\\..\\BibleCommon\\BibleCommon\\obj\\Debug\\BibleCommon.dll"
+            "SourcePath" = "8:..\\..\\BibleCommon\\BibleCommon\\obj\\Release\\BibleCommon.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_8CDA068DB4214B35B75EC118CDD932ED"
@@ -3391,7 +3365,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A3A83E09BBAD46FEABA7F53A91CF974E"
             {
-            "SourcePath" = "8:..\\..\\BibleVersePointer\\BibleVersePointer\\obj\\x86\\Debug\\BibleVersePointer.exe"
+            "SourcePath" = "8:..\\..\\BibleVersePointer\\BibleVersePointer\\obj\\x86\\Release\\BibleVersePointer.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_1710149299ED42D1A0AA2A0498DC2188"
@@ -3419,7 +3393,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B1B1BDDFFD3C48DFAB6EC57FCE5B25D0"
             {
-            "SourcePath" = "8:..\\..\\BibleCommon\\BibleCommon\\obj\\Debug\\BibleCommon.dll"
+            "SourcePath" = "8:..\\..\\BibleCommon\\BibleCommon\\obj\\Release\\BibleCommon.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_1254057D874949AFADACFC134328AAB7"
@@ -3447,7 +3421,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B7D8E041B8A1421FBCE161FA2DBF061E"
             {
-            "SourcePath" = "8:..\\..\\ISBTCommandHandler\\obj\\x86\\Debug\\ISBTCommandHandler.exe"
+            "SourcePath" = "8:..\\..\\ISBTCommandHandler\\obj\\x86\\Release\\ISBTCommandHandler.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_8CDA068DB4214B35B75EC118CDD932ED"
@@ -3503,7 +3477,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CA4EBCE7EEAD491A924378B1B80C766E"
             {
-            "SourcePath" = "8:..\\..\\BibleConfigurator\\BibleConfigurator\\obj\\x86\\Debug\\BibleConfigurator.exe"
+            "SourcePath" = "8:..\\..\\BibleConfigurator\\BibleConfigurator\\obj\\x86\\Release\\BibleConfigurator.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6B6F3FD25E6048F18D747FA6C8B01535"
@@ -3615,7 +3589,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FFEA549306074C1F816582BF2A48D211"
             {
-            "SourcePath" = "8:..\\..\\BibleCommon\\BibleCommon\\obj\\Debug\\BibleCommon.dll"
+            "SourcePath" = "8:..\\..\\BibleCommon\\BibleCommon\\obj\\Release\\BibleCommon.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6B6F3FD25E6048F18D747FA6C8B01535"
