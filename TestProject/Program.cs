@@ -553,6 +553,7 @@ namespace TestProject
                     {
                         var result = Regex.Replace(s, @", (\d)", @",$1");
                         result = Regex.Replace(result, @"(\d). (\d)", @"$1,$2");
+                        result = Regex.Replace(result, @"Иов. (\d)", @"Иов $1");
                         return result;
                     });
 
