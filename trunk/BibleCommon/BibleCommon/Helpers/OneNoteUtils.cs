@@ -240,6 +240,13 @@ namespace BibleCommon.Helpers
         {
             return string.Format("<a href=\"{0}\">{1}</a>", link, title);            
         }
+        public static string GetLink(string title, string link, string style)
+        {
+            if (!string.IsNullOrEmpty(style))
+                return string.Format("<a href=\"{0}\"><span style=\"{2}\">{1}</span></a>", link, title, style);
+            else
+                return GetLink(title, link);
+        }
 
         public static string GetOrGenerateLink(ref Application oneNoteApp, string title, string objectHref, 
             LinkId pageObjectInfo, LinkProxyInfo linkProxyInfo, params string[] additionalLinkQueryParameters)
@@ -247,6 +254,14 @@ namespace BibleCommon.Helpers
             var link = GetOrGenerateLinkHref(ref oneNoteApp, objectHref, pageObjectInfo, linkProxyInfo, additionalLinkQueryParameters);
 
             return GetLink(title, link);
+        }
+
+        public static string GetOrGenerateLink(ref Application oneNoteApp, string title, string objectHref, string style,
+            LinkId pageObjectInfo, LinkProxyInfo linkProxyInfo, params string[] additionalLinkQueryParameters)
+        {
+            var link = GetOrGenerateLinkHref(ref oneNoteApp, objectHref, pageObjectInfo, linkProxyInfo, additionalLinkQueryParameters);
+
+            return GetLink(title, link, style);
         }
 
         public static string GenerateLink(ref Application oneNoteApp, string title, 

@@ -44,7 +44,8 @@ namespace BibleConfigurator
 
         public void CheckForNewerVersion()
         {
-            if (VersionOnServerManager.NeedToUpdate())
+            var vsm = new VersionOnServerManager();
+            if (vsm.NeedToUpdate())
             {
                 FormExtensions.SetControlPropertyThreadSafe(lblNewVersion, "Visible", true);                
             }

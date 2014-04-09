@@ -258,6 +258,14 @@ namespace BibleConfigurator
 
                     SettingsManager.Instance.TryToUpdateVersion();      // если надо - применяем обновления и обновляем версию 
 
+                    var vsm = new VersionOnServerManager();
+                    if (vsm.NeedToShowReleaseInfo()
+                        && !ShownMessagesManager.GetMessageWasShown(ShownMessagesManager.MessagesCodes.NewVersionInfo))  
+                    {
+                        var htmlForm = new HtmlMessageForm(ShownMessagesManager.MessagesCodes.NewVersionInfo, vsm.ReleaseInfo, BibleCommon.Resources.Constants.NewVersionAvailable);
+                        htmlForm.ShowDialog();
+                    }
+
                     if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible))
                     {
                         var minutes = MainForm.GetMinutesForBibleVersesCacheGenerating();

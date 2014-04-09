@@ -1335,6 +1335,15 @@ namespace BibleCommon.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The new version is available.
+        /// </summary>
+        public static string NewVersionAvailable {
+            get {
+                return ResourceManager.GetString("NewVersionAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to http://BibleNote.pro/ServerVariables.xml.
         /// </summary>
         public static string NewVersionOnServerFileUrl {

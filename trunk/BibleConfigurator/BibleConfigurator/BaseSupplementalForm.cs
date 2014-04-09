@@ -587,7 +587,7 @@ namespace BibleConfigurator
             ClearSupplementalModules();
 
             var xDoc = OneNoteUtils.GetHierarchyElement(ref _oneNoteApp, notebookId, HierarchyScope.hsPages, out xnm);
-            var pagesEls = xDoc.Root.XPathSelectElements("//one:Page", xnm);
+            var pagesEls = xDoc.Root.XPathSelectElements(string.Format("//one:Page[{0}]", OneNoteUtils.NotInRecycleXPathCondition), xnm);  
             int pagesCount = pagesEls.Count();
 
             Logger.Preffix = BibleCommon.Resources.Constants.ProcessPage + " ";

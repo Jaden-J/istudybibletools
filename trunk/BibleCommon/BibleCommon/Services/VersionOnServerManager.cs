@@ -11,36 +11,52 @@ using System.IO;
 
 namespace BibleCommon.Services
 {
-    public static class VersionOnServerManager
+    public class VersionOnServerManager
     {
-        public static bool NeedToUpdate()
+        public Version NewVersion { get; set; }
+
+        /// <summary>
+        /// Версия релиза. Если текущая версия меньше этой версии, тогда показываем окно с информацией о релизе.
+        /// </summary>
+        public Version ReleaseMinVersion { get; set; }
+        public string ReleaseInfo { get; set; }
+
+        public bool NeedToShowReleaseInfo()
+        {
+            return NeedToUpdate()
+                    && !string.IsNullOrEmpty(ReleaseInfo)
+                    && ReleaseMinVersion > SettingsManager.Instance.CurrentVersion;
+        }
+
+        public bool NeedToUpdate()
         {
             bool result = false;
 
             if (SettingsManager.Instance.NewVersionOnServer != null
                    && SettingsManager.Instance.NewVersionOnServer > SettingsManager.Instance.CurrentVersion)
+            {
+                NewVersion = SettingsManager.Instance.NewVersionOnServer;
+                ReleaseInfo = SettingsManager.Instance.ReleaseInfo;
+                ReleaseMinVersion = SettingsManager.Instance.ReleaseMinVersion;
                 result = true;
+            }
             else
             {
-                Version newVersion = null;
+                if (!SettingsManager.Instance.NewVersionOnServerLatestCheckTime.HasValue
+                    || SettingsManager.Instance.NewVersionOnServerLatestCheckTime.Value.Add(Constants.NewVersionCheckPeriod) < DateTime.Now)
+                    TryToGetVersionOnServer();
 
-                if (SettingsManager.Instance.NewVersionOnServerLatestCheckTime.HasValue)
-                {
-                    if (SettingsManager.Instance.NewVersionOnServerLatestCheckTime.Value.Add(Constants.NewVersionCheckPeriod) < DateTime.Now)
-                        newVersion = TryToGetVersionOnServer();
-                }
-                else
-                    newVersion = TryToGetVersionOnServer();
-
-                if (newVersion != null)
+                if (NewVersion != null)
                 {
                     SettingsManager.Instance.NewVersionOnServerLatestCheckTime = DateTime.Now;
 
-                    if (newVersion != SettingsManager.Instance.NewVersionOnServer)
+                    if (NewVersion != SettingsManager.Instance.NewVersionOnServer)
                     {
-                        SettingsManager.Instance.NewVersionOnServer = newVersion;
+                        SettingsManager.Instance.NewVersionOnServer = NewVersion;
+                        SettingsManager.Instance.ReleaseInfo = ReleaseInfo;
+                        SettingsManager.Instance.ReleaseMinVersion = ReleaseMinVersion;
 
-                        if (newVersion > SettingsManager.Instance.CurrentVersion)
+                        if (NewVersion > SettingsManager.Instance.CurrentVersion)
                             result = true;
                     }
 
@@ -51,27 +67,30 @@ namespace BibleCommon.Services
             return result;
         }
 
-        private static Version TryToGetVersionOnServer()
+        private void TryToGetVersionOnServer()
         {
-            Version result = null;
-
             try
             {
                 LanguageManager.SetThreadUICulture();
-                XDocument xDoc = Load(BibleCommon.Resources.Constants.NewVersionOnServerFileUrl);
+                var xDoc = Load(BibleCommon.Resources.Constants.NewVersionOnServerFileUrl);
 
-                XElement latestVersion = xDoc.Root.XPathSelectElement("LatestVersion_IStudyBibleTools_RU");
-                if (latestVersion != null)
-                {
-                    result = new Version(latestVersion.Value);
-                }                
+                var latestVersionEl = xDoc.Root.XPathSelectElement("LatestVersion");
+                if (latestVersionEl != null)
+                    NewVersion = new Version(latestVersionEl.Value);
+
+                var releaseMinVersionEl = xDoc.Root.XPathSelectElement("ReleaseMinVersion");
+                if (releaseMinVersionEl != null)
+                    ReleaseMinVersion = new Version(releaseMinVersionEl.Value);
+
+                var versionInfoEl = xDoc.Root.XPathSelectElement("ReleaseInfo");
+                if (versionInfoEl != null)
+                    ReleaseInfo = versionInfoEl.Value;
+              
             }
             catch (Exception)
             {
                 //todo: log it in system log (not in common log)
             }
-
-            return result;
         }
 
 

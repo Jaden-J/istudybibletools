@@ -34,7 +34,9 @@ namespace TestProject
         private const string ForGeneratingFolderPath = @"C:\Users\Alexander\SkyDrive\BibleNote\ForGenerating";
         private const string TempFolderPath = @"C:\temp\BibleNote";
 
-        private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;      
+        private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
+
+        private static readonly object _locker = new object();
 
         [STAThread]
         unsafe static void Main(string[] args)
@@ -46,7 +48,7 @@ namespace TestProject
             _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();             
 
             try
-            {   
+            {
 
                 //CheckAdvancedProxyLinks();
 
@@ -57,6 +59,7 @@ namespace TestProject
                 //GetBiggestBooks();                            
 
                 //Console.WriteLine(Regex.Replace("<br>no<", string.Format("(^|[^0-9a-zA-Z]){0}($|[^0-9a-zA-Z<])", "no"), @"$1aeasdasds$2", RegexOptions.IgnoreCase));
+                //Console.WriteLine(Regex.Replace("1, 2, ф", @", (\d)", @",$1"));
                 //return;
 
                 //Console.WriteLine(StringUtils.GetQueryParameterValue("http://adjhdjkhsadsd.rudasd&sdsd=adsadasd&dsfsdf=sgfdsdfdsf&key=value", "key"));
@@ -542,18 +545,24 @@ namespace TestProject
 
         private static void GenerateRuDictionary()
         {
-            //var converter = new BibleQuotaDictionaryConverter(ref _oneNoteApp, "Словари", "goetze", "Библейский словарь Б.Геце", "Библейский словарь Б.Геце",
-            //  new List<DictionaryFile>() { 
-            //        new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Goetze\goetze.htm"), DictionaryPageDescription="Библейский словарь Б.Геце" }                    
-            //    }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Геце",
-            //    Path.Combine(TempFolderPath, "goetze"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0));
+            var converter = new BibleQuotaDictionaryConverter("Test", "goetze", "Библейский словарь Б.Геце", "Библейский словарь Б.Геце",
+              new List<DictionaryFile>() { 
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Goetze\goetze.htm"), DictionaryPageDescription="Библейский словарь Б.Геце" }                    
+                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Геце",
+                Path.Combine(TempFolderPath, "goetze"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0), (s) => 
+                    {
+                        var result = Regex.Replace(s, @", (\d)", @",$1");
+                        result = Regex.Replace(result, @"(\d). (\d)", @"$1,$2");
+                        result = Regex.Replace(result, @"Иов. (\d)", @"Иов $1");
+                        return result;
+                    });
 
 
-            var converter = new BibleQuotaDictionaryConverter("TestDict", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
-             new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
-                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
-               Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 2));
+            //var converter = new BibleQuotaDictionaryConverter("TestDict", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
+            // new List<DictionaryFile>() { 
+            //        new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
+            //    }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
+            //   Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 2));
 
             converter.Convert();
 

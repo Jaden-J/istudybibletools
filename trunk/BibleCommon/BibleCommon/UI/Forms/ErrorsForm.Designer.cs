@@ -39,8 +39,8 @@
             // 
             // lbErrors
             // 
-            resources.ApplyResources(this.lbErrors, "lbErrors");
             this.lbErrors.FormattingEnabled = true;
+            resources.ApplyResources(this.lbErrors, "lbErrors");
             this.lbErrors.Name = "lbErrors";
             this.lbErrors.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lbErrors_MouseClick);
             this.lbErrors.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbErrors_KeyDown);
@@ -48,8 +48,8 @@
             // 
             // btnOk
             // 
-            resources.ApplyResources(this.btnOk, "btnOk");
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+            resources.ApplyResources(this.btnOk, "btnOk");
             this.btnOk.Name = "btnOk";
             this.btnOk.UseVisualStyleBackColor = true;
             // 
@@ -80,8 +80,8 @@
             // 
             // ErrorsForm
             // 
-            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            resources.ApplyResources(this, "$this");
             this.Controls.Add(this.lblDescription);
             this.Controls.Add(this.btnOpenLog);
             this.Controls.Add(this.btnSaveToFile);

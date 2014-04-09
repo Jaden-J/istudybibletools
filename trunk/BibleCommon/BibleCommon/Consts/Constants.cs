@@ -51,7 +51,7 @@ namespace BibleCommon.Consts
         public static readonly bool Default_UseProxyLinksForBibleVerses = true;
         public static readonly bool Default_UseProxyLinksForLinks = true;
         public static readonly bool Default_UseAdvancedProxyForOneNoteLinks = true;
-        public static readonly bool Default_UseCommaDelimeter = true;                
+        public static readonly bool Default_UseCommaDelimeter = false;                
         public static readonly bool DefaultExpandMultiVersesLinking = true;
         public static readonly bool DefaultExcludedVersesLinking = false;
         public static readonly bool DefaultUseDifferentPagesForEachVerse = true;
@@ -83,6 +83,8 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_LastNotesLinkTime = "LastNotesLinkTime";
         public static readonly string ParameterName_NewVersionOnServer = "NewVersionOnServer";
         public static readonly string ParameterName_NewVersionOnServerLatestCheckTime = "NewVersionOnServerLatestCheckTime";
+        public static readonly string ParameterName_ReleaseInfo = "ReleaseInfo";
+        public static readonly string ParameterName_ReleaseMinVersion = "ReleaseMinVersion";        
 
         public static readonly string ParameterName_FolderPathBibleNotesPages = "FolderPath_BibleNotesPages";
 
