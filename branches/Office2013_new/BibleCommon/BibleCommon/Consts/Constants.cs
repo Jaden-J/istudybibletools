@@ -83,7 +83,8 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_LastNotesLinkTime = "LastNotesLinkTime";
         public static readonly string ParameterName_NewVersionOnServer = "NewVersionOnServer";
         public static readonly string ParameterName_NewVersionOnServerLatestCheckTime = "NewVersionOnServerLatestCheckTime";
-        public static readonly string ParameterName_NewVersionInfo = "NewVersionInfo";
+        public static readonly string ParameterName_ReleaseInfo = "ReleaseInfo";
+        public static readonly string ParameterName_ReleaseMinVersion = "ReleaseMinVersion";        
 
         public static readonly string ParameterName_FolderPathBibleNotesPages = "FolderPath_BibleNotesPages";
 
