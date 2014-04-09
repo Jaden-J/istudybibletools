@@ -1,4 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ServerVariables>
-  <LatestVersion_IStudyBibleTools_RU>2.5.10.724</LatestVersion_IStudyBibleTools_RU>
+  <LatestVersion_IStudyBibleTools_RU>3.2.16.1118</LatestVersion_IStudyBibleTools_RU>
+  <LatestVersion>3.2.16.1118</LatestVersion>
+  <LatestVersionInfo>
+    <u>Hi!</u>
+    <a target='_new' href='http://google.com'>google!</a>
+  </LatestVersionInfo>
 </ServerVariables>
