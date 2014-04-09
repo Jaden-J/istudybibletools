@@ -884,8 +884,8 @@ namespace BibleCommon.Services
             {             
                 if (searchResult.VersePointerHtmlStartIndex != searchResult.VersePointerStartIndex)
                 {
-                    if (VerseRecognitionManager.GetChapterVerseDelimiters().Contains(StringUtils.GetChar(textElementValue, searchResult.VersePointerHtmlStartIndex))
-                        && StringUtils.GetChar(textElementValue, searchResult.VersePointerHtmlStartIndex + 1) == '<')  // случай типа "<span lang=ru>:</span><span lang=en-US>12</span>"
+                    if (VerseRecognitionManager.DefaultChapterVerseDelimiter == StringUtils.GetChar(textElementValue, searchResult.VersePointerHtmlStartIndex)
+                        && StringUtils.GetChar(textElementValue, searchResult.VersePointerHtmlStartIndex + 1) == '<')  // случай типа "Ин 1:5 и в <span lang=ru>:</span><span lang=en-US>12</span>"
                     {
                         startVerseNameIndex = searchResult.VersePointerHtmlStartIndex;
                         endVerseNameIndex = searchResult.VersePointerHtmlEndIndex;

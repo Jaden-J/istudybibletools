@@ -163,5 +163,27 @@ namespace Tests
             var result = TestHelper.AnalyzeString(ref _oneNoteApp, "TestScenario14", input);
             TestHelper.CheckVerses(input, result, "1Кор 6:7", "2 Тим 2:3");
         }
+
+        [TestMethod]
+        public void TestScenario15()
+        {
+            var input = "<span lang=ru>Исх. 13,1</span><span lang=ro>4</span><span lang=ru>,</span><span lang=se-FI>15</span><span lang=ru>,20.</span>";            
+            var expected = "Исх. 13:14,15,20.";
+
+            var result = TestHelper.AnalyzeString(ref _oneNoteApp, "TestScenario15", input);
+            TestHelper.CheckVerses(expected, result, "Исх 13:14", "Исх 13:15", "Исх 13:20");
+        }        
+
+        [TestMethod]
+        public void TestScenario16()
+        {
+            var input = "<span lang=ru>Вот Ин 1</span><span lang=en-US>:</span><span lang=ru>12 где в </span><span lang=ro>:</span><span lang=se-FI>13</span>";
+            var expected = "Вот Ин 1:12 где в :13";
+            var result = TestHelper.AnalyzeString(ref _oneNoteApp, "TestScenario16", input);
+            TestHelper.CheckVerses(expected, result, "Ин 1:12", "Ин 1:13");
+        }        
+
+
+        
     }
 }
