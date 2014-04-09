@@ -114,8 +114,7 @@
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openModuleFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.notesPagesFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.ttNotesPageFolder = new System.Windows.Forms.ToolTip(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.ttNotesPageFolder = new System.Windows.Forms.ToolTip(this.components);            
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();

@@ -32,8 +32,7 @@
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.webBrowser = new System.Windows.Forms.WebBrowser();
             this.chkDontShow = new System.Windows.Forms.CheckBox();
-            this.btnClose = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+            this.btnClose = new System.Windows.Forms.Button();            
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
@@ -83,8 +82,7 @@
             this.Shown += new System.EventHandler(this.HtmlMessageForm_Shown);
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel2.ResumeLayout(false);
-            this.splitContainer.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
+            this.splitContainer.Panel2.PerformLayout();            
             this.splitContainer.ResumeLayout(false);
             this.ResumeLayout(false);
 
