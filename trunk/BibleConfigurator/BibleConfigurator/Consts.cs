@@ -15,6 +15,6 @@ namespace BibleConfigurator
         internal const string UnlockAllBible = "-unlockAllBible";
         internal const string UnlockBibleSection = "-unlockBibleSection";        
         internal const string ShowSearchInDictionaries = "-searchInDictionaries";        
-        internal const string ModeratorMode = "-moderatorMode";        
+        internal const string ModeratorMode = "-admin";        
     }
 }
