@@ -181,9 +181,15 @@ namespace Tests
             var expected = "Вот Ин 1:12 где в :13";
             var result = TestHelper.AnalyzeString(ref _oneNoteApp, "TestScenario16", input);
             TestHelper.CheckVerses(expected, result, "Ин 1:12", "Ин 1:13");
-        }        
+        }
 
 
-        
+        [TestMethod]
+        public void TestScenario17()
+        {
+            var input = "Иуда 14,15";            
+            var result = TestHelper.AnalyzeString(ref _oneNoteApp, "TestScenario17", input);
+            TestHelper.CheckVerses(input, result, "Иуд 14", "Иуд 15");
+        }                
     }
 }
