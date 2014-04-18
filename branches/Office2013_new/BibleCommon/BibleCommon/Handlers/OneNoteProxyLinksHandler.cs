@@ -10,6 +10,7 @@ using System.Xml.Linq;
 using System.Xml;
 using System.Xml.XPath;
 using BibleCommon.Common;
+using BibleCommon.Consts;
 
 namespace BibleCommon.Handlers
 {
@@ -66,9 +67,11 @@ namespace BibleCommon.Handlers
 
                 if (changed && autoCommit)
                     ApplicationCache.Instance.CommitModifiedPage(ref oneNoteApp, pageInfo, true);
-            }            
+            }
 
-            return string.Format("{0}{1};{2};{3}", _protocolName, pageObjectInfo.NotebookName, bnPId, bnOeId);
+            return NavigateToHandler.AddIdParametersToLink(
+                        string.Format("{0}{1};{2};{3}", _protocolName, pageObjectInfo.NotebookName, bnPId, bnOeId),
+                        pageObjectInfo.PageId, pageObjectInfo.ObjectId);
         }
 
         public class UpdateResult
@@ -135,36 +138,49 @@ namespace BibleCommon.Handlers
             if (args.Length == 0)
                 throw new ArgumentNullException("args");
 
-            var parts = Uri.UnescapeDataString(args[0]
-                            .Split(new char[] { ':' })[1])
-                            .Split(new char[] { ';', '&' });
-            var notebookName = parts[0];
-            var bnPId = parts[1];
-            var bnOeId = parts[2];
-
             var oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
 
             try
             {
-                var pageId = GetOneNotePageId(ref oneNoteApp, notebookName, bnPId);               
-
-                if (!string.IsNullOrEmpty(pageId))
+                if (!NavigateToHandler.TryToRedirectByIds(ref oneNoteApp, args[0]))
                 {
-                    var objectId = GetOneNoteObjectId(ref oneNoteApp, pageId, bnOeId);
-
-                    oneNoteApp.NavigateTo(pageId, objectId);
-
-                    OneNoteUtils.SetActiveCurrentWindow(ref oneNoteApp);
-
-                    return true;
+                    if (!TryToRedirectByMetadataId(ref oneNoteApp, args[0]))
+                    {
+                        return false;
+                    }
                 }
-                else                
-                    throw new Exception(BibleCommon.Resources.Constants.PageNotFound);                                    
+
+                return true;
             }
             finally
             {
                 OneNoteUtils.ReleaseOneNoteApp(ref oneNoteApp);
             }
+        }
+
+        private bool TryToRedirectByMetadataId(ref Application oneNoteApp, string args)
+        {
+            var parts = Uri.UnescapeDataString(args
+                               .Split(new char[] { ':' })[1])
+                               .Split(new char[] { ';', '&' });
+            var notebookName = parts[0];
+            var bnPId = parts[1];
+            var bnOeId = parts[2];
+
+            var pageId = GetOneNotePageId(ref oneNoteApp, notebookName, bnPId);
+
+            if (!string.IsNullOrEmpty(pageId))
+            {
+                var objectId = GetOneNoteObjectId(ref oneNoteApp, pageId, bnOeId);
+
+                oneNoteApp.NavigateTo(pageId, objectId);
+
+                OneNoteUtils.SetActiveCurrentWindow(ref oneNoteApp);
+
+                return true;
+            }
+            else
+                throw new Exception(BibleCommon.Resources.Constants.PageNotFound);
         }
 
         private string GetOneNotePageId(ref Application oneNoteApp, string notebookName, string bnPId, bool searchInAllNotebooks = false)

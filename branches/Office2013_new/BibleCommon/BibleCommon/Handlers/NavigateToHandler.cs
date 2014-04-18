@@ -32,8 +32,13 @@ namespace BibleCommon.Handlers
             if (string.IsNullOrEmpty(link))
                 return string.Empty;
             else
-                return string.Concat(
-                        link.Replace(Constants.OneNoteProtocol, ProtocolFullString),
+                return AddIdParametersToLink(link.Replace(Constants.OneNoteProtocol, ProtocolFullString), pageId, objectId);
+        }
+
+        internal static string AddIdParametersToLink(string link, string pageId, string objectId)
+        {
+            return string.Concat(
+                        link,
                         "&", Constants.QueryParameterKey_CustomPageId, "=", pageId,
                         "&", Constants.QueryParameterKey_CustomObjectId, "=", objectId);
         }
@@ -123,7 +128,7 @@ namespace BibleCommon.Handlers
             return false;
         }
 
-        private static bool TryToRedirectByIds(ref Application oneNoteApp, string newPath)
+        public static bool TryToRedirectByIds(ref Application oneNoteApp, string newPath)
         {            
             var pageId = StringUtils.GetNotFramedAttributeValue(newPath, Constants.QueryParameterKey_CustomPageId);
 
