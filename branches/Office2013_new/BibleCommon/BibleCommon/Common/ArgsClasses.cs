@@ -86,6 +86,11 @@ namespace BibleCommon.Common
 
         public bool AutoCommitLinkPage { get; set; }
 
+        /// <summary>
+        /// Нужно ли проверять: нети
+        /// </summary>
+        public bool CheckForDuplicateId { get; set; 
+
         public LinkProxyInfo(bool useProxyLinkIfAvailable, bool useAdvancedProxy)
         {
             UseProxyLinkIfAvailable = useProxyLinkIfAvailable;
