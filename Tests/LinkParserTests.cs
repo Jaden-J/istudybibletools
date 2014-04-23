@@ -190,6 +190,23 @@ namespace Tests
             var input = "Иуда 14,15";            
             var result = TestHelper.AnalyzeString(ref _oneNoteApp, "TestScenario17", input);
             TestHelper.CheckVerses(input, result, "Иуд 14", "Иуд 15");
-        }                
+        }
+
+        [TestMethod]
+        public void TestScenario18()
+        {
+            var input = "Ин 20:7-9, Л2";
+            var result = TestHelper.AnalyzeString(ref _oneNoteApp, "TestScenario18", input);
+            TestHelper.CheckVerses(input, result, "Ин 20:7", "Ин 20:8", "Ин 20:9");
+        }
+
+        [TestMethod]
+        public void TestScenario19()
+        {
+            var input = "Ис 43,4,45,5,46,7";
+            var expected = "Ис 43:4,45,5,46,7"; 
+            var result = TestHelper.AnalyzeString(ref _oneNoteApp, "TestScenario19", input);
+            TestHelper.CheckVerses(expected, result, "Ис 43:4");
+        } 
     }
 }
