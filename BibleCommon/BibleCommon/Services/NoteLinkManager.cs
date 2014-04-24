@@ -150,15 +150,22 @@ namespace BibleCommon.Services
                 if (doNotAnalyze.GetValueOrDefault(false) || StringUtils.IndexOfAny(notePageName, Constants.DoNotAnalyzeSymbol1, Constants.DoNotAnalyzeSymbol2) > -1)
                     IsExcludedCurrentNotePage = true;
 
-                HierarchyElementInfo notePageHierarchyInfo;
+                PageHierarchyInfo notePageHierarchyInfo;
 
                 if (linkDepth > AnalyzeDepth.SetVersesLinks)
                 {
                     notePageHierarchyInfo = GetPageHierarchyInfo(ref oneNoteApp, notebookId, notePageDocument, pageId, notePageName, true);
                     
                     //формируем ссылку на заголовок, чтобы она сохранилась в кэше. Так как здесь у нас всё для этого уже есть в кэше. А потом при некоторых обстоятельствах для этой ссылки приходится заново загружать страницу и сохранять её
-                    ApplicationCache.Instance.GenerateHref(ref oneNoteApp, 
-                        new LinkId(notePageHierarchyInfo.NotebookName, notePageHierarchyInfo.Id, notePageHierarchyInfo.PageTitleId), new LinkProxyInfo(true, true));
+                    ApplicationCache.Instance.GenerateHref(ref oneNoteApp,
+                        new LinkId(notePageHierarchyInfo.NotebookName, notePageHierarchyInfo.Id, notePageHierarchyInfo.PageTitleId), 
+                        new LinkProxyInfo(true, true) 
+                            { 
+                                CheckForDuplicateId = force && AnalyzeAllPages
+                            }
+                        );
+
+                    notePageHierarchyInfo.LoadPageSyncId(notePageDocument);  // необходимо вызвать после генерации ссылки, так как при генерации ссылки могло измениться SyncPageId. Да, не логично. Да, плохо. В 4.0 версии изменить.
                 }
                 else
                     notePageHierarchyInfo = GetPageHierarchyInfo(ref oneNoteApp, notebookId, notePageDocument, pageId, notePageName, false);
@@ -242,10 +249,10 @@ namespace BibleCommon.Services
                 XAttribute lastModifiedDateAttribute = pageEl.Attribute("lastModifiedTime");
                 if (lastModifiedDateAttribute != null)
                 {
-                    var lastModifiedDate = Utils.ParseDateTime(lastModifiedDateAttribute.Value);
+                    var lastModifiedDate = StringUtils.ParseDateTime(lastModifiedDateAttribute.Value);
 
                     string lastAnalyzeTime = OneNoteUtils.GetElementMetaData(pageEl, Constants.Key_LatestAnalyzeTime, xnm);
-                    if (!string.IsNullOrEmpty(lastAnalyzeTime) && lastModifiedDate <= Utils.ParseDateTime(lastAnalyzeTime).ToLocalTime())  
+                    if (!string.IsNullOrEmpty(lastAnalyzeTime) && lastModifiedDate <= StringUtils.ParseDateTime(lastAnalyzeTime).ToLocalTime())  
                         return false;
                 }
             }
@@ -257,12 +264,22 @@ namespace BibleCommon.Services
             return true;
         }
 
-        private HierarchyElementInfo GetPageHierarchyInfo(ref Application oneNoteApp, string notebookId, ApplicationCache.PageContent notePageDocument, string notePageId, string notePageName, bool loadFullHierarchy)
+        /// <summary>
+        /// PageHierarchyInfo.LoadPageSyncId надо вызывать отдельно!
+        /// </summary>
+        /// <param name="oneNoteApp"></param>
+        /// <param name="notebookId"></param>
+        /// <param name="notePageDocument"></param>
+        /// <param name="notePageId"></param>
+        /// <param name="notePageName"></param>
+        /// <param name="loadFullHierarchy"></param>
+        /// <returns></returns>
+        private PageHierarchyInfo GetPageHierarchyInfo(ref Application oneNoteApp, string notebookId, ApplicationCache.PageContent notePageDocument, string notePageId, string notePageName, bool loadFullHierarchy)
         {
             XElement titleElement = notePageDocument.Content.Root.XPathSelectElement("one:Title/one:OE", notePageDocument.Xnm);
-            string pageTitleId = titleElement != null ? (string)titleElement.Attribute("objectID") : null;            
+            string pageTitleId = titleElement != null ? (string)titleElement.Attribute("objectID") : null;
 
-            var result = new HierarchyElementInfo()
+            var result = new PageHierarchyInfo()
                 {
                     Title = notePageName,
                     Id = notePageId,
@@ -275,60 +292,15 @@ namespace BibleCommon.Services
             {
                 result.NotebookName = OneNoteUtils.GetHierarchyElementName(ref oneNoteApp, notebookId);
 
-
-                result.SyncPageId = OneNoteUtils.GetElementMetaData(notePageDocument.Content.Root, Constants.Key_SyncId, notePageDocument.Xnm);                
-                if (string.IsNullOrEmpty(result.SyncPageId))
-                    result.SyncPageId = OneNoteUtils.GetElementMetaData(notePageDocument.Content.Root, Constants.Key_PId, notePageDocument.Xnm);                    
-
-                if (string.IsNullOrEmpty(result.SyncPageId))
-                {
-                    result.SyncPageId = OneNoteProxyLinksHandler.GeneratePId();   
-                    OneNoteUtils.UpdateElementMetaData(notePageDocument.Content.Root, Constants.Key_PId, result.SyncPageId, notePageDocument.Xnm);                    
-                }                
+                //result.LoadPageSyncId(notePageDocument);                                
 
                 var fullNotebookHierarchy = ApplicationCache.Instance.GetHierarchy(ref oneNoteApp, notebookId, HierarchyScope.hsPages, false);
-                LoadHierarchyElementParent(notebookId, fullNotebookHierarchy, ref result);
+                result.LoadHierarchyElementParent(notebookId, fullNotebookHierarchy);
             }
 
             return result;
         }
-
-        private void LoadHierarchyElementParent(string notebookId, ApplicationCache.HierarchyElement fullNotebookHierarchy, ref HierarchyElementInfo elementInfo)
-        {
-            var el = fullNotebookHierarchy.Content.Root.XPathSelectElement(
-                                string.Format("//one:{0}[@ID=\"{1}\"]", elementInfo.GetElementName(), elementInfo.Id), fullNotebookHierarchy.Xnm);
-
-            if (el == null)
-                throw new Exception(string.Format("Can not find hierarchyElement '{0}' of type '{1}' in notebook '{2}'", 
-                                elementInfo.Id, elementInfo.Type, notebookId));
-
-
-            if (el.Parent != null)
-            {
-                var parentId = (string)el.Parent.Attribute("ID");
-                var parentType = (HierarchyElementType)Enum.Parse(typeof(HierarchyElementType), el.Parent.Name.LocalName);
-
-                string parentName;
-                string parentTitle;
-                if (parentType == HierarchyElementType.Notebook)
-                {
-                    parentTitle = (string)el.Parent.Attribute("nickname");
-                    parentName = (string)el.Parent.Attribute("name");
-
-                    if (string.IsNullOrEmpty(parentTitle))
-                        parentTitle = parentName;
-                }
-                else
-                {
-                    parentName = (string)el.Parent.Attribute("name");
-                    parentTitle = parentName;
-                }
-
-                var parent = new HierarchyElementInfo() { Id = parentId, Title = parentTitle, Name = parentName, Type = parentType, NotebookId = notebookId };                
-                LoadHierarchyElementParent(notebookId, fullNotebookHierarchy, ref parent);
-                elementInfo.Parent = parent;
-            }
-        }       
+       
         
         public void SetCursorOnNearestVerse(FoundVerseInfo verseInfo)
         {

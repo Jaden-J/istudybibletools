@@ -35,7 +35,7 @@ namespace BibleCommon.Handlers
         /// <param name="objectId"></param>
         /// <param name="autoCommit"></param>
         /// <returns></returns>
-        public static string GetCommandUrlStatic(ref Application oneNoteApp, LinkId pageObjectInfo, bool autoCommit)
+        public static string GetCommandUrlStatic(ref Application oneNoteApp, LinkId pageObjectInfo, bool autoCommit, bool checkForDuplicateId)
         {
             var changed = false;
 
@@ -45,7 +45,7 @@ namespace BibleCommon.Handlers
             if (pageObjectInfo.IdType == IdType.OneNote)
             {
                 var pageInfo = ApplicationCache.Instance.GetPageContent(ref oneNoteApp, pageObjectInfo.PageId, ApplicationCache.PageType.NotePage);
-                var updatePageResult = GetOrUpdateBnPId(pageInfo.Content.Root, pageInfo.Xnm);
+                var updatePageResult = GetOrUpdateBnPId(ref oneNoteApp, pageInfo.Content.Root, checkForDuplicateId, pageInfo.Xnm);
                 bnPId = updatePageResult.Id;
                 if (updatePageResult.Changed)
                 {
@@ -80,17 +80,29 @@ namespace BibleCommon.Handlers
             public bool Changed { get; set; }
         }
 
-        public static UpdateResult GetOrUpdateBnPId(XElement pageEl, XmlNamespaceManager xnm)
+        public static UpdateResult GetOrUpdateBnPId(ref Application oneNoteApp, XElement pageEl, bool checkForDuplicateId, XmlNamespaceManager xnm)
         {
             var result = new UpdateResult();
             result.Id = OneNoteUtils.GetElementMetaData(pageEl, Consts.Constants.Key_PId, xnm);
+
+            if (checkForDuplicateId && !string.IsNullOrEmpty(result.Id))
+            {
+                if (ApplicationCache.Instance.PagesCustomIds.ContainsKey(result.Id))  // почему не нужно всегда проверять, а только при checkForDuplicateId? Потому что вот эта операция (собирание PagesCustomIds) очень дорогая! 
+                {
+                    var oneNoteId = (string)pageEl.Attribute("ID");
+                    if (ApplicationCache.Instance.PagesCustomIds[result.Id] != oneNoteId)  // то есть уже есть другая такая страница (с таким же CustomId)
+                    {
+                        result.Id = null;   // пока так, так как сейчас нет возможности проследить, какая страница была создана первой. Так как копируется и значение атрибута "dateTime". В 4.0 версии можно будет в базе хранить дату создания страницы (или дату первого анализа). И уже по этому параметру понимать, у какой страницы мы оставляем этот CustomId, а какой генерируем новый.
+                    }
+                }
+            }
 
             if (string.IsNullOrEmpty(result.Id))
             {
                 result.Id = GeneratePId();
                 OneNoteUtils.UpdateElementMetaData(pageEl, Consts.Constants.Key_PId, result.Id, xnm);
                 result.Changed = true;
-            }
+            }            
 
             return result;
         }

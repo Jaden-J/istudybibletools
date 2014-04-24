@@ -283,7 +283,7 @@ namespace BibleVerseLinkerEx
                 pageContent.Content.Root.Add(newCommentElement);
 
             pageContent.WasModified = true;            
-            bnPId = OneNoteProxyLinksHandler.GetOrUpdateBnPId(pageContent.Content.Root, pageContent.Xnm).Id;
+            bnPId = OneNoteProxyLinksHandler.GetOrUpdateBnPId(ref _oneNoteApp, pageContent.Content.Root, false, pageContent.Xnm).Id;
             bnOeId = OneNoteProxyLinksHandler.GetOrUpdateBnOeId(
                                 newCommentElement.XPathSelectElement("one:OEChildren/one:OE", pageContent.Xnm),
                                 pageContent.Xnm).Id;                

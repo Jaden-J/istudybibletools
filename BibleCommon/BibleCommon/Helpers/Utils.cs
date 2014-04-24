@@ -12,6 +12,7 @@ using System.Threading;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using BibleCommon.Services;
+using System.ComponentModel;
 
 
 namespace BibleCommon.Helpers
@@ -189,25 +190,6 @@ namespace BibleCommon.Helpers
             }
 
             return result;
-        }
-
-        public static DateTime ParseDateTime(string s)
-        {   
-            try
-            {
-                return DateTime.Parse(s, CultureInfo.InvariantCulture);                
-            }
-            catch (FormatException)
-            {
-                try
-                {
-                    return DateTime.Parse(s);
-                }
-                catch (FormatException)
-                {
-                    return DateTime.Parse(s, LanguageManager.GetCurrentCultureInfo());
-                }
-            }
-        }
+        }        
     }
 }

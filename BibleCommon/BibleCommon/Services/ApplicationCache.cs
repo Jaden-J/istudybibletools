@@ -140,7 +140,8 @@ namespace BibleCommon.Services
         private Dictionary<string, string> _bibleVersesLinks = null;
         private Dictionary<string, ModuleDictionaryInfo> _moduleDictionaries = new Dictionary<string, ModuleDictionaryInfo>();
         private Dictionary<string, Dictionary<string, string>> _dictionariesTermsLinks = new Dictionary<string, Dictionary<string, string>>();
-        private OrderedDictionary<string, NotesPageData> _notesPageDataList = new OrderedDictionary<string, NotesPageData>();        
+        private OrderedDictionary<string, NotesPageData> _notesPageDataList = new OrderedDictionary<string, NotesPageData>();
+        private Dictionary<string, string> _pagesCustomIds = null;   // CustomId, OneNoteId
 
         private bool? _isBibleVersesLinksCacheActive;
 
@@ -233,6 +234,42 @@ namespace BibleCommon.Services
             });
         }
 
+        
+        public Dictionary<string, string> PagesCustomIds
+        {
+            get
+            {
+                if (_pagesCustomIds == null)
+                {
+                    lock (_locker)
+                    {
+                        if (_pagesCustomIds == null)
+                        {
+                            _pagesCustomIds = new Dictionary<string, string>();
+
+                            Application oneNoteApp = null;
+                            OneNoteUtils.UseOneNoteAPI(ref oneNoteApp, () =>
+                            {
+                                var hierarchy = GetHierarchy(ref oneNoteApp, null, HierarchyScope.hsPages);
+                                var pagesEls = hierarchy.Content.Root.XPathSelectElements("//one:Page", hierarchy.Xnm);
+                                foreach (var pageEl in pagesEls)
+                                {
+                                    var customId = OneNoteUtils.GetElementMetaData(pageEl, Consts.Constants.Key_PId, hierarchy.Xnm);
+                                    if (!string.IsNullOrEmpty(customId) && !_pagesCustomIds.ContainsKey(customId))
+                                    {
+                                        var oneNoteId = (string)pageEl.Attribute("ID");
+                                        _pagesCustomIds.Add(customId, oneNoteId);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+
+                return _pagesCustomIds;
+            }
+        }
+
         public string GenerateHref(ref Application oneNoteApp, LinkId pageObjectInfo, LinkProxyInfo linkProxyInfo)
         {
             if (string.IsNullOrEmpty(pageObjectInfo.PageId))
@@ -253,7 +290,7 @@ namespace BibleCommon.Services
                         {
                             if (linkProxyInfo.UseAdvancedProxy && SettingsManager.Instance.UseAdvancedProxyForOneNoteLinks)
                             {
-                                link = GetProxyLink(ref oneNoteApp, pageObjectInfo, linkProxyInfo.AutoCommitLinkPage);
+                                link = GetProxyLink(ref oneNoteApp, pageObjectInfo, linkProxyInfo);
                             }
                             else
                             {
@@ -285,9 +322,9 @@ namespace BibleCommon.Services
             return link.IndexOf("&" + Constants.QueryParameterKey_CustomPageId + "=") > -1;
         }
 
-        public static string GetProxyLink(ref Application oneNoteApp, LinkId pageObjectInfo, bool autoCommit)
+        public static string GetProxyLink(ref Application oneNoteApp, LinkId pageObjectInfo, LinkProxyInfo linkProxyInfo)
         {
-            return OneNoteProxyLinksHandler.GetCommandUrlStatic(ref oneNoteApp, pageObjectInfo, autoCommit);                        
+            return OneNoteProxyLinksHandler.GetCommandUrlStatic(ref oneNoteApp, pageObjectInfo, linkProxyInfo.AutoCommitLinkPage, linkProxyInfo.CheckForDuplicateId);
         }
         public static string GetSimpleProxyLink(string link, string pageId, string objectId)
         {            
