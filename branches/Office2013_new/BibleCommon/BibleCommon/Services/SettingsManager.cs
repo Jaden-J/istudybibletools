@@ -497,7 +497,7 @@ namespace BibleCommon.Services
         private void LoadAdditionalSettings(XDocument xdoc)
         {
             this.NewVersionOnServer = GetParameterValue<Version>(xdoc, Consts.Constants.ParameterName_NewVersionOnServer, null, value => new Version(value));
-            this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, null, value => Utils.ParseDateTime(value));
+            this.NewVersionOnServerLatestCheckTime = GetParameterValue<DateTime?>(xdoc, Consts.Constants.ParameterName_NewVersionOnServerLatestCheckTime, null, value => StringUtils.ParseDateTime(value));
             this.ReleaseMinVersion = GetParameterValue<Version>(xdoc, Consts.Constants.ParameterName_ReleaseMinVersion, null, value => new Version(value));
             this.ReleaseInfo = GetParameterValue<string>(xdoc, Consts.Constants.ParameterName_ReleaseInfo);
             this.Language = GetParameterValue<int>(xdoc, Consts.Constants.ParameterName_Language, Thread.CurrentThread.CurrentUICulture.LCID);

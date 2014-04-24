@@ -1,7 +1,12 @@
-﻿using System;
+﻿using BibleCommon.Consts;
+using BibleCommon.Handlers;
+using BibleCommon.Helpers;
+using BibleCommon.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.XPath;
 
 namespace BibleCommon.Common
 {
@@ -150,5 +155,58 @@ namespace BibleCommon.Common
             else
                 return 1;
         }
+
+        public void LoadHierarchyElementParent(string notebookId, ApplicationCache.HierarchyElement fullNotebookHierarchy)
+        {
+            var el = fullNotebookHierarchy.Content.Root.XPathSelectElement(
+                                string.Format("//one:{0}[@ID=\"{1}\"]", this.GetElementName(), this.Id), fullNotebookHierarchy.Xnm);
+
+            if (el == null)
+                throw new Exception(string.Format("Can not find hierarchyElement '{0}' of type '{1}' in notebook '{2}'",
+                                this.Id, this.Type, notebookId));
+
+
+            if (el.Parent != null)
+            {
+                var parentId = (string)el.Parent.Attribute("ID");
+                var parentType = (HierarchyElementType)Enum.Parse(typeof(HierarchyElementType), el.Parent.Name.LocalName);
+
+                string parentName;
+                string parentTitle;
+                if (parentType == HierarchyElementType.Notebook)
+                {
+                    parentTitle = (string)el.Parent.Attribute("nickname");
+                    parentName = (string)el.Parent.Attribute("name");
+
+                    if (string.IsNullOrEmpty(parentTitle))
+                        parentTitle = parentName;
+                }
+                else
+                {
+                    parentName = (string)el.Parent.Attribute("name");
+                    parentTitle = parentName;
+                }
+
+                var parent = new HierarchyElementInfo() { Id = parentId, Title = parentTitle, Name = parentName, Type = parentType, NotebookId = notebookId };
+                parent.LoadHierarchyElementParent(notebookId, fullNotebookHierarchy);
+                this.Parent = parent;
+            }
+        }       
+    }
+
+    public class PageHierarchyInfo : HierarchyElementInfo
+    {
+        public void LoadPageSyncId(ApplicationCache.PageContent notePageDocument)
+        {
+            this.SyncPageId = OneNoteUtils.GetElementMetaData(notePageDocument.Content.Root, Constants.Key_SyncId, notePageDocument.Xnm);
+            if (string.IsNullOrEmpty(this.SyncPageId))
+                this.SyncPageId = OneNoteUtils.GetElementMetaData(notePageDocument.Content.Root, Constants.Key_PId, notePageDocument.Xnm);
+
+            if (string.IsNullOrEmpty(this.SyncPageId))
+            {
+                this.SyncPageId = OneNoteProxyLinksHandler.GeneratePId();
+                OneNoteUtils.UpdateElementMetaData(notePageDocument.Content.Root, Constants.Key_PId, this.SyncPageId, notePageDocument.Xnm);
+            }
+        }       
     }
 }

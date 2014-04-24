@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using BibleCommon.Services;
 using System.Text.RegularExpressions;
+using System.Globalization;
+using System.ComponentModel;
 
 namespace BibleCommon.Helpers
 {   
@@ -471,6 +473,38 @@ namespace BibleCommon.Helpers
             }
 
             return bookName;
+        }
+        public static DateTime ParseDateTime(string s)
+        {
+            try
+            {
+                return DateTime.Parse(s, CultureInfo.InvariantCulture);
+            }
+            catch (FormatException)
+            {
+                try
+                {
+                    return DateTime.Parse(s);
+                }
+                catch (FormatException)
+                {
+                    return DateTime.Parse(s, LanguageManager.GetCurrentCultureInfo());
+                }
+            }
+        }
+
+        public static T ParseString<T>(string inValue)
+        {
+            if (typeof(T) == typeof(DateTime))
+                return (T)(object)ParseDateTime(inValue);
+            else
+            {
+                var converter =
+                    TypeDescriptor.GetConverter(typeof(T));
+
+                return (T)converter.ConvertFromString(null,
+                    CultureInfo.InvariantCulture, inValue);
+            }
         }
     }
 }
