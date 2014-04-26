@@ -31,7 +31,7 @@ namespace TestProject
 {
     class Program
     {
-        private const string ForGeneratingFolderPath = @"C:\Users\Alexander\SkyDrive\BibleNote\ForGenerating";
+        private const string ForGeneratingFolderPath = @"C:\Users\ademko\OneDrive\BibleNote\ForGenerating";
         private const string TempFolderPath = @"C:\temp\BibleNote";
 
         private static Microsoft.Office.Interop.OneNote.Application _oneNoteApp;
@@ -84,7 +84,7 @@ namespace TestProject
 
                 //AddColorLink();
 
-              //  GenerateRuDictionary();
+                GenerateRuDictionary();
 
                 //GenerateEnDictionary();
 
@@ -509,7 +509,7 @@ namespace TestProject
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\HEBREW.HTM"), SectionName = "1. Old Testament.one", DictionaryPageDescription="Strong's Hebrew Dictionary (с) Bible Foundation", TermPrefix = "H" },
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\GREEK.HTM"), SectionName = "2. New Testament.one", DictionaryPageDescription="Strong's Greek Dictionary (с) Bible Foundation", TermPrefix= "G" }
                 }, BibleQuotaDictionaryConverter.StructureType.Strong, "Strong",
-                 Path.Combine(TempFolderPath, moduleName), "<h4>", "User Notes", "Find all verses with this number", "en", new Version(2, 0));
+                 Path.Combine(TempFolderPath, moduleName), "<h4>", "User Notes", "Find all verses with this number", 100, "en", new Version(2, 0));
 
             converter.Convert();
 
@@ -530,7 +530,7 @@ namespace TestProject
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\HEBREW.HTM"), SectionName = "Ветхий Завет.one", DictionaryPageDescription="Еврейский лексикон Стронга (с) Bob Jones University", TermPrefix = "H" },
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, moduleName + "\\GREEK.HTM"), SectionName = "Новый Завет.one", DictionaryPageDescription="Греческий лексикон Стронга (с) Bob Jones University", TermPrefix= "G" }
                 }, BibleQuotaDictionaryConverter.StructureType.Strong, "Стронга",
-                Path.Combine(TempFolderPath, moduleName), "<h4>", "Пользовательские заметки", "Найти все стихи с этим номером", "ru", new Version(2, 0));
+                Path.Combine(TempFolderPath, moduleName), "<h4>", "Пользовательские заметки", "Найти все стихи с этим номером", 100, "ru", new Version(2, 0));
 
             converter.Convert();
 
@@ -544,31 +544,31 @@ namespace TestProject
 
         private static void GenerateRuDictionary()
         {
-            var converter = new BibleQuotaDictionaryConverter("Test", "goetze", "Библейский словарь Б.Геце", "Библейский словарь Б.Геце",
-              new List<DictionaryFile>() { 
-                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Goetze\goetze.htm"), DictionaryPageDescription="Библейский словарь Б.Геце" }                    
-                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Геце",
-                Path.Combine(TempFolderPath, "goetze"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 0), (s) => 
-                    {
-                        var result = Regex.Replace(s, @", +(\d)", @",$1");
-                        result = Regex.Replace(result, @"(\d)\. +(\d)", @"$1,$2");
-                        result = Regex.Replace(result, @"Иов\. +(\d)", @"Иов $1");
-                        result = Regex.Replace(result, @"Амос\. +(\d)", @"Амос $1");
-                        result = Regex.Replace(result, @"Наум\. +(\d)", @"Наум $1");
-                        result = Regex.Replace(result, @"Авдий +ст\. +(\d)", @"Авдий 1:$1");
-                        result = Regex.Replace(result, @"Иуд\. +ст\. +(\d)", @"Иуд. 1:$1");
-                        result = Regex.Replace(result, @"2 +Иоан\. +ст\. +(\d)", @"2 Иоан. 1:$1");
-                        result = Regex.Replace(result, @"3 +Иоан\. +ст\. +(\d)", @"3 Иоан. 1:$1");
-                        result = Regex.Replace(result, @"Филим\. +ст\. +(\d)", @"Филим. 1:$1");
-                        return result;
-                    });
+            //var converter = new BibleQuotaDictionaryConverter("Test", "goetze", "Библейский словарь Б.Геце", "Библейский словарь Б.Геце",
+            //  new List<DictionaryFile>() { 
+            //        new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"Goetze\goetze.htm"), DictionaryPageDescription="Библейский словарь Б.Геце" }                    
+            //    }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Геце",
+            //    Path.Combine(TempFolderPath, "goetze"), "<h4>", "Пользовательские заметки", null, 5, "ru", new Version(2, 0), (s) => 
+            //        {
+            //            var result = Regex.Replace(s, @", +(\d)", @",$1");
+            //            result = Regex.Replace(result, @"(\d)\. +(\d)", @"$1,$2");
+            //            result = Regex.Replace(result, @"Иов\. +(\d)", @"Иов $1");
+            //            result = Regex.Replace(result, @"Амос\. +(\d)", @"Амос $1");
+            //            result = Regex.Replace(result, @"Наум\. +(\d)", @"Наум $1");
+            //            result = Regex.Replace(result, @"Авдий +ст\. +(\d)", @"Авдий 1:$1");
+            //            result = Regex.Replace(result, @"Иуд\. +ст\. +(\d)", @"Иуд. 1:$1");
+            //            result = Regex.Replace(result, @"2 +Иоан\. +ст\. +(\d)", @"2 Иоан. 1:$1");
+            //            result = Regex.Replace(result, @"3 +Иоан\. +ст\. +(\d)", @"3 Иоан. 1:$1");
+            //            result = Regex.Replace(result, @"Филим\. +ст\. +(\d)", @"Филим. 1:$1");
+            //            return result;
+            //        });
 
 
-            //var converter = new BibleQuotaDictionaryConverter("TestDict", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
-            // new List<DictionaryFile>() { 
-            //        new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
-            //    }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
-            //   Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, "ru", new Version(2, 2));
+            var converter = new BibleQuotaDictionaryConverter("TestDict", "brockhaus", "Библейский словарь Брокгауза", "Библейский словарь Брокгауза",
+             new List<DictionaryFile>() { 
+                    new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, @"brockhaus\BrockhausLexicon.htm"), DictionaryPageDescription="Библейский словарь Брокгауза" }                    
+                }, BibleQuotaDictionaryConverter.StructureType.Dictionary, "Брокгауза",
+               Path.Combine(TempFolderPath, "brockhaus"), "<h4>", "Пользовательские заметки", null, 20, "ru", new Version(2, 3));
 
             converter.Convert();
 
@@ -586,7 +586,7 @@ namespace TestProject
             new List<DictionaryFile>() { 
                     new DictionaryFile() { FilePath = Path.Combine(ForGeneratingFolderPath, string.Format("{0}\\{0}.htm", moduleName)), DictionaryPageDescription = moduleDescription }
                 }, BibleQuotaDictionaryConverter.StructureType.Dictionary, moduleName,
-              Path.Combine(TempFolderPath, moduleName), "<p><b>", "User Notes", null, "en", new Version(2, 1));
+              Path.Combine(TempFolderPath, moduleName), "<p><b>", "User Notes", null, 20, "en", new Version(2, 1));
 
             converter.Convert();
 
