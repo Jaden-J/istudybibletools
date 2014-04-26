@@ -31,9 +31,7 @@ namespace BibleConfigurator.ModuleConverter
             internal XDocument PageDocument { get; set; }
             internal XElement TableElement { get; set; }
             internal int StyleIndex { get; set; }
-        }
-
-        private const int MaxTermsInPage = 25;                
+        }        
 
         public enum StructureType
         {
@@ -58,6 +56,7 @@ namespace BibleConfigurator.ModuleConverter
         public string FindAllVersesString { get; set; }
         public List<string> Terms { get; set; }
         public int PagesCount { get; set; }
+        public int MaxTermsInPage { get; set; }
 
 
         private string SectionGroupId { get; set; }
@@ -77,7 +76,7 @@ namespace BibleConfigurator.ModuleConverter
         /// <param name="manifestFilesFolder"></param>
         public BibleQuotaDictionaryConverter(string notebookName, string dictionaryModuleName, string dictionaryName, string dictionaryDescription, 
             List<DictionaryFile> dictionaryFiles, StructureType type, string dictionarySectionGroupName, 
-            string manifestFilesFolder, string termStartString, string userNotesString, string findAllVersesString,
+            string manifestFilesFolder, string termStartString, string userNotesString, string findAllVersesString, int maxTermsInPage,
             string locale, Version version, Func<string, string> additionalStringProcessing = null)
         {
             this.Type = type;
@@ -99,6 +98,7 @@ namespace BibleConfigurator.ModuleConverter
             this.Version = version;
             this.AdditionalStringProcessing = additionalStringProcessing;
             this.Terms = new List<string>();
+            this.MaxTermsInPage = maxTermsInPage;
 
             if (!Directory.Exists(ManifestFilesFolder))
                 Directory.CreateDirectory(ManifestFilesFolder);
@@ -108,6 +108,7 @@ namespace BibleConfigurator.ModuleConverter
             ProtocolHandler = new FindVersesWithStrongNumberHandler();
         }        
 
+        //более запутанного кода редко можно встретить. УЖАСНО. Надо переписать ПОЛНОСТЬЮ! Исправить какую-то мелочь просто невозможно :(
         public void Convert()
         {
             var sectionGroupEl = NotebookGenerator.AddRootSectionGroupToNotebook(ref _oneNoteApp, NotebookId, this.DictionaryModuleName);
@@ -188,6 +189,7 @@ namespace BibleConfigurator.ModuleConverter
             return new TermPageInfo() { PageDocument = pageDoc, TableElement = tableEl, StyleIndex = styleIndex };
         }
 
+        // вот это жжжесть. Создаём до страницу, после... Разобраться нереально.
         private TermPageInfo AddTermToPage(DictionaryFile file, TermPageInfo pageInfo, string termName, string termDescription,
              string prevTermName, ref int termsInPageCount, ref int termIndex, bool isLatestTermInSection, XmlNamespaceManager xnm, out bool createdNewPageWithoutTerms)
         {
@@ -222,6 +224,7 @@ namespace BibleConfigurator.ModuleConverter
 
                 pageInfo = AddTermsPage(string.Format("{0:000}-", 1), file.DictionaryPageDescription);
                 pageInfoWasChanged = true;
+                termsInPageCount = 0;
             }
 
             if (termDescription.StartsWith(Environment.NewLine))
