@@ -26,7 +26,7 @@ namespace BibleCommon.Services
                     if (_chapterVerseDelimiter == null)
                     {
                         var chars = new List<char>() { ':' };
-                        if (SettingsManager.Instance.UseCommaDelimeter)
+                        if (SettingsManager.Instance.UseCommaDelimiter)
                             chars.Add(',');
 
                         _chapterVerseDelimiter = chars.ToArray();
@@ -198,15 +198,15 @@ namespace BibleCommon.Services
             if (IsFullVerse(prevCharResult.FoundString, nextCharResult.FoundString))
             {
                 result = TryToGetFullVerse(textElement, numberStartIndex, number, nextTextBreakIndex, nextHtmlBreakIndex, prevCharResult.TextBreakIndex, prevCharResult.HtmlBreakIndex,
-                                                prevChar, nextChar, globalChapterResult, localChapterName, prevResult, isLink, verseScopeInfo, isTitle);
+                                                prevChar, nextChar, globalChapterResult, localChapterName, prevResult, isLink, verseScopeInfo, isTitle);                
             }
 
-            if (result.ResultType == VersePointerSearchResult.SearchResultType.Nothing && IsSingleVerse(prevChar, nextChar))
+            if (result.ResultType == VersePointerSearchResult.SearchResultType.Nothing && IsSingleVerse(prevChar, nextChar) && prevCharResult.WasFoundDigits.GetValueOrDefault(true))  // в последней проверке убеждаемся, что в найденной строке были только цифры (и разделители), но не буквы
             {
                 result = TryToGetSingleVerse(textElement, numberStartIndex, number, nextTextBreakIndex, nextHtmlBreakIndex, prevCharResult.TextBreakIndex, prevCharResult.HtmlBreakIndex,
                                                 prevChar, nextChar, globalChapterResult, localChapterName, prevResult, isLink, verseScopeInfo, isTitle);
             }
-            
+
             if (result.ResultType == VersePointerSearchResult.SearchResultType.Nothing && IsChapter(prevChar, nextChar))
             {
                 result = TryToGetChapter(textElement, numberStartIndex, number, nextTextBreakIndex, nextHtmlBreakIndex, prevCharResult.TextBreakIndex, prevCharResult.HtmlBreakIndex,
@@ -214,7 +214,7 @@ namespace BibleCommon.Services
             }
 
             var tryToSearchSingleVerse = false;
-            if (result.ResultType == VersePointerSearchResult.SearchResultType.Nothing && IsChapterOrVerseWithoutBookName(prevChar, nextChar))
+            if (result.ResultType == VersePointerSearchResult.SearchResultType.Nothing && IsChapterOrVerseWithoutBookName(prevChar, nextChar) && prevCharResult.WasFoundDigits.GetValueOrDefault(true))
             {
                 result = TryGetChapterOrVerseWithoutBookName(textElement, numberStartIndex, number, nextTextBreakIndex, nextHtmlBreakIndex, prevCharResult.TextBreakIndex, prevCharResult.HtmlBreakIndex,
                                                 prevChar, nextChar, globalChapterResult, localChapterName, prevResult, isLink, verseScopeInfo, isTitle, out tryToSearchSingleVerse);
@@ -324,7 +324,7 @@ namespace BibleCommon.Services
                     {
                         VersePointer vp = new VersePointer(verseName);
 
-                        if (vp.IsValid)
+                        if (vp.IsValid && vp.IsExisting.GetValueOrDefault(true))
                         {
                             result.VersePointer = vp;
                             result.ResultType = resultType;
@@ -398,7 +398,7 @@ namespace BibleCommon.Services
                                 string verseName = GetVerseName(bookName, chapterString);
 
                                 VersePointer vp = new VersePointer(verseName);
-                                if (vp.IsValid)
+                                if (vp.IsValid && vp.IsExisting.GetValueOrDefault(true))
                                 {
                                     result.ChapterName = GetVerseName(bookName, number);
                                     bool chapterOnlyAtStartString = prevHtmlBreakIndex == -1 && !VerseNumber.Dashes.Contains(nextChar.FirstOrDefault());    //  не считаем это ссылкой, как ChapterOnlyAtStartString
@@ -504,7 +504,7 @@ namespace BibleCommon.Services
                             string verseName = string.Format("{0}{1}{2}", chapterName, DefaultChapterVerseDelimiter, verseString);
 
                             VersePointer vp = new VersePointer(verseName);
-                            if (vp.IsValid)
+                            if (vp.IsValid && vp.IsExisting.GetValueOrDefault(true))
                             {
                                 result.VersePointer = vp;
                                 result.ResultType = resultType;
@@ -573,20 +573,28 @@ namespace BibleCommon.Services
                                 bookName = bookName.Trim(' ');
                                 string verseName = GetVerseName(bookName, number, verseString);
 
-                                VersePointer vp = new VersePointer(verseName);
-                                if (vp.IsValid)
+                                var vp = new VersePointer(verseName);
+                                if (vp.IsValid && vp.IsExisting.GetValueOrDefault(true))
                                 {
-                                    result.VersePointer = vp;
-                                    result.ResultType = prevHtmlBreakIndex == -1
-                                                ? VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString
-                                                : VersePointerSearchResult.SearchResultType.ChapterAndVerse;
-                                    result.VersePointerEndIndex = endIndex;
-                                    result.VersePointerStartIndex = startIndex + 1;
-                                    result.VersePointerHtmlEndIndex = nextHtmlBreakIndex;
-                                    result.VersePointerHtmlStartIndex = prevHtmlBreakIndex;
-                                    result.ChapterName = string.Format("{0}{1}{2}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number);
-                                    result.TextElement = textElement;
-                                    break;
+                                    if (!(
+                                        SettingsManager.Instance.UseCommaDelimiter
+                                        && vp.Chapter > 1
+                                        && SettingsManager.Instance.CanUseBibleContent
+                                        && SettingsManager.Instance.CurrentBibleContentCached.BookHasOnlyOneChapter(vp.ToSimpleVersePointer())))    // например, "Иуд 14,15"
+                                    {
+
+                                        result.VersePointer = vp;
+                                        result.ResultType = prevHtmlBreakIndex == -1
+                                                    ? VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString
+                                                    : VersePointerSearchResult.SearchResultType.ChapterAndVerse;
+                                        result.VersePointerEndIndex = endIndex;
+                                        result.VersePointerStartIndex = startIndex + 1;
+                                        result.VersePointerHtmlEndIndex = nextHtmlBreakIndex;
+                                        result.VersePointerHtmlStartIndex = prevHtmlBreakIndex;
+                                        result.ChapterName = string.Format("{0}{1}{2}", bookName, bookName.EndsWith(" ") ? string.Empty : " ", number);
+                                        result.TextElement = textElement;
+                                        break;
+                                    }
                                 }
                             }
                         }

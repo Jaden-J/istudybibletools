@@ -51,7 +51,7 @@ namespace BibleCommon.Consts
         public static readonly bool Default_UseProxyLinksForBibleVerses = true;
         public static readonly bool Default_UseProxyLinksForLinks = true;
         public static readonly bool Default_UseAdvancedProxyForOneNoteLinks = true;
-        public static readonly bool Default_UseCommaDelimeter = false;                
+        public static readonly bool Default_UseCommaDelimiter = false;                
         public static readonly bool DefaultExpandMultiVersesLinking = true;
         public static readonly bool DefaultExcludedVersesLinking = false;
         public static readonly bool DefaultUseDifferentPagesForEachVerse = true;
@@ -117,7 +117,7 @@ namespace BibleCommon.Consts
         public static readonly string ParameterName_UseProxyLinksForBibleVerses = "UseProxyLinksForBibleVerses";
         public static readonly string ParameterName_UseProxyLinksForLinks = "UseProxyLinksForLinks";
         public static readonly string ParameterName_UseAdvancedProxyForOneNoteLinks = "UseAdvancedProxyForOneNoteLinks";
-        public static readonly string ParameterName_UseCommaDelimeter = "UseCommaDelimeter";
+        public static readonly string ParameterName_UseCommaDelimiter = "UseCommaDelimiter";
 
         public static readonly string ParameterName_UseDefaultSettings = "UseDefaultSettings";
 

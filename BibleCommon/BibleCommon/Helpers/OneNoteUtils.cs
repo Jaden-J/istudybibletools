@@ -522,12 +522,12 @@ namespace BibleCommon.Helpers
         {   
             if (!string.IsNullOrEmpty(s))
             {
-                return s.Split(new string[] { OneNoteUtils.NotebookNameDelimeter }, StringSplitOptions.None)[0];
+                return s.Split(new string[] { OneNoteUtils.NotebookNameDelimiter }, StringSplitOptions.None)[0];
             }
 
             return s;
         }
-        public static string NotebookNameDelimeter = " [\"";
+        public static string NotebookNameDelimiter = " [\"";
         public static Dictionary<string, string> GetExistingNotebooks(ref Application oneNoteApp)
         {
             Dictionary<string, string> result = new Dictionary<string, string>();

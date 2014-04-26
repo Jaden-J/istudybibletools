@@ -465,7 +465,7 @@ namespace BibleCommon.Common
             {
                 subLinksEl.Add(
                     new XElement("td",
-                        new XAttribute("class", "subLinkDelimeter" + detailedClassName),
+                        new XAttribute("class", "subLinkDelimeter" + detailedClassName),            // todo: изменить на Delimiter
                         Resources.Constants.VerseLinksDelimiter));
             }
         }

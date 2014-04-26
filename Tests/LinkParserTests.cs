@@ -19,7 +19,7 @@ namespace Tests
         public void Init()
         {
             _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();
-            SettingsManager.Instance.UseCommaDelimeter = false;
+            SettingsManager.Instance.UseCommaDelimiter = false;
         }
 
         [TestCleanup]
@@ -118,15 +118,15 @@ namespace Tests
         public void TestScenario10()
         {
             var input = "В Ин 1,1 написано. И в 1,2 веке про это писали! Про :2 - тоже";
-            var expectedIfUseCommaDelimeter = "В Ин 1:1 написано. И в 1,2 веке про это писали! Про :2 - тоже";
-            var expectedIfNotUseCommaDelimeter = "В Ин 1, 1 написано. И в 1,2 веке про это писали! Про :2 - тоже";
+            var expectedIfUseCommaDelimiter = "В Ин 1:1 написано. И в 1,2 веке про это писали! Про :2 - тоже";
+            var expectedIfNotUseCommaDelimiter = "В Ин 1, 1 написано. И в 1,2 веке про это писали! Про :2 - тоже";
             
             var result = TestHelper.AnalyzeString(ref _oneNoteApp, "TestScenario10", input);
 
             TestHelper.CheckVerses(                  
-                SettingsManager.Instance.UseCommaDelimeter ? expectedIfUseCommaDelimeter : expectedIfNotUseCommaDelimeter,
+                SettingsManager.Instance.UseCommaDelimiter ? expectedIfUseCommaDelimiter : expectedIfNotUseCommaDelimiter,
                 result,
-                SettingsManager.Instance.UseCommaDelimeter 
+                SettingsManager.Instance.UseCommaDelimiter 
                     ? new string[] { "Ин 1:1", "Ин 1:2" }
                     : new string[] { "Ин 1", "Ин 1", "Ин 1:2"});
         }
@@ -135,15 +135,15 @@ namespace Tests
         public void TestScenario11()
         {
             var input = "в 1 Ин 1,2-3 и в Иисуса Навина 2-3 было написано про 1-е Кор 1,2-3,4-5;6-7,8-9,10 и в :7";
-            var expectedIfUseCommaDelimeter = "в 1 Ин 1:2-3 и в Иисуса Навина 2-3 было написано про 1-е Кор 1:2-3,4-5; 6-7, 8-9, 10 и в :7";
-            var expectedIfNotUseCommaDelimeter = "в 1 Ин 1, 2-3 и в Иисуса Навина 2-3 было написано про 1-е Кор 1, 2-3, 4-5; 6-7, 8-9, 10 и в :7";
+            var expectedIfUseCommaDelimiter = "в 1 Ин 1:2-3 и в Иисуса Навина 2-3 было написано про 1-е Кор 1:2-3,4-5; 6-7, 8-9, 10 и в :7";
+            var expectedIfNotUseCommaDelimiter = "в 1 Ин 1, 2-3 и в Иисуса Навина 2-3 было написано про 1-е Кор 1, 2-3, 4-5; 6-7, 8-9, 10 и в :7";
 
             var result = TestHelper.AnalyzeString(ref _oneNoteApp, "TestScenario11", input);
 
             TestHelper.CheckVerses(
-                SettingsManager.Instance.UseCommaDelimeter ? expectedIfUseCommaDelimeter : expectedIfNotUseCommaDelimeter,
+                SettingsManager.Instance.UseCommaDelimiter ? expectedIfUseCommaDelimiter : expectedIfNotUseCommaDelimiter,
                 result,
-                SettingsManager.Instance.UseCommaDelimeter 
+                SettingsManager.Instance.UseCommaDelimiter 
                     ? new string[] { 
                         "1 Ин 1:2", "1 Ин 1:3", "Нав 2", "Нав 3", 
                         "1Кор 1:2", "1Кор 1:3", "1Кор 1:4", "1Кор 1:5", "1Кор 6", 
@@ -157,15 +157,15 @@ namespace Tests
         public void TestScenario12()
         {
             var input = "Ин 1,2,3 и ещё: Марка 1,2, 3: а потом Лк 1,2- 3";
-            var expectedIfUseCommaDelimeter = "Ин 1:2,3 и ещё: Марка 1:2,3: а потом Лк 1:2-3";
-            var expectedIfNotUseCommaDelimeter = "Ин 1, 2, 3 и ещё: Марка 1, 2, 3: а потом Лк 1, 2-3";
+            var expectedIfUseCommaDelimiter = "Ин 1:2,3 и ещё: Марка 1:2,3: а потом Лк 1:2-3";
+            var expectedIfNotUseCommaDelimiter = "Ин 1, 2, 3 и ещё: Марка 1, 2, 3: а потом Лк 1, 2-3";
 
             var result = TestHelper.AnalyzeString(ref _oneNoteApp, "TestScenario12", input);
 
             TestHelper.CheckVerses(
-                SettingsManager.Instance.UseCommaDelimeter ? expectedIfUseCommaDelimeter : expectedIfNotUseCommaDelimeter,
+                SettingsManager.Instance.UseCommaDelimiter ? expectedIfUseCommaDelimiter : expectedIfNotUseCommaDelimiter,
                 result,
-                SettingsManager.Instance.UseCommaDelimeter
+                SettingsManager.Instance.UseCommaDelimiter
                     ? new string[] { "Ин 1:2", "Ин 1:3", "Мк 1:2", "Мк 1:3", "Лк 1:2", "Лк 1:3" }
                     : new string[] { "Ин 1", "Ин 2", "Ин 3", "Мк 1", "Мк 2", "Мк 3", "Лк 1", "Лк 2", "Лк 3" });
         }
@@ -193,15 +193,15 @@ namespace Tests
         public void TestScenario15()
         {
             var input = "<span lang=ru>Исх. 13,1</span><span lang=ro>4</span><span lang=ru>,</span><span lang=se-FI>15</span><span lang=ru>,20.</span>";
-            var expectedIfUseCommaDelimeter = "Исх. 13:14,15,20.";
-            var expectedIfNotUseCommaDelimeter = "Исх. 13, 14, 15, 20.";
+            var expectedIfUseCommaDelimiter = "Исх. 13:14,15,20.";
+            var expectedIfNotUseCommaDelimiter = "Исх. 13, 14, 15, 20.";
 
             var result = TestHelper.AnalyzeString(ref _oneNoteApp, "TestScenario15", input);
 
             TestHelper.CheckVerses(
-                SettingsManager.Instance.UseCommaDelimeter ? expectedIfUseCommaDelimeter : expectedIfNotUseCommaDelimeter,
+                SettingsManager.Instance.UseCommaDelimiter ? expectedIfUseCommaDelimiter : expectedIfNotUseCommaDelimiter,
                 result,
-                SettingsManager.Instance.UseCommaDelimeter
+                SettingsManager.Instance.UseCommaDelimiter
                     ? new string[] { "Исх 13:14", "Исх 13:15", "Исх 13:20" }
                     : new string[] { "Исх 13", "Исх 14", "Исх 15", "Исх 20" });
         }        
@@ -236,14 +236,14 @@ namespace Tests
         public void TestScenario19()
         {
             var input = "Ис 43,4,45,5,46,7";
-            var expectedIfUseCommaDelimeter = "Ис 43:4,45,5,46,7";
-            var expectedIfNotUseCommaDelimeter = "Ис 43, 4, 45, 5, 46, 7";
+            var expectedIfUseCommaDelimiter = "Ис 43:4, 45:5, 46:7";
+            var expectedIfNotUseCommaDelimiter = "Ис 43, 4, 45, 5, 46, 7";
             var result = TestHelper.AnalyzeString(ref _oneNoteApp, "TestScenario19", input);
             TestHelper.CheckVerses(
-                SettingsManager.Instance.UseCommaDelimeter ? expectedIfUseCommaDelimeter : expectedIfNotUseCommaDelimeter,
+                SettingsManager.Instance.UseCommaDelimiter ? expectedIfUseCommaDelimiter : expectedIfNotUseCommaDelimiter,
                 result,
-                SettingsManager.Instance.UseCommaDelimeter
-                    ? new string[] { "Ис 43:4" }
+                SettingsManager.Instance.UseCommaDelimiter
+                    ? new string[] { "Ис 43:4", "Ис 45:5", "Ис 46:7" }
                     : new string[] { "Ис 43", "Ис 4", "Ис 45", "Ис 5", "Ис 46", "Ис 7" });
         }
 
@@ -256,5 +256,37 @@ namespace Tests
             TestHelper.CheckVerses(expected, result, "Ин 1", "Ин 1:20");
         }
 
+        [TestMethod]
+        public void TestScenario21()
+        {
+            var input = "2Ин2";
+            var expected = "2Ин 2";
+            var result = TestHelper.AnalyzeString(ref _oneNoteApp, "TestScenario21", input);
+            TestHelper.CheckVerses(expected, result, "2Ин 1:2");
+        }
+
+        [TestMethod]
+        public void TestScenario22()
+        {
+            var input = "2Ин2,3Ин3";
+            var expected = "2Ин 2,3Ин 3";
+            var result = TestHelper.AnalyzeString(ref _oneNoteApp, "TestScenario22", input);
+            TestHelper.CheckVerses(expected, result, "2Ин 1:2", "3Ин 1:3");
+        }
+
+        [TestMethod]
+        public void TestScenario23()
+        {
+            var input = "Исх.19,11";
+            var expectedIfUseCommaDelimiter = "Исх. 19:11";
+            var expectedIfNotUseCommaDelimiter = "Исх. 19, 11";
+            var result = TestHelper.AnalyzeString(ref _oneNoteApp, "TestScenario23", input);
+            TestHelper.CheckVerses(
+                SettingsManager.Instance.UseCommaDelimiter ? expectedIfUseCommaDelimiter : expectedIfNotUseCommaDelimiter,
+                result,
+                SettingsManager.Instance.UseCommaDelimiter
+                    ? new string[] { "Исх 19:11" }
+                    : new string[] { "Исх 19", "Исх 11" });
+        }
     }
 }

@@ -241,6 +241,12 @@ namespace BibleCommon.Common
             }
         }
 
+        public SimpleVersePointer GetChangedVerseAsOneChapteredBook()
+        {
+            return new SimpleVersePointer(this.BookIndex, 1, new VerseNumber(this.Chapter));            
+        }    
+
+
         //public SimpleVersePointer(string s)
         //{
         //    var parts = s.Split(new char[] { ' ', ':' });
@@ -804,7 +810,11 @@ namespace BibleCommon.Common
             int iComma = s.LastIndexOf(',');
             if (iComma != -1)
             {
-                int iDel = s.IndexOfAny(new char[] { '.', ',', ':' });
+                var delimiters = new char[] { '.', ',', ':' };
+                int iDel = s.IndexOfAny(delimiters);
+                if (char.IsLetter(StringUtils.GetChar(s, iDel - 1)))
+                    iDel = s.IndexOfAny(delimiters, iDel + 1);
+
                 if (iDel != -1)
                 {
                     if (iComma > iDel) // ситуация типа "2Тим 1:13,14"
@@ -841,6 +851,24 @@ namespace BibleCommon.Common
                 return Book != null                    
                     && Chapter.HasValue
                     && Verse.HasValue;
+            }
+        }
+
+        public bool? IsExisting
+        {
+            get
+            {
+                if (!SettingsManager.Instance.CanUseBibleContent)
+                    return null;
+
+                VerseNumber vn;
+                var svp = ToSimpleVersePointer();
+                var result = SettingsManager.Instance.CurrentBibleContentCached.VerseExists(svp, SettingsManager.Instance.ModuleShortName, out vn);
+
+                if (!result && IsChapter && SettingsManager.Instance.CurrentBibleContentCached.BookHasOnlyOneChapter(svp))                
+                    result = SettingsManager.Instance.CurrentBibleContentCached.VerseExists(svp.GetChangedVerseAsOneChapteredBook(), SettingsManager.Instance.ModuleShortName, out vn);                
+
+                return result;
             }
         }
 
