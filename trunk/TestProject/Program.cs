@@ -48,8 +48,7 @@ namespace TestProject
             _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();             
 
             try
-            {
-
+            {   
                 //CheckAdvancedProxyLinks();
 
                 //OneNoteUtils.UpdateElementMetaData()
@@ -85,7 +84,7 @@ namespace TestProject
 
                 //AddColorLink();
 
-                GenerateRuDictionary();
+              //  GenerateRuDictionary();
 
                 //GenerateEnDictionary();
 

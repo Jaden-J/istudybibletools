@@ -60,7 +60,7 @@
             this.rbMultiNotebook = new System.Windows.Forms.RadioButton();
             this.rbSingleNotebook = new System.Windows.Forms.RadioButton();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.chkUseCommaDelimeter = new System.Windows.Forms.CheckBox();
+            this.chkUseCommaDelimiter = new System.Windows.Forms.CheckBox();
             this.chkUseAdvancedProxyForOneNoteLinks = new System.Windows.Forms.CheckBox();
             this.chkUseProxyLinksForBibleVerses = new System.Windows.Forms.CheckBox();
             this.chkUseProxyLinksForLinks = new System.Windows.Forms.CheckBox();
@@ -367,7 +367,7 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage2.Controls.Add(this.chkUseCommaDelimeter);
+            this.tabPage2.Controls.Add(this.chkUseCommaDelimiter);
             this.tabPage2.Controls.Add(this.chkUseAdvancedProxyForOneNoteLinks);
             this.tabPage2.Controls.Add(this.chkUseProxyLinksForBibleVerses);
             this.tabPage2.Controls.Add(this.chkUseProxyLinksForLinks);
@@ -385,11 +385,11 @@
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Enter += new System.EventHandler(this.tabPage1_Enter);
             // 
-            // chkUseCommaDelimeter
+            // chkUseCommaDelimiter
             // 
-            resources.ApplyResources(this.chkUseCommaDelimeter, "chkUseCommaDelimeter");
-            this.chkUseCommaDelimeter.Name = "chkUseCommaDelimeter";
-            this.chkUseCommaDelimeter.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.chkUseCommaDelimiter, "chkUseCommaDelimiter");
+            this.chkUseCommaDelimiter.Name = "chkUseCommaDelimiter";
+            this.chkUseCommaDelimiter.UseVisualStyleBackColor = true;
             // 
             // chkUseAdvancedProxyForOneNoteLinks
             // 
@@ -844,7 +844,7 @@
         private System.Windows.Forms.CheckBox chkUseProxyLinksForBibleVerses;
         private System.Windows.Forms.ToolTip ttNotesPageFolder;
         private System.Windows.Forms.CheckBox chkUseAdvancedProxyForOneNoteLinks;
-        private System.Windows.Forms.CheckBox chkUseCommaDelimeter;
+        private System.Windows.Forms.CheckBox chkUseCommaDelimiter;
 
     }
 }
