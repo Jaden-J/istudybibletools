@@ -289,13 +289,13 @@
   <data name="tpNotebooks.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="chkUseCommaDelimeter.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="chkUseCommaDelimiter.Size" type="System.Drawing.Size, System.Drawing">
     <value>314, 17</value>
   </data>
-  <data name="chkUseCommaDelimeter.Text" xml:space="preserve">
+  <data name="chkUseCommaDelimiter.Text" xml:space="preserve">
     <value>Анализировать стихи с запятой в качестве разделителя</value>
   </data>
-  <data name="chkUseCommaDelimeter.ToolTip" xml:space="preserve">
+  <data name="chkUseCommaDelimiter.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="chkUseAdvancedProxyForOneNoteLinks.Size" type="System.Drawing.Size, System.Drawing">

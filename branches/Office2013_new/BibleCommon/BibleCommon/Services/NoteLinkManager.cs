@@ -1158,16 +1158,16 @@ namespace BibleCommon.Services
                                     canContinue = false;
                                 }
 
-                                if (canContinue
-                                    && VersePointerSearchResult.IsVerseWithoutChapter(resultType)
-                                    && globalChapterSearchResult != null
-                                    && globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString
-                                    && !verseScopeInfo.IsInBrackets
-                                    && globalChapterSearchResult.VersePointer.IsMultiVerse
-                                    && globalChapterSearchResult.VersePointer.IsInVerseRange(vp))
-                                {
-                                    canContinue = false;    // если указан уже диапазон, а далее идут пояснения, то не отмечаем их заметками
-                                }
+                                //if (canContinue
+                                //    && VersePointerSearchResult.IsVerseWithoutChapter(resultType)
+                                //    && globalChapterSearchResult != null
+                                //    && globalChapterSearchResult.ResultType == VersePointerSearchResult.SearchResultType.ChapterAndVerseAtStartString
+                                //    && !verseScopeInfo.IsInBrackets
+                                //    && globalChapterSearchResult.VersePointer.IsMultiVerse
+                                //    && globalChapterSearchResult.VersePointer.IsInVerseRange(vp))
+                                //{
+                                //    canContinue = false;    // если указан уже диапазон, а далее идут пояснения, то не отмечаем их заметками
+                                //}
 
 
                                 if (canContinue
