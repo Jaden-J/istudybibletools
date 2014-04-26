@@ -813,34 +813,34 @@
   <data name="&gt;&gt;tpNotebooks.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="chkUseCommaDelimeter.AutoSize" type="System.Boolean, mscorlib">
+  <data name="chkUseCommaDelimiter.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="chkUseCommaDelimeter.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+  <data name="chkUseCommaDelimiter.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="chkUseCommaDelimeter.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="chkUseCommaDelimiter.Location" type="System.Drawing.Point, System.Drawing">
     <value>335, 147</value>
   </data>
-  <data name="chkUseCommaDelimeter.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="chkUseCommaDelimiter.Size" type="System.Drawing.Size, System.Drawing">
     <value>184, 17</value>
   </data>
-  <data name="chkUseCommaDelimeter.TabIndex" type="System.Int32, mscorlib">
+  <data name="chkUseCommaDelimiter.TabIndex" type="System.Int32, mscorlib">
     <value>26</value>
   </data>
-  <data name="chkUseCommaDelimeter.Text" xml:space="preserve">
+  <data name="chkUseCommaDelimiter.Text" xml:space="preserve">
     <value>Analyze comma separated verses</value>
   </data>
-  <data name="&gt;&gt;chkUseCommaDelimeter.Name" xml:space="preserve">
-    <value>chkUseCommaDelimeter</value>
+  <data name="&gt;&gt;chkUseCommaDelimiter.Name" xml:space="preserve">
+    <value>chkUseCommaDelimiter</value>
   </data>
-  <data name="&gt;&gt;chkUseCommaDelimeter.Type" xml:space="preserve">
+  <data name="&gt;&gt;chkUseCommaDelimiter.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;chkUseCommaDelimeter.Parent" xml:space="preserve">
+  <data name="&gt;&gt;chkUseCommaDelimiter.Parent" xml:space="preserve">
     <value>tabPage2</value>
   </data>
-  <data name="&gt;&gt;chkUseCommaDelimeter.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;chkUseCommaDelimiter.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <data name="chkUseAdvancedProxyForOneNoteLinks.AutoSize" type="System.Boolean, mscorlib">

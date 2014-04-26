@@ -66,8 +66,8 @@ namespace BibleCommon.Helpers
             public string FoundString { get; set; }
             public int TextBreakIndex { get; set; }
             public int HtmlBreakIndex { get; set; }
-
             public bool MissFound { get; set; }
+            public bool? WasFoundDigits { get; set; }
 
             public StringSearchResult()
             {
@@ -89,7 +89,7 @@ namespace BibleCommon.Helpers
         public SearchDirection Direction { get; set; }
         public StringSearchMode SearchMode { get; set; }
         public SearchMissInfo MissInfo { get; set; }
-        public SearchIgnoringInfo IgnoringInfo { get; set; }
+        public SearchIgnoringInfo IgnoringInfo { get; set; }        
 
         private StringSearchResult _searchResult;
         private int? _missCount = null;
@@ -187,6 +187,8 @@ namespace BibleCommon.Helpers
             {
                 _searchResult.FixSearchResultPosition(_index, _indexBeforeHtml);
             }
+
+            _searchResult.WasFoundDigits = _isDigits;
 
             return _searchResult;
         }

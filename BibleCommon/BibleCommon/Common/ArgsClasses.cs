@@ -86,6 +86,11 @@ namespace BibleCommon.Common
 
         public bool AutoCommitLinkPage { get; set; }
 
+        /// <summary>
+        /// Нужно ли проверять: нет повторяется ли CustomId в метаданных у данной странице. Возможно мы эту страницу скопировали (вместе с метаданными)
+        /// </summary>
+        public bool CheckForDuplicateId { get; set; }
+
         public LinkProxyInfo(bool useProxyLinkIfAvailable, bool useAdvancedProxy)
         {
             UseProxyLinkIfAvailable = useProxyLinkIfAvailable;
