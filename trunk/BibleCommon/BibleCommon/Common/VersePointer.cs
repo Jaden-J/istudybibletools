@@ -14,7 +14,7 @@ namespace BibleCommon.Common
     [Serializable]
     public struct VerseNumber: IComparable<VerseNumber>
     {
-        public readonly static char[] Dashes = new char[] { '-', '—', '‑', '–' };
+        public readonly static char[] Dashes = new char[] { '-', '—', '‑', '–', '−' };
 
         public int Verse;
         public int? TopVerse;

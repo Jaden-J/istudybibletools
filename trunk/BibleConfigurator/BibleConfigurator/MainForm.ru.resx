@@ -293,7 +293,7 @@
     <value>314, 17</value>
   </data>
   <data name="chkUseCommaDelimiter.Text" xml:space="preserve">
-    <value>Анализировать стихи с запятой в качестве разделителя</value>
+    <value>Анализировать ссылки с запятой в качестве разделителя</value>
   </data>
   <data name="chkUseCommaDelimiter.ToolTip" xml:space="preserve">
     <value />

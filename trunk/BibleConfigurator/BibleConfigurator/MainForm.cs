@@ -164,7 +164,7 @@ namespace BibleConfigurator
             btnApply.Enabled = false;
             bool lblWarningVisibilityBefore = lblWarning.Visible;
             lblWarning.Visible = false;
-            this.TopMost = true;
+            //this.TopMost = true;
 
             try
             {
@@ -218,7 +218,7 @@ namespace BibleConfigurator
                     }
                 }
 
-                this.TopMost = false;  // нам не нужен уже топ мост, потому что раньше он нам нужен был из-за того, что OneNote постоянно перекрывал программу когда создавались новые записные книжки
+                //this.TopMost = false;  // нам не нужен уже топ мост, потому что раньше он нам нужен был из-за того, что OneNote постоянно перекрывал программу когда создавались новые записные книжки
 
                 if (!FormLogger.WasErrorLogged)
                 {
@@ -233,9 +233,12 @@ namespace BibleConfigurator
                     if (!BibleVersesLinksCacheManager.CacheIsActive(SettingsManager.Instance.NotebookId_Bible) && !ToIndexBible && !NotAskToIndexBible)
                     {
                         var minutes = GetMinutesForBibleVersesCacheGenerating();
-                        if (MessageBox.Show(string.Format(BibleCommon.Resources.Constants.IndexBibleQuestion, minutes), BibleCommon.Resources.Constants.Warning,
-                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                            ToIndexBible = true;
+                        using (var form = new MessageForm(string.Format(BibleCommon.Resources.Constants.IndexBibleQuestion, minutes), BibleCommon.Resources.Constants.Warning,
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                        {
+                            if (form.ShowDialog() == DialogResult.Yes)
+                                ToIndexBible = true;
+                        }
                     }
                 }
                 
@@ -279,7 +282,7 @@ namespace BibleConfigurator
             {
                 btnOK.Enabled = true;                
                 btnApply.Enabled = true;
-                this.TopMost = false;
+                //this.TopMost = false;
             }
         }
 
