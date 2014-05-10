@@ -835,7 +835,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=3.3.11.1183, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BibleCommon, Version=3.3.12.1187, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_9830DCA6B98EE048A69FFAE549C2E5C4"
@@ -1151,15 +1151,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BibleNote"
-        "ProductCode" = "8:{72DA762B-C2D9-4111-80D2-ADC32ADE8BD6}"
-        "PackageCode" = "8:{E36CA62D-879D-436F-A7A2-66FCD3448E02}"
+        "ProductCode" = "8:{EFFDE6E5-22C4-48B7-887B-34764782F9EA}"
+        "PackageCode" = "8:{12851A70-226B-4E7F-BBB3-98481A7D87E1}"
         "UpgradeCode" = "8:{7EC08565-E66A-4EFE-ADA8-F58B38DCCB11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:3.3.11"
+        "ProductVersion" = "8:3.3.12"
         "Manufacturer" = "8:IStudyBibleTools"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://BibleNote.pro"
