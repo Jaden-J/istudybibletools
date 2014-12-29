@@ -49,6 +49,9 @@ namespace TestProject
 
             try
             {   
+			
+				//ChangeNotebookFont();
+				
                 //CheckAdvancedProxyLinks();
 
                 //OneNoteUtils.UpdateElementMetaData()
@@ -84,7 +87,7 @@ namespace TestProject
 
                 //AddColorLink();
 
-                GenerateRuDictionary();
+                //GenerateRuDictionary();
 
                 //GenerateEnDictionary();
 
@@ -130,6 +133,103 @@ namespace TestProject
 
             Console.WriteLine("Finish. Elapsed time: {0}", sw.Elapsed);
             Console.ReadKey();
+        }
+		
+		 private static void ChangeNotebookFont()
+        {
+            Console.WriteLine("Enter font name");
+            var fontName = Console.ReadLine();
+
+            try
+            {
+                OneNoteLocker.UnlockBible(ref _oneNoteApp, true);
+            }
+            catch (NotSupportedException)
+            {
+                //todo: log it
+            }
+
+            NotebookIteratorHelper.Iterate(ref _oneNoteApp,
+                    SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
+                    {
+                        try
+                        {
+                            ChangePageFont(pageInfo.Id, pageInfo.Title, fontName);
+                        }
+                        catch (Exception ex)
+                        {
+                            FormLogger.LogError(ex.ToString());
+                        }                            
+                    });            
+        }
+
+        private static void ChangePageFont(string pageId, string pageName, string fontName)
+        {
+            string pageContentXml = null;
+            XDocument pageDoc;
+            XmlNamespaceManager xnm;
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
+            {
+                _oneNoteApp.GetPageContent(pageId, out pageContentXml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
+            });
+            pageDoc = OneNoteUtils.GetXDocument(pageContentXml, out xnm);
+
+            var fontsEl = pageDoc.Root.XPathSelectElements("one:QuickStyleDef", xnm);            
+            foreach (var fontEl in fontsEl)
+            {
+                fontEl.SetAttributeValue("font", fontName);
+            }
+
+            var oesEl = pageDoc.Root.XPathSelectElements("//one:OE", xnm);
+            foreach (var oeEl in oesEl)
+            {
+                var styleAttr = (string)oeEl.Attribute("style");
+                if (!string.IsNullOrEmpty(styleAttr))
+                {
+                    var styleDict = styleAttr.Split(';');
+                    foreach (var styleItem in styleDict)
+                    {
+                        if (styleItem.Split(':')[0] == "font-family")
+                        {
+                            oeEl.SetAttributeValue("style", styleAttr.Replace(styleItem, "font-family:" + fontName));
+                            break;
+                        }
+                    }
+                }
+            }
+
+            ChangeColumnsWitdh(pageDoc, xnm);
+
+            OneNoteUtils.UpdatePageContentSafe(ref _oneNoteApp, pageDoc, xnm);
+        }
+
+        private static void ChangeColumnsWitdh(XDocument pageDoc, XmlNamespaceManager xnm)
+        {
+            var columns = pageDoc.Root.XPathSelectElement("//one:Table/one:Columns", xnm);            
+            if (columns != null && columns.Nodes().Count() < 4)  // значит страницы главы Библии, а не, например, начальная страница книги
+            {
+                var column2 = columns.XPathSelectElement("one:Column[2]", xnm);
+
+                if (column2 != null)
+                {
+                    SetWidthAttribute(column2, 40);
+                    SetLockedAttribute(column2);
+                }
+            }
+        }
+
+        private static void SetLockedAttribute(XElement column)
+        {
+            XAttribute isLocked = column.Attribute("isLocked");
+            if (isLocked != null)
+                isLocked.Value = "true";
+            else
+                column.Add(new XAttribute("isLocked", true));
+        }
+
+        private static void SetWidthAttribute(XElement column, int width)
+        {
+            column.SetAttributeValue("width", width);
         }
 
         private static void GetBiggestBooks()
