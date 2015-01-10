@@ -25,6 +25,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Globalization;
 using BibleConfigurator;
+using BibleConfigurator.Tools;
 
 
 namespace TestProject
@@ -135,32 +136,39 @@ namespace TestProject
             Console.ReadKey();
         }
 		
-		 private static void ChangeNotebookFont()
+		private static void ChangeNotebookFont()
         {
+            Console.WriteLine("Enter Notebook Name");
+            var notebookName = Console.ReadLine();
+
             Console.WriteLine("Enter font name");
             var fontName = Console.ReadLine();
 
-            try
+            var notebookId = OneNoteUtils.GetNotebookIdByName(ref _oneNoteApp, notebookName, false);
+
+            if (notebookId == SettingsManager.Instance.NotebookId_Bible)
             {
-                OneNoteLocker.UnlockBible(ref _oneNoteApp, true);
-            }
-            catch (NotSupportedException)
-            {
-                //todo: log it
+                try
+                {
+                    OneNoteLocker.UnlockBible(ref _oneNoteApp, true);
+                }
+                catch (NotSupportedException)
+                {
+                    //todo: log it
+                }
             }
 
-            NotebookIteratorHelper.Iterate(ref _oneNoteApp,
-                    SettingsManager.Instance.NotebookId_Bible, SettingsManager.Instance.SectionGroupId_Bible, pageInfo =>
-                    {
-                        try
-                        {
-                            ChangePageFont(pageInfo.Id, pageInfo.Title, fontName);
-                        }
-                        catch (Exception ex)
-                        {
-                            FormLogger.LogError(ex.ToString());
-                        }                            
-                    });            
+            NotebookIteratorHelper.Iterate(ref _oneNoteApp, notebookId, string.Empty, pageInfo =>
+            {
+                try
+                {
+                    ChangePageFont(pageInfo.Id, pageInfo.Title, fontName);
+                }
+                catch (Exception ex)
+                {
+                    FormLogger.LogError(ex.ToString());
+                }                            
+            });            
         }
 
         private static void ChangePageFont(string pageId, string pageName, string fontName)
