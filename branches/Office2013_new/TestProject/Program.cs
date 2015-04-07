@@ -51,7 +51,7 @@ namespace TestProject
             try
             {   
 			
-				//ChangeNotebookFont();
+				ChangeNotebookFont();
 				
                 //CheckAdvancedProxyLinks();
 
@@ -144,6 +144,16 @@ namespace TestProject
             Console.WriteLine("Enter font name");
             var fontName = Console.ReadLine();
 
+            Console.WriteLine("Enter font size");
+            var fontSize = Console.ReadLine();
+
+            int fontSizeNumber;
+            if (!int.TryParse(fontSize, out fontSizeNumber))
+            {
+                Console.WriteLine("FontSize must be of integer type.");
+                return;
+            }
+
             var notebookId = OneNoteUtils.GetNotebookIdByName(ref _oneNoteApp, notebookName, false);
 
             if (notebookId == SettingsManager.Instance.NotebookId_Bible)
@@ -162,7 +172,7 @@ namespace TestProject
             {
                 try
                 {
-                    ChangePageFont(pageInfo.Id, pageInfo.Title, fontName);
+                    ChangePageFont(pageInfo.Id, pageInfo.Title, fontName, fontSizeNumber);
                 }
                 catch (Exception ex)
                 {
@@ -171,7 +181,7 @@ namespace TestProject
             });            
         }
 
-        private static void ChangePageFont(string pageId, string pageName, string fontName)
+        private static void ChangePageFont(string pageId, string pageName, string fontName, int fontSize)
         {
             string pageContentXml = null;
             XDocument pageDoc;
@@ -185,23 +195,30 @@ namespace TestProject
             var fontsEl = pageDoc.Root.XPathSelectElements("one:QuickStyleDef", xnm);            
             foreach (var fontEl in fontsEl)
             {
-                fontEl.SetAttributeValue("font", fontName);
+                if ((string)fontEl.Attribute("name") != "PageTitle")
+                {
+                    fontEl.SetAttributeValue("font", fontName);
+                    fontEl.SetAttributeValue("fontSize", fontSize);
+                }
             }
 
             var oesEl = pageDoc.Root.XPathSelectElements("//one:OE", xnm);
             foreach (var oeEl in oesEl)
             {
+                if (oeEl.Parent.Name.LocalName == "Title")
+                    continue;
+
                 var styleAttr = (string)oeEl.Attribute("style");
                 if (!string.IsNullOrEmpty(styleAttr))
                 {
                     var styleDict = styleAttr.Split(';');
                     foreach (var styleItem in styleDict)
                     {
-                        if (styleItem.Split(':')[0] == "font-family")
-                        {
-                            oeEl.SetAttributeValue("style", styleAttr.Replace(styleItem, "font-family:" + fontName));
-                            break;
-                        }
+                        var attrName = styleItem.Split(':')[0];
+                        if (attrName == "font-family")                        
+                            oeEl.SetAttributeValue("style", styleAttr.Replace(styleItem, string.Format("{0}:{1}", attrName, fontName)));
+                        else if (attrName == "font-size")
+                            oeEl.SetAttributeValue("style", styleAttr.Replace(styleItem, string.Format("{0}:{1}pt", attrName, fontSize)));
                     }
                 }
             }
