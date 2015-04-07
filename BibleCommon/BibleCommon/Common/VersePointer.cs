@@ -156,7 +156,7 @@ namespace BibleCommon.Common
         public static bool operator !=(VerseNumber vn1, VerseNumber vn2)
         {
             return !(vn1 == vn2);
-    }
+        }
 
         public static bool operator >(VerseNumber vn1, VerseNumber vn2)
         {
@@ -436,6 +436,9 @@ namespace BibleCommon.Common
         public string OriginalVerseName { get; set; }   
         public string OriginalBookName { get; set; }        
 
+        /// <summary>
+        /// Передали "Иуд 2". Исправили ли на "Иуд 1:2"
+        /// </summary>
         public bool WasChangedVerseAsOneChapteredBook { get; set; }
 
         /// <summary>
@@ -491,7 +494,7 @@ namespace BibleCommon.Common
 
 
         /// <summary>
-        /// Новый термин: MultiVerseString - строка в стихе после названия книги. (*| 5:6, :6, :6-7, 5-6...)
+        /// MultiVerseString - строка в стихе после названия книги. (*| 5:6, :6, :6-7, 5-6...)
         /// </summary>
         /// <returns></returns>
         public string GetFullMultiVerseString()
