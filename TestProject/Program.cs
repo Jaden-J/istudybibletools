@@ -49,9 +49,11 @@ namespace TestProject
             _oneNoteApp = OneNoteUtils.CreateOneNoteAppSafe();             
 
             try
-            {   
-			
-				ChangeNotebookFont();
+            {
+
+                TestHtmlAgilityPack();
+
+				//ChangeNotebookFont();
 				
                 //CheckAdvancedProxyLinks();
 
@@ -134,6 +136,24 @@ namespace TestProject
 
             Console.WriteLine("Finish. Elapsed time: {0}", sw.Elapsed);
             Console.ReadKey();
+        }
+
+        private static void TestHtmlAgilityPack()
+        {
+            XmlNamespaceManager xnm;
+            var currentPageInfo = BibleCommon.Helpers.OneNoteUtils.GetCurrentPageInfo(ref _oneNoteApp);
+
+            string xml = null;
+
+            OneNoteUtils.UseOneNoteAPI(ref _oneNoteApp, () =>
+            {
+                _oneNoteApp.GetPageContent(currentPageInfo.Id, out xml, PageInfo.piBasic, Constants.CurrentOneNoteSchema);
+            });
+                       
+
+            var doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(xml);
+            
         }
 		
 		private static void ChangeNotebookFont()
